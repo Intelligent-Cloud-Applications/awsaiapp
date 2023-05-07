@@ -1,0 +1,8 @@
+.Hero-Back{
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url(../../Utils/AWS/iStock-1177116437.jpg);
+    position: relative;
+    background-size: cover;
+    isolation: isolate;
+}
+
+

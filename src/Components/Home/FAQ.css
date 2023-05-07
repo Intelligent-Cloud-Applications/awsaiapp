@@ -1,0 +1,28 @@
+.FAQ-Back{
+    --bg-image: url("");
+    position: relative;
+    background-repeat: no-repeat;
+    isolation: isolate;
+
+}
+
+@media(max-width:900px){
+    .FAQ-Back{
+        --bg-image: #000;
+        background: #000;
+
+    }
+}
+
+.FAQ-Back::after{
+    content: '';
+    opacity: var(--bg-image-opacity);
+    background-color: black;
+    background-position: right;
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+
+}
+
+
