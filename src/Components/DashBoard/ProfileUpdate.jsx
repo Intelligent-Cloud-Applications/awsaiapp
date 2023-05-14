@@ -53,7 +53,7 @@ const ProfileUpdate = () => {
     if (validate()) {
       if (phoneNumber && phoneNumber.length >= 10) {
         try {
-          const userdata = await API.put("user", "/user/profile/Bworkz", {
+          const userdata = await API.put("user", "/user/profile/awsaiapp", {
             body: {
               emailId: UserCtx.emailId,
               userName: name,
@@ -139,7 +139,7 @@ const ProfileUpdate = () => {
       try {
         await Auth.verifyCurrentUserAttributeSubmit("email", emailCode);
 
-        const userdata = await API.put("user", "/user/profile/Bworkz", {
+        const userdata = await API.put("user", "/user/profile/awsaiapp", {
           body: {
             emailId: email,
             userName: UserCtx.userName,

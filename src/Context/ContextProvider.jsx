@@ -9,11 +9,12 @@ const ContextProvider = (props) => {
   const [upcomingClasses, setUpcomingClasses] = useState([]);
   const [previousClasses, setPreviousClasses] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [productList, setProductList] = useState([]);
 
   useEffect(() => {
     if (isAuth) {
       const onLoad = () => {
-        API.get("user", "/user/upcoming-schedule/Bworkz")
+        API.get("user", "/user/upcoming-schedule/awsaiapp")
           .then((classes) => {
             setUpcomingClasses(classes);
           })
@@ -21,7 +22,7 @@ const ContextProvider = (props) => {
             setUpcomingClasses([]);
             console.log(e);
           });
-        API.get("user", "/user/previous-schedule/Bworkz")
+        API.get("user", "/user/previous-schedule/awsaiapp")
           .then((classes) => {
             setPreviousClasses(classes);
           })
@@ -29,7 +30,7 @@ const ContextProvider = (props) => {
             setPreviousClasses([]);
             console.log(e);
           });
-        API.get("user", "/admin/profile-list/Bworkz")
+        API.get("user", "/admin/profile-list/awsaiapp")
           .then((list) => {
             setUserList(list);
           })
@@ -41,6 +42,19 @@ const ContextProvider = (props) => {
       onLoad();
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    API.get("user", "/any/products/awsaiapp")
+      .then((list) => {
+        console.log(list);
+        setProductList(list);
+      })
+      .catch((e) => {
+        console.log(e);
+        setUserList([]);
+      });
+  }, []);
+
 
   const setIsAuthFn = (data) => {
     setIsAuth(data);
@@ -69,6 +83,8 @@ const ContextProvider = (props) => {
     setPreviousClasses: () => {},
     userList: userList,
     setUserList: () => {},
+    productList: productList,
+    setProductList: () => {},
   };
 
   return (

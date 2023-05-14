@@ -3,7 +3,7 @@ import { API } from "aws-amplify";
 import { useNavigate } from "react-router";
 // import { useParams } from "react-router-dom";
 
-export default function BworkzInstructorYearly() {
+export default function RtigerPaypalMonthly() {
   const paypal = useRef();
   const Navigate = useNavigate();
   // const history = useHistory()
@@ -22,7 +22,7 @@ export default function BworkzInstructorYearly() {
         createSubscription: (data, actions, err, can) => {
           return actions.subscription.create({
             intent: "subscription",
-            plan_id: "P-2Y526077J28152424MAUGT5A",
+            plan_id: "P-49X49202J6495240FMINKALY",
           });
         },
 
@@ -31,12 +31,12 @@ export default function BworkzInstructorYearly() {
           // history.push('/PaymentConfirmation')
 
           try {
-            const addYear = 365 * 24 * 60 * 60 * 1000;
+            const addMonth = 30 * 24 * 60 * 60 * 1000;
 
-            const product = "BworkZ Instructor Yearly";
+            const product = "Rtiger Monthly";
             const joiningDate = Date.now();
-            const renewDate = Date.now() + addYear;
-            const paymentMethodEmailId = "";
+            const renewDate = Date.now() + addMonth;
+            const paymentMethodEmailId = "---";
             const subscriptionId = data.subscriptionID;
             // const zoomDesc =
             //   "BworkZ Pro Class Every Week Monday, Thursday 7 PM EST and Saturday 9AM EST (6:30 PM India Time) : ";
@@ -66,12 +66,13 @@ export default function BworkzInstructorYearly() {
           Navigate("/paymentfailed");
         },
       })
-      .render("#paypal-button-container-P-2Y526077J28152424MAUGT5A");
-    // eslint-disable-next-line
+      .render(paypal.current);
+      // .render("#paypal-button-container-P-49X49202J6495240FMINKALY");
+      // eslint-disable-next-line
   }, []);
 
   const paypalData = async (postData) => {
-    return await API.put("user", `/user/payment-update/Bworkz`, {
+    return await API.put("user", `/user/payment-update/rtiger`, {
       body: postData,
     });
   };
@@ -79,7 +80,7 @@ export default function BworkzInstructorYearly() {
   return (
     <div>
       <div
-        id="paypal-button-container-P-2Y526077J28152424MAUGT5A"
+        // id="paypal-button-container-P-49X49202J6495240FMINKALY"
         ref={paypal}
       ></div>
     </div>

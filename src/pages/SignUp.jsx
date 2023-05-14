@@ -86,14 +86,14 @@ const SignUp = () => {
       if (form2Validator()) {
         await Auth.confirmSignUp(email, confirmationCode);
         await Auth.signIn(email, password);
-        await API.post("user", "/user/profile/Bworkz", {
+        await API.post("user", "/user/profile/awsaiapp", {
           body: {
             emailId: email,
             userName: name,
             phoneNumber: phoneNumber,
           },
         });
-        const userdata = await API.get("user", "/user/profile/Bworkz");
+        const userdata = await API.get("user", "/user/profile/awsaiapp");
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);

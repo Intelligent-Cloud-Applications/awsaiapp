@@ -14,7 +14,7 @@ function App() {
 
       try {
         await Auth.currentAuthenticatedUser();
-        const userdata = await API.get("user", "/user/profile/Bworkz");
+        const userdata = await API.get("user", "/user/profile/awsaiapp");
         // userdata.Status = true;
         UserCtx.current.setUserData(userdata);
         UserCtx.current.setIsAuth(true);

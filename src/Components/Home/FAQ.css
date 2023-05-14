@@ -7,16 +7,16 @@
 }
 
 @media(max-width:900px){
-    .FAQ-Back{
+    /* .FAQ-Back{
         --bg-image: #000;
         background: #000;
 
-    }
+    } */
 }
 
 .FAQ-Back::after{
     content: '';
-    opacity: var(--bg-image-opacity);
+    /* opacity: var(--bg-image-opacity); */
     background-color: black;
     background-position: right;
     position: absolute;

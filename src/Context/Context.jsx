@@ -15,6 +15,8 @@ const Context = createContext({
   setPreviousClasses: () => {},
   userList: [],
   setUserList: () => {},
+  productList: [],
+  setProductList: () => {},
 });
 
 export default Context;
