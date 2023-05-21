@@ -11,6 +11,7 @@ import Query from "./pages/Query";
 import ForgotPassword from "./pages/ForgotPassword";
 import PaymentFailed from "./pages/PaymentFailed";
 import PaymentSuccessful from "./pages/PaymentSuccessful";
+import Logout from "./pages/Logout";
 
 const RoutesContainer = () => {
   return (
@@ -21,7 +22,7 @@ const RoutesContainer = () => {
       <Route path="/teams" element={<Teams />} />
       <Route path="/services" element={<Services />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+      <Route path="/logout" element={<Logout />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/query" element={<Query />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
