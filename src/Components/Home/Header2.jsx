@@ -1,6 +1,6 @@
 import React from "react";
 
-import VR from "../../Utils/AWS/raw/VR.png";
+// import VR from "../../Utils/AWS/raw/VR.png";
 import "./New.css";
 
 

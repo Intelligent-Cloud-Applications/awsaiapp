@@ -249,8 +249,11 @@ useEffect(() => {
       <form className="w-[50vw] max800:w-[90vw]  max-w-[35rem] bg-[#FFFFFF] shadow-2xl rounded-2xl p-4 flex flex-col items-center ">
         <h3 className="text-[1.2rem] font-roboto font-bold">Sign Up</h3>
         <ul className="flex flex-col items-center">
-          <li className="flex items-center gap-20 mt-8 max500:flex-col max500:gap-2 max500:items-start">
-            <label className="w-20 max500:ml-3">OTP Code</label>
+          <li className="flex flex-col items-center gap-6 mt-8 max500:flex-col max500:gap-2 max500:items-start">
+          <div className="flex flex-col ">
+          <label className="w-50  max500:ml-3">The OTP was generated and sent via email for verification.  </label>
+            <span className="text-[#404E7C] w-full text-center">{email}</span>
+          </div>  
             <ValidatorForm>
              <TextValidator
                 label={
@@ -268,11 +271,11 @@ useEffect(() => {
               onChange={(e) => {
                 setConfirmationCode(e.target.value);
               }}
-            />
+            /> 
             </ValidatorForm>
             </li>
             {resendVisible ? (
-              <button className="mt-[1rem] ml-[5rem]" onClick={resendOTP}>Resend OTP</button>
+              <button className="mt-[1rem] text-center" onClick={resendOTP}>Resend OTP</button>
             ) : (
               <p className="mt-[1rem]">Resend OTP in <span className="text-[#404E7C] font-bold">{counter}</span> seconds</p>
             )}
