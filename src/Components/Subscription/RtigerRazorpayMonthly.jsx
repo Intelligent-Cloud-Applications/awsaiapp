@@ -26,7 +26,7 @@ const RtigerRazorpayMonthly = ({ productId }) => {
 
     try {
       console.log("before");
-      response = await API.put("user", "/user/billing/rtiger", {
+      response = await API.put("user", "/user/billing/awsaiapp", {
         body: {
           productId: productId,
         },
@@ -61,12 +61,12 @@ const RtigerRazorpayMonthly = ({ productId }) => {
                 razorpaySignature: response.razorpay_signature,
               };
 
-              const res = await API.put("user", "/user/billing/verify/rtiger", {
+              const res = await API.put("user", "/user/billing/verify/awsaiapp", {
                 body: resBody,
               });
               const tempUserdata = await API.get(
                 "user",
-                "/user/profile/rtiger"
+                "/user/profile/awsaiapp"
               );
 
               Ctx.setUserData(tempUserdata);

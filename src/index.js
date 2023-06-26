@@ -8,7 +8,7 @@ import App from "./App";
 
 const process = {
   env: {
-    STAGE: "PROD",
+    STAGE: "DEV",
   },
 }
 
