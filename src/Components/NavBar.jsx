@@ -20,7 +20,6 @@ const NavBar = () => {
   const navBarContent = [
     { label: "HOME", path: "/" },
     { label: "ABOUT US", path: "/aboutus" },
-    { label: "INSTRUCTOR", path: "/instructor" },
   ];
 
   return (
@@ -62,14 +61,15 @@ const NavBar = () => {
           ))}
           <p className="max800:hidden flex items-center justify-center p-0 m-0">
             {UserCtx.isAuth ? (
-              <p
-                onClick={() => {
-                  Navigate("/dashboard");
-                }}
-                className="cursor-pointer  max800:hidden w-[10rem] text-center mr-10  p-2 py-1 border-solid border-2 border-[#71B48D] rounded-md "
-              >
-                {UserCtx.userData.userName}
-              </p>
+              <span
+                  onClick={() => {
+                    Navigate("/dashboard");
+                  }}
+                  className="cursor-pointer max800:hidden w-[10rem] text-center mr-10 p-2 py-1 border-solid border-2 border-[#71B48D] rounded-md"
+                >
+                  {UserCtx.userData.userName.split(" ")[0]}
+                </span>
+
             ) : (
               <button
                 className="max800:hidden  p-2 py-1 bg-[#71B48D] w-[6.5rem] h-[2.63rem] rounded-md text-white font-russo"

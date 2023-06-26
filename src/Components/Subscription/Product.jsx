@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Context from "../../Context/Context";
 import { useNavigate } from "react-router-dom";
 import RtigerRazorpay from "./RtigerRazorpay";
-import Dashboard from "../../pages/DashBoard";
+import LeftBanner from "../DashBoard/LeftBanner"
 
 const Product = (product) => {
   const Ctx = useContext(Context);
@@ -12,16 +12,24 @@ const Product = (product) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [expirationDate, setExpirationDate] = useState(null); 
 
-  useEffect(() => {
-    setSelectedPlan(null); // Reset the selected plan when the product changes
-    setExpirationDate(null); // Reset the expiration date when the product changes
-  }, [product]);
-
+  
   const handlePlanSelection = (plan, expiration) => {
     setSelectedPlan(plan); // Update the selected plan
     setExpirationDate(expiration); // Update the expiration date
   };
-
+  
+  const handleDashboardSubmit = () => {
+    // Logic to handle submitting the selected plan and expiration date to the server
+    // You can make an API call or perform any other necessary action here
+    // For demonstration purposes, let's just console log the values
+    console.log("Selected Plan:", selectedPlan);
+    console.log("Expiration Date:", expirationDate);
+  };
+  useEffect(() => {
+    setSelectedPlan(null); // Reset the selected plan when the product changes
+    setExpirationDate(null); // Reset the expiration date when the product changes
+  }, [product]);
+  
   return (
     <li className="bg-white w-[20rem] h-[24rem] max450:h-[25rem] rounded-[2rem]  flex flex-col justify-center items-center gap-8 shadowSubscribe   max450:w-[90vw] max450:gap-[1.2rem] max450:text-[1rem]   max450:p-12  border-[0.1rem]">
       <p className="font-gidugu leading-[1.5rem] h-[1rem] max450:mb-[1.2rem] text-[3.2rem]">
@@ -66,10 +74,13 @@ const Product = (product) => {
         </button>
       )}
 
-      <Dashboard
-        selectedPlan={selectedPlan}
-        expirationDate={expirationDate} // Pass the state as a prop
-      />
+      {selectedPlan && expirationDate && (
+        <LeftBanner
+          selectedPlan={selectedPlan}
+          expirationDate={expirationDate}
+          handleSubmit={handleDashboardSubmit} // Pass the handleDashboardSubmit function as a prop
+        />
+      )}
     </li>
   );
 };

@@ -16,6 +16,7 @@ function App() {
         await Auth.currentAuthenticatedUser();
         const userdata = await API.get("user", "/user/profile/awsaiapp");
         // userdata.Status = true;
+        // console.log(userdata);
         UserCtx.current.setUserData(userdata);
         UserCtx.current.setIsAuth(true);
         UtilCtx.current.setLoader(false);
