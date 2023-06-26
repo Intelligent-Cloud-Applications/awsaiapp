@@ -113,7 +113,7 @@ const NavBar = () => {
                     Navigate("/dashboard");
                   }}
                 >
-                  {UserCtx.userData.userName}
+                {UserCtx.userData.userName.split(" ")[0]}
                 </li>
               ) : (
                 <li
@@ -175,7 +175,7 @@ const NavBar = () => {
                       Navigate("/dashboard");
                     }}
                   >
-                    {UserCtx.userData.userName}
+                  {UserCtx.userData.userName.split(" ")[0]}
                   </li>
                 ) : (
                   <li

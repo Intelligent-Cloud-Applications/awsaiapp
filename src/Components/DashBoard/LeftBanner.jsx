@@ -99,7 +99,7 @@ const LeftBanner = ({ displayAfterClick }) => {
         <div className="w-[60%] bg-[#fff] h-[10rem] rounded-3xl flex flex-col justify-center items-center max1050:hidden">
           <div className="flex flex-col items-center justify-center gap-2 h-[8rem] ">
             <h2 className="font-bold font-bebas-neue text-[1.2rem]">PLAN</h2>
-            {userType === "admin" ? (
+         {userType === "admin" ? (
               <div className="flex items-center justify-center flex-col gap-3 ">
                 <FontAwesomeIcon
                   icon={faCalendarCheck}
