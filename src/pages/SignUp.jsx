@@ -19,6 +19,7 @@ const SignUp = () => {
   const [confirmationCode, setConfirmationCode] = useState(0);
   const [err, setErr] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(true);
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
   const Navigate = useNavigate();
@@ -26,6 +27,14 @@ const SignUp = () => {
   
 const [counter, setCounter] = useState(60); // Timer counter
 const [resendVisible, setResendVisible] = useState(false); // Resend OTP visibility
+
+useEffect(() => {
+  const query = new URLSearchParams(window.location.search);
+
+  if (query.get("newuser") === "false") {
+    setIsNewUser(false);
+  }
+}, []);
 
 // Function to handle resend OTP
 const resendOTP = async (event) => {
@@ -99,11 +108,47 @@ useEffect(() => {
     }
   };
 
+  const userExistSignUp = async () => {
+    try {
+      console.log("Sign in");
+      await Auth.signIn(email, password);
+      console.log("post");
+      await API.post("user", "/user/profile/rtiger", {
+        body: {
+          emailId: email,
+          userName: name,
+          phoneNumber: phoneNumber,
+          country: country,
+        },
+      });
+      const userdata = await API.get("user", "/user/profile/rtiger");
+      //Temporary
+      // userdata.Status = true;
+      UserCtx.setUserData(userdata);
+      UserCtx.setIsAuth(true);
+      UtilCtx.setLoader(false);
+      alert("Signed Up");
+      if (userdata.status === "Active") {
+        Navigate("/dashboard");
+      }
+      Navigate("/subscription");
+    } catch (error) {
+      UtilCtx.setLoader(false);
+      console.log("Error:", error.message);
+      throw error;
+    }
+  };
+
   const onSubmit = async (event) => {
     event.preventDefault();
 
     try {
       if (form1Validator()) {
+        if (!isNewUser) {
+          await userExistSignUp();
+          UtilCtx.setLoader(false);
+          return;
+        }
         const newUserCheck = await Auth.signUp({
           username: email,
           password: password,

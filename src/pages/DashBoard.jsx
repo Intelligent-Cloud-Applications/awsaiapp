@@ -9,23 +9,14 @@ import Context from "../Context/Context";
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
-<<<<<<< HEAD
-  // const [isUserAdd, setIsUserAdd] = useState(false);
-=======
->>>>>>> origin/master
+
   // const [name, setName] = useState("");
   // const [email, setEmail] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [status, setStatus] = useState("Active");
   // const [balance, setBalance] = useState("");
   // const [attandance, setAttandance] = useState("");
-<<<<<<< HEAD
-  const Ctx = useContext(Context);
-  // const UtilCtx = useContext(Context).util;
-  const [userCheck, setUserCheck] = useState(0);
-=======
-  // const UtilCtx = useContext(Context).util;
->>>>>>> origin/master
+
   // const [displayProfile, setDisplayProfile] = useState(false);
   const Ctx = useContext(Context);
   const [userCheck, setUserCheck] = useState(0);
@@ -36,7 +27,7 @@ const DashBoard = () => {
     switch (click) {
   
 
-     
+
       case 3:
         return <ProfileUpdate />;
 
@@ -53,74 +44,7 @@ const DashBoard = () => {
         Navigate("/");
       }
     }
-  }, [Ctx, Navigate]);
-  // const toggleProfile = () => {
-  //   setDisplayProfile(!displayProfile);
-  // };
-
-  // const onCreateUser = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!(name && email && phoneNumber && status && balance && attandance)) {
-  //     alert("Fill all Fields");
-  //     return;
-  //   }
-  //   if (!name) {
-  //     alert("Fill Name");
-  //     return;
-  //   } else if (!email) {
-  //     alert("Fill email");
-  //     return;
-  //   } else if (!phoneNumber) {
-  //     alert("Fill Phone Number");
-  //     return;
-  //   } else if (!status) {
-  //     alert("Fill Status");
-  //     return;
-  //   } else if (!balance) {
-  //     alert("Fill Balance");
-  //     return;
-  //   } else if (!attandance) {
-  //     alert("Fill Attandance");
-  //     return;
-  //   }
-
-  //   UtilCtx.setLoader(true);
-
-  //   try {
-  //     console.log("started");
-
-<<<<<<< HEAD
-  //     await API.post("user", "/admin/create-user/awsaiapp", {
-=======
-  //     await API.post("user", "/admin/create-user/rtiger", {
->>>>>>> origin/master
-  //       body: {
-  //         emailId: email,
-  //         userName: name,
-  //         phoneNumber: phoneNumber,
-  //         status: status,
-  //         attandance: attandance,
-  //         balance: balance,
-  //       },
-  //     });
-  //     Ctx.setUserList();
-
-  //     alert("User Added");
-
-  //     setName("");
-  //     setEmail("");
-  //     setPhoneNumber("");
-  //     setStatus("");
-  //     setAttandance("");
-  //     setBalance("");
-
-  //     UtilCtx.setLoader(false);
-  //   } catch (e) {
-  //     console.log(e);
-  //     UtilCtx.setLoader(false);
-  //   }
-  // };
+  }, [Ctx, Navigate]);  
 
   return (
     <div className="flex flex-col items-center w-screen overflow-hidden  h-screen bg-gradient-to-b min536:from-[#fafafa] max536:from-[#404e7c9f] min536:via-[#404e7c5c] max536:via-[#2C73EB42] max536:to-[#404E7C] min536:to-[#404E7C]">
