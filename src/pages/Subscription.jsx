@@ -1,14 +1,16 @@
 import React, { useContext } from "react";
-import "../comp/Subscription.css";
-import Product from "../Subscription/Product";
+import "../Components/comp/Subscription.css";
+import Product from "../Components/Subscription/Product";
 // import BworkzInstructorMonthly from "../Subscription/BworkzInstructorMonthly";
 // import BworkzInstructorYearly from "../Subscription/BworkzInstructorYearly";
-import Context from "../../Context/Context";
+import Context from "../Context/Context";
+import NavBar from "../Components/NavBar";
 export default function Subscription() {
   const Ctx = useContext(Context);
 
   return (
     <>
+    <NavBar />
       <section className="Back  text-[1.5rem]  flex  flex-col items-center h-[50rem] max1414:h-[auto] justify-center gap-[5rem] pb-20 ">
         <div className="text-center text-[white] text-[3.4rem] mt-20 font-bebas-neue ">
           <h1>check out our exclusive offers!</h1>
@@ -25,4 +27,3 @@ export default function Subscription() {
     </>
   );
 }
- 

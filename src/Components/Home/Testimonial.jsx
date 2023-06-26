@@ -1,8 +1,5 @@
 import React from "react";
-
 import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
-
-import yellow_star from "../../Utils/Assests/yellow star.png";
 import Rtigers from "../../Utils/AWS/Logo/Logo.svg";
 import Bworkz from "../../Utils/AWS/Logo/bworkz.png";
 import happyprancer from "../../Utils/AWS/Logo/happyprancer.png";

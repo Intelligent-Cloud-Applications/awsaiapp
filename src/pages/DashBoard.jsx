@@ -9,17 +9,26 @@ import Context from "../Context/Context";
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
+<<<<<<< HEAD
   // const [isUserAdd, setIsUserAdd] = useState(false);
+=======
+>>>>>>> origin/master
   // const [name, setName] = useState("");
   // const [email, setEmail] = useState("");
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [status, setStatus] = useState("Active");
   // const [balance, setBalance] = useState("");
   // const [attandance, setAttandance] = useState("");
+<<<<<<< HEAD
   const Ctx = useContext(Context);
   // const UtilCtx = useContext(Context).util;
   const [userCheck, setUserCheck] = useState(0);
+=======
+  // const UtilCtx = useContext(Context).util;
+>>>>>>> origin/master
   // const [displayProfile, setDisplayProfile] = useState(false);
+  const Ctx = useContext(Context);
+  const [userCheck, setUserCheck] = useState(0);
 
   const Navigate = useNavigate();
 
@@ -81,7 +90,11 @@ const DashBoard = () => {
   //   try {
   //     console.log("started");
 
+<<<<<<< HEAD
   //     await API.post("user", "/admin/create-user/awsaiapp", {
+=======
+  //     await API.post("user", "/admin/create-user/rtiger", {
+>>>>>>> origin/master
   //       body: {
   //         emailId: email,
   //         userName: name,
@@ -125,6 +138,9 @@ const DashBoard = () => {
           {displayAfterClick()}
           </div>
         </div>
+
+        
+      
       </div>
     </div>
   );

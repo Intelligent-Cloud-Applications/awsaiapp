@@ -1,13 +1,26 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Context from "../../Context/Context";
 import { useNavigate } from "react-router-dom";
 import RtigerRazorpay from "./RtigerRazorpay";
+import Dashboard from "../../pages/DashBoard";
 
 const Product = (product) => {
   const Ctx = useContext(Context);
   const UserCtx = useContext(Context).userData;
 
   const Navigate = useNavigate();
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [expirationDate, setExpirationDate] = useState(null); 
+
+  useEffect(() => {
+    setSelectedPlan(null); // Reset the selected plan when the product changes
+    setExpirationDate(null); // Reset the expiration date when the product changes
+  }, [product]);
+
+  const handlePlanSelection = (plan, expiration) => {
+    setSelectedPlan(plan); // Update the selected plan
+    setExpirationDate(expiration); // Update the expiration date
+  };
 
   return (
     <li className="bg-white w-[20rem] h-[24rem] max450:h-[25rem] rounded-[2rem]  flex flex-col justify-center items-center gap-8 shadowSubscribe   max450:w-[90vw] max450:gap-[1.2rem] max450:text-[1rem]   max450:p-12  border-[0.1rem]">
@@ -32,7 +45,10 @@ const Product = (product) => {
           ) : (
             <>
               {product.currency === "INR" ? (
-                <RtigerRazorpay productId={product.productId} />
+                <RtigerRazorpay
+                  productId={product.productId}
+                  handlePlanSelection={handlePlanSelection} // Pass the handlePlanSelection function as a prop
+                />
               ) : (
                 <div></div>
               )}
@@ -49,6 +65,11 @@ const Product = (product) => {
           Sign Up
         </button>
       )}
+
+      <Dashboard
+        selectedPlan={selectedPlan}
+        expirationDate={expirationDate} // Pass the state as a prop
+      />
     </li>
   );
 };

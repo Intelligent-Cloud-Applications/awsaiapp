@@ -1,10 +1,8 @@
 
 import React from "react";
 import "./Header.css";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const Navigate = useNavigate();
 
   return (
     <div className="Hero-Back self-stretch overflow-hidden flex flex-col max375:px-[2rem] max670:px-[3rem] py-[12.44rem] px-[7.13rem] items-start justify-start text-left text-[2rem] text-white font-poppins">

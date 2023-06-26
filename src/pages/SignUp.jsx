@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Auth, API } from "aws-amplify";
 import NavBar from "../Components/NavBar";
 import DanceAuth from "../Utils/Png/danceAuth.png";
 import Context from "../Context/Context";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -19,11 +21,47 @@ const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
-
   const Navigate = useNavigate();
 
+  
+const [counter, setCounter] = useState(60); // Timer counter
+const [resendVisible, setResendVisible] = useState(false); // Resend OTP visibility
+
+// Function to handle resend OTP
+const resendOTP = async (event) => {
+  event.preventDefault();
+  try {
+    if (email) {
+      await Auth.resendSignUp(email);
+      setCounter(60); // Reset the timer
+      setResendVisible(false); // Hide the resend button
+      setErr("OTP resent successfully."); // Provide appropriate feedback to the user
+    } else {
+      setErr("Please enter your email address."); // Provide appropriate feedback to the user
+    }
+  } catch (error) {
+    setErr(error.message); // Handle any error occurred during the resend process
+  }
+};
+
+useEffect(() => {
+  let timer = null;
+  if (counter > 0) {
+    timer = setInterval(() => setCounter((prevCounter) => prevCounter - 1), 1000);
+  } else {
+    setResendVisible(true); // Display the resend button when timer reaches 0
+  }
+
+  return () => {
+    clearInterval(timer);
+  };
+}, [counter]);
+
+  
+  
+
   const passwordVisibilityChange = () => {
-    setPasswordVisible((i) => !i);
+    setPasswordVisible((prevState) => !prevState);
   };
 
   const form1Validator = () => {
@@ -197,7 +235,7 @@ const SignUp = () => {
         </ul>
         {err && <p className="text-[0.8rem] mt-2 text-red-500">{err}</p>}
         <button
-          className={`p-4 py-1 mt-6 mb-3 bg-yellow-400 rounded-lg`}
+          className={`p-4 py-1 mt-6 mb-3 bg-[#404E7C] text-white rounded-lg`}
           onClick={onSubmit}
         >
           Sign Up
@@ -209,22 +247,43 @@ const SignUp = () => {
   const form2 = () => {
     return (
       <form className="w-[50vw] max800:w-[90vw]  max-w-[35rem] bg-[#FFFFFF] shadow-2xl rounded-2xl p-4 flex flex-col items-center ">
-        <h3 className="text-[1.2rem]">Sign Up</h3>
+        <h3 className="text-[1.2rem] font-roboto font-bold">Sign Up</h3>
         <ul className="flex flex-col items-center">
-          <li className="flex items-center gap-20 mt-8 max500:flex-col max500:gap-2 max500:items-start">
-            <label className="w-20 max500:ml-3">Code</label>
-            <input
-              className="border-[0.02rem] px-3 py-2 border-black shadow-xl rounded-2xl max500:w-[80vw]"
+          <li className="flex flex-col items-center gap-6 mt-8 max500:flex-col max500:gap-2 max500:items-start">
+          <div className="flex flex-col ">
+          <label className="w-50  max500:ml-3">The OTP was generated and sent via email for verification.  </label>
+            <span className="text-[#404E7C] w-full text-center">{email}</span>
+          </div>  
+            <ValidatorForm>
+             <TextValidator
+                label={
+                  <span style={{ color: '#404E7C' }}>Enter 6 Digit OTP</span>
+                }
+                variant="outlined"
+                inputProps={{ maxLength: 6 }}
+                name="otp"
+                size="small"
+                type="text"
+                fullWidth
+                validators={['required']}
+                errorMessages={['OTP is required']}
               value={confirmationCode === 0 ? "" : confirmationCode}
               onChange={(e) => {
                 setConfirmationCode(e.target.value);
               }}
-            />
-          </li>
+            /> 
+            </ValidatorForm>
+            </li>
+            {resendVisible ? (
+              <button className="mt-[1rem] text-center" onClick={resendOTP}>Resend OTP</button>
+            ) : (
+              <p className="mt-[1rem]">Resend OTP in <span className="text-[#404E7C] font-bold">{counter}</span> seconds</p>
+            )}
         </ul>
         {err && <p className="text-[0.8rem] mt-2 text-red-500">{err}</p>}
+        <p className="text-center w-[80%] text-[0.81rem]"><strong className="text-red-500">Note*</strong> An OTP has been sent to “same_email”. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.</p>
         <button
-          className="p-4 py-1 mt-6 mb-3 bg-yellow-400 rounded-lg"
+          className="p-4 py-1 mt-6 mb-3 text-white bg-[#404E7C] rounded-lg"
           onClick={onConfirmationSubmit}
         >
           Confirm code
@@ -237,6 +296,7 @@ const SignUp = () => {
     <div className="w-screen min-h-screen bg-[#f0efef]">
       <NavBar />
       <div className="flex flex-col items-center mt-6 text-black">
+        <h3 className="text-[2rem]">FITNESS</h3>
         <div className="w-[80%] h-[0.08rem] bg-black flex"></div>
         <div className="flex w-[100%] gap-16 justify-center items-end mt-16 ">
           {!newUser ? form1() : form2()}
