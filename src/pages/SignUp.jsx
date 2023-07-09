@@ -113,7 +113,7 @@ useEffect(() => {
       console.log("Sign in");
       await Auth.signIn(email, password);
       console.log("post");
-      await API.post("user", "/user/profile/rtiger", {
+      await API.post("user", "/user/profile/awsaiapp", {
         body: {
           emailId: email,
           userName: name,
@@ -121,7 +121,7 @@ useEffect(() => {
           country: country,
         },
       });
-      const userdata = await API.get("user", "/user/profile/rtiger");
+      const userdata = await API.get("user", "/user/profile/awsaiapp");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
