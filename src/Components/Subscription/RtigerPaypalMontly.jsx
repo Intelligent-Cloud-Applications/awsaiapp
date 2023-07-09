@@ -3,7 +3,7 @@ import { API } from "aws-amplify";
 import { useNavigate } from "react-router";
 // import { useParams } from "react-router-dom";
 
-export default function RtigerPaypalMonthly() {
+const RtigerPaypalMonthly = () => {
   const paypal = useRef();
   const Navigate = useNavigate();
   // const history = useHistory()
@@ -86,3 +86,5 @@ export default function RtigerPaypalMonthly() {
     </div>
   );
 }
+
+export default RtigerPaypalMonthly;

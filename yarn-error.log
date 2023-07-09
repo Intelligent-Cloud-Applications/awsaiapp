@@ -28,7 +28,7 @@ Trace:
 
 npm manifest: 
   {
-    "name": "bworkz-frontend",
+    "name": "awsaiapp-frontend",
     "version": "0.1.0",
     "private": true,
     "dependencies": {

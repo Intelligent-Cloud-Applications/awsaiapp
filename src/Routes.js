@@ -7,7 +7,7 @@ import Logout from "./pages/Logout";
 import ErrorPage from "./pages/Error";
 import SignUp from "./pages/SignUp";
 import About from "./pages/AboutUs";
-import Teams from "./pages/Teams";
+// import Teams from "./pages/Teams";
 import Services from "./pages/Services";
 import Subscription from "./pages/Subscription";
 import Query from "./pages/Query";
@@ -21,7 +21,6 @@ const RoutesContainer = () => {
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/aboutus" element={<About />} />
-      <Route path="/teams" element={<Teams />} />
       <Route path="/services" element={<Services />} />
       <Route path="/login" element={<Login />} />
       <Route path="/logout" element={<Logout />} />

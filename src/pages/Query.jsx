@@ -10,7 +10,7 @@ import { useContext } from "react";
 import Context from "../Context/Context";
 import "./query.css";
 
-export default function Query() {
+const  Query = () => {
   const UtilCtx = useContext(Context).util;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,7 +50,7 @@ export default function Query() {
   };
 
   return (
-    <>
+    <div>
       <NavBar />
       <div className="flex flex-col gap-16 py-10 items-center Background">
         <div className="flex flex-col items-center ">
@@ -165,6 +165,8 @@ export default function Query() {
         </div>
       </section> */}
       <Footer />
-    </>
+    </div>
   );
 }
+
+export default Query;
