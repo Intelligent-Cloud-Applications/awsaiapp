@@ -157,6 +157,8 @@ useEffect(() => {
       }
     } catch (e) {
       setErr(e.message);
+    }finally{
+      UtilCtx.setLoader(false);
     }
   };
 
@@ -190,6 +192,7 @@ useEffect(() => {
       } else {
         UtilCtx.setLoader(false);
       }
+      UtilCtx.setLoader(false);
     } catch (e) {
       setErr(e.message);
       UtilCtx.setLoader(false);
