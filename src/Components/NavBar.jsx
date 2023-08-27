@@ -77,7 +77,7 @@ const NavBar = () => {
                   Navigate("/login");
                 }}
               >
-                Login.
+                Login
               </button>
             )}
           </p>
