@@ -3,7 +3,7 @@ name: Sync to S3
 on:
   push:
     branches:
-      - Beta
+      - beta
       - prod
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
       run: npm run build
 
     - name: Sync to Beta S3
-      if: github.ref == 'refs/heads/Beta'
+      if: github.ref == 'refs/heads/beta'
       env:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
