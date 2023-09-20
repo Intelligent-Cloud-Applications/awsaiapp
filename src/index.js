@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Amplify } from "aws-amplify";
-import ContextProvider from "./Context/ContextProvider";
+import ContextProvider from "./context/ContextProvider";
 import "./index.css";
 import App from "./App";
 
@@ -32,18 +32,18 @@ Amplify.configure({
       responseType: "token",
     },
   },
-  API: {
-    endpoints: [
-      {
-        name: "user",
-        endpoint:
-          process.env.STAGE === "PROD"
-            ? "https://7sh8wrjmm2.execute-api.us-east-1.amazonaws.com/dev"
-            : "https://r5dp21mb28.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
-      },
-    ],
-  },
+  // API: {
+  //   endpoints: [
+  //     {
+  //       name: "user",
+  //       endpoint:
+  //         process.env.STAGE === "PROD"
+  //           ? "https://7sh8wrjmm2.execute-api.us-east-1.amazonaws.com/dev"
+  //           : "https://r5dp21mb28.execute-api.us-east-2.amazonaws.com/dev",
+  //       region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
+  //     },
+  //   ],
+  // },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
