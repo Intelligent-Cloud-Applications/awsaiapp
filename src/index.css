@@ -27,6 +27,14 @@ body {
   font-family: "Sansita";
 }
 
+.K2D{
+  font-family: 'K2D', sans-serif;
+}
+
+.Poppins{
+  font-family: 'Poppins', sans-serif;
+}
+
 #close-arrow {
   transform: rotate(180deg);
 }
