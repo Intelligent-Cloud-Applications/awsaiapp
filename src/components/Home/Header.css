@@ -1,0 +1,24 @@
+.showed{
+  --background: url(/src/utils/waves/layered-waves-haikei\(1\).svg);
+  --bg-image-opacity: 1;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 92vh;
+}
+
+.showed::after{
+  content: '';
+  opacity: var(--bg-image-opacity);
+  background: var(--background);
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+}
+
+.heropic{
+  background: url(/src/utils/waves/2-removebg\ 3.png);
+  background-repeat: no-repeat;
+}
