@@ -14,6 +14,7 @@ export default function Footer(props) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [props.initialContent]);
+
   return (
 
    <div className='w-full h-[90vh] flex flex-col max450px:text-[75%]'>

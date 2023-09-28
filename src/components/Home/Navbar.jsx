@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../../utils/awsaiappLogo.png";
 function Navbar() {
   return (
-    <nav className=" bg-[#001220] text-white p-4 h-[8vh] font-inter">
+    <nav className="hidden md:block bg-black text-white p-4 h-[8vh] font-inter ">
       <div className="container mx-auto flex justify-between items-center">
         <a href="/" className="text-2xl font-bold">
           <img
