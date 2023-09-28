@@ -31,8 +31,8 @@ const Pricing = () => {
                                 <li>Monthly billing for flexibility.</li>
                                 <li>Customization options available.</li>
                             </ul>
-                            <div className="flex w-full justify-center items-center">
-                                <button className="text-white text-[20px] font-semi-bold bg-[#000000] w-60">
+                            <div className="flex w-full justify-center items-center pt-[2rem]">
+                                <button className="text-white text-[20px] font-semi-bold bg-[#000000] w-60 hover:bg-[#30AFBC] hover:text-black">
                                     Get Started
                                 </button>
                             </div>
@@ -61,12 +61,12 @@ const Pricing = () => {
 
                         </ul>
                         <div className="flex w-full justify-center items-center">
-                            <button className="text-[#00000] text-[20px] font-semi-bold bg-[#30AFBC] w-60">
+                            <button className="text-black text-[20px] font-semi-bold bg-[#30AFBC] w-60 hover:bg-white hiver:text-black">
                                 Get Started
                             </button>
                         </div>
                     </div>
-                    <div className="pt-[1.8rem]">
+                    <div className="pt-[1.7rem]">
                         <div className="flex-col box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px]">
                             <h3 className="font-semi-bold text-[34px] pb-[1rem]">Advance</h3>
                             <p className="text-[32px] font-semi-bold">₹ 5,000</p>
@@ -91,7 +91,7 @@ const Pricing = () => {
                                 <li>Digital Marketing, data Analysis and SEO Integration.</li>
                             </ul>
                             <div className="flex w-full justify-center items-center">
-                                <button className="text-white text-[20px] font-semi-bold bg-[#000000] w-60">
+                                <button className="text-white text-[20px] font-semi-bold bg-[#000000] w-60 hover:bg-[#30AFBC] hover:text-black">
                                     Get Started
                                 </button>
                             </div>
