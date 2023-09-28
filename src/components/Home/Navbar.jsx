@@ -1,6 +1,5 @@
 import React from "react";
 import logo from "../../utils/awsaiappLogo.png";
-
 function Navbar() {
   return (
     <nav className=" bg-[#001220] text-white p-4 h-[8vh] font-inter">
@@ -23,8 +22,8 @@ function Navbar() {
               About
             </a>
           </li>
-          <li>
-            <a href="/pricing" className="hover:text-blue-500">
+          <li >
+            <a href="/Pricing" className="hover:text-blue-500">
               Pricing
             </a>
           </li>

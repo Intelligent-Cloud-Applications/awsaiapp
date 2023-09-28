@@ -1,0 +1,22 @@
+.background{
+    background-image: url(../utils/png/Rectangle\ 7.png);
+    background-repeat: no-repeat;
+    background-size: calc(1600px,200px);
+    background-position: -15.5rem -3rem;
+}
+.box{
+    border: inset 2px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px #353535;
+}
+li{
+    padding-bottom: 10px;
+}
+ul {
+    list-style-image: url(../utils/png/Vector_L.png);
+    padding-left: 2rem;
+}
+button{
+    border-radius: 10px;
+    padding: 6px;
+}

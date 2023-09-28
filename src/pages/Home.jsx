@@ -11,11 +11,11 @@ function Home() {
 
 
 
-return (
-  <div className=" overflow-hidden">
-<Navbar/>
+  return (
+    <div className=" overflow-hidden">
+      <Navbar />
 
-<Header/>
+      <Header />
 
 <Testimonial/>
 
@@ -25,11 +25,11 @@ return (
 
 
 
-{/* <Testimonial/> */}
+      {/* <Testimonial/> */}
 
 
-</div>
-);
+    </div>
+  );
 }
 
 export default Home;
