@@ -9,18 +9,18 @@ function Home() {
 
 
 
-return (
-  <div className=" overflow-hidden">
+  return (
+    <div className=" overflow-hidden">
 
-<Navbar/>
+      <Navbar />
 
-<Header/>
+      <Header />
 
-{/* <Testimonial/> */}
+      {/* <Testimonial/> */}
 
 
-</div>
-);
+    </div>
+  );
 }
 
 export default Home;
