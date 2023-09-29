@@ -7,7 +7,7 @@ const Pricing = () => {
         <div className="background">
             <Navbar />
             <div className="justify-center items-center max500:bg-black ">
-                <div className="max500:bg-[#30AFBC] max500:h-[10rem]"
+                <div className="max500:bg-[#30AFBC] max500:h-[7rem]"
                 style={{borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20, height:"12rem",}}>
                     <div className="justify-center item-center gap-6 pb-20 max500:pb-2">
@@ -16,10 +16,10 @@ const Pricing = () => {
                         </h1>
                     </div>
                 </div>
-                <div className="flex justify-center items-start gap-6 pb-10 max1050:gap-4 max800:flex-col max500:flex-col max500:pt-[-2rem] overflow-visible">
-                    <div className="flex flex-row max800:flex-row max500:flex-col">
-                        <div className="pt-[1.8rem] p-[1.5rem] max800:p-[2rem] max800:pt-0">
-                            <div className=" box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem] max500:w-[100px]">
+                <div className="flex justify-center pos items-start gap-6 pb-10 max1050:gap-4 max800:flex-col max500:pt-[-2rem]">
+                    <div className="flex flex-row max800:flex-row">
+                        <div className="pt-[1.8rem] p-[1.5rem] max800:p-[2rem] max800:pt-0 max500:flex-col max350:pl-[0.5rem]">
+                            <div className=" box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem] max500:w-[100px] max500:mt-[-3.5rem]">
                                 <h3 className="font-semi-bold text-[34px] pb-[1rem]">Basic</h3>
                                 <p className="text-[32px] font-semi-bold">₹ 1,000</p>
                                 <p className="text-[12px] pb-[3rem]">Per Month</p>
