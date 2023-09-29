@@ -6,18 +6,20 @@ const Pricing = () => {
     return (
         <div className="background">
             <Navbar />
-            <div className="justify-center items-center">
-                <div>
-                    <div className="justify-center item-center w-full gap-6 pb-20">
-                        <h1 className="flex font-bold text-[2.5rem] justify-center items-center pt-10">
-                            Find the plan that is right <p className="text-white pl-2">for you</p>
+            <div className="justify-center items-center max500:bg-black ">
+                <div className="max500:bg-[#30AFBC] max500:h-[10rem]"
+                style={{borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20, height:"12rem",}}>
+                    <div className="justify-center item-center gap-6 pb-20 max500:pb-2">
+                        <h1 className="text-center font-bold text-[2.5rem] justify-center items-center pt-10 max500:text-[1.2rem] max500:text-white max500:w-[85%] max500:pl-[5rem] max800:pl-[2rem] max500:flex-col">
+                            Find the plan that is right<span className="text-white m-3 max400:m-[2rem]">for you</span>
                         </h1>
                     </div>
                 </div>
-                <div className="flex justify-center items-start gap-6 pb-10 max1050:gap-4 max800:flex-col ">
-                    <div className="flex flex-row max800:flex max800:flex-row max500:flex max500:flex-col">
+                <div className="flex justify-center items-start gap-6 pb-10 max1050:gap-4 max800:flex-col max500:flex-col max500:pt-[-2rem] overflow-visible">
+                    <div className="flex flex-row max800:flex-row max500:flex-col">
                         <div className="pt-[1.8rem] p-[1.5rem] max800:p-[2rem] max800:pt-0">
-                            <div className=" box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem]">
+                            <div className=" box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem] max500:w-[100px]">
                                 <h3 className="font-semi-bold text-[34px] pb-[1rem]">Basic</h3>
                                 <p className="text-[32px] font-semi-bold">₹ 1,000</p>
                                 <p className="text-[12px] pb-[3rem]">Per Month</p>
