@@ -1,24 +1,74 @@
-.showed{
-  --background: url(/src/utils/waves/layered-waves-haikei\(1\).svg);
+.heropic{
+  background: url(/src/utils/waves/2-removebg\ 3.png);
+  background-repeat: no-repeat;
+}
+
+.wow{
+  --background: url(/src/utils/Animate.svg);
   --bg-image-opacity: 1;
+  background-color: black;
   position: relative;
   isolation: isolate;
   width: 100%;
-  height: 92vh;
+  height: 90vh;
 }
-
-.showed::after{
+.wow::after{
   content: '';
   opacity: var(--bg-image-opacity);
   background: var(--background);
+  background-color: black;
   background-position: center;
   background-size: cover;
   position: absolute;
   z-index: -1;
   inset: 0;
 }
+.responsive-button {
+  width: 40%;
+  color: black;
+  padding: 10px 20px;
+  font-size: large;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
 
-.heropic{
-  background: url(/src/utils/waves/2-removebg\ 3.png);
-  background-repeat: no-repeat;
+/* Media query for small screens (up to 600px) */
+@media (max-width: 600px) {
+  .responsive-button {
+    width: 40%;
+      font-size: 75%;
+      padding: 8px 16px;
+  }
+}
+
+/* Media query for medium screens (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .responsive-button {
+      width: 50%;
+      min-width: 40%;
+      font-size: 85%;
+      padding: 12px 24px;
+  }
+}
+
+/* Media query for large screens (greater than 1024px) */
+@media (min-width: 1025px) {
+  .responsive-button {
+      width: 30%;
+      padding: 14px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hello{
+    font-size: 2rem; /* Adjust the font size for small screens */
+  }
+  .main{
+    width:100%;
+  }
+  .wid{
+    width:30vw;
+    font: small;
+  }
 }

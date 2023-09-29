@@ -2,16 +2,16 @@ import React from "react";
 import logo from "../../utils/awsaiappLogo.png";
 function Navbar() {
   return (
-    <nav className="bg-gray-900 text-white p-4 h-[8vh] font-inter">
+    <nav className="hidden md:block bg-black text-white p-4 h-[8vh] font-inter ">
       <div className="container mx-auto flex justify-between items-center">
         <a href="/" className="text-2xl font-bold">
           <img
-            className="relative w-full h-[2.5rem] shrink-0 object-contain rounded"
+            className="relative w-full h-[3rem] shrink-0 object-contain rounded ml-[1rem]"
             alt=""
             src={logo}
           />
         </a>
-        <ul className="flex space-x-4">
+        <ul className="flex space-x-8 text-lg">
           <li>
             <a href="/" className="hover:text-blue-500">
               Home
@@ -42,7 +42,7 @@ function Navbar() {
           </li>
           <li>
             <a
-              href="/contact"
+              href="/query"
               className="w-[10vw] bg-[#30AFBC] px-4 py-2 rounded font-bold"
             >
               Contact Us
