@@ -1,7 +1,7 @@
 import React from "react";
 import "./Header.css"; // You'll need to create this CSS file for styling.
 import imageSrc from "../../utils/waves/2-removebg 3.png";
-import vector from "../../utils/Animate.svg";
+// import vector from "../../utils/Animate.svg";
 
 const Header = () => {
   return (
