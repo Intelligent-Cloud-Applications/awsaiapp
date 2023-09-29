@@ -5,7 +5,7 @@ const Pricing = () => {
     return (
         <div className="background">
             <Navbar />
-            <div className="justify-center items-center h-screen">
+            <div className="justify-center items-center">
                 <div>
                     <div className="justify-center item-center w-full gap-6 pb-20">
                         <h1 className="flex font-bold text-[2.5rem] justify-center items-center pt-10">
@@ -39,7 +39,7 @@ const Pricing = () => {
                         </div>
                     </div>
                     {/* Middle Box */}
-                    <div className="flex-col text-white box p-[2rem] bg-[#1D1D1D] h-[800px] w-[360px]">
+                    <div className="flex-col text-white box p-[2rem] bg-[#1D1D1D] h-[800px] w-[380px]">
                         <h3 className="font-semi-bold text-[34px] pb-[2rem]">Standard</h3>
                         <p className="text-[32px] font-semi-bold">₹ 2,500</p>
                         <p className="text-[12px] pb-[2.5rem]">Per Month</p>
