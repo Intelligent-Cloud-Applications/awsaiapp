@@ -1,56 +1,4 @@
-/* 
-@media (max-width: 767px)
 
-.about1,
-.about2,
-.about3 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  max-width: 85%; 
-  height: 17rem; 
-  opacity: 0;
-  animation: fadeInOut 2s ease-in-out infinite, sideScroll 6s ease-in-out infinite;
-  transform: translateX(-20%); }
-
-.about2 {
-  animation-delay: 2s; }
-
-.about3 {
-  animation-delay: 4s; }
-
-@keyframes fadeInOut {
-  0%, 100% {
-    opacity: 0;
-  }
-
-  20%, 80% {
-    opacity: 1;
-  }
-}
-
-@keyframes sideScroll {
-  0% {
-    transform: translateX(-20%); 
-  }
-
-  20% {
-    transform: translateX(0); }
-
-  80% {
-    transform: translateX(0); 
-  }
-
-  100% {
-    transform: translateX(20%); 
-  }
-}
-} */
-/* @media (max-width: 767px)
-{
-  .who{
-   margin:0;
-}} */
 .value {
   font-size: 2.5rem;
 }
@@ -81,72 +29,14 @@
   .right {
     width: 120px;
   }
-}
-
-/* @media (max-width: 800px) {
-  
-.Container1 .wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  overflow-x: auto;
-  margin-right: 1rem;
-  
-}
 
 
 
-
-.Container1 .wrapper > div {
-  flex: 0 0 auto;
-  margin-right: 1rem; 
-}
-
-.Container1 .wrapper > div:last-child {
-  margin-right: 0; 
-}
-
-
-@media (max-width: 800px) {
-  .Container1 .wrapper {
-    flex-direction: row; 
-    overflow-x: auto;
-  }
-
-  .Container1 .wrapper > div {
-    flex: 0 0 auto; 
-    margin-right: 1rem; 
-  }
-  
-  .Container1 .wrapper > div:last-child {
-    margin-right: 0;
-  }
-}
-
-} */
-/* @media (max-width:800) {
-  .value1 img{
-    width: 12rem;
-    margin-top: 28rem;
-    margin-right: 39rem; */
-    /* w-[12rem] md:mt-[28rem] md:mr-[39rem] */
-  /* }
-} */
-/* @media (max-width:600) {
-  .about1{
-    height: 13rem ;
-  }
-  
-} */
-/* CSS for small screens (max-width: 800px) */
-/* CSS for small screens (max-width: 800px) */
-/* CSS for small screens (max-width: 800px) */
-@media (max-width: 800px) {
   .Container1 .wrapper1 {
     display: flex;
     flex-direction: row;
     white-space: nowrap;
-    animation: scrollAnimation 15s linear infinite; /* Adjust duration to slow it down */
+    animation: scrollAnimation 15s linear infinite; 
     animation-play-state: running;
   }
 
@@ -164,8 +54,11 @@
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-200%); /* Adjust to -200% for three images */
+      transform: translateX(-200%); 
     }
   }
 }
+
+
+
 
