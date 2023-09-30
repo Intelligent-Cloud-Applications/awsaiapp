@@ -4,20 +4,20 @@ import Footer from "../components/Home/Footer";
 
 const Pricing = () => {
     return (
-        <div className="background">
+        <div className="background  h-screen">
             <Navbar />
-            <div className="justify-center items-center max500:bg-black ">
+            <div className="justify-center items-center max500:bg-black">
                 <div className="max500:bg-[#30AFBC] max500:h-[7rem]"
                 style={{borderBottomLeftRadius: 20,
                     borderBottomRightRadius: 20, height:"12rem",}}>
                     <div className="justify-center item-center gap-6 pb-20 max500:pb-2">
-                        <h1 className="text-center font-bold text-[2.5rem] justify-center items-center pt-10 max500:text-[1.2rem] max500:text-white max500:w-[85%] max500:pl-[5rem] max800:pl-[2rem] max500:flex-col">
+                        <h1 className="text-center font-bold text-[2.5rem] justify-center items-center pt-10 max500:text-[1.2rem] max500:text-white max500:w-[85%] max500:pl-[5rem] max800:pl-[2rem] max500:flex-wrap">
                             Find the plan that is right<span className="text-white m-3 max400:m-[2rem]">for you</span>
                         </h1>
                     </div>
                 </div>
-                <div className="flex justify-center pos items-start gap-6 pb-10 max1050:gap-4 max800:flex-col max500:pt-[-2rem]">
-                    <div className="flex flex-row max800:flex-row">
+                <div className="flex justify-center pos gap-6 pb-10 max1050:gap-4 max800:flex-wrap max500:pt-[-2rem]">
+                    <div className="flex flex-row max800:flex-wrap justify-center">
                         <div className="pt-[1.8rem] p-[1.5rem] max800:p-[2rem] max800:pt-0 max500:flex-col max350:pl-[0.5rem]">
                             <div className=" box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem] max500:w-[100px] max500:mt-[-3.5rem]">
                                 <h3 className="font-semi-bold text-[34px] pb-[1rem]">Basic</h3>
@@ -43,7 +43,7 @@ const Pricing = () => {
                             </div>
                         </div>
                         {/* Middle Box */}
-                        <div className="flex-col text-white box p-[2rem] bg-[#1D1D1D] h-[800px] w-[380px] max1050:w-[350px] max800:h-[740px] max1050:w-[300px]">
+                        <div className="text-white box p-[2rem] bg-[#1D1D1D] h-[800px] w-[380px] max1050:w-[350px] max800:h-[740px] max800:w-[300px] max800:p-[1rem]">
                             <h3 className="font-semi-bold text-[34px] pb-[2rem]">Standard</h3>
                             <p className="text-[32px] font-semi-bold">₹ 2,500</p>
                             <p className="text-[12px] pb-[2.5rem]">Per Month</p>
@@ -70,8 +70,8 @@ const Pricing = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="pt-[1.8rem] max800:pl-[30%]">
-                        <div className="flex-col box p-[2rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px] max1050:p-[0.5rem]">
+                    <div className="pt-[1.8rem] justify-center max500:pl-0">
+                        <div className="flex-col box p-[1rem] bg-[#FFFFFF] h-[740px] w-[340px] max1050:w-[300px]">
                             <h3 className="font-semi-bold text-[34px] pb-[1rem]">Advance</h3>
                             <p className="text-[32px] font-semi-bold">₹ 5,000</p>
                             <p className="text-[12px] pb-[0.6rem]">Per Month</p>

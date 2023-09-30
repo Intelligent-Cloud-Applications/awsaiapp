@@ -24,6 +24,5 @@
 @media (max-width: 410px) {
     .pos {
         position:-6rem ;
-        overflow: visible;
     }
 }
