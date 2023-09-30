@@ -18,7 +18,7 @@ function Navbar() {
             </a>
           </li>
           <li>
-            <a href="/about" className="hover:text-blue-500">
+            <a href="/aboutus" className="hover:text-blue-500">
               About
             </a>
           </li>
@@ -28,7 +28,7 @@ function Navbar() {
             </a>
           </li>
           <li>
-            <a href="/services" className="hover:text-blue-500">
+            <a href="/team" className="hover:text-blue-500">
               Our Team
             </a>
           </li>

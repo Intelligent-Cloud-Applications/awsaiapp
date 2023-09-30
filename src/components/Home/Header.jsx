@@ -24,7 +24,7 @@ const Header = () => {
         </button>
       </div>
       <div className="hidden sm:block">
-        <img src={imageSrc} alt="Description of the image" />
+        <img src={imageSrc} alt="Describe" />
       </div>
     </div>
   );
