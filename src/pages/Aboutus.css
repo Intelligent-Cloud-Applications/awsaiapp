@@ -71,9 +71,7 @@
 {
   display: none;
 }
-.about1{
-  height: 13rem;
-}
+
 
 }
 @media (max-width: 800px) {
@@ -84,8 +82,8 @@
     width: 120px;
   }
 }
-/* CSS for small screens (max-width: 800px) */
-@media (max-width: 800px) {
+
+/* @media (max-width: 800px) {
   
 .Container1 .wrapper {
   display: flex;
@@ -93,7 +91,11 @@
   align-items: flex-start;
   overflow-x: auto;
   margin-right: 1rem;
+  
 }
+
+
+
 
 .Container1 .wrapper > div {
   flex: 0 0 auto;
@@ -104,7 +106,7 @@
   margin-right: 0; 
 }
 
-/* CSS for small screens (max-width: 800px) */
+
 @media (max-width: 800px) {
   .Container1 .wrapper {
     flex-direction: row; 
@@ -121,7 +123,7 @@
   }
 }
 
-}
+} */
 /* @media (max-width:800) {
   .value1 img{
     width: 12rem;
@@ -130,3 +132,40 @@
     /* w-[12rem] md:mt-[28rem] md:mr-[39rem] */
   /* }
 } */
+/* @media (max-width:600) {
+  .about1{
+    height: 13rem ;
+  }
+  
+} */
+/* CSS for small screens (max-width: 800px) */
+/* CSS for small screens (max-width: 800px) */
+/* CSS for small screens (max-width: 800px) */
+@media (max-width: 800px) {
+  .Container1 .wrapper {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    animation: scrollAnimation 15s linear infinite; /* Adjust duration to slow it down */
+    animation-play-state: running;
+  }
+
+  .Container1 .wrapper > div {
+    flex: 0 0 auto;
+    margin-right: 1rem;
+  }
+
+  .Container1 .wrapper > div:last-child {
+    margin-right: 0;
+  }
+
+  @keyframes scrollAnimation {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-200%); /* Adjust to -200% for three images */
+    }
+  }
+}
+
