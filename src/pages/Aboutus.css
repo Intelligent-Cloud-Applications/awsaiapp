@@ -32,7 +32,7 @@
 
 
 
-  .Container1 .wrapper1 {
+  .Container1 .wrapper {
     display: flex;
     flex-direction: row;
     white-space: nowrap;
@@ -40,12 +40,12 @@
     animation-play-state: running;
   }
 
-  .Container1 .wrapper1 > div {
+  .Container1 .wrapper > div {
     flex: 0 0 auto;
     margin-right: 1rem;
   }
 
-  .Container1 .wrapper1 > div:last-child {
+  .Container1 .wrapper > div:last-child {
     margin-right: 0;
   }
 

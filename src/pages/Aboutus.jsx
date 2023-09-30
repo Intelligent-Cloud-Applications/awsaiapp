@@ -43,7 +43,7 @@ export default function AboutUs() {
               />
             </div>
             <div className="Container1">
-              <div className=" wrapper1 flex flex-col md:flex-row justify-between items-start p-[1rem] ">
+              <div className=" wrapper flex flex-col md:flex-row justify-between items-start p-[1rem] ">
                 <img
                   src={about3}
                   alt="About 3"
