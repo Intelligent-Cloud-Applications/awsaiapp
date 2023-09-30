@@ -9,7 +9,7 @@ import instagram from '../../utils/Assets/icons8-instagram-100.png';
 import linkdin from '../../utils/Assets/icons8-linkedin-100.png';
 
 export default function Footer(props) {
-  const Navigate = useNavigate();
+ useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -23,11 +23,8 @@ export default function Footer(props) {
       <p>Discover your digital potential with us! From simple website design to complex web applications, e-commerce sites, mobile apps, and captivating branding, our platform offers tailored solutions for all your needs. Let's create together and turn your visions into digital reality!</p>
       <div className='flex justify-center item-center'>
       <button className='border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-2 py-2 rounded-full font-bold w-[20%]'>Contact us now</button>
-      </div>
-    </div>
-
-    
-    <div>
+      </div></div>
+ <div>
       <div className="bg-white h-[40vh] gap-10">
         <div className=" footerheight flex flex-col justify-between sm:flex-row h-[17rem] max600:flex-col max600:justify-center p-12 gap-6 max1358:justify-center w-[100vw]">
           <div className="mb-5">
