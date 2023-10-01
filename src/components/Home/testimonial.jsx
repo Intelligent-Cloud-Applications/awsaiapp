@@ -70,20 +70,6 @@ function Testimonial() {
   };
 
   return (
-<<<<<<< HEAD
-    <div className='flex flex-col w-full h-[100vh]'>
-      <h1 className='flex justify-center item-center font-bold text-[3rem] h-[20vh] p-20'>
-        TESTIMONIAL</h1>
-
-    <div className='h-[80vh] flex justify-center item-center px-[15rem] py-[7rem]'>
-      <button onClick={prevTestimonial} className="text-blue-500 hover:text-blue-700 ">
-        &#9664;
-      </button>
-    <div className=" flex justify-center item-center w-[50vw] max-w-[80%] mx-auto p-4 border shadow-lg">
-      <div className="text-center my-4">
-        <p className="text-lg">{testimonials[currentTestimonial].text}</p>
-        <p className="font-bold mt-2">{testimonials[currentTestimonial].name}</p>
-=======
     <div className="testi flex flex-col w-full h-[100vh] ">
       <h1 className="flex justify-center item-center font-bold text-[3rem] h-[20vh] p-20 text-white">
         TESTIMONIAL
@@ -97,7 +83,6 @@ function Testimonial() {
                 className="w-full h-full object-cover "
               />
             </div >
->>>>>>> 135c5c7e5c605b8b30da72cb0f8113ee1b58093a
       </div>
       <div className="h-[80vh] flex justify-center item-center py-[7rem] mx-5">
         <button onClick={prevTestimonial} className="">
