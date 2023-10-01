@@ -38,7 +38,7 @@ function Testimonial() {
         TESTIMONIAL</h1>
 
     <div className='h-[80vh] flex justify-center item-center px-[15rem] py-[7rem]'>
-       <button onClick={prevTestimonial} className="text-blue-500 hover:text-blue-700 ">
+      <button onClick={prevTestimonial} className="text-blue-500 hover:text-blue-700 ">
         &#9664;
       </button>
     <div className=" flex justify-center item-center w-[50vw] max-w-[80%] mx-auto p-4 border shadow-lg">
