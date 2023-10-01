@@ -57,7 +57,7 @@ export default function AboutUs() {
                 <img
                   src={about1}
                   alt="About 1"
-                  className="about1 w-[100%] md:w-[25.2rem] md:h-[16.6rem] rounded-[10px] max800:mt-[6rem] max800:ml-[3rem] max800:mt-[9.9rem] max760:h-[13rem] "
+                  className="about1 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem] max800:h-[16rem] lg:h-[16rem] "
                 />
               </div>
             </div>
