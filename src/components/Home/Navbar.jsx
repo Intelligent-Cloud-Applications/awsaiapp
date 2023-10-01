@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../../utils/awsaiappLogo.png";
-import logo1 from "../../utils/Assets/logo2.png";
+// import logo1 from "../../utils/Assets/logo2.png";
 function Navbar() {
   
   return (

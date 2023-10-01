@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import "../Home/Price.css";
 import Faq from "react-faq-component";
 import plus1 from "../../utils/plus.svg";

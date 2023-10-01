@@ -14,7 +14,7 @@ const User_Interface = () => {
                     <h2 className="text-[29px]">Our Services</h2>
                     <a href="/User_interface" className="justify-space-between">
                         <p>User interface & User experience</p>
-                        <img src={plus} alt="plus"/>
+                        <img src={plus} alt="plus" />
                     </a>
                     <a href="/User_interface" className="justify-spacebetween">
                         <p>Personalization</p>
