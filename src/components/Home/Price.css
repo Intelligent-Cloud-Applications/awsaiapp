@@ -3,7 +3,7 @@
 }
 
 .row-title-text {
-  font-size: 17px;
+  font-size: 1.2rem;
   font-weight: 600;
   padding-top: 10px;
   color: #131212d8;
@@ -29,9 +29,7 @@
   font-size: 2rem;
   font-weight: 500;
 }
-.FAQ .faq-row .faq-row-title:before {
-  font-size: 50px; /* Adjust the font size as needed */
-}
+
 @media (max-width: 844px) {
   .home-faq {
     padding: 4rem;

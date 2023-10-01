@@ -1,12 +1,14 @@
 import React from "react";
 import logo from "../../utils/awsaiappLogo.png";
+import logo1 from "../../utils/Assets/logo2.png";
 function Navbar() {
+  
   return (
     <nav className="hidden md:block bg-black text-white p-4 h-[8vh] font-inter ">
       <div className="container mx-auto flex justify-between items-center">
         <a href="/" className="text-2xl font-bold">
           <img
-            className="relative w-full h-[3rem] shrink-0 object-contain rounded ml-[1rem]"
+            className="relative h-[3rem] w-full shrink-0 object-contain rounded ml-[1.5rem] dark:block"
             alt=""
             src={logo}
           />

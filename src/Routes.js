@@ -6,6 +6,7 @@ import DashBoard from "./pages/DashBoard";
 import Pricing from "./pages/Pricing";
 import Aboutus from "./pages/Aboutus";
 import Team from "./pages/Team";
+import Query from "./pages/Query";
 const RoutesContainer = () => {
   return (
     <Routes>
@@ -15,6 +16,7 @@ const RoutesContainer = () => {
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/team" element={<Team />} />
+      <Route path="/query" element={<Query />} />
     </Routes>
   );
 };

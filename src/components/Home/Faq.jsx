@@ -1,24 +1,25 @@
 import React from "react";
 import Faq from "react-faq-component";
 import "./Faq.css";
+import plus from "../../utils/plus.svg";
 
 const data = {                                               
   rows: [
     {
       title: "  How do I connect with your website development team?",
-      content: `Online Instructor led dance fitness community`,
+      content: `Connecting with our website development team is easy! Simply fill out the form on our website and pay the first month's fee. Our team will get to work on developing a prototype of your website within 15 days of receiving your completed form. Once the prototype is approved, we will work to have your website fully developed and ready to launch within a month.`,
     },
     {
       title: "What if I want changes made to my website after it has launched?",
-      content: `HappyPrancer's mission is to bring dance as fitness activity and performance to people. And through dance, to create healthier people and more integrated communities.`,
+      content: `We offer ongoing website maintenance and support services to our clients. If you need changes made to your website after it has launched, simply contact our team and we will work with you to make the necessary updates.`,
     },
     {
       title: "Do you offer website hosting services?",
-      content: `Currently, Indian members can enjoy a special discount and join Happyprancer Live Zumba sessions for just ₹499 per month, while international users can join for $12 per month.`,
+      content: `Yes, we offer website hosting services to our clients. Our hosting services include website backups, security updates, and ongoing support to ensure that your website is always up and running smoothly.`,
     },
     {
       title: " What if I have questions during the website development process?",
-      content: `If you're passionate about dance and interested in becoming a Happyprancer instructor, simply send us an email at admin@happyprancer.com with your work experience and we'll be in touch!`,
+      content: `We pride ourselves on providing excellent customer service and support to our clients. If you have any questions or concerns during the website development process, simply reach out to our team and we will be happy to assist you.`,
     },
   ],
 };
@@ -27,13 +28,14 @@ const styles = {
   bgColor: "#ffffff",
   rowTitleColor: "#151618",
   rowContentColor: "#555555",
-  arrowColor: "#151618",
+  arrowColor: "#30AFBC",
 };
 
 const config = {
   animate: true,
-  //arrowIcon: "V",
+  arrowIcon: <img className="" src={plus} alt="Arrow" />,
   tabFocus: true,
+  arrowColor:"#30AFBC"
 };
 
 export default function FAQ() {
@@ -50,7 +52,7 @@ export default function FAQ() {
       </div>
     </div>
 
-        <Faq data={data} styles={styles} config={config} />
+        <Faq data={data} styles={styles} config={config} className="FAQ"/>
       </div>
     
   );

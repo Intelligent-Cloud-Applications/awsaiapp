@@ -1,22 +1,29 @@
 import React from "react";
 import Header from "../components/Home/Header";
-import Testimonial from "../components/Home/testimonial";
 import Navbar from "../components/Home/Navbar";
 import FAQ from "../components/Home/Faq";
 import FOOTER from "../components/Home/Footer";
+import TESTIMONIAL from "../components/Home/Testimonial";
+import Price from "../components/Home/Price";
+import Services from "../components/Home/Services";
 
 function Home() {
+
   return (
     <div className=" overflow-hidden">
-      <Navbar />
+      <Navbar/>
 
-      <Header />
+      <Header/>
 
-      <Testimonial />
+      <Services/>
+
+      <TESTIMONIAL/>
+
+      <Price/>
 
       <FAQ />
 
-      <FOOTER />
+      <FOOTER/>
 
       {/* <Testimonial/> */}
     </div>

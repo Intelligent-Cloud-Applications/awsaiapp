@@ -19,13 +19,31 @@ export default function Footer(props) {
   return (
 
    <div className='w-full h-[100vh] flex flex-col'>
-    <div className="flex flex-col h-[50vh] justify-center item-center gap-10 bg-black text-white py-[5rem] px-[10rem] text-center">
+    {/* <div className="flex flex-col h-[50vh] justify-center item-center gap-10 bg-black text-white py-[5rem] px-[10rem] text-center">
       <h1 className='text-[2.5rem] max450:text-[1.5rem]'>Let's explore what we can create collaboratively</h1>
       <p>Discover your digital potential with us! From simple website design to complex web applications, e-commerce sites, mobile apps, and captivating branding, our platform offers tailored solutions for all your needs. Let's create together and turn your visions into digital reality!</p>
       <div className='flex justify-center item-center'>
       <button className='border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-2 py-2 rounded-full font-bold w-[20%]'>Contact us now</button>
       </div>
-    </div>
+    </div> */}
+    <div className="flex flex-col h-[60vh] justify-center items-center gap-10 bg-black text-white py-6 px-6 md:px-3 text-center font-inter">
+  <h1 className="text-3xl max-w-5xl md:text-21xl lg:max-w-6xl">
+    Let's explore what we can create collaboratively
+  </h1>
+  <p className="text-lg max-w-7xl">
+    Discover your digital potential with us! From simple website design to
+    complex web applications, e-commerce sites, mobile apps, and captivating
+    branding, our platform offers tailored solutions for all your needs. Let's
+    create together and turn your visions into digital reality!
+  </p>
+  <div className="flex justify-center items-center">
+    <button className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full font-bold text-base md:text-xl lg:text-xl ">
+      Contact us now
+    </button>
+  </div>
+</div>
+
+
 
     
     <div>
