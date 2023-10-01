@@ -3,9 +3,9 @@ import Header from "../components/Home/Header";
 import Navbar from "../components/Home/Navbar";
 import FAQ from "../components/Home/Faq";
 import FOOTER from "../components/Home/Footer";
-import TESTIMONIAL from "../components/Home/Testimonial";
+import TESTIMONIAL from "../components/Home/testimonial";
 import Price from "../components/Home/Price";
-import Services from "../components/Home/Services";
+import Services from "../components/Home/services";
 
 function Home() {
 

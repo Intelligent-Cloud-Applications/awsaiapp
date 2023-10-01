@@ -7,6 +7,7 @@ import Pricing from "./pages/Pricing";
 import Aboutus from "./pages/Aboutus";
 import Team from "./pages/Team";
 import Query from "./pages/Query";
+import User from "./services/User_Interface";
 const RoutesContainer = () => {
   return (
     <Routes>
@@ -17,6 +18,7 @@ const RoutesContainer = () => {
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/team" element={<Team />} />
       <Route path="/query" element={<Query />} />
+      <Route path="/User_interface" element={<User />} />
     </Routes>
   );
 };

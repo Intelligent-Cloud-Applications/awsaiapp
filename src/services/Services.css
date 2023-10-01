@@ -1,0 +1,43 @@
+.serv a p{
+    font-size: 14px ;
+}
+.serv a{
+    width: 290px;
+    display: flex;
+    flex-direction: row; /* Make sure the elements are in a row */
+    align-items: center;
+    text-decoration: none; /* Remove default link underline */
+    padding-bottom: 10px; /* Add spacing between the links and the underline */
+    border-bottom: 1px solid #000000; /* Add a 1px solid gray underline to each link */
+    margin-bottom: 10px;
+}
+.serv a img{
+    width: 10px;
+    height: 10px;
+    margin-left: 60px;
+    display: flex;
+}
+
+.serv{
+    position: relative;
+}
+
+.styled-list li h1{
+    margin: 0; /* Remove default margin for the heading */
+    font-size: 15px;
+    font-weight: bold;
+}
+.styled-list {
+    list-style-type: disc;
+    list-style-position: outside;
+    padding-left: 25px;
+}
+
+.styled-list li {
+    margin-bottom: 10px;
+}
+
+.description{
+    display: flex;
+    float: left;
+}
