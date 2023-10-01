@@ -33,5 +33,6 @@
 @media (max-width: 844px) {
   .home-faq {
     padding: 4rem;
+    font-size:x-small;
   }
 }

@@ -15,7 +15,7 @@ const Services = () => {
         <div className="w-[30%] flex flex-col justify-evenly items-end pl-5">
         <div
             id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]  -mr-[5rem] z-50"
+            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]  -mr-[5rem] z-20"
           >
             <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
               <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
@@ -50,7 +50,7 @@ const Services = () => {
           </div>
         <div
             id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-50"
+            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20"
           >
             <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
               <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
@@ -74,7 +74,7 @@ const Services = () => {
         <div className="w-[30%] flex flex-col justify-evenly items-start pr-5">
         <div
             id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-50">
+            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20">
             <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
               <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
               Trade Specific features{" "}
@@ -105,7 +105,7 @@ const Services = () => {
           </div>
         <div
             id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-50"
+            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
           >
             <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
               <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">

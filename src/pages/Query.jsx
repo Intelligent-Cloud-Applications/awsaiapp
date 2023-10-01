@@ -1,31 +1,13 @@
 import React from 'react';
 import pic from "../utils/Assets/contactPic.png";
 import logo from "../utils/awsaiappLogo.png";
+import Navbar from '../components/Home/Navbar';
 
 const Query = () => {
   return (
-    <div className="container">
-      <div className="bg-white self-stretch flex flex-row justify-between items-start pt-2 px-4 sm:px-8">
-        <img
-          src={logo}
-          alt="Logo"
-          className="mb-4 w-24 sm:w-32"
-        />
-        <div className="hidden sm:flex flex-row justify-between mt-4 w-1/2 items-center">
-          <div className="text-xl font-inter">Home</div>
-          <div className="text-xl font-inter">About Us</div>
-          <div className="text-xl font-inter">Pricing</div>
-          <div className="text-xl font-inter">Our Team</div>
-          <div className="border-solid border-[#30afbc] bg-white self-start flex flex-col w-24 shrink-0 h-10 items-center py-2 border-2 rounded-lg">
-            <div className="text-xl font-inter font-bold">Login</div>
-          </div>
-          <div className="bg-[#30afbc] self-start flex flex-col justify-center pl-2 h-10 items-start rounded-lg">
-            <div className="text-xl font-inter font-bold text-white mr-2">
-              Contact us
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="container h-[100vh]">
+      <Navbar/>
+     
       <div className='w-full flex justify-center h-[90vh] bg-[#F0F0F0]'>
       <div className="flex flex-col w-full sm:flex-row ml-[8px] gap-px sm:gap-2 sm:w-2/3 items-center">
         <div className="shadow-[0px_4px_4px_0px_#30afbc] overflow-hidden bg-[#0091a0] flex flex-col justify-end gap-5 w-full sm:w-1/2 items-center pt-12 pb-6 px-4 sm:px-8 sm:rounded-tl-[33px] sm:rounded-bl-[33px] h-[50vh] sm:h-[80vh]">

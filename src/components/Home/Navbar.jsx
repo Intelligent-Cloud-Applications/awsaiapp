@@ -1,59 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../../utils/awsaiappLogo.png";
-import logo1 from "../../utils/Assets/logo2.png";
-function Navbar() {
-  
+import plus from "../../utils/Assets/icons8-cross-100.png";
+import Menu from "../../utils/Assets/icons8-menu-100.png";
+
+const Navbar = () => {
+  const Navigate = useNavigate();
+
+  let Links = [
+    { name: "Home", link: "/" },
+    { name: "About Us", link: "/aboutus" },
+    { name: "Pricing", link: "/Pricing" },
+    { name: "Team", link: "/team" },
+    // {name:"C",link:"/"},
+  ];
+  let [open, setOpen] = useState(false);
   return (
-    <nav className="hidden md:block bg-black text-white p-4 h-[8vh] font-inter ">
-      <div className="container mx-auto flex justify-between items-center">
-        <a href="/" className="text-2xl font-bold">
+    <div className="shadow-md w-full fixed top-0 left-0 z-50">
+      <div className="md:flex items-center justify-between bg-black py-2 md:px-10 px-7">
+        <div
+          className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] 
+      text-gray-800"
+        >
           <img
-            className="relative h-[3rem] w-full shrink-0 object-contain rounded ml-[1.5rem] dark:block"
-            alt=""
+            onClick={() => Navigate("/")}
+            className="h-[3.5rem]"
             src={logo}
+            alt=""
           />
-        </a>
-        <ul className="flex space-x-8 text-lg">
-          <li>
-            <a href="/" className="hover:text-blue-500">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="/aboutus" className="hover:text-blue-500">
-              About
-            </a>
-          </li>
-          <li >
-            <a href="/Pricing" className="hover:text-blue-500">
-              Pricing
-            </a>
-          </li>
-          <li>
-            <a href="/team" className="hover:text-blue-500">
-              Our Team
-            </a>
-          </li>
-          <li>
-            <a
-              href="/contact"
-              className="w-[10vw] bg-white text-[#30AFBC] px-4 py-2 rounded font-bold"
-            >
-              Login
-            </a>
-          </li>
-          <li>
-            <a
-              href="/query"
-              className="w-[10vw] bg-[#30AFBC] px-4 py-2 rounded font-bold"
-            >
-              Contact Us
-            </a>
-          </li>
+        </div>
+
+        <div
+          onClick={() => setOpen(!open)}
+          className="text-3xl absolute right-8 top-6 cursor-pointer md:hidden"
+        >
+          {open ? (
+            <img
+            className="h-7"
+              src={plus}
+              alt="Close Menu"
+              onClick={() => {
+                // Handle the click event for the "close" image
+              }}
+            />
+          ) : (
+            <img
+              className="h-7"
+              src={Menu}
+              alt="Open Menu"
+              onClick={() => {
+                // Handle the click event for the "menu" image
+              }}
+            />
+          )}
+        </div>
+
+        <ul
+          className={`bg-black md:flex md:items-center md:pb-0 pb-12 absolute md:static md:z-auto z-[1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
+            open ? "top-[4.5rem] " : "top-[-490px]"
+          }`}
+        >
+          {Links.map((link) => (
+            <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
+              <a
+                href={link.link}
+                className="text-white max670:text- mx-2 hover:text-gray-400 duration-500"
+              >
+                {link.name}
+              </a>
+            </li>
+          ))}
+          <button
+            onClick={() => {
+              Navigate("/query");
+            }}
+            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#67B2BA] 
+    duration-"
+          >
+            Contact Us
+          </button>
         </ul>
       </div>
-    </nav>
+    </div>
   );
-}
+};
 
 export default Navbar;

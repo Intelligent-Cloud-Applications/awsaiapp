@@ -10,7 +10,7 @@ import linkdin from '../../utils/Assets/icons8-linkedin-100.png';
 import "./Footer.css";
 
 export default function Footer(props) {
-   useNavigate();
+   const Navigate= useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,7 +18,7 @@ export default function Footer(props) {
 
   return (
 
-   <div className='w-full h-[100vh] flex flex-col'>
+   <div className='w-full flex flex-col'>
     {/* <div className="flex flex-col h-[50vh] justify-center item-center gap-10 bg-black text-white py-[5rem] px-[10rem] text-center">
       <h1 className='text-[2.5rem] max450:text-[1.5rem]'>Let's explore what we can create collaboratively</h1>
       <p>Discover your digital potential with us! From simple website design to complex web applications, e-commerce sites, mobile apps, and captivating branding, our platform offers tailored solutions for all your needs. Let's create together and turn your visions into digital reality!</p>
@@ -37,17 +37,18 @@ export default function Footer(props) {
     create together and turn your visions into digital reality!
   </p>
   <div className="flex justify-center items-center">
-    <button className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full font-bold text-base md:text-xl lg:text-xl ">
+    <button onClick={() => {
+                Navigate("/query");
+              }} className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full font-bold text-base md:text-xl lg:text-xl ">
       Contact us now
     </button>
   </div>
 </div>
 
 
-
     
     <div>
-      <div className="bg-white md:h-[50vh] gap-10 max670:text-xs md:text-base max450:text-[5px]">
+      <div className="bg-white gap-10 max670:text-xs md:text-base max450:text-[5px]">
         <div className="flex justify-between max670:flex-col md:h-[40vh] max450:h-[45vh] md:flex-row p-6 gap-6 max1358:justify-center overflow-hidden items-center md:text-5xl">
           
           <div className="flex md:w-[30%] max600:h-[25%] max450:h-[10%] flex-row justify-center ">
@@ -242,7 +243,7 @@ export default function Footer(props) {
         </div> */}
 
         <div className="p-[0.5rem] flex flex-row justify-center text-black sm:gap-2 md:gap-4 font-sans max600:text-center max600:text-xs">
-          <Link className="text-black text-decoration-none" to={"/privacypolicy"}>
+          <Link className="text-black text-decoration-none" to={"/privacy"}>
             Privacy Policy
           </Link>
           <div className="bg-black w-0.5 border-black rounded-md"></div>
