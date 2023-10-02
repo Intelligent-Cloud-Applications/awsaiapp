@@ -11,16 +11,16 @@ const Services = () => {
                     US?</h1>
             </div>
 
-      <div className="flex flex-row h-[100vh] w-[110vw]">
-        <div className="w-[30%] flex flex-col justify-evenly items-end pl-5">
-        <div
-            id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]  -mr-[5rem] z-20"
-          >
-            <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
-              <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
-                User interface & User experience{" "}
-              </div>
+            <div className="flex flex-row h-[100vh] w-[110vw]">
+                <div className="w-[30%] flex flex-col justify-evenly items-end pl-5">
+                    <div
+                        id="Component3"
+                        className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]  -mr-[5rem] z-20"
+                    >
+                        <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
+                            <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
+                                User interface & User experience{" "}
+                            </div>
 
                             <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
                                 <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
@@ -42,21 +42,21 @@ const Services = () => {
                                 Personalization{" "}
                             </div>
 
-              <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
-                <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
-                With personalization, we craft unique journeys for every customer, aligning their preferences with our offerings to create unparalleled satisfaction and brand loyalty.
-                </div>
-              </div>
-            </div>
-          </div>
-        <div
-            id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20"
-          >
-            <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
-              <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
-              Login & identity managment{" "}
-              </div>
+                            <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
+                                <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
+                                    With personalization, we craft unique journeys for every customer, aligning their preferences with our offerings to create unparalleled satisfaction and brand loyalty.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="Component3"
+                        className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20"
+                    >
+                        <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
+                            <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
+                                Login & identity managment{" "}
+                            </div>
 
                             <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
                                 <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
@@ -72,14 +72,14 @@ const Services = () => {
                     <img className="h-[30rem] object-contain" src={Service} alt="" />
                 </div>
 
-        <div className="w-[30%] flex flex-col justify-evenly items-start pr-5">
-        <div
-            id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20">
-            <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
-              <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
-              Trade Specific features{" "}
-              </div>
+                <div className="w-[30%] flex flex-col justify-evenly items-start pr-5">
+                    <div
+                        id="Component3"
+                        className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20">
+                        <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
+                            <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
+                                Trade Specific features{" "}
+                            </div>
 
                             <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
                                 <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
@@ -97,21 +97,21 @@ const Services = () => {
                                 Leads & customer tracking{" "}
                             </div>
 
-              <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
-                <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
-                Gain valuable leads and track customer interactions. Leverage data-driven insights for effective business growth and improved customer engagement
-                </div>
-              </div>
-            </div>
-          </div>
-        <div
-            id="Component3"
-            className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
-          >
-            <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
-              <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
-              Payments{" "}
-              </div>
+                            <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
+                                <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
+                                    Gain valuable leads and track customer interactions. Leverage data-driven insights for effective business growth and improved customer engagement
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="Component3"
+                        className="w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
+                    >
+                        <div className="bg-white flex flex-col justify-end pt-6 gap-3 items-start rounded">
+                            <div className="font-['Inter'] font-semibold leading-[28px] ml-6 w-5/6">
+                                Payments{" "}
+                            </div>
 
                             <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
                                 <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">

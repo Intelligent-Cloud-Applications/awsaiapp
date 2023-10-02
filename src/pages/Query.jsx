@@ -1,6 +1,5 @@
 import React from 'react';
 import pic from "../utils/Assets/contactPic.png";
-import logo from "../utils/awsaiappLogo.png";
 import Navbar from '../components/Home/Navbar';
 
 const Query = () => {

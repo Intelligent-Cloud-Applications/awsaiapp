@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 import Navbar from "../components/Home/Navbar";
 import Footer from "../components/Home/Footer";
-import Serv_img from "../utils/Assets/Services_Personalization.png";
+import Serv_img from "../utils/Assets/Services_Login.png";
 import "./Services.css"
 import plus from "../utils/Assets/p2.png";
 
-const Personalization = () => {
+const Login_IdentityManagment = () => {
     return (
         <div className="h-full">
             <Navbar />
@@ -38,32 +38,32 @@ const Personalization = () => {
                     </a>
                 </div>
                 <div className="flex flex-wrap item-center p-[7rem] nor">
-                    <h1 className="text-[25px] font-bold text-center pb-[1rem]">Personalization</h1>
+                    <h1 className="text-[25px] font-bold text-center pb-[1rem]">Login And identity managment</h1>
                     <img src={Serv_img} alt="services for user interface" className="h-[444px] w-[720px] item-center justify-center pb-[3rem]" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
-                    Customization is key to building lasting connections with your users, and our Personalization service is designed to deliver just that. Through sophisticated algorithms and data-driven insights, we personalize your web application to cater to each user's unique preferences, behavior, and context. Whether it's a personalized dashboard, tailored content recommendations, or adaptive user interfaces, we ensure that your users feel valued and engaged at every interaction. By providing a highly personalized experience, you can boost user satisfaction, drive conversions, and cultivate loyalty, setting your web application apart from the competition.
+                    Security is paramount in the digital world, and our Login & Identity Management service guarantees robust user authentication and access control. Through secure authentication mechanisms, such as two-factor authentication (2FA) and single sign-on (SSO), we safeguard user accounts from unauthorized access and potential threats. Our identity verification processes add an extra layer of protection, ensuring a trustworthy user base. Additionally, we provide seamless password management options, making it convenient for users to reset and recover their login credentials securely.
                     </p>
                     <div className="bullet w-[700px]">
                         <ul className="styled-list gap-3 justify-center item-center flex flex-wrap">
                             <li>
-                                <h1>Dynamic Content Personalization:</h1>
-                                <p> We use data-driven insights to deliver personalized content, product recommendations, and notifications tailored to each user's interests and behavior.</p>
+                                <h1>Secure Authentication:</h1>
+                                <p> Implement strong authentication mechanisms, such as two-factor authentication to safeguard user accounts.</p>
                             </li>
                             <li>
-                                <h1>Segmentation:</h1>
-                                <p> Group your users based on demographics, behavior, or preferences, allowing you to target specific segments with personalized experiences.</p>
+                                <h1>Single Sign-On (SSO):</h1>
+                                <p> Streamline user access with SSO, allowing users to log in once and access multiple services seamlessly.</p>
                             </li>
                             <li>
-                                <h1>Contextual Recommendations:</h1>
-                                <p> Our algorithms consider the user's current context, location, and previous interactions to offer real-time personalized recommendations.</p>
+                                <h1>Identity Verification:</h1>
+                                <p> Verify user identities through various methods, ensuring a trustworthy user base and reducing fraudulent activities.</p>
                             </li>
                             <li>
-                                <h1>User Preference Management:</h1>
-                                <p> Empower users to customize their settings, enabling them to control the level of personalization they receive.</p>
+                                <h1>Password Management:</h1>
+                                <p> Offer password reset and recovery options to enhance user account security and convenience.</p>
                             </li>
                             <li>
-                                <h1>Adaptive User Interfaces:</h1>
-                                <p> Personalize the user interface based on user preferences and roles, ensuring each user sees the most relevant information and features.</p>
+                                <h1>User Access Control:</h1>
+                                <p> Define user roles and permissions to control access to specific features and information within the web app.</p>
                             </li>
                         </ul>
                     </div>
@@ -73,4 +73,4 @@ const Personalization = () => {
         </div>
     );
 };
-export default Personalization;
+export default Login_IdentityManagment;
