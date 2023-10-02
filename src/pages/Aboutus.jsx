@@ -114,7 +114,7 @@ export default function AboutUs() {
             <div class="value text-lg md:text-2xl lg:text-4xl font-inter font-bold text-white self-start mb-2 mt-2 lg:mb-4  ">
               Our Values
             </div>
-            <div class="flex flex-col md:flex-row gap-4 lg:gap-12 items-start ml-0 md:ml-10 lg:ml-0 mr-0 md:mr-8 lg:mr-0 w-full md:w-full lg:w-[60rem] md:ml-[10px] md:w-[50rem] md:ml-[0rem] ">
+            <div class="flex flex-col md:flex-row gap-4 lg:gap-12 items-start ml-0 md:ml-10 lg:ml-0 mr-0 md:mr-8 lg:mr-0 w-full  lg:w-[60rem]  md:w-[50rem]">
               <div class="flex flex-col mt-1 gap-2 md:gap-6 lg:gap-8 w-full md:w-2/5 lg:w-1/3 items-start ">
                 <div class="text-base md:text-lg lg:text-xl font-inter font-bold text-[#30afbc]">
                   Innovation
@@ -136,7 +136,7 @@ export default function AboutUs() {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-8 items-start ml-0 md:ml-10 lg:ml-0 w-full lg:w-[63rem] md:ml-[10px] md:w-[50rem] md:ml-[0rem]">
+            <div class="flex flex-col md:flex-row gap-2 md:gap-6 lg:gap-8 items-start ml-0 md:ml-10 lg:ml-0 w-full lg:w-[63rem]  md:w-[50rem]">
               <div class="flex flex-col mb-2 md:mb-3 lg:mb-4 gap-2 md:gap-6 lg:gap-8 w-full md:w-2/5 lg:w-1/3 items-start">
                 <div class="text-base md:text-lg lg:text-xl font-inter font-bold text-[#30afbc]">
                   Collaboration
@@ -147,7 +147,7 @@ export default function AboutUs() {
                   the end result exceeds expectations.
                 </div>
               </div>
-              <div class="flex flex-col gap-2 md:gap-6 lg:gap-8 w-full md:w-1/2 lg:w-1/3 items-start md:w-[20rem]">
+              <div class="flex flex-col gap-2 md:gap-6 lg:gap-8 w-full md:w-1/2 lg:w-1/3 items-start ">
                 <div class="text-base md:text-lg lg:text-xl font-inter font-bold text-[#30afbc]">
                   Results
                 </div>
