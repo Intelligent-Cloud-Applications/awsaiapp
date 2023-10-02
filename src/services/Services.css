@@ -15,6 +15,7 @@
 @media (max-width: 450px) {
     .nor {
         padding:0rem;
+        padding-top: 5rem;
         justify-content: center;
         align-items: center;
     }

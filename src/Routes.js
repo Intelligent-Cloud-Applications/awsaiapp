@@ -9,6 +9,11 @@ import Team from "./pages/Team";
 import Query from "./pages/Query";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import User from "./services/User_Interface";
+import Personalization from "./services/Personalization";
+import Identity from "./services/Login&IdentityManagment";
+import Trade from "./services/Trade";
+import Coustmer from "./services/Coustmer";
+import Payment from "./services/Payment";
 const RoutesContainer = () => {
   return (
     <Routes>
@@ -21,6 +26,11 @@ const RoutesContainer = () => {
       <Route path="/query" element={<Query />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/User_interface" element={<User />} />
+      <Route path="/Personalization" element={<Personalization />} />
+      <Route path="/identity" element={<Identity />} />
+      <Route path="/trade" element={<Trade />} />
+      <Route path="/coustmer" element={<Coustmer />} />
+      <Route path="/payment" element={<Payment />} />
     </Routes>
   );
 };
