@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../utils/awsaiappLogo.png";
-import plus from "../../utils/Assets/icons8-cross-100.png";
+import cross from "../../utils/Assets/icons8-cross-100.png";
 import Menu from "../../utils/Assets/icons8-menu-100.png";
 
 const Navbar = () => {
@@ -37,7 +37,7 @@ const Navbar = () => {
           {open ? (
             <img
             className="h-7"
-              src={plus}
+              src={cross}
               alt="Close Menu"
               onClick={() => {
                 // Handle the click event for the "close" image

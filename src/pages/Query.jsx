@@ -2,13 +2,14 @@ import React from 'react';
 import pic from "../utils/Assets/contactPic.png";
 import logo from "../utils/awsaiappLogo.png";
 import Navbar from '../components/Home/Navbar';
+import { useState } from 'react';
 
 const Query = () => {
   return (
-    <div className="container h-[100vh]">
+    <div className="container">
       <Navbar/>
      
-      <div className='w-full flex justify-center h-[90vh] bg-[#F0F0F0]'>
+      <div className='w-full flex justify-center h-[100vh] bg-[#F0F0F0] pt-10'>
       <div className="flex flex-col w-full sm:flex-row ml-[8px] gap-px sm:gap-2 sm:w-2/3 items-center">
         <div className="shadow-[0px_4px_4px_0px_#30afbc] overflow-hidden bg-[#0091a0] flex flex-col justify-end gap-5 w-full sm:w-1/2 items-center pt-12 pb-6 px-4 sm:px-8 sm:rounded-tl-[33px] sm:rounded-bl-[33px] h-[50vh] sm:h-[80vh]">
           <img

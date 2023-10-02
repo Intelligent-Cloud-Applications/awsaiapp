@@ -27,10 +27,10 @@ export default function Footer(props) {
       </div>
     </div> */}
     <div className="flex flex-col h-[60vh] justify-center items-center gap-10 bg-black text-white py-6 px-6 md:px-3 text-center font-inter">
-  <h1 className="text-3xl max-w-5xl md:text-21xl lg:max-w-6xl">
+  <h1 className="text-5xl max-w-7xl md:text-21xl lg:max-w-6xl">
     Let's explore what we can create collaboratively
   </h1>
-  <p className="text-lg max-w-7xl">
+  <p className="text-lg max-w-7xl max670:text-sm">
     Discover your digital potential with us! From simple website design to
     complex web applications, e-commerce sites, mobile apps, and captivating
     branding, our platform offers tailored solutions for all your needs. Let's

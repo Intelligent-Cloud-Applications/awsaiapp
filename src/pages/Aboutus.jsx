@@ -28,11 +28,10 @@ export default function AboutUs() {
       <div className="overflow-hidden bg-white flex flex-col pb-1 gap-2 w-full">
         <div className="overflow-hidden bg-black flex flex-col mb-5 pt-1 gap-8  ">
           <div className="flex flex-col">
-            <div className="flex flex-col md:flex-row md:justify-between items-center ml-2rem lg:ml-32 ">
+            <div className="w-full flex flex-col md:flex-row md:justify-between max800:justify-center items-center ">
               <style>{fontStyles}</style>
               <div
-                className="text-[48px] md:text-[84px] font-family-[Rubik_Mono_One] text-[#30afbc] font-bold max800:text-[53px]
-    max800:w-[283px]"
+                className="pl-[4rem] max800:pt-[7rem] max800:w-full text-[48px] md:text-[84px] font-family-[Rubik_Mono_One] text-[#30afbc] font-bold max800:text-[3rem]"
               >
                 ABOUT <span className="text-white contents">US</span>
               </div>
@@ -43,7 +42,7 @@ export default function AboutUs() {
               />
             </div>
             <div className="Container1">
-              <div className=" wrapper flex flex-col md:flex-row justify-between items-start p-[1rem] ">
+              <div className=" wrapper flex flex-col md:flex-row justify-between items-start p-[1rem] gap-2">
                 <img
                   src={about3}
                   alt="About 3"
