@@ -51,7 +51,6 @@ export default function FAQ() {
         </div>
       </div>
     </div>
-
         <Faq data={data} styles={styles} config={config} className="FAQ"/>
       </div>
     
