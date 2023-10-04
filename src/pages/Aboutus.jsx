@@ -70,7 +70,7 @@ export default function AboutUs() {
               className="left relative hidden sm:block max800:block"
               alt="left"
             />
-            <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start ">
+            <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start  ">
               <div className="text-3xl font-inter font-bold tracking-[3.2] w-full max800:text-[25px]">
                 Welcome to Intelligent Cloud Applications!
               </div>

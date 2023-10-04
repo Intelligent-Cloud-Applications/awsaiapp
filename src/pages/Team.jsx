@@ -28,6 +28,7 @@ import img4 from '../utils/hackathon/img4.png';
 // import img7 from '../utils/hackathon/img7.png';
 import img8 from '../utils/hackathon/img8.png';
 import "./Team.css";
+import { motion } from 'framer-motion';
 
 const teamMembers = [
   {
@@ -114,6 +115,28 @@ const teamMembers = [
 ];
 
 const TeamPage = () => {
+   const containerVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const memberVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const flipVariants = {
+    hover: { rotateY: 180 },
+  };
+
   return (
 <div>
 <Navbar />
@@ -121,7 +144,7 @@ const TeamPage = () => {
 
      
 <div className="relative flex flex-col pb-[482px] ">
-    <div className="w-full h-[446px] overflow-hidden bg-[rgba(48,_175,_188,_0.7)] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] ">
+    <div className="w-full h-[446px] overflow-hidden bg-[#30AFBC] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] ">
       <div className="flex flex-col gap-16 w-2/3 items-end">
         <div className="text-center text-3xl font-['Inter'] font-semibold leading-[26px] w-1/2 mt-[8rem] max800:text-[1rem]">
           Your Dreams are Full Filled Here !
@@ -170,7 +193,7 @@ const TeamPage = () => {
       </div>
       
       <div className="relative">
-  <div className="overflow-hidden bg-black bg-[linear-gradient(#000000,_#000000)] bg-cover bg-50%_50% bg-blend-normal bg-no-repeat relative flex flex-col justify-end items-end pt-48 pb-32 px-[111px] rounded-br-[80px] rounded-bl-[80px] max800:h-[30rem]">
+  <div className="overflow-hidden bg-black bg-[linear-gradient(#000000,_#000000)] bg-cover bg-50%_50% bg-blend-normal bg-no-repeat relative flex flex-col justify-end items-end pt-48 pb-32 px-[111px] rounded-br-[80px] rounded-bl-[80px] max850:h-[30rem]">
   
   <div className="text-center text-[3rem] font-['Inter'] font-bold text-white absolute top-48 left-[147px] h-20 w-1/6 max1000:text-[1.5rem] max800:w-[30rem] max800:pr-[6rem] max800-center ">
     Our{" "}
@@ -198,7 +221,7 @@ const TeamPage = () => {
     <img
       src={img1}
       id="All3"
-      className="relative hidden md:block"
+      className="img1 relative hidden md:block "
       alt=''
     />
   </div>
@@ -229,29 +252,41 @@ const TeamPage = () => {
     />
   </div>
 </div> */}
-
-
-{/* //Team member */}
-    <div className='max850:flex max850:justify-center relative  '>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mr-2 lg:ml-[7rem] md:p-[3rem] ">
-  {teamMembers.map((member, index) => (
-    <div key={index} className="relative flex flex-col w-48 items-center pb-20 px-6 max800:gap-3">
-      <div className="w-48 h-32 bg-[#7ccad7] absolute top-24 left-0 right-0 mx-auto flex flex-col justify-end pt-20 pb-10 px-8">
-        <div className="text-center font-['Inter'] font-medium leading-[30px] absolute top-16 left-5 right-5 h-16 w-[10rem]">
-          {member.name}
-          <br />
-          <div className="text-xs leading-[25px] contents">{member.role}</div>
-        </div>
-        <div className="border-solid relative mr-px h-px shrink-0 border-t border-b-0 border-black border-x-0" />
+  <div className="max850:flex max850:justify-center relative">
+        <motion.div
+          className="grid grid-cols-1 max670:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mr-2 md:px-[7rem] pb-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={index}
+              className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
+              variants={memberVariants}
+              whileHover={flipVariants}
+            >
+              <img
+                src={member.imageSrc}
+                alt={member.name}
+                className="h-24 w-24 object-cover rounded-full border-2 border-[#7ccad7]"
+              />
+              <div className="mt-2 md:mt-3 text-center">
+                <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
+                <p className="text-xs md:text-sm text-gray-600">{member.role}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
-      <img src={member.imageSrc} className="relative" alt={member.name} />
-    </div>
-  ))}
-</div>
-    </div>
-  <FOOTER />
+      <FOOTER />
     </div>
   );
 };
 
 export default TeamPage;
+
+  
+
+    
+
