@@ -137,6 +137,7 @@ const TeamPage = () => {
     hover: { rotateY: 180 },
   };
 
+  
   return (
 <div>
 <Navbar />
@@ -273,7 +274,7 @@ const TeamPage = () => {
               />
               <div className="mt-2 md:mt-3 text-center">
                 <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
-                <p className="text-xs md:text-sm text-gray-600">{member.role}</p>
+                <p className="text-xs md:text-sm ">{member.role}</p>
               </div>
             </motion.div>
           ))}
@@ -285,8 +286,3 @@ const TeamPage = () => {
 };
 
 export default TeamPage;
-
-  
-
-    
-
