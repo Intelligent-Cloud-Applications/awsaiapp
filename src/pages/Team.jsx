@@ -20,15 +20,12 @@ import Sanjita from'../utils/team/Sanjita.png';
 import line1 from '../utils/Line 16.svg';
 import line2 from '../utils/Line 17.svg';
 import img1 from '../utils/hackathon/img1.png';
-// import img2 from '../utils/hackathon/img2.png';
 import img3 from '../utils/hackathon/img3.png';
 import img4 from '../utils/hackathon/img4.png';
-// import img5 from '../utils/hackathon/img5.png';
-// import img6 from '../utils/hackathon/img6.png';
-// import img7 from '../utils/hackathon/img7.png';
 import img8 from '../utils/hackathon/img8.png';
 import "./Team.css";
 import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 const teamMembers = [
   {
@@ -115,6 +112,7 @@ const teamMembers = [
 ];
 
 const TeamPage = () => {
+  
    const containerVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
@@ -136,6 +134,11 @@ const TeamPage = () => {
   const flipVariants = {
     hover: { rotateY: 180 },
   };
+
+  const [ref, inView] = useInView({
+    triggerOnce: true, // Trigger the animation only once when it comes into view
+  });
+
 
   
   return (
@@ -253,33 +256,35 @@ const TeamPage = () => {
     />
   </div>
 </div> */}
-  <div className="max850:flex max850:justify-center relative">
-        <motion.div
-          className="grid grid-cols-1 max670:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mr-2 md:px-[7rem] pb-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {teamMembers.map((member, index) => (
+<div ref={ref} className="max850:flex max850:justify-center relative">
+          {inView && (
             <motion.div
-              key={index}
-              className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
-              variants={memberVariants}
-              whileHover={flipVariants}
+              className="grid grid-cols-1 max670:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mr-2 md:px-[7rem] pb-10"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              <img
-                src={member.imageSrc}
-                alt={member.name}
-                className="h-24 w-24 object-cover rounded-full border-2 border-[#7ccad7]"
-              />
-              <div className="mt-2 md:mt-3 text-center">
-                <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
-                <p className="text-xs md:text-sm ">{member.role}</p>
-              </div>
+              {teamMembers.map((member, index) => (
+                <motion.div
+                  key={index}
+                  className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
+                  variants={memberVariants}
+                  whileHover={flipVariants}
+                >
+                  <img
+                    src={member.imageSrc}
+                    alt={member.name}
+                    className="h-24 w-24 object-cover rounded-full border-2 border-[#7ccad7]"
+                  />
+                  <div className="mt-2 md:mt-3 text-center">
+                    <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
+                    <p className="text-xs md:text-sm ">{member.role}</p>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
-      </div>
+          )}
+        </div>
       <FOOTER />
     </div>
   );
