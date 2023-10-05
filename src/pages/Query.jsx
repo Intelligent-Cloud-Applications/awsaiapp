@@ -1,7 +1,6 @@
 import React from 'react';
 import pic from "../utils/Assets/contactPic.png";
 import Navbar from '../components/Home/Navbar';
-import { useState } from 'react';
 
 const Query = () => {
   return (
