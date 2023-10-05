@@ -7,11 +7,11 @@ const Pricing = () => {
         <div className="background  h-screen">
             <Navbar />
             <div className="justify-center items-center max500:bg-black">
-                <div className="max500:bg-[#30AFBC] max500:h-[7rem]"
+                <div className="max500:bg-[#30AFBC] max500:h-[15rem]"
                 style={{borderBottomLeftRadius: 20,
-                    borderBottomRightRadius: 20, height:"12rem",}}>
-                    <div className="justify-center item-center gap-6 pb-20 max500:pb-2">
-                        <h1 className="text-center font-bold text-[2.5rem] justify-center items-center pt-10 max500:text-[1.5rem] max500:text-white max500:w-[85%] max500:pl-[5rem] max800:pl-[2rem] max500:flex-wrap">
+                    borderBottomRightRadius: 20}}>
+                    <div className="justify-center item-center gap-6 pb-20 max500:pb-1">
+                        <h1 className="text-center font-bold text-[2.5rem] justify-center items-center pt-[6rem] max800:pl-[2rem] max500:text-[1.2rem] max500:text-white max500:w-[85%] max500:pt[2rem] max500:flex-wrap">
                             Find the plan that is right<span className="text-white m-3 max400:m-[2rem]">for you</span>
                         </h1>
                     </div>
