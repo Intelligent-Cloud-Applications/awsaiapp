@@ -4,6 +4,7 @@ import Footer from "../components/Home/Footer";
 import Serv_img from "../utils/Assets/Services_User.png";
 import "./Services.css"
 import plus from "../utils/Assets/p2.png";
+import cross from "../utils/Assets/cross.png";
 
 const User_Interface = () => {
     return (
@@ -11,10 +12,10 @@ const User_Interface = () => {
             <Navbar />
             <div className="">
                 <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[200px] max800:pt-[5%] max800:p-[2%]">
-                    <h2 className="text-[29px]">Our Services</h2>
+                    <h2 className="text-[29px] pb-[1rem]">Our Services</h2>
                     <a href="/User_interface" className="justify-space-between">
                         <p>User interface & User experience</p>
-                        <img src={plus} alt="plus" />
+                        <img src={cross} alt="cross" />
                     </a>
                     <a href="/Personalization" className="justify-spacebetween">
                         <p>Personalization</p>

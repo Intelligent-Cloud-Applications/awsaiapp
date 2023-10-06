@@ -1,28 +1,52 @@
-.background{
+.background {
     background-image: url(../utils/png/Rectangle\ 7.png);
     background-repeat: no-repeat;
-    /* background-size: calc(1600px,1000px); */
-    background-position-x:center;
-    background-position-y:-6rem;
+    background-size: cover; /* Adjust background-size as needed */
+    background-position: center -12rem ; /* Adjust background-position as needed */
 }
-.box{
-    border: inset 2px;
+
+.pos {
+    display: flex; /* Use display: flex; instead of align-items and justify-content */
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    border: 2px inset; /* Use "2px inset" instead of "inset 2px" */
     border-radius: 10px;
     box-shadow: 4px 4px 6px #353535;
+    padding: 20px; /* Add padding for better spacing */
 }
-.box li{
+
+.box li {
     padding-bottom: 10px;
 }
+
 .box ul {
-    list-style-image: url(../utils/png/Vector_L.png);
+    list-style: url(../utils/png/Vector_L.png); /* Use "list-style" instead of "list-style-image" */
     padding-left: 2rem;
 }
-.box button{
+
+.box button {
     border-radius: 10px;
     padding: 6px;
 }
-@media (max-width: 410px) {
+@media (max-width: 768px){
+    .background{
+        background-color: #000;
+        background-image: none;
+    }
     .pos {
-        position:-6rem ;
+        margin-top: -6rem; /* Use "margin-top" to adjust position */
+    }
+    .head{
+        background: #30AFBC;
+        height: 20rem;
+        border-radius: 0 0 50px 50px;
+    }
+    .head h1{
+        color: white;
+        font-size: 32px;
+        padding-top: 2rem;
     }
 }
