@@ -1,75 +1,156 @@
-import React from 'react';
+import React from "react";
 import pic from "../utils/Assets/contactPic.png";
-import Navbar from '../components/Home/Navbar';
-import { useState } from 'react';
+import Navbar from "../components/Home/Navbar";
+import { useState } from "react";
+import Pic from "../utils/contactusPic.png";
 
 const Query = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    companyName: "",
+    email: "",
+    address: "",
+    projectDetails: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission here (e.g., send data to a server)
+    console.log(formData);
+  };
+
   return (
-    <div className="container">
-      <Navbar/>
-     
-      <div className='w-full flex justify-center h-[100vh] bg-[#F0F0F0] pt-10'>
-      <div className="flex flex-col w-full sm:flex-row ml-[8px] gap-px sm:gap-2 sm:w-2/3 items-center">
-        <div className="shadow-[0px_4px_4px_0px_#30afbc] overflow-hidden bg-[#0091a0] flex flex-col justify-end gap-5 w-full sm:w-1/2 items-center pt-12 pb-6 px-4 sm:px-8 sm:rounded-tl-[33px] sm:rounded-bl-[33px] h-[50vh] sm:h-[80vh]">
-          <img
-            src={pic}
-            alt="Contact"
-            className="w-full"
-          />
-          <div className="self-stretch flex flex-col gap-2 items-start">
-            <div className="text-2xl font-poppins font-bold text-white">
-              Let's Chat.
-              <br />
-              Tell Us About Your Project.
-            </div>
-            <div className="text-sm font-poppins font-semibold text-white">
-              Let’s Maximize Your business's Potential with Us
+    <>
+      <Navbar />
+      {/* new contact us page */}
+      <div className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
+      max670:h-[140vh] max670:pt-[5rem] max670:px-6 ">
+        {/* card */}
+        <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
+          <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
+            <div className="flex flex-col items-center justify-around h-full">
+              <img
+                src={Pic}
+                alt=""
+                className="w-32 md:w-[80%] rounded-full mb-4"
+              />
+              <div>
+              <h2 className="text-3xl font-semibold mb-2 w-full">
+                Let's Chat.<br/>Tell Us About Your Project.
+              </h2>
+              <p className="w-full">
+                Let's Maximize Your business's Potential with Us
+              </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="shadow-[4px_4px_4px_0px_rgba(48,_175,_188,_0.72)] bg-white flex flex-col w-full sm:w-1/2 items-start pt-5 pb-12 px-4 sm:px-8 sm:rounded-tr-[33px] sm:rounded-br-[33px]">
-          <div
-            id="SendUsAMessage"
-            className="text-3xl font-poppins font-semibold mb-6 sm:mb-10"
-          >
-            Send us a message
-          </div>
-          <div className="flex flex-col space-y-4">
-            <label className="text-xs font-poppins font-semibold text-black/85" htmlFor="fullName">
-              Full Name
-            </label>
-            <input type="text" id="fullName" className="border-solid self-stretch h-8 sm:h-6 shrink-0 mb-1 ml-1 mr-4 sm:mr-10 border-black/47 border rounded-lg" />
 
-            <label className="text-xs font-poppins font-semibold text-black" htmlFor="companyName">
-              Company Name
-            </label>
-            <input type="text" id="companyName" className="border-solid self-stretch h-8 sm:h-6 shrink-0 ml-1 mr-4 sm:mr-10 border-black/47 border rounded-lg" />
-
-            <label className="text-xs font-poppins font-semibold text-black" htmlFor="email">
-              Email
-            </label>
-            <input type="email" id="email" className="self-stretch relative border h-8 sm:h-6 flex flex-col pb-4 ml-1 mr-4 sm:mr-10" />
-
-            <label className="text-xs font-poppins font-semibold text-black" htmlFor="address">
-              Address
-            </label>
-            <textarea id="address" className="border-solid h-20 sm:h-6 border-black/47 border rounded-lg"></textarea>
-
-            <label className="text-xs font-poppins font-semibold text-black/85" htmlFor="projectDescription">
-              Tell us more about your project
-            </label>
-            <textarea id="projectDescription" className="border-solid self-stretch h-24 sm:h-36 shrink-0 mb-6 ml-1 mr-4 sm:mr-10 border-black/47 border rounded-lg"></textarea>
-
-            <button className="bg-[#30afbc] flex flex-col justify-center ml-1 pl-2 h-10 sm:h-8 shrink-0 items-start rounded-lg">
-              <span className="font-inter font-semibold text-white mr-2">
-                Send message
-              </span>
-            </button>
+          <div className=" max-w-md w-full mx-auto px-10 py-8  border rounded-md bg-white">
+          <h2 className=" max406:text-3xl max670:text-9xl md:text-15xl font-semibold mb-4 w-full">
+              Send  us  a message
+              </h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div>
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder=""
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="companyName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  id="companyName"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Address
+                </label>
+                <textarea
+                  id="address"
+                  name="address"
+                  rows="2"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  htmlFor="projectDetails"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Tell us more about your project
+                </label>
+                <textarea
+                  id="projectDetails"
+                  name="projectDetails"
+                  rows="4"
+                  value={formData.projectDetails}
+                  onChange={handleChange}
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                ></textarea>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                >
+                  Send Message
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-      </div>
-    </div>
+    </>
   );
 };
 
