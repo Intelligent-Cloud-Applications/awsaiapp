@@ -38,9 +38,9 @@ const payment = () => {
                         <img src={cross} alt="cross"/>
                     </a>
                 </div>
-                <div className="flex flex-wrap item-center justify-center px-[3rem] pt-[7rem] nor">
-                    <h1 className="text-[25px] font-bold text-center pb-[1rem]">Payment</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
+                <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
+                    <div className="xl:flex-col"><h1 className="text-[25px] font-bold text-center pb-[1rem] md:text-left xl:text-left">Payments</h1>
+                    <img src={Serv_img} alt="services for user payment" className=" item-center justify-center pb-[3rem]" /></div>
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Seamless and secure payment processing is fundamental to a successful web application. With our Payments service, we integrate robust and reliable payment gateways, enabling your users to make transactions with confidence. From credit card payments to digital wallets and recurring billing options, we offer a range of payment solutions that cater to diverse preferences. Our comprehensive payment tracking and reporting features provide valuable insights into your transaction data, empowering you to optimize your payment processes and enhance the overall customer experience.
                     </p>
