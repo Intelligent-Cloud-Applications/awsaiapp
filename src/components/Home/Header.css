@@ -1,3 +1,12 @@
+
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 .heropic{
   background: url(/src/utils/waves/2-removebg\ 3.png);
   background-repeat: no-repeat;
@@ -60,9 +69,9 @@
   }
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .hello{
-    font-size: 2rem; /* Adjust the font size for small screens */
+    font-size: 2rem; 
   }
   .main{
     width:100%;
@@ -71,4 +80,52 @@
     width:30vw;
     font: small;
   }
+} */
+
+
+
+.wrapper{
+  box-sizing: content-box;
+  background-color: transparent;
+  height: 50px;
+  padding: 0px 0px 1.5rem 0;
+  display: flex;
+  color: white;
+  width: auto;
+}
+.words{
+  overflow: hidden;
+}
+.txt{
+  display: block;
+  height: 100%;
+  padding-left: 10px;
+  color: #30AFBC;
+  animation: spin_words 6s infinite;
+}
+@keyframes spin_words{
+  10%{
+      transform: translateY(-112%);
+  }
+  25%{
+      transform: translateY(-100%);
+  }
+  35%{
+      transform: translateY(-212%);
+  }
+  50%{
+      transform: translateY(-200%);
+  }
+  60%{
+      transform: translateY(-312%);
+  }
+  75%{
+      transform: translateY(-300%);
+  }
+  /* 85%{
+      transform: translateY(-412%);
+  }
+  100%{
+      transform: translateY(-400%);
+  } */
 }

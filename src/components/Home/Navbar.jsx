@@ -36,7 +36,7 @@ const Navbar = () => {
         >
           {open ? (
             <img
-            className="h-7"
+              className="h-7"
               src={cross}
               alt="Close Menu"
               onClick={() => {
@@ -70,15 +70,23 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-          <button
+          <li><button
+            onClick={() => {
+              Navigate("/login");
+            }}
+            className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#30AFBC] hover:text-white max800:mb-5"
+          >
+            Login
+          </button></li>
+          
+          <li><button
             onClick={() => {
               Navigate("/query");
             }}
-            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#67B2BA] 
-    duration-"
+            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#67B2BA]"
           >
             Contact Us
-          </button>
+          </button></li>
         </ul>
       </div>
     </div>

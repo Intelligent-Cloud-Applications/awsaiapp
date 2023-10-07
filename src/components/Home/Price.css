@@ -1,5 +1,5 @@
 .home-faq {
-  padding: 4rem 10rem;
+  padding: 4rem 6rem;
 }
 
 .row-title-text {
@@ -30,9 +30,8 @@
   font-weight: 500;
 }
 
-@media (max-width: 844px) {
+@media (max-width: 450px) {
   .home-faq {
-    padding: 4rem;
-    font-size:x-small;
+    padding: 3rem 1rem;
   }
 }
