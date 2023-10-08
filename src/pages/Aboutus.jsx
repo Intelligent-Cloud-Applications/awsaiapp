@@ -14,6 +14,8 @@ import "./Aboutus.css";
 import Navbar from "../components/Home/Navbar";
 import FOOTER from "../components/Home/Footer";
 
+
+
 export default function AboutUs() {
   const fontStyles = `
     @font-face {
@@ -21,7 +23,8 @@ export default function AboutUs() {
       src: url('${Rubikfont}') format('truetype');
     }
   `;
-
+  
+  
   return (
     <div>
       <Navbar />
@@ -41,7 +44,7 @@ export default function AboutUs() {
                 alt="Arrow"
               />
             </div>
-            <div className="Container1">
+            <div className="Container1 md:pb-[12rem] max800:pb-[23rem] max767:mb-[2rem] max450:pb-[1rem]  md:px-2">
               <div className=" wrapper flex flex-col md:flex-row justify-between items-start p-[1rem] gap-2">
                 <img
                   src={about3}
@@ -56,25 +59,28 @@ export default function AboutUs() {
                 <img
                   src={about1}
                   alt="About 1"
-                  className="about1 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem] max800:h-[16rem] lg:h-[16rem] "
+                  className="about2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem] "
                 />
+                
               </div>
             </div>
           </div>
         </div>
 
-        <div className=" cloud flex flex-col md:flex-row justify-between items-start">
+
+          <div className="max767:flex max767:justify-center max767:px-[2rem] ">
+        <div className=" flex flex-col md:flex-row justify-between items-start ">
           <div className="flex flex-col md:flex-row gap-3 w-full md:w-2/5 items-start">
             <img
               src={left}
               className="left relative hidden sm:block max800:block"
               alt="left"
             />
-            <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start ">
-              <div className="text-3xl font-inter font-bold tracking-[3.2] w-full max800:text-[25px]">
+            <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start">
+              <div className="text-3xl font-inter font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
                 Welcome to Intelligent Cloud Applications!
               </div>
-              <div className="text-xl font-['Inter'] text-[#545454] leading-[25px] w-full max800:w-[302px] max800:text-[16px]">
+              <div className="text-xl font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
                 At Intelligent Cloud Applications, we are not just a digital
                 consulting company; we are your partners in propelling your
                 business into the digital age. Our mission is to empower your
@@ -85,9 +91,10 @@ export default function AboutUs() {
             </div>
           </div>
           <div className="self-start md:self-end relative flex flex-col justify-start md:justify-end w-full md:w-2/5 items-end">
+            
             <img
               src={cloud}
-              className="w-full md:w-[518px] h-auto absolute top-0 left-0  max800:w-[400px]"
+              className="w-full md:w-[518px] h-auto absolute top-0 left-0  max980:w-[400px]"
               alt="Cloud"
             />
             <img
@@ -97,8 +104,10 @@ export default function AboutUs() {
             />
           </div>
         </div>
+        </div> 
 
-        <div className="who text-4xl font-['Inter'] font-bold self-center mt-[120px] ">
+
+        <div className="who text-4xl font-['Inter'] font-bold self-center md:mt-[120px] max767:pt-[1.5rem] ">
           Who<span className="text-[#30afbc] contents"> We </span>Are
         </div>
         <div className="text-xl font-['Inter'] font-medium leading-[29.4px] text-[#545454] self-center mb-[109px] w-4/5   max800:text-[15px]  ">
