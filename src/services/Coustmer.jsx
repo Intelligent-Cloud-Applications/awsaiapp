@@ -11,8 +11,8 @@ const coustmer = () => {
         <div className="h-full">
             <Navbar />
             <div className="">
-                <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[200px] max800:pt-[5%] max800:p-[2%]">
-                    <h2 className="text-[29px] pb-[1rem]">Our Services</h2>
+            <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[150px] max800:pt-[15%] max800:p-[2%]">
+                    <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                     <a href="/User_interface" className="justify-space-between">
                         <p>User interface & User experience</p>
                         <img src={plus} alt="plus" />
@@ -38,9 +38,9 @@ const coustmer = () => {
                         <img src={plus} alt="plus"/>
                     </a>
                 </div>
-                <div className="flex flex-wrap item-center p-[7rem] nor">
+                <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">Leads & customer tracking</h1>
-                    <img src={Serv_img} alt="services for user interface" className="h-[444px] w-[720px] item-center justify-center pb-[3rem]" />
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Understanding your customers and leads is vital for driving business growth, and our Leads & Customer Tracking service equips you with the tools to do just that. From lead capture forms and lead scoring systems to automated lead nurturing campaigns, we help you gather valuable customer data, prioritize leads effectively, and nurture them through the sales funnel. By monitoring customer interactions and tracking user behavior within your web application, we empower you to make data-driven decisions, optimize marketing strategies, and deliver personalized experiences that resonate with your audience.
                     </p>

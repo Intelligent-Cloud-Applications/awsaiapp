@@ -11,8 +11,8 @@ const Login_IdentityManagment = () => {
         <div className="h-full">
             <Navbar />
             <div className="">
-                <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[200px] max800:pt-[5%] max800:p-[2%]">
-                    <h2 className="text-[29px] pb-[1rem]">Our Services</h2>
+            <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[150px] max800:pt-[15%] max800:p-[2%]">
+                    <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                     <a href="/User_interface" className="justify-space-between">
                         <p>User interface & User experience</p>
                         <img src={plus} alt="plus" />
@@ -38,9 +38,9 @@ const Login_IdentityManagment = () => {
                         <img src={plus} alt="plus"/>
                     </a>
                 </div>
-                <div className="flex flex-wrap item-center p-[7rem] nor">
+                <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">Login And identity managment</h1>
-                    <img src={Serv_img} alt="services for user interface" className="h-[444px] w-[720px] item-center justify-center pb-[3rem]" />
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Security is paramount in the digital world, and our Login & Identity Management service guarantees robust user authentication and access control. Through secure authentication mechanisms, such as two-factor authentication (2FA) and single sign-on (SSO), we safeguard user accounts from unauthorized access and potential threats. Our identity verification processes add an extra layer of protection, ensuring a trustworthy user base. Additionally, we provide seamless password management options, making it convenient for users to reset and recover their login credentials securely.
                     </p>

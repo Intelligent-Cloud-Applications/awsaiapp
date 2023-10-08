@@ -12,8 +12,9 @@
     margin-bottom: 10px;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 600px) {
     .nor {
+        margin: 5%;
         padding:0rem;
         padding-top: 5rem;
         justify-content: center;
@@ -28,10 +29,23 @@
     }
     
 }
+@media (max-width:800px) {
+    .serv a p{
+        font-size: 10px ;
+    }
+    .serv a{
+        width: 170px;
+    }
+    .nor img{
+        object-fit: contain;
+        padding: 0%;
+    }
+}
 .serv a img{
     width: 10px;
     height: 10px;
     display: flex;
+    object-fit: cover;
 }
 
 .serv{

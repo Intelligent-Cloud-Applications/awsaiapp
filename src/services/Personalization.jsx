@@ -11,8 +11,8 @@ const Personalization = () => {
         <div className="h-full">
             <Navbar />
             <div className="">
-                <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[200px] max800:pt-[5%] max800:p-[2%]">
-                    <h2 className="text-[29px] pb-[1rem]">Our Services</h2>
+            <div className="flex flex-col h-269 w-231 serv pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[150px] max800:pt-[15%] max800:p-[2%]">
+                    <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                     <a href="/User_interface" className="justify-space-between">
                         <p>User interface & User experience</p>
                         <img src={plus} alt="plus" />
@@ -38,9 +38,9 @@ const Personalization = () => {
                         <img src={plus} alt="plus"/>
                     </a>
                 </div>
-                <div className="flex flex-wrap item-center p-[7rem] nor">
-                    <h1 className="text-[25px] font-bold text-center pb-[1rem]">Personalization</h1>
-                    <img src={Serv_img} alt="services for user interface" className="h-[444px] w-[720px] item-center justify-center pb-[3rem]" />
+                <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
+                    <div className="xl:flex-col"><h1 className="text-[25px] font-bold text-center pb-[1rem] md:text-left xl:text-left">Personalization</h1>
+                    <img src={Serv_img} alt="services for user interface" className=" item-center justify-center pb-[3rem]" /></div>
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Customization is key to building lasting connections with your users, and our Personalization service is designed to deliver just that. Through sophisticated algorithms and data-driven insights, we personalize your web application to cater to each user's unique preferences, behavior, and context. Whether it's a personalized dashboard, tailored content recommendations, or adaptive user interfaces, we ensure that your users feel valued and engaged at every interaction. By providing a highly personalized experience, you can boost user satisfaction, drive conversions, and cultivate loyalty, setting your web application apart from the competition.
                     </p>
