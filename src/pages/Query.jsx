@@ -1,8 +1,8 @@
 import React from "react";
-import pic from "../utils/Assets/contactPic.png";
 import Navbar from "../components/Home/Navbar";
 import { useState } from "react";
 import Pic from "../utils/contactusPic.png";
+import { motion } from 'framer-motion';
 
 const Query = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +33,11 @@ const Query = () => {
         {/* card */}
         <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
-            <div className="flex flex-col items-center justify-around h-full">
+            <motion.div 
+            initial={{ opacity: 0, y: 20 }} // Initial state (hidden and slightly moved)
+            animate={{ opacity: 1, y: 0 }} // Animation state (visible and at its original position)
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-around h-full">
               <img
                 src={Pic}
                 alt=""
@@ -47,7 +51,7 @@ const Query = () => {
                 Let's Maximize Your business's Potential with Us
               </p>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <div className=" max-w-md w-full mx-auto px-10 py-8  border rounded-md bg-white">

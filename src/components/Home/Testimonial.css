@@ -1,7 +1,6 @@
 .testi{
   --background: url(/src/utils/TestimonialBack.png);
   --bg-image-opacity: 1;
-  background-color: black;
   position: relative;
   isolation: isolate;
   width: 100%;

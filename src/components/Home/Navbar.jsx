@@ -74,7 +74,7 @@ const Navbar = () => {
             onClick={() => {
               Navigate("/login");
             }}
-            className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#30AFBC] hover:text-white max800:mb-5"
+            className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
           >
             Login
           </button></li>

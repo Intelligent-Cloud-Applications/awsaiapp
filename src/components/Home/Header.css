@@ -33,7 +33,6 @@
   inset: 0;
 }
 .responsive-button {
-  width: 40%;
   color: black;
   padding: 10px 20px;
   font-size: large;
@@ -45,7 +44,6 @@
 /* Media query for small screens (up to 600px) */
 @media (max-width: 600px) {
   .responsive-button {
-    width: 40%;
       font-size: 75%;
       padding: 8px 16px;
   }
@@ -54,8 +52,6 @@
 /* Media query for medium screens (601px to 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
   .responsive-button {
-      width: 50%;
-      min-width: 40%;
       font-size: 85%;
       padding: 12px 24px;
   }
@@ -64,7 +60,6 @@
 /* Media query for large screens (greater than 1024px) */
 @media (min-width: 1025px) {
   .responsive-button {
-      width: 30%;
       padding: 14px 28px;
   }
 }
@@ -88,7 +83,7 @@
   box-sizing: content-box;
   background-color: transparent;
   height: 50px;
-  padding: 0px 0px 1.5rem 0;
+  padding: 0px 0px 1rem 0;
   display: flex;
   color: white;
   width: auto;
@@ -110,16 +105,16 @@
   25%{
       transform: translateY(-100%);
   }
-  35%{
+  40%{
       transform: translateY(-212%);
   }
-  50%{
+  65%{
       transform: translateY(-200%);
   }
-  60%{
+  75%{
       transform: translateY(-312%);
   }
-  75%{
+  100%{
       transform: translateY(-300%);
   }
   /* 85%{
