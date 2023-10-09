@@ -27,7 +27,11 @@
         overflow: hidden;
         display: none;
     }
-    
+}
+.relat{
+    position: absolute;
+    top: 100px; /* Adjust this value to position it below the navbar */
+    z-index: 1;
 }
 @media (max-width:800px) {
     .serv a p{
@@ -70,4 +74,9 @@
 .description{
     display: flex;
     float: left;
+}
+
+.sty{
+    list-style-type: disc;
+    padding-left: 25px;
 }
