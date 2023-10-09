@@ -1,7 +1,7 @@
 import React from "react";
 import Service from "../../utils/ServicesPic.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import s1 from "../../utils/Assets/service1.png";
 import s2 from "../../utils/Assets/service2.png";
 import s3 from "../../utils/Assets/service3.png";
@@ -10,6 +10,8 @@ import s5 from "../../utils/Assets/service5.png";
 import s6 from "../../utils/Assets/service6.png";
 
 const Services = () => {
+ const Navigate = useNavigate();
+
   const [isHovered, setIsHovered] = useState(false);
   const Navigate =useNavigate();
   const handleHover = () => {
@@ -51,7 +53,7 @@ const Services = () => {
                 </div>
 
                 <div className="self-stretch relative flex flex-col ml-6 items-start">
-                  <div className="text-sm font-['Inter'] leading-[23px] relative w-full max1008:text-xs">
+                  <div className="font-['Inter'] leading-[23px] relative w-full text-sm lg:text-sm">
                     UI: Elegant design, intuitive interactions.
                     <br />
                     UX: Purposeful journeys, foreseeing needs, meaningful
@@ -61,16 +63,16 @@ const Services = () => {
               </div>
 
               <div
-                className={`flex flex-col justify-center items-start absolute bg-[#30AFBC] pl-10 rounded-[1.5rem] overflow-hidden transition-all duration-500 ease${
+                className={`h-[50vh] w-[50vw] flex flex-col justify-center items-start absolute bg-[#30AFBC] pb-10 pl-16 overflow-hidden transition-all duration-500 ease rounded-full ${
                   isHovered
-                    ? "right-0 -top-50  h-[25vh] w-[25vw] "
-                    : " top-[170px] -right-1 w-10 text-[#30AFBC]"
+                    ? "transform -translate-x-10 -translate-y-20"
+                    : "transform translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
-                <div className="font-['Inter'] font-semibold leading-[25px] ml-5 w-5/6">
+                <div className="font-['Inter'] font-semibold leading-[28px] ml-1 w-5/6">
                   User interface & User experience{" "}
                 </div>
-                <ul className="list-disc pl-10 w-full">
+                <ul className="list-disc pl-8 w-full">
                   <li>Intuitive UI Design</li>
                   <li>Responsive Web Design</li>
                   <li>Accessibility</li>
@@ -78,12 +80,12 @@ const Services = () => {
                 </ul>
                 <div
                   onClick={() => {
-                    Navigate("/User_interface");
+                    Navigate("/coustmer");
                   }}
-                  className="ml-10 mt-3 border-white border-2 px-2 py-1 rounded hover:bg-white hover:text-black"
+                  className="text-xs ml-8 mt-3 px-2 py-1 rounded text-white border-white hover:bg-white border-2 hover:border-black hover:text-black"
                 >
                   View More
-                </div>
+                </button>
               </div>
             </div>
 

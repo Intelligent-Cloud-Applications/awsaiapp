@@ -3,9 +3,9 @@ import Header from "../components/Home/Header";
 import Navbar from "../components/Home/Navbar";
 import FAQ from "../components/Home/Faq";
 import FOOTER from "../components/Home/Footer";
-import TESTIMONIAL from "../components/Home/Testimonial";
 import Price from "../components/Home/Price";
 import Services from "../components/Home/services";
+import Testimonial from "../components/Home/Testimonials";
 
 function Home() {
 
@@ -17,7 +17,8 @@ function Home() {
 
       <Services/>
 
-      <TESTIMONIAL/>
+      <Testimonial/>
+
 
       <Price/>
 
