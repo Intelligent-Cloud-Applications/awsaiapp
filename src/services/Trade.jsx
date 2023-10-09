@@ -37,7 +37,7 @@ const Trade = () => {
                             <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                             <a href="/User_interface" className="justify-space-between">
                                 <p>User interface & User experience</p>
-                                <img src={cross} alt="cross" />
+                                <img src={plus} alt="plus" />
                             </a>
                             <a href="/Personalization" className="justify-spacebetween">
                                 <p>Personalization</p>
@@ -49,7 +49,7 @@ const Trade = () => {
                             </a>
                             <a href="/trade">
                                 <p>Trade Specific features</p>
-                                <img src={plus} alt="plus" />
+                                <img src={cross} alt="cross" />
                             </a>
                             <a href="/coustmer">
                                 <p>Leads & customer tracking</p>
@@ -64,7 +64,7 @@ const Trade = () => {
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">Trade Specific features</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Every industry has unique requirements, and our Trade Specific Features service ensures that your web application is tailored to meet the specific needs of your trade. Whether you operate in e-commerce, healthcare, education, or any other industry, our team customizes your web application with industry-specific functionalities and compliance features. From inventory management tools and real-time data updates to specialized reporting and analytics, our trade-specific approach positions your web application as a powerful asset, driving growth and success in your niche.
                     </p>

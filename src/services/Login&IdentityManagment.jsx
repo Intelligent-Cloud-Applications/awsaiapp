@@ -37,7 +37,7 @@ const Login_IdentityManagment = () => {
                             <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                             <a href="/User_interface" className="justify-space-between">
                                 <p>User interface & User experience</p>
-                                <img src={cross} alt="cross" />
+                                <img src={plus} alt="plus" />
                             </a>
                             <a href="/Personalization" className="justify-spacebetween">
                                 <p>Personalization</p>
@@ -45,7 +45,7 @@ const Login_IdentityManagment = () => {
                             </a>
                             <a href="/identity">
                                 <p>Login And identity managment</p>
-                                <img src={plus} alt="plus" />
+                                <img src={cross} alt="cross" />
                             </a>
                             <a href="/trade">
                                 <p>Trade Specific features</p>
@@ -64,7 +64,7 @@ const Login_IdentityManagment = () => {
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">Login And identity managment</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                     Security is paramount in the digital world, and our Login & Identity Management service guarantees robust user authentication and access control. Through secure authentication mechanisms, such as two-factor authentication (2FA) and single sign-on (SSO), we safeguard user accounts from unauthorized access and potential threats. Our identity verification processes add an extra layer of protection, ensuring a trustworthy user base. Additionally, we provide seamless password management options, making it convenient for users to reset and recover their login credentials securely.
                     </p>

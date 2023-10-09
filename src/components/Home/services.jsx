@@ -1,7 +1,7 @@
 import React from "react";
 import Service from "../../utils/ServicesPic.png";
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import s1 from "../../utils/Assets/service1.png";
 import s2 from "../../utils/Assets/service2.png";
 import s3 from "../../utils/Assets/service3.png";
@@ -10,8 +10,6 @@ import s5 from "../../utils/Assets/service5.png";
 import s6 from "../../utils/Assets/service6.png";
 
 const Services = () => {
- const Navigate = useNavigate();
-
   const [isHovered, setIsHovered] = useState(false);
   const Navigate =useNavigate();
   const handleHover = () => {
@@ -78,9 +76,9 @@ const Services = () => {
                   <li>Accessibility</li>
                   <li>Interactive Elements</li>
                 </ul>
-                <div
+                <button
                   onClick={() => {
-                    Navigate("/coustmer");
+                    Navigate("/User_interface");
                   }}
                   className="text-xs ml-8 mt-3 px-2 py-1 rounded text-white border-white hover:bg-white border-2 hover:border-black hover:text-black"
                 >

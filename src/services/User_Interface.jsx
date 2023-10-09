@@ -64,7 +64,7 @@ const User_Interface = () => {
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor ">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">User interface & User experience</h1>
-                    <img src={Serv_img} alt="services for user interface" className=" item-center justify-center pb-[3rem]" />
+                    <img src={Serv_img} alt="services for user interface" className=" item-center justify-center" />
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
                         At Intelligent Cloud Applications, we understand that the success of your web application hinges on delivering a delightful user experience. Our User Interface and User Experience service are dedicated to crafting intuitive, visually appealing, and user-friendly interfaces that captivate your audience from the moment they land on your site. Our team of skilled designers leverages the latest design trends and usability principles to create seamless interactions, ensuring that your users can navigate your web application effortlessly across various devices. With a focus on accessibility and responsive design, we guarantee that every user, regardless of their device or abilities, enjoys an exceptional experience that drives engagement and enhances satisfaction.
                     </p>

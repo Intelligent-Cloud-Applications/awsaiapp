@@ -37,7 +37,7 @@ const Coustmer = () => {
                             <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">Our Services</h2>
                             <a href="/User_interface" className="justify-space-between">
                                 <p>User interface & User experience</p>
-                                <img src={cross} alt="cross" />
+                                <img src={plus} alt="plus" />
                             </a>
                             <a href="/Personalization" className="justify-spacebetween">
                                 <p>Personalization</p>
@@ -53,7 +53,7 @@ const Coustmer = () => {
                             </a>
                             <a href="/coustmer">
                                 <p>Leads & customer tracking</p>
-                                <img src={plus} alt="plus" />
+                                <img src={cross} alt="cross" />
                             </a>
                             <a href="/payment">
                                 <p>Payments</p>
@@ -64,8 +64,8 @@ const Coustmer = () => {
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
                     <h1 className="text-[25px] font-bold text-center pb-[1rem]">Leads & customer tracking</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center pb-[3rem]" />
-                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" />
+                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] " >
                     Understanding your customers and leads is vital for driving business growth, and our Leads & Customer Tracking service equips you with the tools to do just that. From lead capture forms and lead scoring systems to automated lead nurturing campaigns, we help you gather valuable customer data, prioritize leads effectively, and nurture them through the sales funnel. By monitoring customer interactions and tracking user behavior within your web application, we empower you to make data-driven decisions, optimize marketing strategies, and deliver personalized experiences that resonate with your audience.
                     </p>
                     <div className="bullet w-[700px]">

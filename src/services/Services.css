@@ -42,7 +42,7 @@
     }
     .nor img{
         object-fit: contain;
-        padding: 0%;
+        padding: 5%;
     }
 }
 .serv a img{
