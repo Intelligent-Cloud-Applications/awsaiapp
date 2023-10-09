@@ -53,7 +53,7 @@ const testimonials = [
   },
 ];
 
-function Testimonial() {
+function Testimonials() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const nextTestimonial = () => {
@@ -171,4 +171,4 @@ function Testimonial() {
   );
 }
 
-export default Testimonial;
+export default Testimonials;
