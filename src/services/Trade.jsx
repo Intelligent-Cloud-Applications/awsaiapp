@@ -63,13 +63,13 @@ const Trade = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
-                    <h1 className="text-[25px] font-bold text-center pb-[1rem]">Trade Specific features</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" />
-                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
+                <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold pb-[1rem] max767:text-center">Trade Specific features</h1>
+                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" /></div>
+                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center" >
                     Every industry has unique requirements, and our Trade Specific Features service ensures that your web application is tailored to meet the specific needs of your trade. Whether you operate in e-commerce, healthcare, education, or any other industry, our team customizes your web application with industry-specific functionalities and compliance features. From inventory management tools and real-time data updates to specialized reporting and analytics, our trade-specific approach positions your web application as a powerful asset, driving growth and success in your niche.
                     </p>
-                    <div className="bullet w-[700px]">
-                        <ul className="styled-list gap-3 justify-center item-center flex flex-wrap">
+                    <div className="bullet">
+                        <ul className="styled-list gap-3 item-center flex flex-wrap">
                             <li>
                                 <h1>Industry-Specific Customization:</h1>
                                 <p> Tailor your web app to meet the unique needs of your industry, ensuring it becomes a valuable asset for your trade.</p>

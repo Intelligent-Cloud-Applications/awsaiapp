@@ -63,13 +63,13 @@ const Personalization = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
-                    <div className="xl:flex-col"><h1 className="text-[25px] font-bold text-center pb-[1rem] md:text-left xl:text-left">Personalization</h1>
+                <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">Personalization</h1>
                     <img src={Serv_img} alt="services for user interface" className=" item-center justify-center" /></div>
-                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px]" >
+                    <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center" >
                     Customization is key to building lasting connections with your users, and our Personalization service is designed to deliver just that. Through sophisticated algorithms and data-driven insights, we personalize your web application to cater to each user's unique preferences, behavior, and context. Whether it's a personalized dashboard, tailored content recommendations, or adaptive user interfaces, we ensure that your users feel valued and engaged at every interaction. By providing a highly personalized experience, you can boost user satisfaction, drive conversions, and cultivate loyalty, setting your web application apart from the competition.
                     </p>
-                    <div className="bullet w-[700px]">
-                        <ul className="styled-list gap-3 justify-center item-center flex flex-wrap">
+                    <div className="bullet ">
+                        <ul className="styled-list gap-3 flex flex-wrap">
                             <li>
                                 <h1>Dynamic Content Personalization:</h1>
                                 <p> We use data-driven insights to deliver personalized content, product recommendations, and notifications tailored to each user's interests and behavior.</p>
