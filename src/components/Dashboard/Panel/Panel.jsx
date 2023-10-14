@@ -14,43 +14,74 @@ import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import "./Panel.css";
 
 const Panel = () => {
-  const itemsPerPage = 7;
+  const itemsPerPage = 2;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   const [isMemberList, setisMemberList] = useState("");
-  const [users, setUsers] = useState([]);
-  // const { clients } = useContext(Context);
-  // const clientsData = clients.data;
+  const { clients } = useContext(Context);
+  const clientsData = clients.data;
   // console.log("Clients data:", clients.data);
 
-  useEffect(() => {
-    // Fetch data when the component mounts
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []); 
 
   // Function to handle checkbox changes
-  const handleCheckboxChange = (userId) => {
-    if (selectedRow.includes(userId)) {
-      setSelectedRow(selectedRow.filter((id) => id !== userId));
+  const handleCheckboxChange = (institution) => {
+    if (selectedRow.includes(institution)) {
+      setSelectedRow(selectedRow.filter((id) => id !== institution));
     } else {
-      setSelectedRow([...selectedRow, userId]);
+      setSelectedRow([...selectedRow, institution]);
     }
   };
 
   // Function to check if a row is selected
-  const isRowSelected = (userId) => {
-    return selectedRow.includes(userId);
+  const isRowSelected = (institution) => {
+    return selectedRow.includes(institution);
   };
 
+  const filterClients = () => {
+    if (!searchQuery) {
+      return clientsData; // If no search query, return all clients
+    }
+  
+    const query = searchQuery.toLowerCase();
+  
+    const filtered = clientsData.filter((client) => {
+      const matches = (
+        client.institution.toLowerCase().includes(query) ||
+        client.emailId.toLowerCase().includes(query) ||
+        client.phoneNumber.toLowerCase().includes(query)
+      );
+  
+      // Add a console.log to see what's being filtered
+      console.log(client.institution, matches);
+      
+      return matches;
+    });
+  
+    // Add a console.log to see the filtered results
+    console.log('Filtered Clients:', filtered);
+  
+    return filtered;
+  };
+  
+
+  // Apply filtering to the data
+  const filteredClients = filterClients();
   // Pagination logic
-  // const totalPages = Math.ceil(clientsData.length / itemsPerPage);
-  // const startIndex = (currentPage - 1) * itemsPerPage;
-  // const endIndex = startIndex + itemsPerPage;
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);  
+  
   const selectedRowCount = selectedRow.length;
+
+  function formatEpochToReadableDate(epochTimestamp) {
+    const date = new Date ();
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
@@ -117,71 +148,72 @@ const Panel = () => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
-        {users.map((user) => (
-                <div
-                  key={user.id}
-                  onClick={() => {
-                    setisMemberList(user.name);
-                  }}
-                  className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(user.id)
-                    ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                    : "border-[#a2a2a280]"
-                    }`}
-                  style={{
-                    margin: isRowSelected(user.id) ? "1rem 0" : "0.5rem 0",
-                    boxShadow: isRowSelected(user.id)
-                      ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)"
-                      : "none",
-                  }}
-                >
-                  {/* checkbox */}
-                  <label className="relative">
-                    <input
-                      type="checkbox"
-                      className="hidden"
-                      onChange={() => handleCheckboxChange(user.id)}
-                      checked={isRowSelected(user.id)}
+        {filteredClients && Array.isArray(filteredClients) && filteredClients.map((client, index) => (
+            <div
+              key={client.institution}
+              onClick={() => {
+                setisMemberList(clients.name);
+              }}
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
+                ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
+                : "border-[#a2a2a280]"
+                }`}
+              style={{
+                margin: isRowSelected(client.institution) ? "1rem 0" : "0.5rem 0",
+                boxShadow: isRowSelected(client.institution)
+                  ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)"
+                  : "none",
+              }}
+            >
+              {/* checkbox */}
+              <label className="relative">
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  onChange={() => handleCheckboxChange(client.institution)}
+                  checked={isRowSelected(client.institution)}
+                />
+                <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
+                  {isRowSelected(client.institution) && (
+                    <img
+                      src={Select}
+                      alt="Selected"
+                      className="w-full h-full"
                     />
-                    <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                      {isRowSelected(user.id) && (
-                        <img
-                          src={Select}
-                          alt="Selected"
-                          className="w-full h-full"
-                        />
-                      )}
-                    </div>
-                  </label>
+                  )}
+                </div>
+              </label>
 
-                  <div className="absolute right-2 mt-5"><img src={personIcon} alt="" /></div>
-                  <div className="flex flex-row K2D items-center">
-                    <div className=" flex gap-[1rem] pl-[2rem] items-center">
-                      <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
-                        <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
+              <div className="absolute right-2 mt-5"><img src={personIcon} alt="" /></div>
+              <div className="flex flex-row K2D items-center">
+                <div className=" flex gap-[1rem] pl-[2rem] items-center">
+                  <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
+                    <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="grid grid-cols-12 items-center w-[55vw]">
+                    <div className="col-span-3 flex flex-col max600:w-[10rem]">
+                      <div className="font-[900] email-hover cursor-pointer">
+                        {client.institution}
                       </div>
-                      <div className="grid grid-cols-12 items-center w-[55vw]">
-                        <div className="col-span-3 flex flex-col max600:w-[10rem]">
-                          <div className="font-[900] email-hover cursor-pointer">
-                            {user.name}
-                          </div>
-                          <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{user.email}</div>
-                          <div className="overflow-auto text-[0.8rem] font-[600]">7735227398</div>
-                        </div>
-                        <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">USA</div>
-                        <div className="col-span-3 ml-[0rem] font-semibold text-sm max600:hidden">23/01/2003</div>
-                        <div className="col-span-2 font-semibold text-sm"></div>
-                        <div className="col-span-2 ml-[-2rem] relative max850:hidden">
-                          <div >
-                            <div></div>
-                            <div></div>
-                          </div>
-                        </div>
-                        <div className="font-[600] ml-[-1rem] text-[0.9rem] pr-[6rem] max850:hidden"></div>
+                      <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
+                      <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
+                    </div>
+                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-3 ml-[0rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
+                    </div>
+                    <div className="col-span-2 font-semibold text-sm"></div>
+                    <div className="col-span-2 ml-[-2rem] relative max850:hidden">
+                      <div >
+                        <div></div>
+                        <div></div>
                       </div>
                     </div>
+                    <div className="font-[600] ml-[-1rem] text-[0.9rem] pr-[6rem] max850:hidden"></div>
                   </div>
                 </div>
-        ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-row gap-2">
@@ -194,7 +226,7 @@ const Panel = () => {
           {/* Pagination */}
           <div className="flex justify-start pt-4 ml-[2rem] z-[-1]">
             <Pagination
-              count={3}
+              count={totalPages}
               page={currentPage}
               onChange={(event, value) => setCurrentPage(value)}
               className="custom-pagination"

@@ -4,7 +4,7 @@ import { API } from "aws-amplify";
 
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState({});
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const ContextProvider = (props) => {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-clients");
       console.log("API Response:", response); 
-      setClients({ data: response.data });
+      setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
@@ -29,9 +29,9 @@ const ContextProvider = (props) => {
   const fetchMembers = async (institution) => {
     try {
       setLoader(true);
-      const response = await API.get(`/admin/list-member/${institution}`); // Replace with your API URL
-      console.log(response)
-      setMembers(response.data);
+      const response = await API.get("members",`/admin/list-member/${institution}`); // Replace with your API URL
+      console.log("Memberlist ",response)
+      setMembers(response);
     } catch (error) {
       console.error("Error fetching members:", error);
     } finally {
