@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext} from "react";
 import Context from "../../../context/Context";
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
@@ -18,6 +18,7 @@ const Panel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
+    // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
   const { clients } = useContext(Context);
   const clientsData = clients.data;
@@ -70,6 +71,7 @@ const Panel = () => {
   // Pagination logic
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
+    // eslint-disable-next-line
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);  
   
   const selectedRowCount = selectedRow.length;
