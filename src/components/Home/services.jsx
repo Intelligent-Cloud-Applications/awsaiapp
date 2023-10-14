@@ -203,42 +203,54 @@ const Services = () => {
           <img className="h-[18vh] max500:h-[14vh] " src={s1} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">User interface & User experience </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">UI: Elegant design, intuitive interactions.UX: Purposeful journeys, foreseeing needs, meaningful engagements, delightful digital connections.</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/User_interface");
+                  }} className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[18vh] max500:h-[14vh]" src={s2} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">Personalization </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">With personalization, we craft unique journeys for every customer, aligning their preferences with our offerings to create unparalleled satisfaction and brand loyalty.</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/Personalization");
+                  }} className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[18vh] max500:h-[14vh]" src={s3} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">Login & identity managment </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">Advanced Identity Solutions: Optimize user authentication, authorization, and tracking with our cutting-edge login and identity management.</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/identity");
+                  }}  className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[18vh] max500:h-[14vh]" src={s4} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">Trade Specific features </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">Our services offer industry-specific features, empowering businesses with tools and functionalities optimized for success in their respective fields.</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/trade");
+                  }}  className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[18vh] max500:h-[14vh]" src={s5} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">Leads & customer tracking </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">Gain valuable leads and track customer interactions. Leverage data-driven insights for effective business growth and improved customer engagement</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/coustmer");
+                  }}  className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[18vh] max500:h-[14vh]" src={s6} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">Payments </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">Secure and Convenient Payments: Experience hassle-free transactions with our trusted payment solutions, ensuring data security and peace of mind with seamless transactions</p>
-          <button className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
+          <button onClick={() => {
+                    Navigate("/payment");
+                  }}  className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">READ MORE</button>
         </div>
 
 
