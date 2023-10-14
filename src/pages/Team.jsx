@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from "../components/Home/Navbar";
 import FOOTER from "../components/Home/Footer";
+import Bapuji from'../utils/team/Bapuji.png';
+import Shubhasmita from'../utils/team/Shubhasmita.png';
 import Harsh from'../utils/team/Harsh.png';
 import Sambhunath from'../utils/team/Sambhunath.png';
 import Shreetam from'../utils/team/Shreetam.png';
@@ -29,84 +31,93 @@ import { useInView } from 'react-intersection-observer';
 
 const teamMembers = [
   {
-    name: 'Harsh Kesari',
-    role: 'Full-Stack Developer (TL)',
+    name: 'Bapuji',
+    role: 'Customer Relationship Manager',
+    imageSrc: Bapuji, 
+  },
+  {
+    name: 'Shubhasmita',
+    role: 'Digital Marketing Manager',
+    imageSrc: Shubhasmita, 
+  },
+  {
+    name: 'Harsh',
+    role: 'SDE 1',
     imageSrc: Harsh, 
   },
+  
   {
-    name: 'Avishek Mishra',
-    role: 'Full-Stack Developer',
-    imageSrc: Avishek, 
-  },
-  {
-    name: 'Bhabesh Pradhan',
-    role: 'Full-Stack Developer',
-    imageSrc: Bhabesh, 
-  },
-  {
-    name: 'Sambhunath Meher',
-    role: 'Full-Stack Developer',
-    imageSrc: Sambhunath, 
-  },
-
-  {
-    name: 'Bikash Marandi',
-    role: 'UI/UX Designer (TL)',
+    name: 'Bikash',
+    role: 'SDE 1',
     imageSrc: Bikash, 
   },
   {
-    name: 'Santosh Pati',
-    role: 'UI/UX Designer',
-    imageSrc: Santosh, 
-  },
-  {
-    name: 'Shreetam Mishra',
-    role: 'UI/UX Designer',
-    imageSrc: Shreetam, 
-  },
-  {
-    name: 'Ananta Nag',
-    role: 'UI/UX Designer',
-    imageSrc: Ananta, 
-  },
-  {
-    name: 'Lokanath Panda',
-    role: 'DSA Team (TL)',
+    name: 'Lokanath',
+    role: 'SDE 1',
     imageSrc: Lokanath, 
   },
   {
-    name: 'Subham Mallik',
-    role: 'DSA Team (TL)',
+    name: 'Subham',
+    role: 'SDE 1',
     imageSrc: Subham, 
-  },
-  {
-    name: 'Akash Kumar Panda',
-    role: 'DSA Team',
-    imageSrc: Akash, 
-  },
-  {
-    name: 'Rohit Kumar Barada',
-    role: 'DSA Team',
-    imageSrc: Rohit, 
-  },
-  {
-    name: 'Soumya Ranjan Sahu',
-    role: 'DevOps Team (TL)',
+  },{
+    name: 'Soumya',
+    role: 'SDE 1',
     imageSrc: Soumya, 
   },
   {
-    name: 'Jogalakshmi Rath',
-    role: 'DevOps Team (TL)',
+    name: 'Jogalakshmi',
+    role: 'SDE 1',
     imageSrc: Jogalaxmi, 
   },
   {
-    name: 'Anchal Mahana',
-    role: 'DevOps Team',
+    name: 'Avishek',
+    role: 'SDE Intern',
+    imageSrc: Avishek, 
+  },
+  {
+    name: 'Bhabesh',
+    role: 'SDE Intern',
+    imageSrc: Bhabesh, 
+  },
+  {
+    name: 'Sambhunath',
+    role: 'SDE Intern',
+    imageSrc: Sambhunath, 
+  },
+  {
+    name: 'Santosh',
+    role: 'SDE Intern',
+    imageSrc: Santosh, 
+  },
+  {
+    name: 'Shreetam',
+    role: 'SDE Intern',
+    imageSrc: Shreetam, 
+  },
+  {
+    name: 'Ananta',
+    role: 'SDE Intern',
+    imageSrc: Ananta, 
+  },
+  {
+    name: 'Akash',
+    role: 'SDE Intern',
+    imageSrc: Akash, 
+  },
+  {
+    name: 'Rohit',
+    role: 'SDE Intern',
+    imageSrc: Rohit, 
+  },
+  {
+    name: 'Anchal',
+    role: 'SDE Intern',
     imageSrc: Anchal, 
   },
   {
-    name: 'Sanjita Nayak',
-    role: 'DevOps Team',
+    name: 'Sanjita',
+    role: 'SDE Intern',
     imageSrc: Sanjita, 
   },
 ];
@@ -285,6 +296,10 @@ const TeamPage = () => {
             </motion.div>
           )}
         </div>
+
+
+
+        
       <FOOTER />
     </div>
   );
