@@ -76,9 +76,9 @@ const MemberList = ({ institutionId }) => {
   const activeUserCount = activeUserList.length;
 
   return (
-    <div className="w-[100%] flex flex-col items-center pt-6 max536:pt-0 gap-10 ml-[10rem]">
+    <div className="w-[100%] flex flex-col items-center pt-6 max536:pt-0 gap-10">
       <div
-        className={`w-[90%] max536:bg-transparent max536:w-[100%] mt-[-1rem] max600:mr-[3rem]
+        className={`w-[90%] max536:bg-transparent max536:w-[100%] mt-[2rem] max600:mr-[3rem]
         } rounded-3xl p-3 m`}
       >
         <div className="flex flex-row justify-between pb-2 max850:hidden">

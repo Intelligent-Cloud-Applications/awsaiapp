@@ -11,6 +11,7 @@ import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
+      // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
 
   const Navigate = useNavigate();
