@@ -19,6 +19,7 @@ const ClientsPayments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
+    // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
   const [users, setUsers] = useState([]);
   const { clients } = useContext(Context);
@@ -50,6 +51,7 @@ const ClientsPayments = () => {
   // Pagination logic
   const totalPages = Math.ceil(clientsData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
+      // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
   const selectedRowCount = selectedRow.length;
 

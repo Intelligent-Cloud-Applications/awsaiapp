@@ -20,7 +20,9 @@ const MemberList = ({ institutionId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
   const [selectedRow, setSelectedRow] = useState([]);
+    // eslint-disable-next-line
   const [activeUserList, setActiveUserList] = useState([]);
+    // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [users, setUsers] = useState([]);
   const { userHappy, userModa, userLissome, userBworkz, userIconic } = useContext(Context);
@@ -51,6 +53,7 @@ const MemberList = ({ institutionId }) => {
 
   const totalPages = Math.ceil(users.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
+    // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
 
 

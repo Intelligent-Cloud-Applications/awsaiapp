@@ -36,6 +36,7 @@ const PieChart = ({ data }) => {
     });
 
     // Custom function to add text inside pie chart segments
+        // eslint-disable-next-line
     function addTextInsideSegments(chart) {
       const { datasets } = chart.data;
       const meta = chart.getDatasetMeta(0);
@@ -209,6 +210,7 @@ const RevenueGenerated = () => {
   const itemsPerPage = 8;
   const totalPages = (currentPage - 1) * itemsPerPage;
   const startIndex = 1;
+      // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
 
   return (
