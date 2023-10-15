@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from "../components/Home/Navbar";
 import FOOTER from "../components/Home/Footer";
+import Bapuji from'../utils/team/Bapuji.png';
+import Shubhasmita from'../utils/team/Shubhasmita.png';
 import Harsh from'../utils/team/Harsh.png';
 import Sambhunath from'../utils/team/Sambhunath.png';
 import Shreetam from'../utils/team/Shreetam.png';
@@ -22,91 +24,100 @@ import line2 from '../utils/Line 17.svg';
 import img1 from '../utils/hackathon/img1.png';
 import img3 from '../utils/hackathon/img3.png';
 import img4 from '../utils/hackathon/img4.png';
-import img8 from '../utils/hackathon/img8.png';
+import img8 from '../utils/hackathon/image 24.png';
 import "./Team.css";
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
 const teamMembers = [
   {
-    name: 'Harsh Kesari',
-    role: 'Full-Stack Developer (TL)',
+    name: 'Bapuji',
+    role: 'Customer Relationship Manager',
+    imageSrc: Bapuji, 
+  },
+  {
+    name: 'Shubhasmita',
+    role: 'Digital Marketing Manager',
+    imageSrc: Shubhasmita, 
+  },
+  {
+    name: 'Harsh',
+    role: 'SDE 1',
     imageSrc: Harsh, 
   },
+  
   {
-    name: 'Avishek Mishra',
-    role: 'Full-Stack Developer',
-    imageSrc: Avishek, 
-  },
-  {
-    name: 'Bhabesh Pradhan',
-    role: 'Full-Stack Developer',
-    imageSrc: Bhabesh, 
-  },
-  {
-    name: 'Sambhunath Meher',
-    role: 'Full-Stack Developer',
-    imageSrc: Sambhunath, 
-  },
-
-  {
-    name: 'Bikash Marandi',
-    role: 'UI/UX Designer (TL)',
+    name: 'Bikash',
+    role: 'SDE 1',
     imageSrc: Bikash, 
   },
   {
-    name: 'Santosh Pati',
-    role: 'UI/UX Designer',
-    imageSrc: Santosh, 
-  },
-  {
-    name: 'Shreetam Mishra',
-    role: 'UI/UX Designer',
-    imageSrc: Shreetam, 
-  },
-  {
-    name: 'Ananta Nag',
-    role: 'UI/UX Designer',
-    imageSrc: Ananta, 
-  },
-  {
-    name: 'Lokanath Panda',
-    role: 'DSA Team (TL)',
+    name: 'Lokanath',
+    role: 'SDE 1',
     imageSrc: Lokanath, 
   },
   {
-    name: 'Subham Mallik',
-    role: 'DSA Team (TL)',
+    name: 'Subham',
+    role: 'SDE 1',
     imageSrc: Subham, 
-  },
-  {
-    name: 'Akash Kumar Panda',
-    role: 'DSA Team',
-    imageSrc: Akash, 
-  },
-  {
-    name: 'Rohit Kumar Barada',
-    role: 'DSA Team',
-    imageSrc: Rohit, 
-  },
-  {
-    name: 'Soumya Ranjan Sahu',
-    role: 'DevOps Team (TL)',
+  },{
+    name: 'Soumya',
+    role: 'SDE 1',
     imageSrc: Soumya, 
   },
   {
-    name: 'Jogalakshmi Rath',
-    role: 'DevOps Team (TL)',
+    name: 'Jogalakshmi',
+    role: 'SDE 1',
     imageSrc: Jogalaxmi, 
   },
   {
-    name: 'Anchal Mahana',
-    role: 'DevOps Team',
+    name: 'Avishek',
+    role: 'SDE Intern',
+    imageSrc: Avishek, 
+  },
+  {
+    name: 'Bhabesh',
+    role: 'SDE Intern',
+    imageSrc: Bhabesh, 
+  },
+  {
+    name: 'Sambhunath',
+    role: 'SDE Intern',
+    imageSrc: Sambhunath, 
+  },
+  {
+    name: 'Santosh',
+    role: 'SDE Intern',
+    imageSrc: Santosh, 
+  },
+  {
+    name: 'Shreetam',
+    role: 'SDE Intern',
+    imageSrc: Shreetam, 
+  },
+  {
+    name: 'Ananta',
+    role: 'SDE Intern',
+    imageSrc: Ananta, 
+  },
+  {
+    name: 'Akash',
+    role: 'SDE Intern',
+    imageSrc: Akash, 
+  },
+  {
+    name: 'Rohit',
+    role: 'SDE Intern',
+    imageSrc: Rohit, 
+  },
+  {
+    name: 'Anchal',
+    role: 'SDE Intern',
     imageSrc: Anchal, 
   },
   {
-    name: 'Sanjita Nayak',
-    role: 'DevOps Team',
+    name: 'Sanjita',
+    role: 'SDE Intern',
     imageSrc: Sanjita, 
   },
 ];
@@ -197,11 +208,11 @@ const TeamPage = () => {
       </div>
       
       <div className="relative">
-  <div className="overflow-hidden bg-black bg-[linear-gradient(#000000,_#000000)] bg-cover bg-50%_50% bg-blend-normal bg-no-repeat relative flex flex-col justify-end items-end pt-48 pb-32 px-[111px] rounded-br-[80px] rounded-bl-[80px] max850:h-[30rem]">
+  <div className="overflow-hidden bg-black bg-[linear-gradient(#000000,_#000000)] bg-cover bg-50%_50% bg-blend-normal bg-no-repeat relative flex flex-col justify-end items-end pt-48 pb-32 px-[111px] rounded-br-[80px] rounded-bl-[80px] max850:h-[30rem] max1050:h-[30rem]">
   
-  <div className="text-center text-[3rem] font-['Inter'] font-bold text-white absolute top-48 left-[147px] h-20 w-1/6 max1000:text-[1.5rem] max800:w-[30rem] max800:pr-[6rem] max800-center ">
+  <div className="text-center text-[3rem] font-['Inter'] font-bold text-white absolute top-48 left-[147px] h-20 w-1/6 max1250:text-[2.5rem] max1250:w-[30rem] max800:pr-[6rem] max800-center max1250:pr-[15rem] ">
     Our{" "}
-    <div id="OurTeam" className="leading-[85px] text-[#30afbc] contents">
+    <div id="OurTeam" className="leading-[85px] text-[#30afbc] contents max1050:text-[2.5rem]">
       Team
     </div>
   </div>
@@ -259,7 +270,7 @@ const TeamPage = () => {
 <div ref={ref} className="max850:flex max850:justify-center relative">
           {inView && (
             <motion.div
-              className="grid grid-cols-1 max670:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mr-2 md:px-[7rem] pb-10"
+              className="grid grid-cols-1 max670:grid-cols-2 sm:grid-cols-3 max850:grid-cols-3 max850:px-[1rem] md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 mr-2 md:px-[7rem] pb-10"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -285,6 +296,10 @@ const TeamPage = () => {
             </motion.div>
           )}
         </div>
+
+
+
+        
       <FOOTER />
     </div>
   );

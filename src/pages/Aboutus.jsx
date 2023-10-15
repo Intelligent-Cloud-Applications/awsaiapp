@@ -118,7 +118,7 @@ export default function AboutUs() {
           business goals and drive growth.
         </div>
 
-        <div class=" our overflow-hidden bg-black flex flex-col md:flex-row justify-between mb-6 md:mb-24 items-start p-4 md:p-24 py-12 ">
+        <div class=" our overflow-hidden bg-black flex flex-col md:flex-row justify-between mb-6 md:mb-24 items-start p-4 md:p-24 py-12 max950:p-5  ">
           <div class="flex flex-col mb-4 md:mb-8 lg:mb-16 gap-4 lg:gap-24 w-full md:w-3/5 h-auto lg:h-auto ">
             <div class="value text-lg md:text-2xl lg:text-4xl font-inter font-bold text-white self-start mb-2 mt-2 lg:mb-4  ">
               Our Values
@@ -160,7 +160,7 @@ export default function AboutUs() {
                 <div class="text-base md:text-lg lg:text-xl font-inter font-bold text-[#30afbc]">
                   Results
                 </div>
-                <div class="font-inter leading-[23.5px] md:leading-[28px] lg:leading-[27px] text-[#d8d1d1] w-full">
+                <div class="font-inter leading-[23.5px] md:leading-[28px] lg:leading-[27px] text-[#d8d1d1] w-full max950:w-[20rem] max767:w-full">
                   Your success is our success. We measure our achievements by
                   the growth and achievements of your business in the digital
                   landscape.
@@ -168,10 +168,10 @@ export default function AboutUs() {
               </div>
             </div>
           </div>
-          <div class="flex justify-center items-center lg:items-end w-full  ">
+          <div class="flex justify-center items-center lg:items-end w-full max1050:w-[18rem] max1050:flex-col ">
             <img
               src={value}
-              class="self-end mt-4 lg:mt-[160px] lg:ml-[17rem] md:w-[12rem] md:mt-[28rem] md:mr-[39rem] lg:w-full  "
+              class="self-end mt-4 lg:mt-[160px] lg:ml-[17rem]  md:mt-[28rem]  max1414:w-full   "
               alt="Value"
             />
           </div>
@@ -195,14 +195,14 @@ export default function AboutUs() {
                 <img src={Tick} className="w-6" alt="Tick" />
                 <img src={Tick} className="w-6" alt="Tick" />
               </div>
-              <div className="flex flex-col justify-between gap-2 w-full lg:w-[520px] items-start">
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f]">
+              <div className="flex flex-col justify-between gap-2 w-full lg:w-[520px] items-start ">
+                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] max450:text-[14.5px]">
                   Empowering clients through advanced applications.
                 </div>
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f]">
+                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] max450:text-[14.5px]">
                   Crafting advanced apps for confident navigation.
                 </div>
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] ml-0 w-full">
+                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] ml-0 w-full max450:text-[14.5px]">
                   Providing end-to-end digital solutions encompassing tech,
                   payments, and marketing.
                 </div>

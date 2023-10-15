@@ -2,6 +2,7 @@ import React from "react";
 import Service from "../../utils/ServicesPic.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import s1 from "../../utils/Assets/service1.png";
 import s2 from "../../utils/Assets/service2.png";
 import s3 from "../../utils/Assets/service3.png";
