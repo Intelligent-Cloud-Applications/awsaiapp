@@ -51,17 +51,9 @@ const Panel = () => {
         client.institution.toLowerCase().includes(query) ||
         client.emailId.toLowerCase().includes(query) ||
         client.phoneNumber.toLowerCase().includes(query)
-      );
-  
-      // Add a console.log to see what's being filtered
-      console.log(client.institution, matches);
-      
+      );      
       return matches;
-    });
-  
-    // Add a console.log to see the filtered results
-    console.log('Filtered Clients:', filtered);
-  
+    });  
     return filtered;
   };
   

@@ -35,6 +35,13 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+.Inter{
+  font-family: 'Inter', sans-serif;
+}
+.Laila{
+  font-family: 'Laila', serif;
+}
+
 #close-arrow {
   transform: rotate(180deg);
 }

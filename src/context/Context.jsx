@@ -9,9 +9,9 @@ const Context = createContext({
     data:{},
     fetchClients: () => {},
   },
-  members:{
+  member:{
     data:[],
-    fetchMembers: () => {},
+    fetchmember: () => {},
   }
 });
 

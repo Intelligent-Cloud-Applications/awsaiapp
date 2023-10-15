@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState,} from "react";
 import Context from "../../../context/Context";
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
@@ -24,34 +24,30 @@ const MemberList = ({ institutionId }) => {
   const [activeUserList, setActiveUserList] = useState([]);
     // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
-  const [users, setUsers] = useState([]);
-  const { userHappy, userModa, userLissome, userBworkz, userIconic } = useContext(Context);
+  const { member } = useContext(Context);
+  const memberData = member.data;
 
-  const getUsersByInstitution = useCallback(() => {
-    switch (institutionId) {
-      case "happyprancer":
-        return userHappy;
-      case "moda":
-        return userModa;
-      case "lissome":
-        return userLissome;
-      case "Bworkz":
-        return userBworkz;
-      case "iconic":
-        return userIconic;
-      default:
-        return [];
+  const filtermember = () => {
+    if (!searchQuery) {
+      return memberData; // If no search query, return all clients
     }
-  }, [institutionId, userHappy, userModa, userLissome, userBworkz, userIconic]);
+  
+    const query = searchQuery.toLowerCase();
+  
+    const filtered = memberData.filter((member) => {
+      const matches = (
+        member.institution.toLowerCase().includes(query) ||
+        member.emailId.toLowerCase().includes(query) ||
+        member.phoneNumber.toLowerCase().includes(query)
+      );      
+      return matches;
+    });  
+    return filtered;
+  };
+  const filteredmember = filtermember();
 
-  useEffect(() => {
-    console.log("institutionId:", institutionId);
-    const userData = getUsersByInstitution();
-    console.log("userData:", userData);
-    setUsers(userData);
-  }, [institutionId, getUsersByInstitution]);
 
-  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
     // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
@@ -171,16 +167,16 @@ const MemberList = ({ institutionId }) => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
-          {users.map((userData) => (
+        {filtermember && Array.isArray(filtermember) && filtermember.map((client, index) => (
             <div
-              key={userData.id}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(userData.id)
+              key={member.id}
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(member.id)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out" // Increase the height of the container
                 : "border-[#a2a2a280]"
                 }`}
               style={{
-                margin: isRowSelected(userData.id) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
-                boxShadow: isRowSelected(userData.id)
+                margin: isRowSelected(member.id) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
+                boxShadow: isRowSelected(member.id)
                   ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                   : "none"
               }}
@@ -190,11 +186,11 @@ const MemberList = ({ institutionId }) => {
                 <input
                   type="checkbox"
                   className="hidden"
-                  onChange={() => handleCheckboxChange(userData.id)}
-                  checked={isRowSelected(userData.id)}
+                  onChange={() => handleCheckboxChange(member.id)}
+                  checked={isRowSelected(member.id)}
                 />
                 <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                  {isRowSelected(userData.id) && (
+                  {isRowSelected(member.id) && (
                     <img
                       src={Select}
                       alt="Selected"
@@ -212,26 +208,26 @@ const MemberList = ({ institutionId }) => {
                   </div>
                   <div className="grid grid-cols-12 items-center">
                     <div className="col-span-2 flex flex-col">
-                      <div className="font-[900] email-hover cursor-pointer" title={userData.userName}>
-                        {userData.name.split(' ')[0]}
+                      <div className="font-[900] email-hover cursor-pointer" title={member.name}>
+                        {member.name.split(' ')[0]}
                       </div>
-                      <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer" title={userData.emailId.split("@")[0] + "@"}>
-                        {userData.emailId}
+                      <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer" title={member.emailId.split("@")[0] + "@"}>
+                        {member.emailId}
                       </div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">
-                        ({userData.phoneNumber})
+                        ({member.phoneNumber})
                       </div>
                     </div>
-                    <div className="col-span-2 ml-[2rem] font-semibold text-sm">{userData.country}</div>
+                    <div className="col-span-2 ml-[2rem] font-semibold text-sm">{member.country}</div>
                     <div className="col-span-3 ml-[3rem] font-semibold text-sm">23/01/2003</div>
                     <div className="col-span-2 font-semibold text-sm">4/10</div>
                     <div className="col-span-2 ml-[-3rem] relative max850:hidden">
-                      <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${userData.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
-                        <div className={`w-3 h-3 mt-[0.4rem] ${userData.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
-                        <div>{userData.status === "Active" ? "Active" : "Inactive"}</div>
+                      <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${member.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
+                        <div className={`w-3 h-3 mt-[0.4rem] ${member.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
+                        <div>{member.status === "Active" ? "Active" : "Inactive"}</div>
                       </div>
                     </div>
-                    <div className="font-[600] ml-[-2rem] text-[0.9rem] pr-[6rem] max850:hidden">10/20</div>                         {/* user.balance should be use*/}
+                    <div className="font-[600] ml-[-2rem] text-[0.9rem] pr-[6rem] max850:hidden">{member.balance}</div>                         {/* user.balance should be use*/}
                   </div>
                 </div>
               </div>

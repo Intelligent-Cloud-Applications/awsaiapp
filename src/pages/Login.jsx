@@ -1,15 +1,17 @@
-import React from "react";
-import { useState } from "react";
-import Navbar from "../components/Home/Navbar";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import { Auth } from 'aws-amplify';
+import Navbar from '../components/Home/Navbar';
+import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
+import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
+import GoogleIcon from '../utils/png/Google.png';
+import FacebookIcon from '../utils/png/Facebook.png';
+import LoginPng from '../utils/Assets/Login.png';
+import './Login.css'
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    companyName: "",
-    email: "",
-    address: "",
-    projectDetails: "",
+    email: '',
+    password: '',
   });
 
   const handleChange = (e) => {
@@ -17,139 +19,110 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here (e.g., send data to a server)
-    console.log(formData);
+    try {
+      await Auth.signIn(formData.email, formData.password);
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
+
+  // Function to handle "Continue with Google" button click
+  const handleGoogleLogin = async () => {
+    // Add Google authentication logic here
+  };
+
+  // Function to handle "Continue with Facebook" button click
+  const handleFacebookLogin = async () => {
+    // Add Facebook authentication logic here
+  };
+
   return (
     <>
       <Navbar />
-      {/* new contact us page */}
-      <div
-        className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
-        max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
-      >
-        {/* card */}
-        <div className="flex flex-col sm:flex-row m-5 max600:mx-5 rounded-lg">
-          <div className="text-black p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
-            <div className="flex flex-col items-start justify-center h-full">
-              <div>
-                <h2 className="text-5xl lg:text-21xl md:text-11xl font-bold mb-2 w-full font-poppins">
-                  Let's Chat.
-                  <br />
-                  Tell Us About Your Project.
-                </h2>
-                <p className="w-full text-lg max600:text-base font-semibold">
-                  Let's Maximize Your business's Potential with Us
-                </p>
-              </div>
-            </div>
+      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh]">
+        <div className="flex max767:flex-col h-[35rem]">
+          <div className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]" style={{ boxShadow: '0 9px 14px rgba(48, 175, 188, 0.5)' }}>
+            <img src={LoginPng} alt="" />
+            <h1 className='font-[900] text-[2rem] max767:text-[5vw] text-white Laila max767:text-black'>Let’s Get Started</h1>
           </div>
 
-          <div className=" max-w-md w-full mx-auto px-10 py-8  border rounded-md bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-            <h2 className=" max406:text-3xl max670:text-9xl md:text-15xl font-semibold mb-4 w-full font-poppins">
-              Send us a message
-            </h2>
-            <motion.form
-              onSubmit={handleSubmit}
-              initial={{ opacity: 0, y: 20 }} // Initial state (hidden and slightly moved)
-              animate={{ opacity: 1, y: 0 }} // Animation state (visible and at its original position)
-              transition={{ duration: 0.8 }} // Animation duration
-              className="space-y-3"
-            >
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Full Name
-                </label>
+
+          <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw]" style={{ boxShadow: '12px 9px 14px rgba(48, 175, 188, 0.5)' }}>
+            <h2 className="Inter text-center text-2xl font-semibold mb-4">Login</h2>
+            <form className='flex flex-col items-center' onSubmit={handleSubmit}>
+              <div className="mb-4 relative flex items-center">
+                <img
+                  src={EmailIcon}
+                  alt="Email Icon"
+                  className="absolute left-3 top-3 pointer-events-none w-[1rem] h-[1rem]"
+                />
                 <input
                   type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder=""
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="companyName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                  required
+                  className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
+                  placeholder="Email"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Address
-                </label>
-                <textarea
-                  id="address"
-                  name="address"
-                  rows="2"
-                  value={formData.address}
+              <div className="mb-2 relative flex items-center">
+                <img
+                  src={LockIcon}
+                  alt="Lock Icon"
+                  className="absolute left-3 top-3 h-[1rem] w-[1rem] pointer-events-none"
+                />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                ></textarea>
+                  className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
+                  placeholder="Password"
+                />
               </div>
-              <div>
-                <label
-                  htmlFor="projectDetails"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Tell us more about your project
-                </label>
-                <textarea
-                  id="projectDetails"
-                  name="projectDetails"
-                  rows="4"
-                  value={formData.projectDetails}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                ></textarea>
+              <div className="w-[20rem] mb-6">
+                <a href="/forgot-password" className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline">
+                  Forgot Password?
+                </a>
               </div>
-              <div>
-                <button
-                  type="submit"
-                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
-                >
-                  Send Message
-                </button>
+              <button
+                type="submit"
+                className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+              >
+                Login
+              </button>
+
+              <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
+              <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
+              <p className='font-bold'> OR </p>
+              <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
               </div>
-            </motion.form>
+
+              <button
+                onClick={handleGoogleLogin}
+                className="border w-[20rem] mb-2 p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
+              >
+                <img
+                  src={GoogleIcon}
+                  alt="Google Icon"
+                  className=" w-6 h-6 ml-4"
+                />
+                <div >Continue with Google</div>
+              </button>
+              <button
+                onClick={handleFacebookLogin}
+                className="border w-[20rem] p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
+              >
+                <img
+                  src={FacebookIcon}
+                  alt="Facebook Icon"
+                  className="w-6 h-6 ml-4"
+                />
+                <div className="text-center">Continue with Facebook</div>
+              </button>
+            </form>
           </div>
         </div>
       </div>
