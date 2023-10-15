@@ -119,55 +119,6 @@ function Testimonials() {
       </div>
     </div>
 
-//     <div className="testi flex flex-col w-full p-5 md:w-1/2 lg:w-1/3">
-//   <h1 className="flex justify-center item-center font-bold text-3xl md:text-4xl lg:text-21xl h-[10vh] md:h-[15vh] p-5 text-white">
-//     TESTIMONIAL
-//   </h1>
-//   <div className="h-20"></div>
-//   <div className="flex flex-row justify-center mb-[-11rem] z-10">
-//     <div className="md:w-23 md:h-23 lg:w-28 lg:h-28 max670:w-14 max670:h-14 rounded-full overflow-hidden">
-//       <img
-//         src={testimonials[currentTestimonial].img}
-//         alt=""
-//         className="w-full h-full object-cover"
-//       />
-//     </div>
-//   </div>
-//   <div className="w-full flex justify-center item-center py-[7rem] mx-5">
-//     <button onClick={prevTestimonial} className="">
-//       <img src={leftarrow} alt="" className="h-8 md:h-12" />
-//     </button>
-//     <div className="flex flex-col bg-white justify-center item-center md:w-[40vw] lg:w-[30vw] 
-//     mx-20 border shadow-lg px-10 overflow-hidden rounded">
-//       <div className="flex h-[20%] justify-between items-end mb-[-1rem]">
-//         <img className="h-[1rem] sm:h-[1.5rem] md:h-[3rem]" src={leftquote} alt="" />
-//         <img className="h-[1rem] sm:h-[1.5rem] md:h-[3rem]" src={rightquote} alt="" />
-//       </div>
-//       <div className="text-center my-4">
-//         <p className="text-sm lg:text-base pb-10 max1008:text-sm max670:text-xs">
-//           {testimonials[currentTestimonial].text}
-//         </p>
-//         <p className="font-bold mt-2 text-[#30AFBC] text-3xl">
-//           {testimonials[currentTestimonial].name}
-//         </p>
-//         <p className="font-semibold">
-//           {testimonials[currentTestimonial].post}
-//         </p>
-//       </div>
-//     </div>
-//     <button onClick={nextTestimonial} className="">
-//       <img src={rightarrow} alt="" className="h-8 md:h-12" />
-//     </button>
-//   </div>
-//   <div className="w-full flex justify-center">
-//     <div class="w-1/5 md:w-1/6 bg-[#30AFBC] text-center text-2xl md:text-3xl lg:text-5xl p-1 rounded-full">
-//       <p class="font-bold text-white">
-//         {testimonials[currentTestimonial].add}
-//       </p>
-//     </div>
-//   </div>
-// </div>
-
   );
 }
 

@@ -1,11 +1,29 @@
-import React from "react";
+import React ,{useEffect,useRef} from "react";
 import { useNavigate } from "react-router";
 import "../Home/Price.css";
 import Faq from "react-faq-component";
 import plus1 from "../../utils/plus.svg";
+import { motion, useAnimation,useInView } from "framer-motion";
 
 const Price = () => {
   const Navigate = useNavigate();
+  
+  const mainControls = useAnimation();
+  const slideControls = useAnimation();
+
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+
+  useEffect(() => {
+    if (isInView) {
+      slideControls.start("visible");
+      mainControls.start("visible");
+    } else {
+      slideControls.start("hidden");
+      mainControls.start("hidden");
+    }
+  }, [isInView, mainControls, slideControls]);
 
   const data = {
     rows: [
@@ -41,7 +59,9 @@ const Price = () => {
   return (
     <div className="w-full flex md:flex-row max1008:flex-col-reverse justify-center border-2 px-5 overflow-hidden py-[8rem]">
       <div className=" h-[60vh] home-faq flex flex-col items-start justify-start gap-10 md:py-32 lg:w-[60%] max-w-screen-xl mx-auto px-5 md:px-10 lg:px-16 xl:px-20">
-        <div className="flex flex-col max-w-screen-sm">
+        <div
+        className="flex flex-col max-w-screen-sm">
+       
           <div className="w-80 h-10 lg:w-80 lg:h-25 flex items-center justify-start">
             <div className="text-3xl md:text-5xl lg:text-9xl font-bold font-inter">
               Select your Magic Plan
@@ -53,6 +73,8 @@ const Price = () => {
       </div>
 
       <div className="flex flex-col justify-center  lg:w-1/3 xl:w-1/3 mx-8 gap-6 lg:mr-20 ">
+      <motion.div
+                >
         <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
           <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
             <h3>Basic</h3>
@@ -69,6 +91,8 @@ const Price = () => {
             </button>
           </div>
         </div>
+        </motion.div>
+
         <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
           <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
             <h3>Standard</h3>
@@ -85,6 +109,7 @@ const Price = () => {
             </button>
           </div>
         </div>
+
         <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
           <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
             <h3>Advance</h3>

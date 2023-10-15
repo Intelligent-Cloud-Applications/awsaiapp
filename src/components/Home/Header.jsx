@@ -18,38 +18,6 @@ const Header = () => {
   }, [controls]);
 
   return (
-    // <div className="wow overflow-hidden flex flex-col md:flex-row justify-center md:justify-between items-center pt-6 md:pt-16 w-full">
-    //   <div className="flex flex-col w-full md:w-1/2 gap-1 md:pl-8 main lg:pl-16 px-5">
-    //     <h2 className="flex flex-row flex-wrap hello text-xl md:text-xl lg:text-5xl min1150:text-9xl text-white font-bold max-w-screen-md:max-[450px] mb-1">
-    //       Unlock Your Business
-    //     </h2>
-    //     <div className="wrapper text-xl md:text-xl lg:text-5xl min1150:text-9xl font-bold ">
-    //       <p className="mb-2 md:mb-4">Potential with</p>
-    //       <div className="words">
-    //         <span className="txt ml-2">Seamless Solutions</span>
-    //         <span className="txt ml-2">Limitless Possibilities</span>
-    //         <span className="txt ml-2">Cloud Resolution</span>
-    //         <span className="txt ml-2">Seamless Solutions</span>
-    //       </div>
-    //     </div>
-    //     <p className="text-sm md:text-base text-white mb-6">
-    //       We are your strategic partners, offering intelligent cloud apps,
-    //       digital marketing, personalized dashboards, and secure payment
-    //       solutions.
-    //     </p>
-    //     <button className="w-[37%] text-sm sm:text-base md:text-[1rem] lg:text-xl font-semibold rounded-full responsive-button button-2 bg-white hover:bg-gray-300">
-    //       Get Started
-    //     </button>
-    //   </div>
-    //   <div className="hidden md:block">
-    //     <img
-    //       className="max-w-full md:w-[32vw] lg:w-[35vw] lg:mr-10 mr-8"
-    //       src={imageSrc}
-    //       alt="Describe"
-    //     />
-    //   </div>
-    // </div>
-
     <motion.div
     className="wow overflow-hidden flex flex-col md:flex-row justify-center md:justify-between items-center pt-6 md:pt-16 w-full"
     initial={{ opacity: 0, x: -50 }}
@@ -61,10 +29,10 @@ const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.5 }}
     >
-      <h2 className="flex flex-row flex-wrap hello text-xl md:text-xl lg:text-5xl min1150:text-9xl text-white font-bold max-w-screen-md:max-[450px] mb-1">
+      <h2 className="flex flex-row flex-wrap hello text-xl md:text-xl lg:text-5xl min1150:text-9xl text-white font-bold max-w-screen-md:max-[450px] mb-1 max375:text-[1.2rem]">
         Unlock Your Business
       </h2>
-      <div className="wrapper text-xl md:text-xl lg:text-5xl min1150:text-9xl font-bold ">
+      <div className="wrapper text-xl md:text-xl lg:text-5xl min1150:text-9xl font-bold max375:text-[1.2rem]">
         <p className="mb-2 md:mb-4">Potential with</p>
         <div className="words">
           <span className="txt ml-2">Seamless Solutions</span>

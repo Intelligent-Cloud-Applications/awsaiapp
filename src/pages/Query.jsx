@@ -34,8 +34,8 @@ const Query = () => {
         <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
             <motion.div 
-            initial={{ opacity: 0, y: 20 }} // Initial state (hidden and slightly moved)
-            animate={{ opacity: 1, y: 0 }} // Animation state (visible and at its original position)
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center justify-around h-full">
               <img

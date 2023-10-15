@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState} from "react";
 import Faq from "react-faq-component";
 import "./Faq.css";
 import plus from "../../utils/plus.svg";
@@ -6,6 +6,7 @@ import one from "../../utils/Assets/01.png";
 import two from "../../utils/Assets/02.png";
 import three from "../../utils/Assets/03.png";
 import four from "../../utils/Assets/04.png";
+import minus from "../../utils/minus.png";
 
 const data = {
   rows: [
@@ -13,7 +14,7 @@ const data = {
       title: (
         <div className="flex items-center">
         <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={one} alt="" />
-        <span className="flex-grow">
+        <span className="flex">
         How do I connect with your website development team?
         </span>
       </div>
@@ -57,21 +58,34 @@ const data = {
   ],
 };
 
-const styles = {
-  bgColor: "#ffffff",
-  rowTitleColor: "#151618",
-  rowContentColor: "#555555",
-  arrowColor: "#30AFBC",
-};
 
-const config = {
-  animate: true,
-  arrowIcon: <img className="h-[1.5rem] max1008:h-[1rem] mt-5" src={plus} alt="Arrow" />,
-  tabFocus: true,
-  arrowColor: "#30AFBC",
-};
 
 export default function FAQ() {
+
+  const [openRows, setOpenRows] = useState([]); // Maintain state for open rows
+
+  const toggleRow = (index) => {
+    if (openRows.includes(index)) {
+      // Row is open, so close it
+      setOpenRows(openRows.filter((item) => item !== index));
+    } else {
+      // Row is closed, so open it
+      setOpenRows([...openRows, index]);
+    }
+  };
+
+  const styles = {
+    bgColor: "#ffffff",
+    rowTitleColor: "#151618",
+    rowContentColor: "#555555",
+    arrowColor: "#30AFBC",
+  };
+  
+  const config = {
+    animate: true,
+    tabFocus: true,
+  };
+
   return (
     <div className="home-faq flex flex-col items-center justify-center gap-[5rem] max800:py-[20rem] mb-20">
       <div className=" flex flex-col p-[2rem] max800:px-[5rem]">
@@ -83,7 +97,21 @@ export default function FAQ() {
           </div>
         </div>
       </div>
-      <Faq data={data} styles={styles} config={config} className="FAQ" />
+      {/* <Faq data={data} styles={styles} config={config} className="FAQ" />? */}
+      <Faq
+        data={data}
+        styles={styles}
+        config={config}
+        className="FAQ"
+        arrowIcon={(props) => (
+          <img
+            className="h-[1.5rem] max1008:h-[1rem]"
+            src={openRows.includes(props.index) ? minus : plus}
+            alt={openRows.includes(props.index) ? "Minus" : "Plus"}
+            onClick={() => toggleRow(props.index)}
+          />
+        )}
+      />
     </div>
   );
-}
+};

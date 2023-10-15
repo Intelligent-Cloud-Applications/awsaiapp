@@ -6,6 +6,7 @@ import FOOTER from "../components/Home/Footer";
 import Price from "../components/Home/Price";
 import Services from "../components/Home/services";
 import Testimonial from "../components/Home/Testimonials";
+import Stages from "../components/Home/Stages";
 
 function Home() {
 
@@ -19,6 +20,7 @@ function Home() {
 
       <Testimonial/>
 
+      <Stages/>
 
       <Price/>
 
