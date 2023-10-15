@@ -9,14 +9,22 @@ import LoginPng from '../utils/Assets/Login.png';
 import './Login.css'
 
 const Login = () => {
+  // eslint-disable-next-line
+  const [email, setEmail] = useState('');
+  // eslint-disable-next-line
+  const [password, setPassword] = useState('');
+  // eslint-disable-next-line
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +70,7 @@ const Login = () => {
                   type="text"
                   name="email"
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={handleEmailChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
                   placeholder="Email"
                 />
@@ -77,7 +85,7 @@ const Login = () => {
                   type="password"
                   name="password"
                   value={formData.password}
-                  onChange={handleChange}
+                  onChange={handlePasswordChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
                   placeholder="Password"
                 />
@@ -95,9 +103,9 @@ const Login = () => {
               </button>
 
               <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
-              <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
-              <p className='font-bold'> OR </p>
-              <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
+                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
+                <p className='font-bold'> OR </p>
+                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
               </div>
 
               <button
@@ -127,7 +135,7 @@ const Login = () => {
         </div>
       </div>
     </>
-  );
+  )
 };
 
 export default Login;
