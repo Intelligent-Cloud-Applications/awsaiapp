@@ -17,9 +17,9 @@ const Navbar = () => {
   let [open, setOpen] = useState(false);
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-50">
-      <div className="md:flex items-center justify-between bg-black py-2 md:px-10 px-7">
+      <div className="md:flex items-center justify-between bg-black py-2 lg:px-10 px-2">
         <div
-          className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] 
+          className="font-bold lg:text-2xl text-lg cursor-pointer flex items-center font-[Poppins] 
       text-gray-800"
         >
           <img
@@ -61,7 +61,7 @@ const Navbar = () => {
           }`}
         >
           {Links.map((link) => (
-            <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
+            <li key={link.name} className="lg:ml-8 md:ml-2 text-xl md:my-0 my-7">
               <a
                 href={link.link}
                 className="text-white max670:text- mx-2 hover:text-gray-400 duration-500"
@@ -83,7 +83,7 @@ const Navbar = () => {
             onClick={() => {
               Navigate("/query");
             }}
-            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-[#67B2BA]"
+            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105"
           >
             Contact Us
           </button></li>
