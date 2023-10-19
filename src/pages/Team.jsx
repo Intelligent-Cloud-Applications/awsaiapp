@@ -185,7 +185,7 @@ const TeamPage = () => {
       />
     </div> */}
      <div className="Container2 max800:mb-[15rem]">
-     <div className=" wrapper1 self-stretch flex flex-row justify-between mr-20 items-start gap-[10rem]">
+     <div className=" wrapper1 self-stretch flex flex-row justify-between px-4 mr-20 items-start gap-[10rem]">
                 <img
                   src={img4}
                   alt=""
@@ -194,7 +194,7 @@ const TeamPage = () => {
                 <img
                   src={img3}
                   alt=""
-                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem]"
+                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem] mr-3  max800:ml-[3rem]"
                 />
                 <img
                   src={img8}
