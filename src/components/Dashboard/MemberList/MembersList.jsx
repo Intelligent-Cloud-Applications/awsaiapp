@@ -63,7 +63,9 @@ const MemberList = ({ institution }) => {
   useEffect(() => {
     // Fetch members for the provided institution
     fetchMembersForInstitution(institution);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
+  
 
   const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -187,14 +189,14 @@ const MemberList = ({ institution }) => {
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
         {filtermember.map((member) => (
             <div
-              key={member.id}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(member.id)
+              key={member}
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(member)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out" // Increase the height of the container
                 : "border-[#a2a2a280]"
                 }`}
               style={{
-                margin: isRowSelected(member.id) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
-                boxShadow: isRowSelected(member.id)
+                margin: isRowSelected(member) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
+                boxShadow: isRowSelected(member)
                   ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                   : "none"
               }}
