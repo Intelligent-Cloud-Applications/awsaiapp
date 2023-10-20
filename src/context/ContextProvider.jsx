@@ -10,7 +10,7 @@ const ContextProvider = (props) => {
 
   useEffect(() => {
     fetchClients();
-    fetchMember();
+    // fetchMember();
     fetchUserProfile(); // Fetch user profile when the component mounts
   }, []);
 
@@ -30,7 +30,10 @@ const ContextProvider = (props) => {
   const fetchMember = async (institution) => {
     try {
       setLoader(true);
-      const response = await API.get("clients", `/admin/list-member/${institution}`);
+      const response = await API.get(
+        "clients",
+        `/user/list-member/${institution}`
+      );
       console.log("members", response);
       setMember(response);
     } catch (error) {
@@ -40,7 +43,6 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-  
 
   // Function to fetch the user profile
   const fetchUserProfile = async () => {
@@ -69,7 +71,7 @@ const ContextProvider = (props) => {
       fetchClients: fetchClients,
     },
     member: {
-      data: clients,
+      data: member,
       fetchMember: fetchMember,
     },
     user: {
