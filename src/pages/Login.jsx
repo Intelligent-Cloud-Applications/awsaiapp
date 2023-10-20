@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       await Auth.signIn(formData.email, formData.password);
-      const response = await API.get('clients', '/clients/profile/awsaiapp');
+      const response = await API.get('clients', '/self/read-self/awsaiapp');
       console.log('User Profile:', response);
 
     } catch (error) {

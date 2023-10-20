@@ -10,6 +10,7 @@ import Context from "./context/Context";
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
   // const UserCtx = useRef(useContext(Context));
+  const Ctx = useContext(Context);
 
   useEffect(() => {
     const check = async () => {
@@ -19,6 +20,8 @@ function App() {
         const user = await Auth.signIn("bworkztester@gmail.com", "Password@123")
 
         console.log(user)
+        console.log("fetchingMembers")
+        Ctx.member.fetchMember()
         // await Auth.currentAuthenticatedUser();
         // const userdata = await API.get("clients", "/user/profile/awsaiapp");
         // userdata.Status = true;

@@ -27,7 +27,7 @@ const ContextProvider = (props) => {
     }
   };
 
-  const fetchMember = async (institution) => {
+  const fetchMember = async (institution = "happyprancer") => {
     try {
       setLoader(true);
       const response = await API.get(
@@ -38,7 +38,7 @@ const ContextProvider = (props) => {
       setMember(response);
     } catch (error) {
       console.error("Error fetching member:", error);
-      console.error("Error details:", error.response); // Log the response for more information
+      console.error("Error details:", error.response); 
     } finally {
       setLoader(false);
     }
@@ -48,7 +48,7 @@ const ContextProvider = (props) => {
   const fetchUserProfile = async () => {
     try {
       setLoader(true);
-      const response = await API.get("clients", "/user/profile/awsaiapp");
+      const response = await API.get('clients', '/self/read-self/awsaiapp');
       setUserProfile(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);

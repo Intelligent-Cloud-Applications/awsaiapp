@@ -11,7 +11,7 @@ const Context = createContext({
   },
   member: {
     data: [],
-    fetchmember: () => {},
+    fetchMember: () => {},
   },
   user: { 
     profile: {},
