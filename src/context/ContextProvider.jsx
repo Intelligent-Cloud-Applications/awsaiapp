@@ -6,7 +6,9 @@ const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
   const [member, setMember] = useState([]);
-  const [userProfile, setUserProfile] = useState({}); // Add user profile state
+  const [userProfile, setUserProfile] = useState({});
+  const [isAuth, setIsAuth] = useState(false);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     fetchClients();
@@ -60,8 +62,20 @@ const ContextProvider = (props) => {
   const setLoaderFn = (data) => {
     setLoader(data);
   };
+  
+  const setIsAuthFn = (data) => {
+    setIsAuth(data);
+  };
+
+  const setUserDataFn = (data) => {
+    setUserData(data);
+  };
 
   const ContextData = {
+    isAuth: isAuth,
+    setIsAuth: setIsAuthFn,
+    userData: userData,
+    setUserData: setUserDataFn,
     util: {
       loader: loader,
       setLoader: setLoaderFn,

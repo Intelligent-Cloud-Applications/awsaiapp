@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Auth, API } from 'aws-amplify';
+import Context from "../context/Context";
 import Navbar from '../components/Home/Navbar';
 import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
@@ -14,23 +16,48 @@ const Login = () => {
     password: '',
   });
   const [error, setError] = useState('');
+  console.log(error);
+  const UtilCtx = useContext(Context).util;
+  const UserCtx = useContext(Context);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const Navigate = useNavigate();
+
+  const handelSubmit = async (event) => {
+    event.preventDefault();
+
+    UtilCtx.setLoader(true);
 
     try {
-      await Auth.signIn(formData.email, formData.password);
-      const response = await API.get('clients', '/self/read-self/awsaiapp');
-      console.log('User Profile:', response);
+      const user = await Auth.signIn(formData.email, formData.password);
 
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Incorrect email or password');
+      if (user) {
+        const userdata = await API.get('clients', '/self/read-self/awsaiapp');
+        UserCtx.setUserData(userdata);
+        UserCtx.setIsAuth(true);
+        UtilCtx.setLoader(false);
+        alert("Logged In");
+        console.log(userdata.status);
+
+        Navigate("/dashboard");
+      } else {
+        setError(`Incorrect ${formData.email} or password`);
+        UtilCtx.setLoader(false);
+      }
+    } catch (e) {
+      if (e.toString().split(" code ")[1]?.trim() === "404") {
+        console.log("User Not Found");
+        alert("Contact us for login");
+        Navigate("/Query?newuser=false");
+        setError("");
+      } else {
+        setError(e.message);
+      }
+      UtilCtx.setLoader(false);
     }
   };
 
@@ -54,7 +81,7 @@ const Login = () => {
 
           <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw]" style={{ boxShadow: '12px 9px 14px rgba(48, 175, 188, 0.5)' }}>
             <h2 className="Inter text-center text-2xl font-semibold mb-4">Login</h2>
-            <form className='flex flex-col items-center' onSubmit={handleLogin}>
+            <form className='flex flex-col items-center'>
               <div className="mb-4 relative flex items-center">
                 <img
                   src={EmailIcon}
@@ -92,6 +119,7 @@ const Login = () => {
               </div>
               <button
                 type="submit"
+                onClick={handelSubmit}
                 className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
               >
                 Login
