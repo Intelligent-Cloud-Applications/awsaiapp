@@ -121,7 +121,7 @@ const Login = () => {
                 onClick={handelSubmit}
                 className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
               >
-                Login now
+                Login
               </button>
 
               <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
