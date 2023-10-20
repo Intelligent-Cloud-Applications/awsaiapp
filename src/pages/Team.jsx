@@ -159,10 +159,10 @@ const TeamPage = () => {
 
      
 <div className="relative flex flex-col pb-[482px] ">
-    <div className="w-full h-[446px] overflow-hidden bg-[#30AFBC] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] ">
-      <div className="flex flex-col gap-16 w-2/3 items-end">
-        <div className="text-center text-3xl font-['Inter'] font-semibold leading-[26px] w-1/2 mt-[8rem] max800:text-[1rem]">
-          Your Dreams are Full Filled Here !
+    <div className="w-full h-[446px] overflow-hidden bg-[#30AFBC] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] max450:h-[25rem] ">
+      <div className="flex flex-col gap-[2.5rem] w-2/3 items-end">
+        <div className="text-center text-3xl font-['Inter'] font-semibold leading-[26px] w-1/2 mt-[8rem] max800:text-[1rem] max450:mt-[2rem]">
+          Your Dreams are Fulfilled Here !
         </div>
         {/* <div className="self-stretch flex flex-row justify-between mr-20 items-start gap-[10rem]">
           <img
@@ -185,7 +185,7 @@ const TeamPage = () => {
       />
     </div> */}
      <div className="Container2 max800:mb-[15rem]">
-     <div className=" wrapper1 self-stretch flex flex-row justify-between mr-20 items-start gap-[10rem]">
+     <div className=" wrapper1 self-stretch flex flex-row justify-between px-4 mr-20 items-start gap-[10rem]">
                 <img
                   src={img4}
                   alt=""
@@ -194,7 +194,7 @@ const TeamPage = () => {
                 <img
                   src={img3}
                   alt=""
-                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem]"
+                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem] mr-3  max800:ml-[3rem]"
                 />
                 <img
                   src={img8}
