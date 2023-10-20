@@ -1,47 +1,43 @@
 import React, { useState } from 'react';
-import { Auth } from 'aws-amplify';
+import { Auth, API } from 'aws-amplify';
 import Navbar from '../components/Home/Navbar';
 import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
 import GoogleIcon from '../utils/png/Google.png';
 import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from '../utils/Assets/Login.png';
-import './Login.css'
+import './Login.css';
 
 const Login = () => {
-  // eslint-disable-next-line
-  const [email, setEmail] = useState('');
-  // eslint-disable-next-line
-  const [password, setPassword] = useState('');
-  // eslint-disable-next-line
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       await Auth.signIn(formData.email, formData.password);
+      const response = await API.get('clients', '/clients/profile/awsaiapp');
+      console.log('User Profile:', response);
+
     } catch (error) {
       console.error('Login error:', error);
+      setError('Incorrect email or password');
     }
   };
 
-  // Function to handle "Continue with Google" button click
   const handleGoogleLogin = async () => {
     // Add Google authentication logic here
   };
 
-  // Function to handle "Continue with Facebook" button click
   const handleFacebookLogin = async () => {
     // Add Facebook authentication logic here
   };
@@ -56,10 +52,9 @@ const Login = () => {
             <h1 className='font-[900] text-[2rem] max767:text-[5vw] text-white Laila max767:text-black'>Let’s Get Started</h1>
           </div>
 
-
           <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw]" style={{ boxShadow: '12px 9px 14px rgba(48, 175, 188, 0.5)' }}>
             <h2 className="Inter text-center text-2xl font-semibold mb-4">Login</h2>
-            <form className='flex flex-col items-center' onSubmit={handleSubmit}>
+            <form className='flex flex-col items-center' onSubmit={handleLogin}>
               <div className="mb-4 relative flex items-center">
                 <img
                   src={EmailIcon}
@@ -70,7 +65,7 @@ const Login = () => {
                   type="text"
                   name="email"
                   value={formData.email}
-                  onChange={handleEmailChange}
+                  onChange={handleInputChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
                   placeholder="Email"
                 />
@@ -85,7 +80,7 @@ const Login = () => {
                   type="password"
                   name="password"
                   value={formData.password}
-                  onChange={handlePasswordChange}
+                  onChange={handleInputChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
                   placeholder="Password"
                 />

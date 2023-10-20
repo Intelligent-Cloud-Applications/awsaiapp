@@ -5,11 +5,13 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [member, setmember] = useState([]);
+  const [member, setMember] = useState([]);
+  const [userProfile, setUserProfile] = useState({}); // Add user profile state
 
   useEffect(() => {
     fetchClients();
-    fetchmember();
+    fetchMember();
+    fetchUserProfile(); // Fetch user profile when the component mounts
   }, []);
 
   // Function to fetch the list of clients
@@ -17,7 +19,6 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-clients");
-      console.log("API Response:", response); 
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -25,16 +26,30 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-  
-  // Function to fetch the list of member of a given institution
-  const fetchmember = async (institution) => {
+
+  const fetchMember = async (institution) => {
     try {
       setLoader(true);
-      const response = await API.get("member",`/admin/list-member/${institution}`); 
-      console.log("Memberlist",response)
-      setmember(response);
+      const response = await API.get("clients", `/admin/list-member/${institution}`);
+      console.log("members", response);
+      setMember(response);
     } catch (error) {
       console.error("Error fetching member:", error);
+      console.error("Error details:", error.response); // Log the response for more information
+    } finally {
+      setLoader(false);
+    }
+  };
+  
+
+  // Function to fetch the user profile
+  const fetchUserProfile = async () => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/user/profile/awsaiapp");
+      setUserProfile(response);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
     } finally {
       setLoader(false);
     }
@@ -54,8 +69,12 @@ const ContextProvider = (props) => {
       fetchClients: fetchClients,
     },
     member: {
-      data: member,
-      fetchmember: fetchmember,
+      data: clients,
+      fetchMember: fetchMember,
+    },
+    user: {
+      profile: clients,
+      fetchUserProfile: fetchUserProfile,
     },
   };
 
