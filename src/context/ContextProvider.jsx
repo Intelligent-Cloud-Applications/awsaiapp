@@ -75,7 +75,7 @@ const ContextProvider = (props) => {
       fetchMember: fetchMember,
     },
     user: {
-      profile: clients,
+      profile: userProfile,
       fetchUserProfile: fetchUserProfile,
     },
   };
