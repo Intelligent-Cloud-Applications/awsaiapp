@@ -40,7 +40,6 @@ const Login = () => {
         UserCtx.setUserData(userdata);
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
-        alert("Logged In");
         console.log(userdata.status);
 
         Navigate("/dashboard");

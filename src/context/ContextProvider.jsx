@@ -29,7 +29,7 @@ const ContextProvider = (props) => {
     }
   };
 
-  const fetchMember = async (institution = "happyprancer") => {
+  const fetchMember = async (institution) => {
     try {
       setLoader(true);
       const response = await API.get(

@@ -32,12 +32,10 @@ function App() {
     };
     check();
   }, []);
-
   return (
     <LoaderProvider>
       <RoutesContainer />
     </LoaderProvider>
   );
 }
-
 export default App;

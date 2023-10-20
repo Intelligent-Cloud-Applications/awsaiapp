@@ -1,5 +1,6 @@
-import React, { useContext, useState,} from "react";
+import React, { useContext, useState, useEffect} from "react";
 import Context from "../../../context/Context";
+import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
@@ -14,7 +15,7 @@ import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import "./MembersList.css";
 
 
-const MemberList = ({ institutionId }) => {
+const MemberList = ({ institution }) => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +25,7 @@ const MemberList = ({ institutionId }) => {
   const [activeUserList, setActiveUserList] = useState([]);
     // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
-  const { member } = useContext(Context);
+  const { member, setLoader, setMember } = useContext(Context);
   const memberData = member.data;
 
   const filtermember = () => {
@@ -46,6 +47,23 @@ const MemberList = ({ institutionId }) => {
   };
   const filteredmember = filtermember();
 
+  const fetchMembersForInstitution = async (institution) => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", `/user/list-member/${institution}`);
+      setMember(response);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      console.error("Error details:", error.response);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch members for the provided institution
+    fetchMembersForInstitution(institution);
+  }, [institution]);
 
   const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -167,7 +185,7 @@ const MemberList = ({ institutionId }) => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
-        {filtermember && Array.isArray(filtermember) && filtermember.map((client, index) => (
+        {filtermember.map((member) => (
             <div
               key={member.id}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(member.id)
