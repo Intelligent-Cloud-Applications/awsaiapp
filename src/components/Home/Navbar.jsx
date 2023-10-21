@@ -95,17 +95,6 @@ const Navbar = () => {
             )}
 
           </li>
-
-          <li>
-            <button
-          <li><button
-            onClick={() => {
-              Navigate("/login");
-            }}
-            className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg max767:mb-5"
-          >
-            Login
-          </button></li>
           
           <li><button
             onClick={() => {
