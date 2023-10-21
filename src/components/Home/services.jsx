@@ -417,7 +417,7 @@ const Services = () => {
           </p>
           <button
           onClick={() => {
-            Navigate("/Personalizationx`");
+            Navigate("/Personalization");
           }}
           className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
             READ MORE

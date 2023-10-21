@@ -26,7 +26,7 @@ const Coustmer = () => {
     return (
         <div className="h-full">
             <Navbar />
-            <div className="">
+            <div className="pb-[5rem]">
                 <div className="">
                     {shouldDisplayContainer ? (
                         <div className="relat">
@@ -63,10 +63,10 @@ const Coustmer = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
-                <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">Leads & customer tracking</h1>
-                    <img src={Serv_img} alt="services for user interface" className="item-center justify-center" /></div>
+                    <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">Leads & customer tracking</h1>
+                        <img src={Serv_img} alt="services for user interface" className="item-center justify-center" /></div>
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center" >
-                    Understanding your customers and leads is vital for driving business growth, and our Leads & Customer Tracking service equips you with the tools to do just that. From lead capture forms and lead scoring systems to automated lead nurturing campaigns, we help you gather valuable customer data, prioritize leads effectively, and nurture them through the sales funnel. By monitoring customer interactions and tracking user behavior within your web application, we empower you to make data-driven decisions, optimize marketing strategies, and deliver personalized experiences that resonate with your audience.
+                        Understanding your customers and leads is vital for driving business growth, and our Leads & Customer Tracking service equips you with the tools to do just that. From lead capture forms and lead scoring systems to automated lead nurturing campaigns, we help you gather valuable customer data, prioritize leads effectively, and nurture them through the sales funnel. By monitoring customer interactions and tracking user behavior within your web application, we empower you to make data-driven decisions, optimize marketing strategies, and deliver personalized experiences that resonate with your audience.
                     </p>
                     <div className="bullet">
                         <ul className="styled-list gap-3 flex flex-wrap">
@@ -93,8 +93,8 @@ const Coustmer = () => {
                         </ul>
                     </div>
                 </div>
-                <Footer />
             </div>
+            <Footer />
         </div>
     );
 };
