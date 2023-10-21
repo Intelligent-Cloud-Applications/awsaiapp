@@ -16,7 +16,7 @@ import Navbar from "../../Home/Navbar";
 import "./MembersList.css";
 
 const MemberList = ({ institution ="happyprancer"}) => {
-  const itemsPerPage = 10;
+  const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
@@ -29,6 +29,8 @@ const MemberList = ({ institution ="happyprancer"}) => {
   const { util } = useContext(Context);
 
 
+
+
   const fetchMembersForInstitution = async (institution) => {
     try {
       util.setLoader(true);
@@ -36,6 +38,15 @@ const MemberList = ({ institution ="happyprancer"}) => {
         "clients",
         `/user/list-members/${institution}`
       );
+      const activeUsers = response.filter((memberData) => memberData.status === "Active");
+      const inactiveUsers = response.filter((memberData) => memberData.status === "InActive");
+  
+      setActiveUserList(activeUsers);
+      setInactiveUserList(inactiveUsers);
+
+      console.log("Active Users:", activeUsers);
+      console.log("Inactive Users:", inactiveUsers);
+
       console.log("members from memberlist", response);
       setMemberData(response);
     } catch (error) {
@@ -76,6 +87,8 @@ const MemberList = ({ institution ="happyprancer"}) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
+  const MembersData = filteredmember.slice(startIndex, endIndex);
+
 
   const handleCheckboxChange = (institutionId) => {
     if (selectedRow.includes(institutionId)) {
@@ -226,7 +239,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
-          {filteredmember.map((memberData, index) => (
+          {MembersData.map((memberData, index) => (
             <div
               key={memberData.cognitoId}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(memberData.userName)
