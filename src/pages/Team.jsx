@@ -284,12 +284,12 @@ const TeamPage = () => {
                 // >
                 <motion.div
                 key={index}
-                className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 transition-transform duration-300"
+                className="custom-box-shadow relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 transition-transform duration-300"
                 variants={memberVariants}
                 whileHover={flipVariants}
-                style={{ boxShadow: "0 0 0 0 transparent", transition: "box-shadow 0.3s ease" }}
-                onMouseEnter={(e) => e.target.style.boxShadow = "0 0 10px 5px #30AFBC"}
-                onMouseLeave={(e) => e.target.style.boxShadow = "0 0 0 0 transparent"}
+                // style={{ boxShadow: "0 0 0 0 transparent", transition: "box-shadow 0.3s ease" }}
+                // onMouseEnter={(e) => e.target.style.boxShadow = "0 0 10px 5px #30AFBC"}
+                // onMouseLeave={(e) => e.target.style.boxShadow = "0 0 0 0 transparent"}
               >
 
 

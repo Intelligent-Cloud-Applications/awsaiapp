@@ -100,3 +100,12 @@
       display: none;
     }
   }
+  /* CSS */
+.custom-box-shadow {
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.3s ease;
+}
+
+.custom-box-shadow:hover {
+  box-shadow: 0 0 10px 5px #30AFBC;
+}
