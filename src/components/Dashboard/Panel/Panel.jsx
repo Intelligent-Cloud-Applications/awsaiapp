@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from 'react-router-dom';
 import Context from "../../../context/Context";
+import { Link } from 'react-router-dom';
+import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
@@ -15,17 +16,23 @@ import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import "./Panel.css";
 
 const Panel = () => {
-  const itemsPerPage = 2;
+  const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
   const { clients } = useContext(Context);
-  const clientsData = clients.data;
-  // console.log("Clients data:", clients.data);
-  const navigate = useNavigate();
+  const clientsData =  Object.entries(clients.data);
+  console.log("Clients data", clientsData)
 
+  const [isUserAdd, setIsUserAdd] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [balance, setBalance] = useState("");
+  const [userCheck, setUserCheck] = useState(0);
+  const [JoiningDate, setJoiningDate] = useState("")
 
   // Function to handle checkbox changes
   const handleCheckboxChange = (institution) => {
@@ -60,18 +67,21 @@ const Panel = () => {
   };
 
 
-  // Apply filtering to the data
   const filteredClients = filterClients();
-  // Pagination logic
+  console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  
   const startIndex = (currentPage - 1) * itemsPerPage;
-  // eslint-disable-next-line
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+
+
+
 
   const selectedRowCount = selectedRow.length;
 
-  function formatEpochToReadableDate(epochTimestamp) {
-    const date = new Date();
+  function formatEpochToReadableDate(epochDate) {
+    const date = new Date(epochDate);
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
@@ -79,14 +89,35 @@ const Panel = () => {
     return formattedDate;
   }
 
-  const handlePersonIconClick = (institutionId) => {
-    // Assuming institutionId is available for the client, you can use it for the URL
-    const linkToMemberList = `/user/list-member/${institutionId}`;
 
-    // Use navigate to navigate to the member list page
-    navigate(linkToMemberList);
+  const handlePersonIconClick = (institution) => {
+    setisMemberList(institution);
   };
 
+  //adding clients
+
+  const handleAddClient = async () => {
+    const apiName = 'clients'; // The API name as configured in your Amplify project
+    const path = '/admin/create-user/happyprancer';
+    const myInit = {
+      body: {
+        // Replace with the data you want to send
+        institution: 'NewInstitution',
+        userName: 'NewUserName',
+        emailId: 'newuser@example.com',
+        phoneNumber: '1234567890',
+        country: 'NewCountry',
+        cognitoId: '12345',
+      },
+    };
+
+    try {
+      const response = await API.post(apiName, path, myInit);
+      console.log("User created successfully:", response);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+  };
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
@@ -128,12 +159,87 @@ const Panel = () => {
           <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white ">
             <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
               <button><img className="w-[1.2rem]" src={CSV} alt="" /></button>
-              <button><img className="w-[1rem]" src={Add} alt="" /></button>
+              <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>
               <button><img className="w-[1.2rem]" src={Filter} alt="" /></button>
               <button><img className="w-[1.1rem]" src={Selections} alt="" /></button>
             </div>
             <div className=" absolute right-[4px] bottom-[-7px] border border-[#989898b8] w-[9rem] rounded-[1.3125rem] h-8 mt-6 z-[-1]"></div>
           </div>
+        </div>
+
+        {/* form of creating new client */}
+        <div className=" absolute flex w-[50vw]">
+          {isUserAdd && (
+            <form className=" relative m-auto flex flex-col gap-6 p-6 border-[0.2rem] border-t-[2rem] border-[#1a1a1ade] items-center justify-center w-[22rem] h-[30rem] max900:w-[auto] Poppins bg-[#d7d7d7ee] z-[1]">
+              <input
+                required
+                placeholder="Name"
+                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Email Address"
+                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Phone Number"
+                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                type="number"
+                value={phoneNumber}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Joining date"
+                className="bg-[#ffffff] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                type="date"
+                value={JoiningDate}
+                onChange={(e) => {
+                  setJoiningDate(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Balance"
+                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                type="number"
+                value={balance}
+                onChange={(e) => {
+                  setBalance(e.target.value);
+                }}
+              />
+              <div className="flex flex-col  gap-3 w-full justify-center items-center">
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 focus:outline-none"
+                  onClick={() => {
+                    setIsUserAdd(false);
+                    setUserCheck(0);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#1f9993] text-white w-full rounded-[4px] py-2 focus:outline-none"
+                  onClick={handleAddClient}
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* Headings */}
@@ -153,7 +259,7 @@ const Panel = () => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
-          {filteredClients && Array.isArray(filteredClients) && filteredClients.map((client, index) => (
+        {clientsData.map(([key, client], index) => (
             <div
               key={client.institution}
               onClick={() => {
@@ -189,13 +295,17 @@ const Panel = () => {
                 </div>
               </label>
 
-              <div className="absolute right-2 mt-5">
-                <img
-                  src={personIcon}
-                  alt=""
-                  onClick={() => handlePersonIconClick(client.institution)} // Add the onClick handler
-                />
-              </div>
+              <Link to="/memberlist">
+                <div className="absolute right-2 mt-5">
+                  <img
+                    src={personIcon}
+                    alt=""
+                    className="cursor-pointer"
+                    onChange={() => handlePersonIconClick(client.institution)}
+                  />
+                </div>
+              </Link>
+
 
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
@@ -236,12 +346,11 @@ const Panel = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-start pt-4 ml-[2rem] z-[-1]">
+          <div className="flex justify-start pt-4 ml-[2rem]">
             <Pagination
               count={totalPages}
               page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)}
-              className="custom-pagination"
+              onChange={(event, value) => setCurrentPage(value)}               className="custom-pagination"
             />
           </div>
         </div>
