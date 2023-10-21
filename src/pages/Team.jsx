@@ -159,10 +159,10 @@ const TeamPage = () => {
 
      
 <div className="relative flex flex-col pb-[482px] ">
-    <div className="w-full h-[446px] overflow-hidden bg-[#30AFBC] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] ">
-      <div className="flex flex-col gap-16 w-2/3 items-end">
-        <div className="text-center text-3xl font-['Inter'] font-semibold leading-[26px] w-1/2 mt-[8rem] max800:text-[1rem]">
-          Your Dreams are Full Filled Here !
+    <div className="w-full h-[446px] overflow-hidden bg-[#30AFBC] absolute top-[400px] left-0 flex flex-row justify-between items-center pb-20 pl-12 pr-24 rounded-br-[80px] rounded-bl-[80px] max450:h-[25rem] ">
+      <div className="flex flex-col gap-[2.5rem] w-2/3 items-end">
+        <div className="text-center text-3xl font-['Inter'] font-semibold leading-[26px] w-1/2 mt-[8rem] max800:text-[1rem] max450:mt-[2rem]">
+          Your Dreams are Fulfilled Here !
         </div>
         {/* <div className="self-stretch flex flex-row justify-between mr-20 items-start gap-[10rem]">
           <img
@@ -185,7 +185,7 @@ const TeamPage = () => {
       />
     </div> */}
      <div className="Container2 max800:mb-[15rem]">
-     <div className=" wrapper1 self-stretch flex flex-row justify-between mr-20 items-start gap-[10rem]">
+     <div className=" wrapper1 self-stretch flex flex-row justify-between px-4 mr-20 items-start gap-[10rem]">
                 <img
                   src={img4}
                   alt=""
@@ -194,7 +194,7 @@ const TeamPage = () => {
                 <img
                   src={img3}
                   alt=""
-                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem]"
+                  className="team2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem] mr-3  max800:ml-[3rem]"
                 />
                 <img
                   src={img8}
@@ -276,20 +276,32 @@ const TeamPage = () => {
               animate="visible"
             >
               {teamMembers.map((member, index) => (
+                // <motion.div
+                //   key={index}
+                //   className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
+                //   variants={memberVariants}
+                //   whileHover={flipVariants}
+                // >
                 <motion.div
-                  key={index}
-                  className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
-                  variants={memberVariants}
-                  whileHover={flipVariants}
-                >
+                key={index}
+                className="custom-box-shadow relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 transition-transform duration-300"
+                variants={memberVariants}
+                whileHover={flipVariants}
+                // style={{ boxShadow: "0 0 0 0 transparent", transition: "box-shadow 0.3s ease" }}
+                // onMouseEnter={(e) => e.target.style.boxShadow = "0 0 10px 5px #30AFBC"}
+                // onMouseLeave={(e) => e.target.style.boxShadow = "0 0 0 0 transparent"}
+              >
+
+
                   <img
                     src={member.imageSrc}
                     alt={member.name}
                     className="h-24 w-24 object-cover rounded-full border-2 border-[#7ccad7]"
+                    style={{ boxShadow: "0 0 0 0 transparent"}}
                   />
                   <div className="mt-2 md:mt-3 text-center">
-                    <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
-                    <p className="text-xs md:text-sm ">{member.role}</p>
+                    <h3 className="text-md md:text-lg font-semibold"  style={{ boxShadow: "0 0 0 0 transparent"}}>{member.name}</h3>
+                    <p className="text-xs md:text-sm "  style={{ boxShadow: "0 0 0 0 transparent" }}>{member.role}</p>
                   </div>
                 </motion.div>
               ))}

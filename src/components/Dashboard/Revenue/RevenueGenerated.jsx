@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-import 'chartjs-plugin-datalabels';
+import ChartDataLabels from "chartjs-plugin-datalabels";
 // import addTextInsideSegments from './addTextInsideSegmentsPlugin';
 import Dollar from "../../../utils/Assets/Dashboard/images/SVG/dollar.svg";
 import shopIcon from "../../../utils/Assets/Dashboard/images/SVG/Shopicon.svg";
@@ -24,49 +24,40 @@ const PieChart = ({ data }) => {
     const ctx = chartRef.current.getContext("2d");
 
     const pieChart = new Chart(ctx, {
-      type: "pie",
+      type: "doughnut",
       data,
       options: {
+        borderWidth: 0,
         plugins: {
           legend: {
-            display: false, 
+            display: false,
+          },
+          datalabels: {
+            color: 'white',
+            font: {
+              size: 15,
+              weight: 700,
+            },
+            formatter: (value, context) => {
+              const dataset = context.chart.data.datasets[0];
+              const total = dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(2) + "%";
+              return percentage;
+            },
+            anchor: 'center',
+            rotation: -90,
           },
         },
+        elements: {
+          arc: {
+            borderWidth:4, 
+          },
+        },
+        shadowBlur: 10,
+        shadowColor: 'black', 
       },
+      plugins: [ChartDataLabels],
     });
-
-    // Custom function to add text inside pie chart segments
-        // eslint-disable-next-line
-    function addTextInsideSegments(chart) {
-      const { datasets } = chart.data;
-      const meta = chart.getDatasetMeta(0);
-      const total = datasets[0].data.reduce((a, b) => a + b, 0);
-
-      meta.data.forEach((element, index) => {
-        if (element.hidden) return;
-
-        const model = element._model;
-        const midAngle = model.startAngle + (model.endAngle - model.startAngle) / 2;
-
-        const x = model.x + model.radius * Math.cos(midAngle);
-        const y = model.y + model.radius * Math.sin(midAngle);
-
-        // Draw text inside the pie chart segment
-        ctx.fillStyle = "white"; // Set the text color
-        ctx.font = "14px Arial"; // Set your desired font size and style
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        // Calculate the percentage of this segment and display it as text
-        const percentage = ((datasets[0].data[index] / total) * 100).toFixed(2) + "%";
-        ctx.fillText(percentage, x, y);
-      });
-    }
-
-    // Call the custom function to add text inside pie chart segments
-    // chartRef.plugins.register({
-    //   beforeDraw: addTextInsideSegments,
-    // });
 
     return () => {
       pieChart.destroy();
@@ -174,18 +165,18 @@ const RevenueGenerated = () => {
     datasets: [
       {
         label: "Revenue",
-        data: [10, 20, 15, 55, 30, 35, 30, 65, 30, 55, 20, 45],
+        data: [ 30, 35, 30,30, 35, 30,30, 35, 30,30,],
         backgroundColor: [
-          "#8E44AD",
-          "#E74C3C",
-          "#566573",
-          "#DC7633",
-          "#58D68D",
-          "#F1C40F",
-          "#1ABC9C",
+          "#19C2B8",
+          "#D2563A",
+          "#E89A2C",
+          "#397BAB",
+          "#3DA36C",
+          "#444444",
+          "#D9DC58",
           "#2980B9",
           "#aa66cc",
-          "#9933cc",
+          "#3DA36C",
           "#99cc00",
           "#ffbb33",
         ],
@@ -210,7 +201,7 @@ const RevenueGenerated = () => {
   const itemsPerPage = 8;
   const totalPages = (currentPage - 1) * itemsPerPage;
   const startIndex = 1;
-      // eslint-disable-next-line
+  // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
 
   return (
@@ -304,7 +295,7 @@ const RevenueGenerated = () => {
 
         <div className="flex flex-col justify-center items-center">
           {/* Headings */}
-          <div className=" w-[77vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max850:hidden">
+          <div className=" w-[77vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:hidden ">
             <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
             <div className="flex flex-row justify-between">
               <div className="font-[700] pl-[5rem]">Company (Owner’s Details)</div>
@@ -317,11 +308,11 @@ const RevenueGenerated = () => {
             </div>
             <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
           </div>
-          <div className=" w-[77vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
+          <div className=" w-[77vw] bg-[#757575] h-[0.095rem] mb-4 max1050:hidden "></div>
 
-          <div className="flex justify-center w-[77vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
+          <div className="flex justify-center w-[77vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[101vw]">
             <div
-              className={`w-[76.5vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative ${isRowSelected()
+              className={`w-[76.5vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[90vw] max600:ml-5 ${isRowSelected()
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
                 : "border-[#a2a2a280]"
                 }`}
@@ -359,9 +350,9 @@ const RevenueGenerated = () => {
                       <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">avishek@gmail.com</div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">7735227398</div>
                     </div>
-                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">USA</div>
-                    <div className="col-span-3 ml-[1rem] font-semibold text-sm max600:hidden">$45k/$50k</div>
-                    <div className="col-span-2 font-semibold text-sm ml-[-2rem] max600:hidden">0</div>
+                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max767:hidden">USA</div>
+                    <div className="col-span-3 ml-[1rem] font-semibold text-sm max767:hidden">$45k/$50k</div>
+                    <div className="col-span-2 font-semibold text-sm ml-[-1.5rem] max767:hidden">0</div>
                     <div className="col-span-2 relative max850:hidden">
                       <div >
                         <div></div>

@@ -5,10 +5,15 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [members, setMembers] = useState([]);
+  const [member, setMember] = useState([]);
+  const [userProfile, setUserProfile] = useState({});
+  const [isAuth, setIsAuth] = useState(false);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     fetchClients();
+    fetchMember({ institution: "happyprancer" });
+    fetchUserProfile(); // Fetch user profile when the component mounts
   }, []);
 
   // Function to fetch the list of clients
@@ -16,7 +21,6 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-clients");
-      console.log("API Response:", response); 
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -24,16 +28,32 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-  
-  // Function to fetch the list of members of a given institution
-  const fetchMembers = async (institution) => {
+
+  const fetchMember = async ({ institution = "happyprancer" }) => {
     try {
       setLoader(true);
-      const response = await API.get("members",`/admin/list-member/${institution}`); // Replace with your API URL
-      console.log("Memberlist ",response)
-      setMembers(response);
+      const response = await API.get(
+        "clients",
+        `/user/list-member/${institution}`
+      );
+      console.log("members", response);
+      setMember(response);
     } catch (error) {
-      console.error("Error fetching members:", error);
+      console.error("Error fetching member:", error);
+      console.error("Error details:", error.response);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  // Function to fetch the user profile
+  const fetchUserProfile = async () => {
+    try {
+      setLoader(true);
+      const response = await API.get('clients', '/self/read-self/awsaiapp');
+      setUserProfile(response);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
     } finally {
       setLoader(false);
     }
@@ -43,7 +63,20 @@ const ContextProvider = (props) => {
     setLoader(data);
   };
 
+  const setIsAuthFn = (data) => {
+    setIsAuth(data);
+  };
+
+  const setUserDataFn = (data) => {
+    setUserData(data);
+  };
+
   const ContextData = {
+    isAuth: isAuth,
+    setIsAuth: setIsAuthFn,
+    userData: userData,
+    setUserData: setUserDataFn,
+
     util: {
       loader: loader,
       setLoader: setLoaderFn,
@@ -52,9 +85,13 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
     },
-    members: {
-      data: members,
-      fetchMembers: fetchMembers,
+    member: {
+      data: member,
+      fetchMember: fetchMember,
+    },
+    user: {
+      profile: userProfile,
+      fetchUserProfile: fetchUserProfile,
     },
   };
 

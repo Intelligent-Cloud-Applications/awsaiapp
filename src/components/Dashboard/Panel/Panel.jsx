@@ -1,4 +1,5 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 import Context from "../../../context/Context";
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
@@ -18,11 +19,12 @@ const Panel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
   const { clients } = useContext(Context);
   const clientsData = clients.data;
   // console.log("Clients data:", clients.data);
+  const navigate = useNavigate();
 
 
   // Function to handle checkbox changes
@@ -43,47 +45,48 @@ const Panel = () => {
     if (!searchQuery) {
       return clientsData; // If no search query, return all clients
     }
-  
+
     const query = searchQuery.toLowerCase();
-  
+
     const filtered = clientsData.filter((client) => {
       const matches = (
         client.institution.toLowerCase().includes(query) ||
         client.emailId.toLowerCase().includes(query) ||
         client.phoneNumber.toLowerCase().includes(query)
       );
-  
-      // Add a console.log to see what's being filtered
-      console.log(client.institution, matches);
-      
       return matches;
     });
-  
-    // Add a console.log to see the filtered results
-    console.log('Filtered Clients:', filtered);
-  
     return filtered;
   };
-  
+
 
   // Apply filtering to the data
   const filteredClients = filterClients();
   // Pagination logic
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-    // eslint-disable-next-line
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);  
-  
+  // eslint-disable-next-line
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+
   const selectedRowCount = selectedRow.length;
 
   function formatEpochToReadableDate(epochTimestamp) {
-    const date = new Date ();
+    const date = new Date();
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
+
+  const handlePersonIconClick = (institutionId) => {
+    // Assuming institutionId is available for the client, you can use it for the URL
+    const linkToMemberList = `/user/list-member/${institutionId}`;
+
+    // Use navigate to navigate to the member list page
+    navigate(linkToMemberList);
+  };
+
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
@@ -150,7 +153,7 @@ const Panel = () => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
-        {filteredClients && Array.isArray(filteredClients) && filteredClients.map((client, index) => (
+          {filteredClients && Array.isArray(filteredClients) && filteredClients.map((client, index) => (
             <div
               key={client.institution}
               onClick={() => {
@@ -186,7 +189,14 @@ const Panel = () => {
                 </div>
               </label>
 
-              <div className="absolute right-2 mt-5"><img src={personIcon} alt="" /></div>
+              <div className="absolute right-2 mt-5">
+                <img
+                  src={personIcon}
+                  alt=""
+                  onClick={() => handlePersonIconClick(client.institution)} // Add the onClick handler
+                />
+              </div>
+
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
                   <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
