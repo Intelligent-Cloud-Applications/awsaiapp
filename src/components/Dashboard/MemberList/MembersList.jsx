@@ -24,28 +24,9 @@ const MemberList = ({ institution = "happyprancer" }) => {
   const [activeUserList, setActiveUserList] = useState([]);
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
-  const [members, setMember] = useState([]);
-  const { member, util } = useContext(Context);
-  const memberData = member.data;
+  const [memberData, setMemberData] = useState([]);
+  const { util } = useContext(Context);
 
-  const filtermember = () => {
-    if (!searchQuery) {
-      return memberData; // If no search query, return all clients
-    }
-
-    const query = searchQuery.toLowerCase();
-
-    const filtered = memberData?.filter((member) => {
-      const matches =
-        member.institution.toLowerCase().includes(query) ||
-        member.emailId.toLowerCase().includes(query) ||
-        member.phoneNumber.toLowerCase().includes(query);
-      return matches;
-    });
-    return filtered;
-  };
-
-  const filteredmember = filtermember();
 
   const fetchMembersForInstitution = async (institution) => {
     try {
@@ -54,8 +35,8 @@ const MemberList = ({ institution = "happyprancer" }) => {
         "clients",
         `/user/list-members/${institution}`
       );
-      console.log("members", response);
-      setMember(response);
+      console.log("members from memberlist", response);
+      setMemberData(response);
     } catch (error) {
       console.error("Error fetching members:", error);
       console.error("Error details:", error.response);
@@ -69,6 +50,27 @@ const MemberList = ({ institution = "happyprancer" }) => {
     fetchMembersForInstitution(institution);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
+
+  
+  const filtermember = () => {
+    if (!searchQuery) {
+      return memberData; // If no search query, return all clients
+    }
+
+    const query = searchQuery.toLowerCase();
+
+    const filtered = memberData?.filter((member) => {
+      const matches = (
+        member.cognitoId.toLowerCase().includes(query) ||
+        member.emailId.toLowerCase().includes(query) ||
+        member.phoneNumber.toLowerCase().includes(query)
+      );
+      return matches;
+    });
+    return filtered;
+  };
+
+  const filteredmember = filtermember();
 
   const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -90,6 +92,10 @@ const MemberList = ({ institution = "happyprancer" }) => {
   const selectedRowCount = selectedRow.length;
   const inactiveUserCount = inactiveUserList.length;
   const activeUserCount = activeUserList.length;
+
+  console.log("Initial member data:", memberData);
+  console.log("Filtered member data:", filteredmember);
+
 
   return (
     <div className="w-[100%] flex flex-col items-center pt-6 max536:pt-0 gap-10">
@@ -159,11 +165,10 @@ const MemberList = ({ institution = "happyprancer" }) => {
 
         <div className="flex flex-row gap-6 ml-[3rem] relative mb-3">
           <div
-            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-              userStatus === "all"
+            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "all"
                 ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
                 : "text-[#000] hover:text-[#30afbc]"
-            }`}
+              }`}
             onClick={() => {
               setUserStatus("all");
             }}
@@ -171,11 +176,10 @@ const MemberList = ({ institution = "happyprancer" }) => {
             All
           </div>
           <div
-            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-              userStatus === "active"
+            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "active"
                 ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
                 : "text-[#000] hover:text-[#30afbc]"
-            }`}
+              }`}
             onClick={() => {
               setUserStatus("active");
             }}
@@ -183,11 +187,10 @@ const MemberList = ({ institution = "happyprancer" }) => {
             Active ({activeUserCount})
           </div>
           <div
-            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-              userStatus === "inactive"
+            className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "inactive"
                 ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
                 : "text-[#000] hover:text-[#30afbc]"
-            }`}
+              }`}
             onClick={() => {
               setUserStatus("inactive");
             }}
@@ -213,17 +216,16 @@ const MemberList = ({ institution = "happyprancer" }) => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
-          {filteredmember?.map((member) => (
+          {filteredmember.map((memberData, index) => (
             <div
-              key={member}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${
-                isRowSelected(member)
+              key={memberData.cognitoId}
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(memberData.userName)
                   ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out" // Increase the height of the container
                   : "border-[#a2a2a280]"
-              }`}
+                }`}
               style={{
-                margin: isRowSelected(member) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
-                boxShadow: isRowSelected(member)
+                margin: isRowSelected(memberData.userName) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
+                boxShadow: isRowSelected(memberData.userName)
                   ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                   : "none",
               }}
@@ -233,11 +235,11 @@ const MemberList = ({ institution = "happyprancer" }) => {
                 <input
                   type="checkbox"
                   className="hidden"
-                  onChange={() => handleCheckboxChange(member.id)}
-                  checked={isRowSelected(member.id)}
+                  onChange={() => handleCheckboxChange(memberData.userName)}
+                  checked={isRowSelected(memberData.userName)}
                 />
                 <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                  {isRowSelected(member.id) && (
+                  {isRowSelected(memberData.userName) && (
                     <img
                       src={Select}
                       alt="Selected"
@@ -263,49 +265,47 @@ const MemberList = ({ institution = "happyprancer" }) => {
                     <div className="col-span-2 flex flex-col">
                       <div
                         className="font-[900] email-hover cursor-pointer"
-                        title={member.name}
+                        title={memberData.userName}
                       >
-                        {member.name.split(" ")[0]}
+                        {memberData.userName.split(" ")[0]}
                       </div>
                       <div
                         className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer"
-                        title={member.emailId.split("@")[0] + "@"}
+                        title={memberData.emailId ? memberData.emailId.split("@")[0] + "@" : ""}
                       >
-                        {member.emailId}
+                        {memberData.emailId}
                       </div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">
-                        ({member.phoneNumber})
+                        ({memberData.phoneNumber})
                       </div>
                     </div>
                     <div className="col-span-2 ml-[2rem] font-semibold text-sm">
-                      {member.country}
+                      {memberData.country}
                     </div>
                     <div className="col-span-3 ml-[3rem] font-semibold text-sm">
-                      23/01/2003
+                      {memberData.joiningDate}
                     </div>
                     <div className="col-span-2 font-semibold text-sm">4/10</div>
                     <div className="col-span-2 ml-[-3rem] relative max850:hidden">
                       <div
-                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${
-                          member.status === "Active"
+                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
                             ? "border-[#99EF72] text-[#99EF72]"
                             : "border-[#FF4343AB] text-[#FF4343AB]"
-                        }`}
+                          }`}
                       >
                         <div
-                          className={`w-3 h-3 mt-[0.4rem] ${
-                            member.status === "Active"
+                          className={`w-3 h-3 mt-[0.4rem] ${memberData.status === "Active"
                               ? "bg-[#99EF72]"
                               : "bg-[#FF4343AB]"
-                          } rounded-full transform K2D`}
+                            } rounded-full transform K2D`}
                         ></div>
                         <div>
-                          {member.status === "Active" ? "Active" : "Inactive"}
+                          {memberData.status === "Active" ? "Active" : "Inactive"}
                         </div>
                       </div>
                     </div>
                     <div className="font-[600] ml-[-2rem] text-[0.9rem] pr-[6rem] max850:hidden">
-                      {member.balance}
+                      {memberData.balance}
                     </div>{" "}
                     {/* user.balance should be use*/}
                   </div>

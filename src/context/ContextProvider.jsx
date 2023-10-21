@@ -12,7 +12,7 @@ const ContextProvider = (props) => {
 
   useEffect(() => {
     fetchClients();
-    // fetchMember();
+    fetchMember({ institution: "happyprancer" });
     fetchUserProfile(); // Fetch user profile when the component mounts
   }, []);
 
@@ -29,7 +29,7 @@ const ContextProvider = (props) => {
     }
   };
 
-  const fetchMember = async (institution) => {
+  const fetchMember = async ({ institution = "happyprancer" }) => {
     try {
       setLoader(true);
       const response = await API.get(
@@ -40,7 +40,7 @@ const ContextProvider = (props) => {
       setMember(response);
     } catch (error) {
       console.error("Error fetching member:", error);
-      console.error("Error details:", error.response); 
+      console.error("Error details:", error.response);
     } finally {
       setLoader(false);
     }
@@ -62,7 +62,7 @@ const ContextProvider = (props) => {
   const setLoaderFn = (data) => {
     setLoader(data);
   };
-  
+
   const setIsAuthFn = (data) => {
     setIsAuth(data);
   };
@@ -76,6 +76,7 @@ const ContextProvider = (props) => {
     setIsAuth: setIsAuthFn,
     userData: userData,
     setUserData: setUserDataFn,
+
     util: {
       loader: loader,
       setLoader: setLoaderFn,
