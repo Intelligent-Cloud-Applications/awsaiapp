@@ -36,7 +36,7 @@ const RoutesContainer = () => {
       <Route path="/coustmer" element={<Coustmer />} />
       <Route path="/payment" element={<Payment />} />
     </Routes>
-  );
-};
+    );
+  };
 
 export default RoutesContainer;

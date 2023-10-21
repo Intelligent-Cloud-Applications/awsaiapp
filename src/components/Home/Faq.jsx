@@ -19,8 +19,9 @@ const data = {
         </span>
       </div>
       ),
-      content: 
-      `Connecting with our website development team is easy! Simply fill out the form on our website and pay the first month's fee. Our team will get to work on developing a prototype of your website within 15 days of receiving your completed form. Once the prototype is approved, we will work to have your website fully developed and ready to launch within a month.`,
+      content:(
+      <p className="pl-12 pr-2">Connecting with our website development team is easy! Simply fill out the form on our website and pay the first month's fee. Our team will get to work on developing a prototype of your website within 15 days of receiving your completed form. Once the prototype is approved, we will work to have your website fully developed and ready to launch within a month.</p> 
+      ),
     },
     {
       title: (
@@ -31,7 +32,9 @@ const data = {
         </span>
       </div>
       ),
-      content: `We offer ongoing website maintenance and support services to our clients. If you need changes made to your website after it has launched, simply contact our team and we will work with you to make the necessary updates.`,
+      content:(
+        <p className="pl-12 pr-2">We offer ongoing website maintenance and support services to our clients. If you need changes made to your website after it has launched, simply contact our team and we will work with you to make the necessary updates.</p> 
+        ),
     },
     {
       title: (
@@ -42,7 +45,9 @@ const data = {
           </span>
         </div>
       ),
-      content: `Yes, we offer website hosting services to our clients. Our hosting services include website backups, security updates, and ongoing support to ensure that your website is always up and running smoothly.`,
+      content:(
+        <p className="pl-12 pr-2">Yes, we offer website hosting services to our clients. Our hosting services include website backups, security updates, and ongoing support to ensure that your website is always up and running smoothly.</p> 
+        ),
     },
     {
       title: (
@@ -53,7 +58,9 @@ const data = {
         </span>
       </div>
       ),
-      content: `We pride ourselves on providing excellent customer service and support to our clients. If you have any questions or concerns during the website development process, simply reach out to our team and we will be happy to assist you.`,
+      content:(
+        <p className="pl-12 pr-2">We pride ourselves on providing excellent customer service and support to our clients. If you have any questions or concerns during the website development process, simply reach out to our team and we will be happy to assist you.</p> 
+        ),
     },
   ],
 };

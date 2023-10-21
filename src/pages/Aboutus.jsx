@@ -77,7 +77,7 @@ export default function AboutUs() {
               alt="left"
             />
             <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start">
-              <div className="text-3xl font-inter font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
+              <div className="text-3xl font-Bebas Neue font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
                 Welcome to Intelligent Cloud Applications!
               </div>
               <div className="text-xl font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
@@ -107,7 +107,7 @@ export default function AboutUs() {
         </div> 
 
 
-        <div className="who text-4xl font-['Inter'] font-bold self-center md:mt-[120px] max767:pt-[1.5rem] ">
+        <div className="who text-4xl font-Bebas Neue font-bold self-center md:mt-[120px] max767:pt-[1.5rem] ">
           Who<span className="text-[#30afbc] contents"> We </span>Are
         </div>
         <div className="text-xl font-['Inter'] font-medium leading-[29.4px] text-[#545454] self-center mb-[109px] w-4/5   max800:text-[15px]  ">
@@ -120,7 +120,7 @@ export default function AboutUs() {
 
         <div class=" our overflow-hidden bg-black flex flex-col md:flex-row justify-between mb-6 md:mb-24 items-start p-4 md:p-24 py-12 max950:p-5  ">
           <div class="flex flex-col mb-4 md:mb-8 lg:mb-16 gap-4 lg:gap-24 w-full md:w-3/5 h-auto lg:h-auto ">
-            <div class="value text-lg md:text-2xl lg:text-4xl font-inter font-bold text-white self-start mb-2 mt-2 lg:mb-4  ">
+            <div class="value text-lg md:text-2xl lg:text-4xl font-Bebas Neue font-bold text-white self-start mb-2 mt-2 lg:mb-4  ">
               Our Values
             </div>
             <div class="flex flex-col md:flex-row gap-4 lg:gap-12 items-start ml-0 md:ml-10 lg:ml-0 mr-0 md:mr-8 lg:mr-0 w-full  lg:w-[60rem]  md:w-[50rem]">

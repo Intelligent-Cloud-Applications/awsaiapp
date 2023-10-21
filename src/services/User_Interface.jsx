@@ -26,7 +26,7 @@ const User_Interface = () => {
     return (
         <div className="h-full">
             <Navbar />
-            <div className="">
+            <div className="pb-[5rem]">
                 <div className="">
                     {shouldDisplayContainer ? (
                         <div className="relat">

@@ -1,5 +1,5 @@
 .animated-svg {
-  animation-name: slideFromRight1;
+  animation-name: slideFromRight;
   animation-duration: 10s;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;

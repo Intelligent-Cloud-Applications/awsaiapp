@@ -95,9 +95,8 @@ const Navbar = () => {
             )}
 
           </li>
-
-          <li>
-            <button
+          
+          <li><button
             onClick={() => {
               Navigate("/query");
             }}
