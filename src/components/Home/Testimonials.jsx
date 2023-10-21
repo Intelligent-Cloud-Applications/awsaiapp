@@ -69,13 +69,13 @@ function Testimonials() {
   };
 
   return (
-    <div className="testi flex flex-col w-full h-[100vh] ">
-      <h1 className="flex justify-center item-center font-bold md:text-[3rem] max670:text-[1.5rem] h-[20vh] p-20 text-white">
+    <div className="testi flex flex-col w-full">
+      <h1 className="flex justify-center item-center font-bold lg:text-[3rem] md:text-[2.5rem] sm:text-[2rem] max670:text-[1.5rem] h-[20vh] pt-20 text-white">
         TESTIMONIAL
       </h1>
       <div className="h-20"></div>
       <div className="flex flex-row justify-center mb-[-8rem] max670:-mb-[7rem] z-10">
-        <div className="w-20 md:w-24 max670:w-16  rounded-full overflow-hidden">
+        <div className="w-20 md:w-24 max670:w-16 rounded-full overflow-hidden">
           <img
             src={testimonials[currentTestimonial].img}
             alt=""
@@ -83,15 +83,15 @@ function Testimonials() {
           />
         </div>
       </div>
-      <div className="flex justify-center item-center py-[5rem] mx-5">
+      <div className="flex justify-center item-center py-[5rem] max500:py-[rem] mx-5">
         <button onClick={prevTestimonial} className="">
           <img src={leftarrow} alt="" className="h-12 max600:h-8" />
         </button>
-        <div className="flex flex-col h-[55vh] bg-white justify-center item-center md:w-[45%] sm:w-[60%] max670:w-[85%] 
-        md:mx-20 sm:mx-5 mx-5 border shadow-lg md:px-10 px-5 overflow-hidden rounded ">
+        <div className="flex flex-col h-[55vh] max375:h-[65vh] bg-white justify-center item-center lg:w-[45%] max1300:min-w-[60%] sm:w-[60%] max670:w-[85%] 
+        md:mx-20 sm:mx-5 mx-5 border shadow-lg md:px-10 px-5 overflow-hidden rounded">
           <div className="flex h-[20%] justify-between items-end mb-[-1rem]">
-            <img className="h-[1rem] sm:h-[1.2rem] md:h-[3rem]" src={leftquote} alt="" />
-            <img className="h-[1rem] sm:h-[1.2rem] md:h-[3rem]" src={rightquote} alt="" />
+            <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={leftquote} alt="" />
+            <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={rightquote} alt="" />
           </div>
           <div className="text-center my-4">
             <p className="text-[1rem] pb-10 max1008:text-sm max670:text-xs">
@@ -110,7 +110,7 @@ function Testimonials() {
           <img src={rightarrow} alt="" className=" h-12 max600:h-8" />
         </button>
       </div>
-      <div className="w-full flex justify-center ">
+      <div className="w-full flex justify-center max375:pb-5">
         <div class="px-4 py-2 bg-[#30AFBC] text-center text-sm sm:text-lg md:text-3xl lg:text-7xl p-1 rounded-full">
           <p class="font-bold text-white">
             {testimonials[currentTestimonial].add}
