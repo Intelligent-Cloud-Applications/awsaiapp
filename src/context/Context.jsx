@@ -5,14 +5,18 @@ const Context = createContext({
     loader: false,
     setLoader: () => {},
   },
-  clients:{
-    data:{},
+  clients: {
+    data: {},
     fetchClients: () => {},
   },
-  member:{
-    data:[],
-    fetchmember: () => {},
-  }
+  member: {
+    data: [],
+    fetchMember: () => {},
+  },
+  user: { 
+    profile: {},
+    fetchUserProfile: () => {},
+  },
 });
 
 export default Context;

@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Context from "../../context/Context";
 import logo from "../../utils/awsaiappLogo.png";
 import cross from "../../utils/Assets/icons8-cross-100.png";
 import Menu from "../../utils/Assets/icons8-menu-100.png";
 
 const Navbar = () => {
   const Navigate = useNavigate();
+  const UserCtx = useContext(Context);
+
 
   let Links = [
     { name: "Home", link: "/" },
@@ -56,9 +59,8 @@ const Navbar = () => {
         </div>
 
         <ul
-          className={`bg-black md:flex md:items-center md:pb-0 pb-12 absolute md:static md:z-auto z-[1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
-            open ? "top-[4.5rem] " : "top-[-490px]"
-          }`}
+          className={`bg-black md:flex md:items-center md:pb-0 pb-12 absolute md:static md:z-auto z-[1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? "top-[4.5rem] " : "top-[-490px]"
+            }`}
         >
           {Links.map((link) => (
             <li key={link.name} className="lg:ml-8 md:ml-2 text-xl md:my-0 my-7">
@@ -70,23 +72,40 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-          <li><button
-            onClick={() => {
-              Navigate("/login");
-            }}
-            className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
-          >
-            Login
-          </button></li>
-          
-          <li><button
+          <li>
+
+          {UserCtx.isAuth ? (
+              <span
+                onClick={() => {
+                  Navigate("/dashboard");
+                }}
+                className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
+                >
+                {UserCtx.userData.userName.split(" ")[0]}
+              </span>
+            ) : (
+              <button
+              className="bg-white text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
+                onClick={() => {
+                  Navigate("/login");
+                }}
+              >
+                Login
+              </button>
+            )}
+
+          </li>
+
+          <li>
+            <button
             onClick={() => {
               Navigate("/query");
             }}
             className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105"
           >
             Contact Us
-          </button></li>
+          </button>
+          </li>
         </ul>
       </div>
     </div>
