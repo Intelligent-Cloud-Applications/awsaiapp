@@ -31,6 +31,7 @@ const Panel = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [balance, setBalance] = useState("");
+    // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
 
@@ -73,6 +74,7 @@ const Panel = () => {
   
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+    // eslint-disable-next-line
   const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
 
