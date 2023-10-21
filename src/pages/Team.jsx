@@ -276,20 +276,32 @@ const TeamPage = () => {
               animate="visible"
             >
               {teamMembers.map((member, index) => (
+                // <motion.div
+                //   key={index}
+                //   className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
+                //   variants={memberVariants}
+                //   whileHover={flipVariants}
+                // >
                 <motion.div
-                  key={index}
-                  className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 hover:bg-[#30AFBC] hover:scale-105 transition-transform duration-300  hover:text-white"
-                  variants={memberVariants}
-                  whileHover={flipVariants}
-                >
+                key={index}
+                className="relative flex flex-col items-center border border-gray-200 rounded-lg p-2 md:p-4 transition-transform duration-300"
+                variants={memberVariants}
+                whileHover={flipVariants}
+                style={{ boxShadow: "0 0 0 0 transparent", transition: "box-shadow 0.3s ease" }}
+                onMouseEnter={(e) => e.target.style.boxShadow = "0 0 10px 5px #30AFBC"}
+                onMouseLeave={(e) => e.target.style.boxShadow = "0 0 0 0 transparent"}
+              >
+
+
                   <img
                     src={member.imageSrc}
                     alt={member.name}
                     className="h-24 w-24 object-cover rounded-full border-2 border-[#7ccad7]"
+                    style={{ boxShadow: "0 0 0 0 transparent"}}
                   />
                   <div className="mt-2 md:mt-3 text-center">
-                    <h3 className="text-md md:text-lg font-semibold">{member.name}</h3>
-                    <p className="text-xs md:text-sm ">{member.role}</p>
+                    <h3 className="text-md md:text-lg font-semibold"  style={{ boxShadow: "0 0 0 0 transparent"}}>{member.name}</h3>
+                    <p className="text-xs md:text-sm "  style={{ boxShadow: "0 0 0 0 transparent" }}>{member.role}</p>
                   </div>
                 </motion.div>
               ))}
