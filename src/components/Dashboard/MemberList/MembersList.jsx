@@ -12,10 +12,11 @@ import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
 import CSV from "../../../utils/Assets/Dashboard/images/SVG/CSV.svg";
 import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 import Filter from "../../../utils/Assets/Dashboard/images/SVG/Filter.svg";
+import Navbar from "../../Home/Navbar";
 import "./MembersList.css";
 
-const MemberList = ({ institution = "happyprancer" }) => {
-  const itemsPerPage = 10;
+const MemberList = ({ institution ="happyprancer"}) => {
+  const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
@@ -25,7 +26,9 @@ const MemberList = ({ institution = "happyprancer" }) => {
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [memberData, setMemberData] = useState([]);
-  const { util } = useContext(Context);
+  const { util} = useContext(Context);
+
+
 
 
   const fetchMembersForInstitution = async (institution) => {
@@ -35,6 +38,12 @@ const MemberList = ({ institution = "happyprancer" }) => {
         "clients",
         `/user/list-members/${institution}`
       );
+      const activeUsers = response.filter((memberData) => memberData.status === "Active");
+      const inactiveUsers = response.filter((memberData) => memberData.status === "InActive");
+  
+      setActiveUserList(activeUsers);
+      setInactiveUserList(inactiveUsers);
+
       console.log("members from memberlist", response);
       setMemberData(response);
     } catch (error) {
@@ -46,7 +55,6 @@ const MemberList = ({ institution = "happyprancer" }) => {
   };
 
   useEffect(() => {
-    // Fetch members for the provided institution
     fetchMembersForInstitution(institution);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
@@ -54,7 +62,7 @@ const MemberList = ({ institution = "happyprancer" }) => {
   
   const filtermember = () => {
     if (!searchQuery) {
-      return memberData; // If no search query, return all clients
+      return memberData;
     }
 
     const query = searchQuery.toLowerCase();
@@ -76,6 +84,8 @@ const MemberList = ({ institution = "happyprancer" }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
+  const MembersData = filteredmember.slice(startIndex, endIndex);
+
 
   const handleCheckboxChange = (institutionId) => {
     if (selectedRow.includes(institutionId)) {
@@ -96,11 +106,21 @@ const MemberList = ({ institution = "happyprancer" }) => {
   console.log("Initial member data:", memberData);
   console.log("Filtered member data:", filteredmember);
 
+  function formatEpochToReadableDate(epochDate) {
+    const date = new Date(epochDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+  
 
   return (
     <div className="w-[100%] flex flex-col items-center pt-6 max536:pt-0 gap-10">
+      <Navbar/>
       <div
-        className={`w-[90%] max536:bg-transparent max536:w-[100%] mt-[2rem] max600:mr-[3rem]
+        className={`w-[77%] max536:bg-transparent max536:w-[100%] mt-[4rem] max600:mr-[3rem]
         } rounded-3xl p-3 m`}
       >
         <div className="flex flex-row justify-between pb-2 max850:hidden">
@@ -216,7 +236,7 @@ const MemberList = ({ institution = "happyprancer" }) => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
-          {filteredmember.map((memberData, index) => (
+          {MembersData.map((memberData, index) => (
             <div
               key={memberData.cognitoId}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(memberData.userName)
@@ -262,7 +282,7 @@ const MemberList = ({ institution = "happyprancer" }) => {
                     />
                   </div>
                   <div className="grid grid-cols-12 items-center">
-                    <div className="col-span-2 flex flex-col">
+                    <div className="col-span-2 w-[11vw] flex flex-col">
                       <div
                         className="font-[900] email-hover cursor-pointer"
                         title={memberData.userName}
@@ -279,14 +299,14 @@ const MemberList = ({ institution = "happyprancer" }) => {
                         ({memberData.phoneNumber})
                       </div>
                     </div>
-                    <div className="col-span-2 ml-[2rem] font-semibold text-sm">
-                      {memberData.country}
+                    <div className="col-span-2 ml-[3rem] font-semibold text-sm">
+                      {/* {memberData.country} */}India
                     </div>
                     <div className="col-span-3 ml-[3rem] font-semibold text-sm">
-                      {memberData.joiningDate}
+                      {formatEpochToReadableDate(memberData.joiningDate)}
                     </div>
                     <div className="col-span-2 font-semibold text-sm">4/10</div>
-                    <div className="col-span-2 ml-[-3rem] relative max850:hidden">
+                    <div className="col-span-2 ml-[-1rem] relative max850:hidden">
                       <div
                         className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
                             ? "border-[#99EF72] text-[#99EF72]"
@@ -304,7 +324,7 @@ const MemberList = ({ institution = "happyprancer" }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="font-[600] ml-[-2rem] text-[0.9rem] pr-[6rem] max850:hidden">
+                    <div className="font-[600] text-[0.9rem] max850:hidden">
                       {memberData.balance}
                     </div>{" "}
                     {/* user.balance should be use*/}

@@ -26,7 +26,7 @@ const Personalization = () => {
     return (
         <div className="h-full">
             <Navbar />
-            <div className="">
+            <div className="pb-[5rem]">
                 <div className="">
                     {shouldDisplayContainer ? (
                         <div className="relat">
@@ -63,10 +63,10 @@ const Personalization = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
-                <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">Personalization</h1>
-                    <img src={Serv_img} alt="services for user interface" className=" item-center justify-center" /></div>
+                    <div className="xl:flex-col pb-5"><h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">Personalization</h1>
+                        <img src={Serv_img} alt="services for user interface" className=" item-center justify-center" /></div>
                     <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center" >
-                    Customization is key to building lasting connections with your users, and our Personalization service is designed to deliver just that. Through sophisticated algorithms and data-driven insights, we personalize your web application to cater to each user's unique preferences, behavior, and context. Whether it's a personalized dashboard, tailored content recommendations, or adaptive user interfaces, we ensure that your users feel valued and engaged at every interaction. By providing a highly personalized experience, you can boost user satisfaction, drive conversions, and cultivate loyalty, setting your web application apart from the competition.
+                        Customization is key to building lasting connections with your users, and our Personalization service is designed to deliver just that. Through sophisticated algorithms and data-driven insights, we personalize your web application to cater to each user's unique preferences, behavior, and context. Whether it's a personalized dashboard, tailored content recommendations, or adaptive user interfaces, we ensure that your users feel valued and engaged at every interaction. By providing a highly personalized experience, you can boost user satisfaction, drive conversions, and cultivate loyalty, setting your web application apart from the competition.
                     </p>
                     <div className="bullet ">
                         <ul className="styled-list gap-3 flex flex-wrap">
@@ -93,8 +93,8 @@ const Personalization = () => {
                         </ul>
                     </div>
                 </div>
-                <Footer />
             </div>
+            <Footer />
         </div>
     );
 };
