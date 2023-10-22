@@ -10,7 +10,7 @@
   &::before {
     content: '';
     display: block;
-    background: black;
+    background-color: black;
     position: absolute;
     left: 50%;
     bottom: 0;
@@ -32,3 +32,4 @@ strong{
 p{
   font-size: medium;
 } */
+
