@@ -9,6 +9,8 @@ import Debebrata from "../../utils/Debabrata.png";
 import Auroshisha from "../../utils/Auroshikha.png";
 import Ayesha from "../../utils/Ayesha.png";
 import Balaraju from "../../utils/Balaraju.png";
+import { motion } from 'framer-motion';
+
 
 const testimonials = [
   {
@@ -68,8 +70,27 @@ function Testimonials() {
     );
   };
 
+  const testimonialVariants = {
+    initial: {
+      opacity: 0,
+      y: -20, // Slide out to the left
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 20, // Slide out to the right
+    },
+  };
+  
+
   return (
-    <div className="testi flex flex-col w-full">
+    <div className="testi flex flex-col w-full ">
       <h1 className="flex justify-center item-center font-bold lg:text-[3rem] md:text-[2.5rem] sm:text-[2rem] max670:text-[1.5rem] h-[20vh] pt-20 text-white">
         TESTIMONIAL
       </h1>
@@ -87,16 +108,23 @@ function Testimonials() {
         <button onClick={prevTestimonial} className="">
           <img src={leftarrow} alt="" className="h-12 max600:h-8" />
         </button>
+
         <div className="flex flex-col h-[55vh] max375:h-[65vh] bg-white justify-center item-center lg:w-[45%] max1300:min-w-[60%] sm:w-[60%] max670:w-[85%] 
-        md:mx-20 sm:mx-5 mx-5 border shadow-lg md:px-10 px-5 overflow-hidden rounded">
+        md:mx-20 sm:mx-5 mx-5 border shadow-lg md:px-10 px-5 overflow-hidden rounded"
+        >
           <div className="flex h-[20%] justify-between items-end mb-[-1rem]">
             <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={leftquote} alt="" />
             <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={rightquote} alt="" />
           </div>
           <div className="text-center my-4">
-            <p className="text-[1rem] pb-10 max1008:text-sm max670:text-xs">
+            <motion.p className="text-[1rem] pb-10 max1008:text-sm max670:text-xs"
+            variants={testimonialVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            key={currentTestimonial}>
               {testimonials[currentTestimonial].text}
-            </p>
+            </motion.p>
             <p className="font-bold mt-2 text-[#30AFBC] text-3xl">
               {testimonials[currentTestimonial].name}
             </p>
