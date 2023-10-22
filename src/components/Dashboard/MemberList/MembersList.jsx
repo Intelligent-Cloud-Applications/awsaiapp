@@ -26,7 +26,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [memberData, setMemberData] = useState([]);
-  const { util } = useContext(Context);
+  const { util} = useContext(Context);
 
 
 
@@ -43,9 +43,6 @@ const MemberList = ({ institution ="happyprancer"}) => {
   
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
-
-      console.log("Active Users:", activeUsers);
-      console.log("Inactive Users:", inactiveUsers);
 
       console.log("members from memberlist", response);
       setMemberData(response);

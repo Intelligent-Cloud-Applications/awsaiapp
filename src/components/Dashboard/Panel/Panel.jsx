@@ -23,15 +23,14 @@ const Panel = () => {
   // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
   const { clients } = useContext(Context);
-  const clientsData =  Object.entries(clients.data);
+  const clientsData = Object.entries(clients.data);
   console.log("Clients data", clientsData)
 
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [balance, setBalance] = useState("");
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
 
@@ -71,10 +70,10 @@ const Panel = () => {
   const filteredClients = filterClients();
   console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-  
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
 
@@ -170,13 +169,13 @@ const Panel = () => {
         </div>
 
         {/* form of creating new client */}
-        <div className=" absolute flex w-[50vw]">
-          {isUserAdd && (
-            <form className=" relative m-auto flex flex-col gap-6 p-6 border-[0.2rem] border-t-[2rem] border-[#1a1a1ade] items-center justify-center w-[22rem] h-[30rem] max900:w-[auto] Poppins bg-[#d7d7d7ee] z-[1]">
+        {isUserAdd && (
+          <div className=" absolute top-[25%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+            <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               <input
                 required
                 placeholder="Name"
-                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="text"
                 value={name}
                 onChange={(e) => {
@@ -186,7 +185,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Email Address"
-                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="email"
                 value={email}
                 onChange={(e) => {
@@ -196,7 +195,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Phone Number"
-                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="number"
                 value={phoneNumber}
                 onChange={(e) => {
@@ -206,26 +205,16 @@ const Panel = () => {
               <input
                 required
                 placeholder="Joining date"
-                className="bg-[#ffffff] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="date"
                 value={JoiningDate}
                 onChange={(e) => {
                   setJoiningDate(e.target.value);
                 }}
               />
-              <input
-                required
-                placeholder="Balance"
-                className="bg-[#ffffff] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:outline-none focus:ring focus:border-[#ffffff]"
-                type="number"
-                value={balance}
-                onChange={(e) => {
-                  setBalance(e.target.value);
-                }}
-              />
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
                 <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 focus:outline-none"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                   onClick={() => {
                     setIsUserAdd(false);
                     setUserCheck(0);
@@ -234,15 +223,16 @@ const Panel = () => {
                   Cancel
                 </button>
                 <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#1f9993] text-white w-full rounded-[4px] py-2 focus:outline-none"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                   onClick={handleAddClient}
                 >
                   Create
                 </button>
               </div>
             </form>
-          )}
-        </div>
+          </div>
+        )}
+
 
         {/* Headings */}
         <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:w-[83vw]">
@@ -261,7 +251,7 @@ const Panel = () => {
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
-        {clientsData.map(([key, client], index) => (
+          {clientsData.map(([key, client], index) => (
             <div
               key={client.institution}
               onClick={() => {
@@ -352,7 +342,7 @@ const Panel = () => {
             <Pagination
               count={totalPages}
               page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)}               className="custom-pagination"
+              onChange={(event, value) => setCurrentPage(value)} className="custom-pagination"
             />
           </div>
         </div>
