@@ -1,20 +1,27 @@
 import Navbar from "../components/Home/Navbar";
 import "./Pricing.css";
 import Footer from "../components/Home/Footer";
+import { Box } from "@mui/system";
 
 const Pricing = () => {
     return (
         <div className="flex flex-col">
             <Navbar />
             <div className=" background flex flex-col items-center w-full pb-[5rem]">
-                <div className="gap-6 p-20 pt-40 max-w-5xl mx-auto text-center head">
+                <div className="gap-6 p-20 pt-40 max-w-5xl mx-auto text-center head max600:pt-20">
                     <h1 className="font-bold text-center justify-center text-15xl md:text-10xl lg:text-15xl xl:text-18xl text-black max767:text-white ">
                         Find the plan that is right <span className="text-white">for you</span>
                     </h1>
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-center items-center gap-5 pb-10 mx-auto pos xl:gap-10">
-                    <div className="box bg-white p-4 md:p-8 xl:w-[25rem] rounded-lg shadow-lg md:h-[51rem] xl:h-[40rem]">
+                    <Box sx={{
+                        height: {
+                            sm: "48rem",
+                            md: "45rem",
+                            lg: "40rem",
+                        },
+                    }} className="box flex flex-col bg-white xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-2">Basic</h3>
                         <p className="text-2xl xl:text-3xl font-semibold">₹ 1,000</p>
                         <p className="text-sm xl:text-base pb-4">Per Month</p>
@@ -30,14 +37,18 @@ const Pricing = () => {
                             <li>Monthly billing for flexibility.</li>
                             <li>Customization options available.</li>
                         </ul>
-                        <div className="flex justify-center items-center pb-[2rem]">
-                            <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
-                                Get Started
-                            </button>
-                        </div>
-                    </div>
+                        <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                            Get Started
+                        </button>
+                    </Box>
                     {/* Middle Box */}
-                    <div className="bg-[#1D1D1D] p-2 box text-white md:p-4 xl:w-[27rem] rounded-lg shadow-lg md:h-[55rem] xl:h-[45rem]">
+                    <Box sx={{
+                        height: {
+                            sm: "54rem",
+                            md: "50rem",
+                            lg: "45rem",
+                        },
+                    }} className="flex flex-col bg-[#1D1D1D] box box2 text-white xl:w-[27rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-4">Standard</h3>
                         <p className="text-2xl xl:text-3xl font-semibold">₹ 2,500</p>
                         <p className="text-sm xl:text-base pb-4">Per Month</p>
@@ -57,13 +68,17 @@ const Pricing = () => {
                             <li>Professional Dashboard for members .</li>
                             <li>Efficient data management for admins.</li>
                         </ul>
-                        <div className="flex justify-center items-center pb-4">
-                            <button className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
-                                Get Started
-                            </button>
-                        </div>
-                    </div>
-                    <div className="bg-white box p-1 md:p-1 xl:w-[25rem] rounded-lg shadow-lg md:h-[51rem] xl:h-[40rem] xl:p-0">
+                        <button className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
+                            Get Started
+                        </button>
+                    </Box>
+                    <Box sx={{
+                        height: {
+                            sm: "48rem",
+                            md: "45rem",
+                            lg: "40rem",
+                        },
+                    }} className="flex flex-col bg-white box xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-1">Advance</h3>
                         <p className="text-1xl xl:text-3xl font-semibold">₹ 5,000</p>
                         <p className="text-sm xl:text-1x1 p-1">Per Month</p>
@@ -86,12 +101,12 @@ const Pricing = () => {
                             <li>Google and Facebook Ads Management</li>
                             <li>Digital Marketing, data Analysis and SEO Integration.</li>
                         </ul>
-                        <div className="flex justify-center items-center pb-[2rem]">
-                            <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
-                                Get Started
-                            </button>
-                        </div>
-                    </div>
+
+                        <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                            Get Started
+                        </button>
+
+                    </Box>
                 </div>
             </div>
             <Footer />
