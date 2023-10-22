@@ -15,7 +15,7 @@ import Filter from "../../../utils/Assets/Dashboard/images/SVG/Filter.svg";
 import Navbar from "../../Home/Navbar";
 import "./MembersList.css";
 
-const MemberList = ({ institution ="happyprancer"}) => {
+const MemberList = ({ institution = "happyprancer" }) => {
   const itemsPerPage = 7;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +26,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [memberData, setMemberData] = useState([]);
-  const { util} = useContext(Context);
+  const { util } = useContext(Context);
 
 
 
@@ -40,7 +40,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
       );
       const activeUsers = response.filter((memberData) => memberData.status === "Active");
       const inactiveUsers = response.filter((memberData) => memberData.status === "InActive");
-  
+
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
 
@@ -59,7 +59,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
 
-  
+
   const filtermember = () => {
     if (!searchQuery) {
       return memberData;
@@ -114,33 +114,34 @@ const MemberList = ({ institution ="happyprancer"}) => {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
-  
+
 
   return (
-    <div className="w-[100%] flex flex-col items-center pt-6 max536:pt-0 gap-10">
-      <Navbar/>
+    <div className="w-[93vw] flex flex-col items-center pt-6 mt-5 gap-10">
+      <Navbar />
+      <div className="flex justify-center">
       <div
-        className={`w-[77%] max536:bg-transparent max536:w-[100%] mt-[4rem] max600:mr-[3rem]
-        } rounded-3xl p-3 m`}
+        className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[6rem] `}
+
       >
-        <div className="flex flex-row justify-between pb-2 max850:hidden">
-          <h1 className="text-[1.4rem] K2D font-[600] pl-5">Welcome, Boss👋</h1>
+        <div className="flex flex-row justify-between pb-2  max850:hidden">
+          <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop">Welcome, Boss👋</h1>
           <div className="relative">
             <img src={AdminPic} alt="" />
             <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" />
           </div>
         </div>
 
-        <div className=" w-[109%] bg-[#96969680] h-[0.095rem] mb-2"></div>
+        <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
-        <h2 className=" w-[22rem] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight">
+        <h2 className=" w-[22rem] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-6">
           Memberlists
         </h2>
 
-        <div className="flex flex-row justify-end gap-[23rem] ml-10 max1600:gap-[6rem] max1250:justify-between">
+        <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem]">
           {/* searchBar */}
           <div className="flex justify-center items-center">
-            <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] gap-6 p-[0.1rem] mb-8 mt-6 max1050:w-[30vw]">
+            <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max1050:w-[35vw]">
               <img
                 className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
                 src={SearchIcon}
@@ -164,7 +165,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
           </div>
 
           {/* functionalities */}
-          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-7 ml-[4rem] bg-white ">
+          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white ">
             <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
               <button>
                 <img className="w-[1.2rem]" src={CSV} alt="" />
@@ -183,11 +184,11 @@ const MemberList = ({ institution ="happyprancer"}) => {
           </div>
         </div>
 
-        <div className="flex flex-row gap-6 ml-[3rem] relative mb-3">
+        <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[17rem]">
           <div
             className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "all"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
+              ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+              : "text-[#000] hover:text-[#30afbc]"
               }`}
             onClick={() => {
               setUserStatus("all");
@@ -197,8 +198,8 @@ const MemberList = ({ institution ="happyprancer"}) => {
           </div>
           <div
             className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "active"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
+              ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+              : "text-[#000] hover:text-[#30afbc]"
               }`}
             onClick={() => {
               setUserStatus("active");
@@ -208,8 +209,8 @@ const MemberList = ({ institution ="happyprancer"}) => {
           </div>
           <div
             className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "inactive"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
+              ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+              : "text-[#000] hover:text-[#30afbc]"
               }`}
             onClick={() => {
               setUserStatus("inactive");
@@ -221,27 +222,27 @@ const MemberList = ({ institution ="happyprancer"}) => {
         </div>
 
         {/* Headings */}
-        <div className=" w-[75vw] flex items-center justify-between relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max850:hidden">
+        <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 ml-[0.5rem] max1050:w-[83vw]">
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
-          <div className="col-span-3 font-[700] pl-[5rem]">
-            Name, Phone, Email
+          <div className="flex flex-row justify-between">
+            <div className="col-span-3 font-[700] pl-[5rem]">Name, Phone, Email</div>
+            <div className="font-[700] max850:hidden">Country</div>
+            <div className="font-[700] max850:hidden">Joining Date</div>
+            <div className="font-[700] max850:hidden">Attendance</div>
+            <div className="font-[700] max850:hidden">Status</div>
+            <div className="font-[700] pr-[7rem] max850:hidden">Due</div>
+            <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
           </div>
-          <div className="font-[700]">Country</div>
-          <div className="font-[700]">Joining Date</div>
-          <div className="font-[700]">Attendance</div>
-          <div className="font-[700]">Status</div>
-          <div className="font-[700] pr-[7rem]">Due</div>
-          <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
         </div>
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
-        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[83vw] max536:w-[96vw]">
+        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
           {MembersData.map((memberData, index) => (
             <div
               key={memberData.cognitoId}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max600:w-[93vw] ${isRowSelected(memberData.userName)
-                  ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out" // Increase the height of the container
-                  : "border-[#a2a2a280]"
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.institution)
+                ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
+                : "border-[#a2a2a280]"
                 }`}
               style={{
                 margin: isRowSelected(memberData.userName) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
@@ -282,7 +283,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
                     />
                   </div>
                   <div className="grid grid-cols-12 items-center">
-                    <div className="col-span-2 w-[11vw] flex flex-col">
+                    <div className="col-span-2 w-[11vw] max850:w-[20vw] flex flex-col">
                       <div
                         className="font-[900] email-hover cursor-pointer"
                         title={memberData.userName}
@@ -299,24 +300,24 @@ const MemberList = ({ institution ="happyprancer"}) => {
                         ({memberData.phoneNumber})
                       </div>
                     </div>
-                    <div className="col-span-2 ml-[3rem] font-semibold text-sm">
+                    <div className="col-span-2 ml-[3rem] font-semibold text-sm max850:hidden">
                       {/* {memberData.country} */}India
                     </div>
-                    <div className="col-span-3 ml-[3rem] font-semibold text-sm">
+                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max850:hidden">
                       {formatEpochToReadableDate(memberData.joiningDate)}
                     </div>
-                    <div className="col-span-2 font-semibold text-sm">4/10</div>
+                    <div className="col-span-2 font-semibold text-sm max850:hidden">4/10</div>
                     <div className="col-span-2 ml-[-1rem] relative max850:hidden">
                       <div
                         className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
-                            ? "border-[#99EF72] text-[#99EF72]"
-                            : "border-[#FF4343AB] text-[#FF4343AB]"
+                          ? "border-[#99EF72] text-[#99EF72]"
+                          : "border-[#FF4343AB] text-[#FF4343AB]"
                           }`}
                       >
                         <div
                           className={`w-3 h-3 mt-[0.4rem] ${memberData.status === "Active"
-                              ? "bg-[#99EF72]"
-                              : "bg-[#FF4343AB]"
+                            ? "bg-[#99EF72]"
+                            : "bg-[#FF4343AB]"
                             } rounded-full transform K2D`}
                         ></div>
                         <div>
@@ -351,6 +352,7 @@ const MemberList = ({ institution ="happyprancer"}) => {
             />
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -38,23 +38,28 @@ const PieChart = ({ data }) => {
               size: 15,
               weight: 700,
             },
+            borderWidth: 2,
+            borderColor: "#fff",
+            borderRadius: 20,
+            backgroundColor: (context) => {
+              return context.dataset.backgroundColor
+            },
             formatter: (value, context) => {
               const dataset = context.chart.data.datasets[0];
               const total = dataset.data.reduce((a, b) => a + b, 0);
               const percentage = ((value / total) * 100).toFixed(2) + "%";
               return percentage;
             },
-            anchor: 'center',
-            rotation: -90,
+            anchor: 'end',
           },
         },
         elements: {
           arc: {
-            borderWidth:4, 
+            borderWidth: 7,
           },
         },
         shadowBlur: 10,
-        shadowColor: 'black', 
+        shadowColor: 'black',
       },
       plugins: [ChartDataLabels],
     });
@@ -165,20 +170,20 @@ const RevenueGenerated = () => {
     datasets: [
       {
         label: "Revenue",
-        data: [ 30, 35, 30,30, 35, 30,30, 35, 30,30,],
+        data: [60, 50, 30, 70, 25, 20, 20, 5, 10, 10,],
         backgroundColor: [
-          "#19C2B8",
-          "#D2563A",
-          "#E89A2C",
-          "#397BAB",
-          "#3DA36C",
-          "#444444",
-          "#D9DC58",
-          "#2980B9",
-          "#aa66cc",
-          "#3DA36C",
+          "#3A5EDE",
+          "#6C4B4B",
+          "#CB5A5A",
+          "#30AFBC",
+          "#5ACB6C",
+          "#AA5AFB",
+          "#FB5AE1",
+          "#522D36",
+          "#3D2581",
+          "#554669",
           "#99cc00",
-          "#ffbb33",
+          "#FB5A80",
         ],
       },
     ],
@@ -228,9 +233,10 @@ const RevenueGenerated = () => {
           >
             <BarChart data={barChartData} />
           </div>
-          <div className="w-[20rem] min800:hidden ml-[1rem] mt-[1rem]">
+          <div className="w-[17rem] min800:hidden ml-[1rem] mt-[1rem]">
             {windowWidth <= 768 && <PieChart data={pieChartData} />}
           </div>
+
 
           <div className="flex flex-col items-center max1300:flex-row flex-col-sm">
             <div className="flex flex-col justify-center items-center border-2 border-[#545454] rounded-[0.4rem] w-[25rem] h-[9rem] mt-[2rem] ml-6 max500:w-[80vw]"
