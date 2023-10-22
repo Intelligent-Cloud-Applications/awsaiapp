@@ -81,6 +81,7 @@ export default function FAQ() {
     }
   };
 
+  
   const styles = {
     bgColor: "#ffffff",
     rowTitleColor: "#151618",

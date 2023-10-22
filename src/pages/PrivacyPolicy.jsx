@@ -1,26 +1,33 @@
 import React from "react";
 import Navbar from "../components/Home/Navbar";
+import Footer from "../components/Home/Footer";
+import "./Privacy.css";
+
 
 const PrivacyPolicy = () => {
   return (
     <div>
       <Navbar />
-      <div className="bg-white text-black min-h-screen px-4 md:px-10 lg:px-16 xl:px-20">
-      <h2 className="mt-5">
+      <div className="bg-white text-black min-h-screen">
+          <h1 className="text-11xl md:text-21xl lg:text-33xl font-bold mb-4 curve"
+         >
+            Privacy Policy
+            <p className=" text-[.8rem] font-normal ">Updated October 23, 2023</p>
+          </h1>
+          <p className="mt-24 px-8 md:px-80 ">
             At Intelligent Cloud, we are committed to safeguarding your privacy
             and protecting your personal information. This Privacy Policy
             outlines how we collect, use, disclose, and safeguard the personal
             information you provide to us when using our website design
             services. By using our services, you agree to the terms described in
             this policy.
-          </h2>
-        <div className="container mx-auto py-12">
-          <h1 className="text-4xl lg:text-11xl font-bold mb-4">
-            Privacy Policy
-          </h1>
-          <div className="text-lg leading-relaxed">
+          </p>
+
+          <div className="px-10 md:px-80 py-10">
+          <div className="container mx-auto py-5">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-              1. Information We Collect
+              Information We Collect
             </h2>
             <p>
               We may collect the following types of information when you use our
@@ -45,14 +52,13 @@ const PrivacyPolicy = () => {
                 referral URLs.
               </li>
             </ul>
-
-            {/* Add the other sections (2-8) similarly */}
           </div>
         </div>
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
-            <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            2. How We Use Your Information
+
+        <div className="container mx-auto py-5">
+          <div className="text-md ">
+            <h2 className="text-2xl lg:text-3xl font-semibold mb-2 ">
+            How We Use Your Information
             </h2>
             <p>
               We use the collected information for the following purposes:
@@ -74,10 +80,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-5">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            3. Disclosure of Your Information
+            Disclosure of Your Information
             </h2>
             <p>
             We do not sell or rent your personal information to third parties. However, we may share your information in the following circumstances:
@@ -96,10 +102,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-5">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            4. Security Measures
+            Security Measures
             </h2>
             <p>
             We implement reasonable security measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction. However, no method of transmission over the internet is completely secure, and we cannot guarantee absolute security.
@@ -107,10 +113,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-2">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            5. Your Choices 
+            Your Choices 
             </h2>
             <p>
             You can update your personal information, modify your communication preferences, or opt-out of receiving marketing communications at any time by contacting us.
@@ -118,10 +124,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-2">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            6. Children's Privac
+            Children's Privacy
             </h2>
             <p>
             Our services are not intended for individuals under the age of 16. We do not knowingly collect personal information from children under 16. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
@@ -129,10 +135,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-2">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            7. Changes to this Policy
+            Changes to this Policy
             </h2>
             <p>
             We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. The revised policy will be effective immediately upon posting.
@@ -140,10 +146,10 @@ const PrivacyPolicy = () => {
           </div>
         </div>
 
-        <div className="container mx-auto py-12">
-          <div className="text-lg leading-relaxed">
+        <div className="container mx-auto py-2 mb-10">
+          <div className="text-md ">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-2">
-            8. Contact Us
+            Contact Us
             </h2>
             <p>
             If you have any questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact us at [contact email/phone number].
@@ -151,8 +157,10 @@ By using our website design services, you acknowledge that you have read and und
             </p>
           </div>
         </div>
+        </div>
         
       </div>
+      <Footer/>
     </div>
   );
 };

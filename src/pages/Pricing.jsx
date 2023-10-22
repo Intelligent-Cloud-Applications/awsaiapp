@@ -2,7 +2,11 @@ import Navbar from "../components/Home/Navbar";
 import "./Pricing.css";
 import Footer from "../components/Home/Footer";
 
+
+
 const Pricing = () => {
+
+      
     return (
         <div className="flex flex-col w-full">
             <Navbar />
@@ -14,7 +18,8 @@ const Pricing = () => {
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-center items-center gap-5 pb-10 max-w-18xl mx-auto xl:mx-2 pos ">
-                    <div className="box bg-white p-4 md:p-8 md:w-[calc(100%/3)] xl:w-[calc(100%/3)] rounded-lg shadow-lg mb-[1rem] md:h-[50rem] xl:h-[45rem]">
+                    <div className="box bg-white p-4 md:p-8 md:w-[calc(100%/3)] xl:w-[calc(100%/3)] rounded-lg shadow-lg mb-[1rem] md:h-[50rem] xl:h-[45rem]"
+                     >
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-2">Basic</h3>
                         <p className="text-2xl xl:text-3xl font-semibold">₹ 1,000</p>
                         <p className="text-sm xl:text-base pb-4">Per Month</p>

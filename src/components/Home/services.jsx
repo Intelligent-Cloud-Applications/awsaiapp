@@ -8,6 +8,8 @@ import s3 from "../../utils/Assets/service3.png";
 import s4 from "../../utils/Assets/service4.png";
 import s5 from "../../utils/Assets/service5.png";
 import s6 from "../../utils/Assets/service6.png";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const Services = () => {
   const Navigate = useNavigate();
@@ -66,6 +68,36 @@ const Services = () => {
     setIsHovered6(false);
   };
 
+  const [ref, inView] = useInView();
+
+  const cardleft = {
+    hidden: {
+      opacity: 0,
+      x: -20,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: .5, // You can adjust the duration
+      },
+    },
+  };
+
+  const cardright = {
+    hidden: {
+      opacity: 0,
+      x: 20,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 1, // You can adjust the duration
+      },
+    },
+  };
+
   return (
     <div>
       <div className="w-full bg-[#EDEDED] max800:hidden">
@@ -79,11 +111,15 @@ const Services = () => {
 
         <div className="flex flex-row h-[100vh] w-[110vw]">
           <div className="w-[30%] flex flex-col justify-evenly items-end pl-5">
-            <div
+            <motion.div
               id="Component1"
               className={`relative w-80 h-48 max1008:w-64 max1008:h-20vh shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20`}
               onMouseEnter={handleHover1}
               onMouseLeave={handleUnhover1}
+
+              variants={cardleft}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6 text-base max1008:text-sm">
@@ -125,13 +161,17 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               id="Component2"
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]"
               onMouseEnter={handleHover2}
               onMouseLeave={handleUnhover2}
+
+              variants={cardleft}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
@@ -173,13 +213,17 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               id="Component3"
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20"
               onMouseEnter={handleHover3}
               onMouseLeave={handleUnhover3}
+
+              variants={cardleft}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
@@ -221,7 +265,7 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <div className="h-[100vh] w-[30%] flex flex-col justify-center">
@@ -229,11 +273,14 @@ const Services = () => {
           </div>
 
           <div className="w-[30%] flex flex-col justify-evenly items-start pr-5">
-            <div
+            <motion.div
               id="Component4"
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
               onMouseEnter={handleHover4}
               onMouseLeave={handleUnhover4}
+              variants={cardright}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
@@ -275,13 +322,17 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               id="Component5"
               className="relative h-48 w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]"
               onMouseEnter={handleHover5}
               onMouseLeave={handleUnhover5}
+
+              variants={cardright}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
@@ -323,13 +374,17 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               id="Component6"
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
               onMouseEnter={handleHover6}
               onMouseLeave={handleUnhover6}
+
+              variants={cardright}
+              animate={inView ? "visible" : "hidden"}
+              ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
@@ -371,7 +426,7 @@ const Services = () => {
                   View More
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -397,10 +452,11 @@ const Services = () => {
             connections.
           </p>
           <button
-          onClick={() => {
-            Navigate("/User_interface");
-          }}
-          className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
+            onClick={() => {
+              Navigate("/User_interface");
+            }}
+            className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
+          >
             READ MORE
           </button>
         </div>
@@ -416,10 +472,11 @@ const Services = () => {
             satisfaction and brand loyalty.
           </p>
           <button
-          onClick={() => {
-            Navigate("/Personalizationx`");
-          }}
-          className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
+            onClick={() => {
+              Navigate("/Personalizationx`");
+            }}
+            className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
+          >
             READ MORE
           </button>
         </div>
@@ -435,10 +492,11 @@ const Services = () => {
             management.
           </p>
           <button
-          onClick={() => {
-            Navigate("/identity");
-          }}
-          className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
+            onClick={() => {
+              Navigate("/identity");
+            }}
+            className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
+          >
             READ MORE
           </button>
         </div>
@@ -454,10 +512,11 @@ const Services = () => {
             respective fields.
           </p>
           <button
-          onClick={() => {
-            Navigate("/trade");
-          }}
-          className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
+            onClick={() => {
+              Navigate("/trade");
+            }}
+            className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
+          >
             READ MORE
           </button>
         </div>
@@ -473,10 +532,11 @@ const Services = () => {
             customer engagement
           </p>
           <button
-          onClick={() => {
-            Navigate("/coustmer");
-          }}
-          className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded">
+            onClick={() => {
+              Navigate("/coustmer");
+            }}
+            className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
+          >
             READ MORE
           </button>
         </div>
