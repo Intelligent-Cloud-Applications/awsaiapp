@@ -2,8 +2,10 @@ import Navbar from "../components/Home/Navbar";
 import "./Pricing.css";
 import Footer from "../components/Home/Footer";
 import { Box } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
+    const Navigate = useNavigate();
     return (
         <div className="flex flex-col">
             <Navbar />
@@ -37,7 +39,10 @@ const Pricing = () => {
                             <li>Monthly billing for flexibility.</li>
                             <li>Customization options available.</li>
                         </ul>
-                        <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                        <button
+                            onClick={() => {
+                                Navigate("/query");
+                            }} className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
                     </Box>
@@ -68,7 +73,10 @@ const Pricing = () => {
                             <li>Professional Dashboard for members .</li>
                             <li>Efficient data management for admins.</li>
                         </ul>
-                        <button className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
+                        <button
+                            onClick={() => {
+                                Navigate("/query");
+                            }} className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
                     </Box>
@@ -102,7 +110,10 @@ const Pricing = () => {
                             <li>Digital Marketing, data Analysis and SEO Integration.</li>
                         </ul>
 
-                        <button className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                        <button
+                            onClick={() => {
+                                Navigate("/query");
+                            }} className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
 
