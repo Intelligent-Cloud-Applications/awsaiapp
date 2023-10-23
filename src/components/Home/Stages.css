@@ -6,32 +6,6 @@
   opacity: 0;
 }
 
-@keyframes slideFromRight {
-  0% {
-    transform: translateX(15%);
-    opacity: 1;
-  }
-  20% {
-    transform: translateX(30%); /* Slow down the initial part of the animation */
-    opacity: 1; /* Adjust opacity */
-  }
-  40% {
-    transform: translateX(45%);
-    opacity: 1;
-  }
-  60% {
-    transform: translateX(60%);
-    opacity: 1;
-  }
-  80% {
-    transform: translateX(72%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 1;
-  }
-}
 
 @keyframes slideFromRight1 {
   from {
@@ -46,7 +20,7 @@
 
 .animated-svg2 {
   animation-name: slideFromtop;
-  animation-duration: 3s;
+  animation-duration: 4s;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
   opacity: 0;
@@ -58,7 +32,31 @@
     opacity: 1;
   }
   to {
-    transform: translateY(110%);
+    transform: translateY(100%);
     opacity: 1;
+  }
+}
+@media screen and (min-width: 430px) and (max-width: 500px) {
+  @keyframes slideFromtop {
+    from {
+      transform: translateY(15%);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(105%); 
+      opacity: 1;
+    }
+  }
+}
+@media screen and (max-width: 375px) {
+  @keyframes slideFromtop {
+    from {
+      transform: translateY(15%);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(90%); 
+      opacity: 1;
+    }
   }
 }

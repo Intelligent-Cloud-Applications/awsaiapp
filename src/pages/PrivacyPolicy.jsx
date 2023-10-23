@@ -2,6 +2,8 @@ import React from "react";
 import Navbar from "../components/Home/Navbar";
 import Footer from "../components/Home/Footer";
 import "./Privacy.css";
+import { motion } from 'framer-motion';
+
 
 
 const PrivacyPolicy = () => {
@@ -9,11 +11,14 @@ const PrivacyPolicy = () => {
     <div>
       <Navbar />
       <div className="bg-white text-black min-h-screen">
-          <h1 className="text-11xl md:text-21xl lg:text-33xl font-bold mb-4 curve"
+          <motion.h1 className="text-11xl md:text-21xl lg:text-33xl font-bold mb-4 curve font-inter"
+         initial={{ opacity: 1, y: -80 }} 
+         animate={{ opacity: 1, y: 0 }} 
+         transition={{ duration: 0.6 }}
          >
             Privacy Policy
             <p className=" text-[.8rem] font-normal ">Updated October 23, 2023</p>
-          </h1>
+          </motion.h1>
           <p className="mt-24 px-8 md:px-80 ">
             At Intelligent Cloud, we are committed to safeguarding your privacy
             and protecting your personal information. This Privacy Policy
