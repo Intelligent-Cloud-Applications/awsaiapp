@@ -24,8 +24,6 @@ const Panel = () => {
   const [isMemberList, setisMemberList] = useState("");
   const { clients } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  console.log("Clients data", clientsData)
-
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +36,7 @@ const Panel = () => {
   const handleCheckboxChange = (institution) => {
     if (selectedRow.includes(institution)) {
       setSelectedRow(selectedRow.filter((id) => id !== institution));
-    } else {
+    } else { 
       setSelectedRow([...selectedRow, institution]);
     }
   };
@@ -50,19 +48,20 @@ const Panel = () => {
 
   const filterClients = () => {
     if (!searchQuery) {
-      return clientsData; // If no search query, return all clients
+      return clientsData;
     }
 
     const query = searchQuery.toLowerCase();
 
-    const filtered = clientsData.filter((client) => {
+    const filtered = clientsData?.filter((client) => {
       const matches = (
-        client.institution.toLowerCase().includes(query) ||
-        client.emailId.toLowerCase().includes(query) ||
-        client.phoneNumber.toLowerCase().includes(query)
+        client[1].institution.toLowerCase().includes(query) ||
+        client[1].emailId.toLowerCase().includes(query) ||
+        client[1].phoneNumber.toLowerCase().includes(query)
       );
       return matches;
     });
+    console.log("Filtered Clients:", filtered);
     return filtered;
   };
 
@@ -98,11 +97,10 @@ const Panel = () => {
   //adding clients
 
   const handleAddClient = async () => {
-    const apiName = 'clients'; // The API name as configured in your Amplify project
-    const path = '/admin/create-user/happyprancer';
+    const apiName = 'clients';
+    const path = '/admin/create-user';
     const myInit = {
       body: {
-        // Replace with the data you want to send
         institution: 'NewInstitution',
         userName: 'NewUserName',
         emailId: 'newuser@example.com',
@@ -168,7 +166,7 @@ const Panel = () => {
 
         {/* form of creating new client */}
         {isUserAdd && (
-          <div className=" absolute top-[25%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+          <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
             <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               <input
                 required
@@ -212,6 +210,12 @@ const Panel = () => {
               />
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
                 <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                  onClick={handleAddClient}
+                >
+                  Create
+                </button>
+                <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                   onClick={() => {
                     setIsUserAdd(false);
@@ -219,12 +223,6 @@ const Panel = () => {
                   }}
                 >
                   Cancel
-                </button>
-                <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                  onClick={handleAddClient}
-                >
-                  Create
                 </button>
               </div>
             </form>
@@ -251,9 +249,9 @@ const Panel = () => {
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
           {clientsData.map(([key, client], index) => (
             <div
-              key={client.institution}
-              onClick={() => {
-                setisMemberList(clients.name);
+            key={client.institution}
+            onClick={() => {
+                setisMemberList(clients.institution);
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
@@ -275,7 +273,7 @@ const Panel = () => {
                   checked={isRowSelected(client.institution)}
                 />
                 <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                  {isRowSelected(client.institution) && (
+                  {isRowSelected(`${client.institution}-${client.emailId}`) && (
                     <img
                       src={Select}
                       alt="Selected"

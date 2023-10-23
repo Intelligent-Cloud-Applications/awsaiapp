@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Context from "../../../context/Context";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
+import Swal from 'sweetalert2';
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
@@ -23,12 +24,22 @@ const MemberList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
   const [selectedRow, setSelectedRow] = useState([]);
+  const [isUserAdd, setIsUserAdd] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [balance, setbalance] = useState("");
+  const [Country, setCountry] = useState("");
+  // eslint-disable-next-line
+  const [userCheck, setUserCheck] = useState(0);
+  const [JoiningDate, setJoiningDate] = useState("")
   // eslint-disable-next-line
   const [activeUserList, setActiveUserList] = useState([]);
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [memberData, setMemberData] = useState([]);
   const { util } = useContext(Context);
+
 
   const fetchMembersForInstitution = async (institution) => {
     try {
@@ -42,8 +53,6 @@ const MemberList = () => {
 
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
-
-      console.log("members from memberlist", response);
       setMemberData(response);
     } catch (error) {
       console.error("Error fetching members:", error);
@@ -61,6 +70,11 @@ const MemberList = () => {
 
   const filtermember = () => {
     if (!searchQuery) {
+      if (userStatus === "active") {
+        return memberData.filter((member) => member.status === "Active");
+      } else if (userStatus === "inactive") {
+        return memberData.filter((member) => member.status === "InActive");
+      }
       return memberData;
     }
 
@@ -68,7 +82,7 @@ const MemberList = () => {
 
     const filtered = memberData?.filter((member) => {
       const matches = (
-        member.cognitoId.toLowerCase().includes(query) ||
+        member.userName.toLowerCase().includes(query) ||
         member.emailId.toLowerCase().includes(query) ||
         member.phoneNumber.toLowerCase().includes(query)
       );
@@ -76,6 +90,7 @@ const MemberList = () => {
     });
     return filtered;
   };
+
 
   const filteredmember = filtermember();
 
@@ -102,9 +117,6 @@ const MemberList = () => {
   const inactiveUserCount = inactiveUserList.length;
   const activeUserCount = activeUserList.length;
 
-  console.log("Initial member data:", memberData);
-  console.log("Filtered member data:", filteredmember);
-
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
@@ -114,9 +126,61 @@ const MemberList = () => {
     return formattedDate;
   }
 
+  const handleAddMember = async (e) => {
+    e.preventDefault()
+    const apiName = 'clients';
+    const path = '/user/create-member';
+    const myInit = {
+      body: {
+        institution: institution,
+        userName: name,
+        emailId: email,
+        phoneNumber: phoneNumber,
+        country: Country,
+        status: userStatus,
+        balance: balance,
+        joiningDate: JoiningDate,
+      },
+    };
+
+    try {
+      const create = await API.post(apiName, path, myInit);
+      setMemberData([...memberData, {
+        userName: name,
+        emailId: email,
+        phoneNumber: phoneNumber,
+        country: Country,
+        status: userStatus,
+        balance: balance,
+        joiningDate: JoiningDate,
+      }]);
+      console.log("User created successfully:", create);
+      Swal.fire({
+        icon: 'success',
+        title: 'User Added',
+      });
+      setIsUserAdd(false);
+
+      setName("");
+      setEmail("");
+      setPhoneNumber("");
+      setUserStatus("");
+      setbalance("");
+
+      util.setLoader(false);
+    } catch (e) {
+      console.log(e);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while creating the user.',
+      });
+      util.setLoader(false);
+    }
+  };
 
   return (
-    <div className="w-[93vw] flex flex-col items-center pt-6 mt-5 gap-10">
+    <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
       <Navbar />
       <div className="flex justify-center">
         <div
@@ -169,7 +233,7 @@ const MemberList = () => {
                 <button>
                   <img className="w-[1.2rem]" src={CSV} alt="" />
                 </button>
-                <button>
+                <button onClick={() => setIsUserAdd(true)}>
                   <img className="w-[1rem]" src={Add} alt="" />
                 </button>
                 <button>
@@ -182,6 +246,113 @@ const MemberList = () => {
               <div className=" absolute right-[4px] bottom-[-7px] border border-[#989898b8] w-[9rem] rounded-[1.3125rem] h-8 mt-6 z-[-1]"></div>
             </div>
           </div>
+
+          {/* form of creating new members */}
+          {isUserAdd && (
+            <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+                <input
+                  required
+                  placeholder="Name"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Email Address"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Phone Number"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="number"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Joining date"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="date"
+                  value={JoiningDate}
+                  onChange={(e) => {
+                    setJoiningDate(e.target.value);
+                  }}
+                />
+                <div className="flex gap-2">
+                  <input
+                    required
+                    placeholder="Country"
+                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="text"
+                    value={Country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                    }}
+                  />
+                  <input
+                    required
+                    placeholder="Due ?"
+                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="number"
+                    value={balance}
+                    onChange={(e) => {
+                      setbalance(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex mt-[-1.5rem] mb-[-1rem]">
+                  <label>Status:</label>
+                  <input
+                    type="radio"
+                    name="memberStatus"
+                    value="Active"
+                    className="ml-3"
+                    checked={userStatus === "Active"}
+                    onChange={() => setUserStatus("Active")}
+                  /> <p className="ml-1"> Active</p>
+                  <input
+                    type="radio"
+                    name="memberStatus"
+                    value="InActive"
+                    className="ml-3"
+                    checked={userStatus === "InActive"}
+                    onChange={() => setUserStatus("InActive")}
+                  /> <p className="ml-1">InActive</p>
+                </div>
+                <div className="flex flex-col  gap-3 w-full justify-center items-center">
+                  <button
+                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                    onClick={handleAddMember}
+                  >
+                    Create
+                  </button>
+                  <button
+                    className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
+                    onClick={() => {
+                      setIsUserAdd(false);
+                      setUserCheck(0);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
 
           <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[17rem]">
             <div
@@ -244,7 +415,7 @@ const MemberList = () => {
                   : "border-[#a2a2a280]"
                   }`}
                 style={{
-                  margin: isRowSelected(memberData.userName) ? "1rem 0" : "0.5rem 0", // Add vertical margin when selected
+                  margin: isRowSelected(memberData.userName) ? "1rem 0" : "0.5rem 0",
                   boxShadow: isRowSelected(memberData.userName)
                     ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                     : "none",

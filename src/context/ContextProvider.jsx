@@ -5,14 +5,14 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [member, setMember] = useState([]);
+  // const [member, setMember] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
     fetchClients();
-    fetchMember({ institution: "happyprancer" });
+    // fetchMember({ institution: "happyprancer" });
     fetchUserProfile(); // Fetch user profile when the component mounts
   }, []);
 
@@ -29,22 +29,22 @@ const ContextProvider = (props) => {
     }
   };
 
-  const fetchMember = async ({ institution = "happyprancer" }) => {
-    try {
-      setLoader(true);
-      const response = await API.get(
-        "clients",
-        `/user/list-member/${institution}`
-      );
-      console.log("members", response);
-      setMember(response);
-    } catch (error) {
-      console.error("Error fetching member:", error);
-      console.error("Error details:", error.response);
-    } finally {
-      setLoader(false);
-    }
-  };
+  // const fetchMember = async ({ institution = "happyprancer" }) => {
+  //   try {
+  //     setLoader(true);
+  //     const response = await API.get(
+  //       "clients",
+  //       `/user/list-member/${institution}`
+  //     );
+  //     console.log("members", response);
+  //     setMember(response);
+  //   } catch (error) {
+  //     console.error("Error fetching member:", error);
+  //     console.error("Error details:", error.response);
+  //   } finally {
+  //     setLoader(false);
+  //   }
+  // };
 
   // Function to fetch the user profile
   const fetchUserProfile = async () => {
@@ -85,10 +85,10 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
     },
-    member: {
-      data: member,
-      fetchMember: fetchMember,
-    },
+    // member: {
+    //   data: member,
+    //   fetchMember: fetchMember,
+    // },
     user: {
       profile: userProfile,
       fetchUserProfile: fetchUserProfile,
