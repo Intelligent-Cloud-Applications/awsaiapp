@@ -80,7 +80,7 @@ export default function AboutUs() {
               <div className="text-3xl font-Bebas Neue font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
                 Welcome to Intelligent Cloud Applications!
               </div>
-              <div className="text-xl font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
+              <div className="text-[18px] font-medium font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
                 At Intelligent Cloud Applications, we are not just a digital
                 consulting company; we are your partners in propelling your
                 business into the digital age. Our mission is to empower your
@@ -180,10 +180,10 @@ export default function AboutUs() {
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-12 items-start mb-4 lg:mb-12 mx-4 lg:mx-16">
           <img src={full} className="mt-2 lg:mt-3" alt="Background" />
           <div className="flex flex-col justify-between gap-2 lg:gap-6 w-full lg:w-1/2 items-start">
-            <div className="text-xl lg:text-5xl font-['Mulish'] font-bold leading-[40px] lg:leading-[52.8px] text-[#2f2f2f] ml-px">
+            <div className="text-xl lg:text-5xl font-Bebas Neue font-bold leading-[40px] lg:leading-[52.8px] text-[#2f2f2f] ml-px">
               Our Mission
             </div>
-            <div className="text-lg lg:text-xl font-['Mulish'] leading-[30.1px] lg:leading-[30.1px] text-[#808080] ml-px w-full">
+            <div className="text-l lg:text-xl font-inter leading-[30.1px] lg:leading-[30.1px] text-[#545454] ml-px w-full">
               Building an enterprise-level site doesn't need a nightmare or cost
               you tens of thousands. Our mission is to revolutionize businesses
               through the seamless integration of cutting-edge technologies.
@@ -196,13 +196,13 @@ export default function AboutUs() {
                 <img src={Tick} className="w-6" alt="Tick" />
               </div>
               <div className="flex flex-col justify-between gap-2 w-full lg:w-[520px] items-start ">
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] max450:text-[14.5px]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.5px] max450:w-[22rem]">
                   Empowering clients through advanced applications.
                 </div>
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] max450:text-[14.5px]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.5px]">
                   Crafting advanced apps for confident navigation.
                 </div>
-                <div className="text-lg font-['Mulish'] leading-[30.1px] text-[#2f2f2f] ml-0 w-full max450:text-[14.5px]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] ml-0 w-full max450:text-[13.5px]">
                   Providing end-to-end digital solutions encompassing tech,
                   payments, and marketing.
                 </div>
