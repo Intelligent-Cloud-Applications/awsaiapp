@@ -14,7 +14,7 @@ import User from "./services/User_Interface";
 import Personalization from "./services/Personalization";
 import Identity from "./services/Login&IdentityManagment";
 import Trade from "./services/Trade";
-import Coustmer from "./services/Coustmer";
+import Customer from "./services/Customer";
 import Payment from "./services/Payment";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
@@ -37,7 +37,7 @@ const RoutesContainer = () => {
       <Route path="/Personalization" element={<Personalization />} />
       <Route path="/identity" element={<Identity />} />
       <Route path="/trade" element={<Trade />} />
-      <Route path="/coustmer" element={<Coustmer />} />
+      <Route path="/customer" element={<Customer />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
