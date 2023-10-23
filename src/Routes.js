@@ -23,7 +23,7 @@ const RoutesContainer = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/dashboard" element={<DashBoard />} />
-      <Route path="/user/list-member/:institutionId" component={MemberList} />
+      <Route path="/memberlist" element={<MemberList />} />
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/team" element={<Team />} />
@@ -36,7 +36,7 @@ const RoutesContainer = () => {
       <Route path="/coustmer" element={<Coustmer />} />
       <Route path="/payment" element={<Payment />} />
     </Routes>
-    );
-  };
+  );
+};
 
 export default RoutesContainer;

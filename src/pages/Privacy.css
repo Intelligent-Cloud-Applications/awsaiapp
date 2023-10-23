@@ -6,21 +6,22 @@
   padding: 13rem 2rem 8rem 2rem;
   width: 100%;
   z-index: 2;
-  
-  &::before {
-    content: '';
-    display: block;
-    background: black;
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    border-radius: 150vw;
-    width: 300vw;
-    height: 300vw;
-    z-index: -1;
-  }
 }
+
+.curve::before {
+  content: '';
+  display: block;
+  background: black;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  border-radius: 150vw;
+  width: 300vw;
+  height: 300vw;
+  z-index: -1;
+}
+
 
 strong{
   font-weight:calc(700 - 50);

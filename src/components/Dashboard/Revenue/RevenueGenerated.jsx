@@ -30,17 +30,28 @@ const PieChart = ({ data }) => {
         borderWidth: 0,
         plugins: {
           legend: {
-            display: false,
+            display: true, 
+            position: 'bottom', 
+            align: 'start', 
+            labels: {
+              font: {
+                size: 10,
+                weight: 'bold',
+              },
+              boxWidth: 15,
+              boxHeight:15,
+              padding: 12,
+            },
           },
           datalabels: {
             color: 'white',
             font: {
-              size: 15,
+              size: 12,
               weight: 700,
             },
             borderWidth: 2,
             borderColor: "#fff",
-            borderRadius: 20,
+            borderRadius: 25,
             backgroundColor: (context) => {
               return context.dataset.backgroundColor
             },
@@ -51,6 +62,8 @@ const PieChart = ({ data }) => {
               return percentage;
             },
             anchor: 'end',
+            align:'start',
+            offset: -10,
           },
         },
         elements: {
@@ -69,7 +82,7 @@ const PieChart = ({ data }) => {
     };
   }, [data]);
 
-  return <canvas ref={chartRef}></canvas>;
+  return <canvas ref={chartRef} className="custom-chart"></canvas>;
 };
 
 const BarChart = ({ data }) => {
@@ -108,7 +121,7 @@ const BarChart = ({ data }) => {
     };
   }, [data]);
 
-  return <canvas className="px-4" ref={chartRef}></canvas>;
+  return <canvas className="p" ref={chartRef}></canvas>;
 };
 
 const RevenueGenerated = () => {
@@ -233,7 +246,7 @@ const RevenueGenerated = () => {
           >
             <BarChart data={barChartData} />
           </div>
-          <div className="w-[17rem] min800:hidden ml-[1rem] mt-[1rem]">
+          <div className="w-[17rem] min800:hidden ml-[-6rem] mt-[1rem]">
             {windowWidth <= 768 && <PieChart data={pieChartData} />}
           </div>
 

@@ -285,17 +285,16 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to="/memberlist">
+              <Link to={`/memberlist?institution=${client.institution} `}>
                 <div className="absolute right-2 mt-5">
                   <img
                     src={personIcon}
                     alt=""
                     className="cursor-pointer"
-                    onChange={() => handlePersonIconClick(client.institution)}
+                    onClick={() => handlePersonIconClick(client.institution)}
                   />
                 </div>
               </Link>
-
 
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
