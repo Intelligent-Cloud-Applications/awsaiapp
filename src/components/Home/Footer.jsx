@@ -32,7 +32,7 @@ export default function Footer(props) {
   <div className="flex justify-center items-center">
     <button onClick={() => {
                 Navigate("/query");
-              }} className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full font-semibold text-base md:text-xl lg:text-xl ">
+              }} className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full text-base md:text-xl lg:text-xl ">
       Contact us now
     </button>
   </div>
@@ -213,7 +213,7 @@ export default function Footer(props) {
             Privacy Policy
           </Link>
           <div className="bg-black w-0.5 border-black rounded-md"></div>
-          <Link className="text-black text-decoration-none" to={"/terms"}>
+          <Link className="text-black text-decoration-none" to={"/term"}>
             Terms and Condition
           </Link>
           <div className="bg-black w-0.5 border-black rounded-md"></div>

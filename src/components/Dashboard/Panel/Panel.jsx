@@ -123,20 +123,18 @@ const Panel = () => {
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div
-        className={`w-[90%] mt-[2rem]
-          } rounded-3xl p-3 m`}
+        className={`w-[90%] mt-[1rem] rounded-3xl p-3 `}
       >
-        <div className="flex flex-row justify-between pb-2">
+        <div className="flex flex-row justify-between max850:justify-end pb-2">
           <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">Welcome, Boss👋</h1>
-          <div className="relative max850:absolute right-[6%] ">
+          <div className="relative">
             <img src={AdminPic} alt="" />
             <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" />
           </div>
         </div>
-
         <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
-        <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-[-1rem] max850:ml-[-2.5rem]">
+        <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-[-3rem] max850:ml-[-2.5rem] ">
           Clients Panel
         </h2>
 
@@ -250,7 +248,7 @@ const Panel = () => {
         </div>
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
-        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
+        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
           {clientsData.map(([key, client], index) => (
             <div
               key={client.institution}
@@ -287,17 +285,16 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to="/memberlist">
+              <Link to={`/memberlist?institution=${client.institution} `}>
                 <div className="absolute right-2 mt-5">
                   <img
                     src={personIcon}
                     alt=""
                     className="cursor-pointer"
-                    onChange={() => handlePersonIconClick(client.institution)}
+                    onClick={() => handlePersonIconClick(client.institution)}
                   />
                 </div>
               </Link>
-
 
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
@@ -305,7 +302,7 @@ const Panel = () => {
                     <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
                   </div>
                   <div className="grid grid-cols-12 items-center w-[55vw]">
-                    <div className="col-span-3 flex flex-col max600:w-[10rem]">
+                    <div className="col-span-3 flex flex-col max600:w-[8.5rem]">
                       <div className="font-[900] email-hover cursor-pointer">
                         {client.institution}
                       </div>

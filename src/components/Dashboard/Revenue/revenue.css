@@ -4,3 +4,8 @@
     }
   }
   
+
+  .custom-chart {
+    width: 450px !important; /* Adjust the width as needed */
+    height: 450px !important; /* Adjust the height as needed */
+  }

@@ -75,14 +75,14 @@ const Navbar = () => {
           <li>
 
           {UserCtx.isAuth ? (
-              <span
+              <button
                 onClick={() => {
                   Navigate("/dashboard");
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
                 >
                 {UserCtx.userData.userName.split(" ")[0]}
-              </span>
+              </button>
             ) : (
               <button
               className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
