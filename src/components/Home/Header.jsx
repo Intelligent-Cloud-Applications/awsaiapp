@@ -3,8 +3,11 @@ import "./Header.css"; // You'll need to create this CSS file for styling.
 import imageSrc from "../../utils/waves/2-removebg 3.png";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Header = () => {
+  const Navigate=useNavigate();
   const controls = useAnimation();
 
   useEffect(() => {
@@ -52,6 +55,9 @@ const Header = () => {
         solutions.
       </motion.p>
       <motion.button
+      onClick={() => {
+        Navigate("/query");
+      }}
         className="w-[37%] text-sm sm:text-base md:text-[1rem] lg:text-xl font-semibold rounded-full responsive-button button-2 bg-white hover:bg-gray-300"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}

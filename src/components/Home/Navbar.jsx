@@ -4,6 +4,7 @@ import Context from "../../context/Context";
 import logo from "../../utils/awsaiappLogo.png";
 import cross from "../../utils/Assets/icons8-cross-100.png";
 import Menu from "../../utils/Assets/icons8-menu-100.png";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const Navigate = useNavigate();
@@ -64,12 +65,12 @@ const Navbar = () => {
         >
           {Links.map((link) => (
             <li key={link.name} className="lg:ml-8 md:ml-2 text-xl md:my-0 my-7">
-              <a
-                href={link.link}
+              <Link
+                to={link.link}
                 className="text-white max670:text- mx-2 hover:text-gray-400 duration-500"
               >
                 {link.name}
-              </a>
+              </Link>
             </li>
           ))}
           <li>
@@ -79,13 +80,13 @@ const Navbar = () => {
                 onClick={() => {
                   Navigate("/dashboard");
                 }}
-                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
+                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
                 >
                 {UserCtx.userData.userName.split(" ")[0]}
               </button>
             ) : (
               <button
-              className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 transition-all hover:shadow-lg focus:bg-black max800:mb-5"
+              className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
                 onClick={() => {
                   Navigate("/login");
                 }}
@@ -100,7 +101,7 @@ const Navbar = () => {
             onClick={() => {
               Navigate("/query");
             }}
-            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105"
+            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200"
           >
             Contact Us
           </button>
