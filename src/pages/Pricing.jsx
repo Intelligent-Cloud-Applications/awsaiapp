@@ -5,6 +5,7 @@ import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
+    const Navigate = useNavigate();
     return (
         <div className="flex flex-col">
             <Navbar />
