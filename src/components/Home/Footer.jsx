@@ -213,7 +213,7 @@ export default function Footer(props) {
             Privacy Policy
           </Link>
           <div className="bg-black w-0.5 border-black rounded-md"></div>
-          <Link className="text-black text-decoration-none" to={"/terms"}>
+          <Link className="text-black text-decoration-none" to={"/term"}>
             Terms and Condition
           </Link>
           <div className="bg-black w-0.5 border-black rounded-md"></div>

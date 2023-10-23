@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router";
 import "../Home/Price.css";
 import Faq from "react-faq-component";

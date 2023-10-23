@@ -8,6 +8,8 @@ const Stages = () => {
   const Navigate = useNavigate();
   const [isMouseInside, setIsMouseInside] = useState(false);
 
+  
+
   return (
     <div
       className="w-full bg-[#30AFBC] overflow-hidden"

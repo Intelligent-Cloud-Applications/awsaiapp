@@ -16,6 +16,10 @@ import Identity from "./services/Login&IdentityManagment";
 import Trade from "./services/Trade";
 import Coustmer from "./services/Coustmer";
 import Payment from "./services/Payment";
+import Terms from "./pages/Terms";
+import Refund from "./pages/Refund";
+
+
 const RoutesContainer = () => {
   return (
     <Routes>
@@ -35,6 +39,8 @@ const RoutesContainer = () => {
       <Route path="/trade" element={<Trade />} />
       <Route path="/coustmer" element={<Coustmer />} />
       <Route path="/payment" element={<Payment />} />
+      <Route path="/term" element={<Terms />} />
+      <Route path="/refund" element={<Refund />} />
     </Routes>
   );
 };
