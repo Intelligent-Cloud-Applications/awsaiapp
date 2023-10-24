@@ -30,6 +30,7 @@ const MemberList = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [balance, setbalance] = useState("");
   const [Country, setCountry] = useState("");
+  const [cognitoId, setcognitoId] = useState("")
   // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
@@ -37,6 +38,8 @@ const MemberList = () => {
   const [activeUserList, setActiveUserList] = useState([]);
   // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
+  const [isEditUser, setIsEditUser] = useState(false);
+  const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
   const { util } = useContext(Context);
 
@@ -101,16 +104,16 @@ const MemberList = () => {
   const MembersData = filteredmember.slice(startIndex, endIndex);
 
 
-  const handleCheckboxChange = (institutionId) => {
-    if (selectedRow.includes(institutionId)) {
-      setSelectedRow(selectedRow.filter((id) => id !== institutionId));
+  const handleCheckboxChange = (cognitoId) => {
+    if (selectedRow.includes(cognitoId)) {
+      setSelectedRow(selectedRow.filter((id) => id !== cognitoId));
     } else {
-      setSelectedRow([...selectedRow, institutionId]);
+      setSelectedRow([...selectedRow, cognitoId]);
     }
   };
 
-  const isRowSelected = (institutionId) => {
-    return selectedRow.includes(institutionId);
+  const isRowSelected = (cognitoId) => {
+    return selectedRow.includes(cognitoId);
   };
 
   const selectedRowCount = selectedRow.length;
@@ -178,6 +181,91 @@ const MemberList = () => {
       util.setLoader(false);
     }
   };
+
+  useEffect(() => {
+    if (editUser) {
+      setcognitoId(editUser.cognitoId || "");
+      setName(editUser.userName || "");
+      setEmail(editUser.emailId || "");
+      setPhoneNumber(editUser.phoneNumber || "");
+      setCountry(editUser.country || "");
+      setUserStatus(editUser.status || "Active");
+      setbalance(editUser.balance || "");
+      setJoiningDate(formatEpochToReadableDate(editUser.joiningDate) || "");
+    }
+  }, [editUser]);
+
+  const handleEditUser = (user) => {
+    setEditUser(user);
+    setIsEditUser(true);
+  };
+
+  const handleSaveUser = async (e) => {
+    e.preventDefault()
+    const apiName = "clients";
+    const path = `/user/update-member`;
+    const myInit = {
+      body: {
+        cognitoId: cognitoId,
+        institution: institution,
+        userName: name,
+        emailId: email,
+        phoneNumber: phoneNumber,
+        country: Country,
+        status: userStatus,
+        balance: balance,
+        joiningDate: new Date(JoiningDate).getTime(),
+      },
+    };
+
+    try {
+      const update = await API.put(apiName, path, myInit);
+      console.log(update)
+      setIsEditUser(false);
+      setEditUser(null);
+      util.setLoader(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditUser(false);
+    setEditUser(null);
+  };
+
+
+  const handleDeleteMember = async (e) => {
+    e.preventDefault()
+    const apiName = 'clients';
+    const path = '/user/delete-member';
+    const myInit = {
+      body: {
+        institution: institution,
+        cognitoId: cognitoId,
+      },
+    };
+  
+    try {
+      await API.del(apiName, path, myInit);
+      const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
+      setMemberData(updatedMemberData);
+      Swal.fire({
+        icon: 'success',
+        title: 'Member Deleted',
+      });
+      util.setLoader(false);
+      setIsEditUser(false);
+    } catch (error) {
+      console.error("Error deleting member:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while deleting the member.',
+      });
+    }
+  };
+
 
   return (
     <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
@@ -410,13 +498,13 @@ const MemberList = () => {
             {MembersData.map((memberData, index) => (
               <div
                 key={memberData.cognitoId}
-                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.institution)
+                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.cognitoId)
                   ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
                   : "border-[#a2a2a280]"
                   }`}
                 style={{
-                  margin: isRowSelected(memberData.userName) ? "1rem 0" : "0.5rem 0",
-                  boxShadow: isRowSelected(memberData.userName)
+                  margin: isRowSelected(memberData.cognitoId) ? "1rem 0" : "0.5rem 0",
+                  boxShadow: isRowSelected(memberData.cognitoId)
                     ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                     : "none",
                 }}
@@ -426,11 +514,11 @@ const MemberList = () => {
                   <input
                     type="checkbox"
                     className="hidden"
-                    onChange={() => handleCheckboxChange(memberData.userName)}
-                    checked={isRowSelected(memberData.userName)}
+                    onChange={() => handleCheckboxChange(memberData.cognitoId)}
+                    checked={isRowSelected(memberData.cognitoId)}
                   />
                   <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                    {isRowSelected(memberData.userName) && (
+                    {isRowSelected(memberData.cognitoId) && (
                       <img
                         src={Select}
                         alt="Selected"
@@ -440,7 +528,7 @@ const MemberList = () => {
                   </div>
                 </label>
 
-                <div className="absolute right-2 mt-5">
+                <div className="absolute right-2 mt-5" onClick={() => handleEditUser(memberData)}>
                   <img src={personIcon} alt="" />
                 </div>
                 <div className="flex flex-row K2D items-center">
@@ -471,7 +559,7 @@ const MemberList = () => {
                         </div>
                       </div>
                       <div className="col-span-2 ml-[3rem] font-semibold text-sm max850:hidden">
-                        {/* {memberData.country} */}India
+                        {memberData.country}
                       </div>
                       <div className="col-span-3 ml-[3rem] font-semibold text-sm max850:hidden">
                         {formatEpochToReadableDate(memberData.joiningDate)}
@@ -505,6 +593,117 @@ const MemberList = () => {
               </div>
             ))}
           </div>
+
+          {isEditUser && (
+            <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+                {/* Include form fields for updating user details */}
+
+                <input
+                  required
+                  placeholder="Name"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Email Address"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Phone Number"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="number"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                  }}
+                />
+                {/* <input
+                  required
+                  placeholder="Joining date"
+                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="date"
+                  value={JoiningDate}
+                  onChange={(e) => {
+                    setJoiningDate(e.target.value);
+                  }}
+                /> */}
+                <div className="flex gap-2">
+                  <input
+                    required
+                    placeholder="Country"
+                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="text"
+                    value={Country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                    }}
+                  />
+                  <input
+                    required
+                    placeholder="Due ?"
+                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="number"
+                    value={balance}
+                    onChange={(e) => {
+                      setbalance(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex mt-[-1.5rem] mb-[-1rem]">
+                  <label>Status:</label>
+                  <input
+                    type="radio"
+                    name="memberStatus"
+                    value="Active"
+                    className="ml-3"
+                    checked={userStatus === "Active"}
+                    onChange={() => setUserStatus("Active")}
+                  /> <p className="ml-1"> Active</p>
+                  <input
+                    type="radio"
+                    name="memberStatus"
+                    value="InActive"
+                    className="ml-3"
+                    checked={userStatus === "InActive"}
+                    onChange={() => setUserStatus("InActive")}
+                  /> <p className="ml-1">InActive</p>
+                </div>
+                <div className="flex flex-col  gap-3 w-full justify-center items-center">
+                  <button
+                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                    onClick={handleSaveUser}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                    onClick={handleDeleteMember}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                    onClick={handleCancelEdit}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
 
           <div className="flex flex-row gap-2">
             {selectedRowCount > 0 && (

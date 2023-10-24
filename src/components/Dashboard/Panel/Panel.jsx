@@ -22,12 +22,15 @@ const Panel = () => {
   const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
   const [isMemberList, setisMemberList] = useState("");
-  const { clients } = useContext(Context);
+  const { clients, util } = useContext(Context);
   const clientsData = Object.entries(clients.data);
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [Country, setCountry] = useState("")
+  const [cognitoId, setcognitoId] = useState("")
+  const [balance, setBalance] = useState("");
   // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
@@ -36,7 +39,7 @@ const Panel = () => {
   const handleCheckboxChange = (institution) => {
     if (selectedRow.includes(institution)) {
       setSelectedRow(selectedRow.filter((id) => id !== institution));
-    } else { 
+    } else {
       setSelectedRow([...selectedRow, institution]);
     }
   };
@@ -94,29 +97,46 @@ const Panel = () => {
     setisMemberList(institution);
   };
 
-  //adding clients
+  const toggleAddUserForm = () => {
+    setIsUserAdd(!isUserAdd);
+  };
 
-  const handleAddClient = async () => {
-    const apiName = 'clients';
-    const path = '/admin/create-user';
-    const myInit = {
-      body: {
-        institution: 'NewInstitution',
-        userName: 'NewUserName',
-        emailId: 'newuser@example.com',
-        phoneNumber: '1234567890',
-        country: 'NewCountry',
-        cognitoId: '12345',
-      },
-    };
-
+  // Function to add a new client
+  const handleAddClient = async (e) => {
+    e.preventDefault()
     try {
+      const apiName = 'clients';
+      const path = '/admin/create-client';
+      const myInit = {
+        body: {
+          cognitoId: cognitoId,
+          institution: name,
+          emailId: email,
+          phoneNumber: phoneNumber,
+          country: Country,
+          balance: balance,
+          joiningDate: JoiningDate,
+        },
+      };
       const response = await API.post(apiName, path, myInit);
-      console.log("User created successfully:", response);
+      console.log("Client added successfully:", response);
+      setName("");
+      setEmail("");
+      setPhoneNumber("");
+      setCountry("");
+      setBalance("");
+      setJoiningDate("");
+      setcognitoId("");
+      // Close the form
+      toggleAddUserForm();
+      util.setLoader(false);
+
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error adding client:", error);
+      util.setLoader(false);
     }
   };
+
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
@@ -249,8 +269,8 @@ const Panel = () => {
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
           {clientsData.map(([key, client], index) => (
             <div
-            key={client.institution}
-            onClick={() => {
+              key={client.institution}
+              onClick={() => {
                 setisMemberList(clients.institution);
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
