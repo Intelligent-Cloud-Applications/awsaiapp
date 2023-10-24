@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/alt-text */
 import Navbar from "../components/Home/Navbar";
 import Footer from "../components/Home/Footer";
-import Serv_img from "../utils/Assets/Services_User.png";
+import Serv_img from "../utils/Assets/Services_Coustmer.png";
 import "./Services.css";
-import React, { useState, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import plus from "../utils/Assets/p2.png";
 import cross from "../utils/Assets/cross.png";
 import Common from "./Common";
 import { Link } from "react-router-dom";
 
-const User_Interface = () => {
+const Coustmer = () => {
   const [screensize, setScreensize] = useState({ width: window.innerWidth });
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const User_Interface = () => {
               </h2>
               <Link to="/User_interface" className="justify-space-between">
                 <p>User interface & User experience</p>
-                <img src={cross} alt="cross" />
+                <img src={plus} alt="plus" />
               </Link>
               <Link to="/Personalization" className="justify-spacebetween">
                 <p>Personalization</p>
@@ -56,7 +56,7 @@ const User_Interface = () => {
               </Link>
               <Link to="/customer">
                 <p>Leads & customer tracking</p>
-                <img src={plus} alt="plus" />
+                <img src={cross} alt="cross" />
               </Link>
               <Link to="/payment">
                 <p>Payments</p>
@@ -65,72 +65,71 @@ const User_Interface = () => {
             </div>
           )}
         </div>
-        <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor ">
+        <div className="flex flex-wrap item-center px-[3rem] pt-[7rem] nor">
           <div className="xl:flex-col pb-5">
-            <h1 className="text-[25px] font-bold pb-[1rem] max767:text-center">
-              User interface & User experience
+            <h1 className="text-[25px] font-bold max767:text-center pb-[1rem]">
+              Leads & customer tracking
             </h1>
             <img
               src={Serv_img}
               alt="services for user interface"
-              className=" item-center justify-center"
+              className="item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 justify-center max500:text-[13px]">
-            At Intelligent Cloud Applications, we understand that the success of
-            your web application hinges on delivering a delightful user
-            experience. Our User Interface and User Experience service are
-            dedicated to crafting intuitive, visually appealing, and
-            user-friendly interfaces that captivate your audience from the
-            moment they land on your site. Our team of skilled designers
-            leverages the latest design trends and usability principles to
-            create seamless interactions, ensuring that your users can navigate
-            your web application effortlessly across various devices. With a
-            focus on accessibility and responsive design, we guarantee that
-            every user, regardless of their device or abilities, enjoys an
-            exceptional experience that drives engagement and enhances
-            satisfaction.
+          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+            Understanding your customers and leads is vital for driving business
+            growth, and our Leads & Customer Tracking service equips you with
+            the tools to do just that. From lead capture forms and lead scoring
+            systems to automated lead nurturing campaigns, we help you gather
+            valuable customer data, prioritize leads effectively, and nurture
+            them through the sales funnel. By monitoring customer interactions
+            and tracking user behavior within your web application, we empower
+            you to make data-driven decisions, optimize marketing strategies,
+            and deliver personalized experiences that resonate with your
+            audience.
           </p>
-          <div className="bullet ">
+          <div className="bullet">
             <ul className="styled-list gap-3 flex flex-wrap">
               <li>
-                <h1>Intuitive UI Design:</h1>
+                <h1>Customer Activity Tracking:</h1>
                 <p>
-                  We create user interfaces that are intuitive, visually
-                  appealing, and easy to navigate. A well-designed UI enhances
-                  user engagement and satisfaction.
+                  {" "}
+                  Monitor customer interactions and behavior within your web app
+                  to identify trends and areas for improvement.
                 </p>
               </li>
               <li>
-                <h1>Responsive Web Design:</h1>
+                <h1>Lead Scoring:</h1>
                 <p>
-                  Our web applications adapt seamlessly to different devices,
-                  ensuring a consistent user experience across desktops,
-                  tablets, and smartphones.
+                  {" "}
+                  Assign scores to leads based on their engagement levels and
+                  potential, allowing you to prioritize follow-ups effectively.
                 </p>
               </li>
               <li>
-                <h1>Accessibility:</h1>
+                <h1>Performance Analytics:</h1>
                 <p>
-                  We prioritize accessibility, making sure that all users,
-                  including those with disabilities, can access and interact
-                  with your web app comfortably.
+                  {" "}
+                  Gain insights into lead conversion rates, customer acquisition
+                  costs, and customer lifetime value to optimize marketing
+                  strategies.
                 </p>
               </li>
               <li>
-                <h1>Interactive Elements:</h1>
+                <h1>SEO-Analytics Integration:</h1>
                 <p>
-                  Engage your users with interactive elements such as
-                  animations, sliders, and buttons, enhancing the overall user
-                  experience.
+                  {" "}
+                  We align lead and customer tracking data with SEO analytics to
+                  identify high-performing keywords and optimize your content
+                  strategy.
                 </p>
               </li>
               <li>
-                <h1>User Journey Mapping:</h1>
+                <h1>Lead Capture Forms:</h1>
                 <p>
-                  We analyze user behavior and preferences to map out optimized
-                  user journeys, leading to higher conversions and increased
-                  user retention.
+                  {" "}
+                  Implement lead capture forms on your web app to gather
+                  valuable customer information and generate potential leads.
                 </p>
               </li>
             </ul>
@@ -141,4 +140,4 @@ const User_Interface = () => {
     </div>
   );
 };
-export default User_Interface;
+export default Coustmer;
