@@ -5,8 +5,8 @@ import Context from "../context/Context";
 import Navbar from '../components/Home/Navbar';
 import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
-import GoogleIcon from '../utils/png/Google.png';
-import FacebookIcon from '../utils/png/Facebook.png';
+// import GoogleIcon from '../utils/png/Google.png';
+// import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from '../utils/Assets/Login.png';
 import './Login.css';
 
@@ -60,13 +60,13 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    // Add Google authentication logic here
-  };
+  // const handleGoogleLogin = async () => {
+  //   Add Google authentication logic here
+  // };
 
-  const handleFacebookLogin = async () => {
-    // Add Facebook authentication logic here
-  };
+  // const handleFacebookLogin = async () => {
+  //   Add Facebook authentication logic here
+  // };
 
   return (
     <>
@@ -124,13 +124,13 @@ const Login = () => {
                 Login
               </button>
 
-              <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
+              {/* <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
                 <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
                 <p className='font-bold'> OR </p>
                 <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
-              </div>
+              </div> */}
 
-              <button
+              {/* <button
                 onClick={handleGoogleLogin}
                 className="border w-[20rem] mb-2 p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
               >
@@ -151,7 +151,7 @@ const Login = () => {
                   className="w-6 h-6 ml-4"
                 />
                 <div className="text-center">Continue with Facebook</div>
-              </button>
+              </button> */}
             </form>
           </div>
         </div>
