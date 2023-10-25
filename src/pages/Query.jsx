@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../components/Home/Navbar";
-import { useState } from "react";
+import { useState , useRef} from "react";
 import Pic from "../utils/contactusPic.png";
 import { motion } from 'framer-motion';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -19,36 +19,40 @@ const Query = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  const recaptchaRef = useRef();
   const handleCaptchaChange = (value) => {
     setCaptchaValue(value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
-   
-    if (!captchaValue) {
-      alert("Please fill out the CAPTCHA.");
-      return; 
+
+    try {
+      const token = await recaptchaRef.current.executeAsync();
+
+      if (!token) {
+        alert("Please fill out the CAPTCHA.");
+        return;
+      }
+
+      if (
+        formData.fullName === "" ||
+        formData.companyName === "" ||
+        formData.email === "" ||
+        formData.address === "" ||
+        formData.projectDetails === ""
+      ) {
+        alert("Please fill out all form fields.");
+        return;
+      }
+
+      console.log(formData);
+      console.log("reCAPTCHA Token:", token);
+    } catch (error) {
+      console.error("reCAPTCHA error:", error);
     }
-  
-   
-    if (
-      formData.fullName === "" ||
-      formData.companyName === "" ||
-      formData.email === "" ||
-      formData.address === "" ||
-      formData.projectDetails === ""
-    ) {
-      alert("Please fill out all form fields.");
-      return; 
-    }
-  
-    
-    console.log(formData);
   };
-  
+
 
   return (
     <>
@@ -84,7 +88,7 @@ const Query = () => {
           <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
               Send  us  a message
               </h2>
-            <form onSubmit={handleSubmit} className="space-y-1">
+              <form onSubmit={handleSubmit} className="space-y-1">
               <div>
                 <label
                   htmlFor="fullName"
@@ -168,12 +172,11 @@ const Query = () => {
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                 ></textarea>
               </div>
-              
               <div>
-                
                 <ReCAPTCHA
+                 ref={recaptchaRef}
                   sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
-                  onChange={handleCaptchaChange}
+                  size="invisible"
                 />
               </div>
               <div>
