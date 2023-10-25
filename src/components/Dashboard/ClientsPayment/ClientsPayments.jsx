@@ -113,7 +113,7 @@ const ClientsPayments = () => {
           </div>
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
         </div>
-        <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
+        <div className=" w-[76vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
         <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
           {users.map((user) => (
