@@ -21,7 +21,7 @@ const Pricing = () => {
                         height: {
                             sm: "48rem",
                             md: "45rem",
-                            lg: "40rem",
+                            lg: "41rem",
                         },
                     }} className="box flex flex-col bg-white xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-2">Basic</h3>
@@ -84,7 +84,7 @@ const Pricing = () => {
                         height: {
                             sm: "48rem",
                             md: "45rem",
-                            lg: "40rem",
+                            lg: "41rem",
                         },
                     }} className="flex flex-col bg-white box xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-1">Advance</h3>
