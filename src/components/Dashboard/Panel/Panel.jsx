@@ -156,10 +156,10 @@ const Panel = () => {
           Clients Panel
         </h2>
 
-        <div className="flex flex-row justify-evenly ml-[2.5rem] mt-[1rem] max850:mt-[4rem]">
+        <div className="flex flex-row justify-evenly ml-[2.5rem] mt-[1rem] max850:mt-[4rem] max850:flex-col max850:justify-center max850:items-center">
           {/* searchBar */}
-          <div className="flex justify-center items-center">
-            <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max1050:w-[35vw]">
+          <div className="flex justify-center items-center max850:w-[80vw]">
+            <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
               <img className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2" src={SearchIcon} alt="" />
               <input
                 className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max1050:text-[1vw] "
@@ -173,7 +173,7 @@ const Panel = () => {
           </div>
 
           {/* functionalities */}
-          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white ">
+          <div className=" relative border border-black w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
             <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
               <button><img className="w-[1.2rem]" src={CSV} alt="" /></button>
               <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>
@@ -275,7 +275,7 @@ const Panel = () => {
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                : "border-[#a2a2a280]"
+                : "border-[#a2a2a260]"
                 }`}
               style={{
                 margin: isRowSelected(client.institution) ? "1rem 0" : "0.5rem 0",

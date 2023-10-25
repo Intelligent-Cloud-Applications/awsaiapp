@@ -31,18 +31,15 @@ const MemberList = () => {
   const [balance, setbalance] = useState("");
   const [Country, setCountry] = useState("");
   const [cognitoId, setcognitoId] = useState("")
-  // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
-  // eslint-disable-next-line
   const [activeUserList, setActiveUserList] = useState([]);
-  // eslint-disable-next-line
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
   const { util } = useContext(Context);
-
+  console.log(userCheck)
 
   const fetchMembersForInstitution = async (institution) => {
     try {
@@ -200,7 +197,7 @@ const MemberList = () => {
     setIsEditUser(true);
   };
 
-  const handleSaveUser = async (e) => {
+  const handleUpdateUser = async (e) => {
     e.preventDefault()
     const apiName = "clients";
     const path = `/user/update-member`;
@@ -221,11 +218,22 @@ const MemberList = () => {
     try {
       const update = await API.put(apiName, path, myInit);
       console.log(update)
+      Swal.fire({
+        icon: 'success',
+        title: 'User Updated',
+      });
       setIsEditUser(false);
       setEditUser(null);
+
       util.setLoader(false);
     } catch (e) {
-      console.error(e);
+      console.log(e);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while updating the user.',
+      });
+      util.setLoader(false);
     }
   };
 
@@ -245,14 +253,14 @@ const MemberList = () => {
         cognitoId: cognitoId,
       },
     };
-  
+
     try {
       await API.del(apiName, path, myInit);
       const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
       setMemberData(updatedMemberData);
       Swal.fire({
         icon: 'success',
-        title: 'Member Deleted',
+        title: 'User Deleted',
       });
       util.setLoader(false);
       setIsEditUser(false);
@@ -533,7 +541,7 @@ const MemberList = () => {
                 </div>
                 <div className="flex flex-row K2D items-center">
                   <div className=" flex gap-[1rem] pl-[2rem] items-center">
-                    <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
+                    <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem] max600:w-[12rem]">
                       <img
                         src={Bworkz}
                         alt="Avishek"
@@ -541,7 +549,7 @@ const MemberList = () => {
                       />
                     </div>
                     <div className="grid grid-cols-12 items-center">
-                      <div className="col-span-2 w-[11vw] max850:w-[20vw] flex flex-col">
+                      <div className="col-span-2 w-[11vw] max850:w-[8rem] flex flex-col">
                         <div
                           className="font-[900] email-hover cursor-pointer"
                           title={memberData.userName}
@@ -683,7 +691,7 @@ const MemberList = () => {
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                    onClick={handleSaveUser}
+                    onClick={handleUpdateUser}
                   >
                     Update
                   </button>
