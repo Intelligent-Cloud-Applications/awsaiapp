@@ -29,7 +29,7 @@
     }
 }
 .relat{
-    position: absolute;
+    position: fixed;
     top: 100px; /* Adjust this value to position it below the navbar */
     z-index: 1;
 }

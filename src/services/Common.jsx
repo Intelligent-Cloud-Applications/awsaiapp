@@ -34,9 +34,9 @@ const Common = () => {
   };
 
   return (
-    <div className="flex flex-row" style={containerStyle}>
+    <div className="flex flex-row " style={containerStyle}>
       <div
-        className=" h-[30px] w-[30px] absolute"
+        className=" h-[30px] w-[30px] absolute bg-white"
         style={{
           boxShadow: "2px 2px 4px #353535",
           borderTopRightRadius: "10px",
