@@ -26,15 +26,29 @@ const Query = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (captchaValue) {
-    
-      console.log(formData);
-    } else {
-     
+  
+   
+    if (!captchaValue) {
       alert("Please fill out the CAPTCHA.");
+      return; 
     }
+  
+   
+    if (
+      formData.fullName === "" ||
+      formData.companyName === "" ||
+      formData.email === "" ||
+      formData.address === "" ||
+      formData.projectDetails === ""
+    ) {
+      alert("Please fill out all form fields.");
+      return; 
+    }
+  
+    
+    console.log(formData);
   };
+  
 
   return (
     <>
@@ -156,16 +170,16 @@ const Query = () => {
               </div>
               
               <div>
-                {/* Add reCAPTCHA to your form */}
-                <ReCAPTCHA 
-                  sitekey="6LeFicooAAAAAIYySrGkdBQ2z3bJlHcHg8NnmyP1" // Replace with your actual reCAPTCHA site key
+                
+                <ReCAPTCHA
+                  sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
                   onChange={handleCaptchaChange}
                 />
               </div>
               <div>
               <button
                   type="submit"
-                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
                   onClick={handleSubmit}
                   disabled={!captchaValue}
                 >
