@@ -10,9 +10,10 @@ import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.sv
 import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
 import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg';
 import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg';
-import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
+// import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
 import Selections from '../../../utils/Assets/Dashboard/images/SVG/Selections.svg';
-import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
+// import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
+import Update from '../../../utils/Assets/Dashboard/images/SVG/Update.svg';
 import "./Panel.css";
 
 const Panel = () => {
@@ -34,6 +35,13 @@ const Panel = () => {
   // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
+  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [updatedName, setUpdatedName] = useState("");
+  const [updatedEmail, setUpdatedEmail] = useState("");
+  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState("");
+  // Add other state variables for updating user details as needed
+
 
   // Function to handle checkbox changes
   const handleCheckboxChange = (institution) => {
@@ -138,6 +146,54 @@ const Panel = () => {
   };
 
 
+  const handleUpdateClient = async (institution, cognitoId, e) => {
+    const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
+    setSelectedUser(userToUpdate);
+    setIsUpdateFormVisible(true);
+    try {
+      const apiName = 'clients';
+      const path = '/admin/update-any';
+      const myInit = {
+        body: {
+          cognitoId: cognitoId,
+          institution: institution,
+          userName: name,
+          emailId: email,
+          phoneNumber: phoneNumber,
+          // balance: updatedBalance,
+          // status: updatedStatus,
+        },
+      };
+      const response = await API.put(apiName, path, myInit);
+      console.log("Client updated successfully:", response);
+      setIsUpdateFormVisible(false);
+      setSelectedUser(null);
+      setUpdatedName("");
+      setUpdatedEmail("");
+      setUpdatedPhoneNumber("");
+      // You can handle the response as needed, e.g., show a success message.
+    } catch (error) {
+      console.error("Error updating client:", error);
+      // Handle the error, show an error message, etc.
+    }
+  };
+
+  const handleCancelUpdate = () => {
+    // Hide the form and reset the state variables
+    setIsUpdateFormVisible(false);
+    setSelectedUser(null);
+    setUpdatedName("");
+    setUpdatedEmail("");
+    setUpdatedPhoneNumber("");
+  };
+
+
+  const showUpdateForm = (institution) => {
+    const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
+    setSelectedUser(userToUpdate);
+    setIsUpdateFormVisible(true);
+  };
+
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div
@@ -172,12 +228,14 @@ const Panel = () => {
             </div>
           </div>
 
+
+
           {/* functionalities */}
           <div className=" relative border border-black w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
-            <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
-              <button><img className="w-[1.2rem]" src={CSV} alt="" /></button>
+            <div className="flex flex-row justify-evenly gap-3 p-[0.3rem] px-5">
+              {/* <button><img className="w-[1.2rem]" src={CSV} alt="" /></button> */}
               <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>
-              <button><img className="w-[1.2rem]" src={Filter} alt="" /></button>
+              {/* <button><img className="w-[1.2rem]" src={Filter} alt="" /></button> */}
               <button><img className="w-[1.1rem]" src={Selections} alt="" /></button>
             </div>
             <div className=" absolute right-[4px] bottom-[-7px] border border-[#989898b8] w-[9rem] rounded-[1.3125rem] h-8 mt-6 z-[-1]"></div>
@@ -275,7 +333,7 @@ const Panel = () => {
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                : "border-[#a2a2a260]"
+                : "border-[#a2a2a280]"
                 }`}
               style={{
                 margin: isRowSelected(client.institution) ? "1rem 0" : "0.5rem 0",
@@ -293,7 +351,7 @@ const Panel = () => {
                   checked={isRowSelected(client.institution)}
                 />
                 <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
-                  {isRowSelected(`${client.institution}-${client.emailId}`) && (
+                  {isRowSelected(client.institution) && (
                     <img
                       src={Select}
                       alt="Selected"
@@ -304,7 +362,7 @@ const Panel = () => {
               </label>
 
               <Link to={`/memberlist?institution=${client.institution} `}>
-                <div className="absolute right-2 mt-5">
+                <div className="absolute right-2 mt-5 max600:mt-1 max600:right-3">
                   <img
                     src={personIcon}
                     alt=""
@@ -330,20 +388,77 @@ const Panel = () => {
                     <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
                     <div className="col-span-3 ml-[0rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
                     </div>
-                    <div className="col-span-2 font-semibold text-sm"></div>
+                    <div className="col-span-2 flex justify-end max600:absolute max600:bottom-[10%] right-[1%] ">
+                      {isRowSelected(client.institution) && (
+                        <img
+                          className="w-[4.5rem] cursor-pointer"
+                          src={Update}
+                          alt=""
+                          onClick={() => showUpdateForm(client.institution)}
+                        />
+                      )}
+                    </div>
                     <div className="col-span-2 ml-[-2rem] relative max850:hidden">
                       <div >
                         <div></div>
                         <div></div>
                       </div>
                     </div>
-                    <div className="font-[600] ml-[-1rem] text-[0.9rem] pr-[6rem] max850:hidden"></div>
+                    <div className="">
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
+        {isUpdateFormVisible && selectedUser && (
+          <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+              {/* Include form fields for updating user details */}
+              <input
+                required
+                placeholder="Name"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
+                type="text"
+                value={updatedName}
+                onChange={(e) => setUpdatedName(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Email Address"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                type="email"
+                value={updatedEmail}
+                onChange={(e) => setUpdatedEmail(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Phone Number"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                type="number"
+                value={updatedPhoneNumber}
+                onChange={(e) => setUpdatedPhoneNumber(e.target.value)}
+              />
+              {/* Add other fields for updating user details */}
+              <div className="flex flex-col gap-3 w-full justify-center items-center">
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover-bg-[#ffffff] hover-text-[#2297a7]"
+                  onClick={() => handleUpdateClient(selectedUser)}
+                >
+                  Update
+                </button>
+                <button
+                  className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                  onClick={() => handleCancelUpdate()}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         <div className="flex flex-row gap-2">
           {selectedRowCount > 0 && (

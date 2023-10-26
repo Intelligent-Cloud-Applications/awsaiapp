@@ -107,5 +107,19 @@
   }
 }
   
-  
-  
+.imganimation {
+  animation: imgAnimation 3s ease infinite; /* You can adjust the duration and timing function as needed */
+}
+
+/* Define the keyframes for the animation */
+@keyframes imgAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
