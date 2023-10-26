@@ -1,10 +1,21 @@
 import React from "react";
 import Navbar from "../components/Home/Navbar";
-import { useState } from "react";
+import { useState , useRef} from "react";
 import Pic from "../utils/contactusPic.png";
 import { motion } from 'framer-motion';
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Query = () => {
+  //Get the action url by inspecting the form
+  const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
+
+  //Get the rest from a prefilled link
+  const FORMS_FULL_NAME = "entry.1659643296";
+  const FORMS_COMPANY_NAME = "entry.1521075864";
+  const FORMS_EMAIL = "entry.792093172";
+  const FORMS_ADDRESS = "entry.727108387";
+  const FORMS_PROJECT_DETAILS = "entry.218886769";
+
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
@@ -13,16 +24,68 @@ const Query = () => {
     projectDetails: "",
   });
 
+  const [captchaValue] = useState(null);
+
+  const recaptchaRef = useRef();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here (e.g., send data to a server)
-    console.log(formData);
+
+    try {
+      const token = await recaptchaRef.current.executeAsync();
+
+      if (!token) {
+        alert("Please fill out the CAPTCHA.");
+        return;
+      }
+
+      if (
+        formData.fullName === "" ||
+        formData.companyName === "" ||
+        formData.email === "" ||
+        formData.address === "" ||
+        formData.projectDetails === ""
+      ) {
+        alert("Please fill out all form fields.");
+        return;
+      }
+
+      const bodyData = new FormData();
+      bodyData.append(FORMS_FULL_NAME, formData.fullName);
+      bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
+      bodyData.append(FORMS_EMAIL, formData.email);
+      bodyData.append(FORMS_ADDRESS, formData.address);
+      bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
+
+      await fetch(FORMS_ACTION_URL, {
+        mode: 'no-cors',
+        method: "POST",
+        body: bodyData,
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      });
+
+      setFormData({
+        fullName: "",
+        companyName: "",
+        email: "",
+        address: "",
+        projectDetails: "",
+      });
+
+      console.log(formData);
+      console.log("reCAPTCHA Token:", token);
+    } catch (error) {
+      console.error("reCAPTCHA error:", error);
+    }
   };
+
 
   return (
     <>
@@ -54,11 +117,11 @@ const Query = () => {
             </motion.div>
           </div>
 
-          <div className=" max-w-md w-full mx-auto px-10 py-8  border rounded-md bg-white">
-          <h2 className=" max406:text-3xl max670:text-9xl md:text-15xl font-semibold mb-4 w-full">
+          <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white">
+          <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
               Send  us  a message
               </h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
+              <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label
                   htmlFor="fullName"
@@ -143,9 +206,18 @@ const Query = () => {
                 ></textarea>
               </div>
               <div>
-                <button
+                <ReCAPTCHA
+                 ref={recaptchaRef}
+                  sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
+                  size="invisible"
+                />
+              </div>
+              <div>
+              <button
                   type="submit"
-                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                  onClick={handleSubmit}
+                  disabled={!captchaValue}
                 >
                   Send Message
                 </button>

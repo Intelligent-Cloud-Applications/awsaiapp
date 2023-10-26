@@ -196,13 +196,13 @@ export default function AboutUs() {
                 <img src={Tick} className="w-6" alt="Tick" />
               </div>
               <div className="flex flex-col justify-between gap-2 w-full lg:w-[520px] items-start ">
-                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.5px] max450:w-[22rem]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.2px] max450:w-[22rem]">
                   Empowering clients through advanced applications.
                 </div>
-                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.5px]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] max450:text-[13.2px]">
                   Crafting advanced apps for confident navigation.
                 </div>
-                <div className="text-lg font-inter leading-[30.1px] text-[#000000] ml-0 w-full max450:text-[13.5px]">
+                <div className="text-lg font-inter leading-[30.1px] text-[#000000] ml-0 w-full max450:text-[13.2px]">
                   Providing end-to-end digital solutions encompassing tech,
                   payments, and marketing.
                 </div>
