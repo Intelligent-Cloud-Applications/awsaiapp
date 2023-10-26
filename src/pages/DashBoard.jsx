@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
-import PendingPayments from "../components/Dashboard/PendingPayments/PendingPayments";
+import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
 import NavBar from "../components/Home/Navbar";
 import Context from "../context/Context";
 import Panel from "../components/Dashboard/Panel/Panel";
@@ -35,7 +35,7 @@ const DashBoard = () => {
         return <ClientsPayments />;
 
       case 3:
-        return <PendingPayments />;
+        return <PendingClients />;
 
       default:
         return <div>Sorry the server is down please try after sometimes</div>;
