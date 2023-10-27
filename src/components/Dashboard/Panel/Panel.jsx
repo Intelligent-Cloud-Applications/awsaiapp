@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import Context from "../../../context/Context";
 import { Link } from 'react-router-dom';
 import { API } from "aws-amplify";
+import Swal from 'sweetalert2';
 import Pagination from "@mui/material/Pagination";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
@@ -25,6 +26,7 @@ const Panel = () => {
   const [isMemberList, setisMemberList] = useState("");
   const { clients, util } = useContext(Context);
   const clientsData = Object.entries(clients.data);
+  console.log(clientsData)
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,9 +39,6 @@ const Panel = () => {
   const [JoiningDate, setJoiningDate] = useState("")
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [updatedName, setUpdatedName] = useState("");
-  const [updatedEmail, setUpdatedEmail] = useState("");
-  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState("");
   // Add other state variables for updating user details as needed
 
 
@@ -127,6 +126,10 @@ const Panel = () => {
         },
       };
       const response = await API.post(apiName, path, myInit);
+      Swal.fire({
+        icon: 'success',
+        title: 'User Added',
+      });
       clients.onReload();
       console.log("Client added successfully:", response);
       setName("");
@@ -142,36 +145,48 @@ const Panel = () => {
 
     } catch (error) {
       console.error("Error adding client:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while creating the user.',
+      });
       util.setLoader(false);
     }
   };
 
 
-  const handleUpdateClient = async (institution, cognitoId, e) => {
-    const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
-    setSelectedUser(userToUpdate);
+  const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
     try {
       const apiName = 'clients';
       const path = '/admin/update-any';
       const myInit = {
         body: {
-          cognitoId: cognitoId,
+          cognitoId: selectedUser[1].cognitoId,
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
         },
       };
-      console.log("my init",myInit);
+      console.log("my init", myInit);
       const response = await API.put(apiName, path, myInit);
+      Swal.fire({
+        icon: 'success',
+        title: 'User Added',
+      });
       clients.onReload();
       console.log("Client updated successfully:", response);
       setIsUpdateFormVisible(false);
       setSelectedUser(null);
-      setUpdatedName("");
-      setUpdatedEmail("");
-      setUpdatedPhoneNumber("");
+      setName("");
+      setEmail("");
+      setPhoneNumber("");
     } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while creating the user.',
+      });
       console.error("Error updating client:", error);
     }
   };
@@ -179,15 +194,20 @@ const Panel = () => {
   const handleCancelUpdate = () => {
     setIsUpdateFormVisible(false);
     setSelectedUser(null);
-    setUpdatedName("");
-    setUpdatedEmail("");
-    setUpdatedPhoneNumber("");
+    setName("");
+    setEmail("");
+    setPhoneNumber("");
   };
 
 
   const showUpdateForm = (institution) => {
     const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
     setSelectedUser(userToUpdate);
+    // setcognitoId(userToUpdate[1].cognitoId)
+    setName(userToUpdate[1].institution);
+    setEmail(userToUpdate[1].emailId);
+    setPhoneNumber(userToUpdate[1].phoneNumber);
+
     setIsUpdateFormVisible(true);
   };
 
@@ -393,7 +413,7 @@ const Panel = () => {
                           alt=""
                           onClick={() => showUpdateForm(client.institution)}
                         />
-                        )}
+                      )}
                     </div>
                     <div className="col-span-2 ml-[-2rem] relative max850:hidden">
                       <div >
@@ -419,24 +439,24 @@ const Panel = () => {
                 placeholder="Name"
                 className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
                 type="text"
-                value={updatedName}
-                onChange={(e) => setUpdatedName(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <input
                 required
                 placeholder="Email Address"
                 className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
                 type="email"
-                value={updatedEmail}
-                onChange={(e) => setUpdatedEmail(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 required
                 placeholder="Phone Number"
                 className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
                 type="number"
-                value={updatedPhoneNumber}
-                onChange={(e) => setUpdatedPhoneNumber(e.target.value)}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
               {/* Add other fields for updating user details */}
               <div className="flex flex-col gap-3 w-full justify-center items-center">
@@ -444,7 +464,6 @@ const Panel = () => {
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover-bg-[#ffffff] hover-text-[#2297a7]"
                   onClick={(e) => {
                     e.preventDefault()
-                    
                     handleUpdateClient(selectedUser)
                   }}
                 >
