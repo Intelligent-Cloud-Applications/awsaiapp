@@ -159,16 +159,13 @@ const MemberList = () => {
         icon: 'success',
         title: 'User Added',
       });
-      // memberData.onReload();
       await fetchMembersForInstitution(institution);
       setIsUserAdd(false);
-
       setName("");
       setEmail("");
       setPhoneNumber("");
       setUserStatus("");
       setbalance("");
-
       util.setLoader(false);
     } catch (e) {
       console.log(e);
@@ -227,7 +224,6 @@ const MemberList = () => {
       });
       setIsEditUser(false);
       setEditUser(null);
-
       util.setLoader(false);
     } catch (e) {
       console.log(e);
@@ -277,6 +273,48 @@ const MemberList = () => {
     }
   };
 
+  const handleDeleteSelected = async () => {
+    if (selectedRow.length === 0) {
+      return;
+    }
+
+    const apiName = 'clients';
+    const path = '/user/delete-member';
+
+    try {
+      util.setLoader(true);
+
+      for (const cognitoId of selectedRow) {
+        const myInit = {
+          body: {
+            institution: institution,
+            cognitoId: cognitoId,
+          },
+        };
+        await API.del(apiName, path, myInit);
+      }
+      const updatedMemberData = memberData.filter(
+        (member) => !selectedRow.includes(member.cognitoId)
+      );
+      setMemberData(updatedMemberData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Selected Users Deleted',
+      });
+    } catch (error) {
+      console.error('Error deleting selected users:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while deleting selected users.',
+      });
+    } finally {
+      util.setLoader(false);
+      setSelectedRow([]);
+    }
+  };
+
 
   return (
     <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
@@ -300,10 +338,10 @@ const MemberList = () => {
             Memberlists
           </h2>
 
-          <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem]">
+          <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem] max600:flex-col max600:justify-center max600:items-center max600:mb-[-1rem]">
             {/* searchBar */}
             <div className="flex justify-center items-center">
-              <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max1050:w-[35vw]">
+              <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max1050:w-[35vw] respons">
                 <img
                   className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
                   src={SearchIcon}
@@ -325,9 +363,17 @@ const MemberList = () => {
                 />
               </div>
             </div>
+            {selectedRowCount > 1 && ( // Only show the delete button if multiple users are selected
+              <button
+                className="K2D font-[600] tracking-[1.2px] w-[6rem] h-[2.4rem] rounded-[4px] border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] mt-6 max600:mt-[-1rem]"
+                onClick={handleDeleteSelected}
+              >
+                Delete
+              </button>
+            )}
 
             {/* functionalities */}
-            <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white ">
+            <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max600:mb-[4rem] max600:ml-0 ">
               <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
                 <button>
                   <img className="w-[1.2rem]" src={CSV} alt="" />
@@ -452,7 +498,7 @@ const MemberList = () => {
             </div>
           )}
 
-
+          {/* filter */}
           <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[17rem]">
             <div
               className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "all"
@@ -505,6 +551,7 @@ const MemberList = () => {
           </div>
           <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
+          {/* member data starts from here */}
           <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
             {MembersData.map((memberData, index) => (
               <div
@@ -597,7 +644,6 @@ const MemberList = () => {
                       <div className="font-[600] text-[0.9rem] max850:hidden">
                         {memberData.balance}
                       </div>{" "}
-                      {/* user.balance should be use*/}
                     </div>
                   </div>
                 </div>
@@ -605,11 +651,10 @@ const MemberList = () => {
             ))}
           </div>
 
+          {/* form to update member */}
           {isEditUser && (
             <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
               <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                {/* Include form fields for updating user details */}
-
                 <input
                   required
                   placeholder="Name"
@@ -722,6 +767,7 @@ const MemberList = () => {
                 {selectedRowCount} Items selected
               </div>
             )}
+
             {/* Pagination */}
             <div className="flex justify-start pt-4 ml--[2rem]">
               <Pagination
