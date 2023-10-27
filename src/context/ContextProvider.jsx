@@ -84,6 +84,7 @@ const ContextProvider = (props) => {
     clients: {
       data: clients,
       fetchClients: fetchClients,
+      onReload: fetchClients,
     },
     // member: {
     //   data: member,

@@ -16,9 +16,10 @@ const DashBoard = () => {
 
   const Navigate = useNavigate();
   useEffect(() => {
-    if (Ctx.isUserDataLoaded) {
-      if (Ctx.userData.userType !== "admin") {
-        Navigate("/");
+    if (Ctx.user.profile) {
+      if (Ctx.user.profile.userType !== "admin") {
+
+        Navigate("/dashboard");
       }
     }
   }, [Ctx, Navigate]);

@@ -127,6 +127,7 @@ const Panel = () => {
         },
       };
       const response = await API.post(apiName, path, myInit);
+      clients.onReload();
       console.log("Client added successfully:", response);
       setName("");
       setEmail("");
@@ -156,30 +157,26 @@ const Panel = () => {
       const myInit = {
         body: {
           cognitoId: cognitoId,
-          institution: institution,
-          userName: name,
+          institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
-          // balance: updatedBalance,
-          // status: updatedStatus,
         },
       };
+      console.log("my init",myInit);
       const response = await API.put(apiName, path, myInit);
+      clients.onReload();
       console.log("Client updated successfully:", response);
       setIsUpdateFormVisible(false);
       setSelectedUser(null);
       setUpdatedName("");
       setUpdatedEmail("");
       setUpdatedPhoneNumber("");
-      // You can handle the response as needed, e.g., show a success message.
     } catch (error) {
       console.error("Error updating client:", error);
-      // Handle the error, show an error message, etc.
     }
   };
 
   const handleCancelUpdate = () => {
-    // Hide the form and reset the state variables
     setIsUpdateFormVisible(false);
     setSelectedUser(null);
     setUpdatedName("");
@@ -388,15 +385,15 @@ const Panel = () => {
                     <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
                     <div className="col-span-3 ml-[0rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
                     </div>
-                    <div className="col-span-2 flex justify-end max600:absolute max600:bottom-[10%] right-[1%] ">
+                    <div className="col-span-2 flex justify-end max600:absolute max600:bottom-[1%] right-[0.5%] ">
                       {isRowSelected(client.institution) && (
                         <img
-                          className="w-[4.5rem] cursor-pointer"
+                          className="w-[4rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
                           src={Update}
                           alt=""
                           onClick={() => showUpdateForm(client.institution)}
                         />
-                      )}
+                        )}
                     </div>
                     <div className="col-span-2 ml-[-2rem] relative max850:hidden">
                       <div >
@@ -445,7 +442,11 @@ const Panel = () => {
               <div className="flex flex-col gap-3 w-full justify-center items-center">
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover-bg-[#ffffff] hover-text-[#2297a7]"
-                  onClick={() => handleUpdateClient(selectedUser)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    
+                    handleUpdateClient(selectedUser)
+                  }}
                 >
                   Update
                 </button>

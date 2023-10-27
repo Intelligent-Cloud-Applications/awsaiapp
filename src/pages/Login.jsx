@@ -41,7 +41,7 @@ const Login = () => {
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
         console.log(userdata.status);
-
+        await UserCtx.clients.onReload();
         Navigate("/dashboard");
       } else {
         setError(`Incorrect ${formData.email} or password`);

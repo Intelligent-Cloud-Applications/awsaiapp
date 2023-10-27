@@ -159,6 +159,8 @@ const MemberList = () => {
         icon: 'success',
         title: 'User Added',
       });
+      // memberData.onReload();
+      await fetchMembersForInstitution(institution);
       setIsUserAdd(false);
 
       setName("");
@@ -217,6 +219,7 @@ const MemberList = () => {
 
     try {
       const update = await API.put(apiName, path, myInit);
+      await fetchMembersForInstitution(institution);
       console.log(update)
       Swal.fire({
         icon: 'success',
