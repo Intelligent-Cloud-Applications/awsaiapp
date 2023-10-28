@@ -73,7 +73,7 @@ const ClientsPayments = () => {
       >
         <div className="flex justify-between w-[72vw] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[1rem] font-[600] max850:text-[2rem]">
           <h2 className="moveRight ">
-            Clients Payment
+            IGNORE THIS PAGE
           </h2>
           <div className="relative">
             <img src={AdminPic} alt="" />
