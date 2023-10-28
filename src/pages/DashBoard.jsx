@@ -1,5 +1,6 @@
-import React, {useState,} from "react";
+import React, { useState, useContext } from "react";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
+import Context from "../context/Context";
 import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
 import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
 import NavBar from "../components/Home/Navbar";
@@ -8,24 +9,44 @@ import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
-      // eslint-disable-next-line
+  // eslint-disable-next-line
+  const Ctx = useContext(Context);
   const [userCheck, setUserCheck] = useState(0);
   const displayAfterClick = () => {
-    switch (click) {
-      case 0:
-        return <Panel />;
+    if (Ctx.userData.userType !== "admin") {
+      switch (click) {
+        case 0:
+          return <Panel />;
 
-      case 1:
-        return <RevenueGenerated />;
+        case 1:
+          return <RevenueGenerated />;
 
-      case 2:
-        return <ClientsPayments />;
+        case 2:
+          return <ClientsPayments />;
 
-      case 3:
-        return <PendingClients />;
+        case 3:
+          return <PendingClients />;
 
-      default:
-        return <div>Sorry the server is down please try after sometimes</div>;
+        default:
+          return <div>Sorry the server is down please try after sometimes</div>;
+      }
+    } else if (Ctx.userData.userType !== "client") {
+      switch (click) {
+        case 0:
+          return <Panel />;
+
+        case 1:
+          return <RevenueGenerated />;
+
+        case 2:
+          return <ClientsPayments />;
+
+        case 3:
+          return <PendingClients />;
+
+        default:
+          return <div>Sorry the server is down please try after sometimes</div>;
+      }
     }
   };
 

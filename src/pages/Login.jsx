@@ -38,18 +38,18 @@ const Login = () => {
 
       if (user) {
         const userdata = await API.get('clients', '/self/read-self/awsaiapp');
-        if(userdata.userType === 'admin'){ 
-        UserCtx.setUserData(userdata);
-        UserCtx.setIsAuth(true);
-        UtilCtx.setLoader(false);
-        console.log(userdata)
-        await UserCtx.clients.onReload();
-        Swal.fire({
-          icon: 'success',
-          title: 'Welcome Back',
-        });
-        Navigate("/dashboard");
-        }else{
+        if (userdata.userType === 'admin') {
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          console.log(userdata)
+          await UserCtx.clients.onReload();
+          Swal.fire({
+            icon: 'success',
+            title: 'Welcome Back',
+          });
+          Navigate("/dashboard");
+        } else {
           Navigate("/")
           Swal.fire({
             icon: 'error',
@@ -138,6 +138,12 @@ const Login = () => {
               >
                 Login
               </button>
+              {error && (
+                <div className=" mt-[1rem] font-bold text-[#db3d3d] text-center K2D">
+                  {error}
+                </div>
+              )}
+
 
               {/* <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
                 <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
