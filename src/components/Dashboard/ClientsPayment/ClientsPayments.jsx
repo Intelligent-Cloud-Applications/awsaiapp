@@ -123,9 +123,9 @@ const ClientsPayments = () => {
           </div>
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
         </div>
-        <div className=" w-[76vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
+        <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
-        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
+        <div className="w-[78vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
           {users.map((user) => (
             <div
               key={user.id}
@@ -178,16 +178,16 @@ const ClientsPayments = () => {
                       <div className="overflow-auto text-[0.8rem] font-[600]">7735227398</div>
                     </div>
                     <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">USA</div>
-                    <div className="col-span-3 ml-[-1rem] font-semibold text-sm max600:hidden">40k/125k</div>
-                    <div className="col-span-2 ml-[-5rem] relative max850:hidden">
+                    <div className="col-span-3 ml-[-1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">40k/125k</div>
+                    <div className="col-span-2 ml-[-5rem] relative max1008:hidden">
                       <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${user.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
                         <div className={`w-3 h-3 mt-[0.4rem] ${user.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
                         <div>{user.status === "Active" ? "Active" : "Inactive"}</div>
                       </div>
                     </div>
                     <div className="flex flex-row justify-between w-[16vw]">
-                    <div className=" ml-[-2rem] relative max850:hidden">0</div>
-                    <div className="w-[10rem] ml-[4rem] max850:hidden"><img className="max-w-[14rem]" src={PDF} alt="" /></div>
+                    <div className=" ml-[-2rem] relative max850:ml-[1rem] max600:hidden">0</div>
+                    <div className="w-[10rem] ml-[4rem] max600:hidden"><img className="max-w-[14rem]" src={PDF} alt="" /></div>
                     </div>
                   </div>
 
