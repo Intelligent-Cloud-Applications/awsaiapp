@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth, API } from 'aws-amplify';
 import Context from "../context/Context";
+import Swal from 'sweetalert2';
 import Navbar from '../components/Home/Navbar';
 import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
@@ -15,8 +16,8 @@ const Login = () => {
     email: '',
     password: '',
   });
+  // eslint-disable-next-line
   const [error, setError] = useState('');
-  console.log(error);
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
 
@@ -37,12 +38,26 @@ const Login = () => {
 
       if (user) {
         const userdata = await API.get('clients', '/self/read-self/awsaiapp');
+        if(userdata.userType === 'admin'){ 
         UserCtx.setUserData(userdata);
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
-        console.log(userdata.status);
+        console.log(userdata)
         await UserCtx.clients.onReload();
+        Swal.fire({
+          icon: 'success',
+          title: 'Welcome Back',
+        });
         Navigate("/dashboard");
+        }else{
+          Navigate("/")
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please enter a valid Id',
+          });
+          UtilCtx.setLoader(false);
+        }
       } else {
         setError(`Incorrect ${formData.email} or password`);
         UtilCtx.setLoader(false);

@@ -172,7 +172,7 @@ const Panel = () => {
       const response = await API.put(apiName, path, myInit);
       Swal.fire({
         icon: 'success',
-        title: 'User Added',
+        title: 'User Updated',
       });
       clients.onReload();
       console.log("Client updated successfully:", response);
@@ -235,9 +235,9 @@ const Panel = () => {
             <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
               <img className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2" src={SearchIcon} alt="" />
               <input
-                className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max1050:text-[1vw] "
+                className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem] "
                 type="text"
-                placeholder={window.innerWidth >= 600 ? "Search “Name, Email, Number”" : ""}
+                placeholder={"Search “Name, Email, Number”"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -248,7 +248,7 @@ const Panel = () => {
 
 
           {/* functionalities */}
-          <div className=" relative border border-black w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
+          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
             <div className="flex flex-row justify-evenly gap-3 p-[0.3rem] px-5">
               {/* <button><img className="w-[1.2rem]" src={CSV} alt="" /></button> */}
               <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>

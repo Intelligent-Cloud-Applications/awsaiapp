@@ -1,29 +1,15 @@
-import React, { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useState,} from "react";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
 import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
 import NavBar from "../components/Home/Navbar";
-import Context from "../context/Context";
 import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
-  const Ctx = useContext(Context);
       // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
-
-  const Navigate = useNavigate();
-  useEffect(() => {
-    if (Ctx.user.profile) {
-      if (Ctx.user.profile.userType !== "admin") {
-
-        Navigate("/dashboard");
-      }
-    }
-  }, [Ctx, Navigate]);
-
   const displayAfterClick = () => {
     switch (click) {
       case 0:

@@ -9,7 +9,7 @@ function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
 
-  console.log(process.env)
+  // console.log(process.env)
 
   useEffect(() => {
     const check = async () => {
@@ -18,12 +18,13 @@ function App() {
       try {
         await Auth.currentAuthenticatedUser();
         const userdata = await API.get('clients', '/self/read-self/awsaiapp');
-
+        if(userdata.userType === 'admin'){ 
         console.log(userdata);
         // userdata.Status = true;
         UserCtx.current.setUserData(userdata);
         UserCtx.current.setIsAuth(true);
         UtilCtx.current.setLoader(false);
+        }
       } catch (e) {
         console.log(e);
         // UserCtx.current.setUserData({});
