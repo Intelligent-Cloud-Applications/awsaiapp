@@ -11,6 +11,7 @@ const DashBoard = () => {
   const [click, setClick] = useState(0);
   // eslint-disable-next-line
   const Ctx = useContext(Context);
+    // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const displayAfterClick = () => {
     if (Ctx.userData.userType !== "admin") {
