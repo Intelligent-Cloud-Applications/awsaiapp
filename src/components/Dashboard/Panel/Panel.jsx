@@ -166,6 +166,7 @@ const Panel = () => {
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
+          country:Country,
         },
       };
       console.log("my init", myInit);
@@ -181,6 +182,7 @@ const Panel = () => {
       setName("");
       setEmail("");
       setPhoneNumber("");
+      setCountry("")
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -295,8 +297,18 @@ const Panel = () => {
               />
               <input
                 required
-                placeholder="Joining date"
+                placeholder="Country"
                 className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="text"
+                value={Country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Joining date"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:border-opacity-20  "
                 type="date"
                 value={JoiningDate}
                 onChange={(e) => {
@@ -305,13 +317,13 @@ const Panel = () => {
               />
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
                 <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                   onClick={handleAddClient}
                 >
                   Create
                 </button>
                 <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                   onClick={() => {
                     setIsUserAdd(false);
                     setUserCheck(0);
@@ -457,6 +469,16 @@ const Panel = () => {
                 type="number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Country"
+                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="text"
+                value={Country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}
               />
               {/* Add other fields for updating user details */}
               <div className="flex flex-col gap-3 w-full justify-center items-center">

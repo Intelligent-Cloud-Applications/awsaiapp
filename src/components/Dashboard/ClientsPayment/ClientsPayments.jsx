@@ -1,12 +1,12 @@
-// // import React from 'react'
+import React from 'react'
 
-// // const ClientsPayments = () => {
-// //   return (
-// //     <div>ClientsPayments</div>
-// //   )
-// // }
+const ClientsPayments = () => {
+  return (
+    <div>ClientsPayments</div>
+  )
+}
 
-// // export default ClientsPayments
+export default ClientsPayments
 
 
 // import React, { useState, useContext, useEffect } from "react"

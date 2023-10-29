@@ -58,7 +58,7 @@ const DashBoard = () => {
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
         {/* Center the LeftBanner below 1300 pixels */}
-        <div className=" bg-white">
+        <div className=" bg-white mt-[6rem]">
           <LeftBanner
             displayAfterClick={(data) => {
               setClick(data);

@@ -1,3 +1,14 @@
+import React from 'react'
+
+const RevenueGenerated = () => {
+  return (
+    <div>RevenueGenerated</div>
+  )
+}
+
+export default RevenueGenerated
+
+
 // import React, { useState, useEffect, useRef } from "react";
 // import Chart from "chart.js/auto";
 // import ChartDataLabels from "chartjs-plugin-datalabels";
