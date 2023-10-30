@@ -8,7 +8,6 @@ import './LeftBanner.css';
 const LeftBanner = ({ displayAfterClick }) => {
   const [click, setClick] = useState(0);
 
-  // Load the selected page from localStorage when the component mounts
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
     if (selectedPage) {

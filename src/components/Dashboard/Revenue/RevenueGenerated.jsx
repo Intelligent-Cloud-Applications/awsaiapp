@@ -43,7 +43,7 @@ export default RevenueGenerated
 //           legend: {
 //             display: true,
 //             position: 'right',
-//             align: 'start',
+//             align: 'end',
 //             labels: {
 //               font: {
 //                 size: 7,

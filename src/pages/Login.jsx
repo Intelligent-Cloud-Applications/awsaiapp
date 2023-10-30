@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Auth, API } from 'aws-amplify';
 import Context from "../context/Context";
 import Swal from 'sweetalert2';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import Navbar from '../components/Home/Navbar';
 import EmailIcon from '../utils/Assets/Dashboard/images/SVG/EmailIcon.svg';
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg';
@@ -16,7 +17,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  // eslint-disable-next-line
+  const [passwordVisible, setPasswordVisible] = useState(true);
   const [error, setError] = useState('');
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
@@ -28,6 +29,10 @@ const Login = () => {
 
   const Navigate = useNavigate();
 
+  const togglePasswordVisibility = (e) => {
+    e.preventDefault();
+    setPasswordVisible(!passwordVisible)
+  }
   const handelSubmit = async (event) => {
     event.preventDefault();
 
@@ -118,13 +123,16 @@ const Login = () => {
                   className="absolute left-3 top-3 h-[1rem] w-[1rem] pointer-events-none"
                 />
                 <input
-                  type="password"
+                  type={passwordVisible ? 'password' : 'text'}
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
                   placeholder="Password"
                 />
+                <button onClick={togglePasswordVisibility} className="absolute right-3 top-3">
+                  {passwordVisible ? <AiFillEyeInvisible /> : <AiFillEye />}
+                </button>
               </div>
               <div className="w-[20rem] mb-6">
                 <a href="/forgot-password" className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline">
