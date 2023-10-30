@@ -42,30 +42,29 @@ export default RevenueGenerated
 //         plugins: {
 //           legend: {
 //             display: true,
-//             position: 'bottom',
+//             position: 'right',
 //             align: 'start',
 //             labels: {
 //               font: {
-//                 size: 10,
+//                 size: 7,
 //                 weight: 'bold',
 //               },
-//               boxWidth: 15,
-//               boxHeight: 15,
+//               usePointStyle: true,
 //               padding: 10,
 //             },
 //           },
 //           datalabels: {
-//             color: 'white',
+//             // className: 'data-label',
+//             color: 'black',
 //             font: {
-//               size: 12,
+//               size: 6,
 //               weight: 700,
 //             },
 //             borderWidth: 1,
-//             borderColor: "#fff",
-//             borderRadius: 25,
-//             backgroundColor: (context) => {
-//               return context.dataset.backgroundColor
-//             },
+//             backgroundColor: "rgba(192, 192, 192, 0.639) ",
+//             borderRadius: 6,
+//             shadowColor:"black",
+//             shadowBlur:5,
 //             formatter: (value, context) => {
 //               const dataset = context.chart.data.datasets[0];
 //               const total = dataset.data.reduce((a, b) => a + b, 0);
@@ -79,7 +78,7 @@ export default RevenueGenerated
 //         },
 //         elements: {
 //           arc: {
-//             borderWidth: 7,
+//             borderWidth: 5,
 //           },
 //         },
 //         shadowBlur: 10,
@@ -185,31 +184,17 @@ export default RevenueGenerated
 //       "Mar",
 //       "Apr",
 //       "May",
-//       "Jun",
-//       "Jul",
-//       "Aug",
-//       "Sep",
-//       "Oct",
-//       "Nov",
-//       "Dec",
 //     ],
 //     datasets: [
 //       {
 //         label: "Revenue",
-//         data: [60, 50, 30, 70, 25, 20, 20, 5, 10, 10,],
+//         data: [60, 50, 30, 70, 25],
 //         backgroundColor: [
 //           "#3A5EDE",
 //           "#6C4B4B",
 //           "#CB5A5A",
 //           "#30AFBC",
 //           "#5ACB6C",
-//           "#AA5AFB",
-//           "#FB5AE1",
-//           "#522D36",
-//           "#3D2581",
-//           "#554669",
-//           "#99cc00",
-//           "#FB5A80",
 //         ],
 //         shadow: true,
 //         shadowColor:"#3A5EDE", 
@@ -263,7 +248,8 @@ export default RevenueGenerated
 //           >
 //             <BarChart data={barChartData} />
 //           </div>
-//           <div className="w-[17rem] min800:hidden ml-[-6rem] mt-[1rem]">
+          
+//           <div className="flex justify-center items-center w-[10rem] min800:hidden mt-[1rem] ml-[3rem]">
 //             {windowWidth <= 768 && <PieChart data={pieChartData} />}
 //           </div>
 
