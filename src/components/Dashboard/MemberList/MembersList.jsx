@@ -330,7 +330,7 @@ const MemberList = () => {
 
           <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
-          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-6">
+          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0">
             Memberlists
           </h2>
 

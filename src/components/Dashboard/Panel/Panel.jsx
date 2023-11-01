@@ -231,7 +231,7 @@ const Panel = () => {
           Clients Panel
         </h2>
 
-        <div className="flex flex-row justify-evenly ml-[2.5rem] mt-[1rem] max850:mt-[4rem] max850:flex-col max850:justify-center max850:items-center">
+        <div className="flex flex-row justify-evenly ml-[2.5rem] mt-[1rem]  max850:flex-col max850:justify-center max850:items-center">
           {/* searchBar */}
           <div className="flex justify-center items-center max850:w-[80vw]">
             <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
