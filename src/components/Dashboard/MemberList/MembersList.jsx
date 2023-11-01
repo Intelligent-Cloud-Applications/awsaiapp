@@ -38,7 +38,7 @@ const MemberList = () => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
-  const { util } = useContext(Context);
+  const { util, clients } = useContext(Context);
   console.log(userCheck)
 
   const fetchMembersForInstitution = async (institution) => {
@@ -53,7 +53,7 @@ const MemberList = () => {
 
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
-      // util.onReload()
+      clients.onReload()
       setMemberData(response);
     } catch (error) {
       console.error("Error fetching members:", error);
@@ -92,12 +92,9 @@ const MemberList = () => {
     return filtered;
   };
 
-
   const filteredmember = filtermember();
-
   const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  // eslint-disable-next-line
   const endIndex = startIndex + itemsPerPage;
   const MembersData = filteredmember.slice(startIndex, endIndex);
 
@@ -253,7 +250,6 @@ const MemberList = () => {
         cognitoId: cognitoId,
       },
     };
-
     try {
       await API.del(apiName, path, myInit);
       const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
@@ -298,18 +294,17 @@ const MemberList = () => {
         (member) => !selectedRow.includes(member.cognitoId)
       );
       setMemberData(updatedMemberData);
-
       Swal.fire({
         icon: 'success',
         title: 'Selected Users Deleted',
       });
     } catch (error) {
-      console.error('Error deleting selected users:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'An error occurred while deleting selected users.',
       });
+      console.error('Error deleting selected users:', error);
     } finally {
       util.setLoader(false);
       setSelectedRow([]);

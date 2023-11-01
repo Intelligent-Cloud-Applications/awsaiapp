@@ -6,6 +6,12 @@ import ContextProvider from "./context/ContextProvider";
 import "./index.css";
 import App from "./App";
 
+const process = {
+  env: {
+    STAGE: "DEV",
+  },
+}
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -30,17 +36,16 @@ Amplify.configure({
     endpoints: [
       {
         name: "clients",
-        endpoint: "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
-        region: "us-east-2",
-      },
-      // You might want to uncomment this and configure it if needed
+        endpoint:
+          process.env.STAGE === "PROD"
+            ? "https://edmrgkqe9b.execute-api.us-east-1.amazonaws.com/prod"
+            : "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
+            region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
+          },
       // {
-      //   name: "user",
-      //   endpoint:
-      //     process.env.STAGE === "PROD"
-      //       ? "https://7sh8wrjmm2.execute-api.us-east-1.amazonaws.com/dev"
-      //       : "https://r5dp21mb28.execute-api.us-east-2.amazonaws.com/dev",
-      //   region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
+      //   name: "clients",
+      //   endpoint: "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
+      //   region: "us-east-2",
       // },
     ],
   },
@@ -49,10 +54,10 @@ Amplify.configure({
 // ReactDOM.render(<App />, document.getElementById('root'));
 
 const root = ReactDOMClient.createRoot(document.getElementById('root'));
-root.render( 
-   <BrowserRouter>
-  <ContextProvider>
-    <App />
-  </ContextProvider>
-</BrowserRouter>,
+root.render(
+  <BrowserRouter>
+    <ContextProvider>
+      <App />
+    </ContextProvider>
+  </BrowserRouter>,
 );
