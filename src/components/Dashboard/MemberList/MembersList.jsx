@@ -241,34 +241,48 @@ const MemberList = () => {
 
 
   const handleDeleteMember = async (e) => {
-    e.preventDefault()
-    const apiName = 'clients';
-    const path = '/user/delete-member';
-    const myInit = {
-      body: {
-        institution: institution,
-        cognitoId: cognitoId,
-      },
-    };
-    try {
-      await API.del(apiName, path, myInit);
-      const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
-      setMemberData(updatedMemberData);
-      Swal.fire({
-        icon: 'success',
-        title: 'User Deleted',
-      });
-      util.setLoader(false);
-      setIsEditUser(false);
-    } catch (error) {
-      console.error("Error deleting member:", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while deleting the member.',
-      });
-    }
+    e.preventDefault();
+    Swal.fire({
+      title: 'Delete User',
+      text: 'Are you sure you want to delete this user?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const apiName = 'clients';
+        const path = '/user/delete-member';
+        const myInit = {
+          body: {
+            institution: institution,
+            cognitoId: cognitoId,
+          },
+        };
+
+        API.del(apiName, path, myInit)
+          .then(() => {
+            const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
+            setMemberData(updatedMemberData);
+            Swal.fire({
+              icon: 'success',
+              title: 'User Deleted',
+            });
+            util.setLoader(false);
+            setIsEditUser(false);
+          })
+          .catch((error) => {
+            console.error("Error deleting member:", error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred while deleting the member.',
+            });
+          });
+      }
+    });
   };
+
 
   const handleDeleteSelected = async () => {
     if (selectedRow.length === 0) {

@@ -85,17 +85,12 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  /* Adjust the transparency here */
   z-index: -1;
-  /* Place it behind the SweetAlert2 dialog */
   filter: blur(50px);
-  /* Apply the blur effect */
 }
 
-/* Style the SweetAlert2 dialog */
 .swal2-popup {
   background: #232323;
-  /* Your other styles here */
 }
 
 div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left] {
@@ -118,10 +113,10 @@ div:where(.swal2-container) button:where(.swal2-styled) {
 }
 
 div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
-  border: 0;
+  border: 0 !important;
   border-radius: 0.25em;
   background: initial;
-  background-color: #1072ad;
+  background-color: #1072ad !important;
   color: #d1d1d1;
   font-size: 1em;
 }
@@ -138,4 +133,9 @@ div:where(.swal2-container) button:where(.swal2-styled) {
 .respons{
   width: 80vw;
 }
+}
+
+div:where(.swal2-container) .swal2-html-container {
+  color: rgb(186, 186, 186);
+  font-family: 'K2D';
 }
