@@ -18,6 +18,7 @@ import "./MembersList.css";
 
 const MemberList = () => {
   const itemsPerPage = 7;
+  console.log(window.location.search)
   const searchParams = new URLSearchParams(window.location.search);
   const institution = searchParams.get('institution');
   const [currentPage, setCurrentPage] = useState(1);

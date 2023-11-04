@@ -43,7 +43,7 @@ const Login = () => {
 
       if (user) {
         const userdata = await API.get('clients', '/self/read-self/awsaiapp');
-        if (userdata.userType === 'admin') {
+        if (userdata.userType === 'admin' && userdata.institution === "awsaiapp" ) {
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
           UtilCtx.setLoader(false);
