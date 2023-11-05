@@ -25,7 +25,7 @@ const RoutesContainer = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/logout" element={<Logout />} />
+      <Route path="/logout" element={<Logout/>} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/memberlist" element={<MemberList />} />
       <Route path="/Pricing" element={<Pricing />} />

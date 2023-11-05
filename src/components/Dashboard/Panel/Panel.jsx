@@ -247,8 +247,6 @@ const Panel = () => {
             </div>
           </div>
 
-
-
           {/* functionalities */}
           <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
             <div className="flex flex-row justify-evenly gap-3 p-[0.3rem] px-5">

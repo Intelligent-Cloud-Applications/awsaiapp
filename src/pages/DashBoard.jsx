@@ -6,6 +6,7 @@ import PendingClients from "../components/Dashboard/PendingClients/PendingClient
 import NavBar from "../components/Home/Navbar";
 import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
+import MemberList from '../components/Dashboard/Revenue/RevenueGenerated';
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
@@ -22,7 +23,10 @@ const DashBoard = () => {
   }, [click]);
 
   const displayAfterClick = () => {
-    if (Ctx.userData.userType === "admin") {
+    if (
+      Ctx.userData.userType === "admin" &&
+      Ctx.userdata.institution === "awsaiapp"
+    ) {
       switch (click) {
         case 0:
           return <Panel />;
@@ -36,6 +40,13 @@ const DashBoard = () => {
         case 3:
           return <PendingClients />;
 
+        default:
+          return <div>Sorry, the server is down. Please try again later.</div>;
+      }
+    } else {
+      switch (click) {
+        case 0:
+          return <MemberList />;
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }

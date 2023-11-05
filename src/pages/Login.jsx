@@ -10,6 +10,7 @@ import LockIcon from "../utils/Assets/Dashboard/images/SVG/LockIcon.svg";
 // import GoogleIcon from '../utils/png/Google.png';
 // import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from "../utils/Assets/Login.png";
+import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import "./Login.css";
 
 const Login = () => {
@@ -49,7 +50,10 @@ const Login = () => {
           "clients",
           `/self/read-self/${institution}`
         );
-        if (userdata.userType === "admin") {
+        if (
+          userdata.userType === "admin" &&
+          userdata.institution === "awsaiapp"
+        ) {
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
           UtilCtx.setLoader(false);
@@ -60,6 +64,16 @@ const Login = () => {
             title: "Welcome Back",
           });
           Navigate("/dashboard");
+        } else if (userdata.userType === "admin") {
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
+          Swal.fire({
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/memberlist?institution=${institution}`);
         } else {
           Navigate("/");
           Swal.fire({
@@ -118,15 +132,13 @@ const Login = () => {
             </h2>
             <form className="flex flex-col items-center">
               <select
-                className="Inter pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
+                className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
                 value={institution}
                 onChange={(e) => {
                   setInstitution(e.target.value);
                 }}
               >
-                <option className="text-[#474747]" value="">
-                  Select Institution
-                </option>
+                <option value="">Select your Institution</option>
                 {institutionName.map((name) => (
                   <option key={name} value={name}>
                     {name}
@@ -222,6 +234,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <LeftBanner institution={institution} />
     </>
   );
 };
