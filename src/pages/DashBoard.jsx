@@ -24,8 +24,7 @@ const DashBoard = () => {
 
   const displayAfterClick = () => {
     if (
-      Ctx.userData.userType === "admin" &&
-      Ctx.userdata.institution === "awsaiapp"
+      Ctx.userData.institution === "awsaiapp"
     ) {
       switch (click) {
         case 0:
