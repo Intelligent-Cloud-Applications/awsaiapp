@@ -58,7 +58,7 @@ const DashBoard = () => {
         <NavBar />
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
-        <div className="bg-white">
+        <div className="bg-white mt-[8rem]">
           <LeftBanner
             displayAfterClick={(data) => {
               setClick(data);

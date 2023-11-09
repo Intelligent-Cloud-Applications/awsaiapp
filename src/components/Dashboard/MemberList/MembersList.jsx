@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Context from "../../../context/Context";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
@@ -14,13 +14,14 @@ import CSV from "../../../utils/Assets/Dashboard/images/SVG/CSV.svg";
 import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 import Filter from "../../../utils/Assets/Dashboard/images/SVG/Filter.svg";
 import Navbar from "../../Home/Navbar";
+// import LeftBanner from "../LeftBanner/LeftBanner";
 import "./MembersList.css";
 
 const MemberList = () => {
   const itemsPerPage = 7;
   console.log(window.location.search)
   const searchParams = new URLSearchParams(window.location.search);
-  const institution = searchParams.get('institution');
+  const institution = searchParams.get("institution");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
@@ -31,16 +32,17 @@ const MemberList = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [balance, setbalance] = useState("");
   const [Country, setCountry] = useState("");
-  const [cognitoId, setcognitoId] = useState("")
+  const [cognitoId, setcognitoId] = useState("");
   const [userCheck, setUserCheck] = useState(0);
-  const [JoiningDate, setJoiningDate] = useState("")
+  const [JoiningDate, setJoiningDate] = useState("");
   const [activeUserList, setActiveUserList] = useState([]);
   const [inactiveUserList, setInactiveUserList] = useState([]);
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
   const { util, clients } = useContext(Context);
-  console.log(userCheck)
+  // const isSuperAdmin = clients.institution !== "awsaiapp";
+  console.log(userCheck);
 
   const fetchMembersForInstitution = async (institution) => {
     try {
@@ -49,12 +51,16 @@ const MemberList = () => {
         "clients",
         `/user/list-members/${institution}`
       );
-      const activeUsers = response.filter((memberData) => memberData.status === "Active");
-      const inactiveUsers = response.filter((memberData) => memberData.status === "InActive");
+      const activeUsers = response.filter(
+        (memberData) => memberData.status === "Active"
+      );
+      const inactiveUsers = response.filter(
+        (memberData) => memberData.status === "InActive"
+      );
 
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
-      clients.onReload()
+      clients.onReload();
       setMemberData(response);
     } catch (error) {
       console.error("Error fetching members:", error);
@@ -69,7 +75,6 @@ const MemberList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
 
-
   const filtermember = () => {
     if (!searchQuery) {
       if (userStatus === "active") {
@@ -83,11 +88,10 @@ const MemberList = () => {
     const query = searchQuery.toLowerCase();
 
     const filtered = memberData?.filter((member) => {
-      const matches = (
+      const matches =
         member.userName.toLowerCase().includes(query) ||
         member.emailId.toLowerCase().includes(query) ||
-        member.phoneNumber.toLowerCase().includes(query)
-      );
+        member.phoneNumber.toLowerCase().includes(query);
       return matches;
     });
     return filtered;
@@ -98,7 +102,6 @@ const MemberList = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const MembersData = filteredmember.slice(startIndex, endIndex);
-
 
   const handleCheckboxChange = (cognitoId) => {
     if (selectedRow.includes(cognitoId)) {
@@ -119,16 +122,16 @@ const MemberList = () => {
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
 
   const handleAddMember = async (e) => {
-    e.preventDefault()
-    const apiName = 'clients';
-    const path = '/user/create-member';
+    e.preventDefault();
+    const apiName = "clients";
+    const path = "/user/create-member";
     const myInit = {
       body: {
         institution: institution,
@@ -144,19 +147,22 @@ const MemberList = () => {
 
     try {
       const create = await API.post(apiName, path, myInit);
-      setMemberData([...memberData, {
-        userName: name,
-        emailId: email,
-        phoneNumber: phoneNumber,
-        country: Country,
-        status: userStatus,
-        balance: balance,
-        joiningDate: JoiningDate,
-      }]);
+      setMemberData([
+        ...memberData,
+        {
+          userName: name,
+          emailId: email,
+          phoneNumber: phoneNumber,
+          country: Country,
+          status: userStatus,
+          balance: balance,
+          joiningDate: JoiningDate,
+        },
+      ]);
       console.log("User created successfully:", create);
       Swal.fire({
-        icon: 'success',
-        title: 'User Added',
+        icon: "success",
+        title: "User Added",
       });
       await fetchMembersForInstitution(institution);
       setIsUserAdd(false);
@@ -169,9 +175,9 @@ const MemberList = () => {
     } catch (e) {
       console.log(e);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while creating the user.',
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while creating the user.",
       });
       util.setLoader(false);
     }
@@ -196,7 +202,7 @@ const MemberList = () => {
   };
 
   const handleUpdateUser = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const apiName = "clients";
     const path = `/user/update-member`;
     const myInit = {
@@ -216,10 +222,10 @@ const MemberList = () => {
     try {
       const update = await API.put(apiName, path, myInit);
       await fetchMembersForInstitution(institution);
-      console.log(update)
+      console.log(update);
       Swal.fire({
-        icon: 'success',
-        title: 'User Updated',
+        icon: "success",
+        title: "User Updated",
       });
       setIsEditUser(false);
       setEditUser(null);
@@ -227,9 +233,9 @@ const MemberList = () => {
     } catch (e) {
       console.log(e);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while updating the user.',
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the user.",
       });
       util.setLoader(false);
     }
@@ -240,20 +246,19 @@ const MemberList = () => {
     setEditUser(null);
   };
 
-
   const handleDeleteMember = async (e) => {
     e.preventDefault();
     Swal.fire({
-      title: 'Delete User',
-      text: 'Are you sure you want to delete this user?',
-      icon: 'warning',
+      title: "Delete User",
+      text: "Are you sure you want to delete this user?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        const apiName = 'clients';
-        const path = '/user/delete-member';
+        const apiName = "clients";
+        const path = "/user/delete-member";
         const myInit = {
           body: {
             institution: institution,
@@ -263,11 +268,13 @@ const MemberList = () => {
 
         API.del(apiName, path, myInit)
           .then(() => {
-            const updatedMemberData = memberData.filter(member => member.cognitoId !== cognitoId);
+            const updatedMemberData = memberData.filter(
+              (member) => member.cognitoId !== cognitoId
+            );
             setMemberData(updatedMemberData);
             Swal.fire({
-              icon: 'success',
-              title: 'User Deleted',
+              icon: "success",
+              title: "User Deleted",
             });
             util.setLoader(false);
             setIsEditUser(false);
@@ -275,23 +282,22 @@ const MemberList = () => {
           .catch((error) => {
             console.error("Error deleting member:", error);
             Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred while deleting the member.',
+              icon: "error",
+              title: "Error",
+              text: "An error occurred while deleting the member.",
             });
           });
       }
     });
   };
 
-
   const handleDeleteSelected = async () => {
     if (selectedRow.length === 0) {
       return;
     }
 
-    const apiName = 'clients';
-    const path = '/user/delete-member';
+    const apiName = "clients";
+    const path = "/user/delete-member";
 
     try {
       util.setLoader(true);
@@ -310,38 +316,37 @@ const MemberList = () => {
       );
       setMemberData(updatedMemberData);
       Swal.fire({
-        icon: 'success',
-        title: 'Selected Users Deleted',
+        icon: "success",
+        title: "Selected Users Deleted",
       });
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while deleting selected users.',
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while deleting selected users.",
       });
-      console.error('Error deleting selected users:', error);
+      console.error("Error deleting selected users:", error);
     } finally {
       util.setLoader(false);
       setSelectedRow([]);
     }
   };
 
-
   return (
     <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
       <Navbar />
       <div className="flex justify-center">
-        <div
-          className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[5rem] `}
-
-        >
+        <div className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[5rem] `}>
           <div className="flex flex-row justify-between pb-2  max850:hidden">
-            <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop">Welcome, Boss👋</h1>
+            <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop">
+              Welcome, Boss👋
+            </h1>
             <div className="relative">
               <img src={AdminPic} alt="" />
               <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" />
             </div>
           </div>
+          {/* {isSuperAdmin && <LeftBanner />} */}
 
           <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
@@ -380,7 +385,6 @@ const MemberList = () => {
                 Delete
               </button>
             )}
-
             {/* functionalities */}
             <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max600:mb-[4rem] max600:ml-0 ">
               <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
@@ -476,7 +480,8 @@ const MemberList = () => {
                     className="ml-3"
                     checked={userStatus === "Active"}
                     onChange={() => setUserStatus("Active")}
-                  /> <p className="ml-1"> Active</p>
+                  />{" "}
+                  <p className="ml-1"> Active</p>
                   <input
                     type="radio"
                     name="memberStatus"
@@ -484,7 +489,8 @@ const MemberList = () => {
                     className="ml-3"
                     checked={userStatus === "InActive"}
                     onChange={() => setUserStatus("InActive")}
-                  /> <p className="ml-1">InActive</p>
+                  />{" "}
+                  <p className="ml-1">InActive</p>
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
@@ -510,10 +516,11 @@ const MemberList = () => {
           {/* filter */}
           <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[17rem]">
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "all"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
-                }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
+                userStatus === "all"
+                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                  : "text-[#000] hover:text-[#30afbc]"
+              }`}
               onClick={() => {
                 setUserStatus("all");
               }}
@@ -521,10 +528,11 @@ const MemberList = () => {
               All
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "active"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
-                }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
+                userStatus === "active"
+                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                  : "text-[#000] hover:text-[#30afbc]"
+              }`}
               onClick={() => {
                 setUserStatus("active");
               }}
@@ -532,10 +540,11 @@ const MemberList = () => {
               Active ({activeUserCount})
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "inactive"
-                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                : "text-[#000] hover:text-[#30afbc]"
-                }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
+                userStatus === "inactive"
+                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                  : "text-[#000] hover:text-[#30afbc]"
+              }`}
               onClick={() => {
                 setUserStatus("inactive");
               }}
@@ -549,7 +558,9 @@ const MemberList = () => {
           <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 ml-[0.5rem] max1050:w-[83vw]">
             <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
             <div className="flex flex-row justify-between">
-              <div className="col-span-3 font-[700] pl-[5rem]">Name, Phone, Email</div>
+              <div className="col-span-3 font-[700] pl-[5rem]">
+                Name, Phone, Email
+              </div>
               <div className="font-[700] max850:hidden">Country</div>
               <div className="font-[700] max850:hidden">Joining Date</div>
               <div className="font-[700] max850:hidden">Attendance</div>
@@ -561,16 +572,19 @@ const MemberList = () => {
           <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
           {/* member data starts from here */}
-          <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
+          <div className="w-[76vw] relative overflow-y-auto min-h-[48vh] scroll-container pl-[7px] max1050:w-[90vw]">
             {MembersData.map((memberData, index) => (
               <div
                 key={memberData.cognitoId}
-                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.cognitoId)
-                  ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                  : "border-[#a2a2a280]"
-                  }`}
+                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
+                  isRowSelected(memberData.cognitoId)
+                    ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
+                    : "border-[#a2a2a280]"
+                }`}
                 style={{
-                  margin: isRowSelected(memberData.cognitoId) ? "1rem 0" : "0.5rem 0",
+                  margin: isRowSelected(memberData.cognitoId)
+                    ? "1rem 0"
+                    : "0.5rem 0",
                   boxShadow: isRowSelected(memberData.cognitoId)
                     ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
                     : "none",
@@ -595,7 +609,10 @@ const MemberList = () => {
                   </div>
                 </label>
 
-                <div className="absolute right-2 mt-5" onClick={() => handleEditUser(memberData)}>
+                <div
+                  className="absolute right-2 mt-5"
+                  onClick={() => handleEditUser(memberData)}
+                >
                   <img src={personIcon} alt="" />
                 </div>
                 <div className="flex flex-row K2D items-center">
@@ -631,22 +648,28 @@ const MemberList = () => {
                       <div className="col-span-3 ml-[3rem] font-semibold text-sm max850:hidden">
                         {formatEpochToReadableDate(memberData.joiningDate)}
                       </div>
-                      <div className="col-span-2 font-semibold text-sm max850:hidden">4/10</div>
+                      <div className="col-span-2 font-semibold text-sm max850:hidden">
+                        4/10
+                      </div>
                       <div className="col-span-2 ml-[-1rem] relative max850:hidden">
                         <div
-                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
-                            ? "border-[#99EF72] text-[#99EF72]"
-                            : "border-[#FF4343AB] text-[#FF4343AB]"
-                            }`}
+                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${
+                            memberData.status === "Active"
+                              ? "border-[#99EF72] text-[#99EF72]"
+                              : "border-[#FF4343AB] text-[#FF4343AB]"
+                          }`}
                         >
                           <div
-                            className={`w-3 h-3 mt-[0.4rem] ${memberData.status === "Active"
-                              ? "bg-[#99EF72]"
-                              : "bg-[#FF4343AB]"
-                              } rounded-full transform K2D`}
+                            className={`w-3 h-3 mt-[0.4rem] ${
+                              memberData.status === "Active"
+                                ? "bg-[#99EF72]"
+                                : "bg-[#FF4343AB]"
+                            } rounded-full transform K2D`}
                           ></div>
                           <div>
-                            {memberData.status === "Active" ? "Active" : "Inactive"}
+                            {memberData.status === "Active"
+                              ? "Active"
+                              : "Inactive"}
                           </div>
                         </div>
                       </div>
@@ -735,7 +758,8 @@ const MemberList = () => {
                     className="ml-3"
                     checked={userStatus === "Active"}
                     onChange={() => setUserStatus("Active")}
-                  /> <p className="ml-1"> Active</p>
+                  />{" "}
+                  <p className="ml-1"> Active</p>
                   <input
                     type="radio"
                     name="memberStatus"
@@ -743,7 +767,8 @@ const MemberList = () => {
                     className="ml-3"
                     checked={userStatus === "InActive"}
                     onChange={() => setUserStatus("InActive")}
-                  /> <p className="ml-1">InActive</p>
+                  />{" "}
+                  <p className="ml-1">InActive</p>
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
@@ -768,7 +793,6 @@ const MemberList = () => {
               </form>
             </div>
           )}
-
 
           <div className="flex flex-row gap-2">
             {selectedRowCount > 0 && (
