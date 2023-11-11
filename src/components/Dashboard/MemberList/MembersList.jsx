@@ -18,8 +18,12 @@ import Navbar from "../../Home/Navbar";
 import "./MembersList.css";
 
 const MemberList = () => {
-  const itemsPerPage = 7;
-  console.log(window.location.search)
+  const getItemsPerPage = () => {
+    return window.innerWidth < 600 ? 5 : 7;
+  };
+
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
+  console.log(window.location.search);
   const searchParams = new URLSearchParams(window.location.search);
   const institution = searchParams.get("institution");
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +47,20 @@ const MemberList = () => {
   const { util, clients } = useContext(Context);
   // const isSuperAdmin = clients.institution !== "awsaiapp";
   console.log(userCheck);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerPage(getItemsPerPage());
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
+  }, []); 
+  
   const fetchMembersForInstitution = async (institution) => {
     try {
       util.setLoader(true);
@@ -116,6 +133,7 @@ const MemberList = () => {
   };
 
   const selectedRowCount = selectedRow.length;
+  const AllUserCount = memberData.length;
   const inactiveUserCount = inactiveUserList.length;
   const activeUserCount = activeUserList.length;
 
@@ -350,11 +368,11 @@ const MemberList = () => {
 
           <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
-          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] max536:mb-3 K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0">
+          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0">
             Memberlists
           </h2>
 
-          <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem] max600:flex-col max600:justify-center max600:items-center max600:mb-[-1rem]">
+          <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem] max600:flex-col max600:justify-center max600:items-center max600:mb-[-1rem] max600:mt-0">
             {/* searchBar */}
             <div className="flex justify-center items-center max850:w-[80vw]">
               <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
@@ -379,14 +397,14 @@ const MemberList = () => {
             </div>
             {selectedRowCount > 1 && ( // Only show the delete button if multiple users are selected
               <button
-                className="K2D font-[600] tracking-[1.2px] w-[6rem] h-[2.4rem] rounded-[4px] border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] mt-6 max600:mt-[-1rem]"
+                className="K2D font-[600] tracking-[1.2px] w-[6rem] h-[2.4rem] rounded-[4px] border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] mt-6 max600:mt-[-0.5rem]"
                 onClick={handleDeleteSelected}
               >
                 Delete
               </button>
             )}
             {/* functionalities */}
-            <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max600:mb-[4rem] max600:ml-0 ">
+            <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max600:mb-[3rem] max600:ml-0 ">
               <div className="flex flex-row justify-center gap-3 p-[0.3rem] px-5">
                 <button>
                   <img className="w-[1.2rem]" src={CSV} alt="" />
@@ -514,9 +532,9 @@ const MemberList = () => {
           )}
 
           {/* filter */}
-          <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[17rem]">
+          <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[18rem]">
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer max850:ml-[-1.5rem] ${
                 userStatus === "all"
                   ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
                   : "text-[#000] hover:text-[#30afbc]"
@@ -525,7 +543,7 @@ const MemberList = () => {
                 setUserStatus("all");
               }}
             >
-              All
+              All ({AllUserCount})
             </div>
             <div
               className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${

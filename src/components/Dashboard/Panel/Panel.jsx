@@ -39,10 +39,7 @@ const Panel = () => {
   const [JoiningDate, setJoiningDate] = useState("")
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  // Add other state variables for updating user details as needed
 
-
-  // Function to handle checkbox changes
   const handleCheckboxChange = (institution) => {
     if (selectedRow.includes(institution)) {
       setSelectedRow(selectedRow.filter((id) => id !== institution));
@@ -51,7 +48,6 @@ const Panel = () => {
     }
   };
 
-  // Function to check if a row is selected
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);
   };
@@ -139,7 +135,6 @@ const Panel = () => {
       setBalance("");
       setJoiningDate("");
       setcognitoId("");
-      // Close the form
       toggleAddUserForm();
       util.setLoader(false);
 
@@ -205,7 +200,6 @@ const Panel = () => {
   const showUpdateForm = (institution) => {
     const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
     setSelectedUser(userToUpdate);
-    // setcognitoId(userToUpdate[1].cognitoId)
     setName(userToUpdate[1].institution);
     setEmail(userToUpdate[1].emailId);
     setPhoneNumber(userToUpdate[1].phoneNumber);
@@ -248,7 +242,7 @@ const Panel = () => {
           </div>
 
           {/* functionalities */}
-          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6">
+          <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6 max600:ml-[2rem]">
             <div className="flex flex-row justify-evenly gap-3 p-[0.3rem] px-5">
               {/* <button><img className="w-[1.2rem]" src={CSV} alt="" /></button> */}
               <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>
