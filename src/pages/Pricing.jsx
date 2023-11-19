@@ -25,7 +25,7 @@ const Pricing = () => {
                         },
                     }} className="box flex flex-col bg-white xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-2">Basic</h3>
-                        <p className="text-2xl xl:text-3xl font-semibold">₹ 1,000</p>
+                        <p className="text-2xl xl:text-3xl font-semibold">₹ 1,500</p>
                         <p className="text-sm xl:text-base pb-4">Per Month</p>
                         <h4 className="text-lg xl:text-xl font-semibold pb-2">Features</h4>
                         <ul className="text-sm p-2">
@@ -55,7 +55,7 @@ const Pricing = () => {
                         },
                     }} className="flex flex-col bg-[#1D1D1D] box box2 text-white xl:w-[27rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-4">Standard</h3>
-                        <p className="text-2xl xl:text-3xl font-semibold">₹ 2,500</p>
+                        <p className="text-2xl xl:text-3xl font-semibold">₹ 3,000</p>
                         <p className="text-sm xl:text-base pb-4">Per Month</p>
                         <h4 className="text-lg xl:text-xl font-semibold pb-2">Features</h4>
                         <ul className="text-sm p-2">
@@ -88,7 +88,7 @@ const Pricing = () => {
                         },
                     }} className="flex flex-col bg-white box xl:w-[25rem] rounded-lg shadow-lg">
                         <h3 className="font-semibold text-2xl xl:text-3xl pb-1">Advance</h3>
-                        <p className="text-1xl xl:text-3xl font-semibold">₹ 5,000</p>
+                        <p className="text-1xl xl:text-3xl font-semibold">₹ 6,000</p>
                         <p className="text-sm xl:text-1x1 p-1">Per Month</p>
                         <h4 className="text-lg xl:text-xl font-semibold p-1">Features</h4>
                         <ul className="text-[12px]">
