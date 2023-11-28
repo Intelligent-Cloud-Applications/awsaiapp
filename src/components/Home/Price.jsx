@@ -34,7 +34,7 @@ const Price = () => {
   const config = {
     animate: true,
     arrowIcon: (
-      <img className="h-[1.5rem] max1008:h-[1rem]" src={plus1} alt="Arrow" />
+      <img className="h-[1.5rem] max1008:h-[1rem] max450:mt-5" src={plus1} alt="Arrow" />
     ),
     tabFocus: true,
   };
@@ -58,7 +58,7 @@ const Price = () => {
           <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
             <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
               <h3>Basic</h3>
-              <h3>₹1,000</h3>
+              <h3>₹1,500</h3>
             </div>
             <div className="flex items-end justify-start">
               <button
@@ -76,7 +76,7 @@ const Price = () => {
         <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
           <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
             <h3>Standard</h3>
-            <h3>₹2,500</h3>
+            <h3>₹3,000</h3>
           </div>
           <div className="flex items-end justify-start">
             <button
@@ -93,7 +93,7 @@ const Price = () => {
         <div className="flex flex-col gap-10 bg-white p-3 rounded-sm shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]">
           <div className="flex flex-row justify-between text-xl md:text-2xl lg:text-3xl font-semibold">
             <h3>Advance</h3>
-            <h3>₹5,000</h3>
+            <h3>₹6,000</h3>
           </div>
           <div className="flex items-end justify-start">
             <button
