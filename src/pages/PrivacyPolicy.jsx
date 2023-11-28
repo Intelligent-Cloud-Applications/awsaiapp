@@ -157,7 +157,7 @@ const PrivacyPolicy = () => {
             Contact Us
             </h2>
             <p>
-            If you have any questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact us at [contact email/phone number].
+            If you have any questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact us at admin@awsaiapp.com.
 By using our website design services, you acknowledge that you have read and understood this Privacy Policy and consent to the practices described herein.
             </p>
           </div>

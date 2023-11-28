@@ -144,7 +144,7 @@ const Terms = () => {
               12. Contact Information
             </h2>
             <p>
-              If you have any questions or concerns regarding these Terms and Conditions, please contact us at [Contact Information].
+              If you have any questions or concerns regarding these Terms and Conditions, please contact us at admin@awsaiapp.com.
             </p>
           </div>
       </div>
