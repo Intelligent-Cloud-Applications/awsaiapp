@@ -18,6 +18,7 @@ import Customer from "./services/Customer";
 import Payment from "./services/Payment";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
+import SignUp from "./pages/SignUp";
 
 
 const RoutesContainer = () => {
@@ -25,6 +26,7 @@ const RoutesContainer = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/logout" element={<Logout/>} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/memberlist" element={<MemberList />} />
