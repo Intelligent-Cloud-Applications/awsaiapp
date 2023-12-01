@@ -10321,7 +10321,7 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
 
 react-material-ui-form-validator@^3.0.1:
   version "3.0.1"
-  resolved "https://registry.npmjs.org/react-material-ui-form-validator/-/react-material-ui-form-validator-3.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-material-ui-form-validator/-/react-material-ui-form-validator-3.0.1.tgz#d6ba2e3f619010cd57bea9d50b11589a2a1fdae2"
   integrity sha512-+ZrAJK/9FrXQVArJJzhzeIBTvfW9GMlxvAirCwYFd32kUy2iyTKRjXUwGWh/s5RuB2LASXgLCtfs+Si1/WdNfw==
   dependencies:
     prop-types "^15.0.0"

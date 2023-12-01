@@ -56,7 +56,7 @@ const Refund = () => {
               3. Processing of Cancellations and Refunds
             </h2>
             <p>
-              3.1. To request a cancellation or refund, please contact our customer support team at [Contact Information]. Ensure that you provide all necessary details and documentation to expedite the process.
+              3.1. To request a cancellation or refund, please contact our customer support team at admin@awsaiapp.com. Ensure that you provide all necessary details and documentation to expedite the process.
             </p>
             <p>
               3.2. Refunds, if approved, will be processed within 15 days from the date of approval. The method of refund (credit back to the original payment method or other specified methods) will be determined by Intelligent Cloud Application.
@@ -80,7 +80,7 @@ const Refund = () => {
               5. Contact Information
             </h2>
             <p>
-              If you have questions or concerns regarding our Cancellation and Refund Policy, please contact us at [Contact Information].
+              If you have questions or concerns regarding our Cancellation and Refund Policy, please contact us at admin@awsaiapp.com.
             </p>
           </div>
       </div>

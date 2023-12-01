@@ -19,7 +19,7 @@ import Payment from "./services/Payment";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import SignUp from "./pages/SignUp";
-
+// import Template  from "./pages/Template";
 
 const RoutesContainer = () => {
   return (
@@ -43,6 +43,7 @@ const RoutesContainer = () => {
       <Route path="/payment" element={<Payment />} />
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
+      {/* <Route path="/template" element={<Template />} /> */}
     </Routes>
   );
 };
