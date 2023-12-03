@@ -80,7 +80,7 @@ const Query = () => {
         projectDetails: formData.projectDetails
       }
 
-      console.log(await API.post("clients", "self/create-query", params));
+      console.alert(await API.post("clients", "self/create-query", params));
 
       setFormData({
         fullName: "",
