@@ -4,17 +4,18 @@ import { useState , useRef} from "react";
 import Pic from "../utils/contactusPic.png";
 import { motion } from 'framer-motion';
 import ReCAPTCHA from "react-google-recaptcha";
+import { API } from "aws-amplify";
 
 const Query = () => {
-  //Get the action url by inspecting the form
-  const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
+  // //Get the action url by inspecting the form
+  // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
 
-  //Get the rest from a prefilled link
-  const FORMS_FULL_NAME = "entry.1659643296";
-  const FORMS_COMPANY_NAME = "entry.1521075864";
-  const FORMS_EMAIL = "entry.792093172";
-  const FORMS_ADDRESS = "entry.727108387";
-  const FORMS_PROJECT_DETAILS = "entry.218886769";
+  // //Get the rest from a prefilled link
+  // const FORMS_FULL_NAME = "entry.1659643296";
+  // const FORMS_COMPANY_NAME = "entry.1521075864";
+  // const FORMS_EMAIL = "entry.792093172";
+  // const FORMS_ADDRESS = "entry.727108387";
+  // const FORMS_PROJECT_DETAILS = "entry.218886769";
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -55,21 +56,31 @@ const Query = () => {
         return;
       }
 
-      const bodyData = new FormData();
-      bodyData.append(FORMS_FULL_NAME, formData.fullName);
-      bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
-      bodyData.append(FORMS_EMAIL, formData.email);
-      bodyData.append(FORMS_ADDRESS, formData.address);
-      bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
+      // const bodyData = new FormData();
+      // bodyData.append(FORMS_FULL_NAME, formData.fullName);
+      // bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
+      // bodyData.append(FORMS_EMAIL, formData.email);
+      // bodyData.append(FORMS_ADDRESS, formData.address);
+      // bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
 
-      await fetch(FORMS_ACTION_URL, {
-        mode: 'no-cors',
-        method: "POST",
-        body: bodyData,
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8'
-        }
-      });
+      // await fetch(FORMS_ACTION_URL, {
+      //   mode: 'no-cors',
+      //   method: "POST",
+      //   body: bodyData,
+      //   headers: {
+      //     'Content-type': 'application/json; charset=UTF-8'
+      //   }
+      // });
+
+      const params = {
+        fullName: formData.fullName,
+        companyName: formData.companyName,
+        emailId: formData.email,
+        address: formData.address,
+        projectDetails: formData.projectDetails
+      }
+
+      console.log(await API.post("clients", "self/create-query", params));
 
       setFormData({
         fullName: "",
