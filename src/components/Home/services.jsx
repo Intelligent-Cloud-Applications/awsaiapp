@@ -367,7 +367,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate("/coustmer");
+                    Navigate("/customer");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
