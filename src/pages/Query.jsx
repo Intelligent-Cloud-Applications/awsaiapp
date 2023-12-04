@@ -72,15 +72,21 @@ const Query = () => {
       //   }
       // });
 
-      const params = {
-        fullName: formData.fullName,
-        companyName: formData.companyName,
-        emailId: formData.email,
-        address: formData.address,
-        projectDetails: formData.projectDetails
-      }
+      const apiName = "clients";
+      const path = "/any/create-query";
+      const myInit = {
+        body: {
+          fullName: formData.fullName,
+          companyName: formData.companyName,
+          emailId: formData.email,
+          address: formData.address,
+          projectDetails: formData.projectDetails
+        },
+      };
 
-      console.alert(await API.post("clients", "self/create-query", params));
+      await API.post(apiName, path, myInit);
+
+      alert("Submitted Successfully");
 
       setFormData({
         fullName: "",
