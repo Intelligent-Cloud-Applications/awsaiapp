@@ -1,70 +1,73 @@
-// import { API } from "aws-amplify";
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import LeftBanner from "../Components/DashBoard/LeftBanner";
-import ProfileUpdate from "../Components/DashBoard/ProfileUpdate";
-import UsersList from "../Components/DashBoard/UsersList";
-import NavBar from "../Components/NavBar";
-import Context from "../Context/Context";
+import React, { useState, useContext, useEffect } from "react";
+import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
+import Context from "../context/Context";
+import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
+import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
+import NavBar from "../components/Home/Navbar";
+import Panel from "../components/Dashboard/Panel/Panel";
+import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
+import MemberList from '../components/Dashboard/Revenue/RevenueGenerated';
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
-
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [phoneNumber, setPhoneNumber] = useState("");
-  // const [status, setStatus] = useState("Active");
-  // const [balance, setBalance] = useState("");
-  // const [attandance, setAttandance] = useState("");
-
-  // const [displayProfile, setDisplayProfile] = useState(false);
   const Ctx = useContext(Context);
-  const [userCheck, setUserCheck] = useState(0);
-
-  const Navigate = useNavigate();
+  
+  useEffect(() => {
+    const selectedPage = localStorage.getItem("selectedPage");
+    if (selectedPage) {
+      setClick(parseInt(selectedPage));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("selectedPage", click.toString());
+  }, [click]);
 
   const displayAfterClick = () => {
-    switch (click) {
-  
+    if (
+      Ctx.userData.institution === "awsaiapp"
+    ) {
+      switch (click) {
+        case 0:
+          return <Panel />;
 
+        case 1:
+          return <RevenueGenerated />;
 
-      case 3:
-        return <ProfileUpdate />;
+        case 2:
+          return <ClientsPayments />;
 
-      case 4:
-        return <UsersList userCheck={userCheck} setUserCheck={setUserCheck} />;
+        case 3:
+          return <PendingClients />;
 
-      default:
-        return <div></div>;
-    }
-  };
-  useEffect(() => {
-    if (Ctx.isUserDataLoaded) {
-      if (Ctx.userData.userType !== "admin") {
-        Navigate("/");
+        default:
+          return <div>Sorry, the server is down. Please try again later.</div>;
+      }
+    } else {
+      switch (click) {
+        case 0:
+          return <MemberList />;
+        default:
+          return <div>Sorry, the server is down. Please try again later.</div>;
       }
     }
-  }, [Ctx, Navigate]);  
+  };
 
   return (
-    <div className="flex flex-col items-center w-screen overflow-hidden  h-screen bg-gradient-to-b min536:from-[#fafafa] max536:from-[#404e7c9f] min536:via-[#404e7c5c] max536:via-[#2C73EB42] max536:to-[#404E7C] min536:to-[#404E7C]">
-      <NavBar />
-      <div className="w-[calc(100vw-1rem)] ml-4 rounded-3xl mt-[2rem] flex max1050:w-screen max1050:ml-0 max536:rounded-none max536:mt-10 items-center">
-        <LeftBanner
-          displayAfterClick={(data) => {
-            setClick(data);
-          }}
-        />
-
-        <div className="relative flex flex-col pt-8 max536:pt-0 justify-start max800:justify-center w-[calc(100vw-16rem)] max1050:w-screen  max1050:items-center">
-          <span className="absolute z-0 text-[2rem] flex items-center justify-center h-full w-full">Thank you for chooseing us we will conctact you soon!</span> 
-          <div className="min-h-[calc(100vh-4rem)] max1050:flex ">
-          {displayAfterClick()}
-          </div>
+    <div className="flex flex-col items-center w-screen h-screen">
+      <div className="w-[100vw]">
+        <NavBar />
+      </div>
+      <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
+        <div className="bg-white mt-[8rem] max850:mt-[0] ">
+          <LeftBanner
+            displayAfterClick={(data) => {
+              setClick(data);
+            }}
+          />
         </div>
-
-        
-      
+        <div className="flex flex-col justify-center items-center pt-8 max800:justify-center w-[85vw] max1050:ml-[1rem]">
+          <div className="min-h-[88vh]">{displayAfterClick()}</div>
+        </div>
       </div>
     </div>
   );

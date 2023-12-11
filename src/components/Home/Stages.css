@@ -1,0 +1,62 @@
+.animated-svg {
+  animation-name: slideFromRight1;
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+
+@keyframes slideFromRight1 {
+  from {
+    transform: translateX(15%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+}
+
+.animated-svg2 {
+  animation-name: slideFromtop;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+@keyframes slideFromtop {
+  from {
+    transform: translateY(15%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 1;
+  }
+}
+@media screen and (min-width: 430px) and (max-width: 500px) {
+  @keyframes slideFromtop {
+    from {
+      transform: translateY(15%);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(105%); 
+      opacity: 1;
+    }
+  }
+}
+@media screen and (max-width: 375px) {
+  @keyframes slideFromtop {
+    from {
+      transform: translateY(15%);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(90%); 
+      opacity: 1;
+    }
+  }
+}

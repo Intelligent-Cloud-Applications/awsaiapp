@@ -1,0 +1,126 @@
+
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.heropic{
+  background: url(/src/utils/waves/2-removebg\ 3.png);
+  background-repeat: no-repeat;
+}
+
+.wow{
+  --background: url(/src/utils/Animate.svg);
+  --bg-image-opacity: 1;
+  background-color: black;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100vh;
+}
+.wow::after{
+  content: '';
+  opacity: var(--bg-image-opacity);
+  background: var(--background);
+  background-color: black;
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+}
+.responsive-button {
+  color: black;
+  padding: 10px 20px;
+  font-size: large;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* Media query for small screens (up to 600px) */
+@media (max-width: 600px) {
+  .responsive-button {
+      font-size: 75%;
+      padding: 8px 16px;
+  }
+}
+
+/* Media query for medium screens (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .responsive-button {
+      font-size: 85%;
+      padding: 12px 24px;
+  }
+}
+
+/* Media query for large screens (greater than 1024px) */
+@media (min-width: 1025px) {
+  .responsive-button {
+      padding: 14px 28px;
+  }
+}
+
+/* @media (max-width: 768px) {
+  .hello{
+    font-size: 2rem; 
+  }
+  .main{
+    width:100%;
+  }
+  .wid{
+    width:30vw;
+    font: small;
+  }
+} */
+
+
+
+.wrapper{
+  box-sizing: content-box;
+  background-color: transparent;
+  height: 50px;
+  padding: 0px 0px 1rem 0;
+  display: flex;
+  color: white;
+  width: auto;
+}
+.words{
+  overflow: hidden;
+}
+.txt{
+  display: block;
+  height: 100%;
+  padding-left: 10px;
+  color: #30AFBC;
+  animation: spin_words 6s infinite;
+}
+@keyframes spin_words{
+  10%{
+      transform: translateY(-112%);
+  }
+  25%{
+      transform: translateY(-100%);
+  }
+  40%{
+      transform: translateY(-212%);
+  }
+  65%{
+      transform: translateY(-200%);
+  }
+  75%{
+      transform: translateY(-312%);
+  }
+  100%{
+      transform: translateY(-300%);
+  }
+  /* 85%{
+      transform: translateY(-412%);
+  }
+  100%{
+      transform: translateY(-400%);
+  } */
+}

@@ -1,43 +1,34 @@
 import React from "react";
-//css files
-//Images
-// import fitness_1 from "../Utils/images/Testimonial/fitness-1.jpg";
-// import fitness_2 from "../Utils/images/Testimonial/fitness-2.jpg";
-// import fitness_3 from "../Utils/images/Testimonial/fitness-3.jpg";
-// import fitness_4 from "../Utils/images/Testimonial/fitness-4.jpg";
-// import fitness_5 from "../Utils/images/Testimonial/fitness-5.jpg";
-
-import NavBar from "../Components/NavBar";
-import Header from "../Components/Home/Header";
-import Header2 from "../Components/Home/Header2";
-import Testimonial from "../Components/Home/Testimonial";
-import FAQ from "../Components/Home/FAQ";
-import Footer from "../Components/Home/Footer";
-import Subscription from "../Components/Home/Subscription";
+import Header from "../components/Home/Header";
+import Navbar from "../components/Home/Navbar";
+import FAQ from "../components/Home/Faq";
+import FOOTER from "../components/Home/Footer";
+import Price from "../components/Home/Price";
+import Services from "../components/Home/services";
+import Testimonial from "../components/Home/Testimonials";
+import Stages from "../components/Home/Stages";
 
 function Home() {
-  // const [fav2Visible6, setfav2Visible6] = useState(false);
-  // const [bottom, setBottom] = useState(false);
-
-  // const bottomhandler = () => {
-  //   setBottom(!bottom);
-  // };
 
   return (
     <div className=" overflow-hidden">
-      <NavBar />
+      <Navbar/>
 
-      <Header />
+      <Header/>
 
-      <Header2 />
+      <Services/>
 
-      <Testimonial />
+      <Testimonial/>
 
-      <Subscription />
+      <Stages/>
+
+      <Price/>
 
       <FAQ />
 
-      <Footer />
+      <FOOTER/>
+
+      {/* <Testimonial/> */}
     </div>
   );
 }

@@ -1,0 +1,66 @@
+.background {
+    background-image: url(../utils/png/Rectangle\ 7.png);
+    background-repeat: no-repeat;
+    background-size: cover; /* Adjust background-size as needed */
+    background-position: center -12rem ; /* Adjust background-position as needed */
+}
+
+.pos {
+    display: flex; /* Use display: flex; instead of align-items and justify-content */
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    border: 2px; /* Use "2px inset" instead of "inset 2px" */
+    border-radius: 10px;
+    box-shadow: 4px 4px 6px black;
+    padding: 25px; /* Add padding for better spacing */
+}
+
+.box2{
+    padding: 50px;
+}
+
+@media (max-width: 981px ) {
+    .box{
+        padding: 10px;
+    }
+    .box2{
+        padding: 20px;
+    }
+}
+.box li {
+    padding-bottom: 8px;
+}
+
+.box ul {
+    list-style: url(../utils/png/Vector_L.png); /* Use "list-style" instead of "list-style-image" */
+    padding-left: 2rem;
+}
+
+.box button {
+    border-radius: 10px;
+    padding: 6px;
+    transition: 0.5s ease-in-out;
+    margin-top: auto;
+}
+@media (max-width: 767px){
+    .background{
+        background-color: #000;
+        background-image: none;
+    }
+    .pos {
+        margin-top: -6rem; /* Use "margin-top" to adjust position */
+    }
+    .head{
+        background: #30AFBC;
+        height: 20rem;
+        border-radius: 0 0 50px 50px;
+    }
+    .head h1{
+        color: white;
+        font-size: 32px;
+        padding-top: 2rem;
+    }
+}

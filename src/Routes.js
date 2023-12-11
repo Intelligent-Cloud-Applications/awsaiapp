@@ -1,36 +1,55 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import DashBoard from "./pages/DashBoard";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
-import ErrorPage from "./pages/Error";
-import SignUp from "./pages/SignUp";
-import About from "./pages/AboutUs";
-// import Teams from "./pages/Teams";
-import Services from "./pages/Services";
-import Subscription from "./pages/Subscription";
+import DashBoard from "./pages/DashBoard";
+import MemberList from "./components/Dashboard/MemberList/MembersList";
+import Pricing from "./pages/Pricing";
+import Aboutus from "./pages/Aboutus";
+import Team from "./pages/Team";
 import Query from "./pages/Query";
-import ForgotPassword from "./pages/ForgotPassword";
-import PaymentFailed from "./pages/PaymentFailed";
-import PaymentSuccessful from "./pages/PaymentSuccessful";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import User from "./services/User_Interface";
+import Personalization from "./services/Personalization";
+import Identity from "./services/Login&IdentityManagment";
+import Trade from "./services/Trade";
+import Customer from "./services/Customer";
+import Payment from "./services/Payment";
+import Terms from "./pages/Terms";
+import Refund from "./pages/Refund";
+import SignUp from "./pages/SignUp";
+import SubscriptionPopup from "./pages/Subscribe_POPUP";
+import SubscriptionPopup1 from "./pages/Subscribe_POPUP1";
+import SubscriptionPopup2 from "./pages/Subscribe_POPUP2";
+// import Template  from "./pages/Template";
 
 const RoutesContainer = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/dashboard" element={<DashBoard />} />
-      <Route path="/aboutus" element={<About />} />
-      <Route path="/services" element={<Services />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/logout" element={<Logout />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/subscription" element={<Subscription />} />
+      <Route path="/subpopup" element={<SubscriptionPopup />} />
+      <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
+      <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
+      <Route path="/logout" element={<Logout/>} />
+      <Route path="/dashboard" element={<DashBoard />} />
+      <Route path="/memberlist" element={<MemberList />} />
+      <Route path="/Pricing" element={<Pricing />} />
+      <Route path="/aboutus" element={<Aboutus />} />
+      <Route path="/team" element={<Team />} />
       <Route path="/query" element={<Query />} />
-      <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/paymentsuccessful" element={<PaymentSuccessful />} />
-      <Route path="/paymentfailed" element={<PaymentFailed />} />
-      <Route path="*" element={<ErrorPage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/User_interface" element={<User />} />
+      <Route path="/Personalization" element={<Personalization />} />
+      <Route path="/identity" element={<Identity />} />
+      <Route path="/trade" element={<Trade />} />
+      <Route path="/customer" element={<Customer />} />
+      <Route path="/payment" element={<Payment />} />
+      <Route path="/term" element={<Terms />} />
+      <Route path="/refund" element={<Refund />} />
+      {/* <Route path="/template" element={<Template />} /> */}
     </Routes>
   );
 };
