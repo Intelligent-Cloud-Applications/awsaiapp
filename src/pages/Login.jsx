@@ -10,7 +10,6 @@ import LockIcon from "../utils/Assets/Dashboard/images/SVG/LockIcon.svg";
 // import GoogleIcon from '../utils/png/Google.png';
 // import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from "../utils/Assets/Login.png";
-import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import "./Login.css";
 
 const Login = () => {
@@ -104,7 +103,7 @@ const Login = () => {
   return (
     <>
       <Navbar />
-      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh]">
+      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh] pt-[2rem]">
         <div className="flex max767:flex-col h-[35rem]">
           <div
             className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
@@ -205,7 +204,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <LeftBanner institution={institution} />
     </>
   );
 };
