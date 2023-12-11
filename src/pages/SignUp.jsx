@@ -277,13 +277,13 @@ const SignUp = () => {
         <h3 className="text-[1.1rem] font-[700]">Sign Up</h3>
         <div className="text-center">
           <p className="w-[13.5rem] font-[500] my-2 text-[0.8rem]">
-            Unlock Your Potential, Sign Up Today for a Healthier Tomorrow!
+            Unlock Success Online! Sign Up for Your Professional Website Today.
           </p>
         </div>
         <ul className="flex flex-col items-center px-0">
           <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
             <input
-              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw] max500:mb-4"
+              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw] max500:mb-4"
               value={firstName}
               placeholder="First Name"
               onChange={(e) => {
@@ -291,7 +291,7 @@ const SignUp = () => {
               }}
             />
             <input
-              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw]"
+              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
               value={lastName}
               placeholder="Last Name"
               onChange={(e) => {
@@ -302,7 +302,7 @@ const SignUp = () => {
           <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
             <div className="relative">
               <input
-                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw]"
+                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
                 type="text"
                 placeholder="Enter Email"
                 value={email}
@@ -313,12 +313,12 @@ const SignUp = () => {
               />
             </div>
           </li>
-          <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative">
+          <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
             <select
               value={countryCode}
               name="countryCode"
               id=""
-              className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1.5rem] py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw] mt-6"
+              className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1.5rem] py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw] mt-6"
               onChange={(e) => {
                 let countries = e.target.innerText.split("\n");
                 const countryCodes = [];
@@ -339,7 +339,7 @@ const SignUp = () => {
           <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
             <div className="relative">
               <input
-                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw]"
+                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
                 type="number"
                 placeholder="Enter Phone Number"
                 value={phoneNumber}
@@ -354,7 +354,7 @@ const SignUp = () => {
           </li>
           <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start">
             <input
-              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw]"
+              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
               type={"password"}
               placeholder="Password"
               value={password}
@@ -365,7 +365,7 @@ const SignUp = () => {
           </li>
           <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start relative">
             <input
-              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-2 max500:w-[80vw]"
+              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
               type={!passwordVisible && "password"}
               placeholder="Confirm Password"
               value={confirmPassword}
@@ -390,7 +390,7 @@ const SignUp = () => {
         </ul>
         {err && <p className="text-[0.8rem]  mt-2 text-red-500">{err}</p>}
         <button
-          className="w-[19.5rem] py-2 mt-3 mb-3 bg-[#30AFBC] text-white rounded-2 max500:w-[80vw]"
+          className="w-[19.5rem] py-2 mt-3 mb-3 bg-[#30AFBC] text-white rounded-[0.5rem] max500:w-[80vw]"
           onClick={onSubmit}
         >
           Sign Up
@@ -466,11 +466,8 @@ const SignUp = () => {
     <div className="w-screen min-h-screen bg-[#f0efef]">
       <NavBar />
       <div className="flex flex-col items-center mt-8 text-black">
-        {/* <h3 className="text-[2rem]">FITNESS</h3> */}
-        {/* <div className="w-[80%] h-[0.08rem] bg-black flex"></div> */}
         <div className="flex w-[100%] gap-16 justify-center items-end mt-20 ">
           {!newUser ? form1() : form2()}
-          {/* <img src={DanceAuth} alt="Dance" className="w-[20%] max800:hidden" /> */}
         </div>
       </div>
     </div>
