@@ -19,7 +19,10 @@ import Payment from "./services/Payment";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
 import SignUp from "./pages/SignUp";
-
+import SubscriptionPopup from "./pages/Subscribe_POPUP";
+import SubscriptionPopup1 from "./pages/Subscribe_POPUP1";
+import SubscriptionPopup2 from "./pages/Subscribe_POPUP2";
+// import Template  from "./pages/Template";
 
 const RoutesContainer = () => {
   return (
@@ -27,6 +30,9 @@ const RoutesContainer = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/subpopup" element={<SubscriptionPopup />} />
+      <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
+      <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
       <Route path="/logout" element={<Logout/>} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/memberlist" element={<MemberList />} />
@@ -43,6 +49,7 @@ const RoutesContainer = () => {
       <Route path="/payment" element={<Payment />} />
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
+      {/* <Route path="/template" element={<Template />} /> */}
     </Routes>
   );
 };

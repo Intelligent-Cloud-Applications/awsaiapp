@@ -97,8 +97,8 @@ export default function Footer(props) {
                       className=" w-5 h-5 cursor-pointer"
                     />
                     <a
-                      className="cursor-pointer text-black text-decoration-none"
-                      href="https://www.bairesdev.com/blog/cutting-edge-web-development-technologies/"
+                        className="cursor-pointer text-black text-decoration-none"
+                      href="tel:+918249675567"
                       target="_blank"
                       rel="noreferrer"
                     >

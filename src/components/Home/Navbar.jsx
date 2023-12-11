@@ -93,7 +93,19 @@ const Navbar = () => {
                 }}
               >
                 Login
+<<<<<<< HEAD
               </button>              
+=======
+              </button>
+              {/* <button
+              className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                onClick={() => {
+                  Navigate("/signup");
+                }}
+              >
+                Sign Up
+              </button> */}
+>>>>>>> refs/remotes/origin/beta
               </div>
             )}
 
