@@ -18,7 +18,7 @@ import Navbar from "../../Home/Navbar";
 import "./MembersList.css";
 
 const MemberList = ({ institution: tempInstitution }) => {
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
@@ -46,7 +46,6 @@ const MemberList = ({ institution: tempInstitution }) => {
     institution = tempInstitution
   }
   console.log(userCheck);
-  // console.log(user.profile.userType)
 
 
   const fetchMembersForInstitution = async (institution) => {
@@ -136,9 +135,9 @@ const MemberList = ({ institution: tempInstitution }) => {
       const formattedDate = `${year}-${month}-${day}`;
       return formattedDate;
     }
-    return ''; 
+    return '';
   }
-  
+
   const handleAddMember = async (e) => {
     e.preventDefault();
     const apiName = "clients";
@@ -654,7 +653,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                         {memberData.country}
                       </div>
                       <div className="col-span-3 ml-[4rem] font-semibold text-sm max850:hidden">
-                      {memberData.joiningDate ? formatEpochToReadableDate(memberData.joiningDate) : ''}
+                        {memberData.joiningDate ? formatEpochToReadableDate(memberData.joiningDate) : ''}
                       </div>
                       <div className="col-span-2 font-semibold text-sm max850:hidden">
                         {memberData.zPoints}
@@ -672,7 +671,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                               : "bg-[#FF4343AB]"
                               } rounded-full transform K2D`}
                           >
-                            
+
                           </div>
                           <div>
                             {memberData.status === "Active"
