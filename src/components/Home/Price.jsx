@@ -34,7 +34,7 @@ const Price = () => {
   const config = {
     animate: true,
     arrowIcon: (
-      <img className="h-[1.5rem] max1008:h-[1rem]" src={plus1} alt="Arrow" />
+      <img className="h-[1.5rem] max1008:h-[1rem] max450:mt-5" src={plus1} alt="Arrow" />
     ),
     tabFocus: true,
   };

@@ -1,20 +1,21 @@
 import React from "react";
 import Navbar from "../components/Home/Navbar";
-import { useState , useRef} from "react";
+import { useState, useRef } from "react";
 import Pic from "../utils/contactusPic.png";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
+import { API } from "aws-amplify";
 
 const Query = () => {
-  //Get the action url by inspecting the form
-  const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
+  // //Get the action url by inspecting the form
+  // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
 
-  //Get the rest from a prefilled link
-  const FORMS_FULL_NAME = "entry.1659643296";
-  const FORMS_COMPANY_NAME = "entry.1521075864";
-  const FORMS_EMAIL = "entry.792093172";
-  const FORMS_ADDRESS = "entry.727108387";
-  const FORMS_PROJECT_DETAILS = "entry.218886769";
+  // //Get the rest from a prefilled link
+  // const FORMS_FULL_NAME = "entry.1659643296";
+  // const FORMS_COMPANY_NAME = "entry.1521075864";
+  // const FORMS_EMAIL = "entry.792093172";
+  // const FORMS_ADDRESS = "entry.727108387";
+  // const FORMS_PROJECT_DETAILS = "entry.218886769";
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -24,7 +25,7 @@ const Query = () => {
     projectDetails: "",
   });
 
-  const [captchaValue] = useState(null);
+  // const [captchaValue] = useState(null);
 
   const recaptchaRef = useRef();
 
@@ -55,21 +56,37 @@ const Query = () => {
         return;
       }
 
-      const bodyData = new FormData();
-      bodyData.append(FORMS_FULL_NAME, formData.fullName);
-      bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
-      bodyData.append(FORMS_EMAIL, formData.email);
-      bodyData.append(FORMS_ADDRESS, formData.address);
-      bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
+      // const bodyData = new FormData();
+      // bodyData.append(FORMS_FULL_NAME, formData.fullName);
+      // bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
+      // bodyData.append(FORMS_EMAIL, formData.email);
+      // bodyData.append(FORMS_ADDRESS, formData.address);
+      // bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
 
-      await fetch(FORMS_ACTION_URL, {
-        mode: 'no-cors',
-        method: "POST",
-        body: bodyData,
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8'
-        }
-      });
+      // await fetch(FORMS_ACTION_URL, {
+      //   mode: 'no-cors',
+      //   method: "POST",
+      //   body: bodyData,
+      //   headers: {
+      //     'Content-type': 'application/json; charset=UTF-8'
+      //   }
+      // });
+
+      const apiName = "clients";
+      const path = "/any/create-query";
+      const myInit = {
+        body: {
+          fullName: formData.fullName,
+          companyName: formData.companyName,
+          emailId: formData.email,
+          address: formData.address,
+          projectDetails: formData.projectDetails,
+        },
+      };
+
+      await API.post(apiName, path, myInit);
+
+      alert("Submitted Successfully");
 
       setFormData({
         fullName: "",
@@ -86,42 +103,46 @@ const Query = () => {
     }
   };
 
-
   return (
     <>
       <Navbar />
       {/* new contact us page */}
-      <div className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
-      max670:h-[140vh] max670:pt-[5rem] max670:px-6 ">
+      <div
+        className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
+      max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
+      >
         {/* card */}
         <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
-            <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center justify-around h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center justify-around h-full"
+            >
               <img
                 src={Pic}
                 alt=""
-                className="w-32 md:w-[80%] rounded-full mb-4"
+                className="w-32 md:w-[80%] rounded-full mb-4 max450:hidden"
               />
               <div>
-              <h2 className="text-3xl font-semibold mb-2 w-full">
-                Let's Chat.<br/>Tell Us About Your Project.
-              </h2>
-              <p className="w-full">
-                Let's Maximize Your business's Potential with Us
-              </p>
+                <h2 className="text-3xl font-semibold mb-2 w-full">
+                  Let's Chat.
+                  <br />
+                  Tell Us About Your Project.
+                </h2>
+                <p className="w-full">
+                  Let's Maximize Your business's Potential with Us
+                </p>
               </div>
             </motion.div>
           </div>
 
           <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white">
-          <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
-              Send  us  a message
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-3">
+            <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
+              Send us a message
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label
                   htmlFor="fullName"
@@ -207,17 +228,16 @@ const Query = () => {
               </div>
               <div>
                 <ReCAPTCHA
-                 ref={recaptchaRef}
+                  ref={recaptchaRef}
                   sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
                   size="invisible"
                 />
               </div>
               <div>
-              <button
+                <button
                   type="submit"
                   className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
                   onClick={handleSubmit}
-                  disabled={!captchaValue}
                 >
                   Send Message
                 </button>

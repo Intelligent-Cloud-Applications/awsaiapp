@@ -1,11 +1,36 @@
 import Navbar from "../components/Home/Navbar";
+import React, { useContext } from "react";
 import "./Pricing.css";
 import Footer from "../components/Home/Footer";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import Context from "../context/Context";
 
 const Pricing = () => {
     const Navigate = useNavigate();
+    const UserCtx = useContext(Context);
+    
+    const handleGetStartedClick = () => {
+        if (UserCtx.isAuth) {
+            Navigate('/subpopup');
+        } else {
+            Navigate('/signup');
+        }
+    };
+    const handleGetStartedClick1 = () => {
+        if (UserCtx.isAuth) {
+            Navigate('/subpopup1');
+        } else {
+            Navigate('/signup');
+        }
+    };
+    const handleGetStartedClick2 = () => {
+        if (UserCtx.isAuth) {
+            Navigate('/subpopup2');
+        } else {
+            Navigate('/signup');
+        }
+    };
     return (
         <div className="flex flex-col">
             <Navbar />
@@ -40,9 +65,8 @@ const Pricing = () => {
                             <li>Customization options available.</li>
                         </ul>
                         <button
-                            onClick={() => {
-                                Navigate("/query");
-                            }} className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                            onClick={handleGetStartedClick}
+                            className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
                     </Box>
@@ -74,9 +98,8 @@ const Pricing = () => {
                             <li>Efficient data management for admins.</li>
                         </ul>
                         <button
-                            onClick={() => {
-                                Navigate("/query");
-                            }} className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
+                            onClick={handleGetStartedClick1}
+                             className="text-black text-lg xl:text-xl font-semibold bg-[#30AFBC] hover:bg-white hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
                     </Box>
@@ -111,9 +134,8 @@ const Pricing = () => {
                         </ul>
 
                         <button
-                            onClick={() => {
-                                Navigate("/query");
-                            }} className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
+                            onClick={handleGetStartedClick2}
+                             className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg">
                             Get Started
                         </button>
 

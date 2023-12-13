@@ -26,7 +26,7 @@ const Refund = () => {
               1. Cancellation Policy
             </h2>
             <p>
-              1.1. Web Application and Digital Marketing Services: If you wish to cancel any web application development or digital marketing services, you must provide written notice to Intelligent Cloud Application at least [XX days/weeks] before the scheduled start date of the service. A cancellation fee may be applied at the discretion of Intelligent Cloud Application.
+              1.1. Web Application and Digital Marketing Services: If you wish to cancel any web application development or digital marketing services, you must provide written notice to Intelligent Cloud Application at least 15 days before the scheduled start date of the service. A cancellation fee may be applied at the discretion of Intelligent Cloud Application.
             </p>
             <p>
               1.2. Payment Solutions: Cancellation of payment solutions may be subject to the terms and conditions of the payment processing provider. You must contact the payment processing provider directly for cancellation requests.
@@ -41,7 +41,7 @@ const Refund = () => {
               2. Refund Policy
             </h2>
             <p>
-              2.1. Web Application and Digital Marketing Services: Refunds for web application and digital marketing services are issued on a case-by-case basis. If you are dissatisfied with the services provided by Intelligent Cloud Application, please contact us within [XX days/weeks] of service completion to discuss your concerns. We will assess your situation and, if applicable, offer a refund or an alternative solution.
+              2.1. Web Application and Digital Marketing Services: Refunds for web application and digital marketing services are issued on a case-by-case basis. If you are dissatisfied with the services provided by Intelligent Cloud Application, please contact us within 15 days of service completion to discuss your concerns. We will assess your situation and, if applicable, offer a refund or an alternative solution.
             </p>
             <p>
               2.2. Payment Solutions: Refunds for payment solutions are subject to the policies of the payment processing provider. You must contact the payment processing provider directly for refund requests.
@@ -56,10 +56,10 @@ const Refund = () => {
               3. Processing of Cancellations and Refunds
             </h2>
             <p>
-              3.1. To request a cancellation or refund, please contact our customer support team at [Contact Information]. Ensure that you provide all necessary details and documentation to expedite the process.
+              3.1. To request a cancellation or refund, please contact our customer support team at admin@awsaiapp.com. Ensure that you provide all necessary details and documentation to expedite the process.
             </p>
             <p>
-              3.2. Refunds, if approved, will be processed within [XX days/weeks] from the date of approval. The method of refund (credit back to the original payment method or other specified methods) will be determined by Intelligent Cloud Application.
+              3.2. Refunds, if approved, will be processed within 15 days from the date of approval. The method of refund (credit back to the original payment method or other specified methods) will be determined by Intelligent Cloud Application.
             </p>
             <p>
               3.3. Any applicable cancellation fees will be deducted from the refund amount.
@@ -80,7 +80,7 @@ const Refund = () => {
               5. Contact Information
             </h2>
             <p>
-              If you have questions or concerns regarding our Cancellation and Refund Policy, please contact us at [Contact Information].
+              If you have questions or concerns regarding our Cancellation and Refund Policy, please contact us at admin@awsaiapp.com.
             </p>
           </div>
       </div>

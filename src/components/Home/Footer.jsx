@@ -65,12 +65,15 @@ export default function Footer(props) {
                   <li className="flex gap-3">
                     <img
                       src={gmail}
+                      href="mailto:admin@awsaiapp.com?subject=Subject%20of%20the%20email&body=Body%20of%20the%20email"
+                      target="_blank"
+                      rel="noreferrer"
                       alt=""
                       className="w-5 h-5 cursor-pointer"
                     />
                     <a
                       className="cursor-pointer text-black text-decoration-none"
-                      href=" "
+                      href="mailto:admin@awsaiapp.com?subject=Subject%20of%20the%20email&body=Body%20of%20the%20email"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -94,8 +97,8 @@ export default function Footer(props) {
                       className=" w-5 h-5 cursor-pointer"
                     />
                     <a
-                      className="cursor-pointer text-black text-decoration-none"
-                      href="https://www.bairesdev.com/blog/cutting-edge-web-development-technologies/"
+                        className="cursor-pointer text-black text-decoration-none"
+                      href="tel:+918249675567"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -211,7 +214,7 @@ export default function Footer(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Michigan
+                    Moda
                   </a>
                 </li>
               </ul>

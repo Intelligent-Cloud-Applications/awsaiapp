@@ -99,19 +99,12 @@ const Login = () => {
     }
   };
 
-  // const handleGoogleLogin = async () => {
-  //   Add Google authentication logic here
-  // };
-
-  // const handleFacebookLogin = async () => {
-  //   Add Facebook authentication logic here
-  // };
 
   // `/memberlist?institution=${institution}`
   return (
     <>
       <Navbar />
-      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh]">
+      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh] pt-[2rem]">
         <div className="flex max767:flex-col h-[35rem]">
           <div
             className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
@@ -122,7 +115,6 @@ const Login = () => {
               Let’s Get Started
             </h1>
           </div>
-
           <div
             className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw]"
             style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}
@@ -196,40 +188,19 @@ const Login = () => {
               >
                 Login
               </button>
+              <p
+                className="text-green cursor-pointer pt-2"
+                onClick={() => {
+                  Navigate("/signup");
+                }}
+              >
+                Create a New Account {" "}
+              </p>
               {error && (
                 <div className=" mt-[1rem] font-bold text-[#db3d3d] text-center K2D">
                   {error}
                 </div>
               )}
-
-              {/* <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
-                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
-                <p className='font-bold'> OR </p>
-                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
-              </div> */}
-
-              {/* <button
-                onClick={handleGoogleLogin}
-                className="border w-[20rem] mb-2 p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
-              >
-                <img
-                  src={GoogleIcon}
-                  alt="Google Icon"
-                  className=" w-6 h-6 ml-4"
-                />
-                <div >Continue with Google</div>
-              </button>
-              <button
-                onClick={handleFacebookLogin}
-                className="border w-[20rem] p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
-              >
-                <img
-                  src={FacebookIcon}
-                  alt="Facebook Icon"
-                  className="w-6 h-6 ml-4"
-                />
-                <div className="text-center">Continue with Facebook</div>
-              </button> */}
             </form>
           </div>
         </div>
