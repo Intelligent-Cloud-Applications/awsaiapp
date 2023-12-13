@@ -34,6 +34,9 @@ const Panel = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [Country, setCountry] = useState("")
+  const [TotalIncome, setTotalIncome] = useState("")
+  const [TotalAttendance, setTotalAttendance] = useState("")
+  const [TotalLeads, setTotalLeads] = useState("")
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
   // eslint-disable-next-line
@@ -41,6 +44,25 @@ const Panel = () => {
   const [JoiningDate, setJoiningDate] = useState("")
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+
+  const showDetailForm = (institution) => {
+    const userDetail = clientsData.find(([key, client]) => client.institution === institution);
+    setSelectedUser(userDetail);
+    setName(userDetail[1].institution);
+    setEmail(userDetail[1].emailId);
+    setCountry(userDetail[1].country)
+    setPhoneNumber(userDetail[1].phoneNumber);
+    setTotalLeads(userDetail[1].totalLeads)
+    setTotalAttendance(userDetail[1].totalAttendance)
+    setTotalIncome(userDetail[1].totalIncome)
+
+    setMemberCount(userDetail[1].totalMembers)
+    setStatus(userDetail[1].status)
+    setCountry(userDetail[1].Country)
+    setShowDetails(true);
+  };
+
 
   const handleCheckboxChange = (institution) => {
     if (selectedRow.includes(institution)) {
@@ -456,6 +478,7 @@ const Panel = () => {
                   </div>
                 </div>
               </div>
+
               <div className="absolute right-0 bottom-[1rem] bg-white">
                 {isRowSelected(client.institution) && (
                   <img
@@ -469,7 +492,38 @@ const Panel = () => {
 
           ))}
         </div>
+        {clientsToDisplay.map(([key, client], index) => (
+          <div key={client.institution}>
+            {isRowSelected(client.institution) && (
+              <p className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[13rem] min600:hidden" onClick={() => showDetailForm(client.institution)}>-- See Details --</p>
+            )}
+          </div>
+        ))}
 
+        {showDetails && selectedUser && (
+          <div class=" bottom-[38rem] right-[19%] w-[26rem] h-[40rem] relative bg-white" style={{
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
+          }}>
+            <div class="w-[333px] h-[487px] left-[30px] top-[93px] absolute">
+              <div class="w-[81px] h-8 left-0 top-0 absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Email Id:</div>
+              <div class="w-[131px] h-[39px] left-[110px] top-[3px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{email}</div>
+              <div class="w-[81px] h-[31px] left-0 top-[75px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Country:</div>
+              <div class="w-[136px] h-[39px] left-[117px] top-[78px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{Country}</div>
+              <div class="w-[81px] h-8 left-0 top-[149px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Status:</div>
+              <div class="w-[123px] h-[38px] left-[117px] top-[152px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{status}</div>
+              <div class="w-[92px] h-8 left-0 top-[223px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Revenue:</div>
+              <div class="w-[172px] h-[39px] left-[117px] top-[226px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalIncome}</div>
+              <div class="w-[92px] h-[31px] left-0 top-[298px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Members:</div>
+              <div class="w-[189px] h-[38px] left-[117px] top-[303px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{memberCount}</div>
+              <div class="w-[117px] h-[31px] left-0 top-[373px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Attendance:</div>
+              <div class="w-[209px] h-[39px] left-[117px] top-[377px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalAttendance}</div>
+              <div class="w-[68px] h-8 left-0 top-[447px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Leads:</div>
+              <div class="w-40 h-[39px] left-[117px] top-[451px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalLeads}</div>
+            </div>
+            <div class="w-[69px] h-[17px] left-[168px] top-[17px] absolute text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
+            <div><button className="absolute right-0 bottom-0 bg-[#13838d] text-white p-3 w-[25rem]" onClick={() => setShowDetails(false)}>Close</button></div>
+          </div>
+        )}
 
         {isUpdateFormVisible && selectedUser && (
           <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">

@@ -319,9 +319,9 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       {
         showDetails && (
           <div
-            className="flex items-center ml-4 flex-col absolute w-[26.5rem] h-[52rem] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 z-10"
+            className="flex items-center ml-4 flex-col absolute w-[26.5rem] h-[52rem] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
             style={{
-              boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
+              boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
             }}
           >
             <h2 className="text-center Inter text-[1.3rem] font-[600] mb-2">Details</h2>
