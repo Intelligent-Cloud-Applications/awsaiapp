@@ -495,33 +495,35 @@ const Panel = () => {
         {clientsToDisplay.map(([key, client], index) => (
           <div key={client.institution}>
             {isRowSelected(client.institution) && (
-              <p className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[13rem] min600:hidden" onClick={() => showDetailForm(client.institution)}>-- See Details --</p>
+              <p className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[11rem] min600:hidden" onClick={() => showDetailForm(client.institution)}>-- See Details --</p>
             )}
           </div>
         ))}
 
         {showDetails && selectedUser && (
-          <div class=" bottom-[38rem] right-[19%] w-[26rem] h-[40rem] relative bg-white" style={{
+          <div class=" mt-[-38rem] rounded-lg right-[8%] w-[22rem] h-[40rem] relative bg-white" style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
           }}>
-            <div class="w-[333px] h-[487px] left-[30px] top-[93px] absolute">
-              <div class="w-[81px] h-8 left-0 top-0 absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Email Id:</div>
-              <div class="w-[131px] h-[39px] left-[110px] top-[3px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{email}</div>
-              <div class="w-[81px] h-[31px] left-0 top-[75px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Country:</div>
-              <div class="w-[136px] h-[39px] left-[117px] top-[78px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{Country}</div>
-              <div class="w-[81px] h-8 left-0 top-[149px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Status:</div>
-              <div class="w-[123px] h-[38px] left-[117px] top-[152px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{status}</div>
-              <div class="w-[92px] h-8 left-0 top-[223px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Revenue:</div>
-              <div class="w-[172px] h-[39px] left-[117px] top-[226px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalIncome}</div>
-              <div class="w-[92px] h-[31px] left-0 top-[298px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Members:</div>
-              <div class="w-[189px] h-[38px] left-[117px] top-[303px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{memberCount}</div>
-              <div class="w-[117px] h-[31px] left-0 top-[373px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Attendance:</div>
-              <div class="w-[209px] h-[39px] left-[117px] top-[377px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalAttendance}</div>
-              <div class="w-[68px] h-8 left-0 top-[447px] absolute text-black text-lg font-semibold font-['Inter'] tracking-wide">Leads:</div>
-              <div class="w-40 h-[39px] left-[117px] top-[451px] absolute text-zinc-800 text-[15px] font-semibold font-['Inter'] tracking-wide">{TotalLeads}</div>
+            <div class="w-[20rem] h-[595px] relative bg-white rounded-[18px] ">
+              <div class="w-[20rem] h-[488px] left-[41px] top-[69px] absolute">
+                <div class="w-[79px] h-7 left-[-21px] top-0 absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
+                <div class="w-[129px] h-[35px] left-[68px] top-0 absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
+                <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Country:</div>
+                <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{Country}</div>
+                <div class="w-[79px] h-7 left-[-21px] top-[133px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
+                <div class="w-[120px] h-[34px] left-[68px] top-[135px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
+                <div class="w-[89px] h-[29px] left-[-21px] top-[198px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
+                <div class="w-[169px] h-[35px] left-[68px] top-[198px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
+                <div class="w-[89px] h-7 left-[-21px] top-[265px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
+                <div class="w-[185px] h-[34px] left-[68px] top-[266px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
+                <div class="w-[114px] h-[27px] left-[-21px] top-[332px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
+                <div class="w-[204px] h-[34px] left-[86px] top-[334px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
+                <div class="w-[66px] h-7 left-[-21px] top-[398px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
+                <div class="w-[158px] h-[35px] left-[68px] top-[399px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
+              </div>
+              <div class="w-[89px] h-[17px] left-[121px] top-[13px] absolute text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
             </div>
-            <div class="w-[69px] h-[17px] left-[168px] top-[17px] absolute text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
-            <div><button className="absolute right-0 bottom-0 bg-[#13838d] text-white p-3 w-[25rem]" onClick={() => setShowDetails(false)}>Close</button></div>
+            <div><button className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
           </div>
         )}
 
