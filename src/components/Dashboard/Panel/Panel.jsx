@@ -527,7 +527,7 @@ const Panel = () => {
 
         {isUpdateFormVisible && selectedUser && (
           <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
-            <form className="relative h-[41rem] m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+            <form className="relative h-[38rem] m-auto flex flex-col justify-between p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               {/* Include form fields for updating user details */}
               <input
                 required
@@ -563,7 +563,7 @@ const Panel = () => {
                   setCountry(e.target.value);
                 }}
               />
-              <div className="flex gap-1">
+              {/* <div className="flex gap-1">
                 <label className="mt-2">Total Member :</label>
                 <input
                   required
@@ -588,7 +588,7 @@ const Panel = () => {
                     setRevenue(e.target.value);
                   }}
                 />
-              </div>
+              </div> */}
               <div className="flex mt-[-1.5rem] mb-[-1rem] ml-[-4rem]">
                 <label>Status:</label>
                 <input
