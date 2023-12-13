@@ -526,8 +526,8 @@ const Panel = () => {
         )}
 
         {isUpdateFormVisible && selectedUser && (
-          <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
-            <form className="relative h-[38rem] m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+          <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
+            <form className="relative h-[41rem] m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               {/* Include form fields for updating user details */}
               <input
                 required
