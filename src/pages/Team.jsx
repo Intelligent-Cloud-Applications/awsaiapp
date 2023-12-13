@@ -204,7 +204,7 @@ const TeamPage = () => {
 
         <div className="relative">
           <div className="overflow-hidden bg-black bg-[linear-gradient(#000000,_#000000)] bg-cover bg-50%_50% bg-blend-normal bg-no-repeat relative flex flex-col justify-end items-end pt-48 pb-32 px-[111px] rounded-br-[80px] rounded-bl-[80px] max850:h-[30rem] max1050:h-[30rem]">
-            <div className="text-center text-[3rem] font-['Inter'] font-bold text-white absolute top-48 left-[147px] h-20 w-1/6 max1250:text-[2.5rem] max1250:w-[30rem] max800:pr-[6rem] max800-center max1250:pr-[15rem] ">
+            <div className="text-center text-[3rem] font-['Inter'] font-bold text-white absolute top-48 left-[147px] h-20 w-1/6 max1250:text-[2.5rem] max1250:w-[30rem] max800:pr-[6rem] max800-center max1250:pr-[15rem] max1320:w-[20rem] max1320:pr-20 ">
               Our{" "}
               <div
                 id="OurTeam"

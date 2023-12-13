@@ -19,6 +19,8 @@ import "./Panel.css";
 
 const Panel = () => {
   const itemsPerPage = 6;
+  const [status, setStatus] = useState();
+  const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
@@ -32,8 +34,8 @@ const Panel = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [Country, setCountry] = useState("")
-  const [cognitoId, setcognitoId] = useState("")
-  const [balance, setBalance] = useState("");
+  // eslint-disable-next-line
+  const [Revenue, setRevenue] = useState("");
   // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate, setJoiningDate] = useState("")
@@ -111,16 +113,15 @@ const Panel = () => {
     e.preventDefault()
     try {
       const apiName = 'clients';
-      const path = '/admin/create-client';
+      const path = '/admin/create-clients';
       const myInit = {
         body: {
-          cognitoId: cognitoId,
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
           country: Country,
-          balance: balance,
-          joiningDate: JoiningDate,
+          JoiningDate: JoiningDate,
+          status: status
         },
       };
       const response = await API.post(apiName, path, myInit);
@@ -134,9 +135,9 @@ const Panel = () => {
       setEmail("");
       setPhoneNumber("");
       setCountry("");
-      setBalance("");
+      setRevenue("");
       setJoiningDate("");
-      setcognitoId("");
+      setStatus("")
       toggleAddUserForm();
       util.setLoader(false);
 
@@ -152,18 +153,20 @@ const Panel = () => {
   };
 
 
+
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
     try {
       const apiName = 'clients';
-      const path = '/admin/update-any';
+      const path = '/admin/update-clients';
       const myInit = {
         body: {
-          cognitoId: selectedUser[1].cognitoId,
+          // cognitoId: selectedUser[1].cognitoId,
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
           country: Country,
+          status: status
         },
       };
       console.log("my init", myInit);
@@ -184,7 +187,7 @@ const Panel = () => {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'An error occurred while creating the user.',
+        text: 'An error occurred while updating the user.',
       });
       console.error("Error updating client:", error);
     }
@@ -196,6 +199,7 @@ const Panel = () => {
     setName("");
     setEmail("");
     setPhoneNumber("");
+    setStatus("");
   };
 
 
@@ -205,14 +209,16 @@ const Panel = () => {
     setName(userToUpdate[1].institution);
     setEmail(userToUpdate[1].emailId);
     setPhoneNumber(userToUpdate[1].phoneNumber);
-
+    setMemberCount(userToUpdate[1].memberCount)
+    setStatus(userToUpdate[1].status)
+    setCountry(userToUpdate[1].country)
     setIsUpdateFormVisible(true);
   };
 
   return (
-    <div className="w-[85vw] min-h-[100vh] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
+    <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div
-        className={`w-[90%] mt-[1rem] rounded-3xl p-3 `}
+        className={`w-[90%] rounded-3xl p-3 `}
       >
         <div className="flex flex-row justify-between max850:justify-end pb-2">
           <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">Welcome, Boss👋</h1>
@@ -258,11 +264,11 @@ const Panel = () => {
         {/* form of creating new client */}
         {isUserAdd && (
           <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
-            <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+            <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               <input
                 required
                 placeholder="Name"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="text"
                 value={name}
                 onChange={(e) => {
@@ -272,7 +278,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Email Address"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="email"
                 value={email}
                 onChange={(e) => {
@@ -282,7 +288,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Phone Number"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="number"
                 value={phoneNumber}
                 onChange={(e) => {
@@ -292,7 +298,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Country"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="text"
                 value={Country}
                 onChange={(e) => {
@@ -302,13 +308,34 @@ const Panel = () => {
               <input
                 required
                 placeholder="Joining date"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:border-opacity-20  "
                 type="date"
                 value={JoiningDate}
                 onChange={(e) => {
                   setJoiningDate(e.target.value);
                 }}
               />
+              <div className="flex mt-[-1.5rem] mb-[-1rem] ml-[-4rem]">
+                <label>Status:</label>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="Active"
+                  className="ml-3"
+                  checked={status === "Active"}
+                  onChange={() => setStatus("Active")}
+                />{" "}
+                <p className="ml-1"> Active</p>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="InActive"
+                  className="ml-3"
+                  checked={status === "InActive"}
+                  onChange={() => setStatus("InActive")}
+                />{" "}
+                <p className="ml-1">InActive</p>
+              </div>
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
@@ -332,15 +359,18 @@ const Panel = () => {
 
 
         {/* Headings */}
-        <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:w-[83vw]">
+        <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:hidden">
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
           <div className="flex flex-row justify-between">
-            <div className="col-span-4 font-[700] pl-[5rem] ">Name, Phone, Email</div>
-            <div className="font-[700] col-span-2 max600:hidden">Country</div>
-            <div className="font-[700] col-span-6 max600:hidden">Joining Date</div>
+            <div className=" font-[700] pl-[5rem] ">Company(Owner's detail)</div>
+            <div className="font-[700] max600:hidden">Country</div>
             <div className="font-[700]">Status</div>
-            <div className="font-[700]">Members</div>
-            <div></div>
+            <div className="font-[700] max600:hidden ">Revenue</div>
+            <div className="flex justify-between w-[17rem] max1300:w-[13rem]">
+              <div className="font-[700]">Members</div>
+              <div className="font-[700]">Attendance</div>
+              <div className="font-[700] mr-[-3rem] max1300:hidden">Leads</div>
+            </div>
             <div></div>
           </div>
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
@@ -384,8 +414,8 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to={`/ClientsRevenue?institution=${client.institution} `}>
-                <div className="absolute right-2 mt-5 max600:mt-1 max600:right-3">
+              <Link to={`/MonthlyReport?institution=${client.institution} `}>
+                <div className="absolute right-2 mt-5">
                   <img
                     src={personIcon}
                     alt=""
@@ -401,45 +431,27 @@ const Panel = () => {
                     <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
                   </div>
                   <div className="grid grid-cols-12 items-center w-[55vw]">
-                    <div className="col-span-3 flex flex-col max600:w-[8.5rem]">
+                    <div className="col-span-3 flex flex-col max600:w-[10rem]">
                       <div className="font-[900] email-hover cursor-pointer">
                         {client.institution}
                       </div>
                       <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
                     </div>
-                    <div className="col-span-2 ml-[0rem] font-semibold text-sm max600:hidden">{client.country}</div>
-                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
-                    </div>
-                    <div className="col-span-2 flex justify-start ml-[1rem]">
-                      <div
-                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active"
-                          ? "border-[#99EF72] text-[#99EF72]"
-                          : "border-[#FF4343AB] text-[#FF4343AB]"
-                          }`}
-                      >
-                        <div
-                          className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active"
-                            ? "bg-[#99EF72]"
-                            : "bg-[#FF4343AB]"
-                            } rounded-full transform K2D`}
-                        >
-
-                        </div>
-                        <div>
-                          {client.status === "Active"
-                            ? "Active"
-                            : "Inactive"}
-                        </div>
-                      </div>                    </div>
-                    <div className="K2D font-[600] col-span-2 ml-[4rem] relative max850:hidden">
-                      {client.memberCount}
-                      <div >
-                        <div></div>
-                        <div></div>
+                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-2 ml-[-4rem] relative max1008:hidden">
+                      <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
+                        <div className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
+                        <div>{client.status === "Active" ? "Active" : "Inactive"}</div>
                       </div>
                     </div>
-                    <div className="">
+                    <div className="col-span-3 ml-[-1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
+                      {client.country === 'USA' ? `$${client.totalIncome}` : `₹${client.totalIncome}`}
+                    </div>
+                    <div className="flex flex-row justify-between w-[16vw]">
+                      <div className="ml-[-4rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.totalMembers}</div>
+                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.totalAttendance}</div>
+                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.totalLeads}</div>
                     </div>
                   </div>
                 </div>
@@ -461,12 +473,12 @@ const Panel = () => {
 
         {isUpdateFormVisible && selectedUser && (
           <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
-            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+            <form className="relative h-[38rem] m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               {/* Include form fields for updating user details */}
               <input
                 required
                 placeholder="Name"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -474,7 +486,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Email Address"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -482,7 +494,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Phone Number"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
                 type="number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
@@ -490,17 +502,65 @@ const Panel = () => {
               <input
                 required
                 placeholder="Country"
-                className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="text"
                 value={Country}
                 onChange={(e) => {
                   setCountry(e.target.value);
                 }}
               />
+              <div className="flex gap-1">
+                <label className="mt-2">Total Member :</label>
+                <input
+                  required
+                  placeholder="Members"
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-[11rem] focus:border-opacity-20  "
+                  type="text"
+                  value={memberCount}
+                  onChange={(e) => {
+                    setMemberCount(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="flex gap-9">
+                <label className="mt-2">Revenue :</label>
+                <input
+                  required
+                  placeholder="Revenue"
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-[11rem] focus:border-opacity-20  "
+                  type="text"
+                  value={memberCount}
+                  onChange={(e) => {
+                    setRevenue(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="flex mt-[-1.5rem] mb-[-1rem] ml-[-4rem]">
+                <label>Status:</label>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="Active"
+                  className="ml-3"
+                  checked={status === "Active"}
+                  onChange={() => setStatus("Active")}
+                />{" "}
+                <p className="ml-1 text-[#85e758]"> Active</p>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="InActive"
+                  className="ml-3"
+                  checked={status === "InActive"}
+                  onChange={() => setStatus("InActive")}
+                />{" "}
+                <p className="ml-1 text-[#ff1010d9]">InActive</p>
+              </div>
+
               {/* Add other fields for updating user details */}
               <div className="flex flex-col gap-3 w-full justify-center items-center">
                 <button
-                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover-bg-[#ffffff] hover-text-[#2297a7]"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                   onClick={(e) => {
                     e.preventDefault()
                     handleUpdateClient(selectedUser)
@@ -509,7 +569,7 @@ const Panel = () => {
                   Update
                 </button>
                 <button
-                  className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                   onClick={() => handleCancelUpdate()}
                 >
                   Cancel

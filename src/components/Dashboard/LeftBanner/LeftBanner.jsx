@@ -22,7 +22,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   }, []);
 
   return (
-    <div className="min-w-[4rem] p-3 bg-[#75757529] rounded-[17px] overflow-auto">
+    <div className="min-w-[4rem] p-3 bg-[#75757540] rounded-[17px] overflow-auto">
       <div className="rounded-r-[7rem] rounded-b-none flex flex-col items-center justify-between">
         <ul className="gap-[3rem] text-center flex flex-col items-center max1300:flex-row">
           {isSuperAdmin && (

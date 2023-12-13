@@ -12,15 +12,14 @@ const ContextProvider = (props) => {
 
   useEffect(() => {
     fetchClients();
-    // fetchMember({ institution: "happyprancer" });
-    fetchUserProfile(); // Fetch user profile when the component mounts
+    fetchUserProfile(); 
   }, []);
 
-  // Function to fetch the list of clients
-  const fetchClients = async () => {
+  const fetchClients = async (institution) => {
     try {
       setLoader(true);
-      const response = await API.get("clients", "/admin/list-clients");
+      const response = await API.get("clients", "/admin/list-institution");
+      console.log(response)
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -29,24 +28,6 @@ const ContextProvider = (props) => {
     }
   };
 
-  // const fetchMember = async ({ institution = "happyprancer" }) => {
-  //   try {
-  //     setLoader(true);
-  //     const response = await API.get(
-  //       "clients",
-  //       `/user/list-member/${institution}`
-  //     );
-  //     console.log("members", response);
-  //     setMember(response);
-  //   } catch (error) {
-  //     console.error("Error fetching member:", error);
-  //     console.error("Error details:", error.response);
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // };
-
-  // Function to fetch the user profile
   const fetchUserProfile = async () => {
     try {
       setLoader(true);

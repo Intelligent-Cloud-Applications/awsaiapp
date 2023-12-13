@@ -345,7 +345,7 @@ const MemberList = ({ institution: tempInstitution }) => {
 
 
   return (
-    <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
+    <div className="w-[93vw] flex flex-col items-center gap-10">
       <Navbar />
       <div className="flex justify-center">
         <div className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[5rem] `}>

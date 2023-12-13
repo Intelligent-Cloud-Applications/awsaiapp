@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import DashBoard from "./pages/DashBoard";
 import MemberList from "./components/Dashboard/MemberList/MembersList";
-import ClientsRevenue from "./components/Dashboard/ClientsRevenue/ClientsRevenue";
+import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
 import Pricing from "./pages/Pricing";
 import Aboutus from "./pages/Aboutus";
 import Team from "./pages/Team";
@@ -29,7 +29,7 @@ const RoutesContainer = () => {
       <Route path="/logout" element={<Logout/>} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
-      <Route path="/ClientsRevenue" element={<ClientsRevenue institution={null} />} />
+      <Route path="/MonthlyReport" element={<MonthlyReport institution={null} />} />
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/team" element={<Team />} />
