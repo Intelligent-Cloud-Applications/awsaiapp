@@ -3,6 +3,7 @@ import Mnagement from "../../../utils/Assets/Dashboard/images/SVG/PendingPayment
 import graph from "../../../utils/Assets/Dashboard/images/PNG/Graph.png";
 import Members from "../../../utils/Assets/Dashboard/images/PNG/Members.png";
 import Bit from "../../../utils/Assets/Dashboard/images/SVG/ClientsPayment.svg";
+import Home from "../../../utils/Assets/Dashboard/images/SVG/Home.svg"
 import "./LeftBanner.css";
 import context from "../../../context/Context";
 // import { Navigate } from "react-router-dom";
@@ -115,7 +116,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 }}
               >
                 <img
-                  src={Members}
+                  src={Home}
                   alt=""
                   style={{
                     width: "1.9rem",
@@ -126,10 +127,29 @@ const LeftBanner = ({ displayAfterClick }) => {
                 />
               </li>
               <li
-                className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer`}
+                className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer `}
                 onClick={() => {
                   setClick(1);
                   displayAfterClick(1);
+                  // Navigate(``)
+                }}
+              >
+                <img
+                  src={Members}
+                  alt=""
+                  style={{
+                    width: "1.9rem",
+                    minWidth: "1.9rem",
+                    filter:
+                      click === 1 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
+                  }}
+                />
+              </li>
+              <li
+                className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer`}
+                onClick={() => {
+                  setClick(2);
+                  displayAfterClick(2);
                 }}
               >
                 <img
@@ -139,7 +159,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                     width: "1.3rem",
                     minWidth: "1.3rem",
                     filter:
-                      click === 1 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
+                      click === 2 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                   }}
                 />
               </li>

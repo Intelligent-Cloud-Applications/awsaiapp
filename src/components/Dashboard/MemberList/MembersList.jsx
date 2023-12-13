@@ -17,15 +17,8 @@ import Navbar from "../../Home/Navbar";
 // import LeftBanner from "../LeftBanner/LeftBanner";
 import "./MembersList.css";
 
-const MemberList = () => {
-  const getItemsPerPage = () => {
-    return window.innerWidth < 600 ? 5 : 7;
-  };
-
-  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
-  console.log(window.location.search);
-  const searchParams = new URLSearchParams(window.location.search);
-  const institution = searchParams.get("institution");
+const MemberList = ({ institution: tempInstitution }) => {
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userStatus, setUserStatus] = useState("all");
@@ -44,23 +37,18 @@ const MemberList = () => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
-  const { util, clients } = useContext(Context);
-  // const isSuperAdmin = clients.institution !== "awsaiapp";
+  const { util, user } = useContext(Context);
+  const searchParams = new URLSearchParams(window.location.search);
+  let institution
+  if (user.profile.institution === "awsaiapp") {
+    institution = searchParams.get("institution");
+  } else {
+    institution = tempInstitution
+  }
   console.log(userCheck);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerPage(getItemsPerPage());
-    };
+  // console.log(user.profile.userType)
 
-    window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-
-  }, []); 
-  
   const fetchMembersForInstitution = async (institution) => {
     try {
       util.setLoader(true);
@@ -68,6 +56,7 @@ const MemberList = () => {
         "clients",
         `/user/list-members/${institution}`
       );
+      console.log(response)
       const activeUsers = response.filter(
         (memberData) => memberData.status === "Active"
       );
@@ -77,8 +66,8 @@ const MemberList = () => {
 
       setActiveUserList(activeUsers);
       setInactiveUserList(inactiveUsers);
-      clients.onReload();
       setMemberData(response);
+
     } catch (error) {
       console.error("Error fetching members:", error);
       console.error("Error details:", error.response);
@@ -91,6 +80,7 @@ const MemberList = () => {
     fetchMembersForInstitution(institution);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution]);
+
 
   const filtermember = () => {
     if (!searchQuery) {
@@ -138,14 +128,17 @@ const MemberList = () => {
   const activeUserCount = activeUserList.length;
 
   function formatEpochToReadableDate(epochDate) {
-    const date = new Date(epochDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
+    const date = isNaN(epochDate) ? new Date(parseFloat(epochDate)) : new Date(epochDate);
+    if (!isNaN(date.getTime())) {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+      return formattedDate;
+    }
+    return ''; 
   }
-
+  
   const handleAddMember = async (e) => {
     e.preventDefault();
     const apiName = "clients";
@@ -350,6 +343,7 @@ const MemberList = () => {
     }
   };
 
+
   return (
     <div className="w-[93vw] flex flex-col items-center pt-6 mt-8 gap-10">
       <Navbar />
@@ -430,7 +424,7 @@ const MemberList = () => {
                 <input
                   required
                   placeholder="Name"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                   type="text"
                   value={name}
                   onChange={(e) => {
@@ -440,7 +434,7 @@ const MemberList = () => {
                 <input
                   required
                   placeholder="Email Address"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                   type="email"
                   value={email}
                   onChange={(e) => {
@@ -450,7 +444,7 @@ const MemberList = () => {
                 <input
                   required
                   placeholder="Phone Number"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                   type="number"
                   value={phoneNumber}
                   onChange={(e) => {
@@ -460,7 +454,7 @@ const MemberList = () => {
                 <input
                   required
                   placeholder="Joining date"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                   type="date"
                   value={JoiningDate}
                   onChange={(e) => {
@@ -471,7 +465,7 @@ const MemberList = () => {
                   <input
                     required
                     placeholder="Country"
-                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                     type="text"
                     value={Country}
                     onChange={(e) => {
@@ -481,7 +475,7 @@ const MemberList = () => {
                   <input
                     required
                     placeholder="Due ?"
-                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                     type="number"
                     value={balance}
                     onChange={(e) => {
@@ -489,7 +483,7 @@ const MemberList = () => {
                     }}
                   />
                 </div>
-                <div className="flex mt-[-1.5rem] mb-[-1rem]">
+                <div className="flex mt-[-1.5rem] mb-[-1rem] ml-[-4rem]">
                   <label>Status:</label>
                   <input
                     type="radio"
@@ -512,13 +506,13 @@ const MemberList = () => {
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
-                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                     onClick={handleAddMember}
                   >
                     Create
                   </button>
                   <button
-                    className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
+                    className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                     onClick={() => {
                       setIsUserAdd(false);
                       setUserCheck(0);
@@ -534,11 +528,10 @@ const MemberList = () => {
           {/* filter */}
           <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[18rem]">
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer max850:ml-[-1.5rem] ${
-                userStatus === "all"
-                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                  : "text-[#000] hover:text-[#30afbc]"
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer max850:ml-[-1.5rem] ${userStatus === "all"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
                 setUserStatus("all");
               }}
@@ -546,11 +539,10 @@ const MemberList = () => {
               All ({AllUserCount})
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-                userStatus === "active"
-                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                  : "text-[#000] hover:text-[#30afbc]"
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "active"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
                 setUserStatus("active");
               }}
@@ -558,11 +550,10 @@ const MemberList = () => {
               Active ({activeUserCount})
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-                userStatus === "inactive"
-                  ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
-                  : "text-[#000] hover:text-[#30afbc]"
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "inactive"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
                 setUserStatus("inactive");
               }}
@@ -594,11 +585,10 @@ const MemberList = () => {
             {MembersData.map((memberData, index) => (
               <div
                 key={memberData.cognitoId}
-                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
-                  isRowSelected(memberData.cognitoId)
-                    ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                    : "border-[#a2a2a280]"
-                }`}
+                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.cognitoId)
+                  ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
+                  : "border-[#a2a2a280]"
+                  }`}
                 style={{
                   margin: isRowSelected(memberData.cognitoId)
                     ? "1rem 0"
@@ -660,30 +650,30 @@ const MemberList = () => {
                           ({memberData.phoneNumber})
                         </div>
                       </div>
-                      <div className="col-span-2 ml-[3rem] font-semibold text-sm max850:hidden">
+                      <div className="col-span-2 ml-[4rem] font-semibold text-sm max850:hidden">
                         {memberData.country}
                       </div>
-                      <div className="col-span-3 ml-[3rem] font-semibold text-sm max850:hidden">
-                        {formatEpochToReadableDate(memberData.joiningDate)}
+                      <div className="col-span-3 ml-[4rem] font-semibold text-sm max850:hidden">
+                      {memberData.joiningDate ? formatEpochToReadableDate(memberData.joiningDate) : ''}
                       </div>
                       <div className="col-span-2 font-semibold text-sm max850:hidden">
-                        4/10
+                        {memberData.zPoints}
                       </div>
-                      <div className="col-span-2 ml-[-1rem] relative max850:hidden">
+                      <div className="col-span-2 relative max850:hidden">
                         <div
-                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${
-                            memberData.status === "Active"
-                              ? "border-[#99EF72] text-[#99EF72]"
-                              : "border-[#FF4343AB] text-[#FF4343AB]"
-                          }`}
+                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
+                            ? "border-[#99EF72] text-[#99EF72]"
+                            : "border-[#FF4343AB] text-[#FF4343AB]"
+                            }`}
                         >
                           <div
-                            className={`w-3 h-3 mt-[0.4rem] ${
-                              memberData.status === "Active"
-                                ? "bg-[#99EF72]"
-                                : "bg-[#FF4343AB]"
-                            } rounded-full transform K2D`}
-                          ></div>
+                            className={`w-3 h-3 mt-[0.4rem] ${memberData.status === "Active"
+                              ? "bg-[#99EF72]"
+                              : "bg-[#FF4343AB]"
+                              } rounded-full transform K2D`}
+                          >
+                            
+                          </div>
                           <div>
                             {memberData.status === "Active"
                               ? "Active"
@@ -790,13 +780,13 @@ const MemberList = () => {
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
-                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 hover:border-[2px] hover:border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                     onClick={handleUpdateUser}
                   >
                     Update
                   </button>
                   <button
-                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
                     onClick={handleDeleteMember}
                   >
                     Delete

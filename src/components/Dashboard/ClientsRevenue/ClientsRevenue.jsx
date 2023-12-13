@@ -1,15 +1,5 @@
-// import React from 'react'
 
-// const RevenueGenerated = () => {
-//   return (
-//     <div>RevenueGenerated</div>
-//   )
-// }
-
-// export default RevenueGenerated
-
-
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 // import addTextInsideSegments from './addTextInsideSegmentsPlugin';
@@ -26,7 +16,8 @@ import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.sv
 import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
 import Pagination from "@mui/material/Pagination";
 import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
-import './revenue.css'
+import Context from '../../../context/Context';
+import './ClientsRevenue.css'
 
 const PieChart = ({ data }) => {
   const chartRef = useRef(null);
@@ -136,7 +127,14 @@ const BarChart = ({ data }) => {
   return <canvas className="p" ref={chartRef}></canvas>;
 };
 
-const RevenueGenerated = () => {
+const ClientsRevenue = () => {
+  const { clients } = useContext(Context);
+  const clientsData = Object.entries(clients.data).map(([clientId, clientInfo]) => ({
+    data: clientInfo.joiningMonth,
+    backgroundColor: "white", // Adjust as needed
+    barPercentage: 0.45, // Adjust as needed
+  }));
+  console.log(clientsData)
   const [currentPage, setCurrentPage] = useState(2);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
@@ -154,27 +152,9 @@ const RevenueGenerated = () => {
 
   const barChartData = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ],
-    datasets: [
-      {
-        label: "Revenue",
-        data: [10, 20, 15, 55, 30, 35, 30, 65, 30, 55, 20, 45],
-        backgroundColor: "white",
-        barPercentage: 0.45
-      },
-    ],
+    datasets: clientsData,
   };
 
   const pieChartData = {
@@ -394,4 +374,4 @@ const RevenueGenerated = () => {
   )
 }
 
-export default RevenueGenerated
+export default ClientsRevenue;

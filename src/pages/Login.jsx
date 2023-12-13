@@ -10,7 +10,6 @@ import LockIcon from "../utils/Assets/Dashboard/images/SVG/LockIcon.svg";
 // import GoogleIcon from '../utils/png/Google.png';
 // import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from "../utils/Assets/Login.png";
-import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import "./Login.css";
 
 const Login = () => {
@@ -73,7 +72,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/memberlist?institution=${institution}`);
+          Navigate(`/dashboard`, {state:{institution:institution}});
         } else {
           Navigate("/");
           Swal.fire({
@@ -108,6 +107,7 @@ const Login = () => {
   //   Add Facebook authentication logic here
   // };
 
+  // `/memberlist?institution=${institution}`
   return (
     <>
       <Navbar />
@@ -234,7 +234,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <LeftBanner institution={institution} />
     </>
   );
 };

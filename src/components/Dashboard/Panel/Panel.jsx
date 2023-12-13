@@ -18,7 +18,7 @@ import Update from '../../../utils/Assets/Dashboard/images/SVG/Update.svg';
 import "./Panel.css";
 
 const Panel = () => {
-  const itemsPerPage = 7;
+  const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
@@ -59,17 +59,20 @@ const Panel = () => {
 
     const query = searchQuery.toLowerCase();
 
-    const filtered = clientsData?.filter((client) => {
-      const matches = (
-        client[1].institution.toLowerCase().includes(query) ||
-        client[1].emailId.toLowerCase().includes(query) ||
-        client[1].phoneNumber.toLowerCase().includes(query)
-      );
+    const filtered = clientsData?.filter(([key, client]) => {
+      const matches =
+        client.institution.toLowerCase().includes(query) ||
+        client.emailId.toLowerCase().includes(query) ||
+        client.phoneNumber.toLowerCase().includes(query) ||
+        client.country.toLowerCase().includes(query) ||
+        formatEpochToReadableDate(client.joiningDate).includes(query);
       return matches;
     });
+
     console.log("Filtered Clients:", filtered);
     return filtered;
   };
+
 
 
   const filteredClients = filterClients();
@@ -78,7 +81,6 @@ const Panel = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  // eslint-disable-next-line
   const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
 
@@ -161,7 +163,7 @@ const Panel = () => {
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
-          country:Country,
+          country: Country,
         },
       };
       console.log("my init", myInit);
@@ -208,7 +210,7 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
+    <div className="w-[85vw] min-h-[100vh] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div
         className={`w-[90%] mt-[1rem] rounded-3xl p-3 `}
       >
@@ -231,9 +233,9 @@ const Panel = () => {
             <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
               <img className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2" src={SearchIcon} alt="" />
               <input
-                className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem] "
+                className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem]"
                 type="text"
-                placeholder={"Search “Name, Email, Number”"}
+                placeholder="Search “Name, Email, Number”"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -336,8 +338,8 @@ const Panel = () => {
             <div className="col-span-4 font-[700] pl-[5rem] ">Name, Phone, Email</div>
             <div className="font-[700] col-span-2 max600:hidden">Country</div>
             <div className="font-[700] col-span-6 max600:hidden">Joining Date</div>
-            <div className="font-[700]"></div>
-            <div className="font-[700]"></div>
+            <div className="font-[700]">Status</div>
+            <div className="font-[700]">Members</div>
             <div></div>
             <div></div>
           </div>
@@ -345,8 +347,8 @@ const Panel = () => {
         </div>
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
-        <div className="w-[76vw] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
-          {clientsData.map(([key, client], index) => (
+        <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
+          {clientsToDisplay.map(([key, client], index) => (
             <div
               key={client.institution}
               onClick={() => {
@@ -382,7 +384,7 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to={`/memberlist?institution=${client.institution} `}>
+              <Link to={`/ClientsRevenue?institution=${client.institution} `}>
                 <div className="absolute right-2 mt-5 max600:mt-1 max600:right-3">
                   <img
                     src={personIcon}
@@ -406,20 +408,32 @@ const Panel = () => {
                       <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
                     </div>
-                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
-                    <div className="col-span-3 ml-[0rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
+                    <div className="col-span-2 ml-[0rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">{formatEpochToReadableDate(client.joiningDate)}
                     </div>
-                    <div className="col-span-2 flex justify-end max600:absolute max600:bottom-[1%] right-[0.5%] ">
-                      {isRowSelected(client.institution) && (
-                        <img
-                          className="w-[4rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
-                          src={Update}
-                          alt=""
-                          onClick={() => showUpdateForm(client.institution)}
-                        />
-                      )}
-                    </div>
-                    <div className="col-span-2 ml-[-2rem] relative max850:hidden">
+                    <div className="col-span-2 flex justify-start ml-[1rem]">
+                      <div
+                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active"
+                          ? "border-[#99EF72] text-[#99EF72]"
+                          : "border-[#FF4343AB] text-[#FF4343AB]"
+                          }`}
+                      >
+                        <div
+                          className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active"
+                            ? "bg-[#99EF72]"
+                            : "bg-[#FF4343AB]"
+                            } rounded-full transform K2D`}
+                        >
+
+                        </div>
+                        <div>
+                          {client.status === "Active"
+                            ? "Active"
+                            : "Inactive"}
+                        </div>
+                      </div>                    </div>
+                    <div className="K2D font-[600] col-span-2 ml-[4rem] relative max850:hidden">
+                      {client.memberCount}
                       <div >
                         <div></div>
                         <div></div>
@@ -430,9 +444,20 @@ const Panel = () => {
                   </div>
                 </div>
               </div>
+              <div className="absolute right-0 bottom-[1rem] bg-white">
+                {isRowSelected(client.institution) && (
+                  <img
+                    className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
+                    src={Update}
+                    alt=""
+                    onClick={() => showUpdateForm(client.institution)}
+                  />
+                )}</div>
             </div>
+
           ))}
         </div>
+
 
         {isUpdateFormVisible && selectedUser && (
           <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
