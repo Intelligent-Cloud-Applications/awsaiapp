@@ -56,10 +56,9 @@ const Panel = () => {
     setTotalLeads(userDetail[1].totalLeads)
     setTotalAttendance(userDetail[1].totalAttendance)
     setTotalIncome(userDetail[1].totalIncome)
-
     setMemberCount(userDetail[1].totalMembers)
     setStatus(userDetail[1].status)
-    setCountry(userDetail[1].Country)
+    setCountry(userDetail[1].country)
     setShowDetails(true);
   };
 

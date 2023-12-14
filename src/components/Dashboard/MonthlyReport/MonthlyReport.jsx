@@ -184,7 +184,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
 
   let Country;
   if (selectedClient) {
-   Country = selectedClient.country;
+    Country = selectedClient.country;
   } else {
     console.log(`Country information not available for institution: ${institution}`);
   }
@@ -192,9 +192,9 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
 
   const renderValue = (value) => {
     if (Country === 'USA') {
-      return `$${value}`;
+      return `$ ${value}`;
     } else {
-      return `₹${value}`;
+      return `₹ ${value}`;
     }
   };
 
@@ -245,7 +245,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
 
   useEffect(() => {
     fetchRevenueOfClients();
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [institution, selectedMonth]);
 
   console.log(monthDetails);
@@ -319,7 +319,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       {
         showDetails && (
           <div
-            className="flex items-center ml-4 flex-col absolute w-[26.5rem] h-[52rem] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
+            className="flex items-center ml-4 flex-col w-[22rem] h-[52.8rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
             style={{
               boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
             }}
@@ -328,7 +328,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="mb-4 border border-[#343434] w-full h-[2.5rem] font-[600]"
+              className="mb-4 border border-[#343434] w-[16rem] p-2 font-[600]"
             >
               <option value="">Select Month</option>
               {monthsShort.map((month, index) => (
@@ -338,35 +338,35 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
               ))}
             </select>
             <div>
-              <div >
-                <div class="w-[85px] h-[17px] left-[57px] top-[527px] absolute text-black text-[17px] font-semibold Inter tracking-wide">Incomes :</div>
-                <div class="w-48 h-[13px] left-[219px] top-[452px] absolute text-black text-[15px] Inter tracking-tight font-[600]">Clients Payment: {renderValue(clientsPayment)}</div>
-                <div class="w-48 h-[13px] left-[219px] top-[522px] absolute text-black text-[15px] Inter tracking-tight font-[600]">Product: {Product}</div>
-                <div class="w-48 h-[13px] left-[219px] top-[592px] absolute text-black text-[15px] Inter tracking-tight font-[600]">Protein: {Protein}</div>
-                <div class="w-16 h-[0px] left-[146.98px] top-[533px] absolute border border-black"></div>
-                <div class="w-[141px] h-[0px] left-[179px] top-[462px] absolute origin-top-left rotate-90 border border-black"></div>
-                <div class="w-8 h-[0px] left-[179px] top-[462px] absolute border border-black"></div>
-                <div class="w-[31.06px] h-[0px] left-[179px] top-[603px] absolute border border-black"></div>
-                <div class="w-[165px] h-[17px] left-[53px] top-[726px] absolute text-black text-[17px] font-semibold Inter tracking-wide">Total Income :</div>
-                <div class="w-[216px] h-8 left-[184px] top-[720px] absolute bg-white border border-black"></div>
-                <div class="left-[206px] top-[724px] absolute text-black text-base font-[600] Inter tracking-wide">{renderValue(totalIncome)}</div>
-                <div class="w-[165px] h-[17px] left-[112px] top-[676px] absolute text-black text-[17px] font-semibold Inter tracking-wide">Profit :</div>
-                <div class="w-[216px] h-8 left-[184px] top-[666px] absolute bg-white border border-black"></div>
-                <div class="left-[206px] top-[670px] absolute text-black text-base  Inter tracking-wide font-[600]">{renderValue(profit)}</div>
-                <div class="w-[131px] h-[17px] left-[45px] top-[216px] absolute text-black text-[17px] font-semibold Inter tracking-wide">Investments :</div>
-                <div class="w-48 h-[13px] left-[239.02px] top-[146px] absolute text-black text-[15px]  Inter tracking-tight font-[600]">Ads Running: {adsRunning} </div>
-                <div class="w-48 h-[13px] left-[239.02px] top-[216px] absolute text-black text-[15px]  Inter tracking-tight font-[600]">Instructor Payment: {renderValue(instructorPayment)}</div>
-                <div class="w-48 h-[13px] left-[239.02px] top-[286px] absolute text-black text-[15px]  Inter tracking-tight font-[600]">XYZ: 1000</div>
-                <div class="w-16 h-[0px] left-[167px] top-[227px] absolute border border-black"></div>
-                <div class="w-[141px] h-[0px] left-[198px] top-[156px] absolute origin-top-left rotate-90 border border-black"></div>
-                <div class="w-8 h-[0px] left-[199.02px] top-[156px] absolute border border-black"></div>
-                <div class="w-[31.06px] h-[0px] left-[199.02px] top-[297px] absolute border border-black"></div>
-                <div class="w-[165px] h-[17px] left-[45px] top-[352px] absolute text-black text-[17px] font-semibold Inter tracking-wide">Total Invest :</div>
-                <div class="w-[216px] h-8 left-[176px] top-[346px] absolute bg-white border border-black"></div>
-                <div class="left-[198px] top-[350px] absolute text-black text-base Inter tracking-wide font-[600]">{renderValue(totalInvestement)}</div>
+              <div class="w-[345px] h-[725px] relative bg-white rounded-[18px]">
+                <div class="w-[92px] h-[17px] left-[17px] top-[421px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Incomes :</div>
+                <div class="w-[163px] h-[13px] left-[155px] top-[350px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Clients Payment: {renderValue(clientsPayment)}</div>
+                <div class="w-[163px] h-[13px] left-[155px] top-[420px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Product: {Product}</div>
+                <div class="w-[163px] h-[13px] left-[155px] top-[490px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Protein: {Protein}</div>
+                <div class="w-[39px] h-[0px] left-[112px] top-[430px] absolute border border-black"></div>
+                <div class="w-[141px] h-[0px] left-[124px] top-[359px] absolute origin-top-left rotate-90 border border-black"></div>
+                <div class="w-[27px] h-[0px] left-[124px] top-[359px] absolute border border-black"></div>
+                <div class="w-[26px] h-[0px] left-[124px] top-[500px] absolute border border-black"></div>
+                <div class="w-[140px] h-[17px] left-[7px] top-[624px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Income :</div>
+                <div class="w-[184px] h-8 left-[128px] top-[617px] absolute bg-white border border-black"></div>
+                <div class="w-[126px] left-[147px] top-[625px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalIncome)}</div>
+                <div class="w-[140px] h-[17px] left-[17px] top-[571px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Profit :</div>
+                <div class="w-[184px] h-8 left-[128px] top-[563px] absolute bg-white border border-black"></div>
+                <div class="w-[118px] left-[147px] top-[571px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(profit)}</div>
+                <div class="w-[118px] h-[17px] left-[7px] top-[113px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Investments :</div>
+                <div class="w-[167px] h-[13px] left-[172px] top-[44px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Ads Running: {adsRunning}</div>
+                <div class="w-[163px] h-[13px] left-[172px] top-[114px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Instructor Payment: {renderValue(instructorPayment)}</div>
+                <div class="w-[163px] h-[13px] left-[172px] top-[184px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">XYZ: 1000</div>
+                <div class="w-10 h-[0px] left-[128px] top-[124px] absolute border border-black"></div>
+                <div class="w-[141px] h-[0px] left-[140px] top-[53px] absolute origin-top-left rotate-90 border border-black"></div>
+                <div class="w-[27px] h-[0px] left-[141px] top-[53px] absolute border border-black"></div>
+                <div class="w-[26px] h-[0px] left-[141px] top-[194px] absolute border border-black"></div>
+                <div class="w-[140px] h-[17px] left-[8px] top-[248px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Invest :</div>
+                <div class="w-[184px] h-8 left-[128px] top-[242px] absolute bg-white border border-black"></div>
+                <div class="w-[110px] left-[147px] top-[250px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalInvestement)}</div>
               </div>
             </div>
-            <div><button className="absolute right-0 bottom-0 border rounded-b-lg bg-[#13838d] text-white p-3 w-[26.48rem]" onClick={() => setShowDetails(false)}>Close</button></div>
+            <div><button className="absolute right-0 bottom-0 border rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
           </div>
         )
       }
