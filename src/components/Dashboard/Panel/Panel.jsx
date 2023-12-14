@@ -467,12 +467,12 @@ const Panel = () => {
                       </div>
                     </div>
                     <div className="col-span-3 ml-[-1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                      {client.country === 'USA' ? `$${client.totalIncome}` : `₹${client.totalIncome}`}
+                      {client.country === 'USA' ? `$${client.recentMonthIncome}` : `₹${client.recentMonthIncome}`}
                     </div>
                     <div className="flex flex-row justify-between w-[16vw]">
-                      <div className="ml-[-4rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.totalMembers}</div>
-                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.totalAttendance}</div>
-                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.totalLeads}</div>
+                      <div className="ml-[-4rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.recentMonthMembers}</div>
+                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.recentMonthAttendance}</div>
+                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.recentMonthLeads}</div>
                     </div>
                   </div>
                 </div>
