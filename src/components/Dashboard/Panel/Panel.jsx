@@ -500,7 +500,7 @@ const Panel = () => {
         ))}
 
         {showDetails && selectedUser && (
-          <div class=" mt-[-38rem] rounded-lg right-[8%] w-[22rem] h-[40rem] relative bg-white" style={{
+          <div class=" mt-[-38rem] rounded-lg right-[2%] w-[22rem] h-[40rem] relative bg-white" style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
           }}>
             <div class="w-[20rem] h-[595px] relative bg-white rounded-[18px] ">
