@@ -72,7 +72,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/memberlist?institution=${institution}`);
+          Navigate(`/dashboard`, {state:{institution:institution}});
         } else {
           Navigate("/");
           Swal.fire({
@@ -100,6 +100,7 @@ const Login = () => {
   };
 
 
+  // `/memberlist?institution=${institution}`
   return (
     <>
       <Navbar />

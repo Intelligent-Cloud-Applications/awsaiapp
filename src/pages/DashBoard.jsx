@@ -6,12 +6,16 @@ import PendingClients from "../components/Dashboard/PendingClients/PendingClient
 import NavBar from "../components/Home/Navbar";
 import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
-import MemberList from '../components/Dashboard/Revenue/RevenueGenerated';
+import MemberList from '../components/Dashboard/MemberList/MembersList';
+import MonthlyReport from '../components/Dashboard/MonthlyReport/MonthlyReport';
+import { useLocation } from "react-router-dom";
+
 
 const DashBoard = () => {
+  const location = useLocation()
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
-  
+ console.log(Ctx.userData.institution)
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
     if (selectedPage) {
@@ -42,13 +46,22 @@ const DashBoard = () => {
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }
-    } else {
+    } else if (Ctx.userData.institution !== "awsaiapp" && Ctx.userData.userType === "admin") {
       switch (click) {
         case 0:
-          return <MemberList />;
+          return <MonthlyReport institution={location.state.institution} />
+
+        case 1:
+          return <div className="mr-[5rem]"><MemberList institution={location.state.institution} /></div>
+        // institution = "happyprancer"
+
         default:
-          return <div>Sorry, the server is down. Please try again later.</div>;
+          return <div>Please try again later</div>;
       }
+    } else {
+      return ( 
+        <div className="bg-white w-[100vw] h-[200vh] z-6"></div>
+      )
     }
   };
 
@@ -58,15 +71,17 @@ const DashBoard = () => {
         <NavBar />
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
-        <div className="bg-white mt-[8rem] max850:mt-[0] ">
+
+        <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 max850:mt-[0] ">
           <LeftBanner
             displayAfterClick={(data) => {
               setClick(data);
             }}
           />
         </div>
-        <div className="flex flex-col justify-center items-center pt-8 max800:justify-center w-[85vw] max1050:ml-[1rem]">
-          <div className="min-h-[88vh]">{displayAfterClick()}</div>
+
+        <div className="flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw] max1050:ml-[1rem]">
+          <div className="">{displayAfterClick()}</div>
         </div>
       </div>
     </div>

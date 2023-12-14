@@ -16,7 +16,7 @@ const Context = createContext({
   // },
   user: { 
     profile: {},
-    fetchUserProfile: () => {},
+    fetchUserProfile: () => { },
   },
 });
 
