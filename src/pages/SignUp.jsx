@@ -128,7 +128,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
       console.log("post");
-      await API.post("user", "/user/profile/happyprancer", {
+      await API.post("clients", "/user/create-member", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -136,19 +136,20 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("user", "/user/profile/happyprancer");
+      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
-      if (userdata.status === "Active") {
-        UtilCtx.setLoader(false);
-        Navigate("/dashboard");
-      }
-      UtilCtx.setLoader(false);
-      Navigate("/subscription");
+      // client dashboard
+      // if (userdata.status === "Active") {
+      //   UtilCtx.setLoader(false);
+      //   Navigate("/dashboard");
+      // }
+      // UtilCtx.setLoader(false);
+      // Navigate("/subscription");
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
@@ -166,7 +167,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(email, password);
       console.log("post");
-      await API.post("user", "/user/profile/happyprancer", {
+      await API.post("clients", "/user/create-member", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -174,19 +175,19 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("user", "/user/profile/happyprancer");
+      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
-      if (userdata.status === "Active") {
-        UtilCtx.setLoader(false);
-        Navigate("/dashboard");
-      }
-      UtilCtx.setLoader(false);
-      Navigate("/subscription");
+      // if (userdata.status === "Active") {
+      //   UtilCtx.setLoader(false);
+      //   Navigate("/dashboard");
+      // }
+      // UtilCtx.setLoader(false);
+      // Navigate("/subscription");
     } catch (error) {
       UtilCtx.setLoader(false);
       console.log("Error:", error.message);
@@ -242,7 +243,7 @@ const SignUp = () => {
         );
         // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
         await Auth.signIn(email, password);
-        await API.post("user", "/user/profile/happyprancer", {
+        await API.post("clients", "/user/create-member", {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
@@ -250,17 +251,17 @@ const SignUp = () => {
             country: country,
           },
         });
-        const userdata = await API.get("user", "/user/profile/happyprancer");
+        const userdata = await API.get("clients", "/user/list-members/awsaiapp");
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
-        alert("Signed Up");
-        if (userdata.status === "Active") {
-          Navigate("/dashboard");
-        }
-        Navigate("/subscription");
+        // alert("Signed Up");
+        // if (userdata.status === "Active") {
+        //   Navigate("/dashboard");
+        // }
+        // Navigate("/subscription");
       } else {
         UtilCtx.setLoader(false);
       }
