@@ -8,11 +8,9 @@ import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
 import MemberList from '../components/Dashboard/MemberList/MembersList';
 import MonthlyReport from '../components/Dashboard/MonthlyReport/MonthlyReport';
-import { useLocation } from "react-router-dom";
 
 
 const DashBoard = () => {
-  const location = useLocation()
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
  console.log(Ctx)
@@ -49,10 +47,10 @@ const DashBoard = () => {
     } else if (Ctx.userData.institution !== "awsaiapp" && Ctx.userData.userType === "admin") {
       switch (click) {
         case 0:
-          return <MonthlyReport institution={location.state.institution} />
+          return <MonthlyReport institution={localStorage.getItem('institution')} />
 
         case 1:
-          return <div className="mr-[5rem]"><MemberList institution={location.state.institution} /></div>
+          return <div className="mr-[5rem]"><MemberList institution={localStorage.getItem('institution')} /></div>
         // institution = "happyprancer"
 
         default:
