@@ -53,10 +53,10 @@ const Panel = () => {
     setEmail(userDetail[1].emailId);
     setCountry(userDetail[1].country)
     setPhoneNumber(userDetail[1].phoneNumber);
-    setTotalLeads(userDetail[1].totalLeads)
-    setTotalAttendance(userDetail[1].totalAttendance)
-    setTotalIncome(userDetail[1].totalIncome)
-    setMemberCount(userDetail[1].totalMembers)
+    setTotalLeads(userDetail[1].recentMonthLeads)
+    setTotalAttendance(userDetail[1].recentMonthAttendance)
+    setTotalIncome(userDetail[1].recentMonthIncome)
+    setMemberCount(userDetail[1].recentMonthMembers)
     setStatus(userDetail[1].status)
     setCountry(userDetail[1].country)
     setShowDetails(true);
@@ -500,7 +500,7 @@ const Panel = () => {
         ))}
 
         {showDetails && selectedUser && (
-          <div class=" mt-[-38rem] rounded-lg right-[2%] w-[22rem] h-[40rem] relative bg-white" style={{
+          <div class=" mt-[-38rem] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white" style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
           }}>
             <div class="w-[20rem] h-[595px] relative bg-white rounded-[18px] ">
