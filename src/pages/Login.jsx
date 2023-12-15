@@ -24,6 +24,11 @@ const Login = () => {
   const institutionName = ["happyprancer", "bworkz", "awsaiapp"];
   const [institution, setInstitution] = useState("");
 
+  const handleInstitutionChange = (selectedInstitution) => {
+    setInstitution(selectedInstitution);
+    localStorage.setItem('institution', selectedInstitution);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -62,7 +67,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate("/dashboard");
+          Navigate("/dashboard", { state: { institution: institution } });
         } else if (userdata.userType === "admin") {
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -72,7 +77,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/dashboard`, {state:{institution:institution}});
+          Navigate(`/dashboard`, { state: { institution: institution } });
         } else {
           Navigate("/");
           Swal.fire({
@@ -126,9 +131,8 @@ const Login = () => {
               <select
                 className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
                 value={institution}
-                onChange={(e) => {
-                  setInstitution(e.target.value);
-                }}
+                onChange={(e) => handleInstitutionChange(e.target.value)}
+
               >
                 <option value="">Select your Institution</option>
                 {institutionName.map((name) => (

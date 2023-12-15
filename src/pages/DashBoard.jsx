@@ -15,7 +15,7 @@ const DashBoard = () => {
   const location = useLocation()
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
- console.log(Ctx.userData.institution)
+ console.log(Ctx)
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
     if (selectedPage) {
