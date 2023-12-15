@@ -59,6 +59,7 @@ const Panel = () => {
     setMemberCount(userDetail[1].recentMonthMembers)
     setStatus(userDetail[1].status)
     setCountry(userDetail[1].country)
+    setJoiningDate(userDetail[1].JoiningDate)
     setShowDetails(true);
   };
 
@@ -83,18 +84,20 @@ const Panel = () => {
     const query = searchQuery.toLowerCase();
 
     const filtered = clientsData?.filter(([key, client]) => {
+      const institution = client.institution ? client.institution.toLowerCase() : '';
+      const emailId = client.emailId ? client.emailId.toLowerCase() : '';
+
       const matches =
-        client.institution.toLowerCase().includes(query) ||
-        client.emailId.toLowerCase().includes(query) ||
-        client.phoneNumber.toLowerCase().includes(query) ||
-        client.country.toLowerCase().includes(query) ||
-        formatEpochToReadableDate(client.joiningDate).includes(query);
+        institution.includes(query) ||
+        emailId.includes(query);
+
       return matches;
     });
 
     console.log("Filtered Clients:", filtered);
     return filtered;
   };
+
 
 
 
@@ -503,24 +506,26 @@ const Panel = () => {
           <div class=" mt-[-38rem] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white" style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
           }}>
-            <div class="w-[20rem] h-[595px] relative bg-white rounded-[18px] ">
-              <div class="w-[20rem] h-[488px] left-[41px] top-[69px] absolute">
-                <div class="w-[79px] h-7 left-[-21px] top-0 absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
-                <div class="w-[129px] h-[35px] left-[68px] top-0 absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
+            <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
+              <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
+                <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
+                <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
                 <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Country:</div>
                 <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{Country}</div>
-                <div class="w-[79px] h-7 left-[-21px] top-[133px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
-                <div class="w-[120px] h-[34px] left-[68px] top-[135px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
-                <div class="w-[89px] h-[29px] left-[-21px] top-[198px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
-                <div class="w-[169px] h-[35px] left-[68px] top-[198px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
-                <div class="w-[89px] h-7 left-[-21px] top-[265px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
-                <div class="w-[185px] h-[34px] left-[68px] top-[266px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
-                <div class="w-[114px] h-[27px] left-[-21px] top-[332px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
-                <div class="w-[204px] h-[34px] left-[86px] top-[334px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
-                <div class="w-[66px] h-7 left-[-21px] top-[398px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
-                <div class="w-[158px] h-[35px] left-[68px] top-[399px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
+                <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
+                <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
+                <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Joining Date:</div>
+                <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{JoiningDate}</div>
               </div>
-              <div class="w-[89px] h-[17px] left-[121px] top-[13px] absolute text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
+              <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
+              <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
+              <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
+              <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
+              <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
+              <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
+              <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
+              <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
+              <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
             </div>
             <div><button className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
           </div>
@@ -646,7 +651,8 @@ const Panel = () => {
             <Pagination
               count={totalPages}
               page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)} className="custom-pagination"
+              onChange={(event, value) => setCurrentPage(value)}
+              className="custom-pagination"
             />
           </div>
         </div>
