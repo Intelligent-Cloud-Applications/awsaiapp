@@ -25,9 +25,15 @@ const Login = () => {
   const [institution, setInstitution] = useState("");
 
   const handleInstitutionChange = (selectedInstitution) => {
-    setInstitution(selectedInstitution);
-    localStorage.setItem('institution', selectedInstitution);
+    if (selectedInstitution !== 'awsaiapp') {
+      setInstitution(selectedInstitution);
+      localStorage.setItem('institution', selectedInstitution);
+    } else {
+      setInstitution(selectedInstitution);
+      localStorage.removeItem('institution', selectedInstitution)
+    }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

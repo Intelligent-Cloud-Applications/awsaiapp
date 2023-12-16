@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Chart from "chart.js/auto";
+import { useLocation } from "react-router-dom";
 import Context from '../../../context/Context';
 import { API } from "aws-amplify";
 import './MonthlyReport.css'
@@ -170,15 +171,11 @@ const LineChartLeads = ({ data }) => {
 
 
 const MonthlyReport = ({ institution: tempInstitution }) => {
-  const { clients, user } = useContext(Context);
+  console.log(window.location.search)
   const searchParams = new URLSearchParams(window.location.search);
-  let institution
-  if (user.profile.institution === "awsaiapp") {
-    institution = searchParams.get("institution");
-    localStorage.setItem('institution', institution);
-  } else {
-    institution = tempInstitution;
-  }
+  const institution = searchParams.get("institution") || tempInstitution;
+console.log(searchParams)
+  const { clients } = useContext(Context);
   const item = clients.data;
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
 

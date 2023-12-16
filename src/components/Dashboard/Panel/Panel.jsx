@@ -25,7 +25,7 @@ const Panel = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
-  const [isMemberList, setisMemberList] = useState("");
+  const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util } = useContext(Context);
   const clientsData = Object.entries(clients.data);
   console.log(clientsData)
@@ -125,7 +125,7 @@ const Panel = () => {
 
 
   const handlePersonIconClick = (institution) => {
-    setisMemberList(institution);
+    setisMonthlyReport(institution);
   };
 
   const toggleAddUserForm = () => {
@@ -406,7 +406,7 @@ const Panel = () => {
             <div
               key={client.institution}
               onClick={() => {
-                setisMemberList(clients.institution);
+                setisMonthlyReport(clients.institution);
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"

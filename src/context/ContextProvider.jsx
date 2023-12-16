@@ -35,7 +35,12 @@ const ContextProvider = (props) => {
   const fetchUserProfile = async () => {
     try {
       setLoader(true);
-      const response = await API.get(`clients', '/self/read-self/${institution}`);
+      let response;
+      if (institution !== 'awsaiapp') {
+        response = await API.get('clients', `/self/read-self/${institution}`);
+      } else {
+        response = await API.get('clients', '/self/read-self/awsaiapp');
+      }
       setUserProfile(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -43,7 +48,7 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-
+  
   const setLoaderFn = (data) => {
     setLoader(data);
   };

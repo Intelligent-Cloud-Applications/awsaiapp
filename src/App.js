@@ -19,32 +19,35 @@ function App() {
 
       try {
         await Auth.currentAuthenticatedUser();
-        
+
         if (institution) {
           const userdata = await API.get("clients", `/self/read-self/${institution}`);
-          
-          if (userdata.userType === "admin") { 
+
+          if (userdata.userType === "admin") {
             UserCtx.current.setUserData(userdata);
             UserCtx.current.setIsAuth(true);
-            UtilCtx.current.setLoader(false);
           } else {
-            // Handle cases where userType is not 'admin'
-            UtilCtx.current.setLoader(false);
           }
         } else {
-          // Handle cases where institution is null or empty
-          UtilCtx.current.setLoader(false);
+          const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
+
+          if (defaultUserdata.userType === "admin") {
+            UserCtx.current.setUserData(defaultUserdata);
+            UserCtx.current.setIsAuth(true);
+          } else {
+            // Handle cases where userType is not 'admin' for default institution
+          }
         }
       } catch (e) {
         console.log(e);
+      } finally {
         UtilCtx.current.setLoader(false);
       }
     };
 
-    if (institution !== null) {
-      check();
-    }
+    check();
   }, [UtilCtx, UserCtx, institution]);
+
 
   return (
     <LoaderProvider>
