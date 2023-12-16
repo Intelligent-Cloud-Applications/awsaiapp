@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Chart from "chart.js/auto";
-import { useLocation } from "react-router-dom";
 import Context from '../../../context/Context';
 import { API } from "aws-amplify";
 import './MonthlyReport.css'
