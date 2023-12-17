@@ -50,7 +50,7 @@ const DashBoard = () => {
           return <MonthlyReport institution={localStorage.getItem('institution')} />
 
         case 1:
-          return <div className="mr-[5rem]"><MemberList institution={localStorage.getItem('institution')} /></div>
+          return <div className="mr-[5rem] max850:mr-7"><MemberList institution={localStorage.getItem('institution')} /></div>
         // institution = "happyprancer"
 
         default:
@@ -78,7 +78,7 @@ const DashBoard = () => {
           />
         </div>
 
-        <div className="flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw] max1050:ml-[1rem]">
+        <div className="flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]">
           <div className="">{displayAfterClick()}</div>
         </div>
       </div>
