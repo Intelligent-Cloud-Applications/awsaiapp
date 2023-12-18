@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { API } from "aws-amplify";
 import Swal from 'sweetalert2';
 import Pagination from "@mui/material/Pagination";
-import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
+// import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
 import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg';
-import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
+// import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
 import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg';
 import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg';
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
@@ -185,7 +185,6 @@ const Panel = () => {
       const path = '/admin/update-clients';
       const myInit = {
         body: {
-          // cognitoId: selectedUser[1].cognitoId,
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
@@ -247,8 +246,8 @@ const Panel = () => {
         <div className="flex flex-row justify-between max850:justify-end pb-2">
           <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">Welcome, Boss👋</h1>
           <div className="relative">
-            <img src={AdminPic} alt="" />
-            <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" />
+            {/* <img src={AdminPic} alt="" /> */}
+            {/* <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" /> */}
           </div>
         </div>
         <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
@@ -390,7 +389,7 @@ const Panel = () => {
             <div className="font-[700] max600:hidden">Country</div>
             <div className="font-[700]">Status</div>
             <div className="font-[700] max600:hidden ">Revenue</div>
-            <div className="flex justify-between w-[17rem] max1300:w-[13rem]">
+            <div className="flex justify-between w-[14vw] max1300:w-[13rem]">
               <div className="font-[700]">Members</div>
               <div className="font-[700]">Attendance</div>
               <div className="font-[700] mr-[-3rem] max1300:hidden">Leads</div>
@@ -401,7 +400,7 @@ const Panel = () => {
         </div>
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
-        <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
+        <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[rem] pl-[7px] max1050:w-[90vw]">
           {clientsToDisplay.map(([key, client], index) => (
             <div
               key={client.institution}
@@ -427,7 +426,7 @@ const Panel = () => {
                   onChange={() => handleCheckboxChange(client.institution)}
                   checked={isRowSelected(client.institution)}
                 />
-                <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
+                <div className="absolute mt-4 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
                   {isRowSelected(client.institution) && (
                     <img
                       src={Select}
@@ -439,7 +438,7 @@ const Panel = () => {
               </label>
 
               <Link to={`/MonthlyReport?institution=${client.institution} `}>
-                <div className="absolute right-2 mt-5">
+                <div className=" flex justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
                   <img
                     src={personIcon}
                     alt=""
@@ -451,10 +450,10 @@ const Panel = () => {
 
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
-                  <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
+                  {/* <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
                     <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="grid grid-cols-12 items-center w-[55vw]">
+                  </div> */}
+                  <div className="grid ml-[3rem] grid-cols-12 items-center w-[55vw]">
                     <div className="col-span-3 flex flex-col max600:w-[10rem]">
                       <div className="font-[900] email-hover cursor-pointer">
                         {client.institution}
@@ -462,18 +461,18 @@ const Panel = () => {
                       <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
                     </div>
-                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
-                    <div className="col-span-2 ml-[-4rem] relative max1008:hidden">
+                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-2 ml-[-2rem] relative max1008:hidden">
                       <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
                         <div className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
                         <div>{client.status === "Active" ? "Active" : "Inactive"}</div>
                       </div>
                     </div>
-                    <div className="col-span-3 ml-[-1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
+                    <div className="col-span-3 ml-[1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
                       {client.country === 'USA' ? `$${client.recentMonthIncome}` : `₹${client.recentMonthIncome}`}
                     </div>
-                    <div className="flex flex-row justify-between w-[16vw]">
-                      <div className="ml-[-4rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.recentMonthMembers}</div>
+                    <div className="flex flex-row justify-between w-[17vw]">
+                      <div className="ml-[-1rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.recentMonthMembers}</div>
                       <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.recentMonthAttendance}</div>
                       <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.recentMonthLeads}</div>
                     </div>
@@ -481,7 +480,7 @@ const Panel = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 bottom-[1rem] bg-white">
+              <div className="absolute right-0 bottom-2 bg-white">
                 {isRowSelected(client.institution) && (
                   <img
                     className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
