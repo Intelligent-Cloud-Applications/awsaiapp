@@ -438,7 +438,7 @@ const Panel = () => {
               </label>
 
               <Link to={`/MonthlyReport?institution=${client.institution} `}>
-                <div className=" flex justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
+                <div className=" flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
                   <img
                     src={personIcon}
                     alt=""
@@ -480,10 +480,10 @@ const Panel = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 bottom-2 bg-white">
+              <div className="absolute right-0 bottom-2 bg-white z-10">
                 {isRowSelected(client.institution) && (
                   <img
-                    className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
+                    className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem]"
                     src={Update}
                     alt=""
                     onClick={() => showUpdateForm(client.institution)}

@@ -334,11 +334,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
           <div className="relative">
             <div className="flex justify-between">
               <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
-                Total Members Trend 
+                Total Members Trend
               </h2>
               <div>
                 <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(1)} src={InfoPng} alt="" />
-                {infoContent === "This graph represents the total number of members for each month" && <p className="absolute K2D font-[600] p-2 right-[2rem] bg-white top-[3.5rem] rounded-[16px]">{infoContent}</p>}
+                {infoContent === "This graph represents the total number of members for each month" && <p className="absolute K2D font-[600] p-2 right-[2rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[1rem] max600:top-[4rem]">{infoContent}</p>}
               </div>
             </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] mt-[2rem] max600:w-[95vw] max600:h-[60vw] ml-6 max1300:ml-0 max600:mb-8 " style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
@@ -351,8 +351,8 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 Total Monthly Leads
               </h2>
               <div>
-              <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(2)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total number of Leads each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px]">{infoContent}</p>}
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(2)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total number of Leads each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[2rem] max600:top-[4rem]">{infoContent}</p>}
               </div>
             </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max1300:ml-0 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
@@ -425,8 +425,8 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 Total Revenue Trend
               </h2>
               <div>
-              <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(3)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total revenue generated per month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px]">{infoContent}</p>}
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(3)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total revenue generated per month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[4rem] max600:right-[1rem]">{infoContent}</p>}
               </div>
             </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max600:mb-8" style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
@@ -445,8 +445,8 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 Total Monthly Attendance
               </h2>
               <div>
-              <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(4)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total attendance increase each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px]">{infoContent}</p>}
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(4)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total attendance increase each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[7rem] max600:right-[1rem]">{infoContent}</p>}
               </div>
             </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
