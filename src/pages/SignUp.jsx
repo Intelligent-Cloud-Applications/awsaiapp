@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import Country from "../components/Auth/Country";
+import signUpPng from "../utils/Signup.png";
+import "./Login.css";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState(""); // Added for first name
@@ -274,137 +276,150 @@ const SignUp = () => {
 
   const form1 = () => {
     return (
-      <form className="w-[50vw] max800:w-[90vw] max-w-[29rem] bg-[#FFFFFF] shadow-2xl rounded-2xl p-6 flex flex-col items-center ">
-        <h3 className="text-[1.1rem] font-[700]">Sign Up</h3>
-        <div className="text-center">
-          <p className="w-[13.5rem] font-[500] my-2 text-[0.8rem]">
-            Unlock Success Online! Sign Up for Your Professional Website Today.
-          </p>
-        </div>
-        <ul className="flex flex-col items-center px-0">
-          <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
-            <input
-              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw] max500:mb-4"
-              value={firstName}
-              placeholder="First Name"
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
-            />
-            <input
-              className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
-              value={lastName}
-              placeholder="Last Name"
-              onChange={(e) => {
-                setLastName(e.target.value);
-              }}
-            />
-          </li>
-          <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
-            <div className="relative">
-              <input
-                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
-                type="text"
-                placeholder="Enter Email"
-                value={email}
-                onChange={(e) => {
-                  const inputValue = e.target.value;
-                  setEmail(inputValue);
-                }}
-              />
+      <form >
+        <div className="flex max767:flex-col">
+          <div
+            className=" mobile1 flex justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
+            style={{ boxShadow: "0 9px 14px rgba(48, 175, 188, 0.5)" }}
+          >
+            <img src={signUpPng} alt="" />
+          </div>
+          <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
+            style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}>
+            <h3 className="text-[1.1rem] font-[700] text-center">Sign Up</h3>
+            <div className="text-center">
+              <p className="Inter font-[500] my-2 text-[0.8rem] ">
+                Unlock Success Online! Sign Up for Your Professional Website Today.
+              </p>
             </div>
-          </li>
-          <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
-            <select
-              value={countryCode}
-              name="countryCode"
-              id=""
-              className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1.5rem] py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw] mt-6"
-              onChange={(e) => {
-                let countries = e.target.innerText.split("\n");
-                const countryCodes = [];
-                countries = countries.map((item) => {
-                  countryCodes.push(item.split(" (")[1].split(")")[0]);
-                  return item.split(" (")[0];
-                });
+            <ul className="flex flex-col items-center px-0 pb-5">
+              <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
+                <input
+                  className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw] max500:mb-4"
+                  value={firstName}
+                  placeholder="First Name"
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                  }}
+                />
+                <input
+                  className="w-[9.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
+                  value={lastName}
+                  placeholder="Last Name"
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
+                />
+              </li>
+              <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
+                <div className="relative">
+                  <input
+                    className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
+                    type="text"
+                    placeholder="Enter Email"
+                    value={email}
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      setEmail(inputValue);
+                    }}
+                  />
+                </div>
+              </li>
+              <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
+                <select
+                  value={countryCode}
+                  name="countryCode"
+                  id=""
+                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1.5rem] py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw] mt-6"
+                  onChange={(e) => {
+                    let countries = e.target.innerText.split("\n");
+                    const countryCodes = [];
+                    countries = countries.map((item) => {
+                      countryCodes.push(item.split(" (")[1].split(")")[0]);
+                      return item.split(" (")[0];
+                    });
 
-                setCountry(
-                  countries[countryCodes.indexOf(`+${e.target.value}`)]
-                );
-                setCountryCode(e.target.value.toString());
+                    setCountry(
+                      countries[countryCodes.indexOf(`+${e.target.value}`)]
+                    );
+                    setCountryCode(e.target.value.toString());
+                  }}
+                >
+                  {<Country />}
+                </select>
+              </li>
+              <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
+                <div className="relative">
+                  <input
+                    className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
+                    type="number"
+                    placeholder="Enter Phone Number"
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      if (inputValue.length >= 0 && inputValue.length <= 10) {
+                        setPhoneNumber(inputValue.toString());
+                      }
+                    }}
+                  />
+                </div>
+              </li>
+              <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start">
+                <input
+                  className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
+                  type={"password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+              </li>
+              <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start relative">
+                <input
+                  className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
+                  type={!passwordVisible && "password"}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                  }}
+                />
+                {passwordVisible ? (
+                  <AiFillEye
+                    onClick={passwordVisibilityChange}
+                    className="absolute right-4 "
+                    size={"1.25rem"}
+                  />
+                ) : (
+                  <AiFillEyeInvisible
+                    onClick={passwordVisibilityChange}
+                    className="absolute right-4 "
+                    size={"1.25rem"}
+                  />
+                )}
+              </li>
+            </ul>
+            {err && <p className="text-[0.8rem]  mt-2 text-red-500">{err}</p>}
+            <div className="item-center pb-5">
+              <button
+              className="w-[19.5rem] max500:w-[80vw] bg-[#30AFBC] text-[1.1rem] text-white p-1 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+              onClick={onSubmit}
+            >
+              Sign Up
+            </button>
+            </div>
+            <p
+              className=" text-[0.85rem] text-black cursor-pointer"
+              onClick={() => {
+                Navigate("/login");
               }}
             >
-              {<Country />}
-            </select>
-          </li>
-          <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
-            <div className="relative">
-              <input
-                className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
-                type="number"
-                placeholder="Enter Phone Number"
-                value={phoneNumber}
-                onChange={(e) => {
-                  const inputValue = e.target.value;
-                  if (inputValue.length >= 0 && inputValue.length <= 10) {
-                    setPhoneNumber(inputValue.toString());
-                  }
-                }}
-              />
-            </div>
-          </li>
-          <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start">
-            <input
-              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
-              type={"password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-          </li>
-          <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start relative">
-            <input
-              className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
-              type={!passwordVisible && "password"}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-              }}
-            />
-            {passwordVisible ? (
-              <AiFillEye
-                onClick={passwordVisibilityChange}
-                className="absolute right-4 "
-                size={"1.25rem"}
-              />
-            ) : (
-              <AiFillEyeInvisible
-                onClick={passwordVisibilityChange}
-                className="absolute right-4 "
-                size={"1.25rem"}
-              />
-            )}
-          </li>
-        </ul>
-        {err && <p className="text-[0.8rem]  mt-2 text-red-500">{err}</p>}
-        <button
-          className="w-[19.5rem] py-2 mt-3 mb-3 bg-[#30AFBC] text-white rounded-[0.5rem] max500:w-[80vw]"
-          onClick={onSubmit}
-        >
-          Sign Up
-        </button>
-        <p
-          className=" text-[0.85rem] text-black cursor-pointer"
-          onClick={() => {
-            Navigate("/login");
-          }}
-        >
-          Already logged In ?{" "}
-          <span className="font-[500] text-[#225c59]">Log In</span>{" "}
-        </p>
+              Already logged In ?{" "}
+              <span className="font-[500] text-[#225c59] max767:text-[#ffff]">Log In</span>{" "}
+            </p>
+          </div>
+        </div>
       </form>
     );
   };
