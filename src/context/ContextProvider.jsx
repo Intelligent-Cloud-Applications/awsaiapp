@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Context from "./Context";
 import { API } from "aws-amplify";
 
@@ -9,10 +10,13 @@ const ContextProvider = (props) => {
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
+  const location = useLocation();
+  const institution = new URLSearchParams(location.search).get("institution");
 
   useEffect(() => {
     fetchClients();
-    fetchUserProfile(); 
+    fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchClients = async (institution) => {
@@ -31,7 +35,12 @@ const ContextProvider = (props) => {
   const fetchUserProfile = async () => {
     try {
       setLoader(true);
-      const response = await API.get('clients', '/self/read-self/awsaiapp');
+      let response;
+      if (institution !== 'awsaiapp') {
+        response = await API.get('clients', `/self/read-self/${institution}`);
+      } else {
+        response = await API.get('clients', '/self/read-self/awsaiapp');
+      }
       setUserProfile(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -39,7 +48,7 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-
+  
   const setLoaderFn = (data) => {
     setLoader(data);
   };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import InfoPng from '../../../utils/Assets/Dashboard/images/PNG/about.png'
 import Chart from "chart.js/auto";
 import Context from '../../../context/Context';
 import { API } from "aws-amplify";
@@ -170,15 +171,11 @@ const LineChartLeads = ({ data }) => {
 
 
 const MonthlyReport = ({ institution: tempInstitution }) => {
-  const { clients, user } = useContext(Context);
+  console.log(window.location.search)
   const searchParams = new URLSearchParams(window.location.search);
-  let institution
-  if (user.profile.institution === "awsaiapp") {
-    institution = searchParams.get("institution");
-    localStorage.setItem('institution', institution);
-  } else {
-    institution = tempInstitution;
-  }
+  const institution = searchParams.get("institution") || tempInstitution;
+  console.log(searchParams)
+  const { clients } = useContext(Context);
   const item = clients.data;
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
 
@@ -219,6 +216,24 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const [clientsPayment, setClientsPayment] = useState("");
   const [monthDetails, setMonthDetails] = useState({});
   console.log(selectedMonth)
+
+
+  const [infoContent, setInfoContent] = useState("");
+
+  const handleInfoClick = (infoNumber) => {
+    const contentMap = {
+      1: "This graph represents the total number of members for each month",
+      2: "This graph shows the total number of Leads each month",
+      3: "This graph shows the total revenue generated per month",
+      4: "This graph shows the total attendance increase each month",
+    };
+
+    if (infoContent === contentMap[infoNumber]) {
+      setInfoContent("");
+    } else {
+      setInfoContent(contentMap[infoNumber]);
+    }
+  };
 
   const fetchRevenueOfClients = async () => {
     try {
@@ -294,22 +309,52 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  const detailsRef = useRef(null);
+
+  const handleClick = () => {
+    if (window.innerWidth > 600) {
+      setShowDetails(true);
+      scrollToTop();
+    } else {
+      setShowDetails(true);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center pt-6 max536:pt-0 gap-10">
       <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
         <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
-          <div>
-            <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
-              Total Members Trend
-            </h2>
+          <div className="relative">
+            <div className="flex justify-between">
+              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
+                Total Members Trend
+              </h2>
+              <div>
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(1)} src={InfoPng} alt="" />
+                {infoContent === "This graph represents the total number of members for each month" && <p className="absolute K2D font-[600] p-2 right-[2rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[1rem] max600:top-[4rem]">{infoContent}</p>}
+              </div>
+            </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] mt-[2rem] max600:w-[95vw] max600:h-[60vw] ml-6 max1300:ml-0 max600:mb-8 " style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
               <BarChart data={barChartData} />
             </div>
           </div>
-          <div>
-            <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
-              Total Monthly Leads
-            </h2>
+          <div className="relative">
+            <div className="flex justify-between">
+              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
+                Total Monthly Leads
+              </h2>
+              <div>
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(2)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total number of Leads each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[2rem] max600:top-[4rem]">{infoContent}</p>}
+              </div>
+            </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max1300:ml-0 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
               <LineChartLeads data={lineChartLeadsData} />
             </div>
@@ -319,7 +364,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       {
         showDetails && (
           <div
-            className="flex items-center ml-4 flex-col w-[22rem] h-[52.8rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
+            className="flex items-center ml-4 flex-col w-[352px] h-[850px] absolute bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
             style={{
               boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
             }}
@@ -337,7 +382,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 </option>
               ))}
             </select>
-            <div>
+            <div >
               <div class="w-[345px] h-[725px] relative bg-white rounded-[18px]">
                 <div class="w-[92px] h-[17px] left-[17px] top-[421px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Incomes :</div>
                 <div class="w-[163px] h-[13px] left-[155px] top-[350px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Clients Payment: {renderValue(clientsPayment)}</div>
@@ -374,19 +419,36 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
 
       <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
         <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
-          <div className="">
-            <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
-              Total Revenue Trend
-            </h2>
+          <div className="relative">
+            <div className="flex justify-between">
+              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
+                Total Revenue Trend
+              </h2>
+              <div>
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(3)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total revenue generated per month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[4rem] max600:right-[1rem]">{infoContent}</p>}
+              </div>
+            </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max600:mb-8" style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
               <LineChart data={lineChartData} />
             </div>
-            <p className="text-end Inter text-[1.15rem] font-[600] text-[#1A8C9B] mr-3 mt-2 cursor-pointer" onClick={() => setShowDetails(true)}>Details</p>
+            <p className="text-end Inter text-[1.15rem] font-[600] text-[#1A8C9B] mr-3 mt-2 cursor-pointer"
+              ref={detailsRef}
+              onClick={handleClick}
+            >
+              Details
+            </p>
           </div>
-          <div>
-            <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
-              Total Monthly Attendance
-            </h2>
+          <div className="relative">
+            <div className="flex justify-between">
+              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
+                Total Monthly Attendance
+              </h2>
+              <div>
+                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(4)} src={InfoPng} alt="" />
+                {infoContent === "This graph shows the total attendance increase each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[7rem] max600:right-[1rem]">{infoContent}</p>}
+              </div>
+            </div>
             <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
               <BarChartAttendance data={barChartAttendance} />
             </div>

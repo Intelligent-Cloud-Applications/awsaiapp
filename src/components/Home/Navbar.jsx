@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const Navigate = useNavigate();
   const UserCtx = useContext(Context);
+  console.log(UserCtx)
 
 
   let Links = [
@@ -82,7 +83,7 @@ const Navbar = () => {
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
                 >
-                {UserCtx.userData.userName.split(" ")[0]}
+                {UserCtx.userData.institution.split(" ")[0]}
               </button>
             ) : (
               <div className="flex flex-row">

@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { API } from "aws-amplify";
 import Swal from 'sweetalert2';
 import Pagination from "@mui/material/Pagination";
-import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
+// import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
 import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg';
-import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
+// import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
 import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg';
 import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg';
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
@@ -25,7 +25,7 @@ const Panel = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
-  const [isMemberList, setisMemberList] = useState("");
+  const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util } = useContext(Context);
   const clientsData = Object.entries(clients.data);
   console.log(clientsData)
@@ -53,12 +53,13 @@ const Panel = () => {
     setEmail(userDetail[1].emailId);
     setCountry(userDetail[1].country)
     setPhoneNumber(userDetail[1].phoneNumber);
-    setTotalLeads(userDetail[1].totalLeads)
-    setTotalAttendance(userDetail[1].totalAttendance)
-    setTotalIncome(userDetail[1].totalIncome)
-    setMemberCount(userDetail[1].totalMembers)
+    setTotalLeads(userDetail[1].recentMonthLeads)
+    setTotalAttendance(userDetail[1].recentMonthAttendance)
+    setTotalIncome(userDetail[1].recentMonthIncome)
+    setMemberCount(userDetail[1].recentMonthMembers)
     setStatus(userDetail[1].status)
     setCountry(userDetail[1].country)
+    setJoiningDate(userDetail[1].JoiningDate)
     setShowDetails(true);
   };
 
@@ -83,18 +84,20 @@ const Panel = () => {
     const query = searchQuery.toLowerCase();
 
     const filtered = clientsData?.filter(([key, client]) => {
+      const institution = client.institution ? client.institution.toLowerCase() : '';
+      const emailId = client.emailId ? client.emailId.toLowerCase() : '';
+
       const matches =
-        client.institution.toLowerCase().includes(query) ||
-        client.emailId.toLowerCase().includes(query) ||
-        client.phoneNumber.toLowerCase().includes(query) ||
-        client.country.toLowerCase().includes(query) ||
-        formatEpochToReadableDate(client.joiningDate).includes(query);
+        institution.includes(query) ||
+        emailId.includes(query);
+
       return matches;
     });
 
     console.log("Filtered Clients:", filtered);
     return filtered;
   };
+
 
 
 
@@ -122,7 +125,7 @@ const Panel = () => {
 
 
   const handlePersonIconClick = (institution) => {
-    setisMemberList(institution);
+    setisMonthlyReport(institution);
   };
 
   const toggleAddUserForm = () => {
@@ -182,7 +185,6 @@ const Panel = () => {
       const path = '/admin/update-clients';
       const myInit = {
         body: {
-          // cognitoId: selectedUser[1].cognitoId,
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
@@ -244,8 +246,8 @@ const Panel = () => {
         <div className="flex flex-row justify-between max850:justify-end pb-2">
           <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">Welcome, Boss👋</h1>
           <div className="relative">
-            <img src={AdminPic} alt="" />
-            <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" />
+            {/* <img src={AdminPic} alt="" /> */}
+            {/* <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" /> */}
           </div>
         </div>
         <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
@@ -387,7 +389,7 @@ const Panel = () => {
             <div className="font-[700] max600:hidden">Country</div>
             <div className="font-[700]">Status</div>
             <div className="font-[700] max600:hidden ">Revenue</div>
-            <div className="flex justify-between w-[17rem] max1300:w-[13rem]">
+            <div className="flex justify-between w-[14vw] max1300:w-[13rem]">
               <div className="font-[700]">Members</div>
               <div className="font-[700]">Attendance</div>
               <div className="font-[700] mr-[-3rem] max1300:hidden">Leads</div>
@@ -398,12 +400,12 @@ const Panel = () => {
         </div>
         <div className=" w-[75vw] bg-[#757575] h-[0.095rem] mb-4 max1050:w-[83vw] max850:hidden"></div>
 
-        <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[-0.5rem] pl-[7px] max1050:w-[90vw]">
+        <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[rem] pl-[7px] max1050:w-[90vw]">
           {clientsToDisplay.map(([key, client], index) => (
             <div
               key={client.institution}
               onClick={() => {
-                setisMemberList(clients.institution);
+                setisMonthlyReport(clients.institution);
               }}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
                 ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
@@ -424,7 +426,7 @@ const Panel = () => {
                   onChange={() => handleCheckboxChange(client.institution)}
                   checked={isRowSelected(client.institution)}
                 />
-                <div className="absolute mt-5 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
+                <div className="absolute mt-4 w-[1rem] h-[1rem] border-2 border-[#757575] cursor-pointer">
                   {isRowSelected(client.institution) && (
                     <img
                       src={Select}
@@ -436,7 +438,7 @@ const Panel = () => {
               </label>
 
               <Link to={`/MonthlyReport?institution=${client.institution} `}>
-                <div className="absolute right-2 mt-5">
+                <div className=" flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
                   <img
                     src={personIcon}
                     alt=""
@@ -448,10 +450,10 @@ const Panel = () => {
 
               <div className="flex flex-row K2D items-center">
                 <div className=" flex gap-[1rem] pl-[2rem] items-center">
-                  <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
+                  {/* <div className="rounded-[50%] overflow-hidden w-[3.7rem] h-[3.4rem]">
                     <img src={Bworkz} alt="Avishek" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="grid grid-cols-12 items-center w-[55vw]">
+                  </div> */}
+                  <div className="grid ml-[3rem] grid-cols-12 items-center w-[55vw]">
                     <div className="col-span-3 flex flex-col max600:w-[10rem]">
                       <div className="font-[900] email-hover cursor-pointer">
                         {client.institution}
@@ -459,29 +461,29 @@ const Panel = () => {
                       <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
                     </div>
-                    <div className="col-span-3 ml-[2rem] font-semibold text-sm max600:hidden">{client.country}</div>
-                    <div className="col-span-2 ml-[-4rem] relative max1008:hidden">
+                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-2 ml-[-2rem] relative max1008:hidden">
                       <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
                         <div className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
                         <div>{client.status === "Active" ? "Active" : "Inactive"}</div>
                       </div>
                     </div>
-                    <div className="col-span-3 ml-[-1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                      {client.country === 'USA' ? `$${client.totalIncome}` : `₹${client.totalIncome}`}
+                    <div className="col-span-3 ml-[1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
+                      {client.country === 'USA' ? `$${client.recentMonthIncome}` : `₹${client.recentMonthIncome}`}
                     </div>
-                    <div className="flex flex-row justify-between w-[16vw]">
-                      <div className="ml-[-4rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.totalMembers}</div>
-                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.totalAttendance}</div>
-                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.totalLeads}</div>
+                    <div className="flex flex-row justify-between w-[17vw]">
+                      <div className="ml-[-1rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.recentMonthMembers}</div>
+                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.recentMonthAttendance}</div>
+                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.recentMonthLeads}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute right-0 bottom-[1rem] bg-white">
+              <div className="absolute right-0 bottom-2 bg-white z-10">
                 {isRowSelected(client.institution) && (
                   <img
-                    className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem] "
+                    className="w-[3rem] cursor-pointer opacity-[90%] max600:w-[3rem]"
                     src={Update}
                     alt=""
                     onClick={() => showUpdateForm(client.institution)}
@@ -500,27 +502,29 @@ const Panel = () => {
         ))}
 
         {showDetails && selectedUser && (
-          <div class=" mt-[-38rem] rounded-lg right-[8%] w-[22rem] h-[40rem] relative bg-white" style={{
+          <div class=" mt-[-38rem] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white" style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
           }}>
-            <div class="w-[20rem] h-[595px] relative bg-white rounded-[18px] ">
-              <div class="w-[20rem] h-[488px] left-[41px] top-[69px] absolute">
-                <div class="w-[79px] h-7 left-[-21px] top-0 absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
-                <div class="w-[129px] h-[35px] left-[68px] top-0 absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
+            <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
+              <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
+                <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
+                <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
                 <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Country:</div>
                 <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{Country}</div>
-                <div class="w-[79px] h-7 left-[-21px] top-[133px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
-                <div class="w-[120px] h-[34px] left-[68px] top-[135px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
-                <div class="w-[89px] h-[29px] left-[-21px] top-[198px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
-                <div class="w-[169px] h-[35px] left-[68px] top-[198px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
-                <div class="w-[89px] h-7 left-[-21px] top-[265px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
-                <div class="w-[185px] h-[34px] left-[68px] top-[266px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
-                <div class="w-[114px] h-[27px] left-[-21px] top-[332px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
-                <div class="w-[204px] h-[34px] left-[86px] top-[334px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
-                <div class="w-[66px] h-7 left-[-21px] top-[398px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
-                <div class="w-[158px] h-[35px] left-[68px] top-[399px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
+                <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
+                <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
+                <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Joining Date:</div>
+                <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{formatEpochToReadableDate(JoiningDate)}</div>
               </div>
-              <div class="w-[89px] h-[17px] left-[121px] top-[13px] absolute text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
+              <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
+              <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
+              <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
+              <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
+              <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
+              <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
+              <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
+              <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
+              <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
             </div>
             <div><button className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
           </div>
@@ -646,7 +650,8 @@ const Panel = () => {
             <Pagination
               count={totalPages}
               page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)} className="custom-pagination"
+              onChange={(event, value) => setCurrentPage(value)}
+              className="custom-pagination"
             />
           </div>
         </div>

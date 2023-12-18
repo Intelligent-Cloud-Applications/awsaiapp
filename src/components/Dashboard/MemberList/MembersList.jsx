@@ -697,7 +697,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                 <input
                   required
                   placeholder="Name"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                   type="text"
                   value={name}
                   onChange={(e) => {
@@ -707,7 +707,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                 <input
                   required
                   placeholder="Email Address"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                   type="email"
                   value={email}
                   onChange={(e) => {
@@ -717,7 +717,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                 <input
                   required
                   placeholder="Phone Number"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                   type="number"
                   value={phoneNumber}
                   onChange={(e) => {
@@ -727,7 +727,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                 {/* <input
                   required
                   placeholder="Joining date"
-                  className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                   type="date"
                   value={JoiningDate}
                   onChange={(e) => {
@@ -738,7 +738,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   <input
                     required
                     placeholder="Country"
-                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                     type="text"
                     value={Country}
                     onChange={(e) => {
@@ -748,7 +748,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   <input
                     required
                     placeholder="Due ?"
-                    className="bg-[#e9e9e9] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                     type="number"
                     value={balance}
                     onChange={(e) => {

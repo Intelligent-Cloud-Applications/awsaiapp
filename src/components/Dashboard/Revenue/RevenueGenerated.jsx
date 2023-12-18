@@ -154,29 +154,21 @@ const RevenueGenerated = () => {
 
   const barChartData = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan-23", "Feb-23", "Mar-23", "Apr-23", "May-23", "Jun-23", "Jul-23", "Aug-23", "Sep-23", "Oct-23", "Nov-23", "Dec-23",
+      "Jan24", "Feb24", "Mar24", "Apr24", "May24", "Jun24", "Jul24", "Aug24", "Sep24", "Oct24", "Nov24", "Dec24"
     ],
+  
     datasets: [
       {
         label: "Revenue",
-        data: [10, 20, 15, 55, 30, 35, 30, 65, 30, 55, 20, 45],
+        data: [10, 20, 15, 55, 30, 35, 30, 65, 30, 55, 20, 45, 10, 20, 15, 55, 30, 35, 30, 65, 30, 55, 20, 45],
         backgroundColor: "white",
         barPercentage: 0.45
       },
+      // Add more datasets or adjust the data points to match the number of labels
     ],
   };
-
+  
   const pieChartData = {
     labels: [
       "Jan",
