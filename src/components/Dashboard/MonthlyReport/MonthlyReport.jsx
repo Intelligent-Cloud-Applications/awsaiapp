@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import InfoPng from '../../../utils/Assets/Dashboard/images/PNG/about.png'
 import Chart from "chart.js/auto";
+import NavBar from "../../Home/Navbar";
 import Context from '../../../context/Context';
 import { API } from "aws-amplify";
 import './MonthlyReport.css'
@@ -328,7 +329,8 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center pt-6 max536:pt-0 gap-10">
+    <div className="flex flex-col justify-center items-center pt-6 max536:pt-0 gap-10 mt-[3rem]">
+      <NavBar/>
       <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
         <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
           <div className="relative">
