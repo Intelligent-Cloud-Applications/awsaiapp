@@ -329,135 +329,137 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center pt-6 max536:pt-0 gap-10 mt-[3rem]">
-      <NavBar/>
-      <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
-        <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
-          <div className="relative">
-            <div className="flex justify-between">
-              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
-                Total Members Trend
-              </h2>
-              <div>
-                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(1)} src={InfoPng} alt="" />
-                {infoContent === "This graph represents the total number of members for each month" && <p className="absolute K2D font-[600] p-2 right-[2rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[1rem] max600:top-[4rem]">{infoContent}</p>}
+    <>
+      <NavBar />
+      <div className="flex flex-col justify-center items-center mt-[6rem] max536:pt-0 gap-1">
+        <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
+          <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
+            <div className="relative">
+              <div className="flex justify-between">
+                <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
+                  Total Members Trend
+                </h2>
+                <div>
+                  <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(1)} src={InfoPng} alt="" />
+                  {infoContent === "This graph represents the total number of members for each month" && <p className="absolute K2D font-[600] p-2 right-[2rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[1rem] max600:top-[4rem]">{infoContent}</p>}
+                </div>
+              </div>
+              <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] mt-[2rem] max600:w-[95vw] max600:h-[60vw] ml-6 max1300:ml-0 max600:mb-8 " style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
+                <BarChart data={barChartData} />
               </div>
             </div>
-            <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] mt-[2rem] max600:w-[95vw] max600:h-[60vw] ml-6 max1300:ml-0 max600:mb-8 " style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
-              <BarChart data={barChartData} />
-            </div>
-          </div>
-          <div className="relative">
-            <div className="flex justify-between">
-              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
-                Total Monthly Leads
-              </h2>
-              <div>
-                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(2)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total number of Leads each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[2rem] max600:top-[4rem]">{infoContent}</p>}
+            <div className="relative">
+              <div className="flex justify-between">
+                <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
+                  Total Monthly Leads
+                </h2>
+                <div>
+                  <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(2)} src={InfoPng} alt="" />
+                  {infoContent === "This graph shows the total number of Leads each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[2rem] max600:top-[4rem]">{infoContent}</p>}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max1300:ml-0 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
-              <LineChartLeads data={lineChartLeadsData} />
+              <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max1300:ml-0 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
+                <LineChartLeads data={lineChartLeadsData} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {
-        showDetails && (
-          <div
-            className="flex items-center ml-4 flex-col w-[352px] h-[850px] absolute bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
-            style={{
-              boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
-            }}
-          >
-            <h2 className="text-center Inter text-[1.3rem] font-[600] mb-2">Details</h2>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="mb-4 border border-[#343434] w-[16rem] p-2 font-[600]"
+        {
+          showDetails && (
+            <div
+              className="flex items-center ml-4 flex-col w-[352px] h-[850px] absolute bg-white rounded-lg p-6 z-10 max600:ml-0 max600:top-[77%]"
+              style={{
+                boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
+              }}
             >
-              <option value="">Select Month</option>
-              {monthsShort.map((month, index) => (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-            <div >
-              <div class="w-[345px] h-[725px] relative bg-white rounded-[18px]">
-                <div class="w-[92px] h-[17px] left-[17px] top-[421px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Incomes :</div>
-                <div class="w-[163px] h-[13px] left-[155px] top-[350px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Clients Payment: {renderValue(clientsPayment)}</div>
-                <div class="w-[163px] h-[13px] left-[155px] top-[420px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Product: {Product}</div>
-                <div class="w-[163px] h-[13px] left-[155px] top-[490px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Protein: {Protein}</div>
-                <div class="w-[39px] h-[0px] left-[112px] top-[430px] absolute border border-black"></div>
-                <div class="w-[141px] h-[0px] left-[124px] top-[359px] absolute origin-top-left rotate-90 border border-black"></div>
-                <div class="w-[27px] h-[0px] left-[124px] top-[359px] absolute border border-black"></div>
-                <div class="w-[26px] h-[0px] left-[124px] top-[500px] absolute border border-black"></div>
-                <div class="w-[140px] h-[17px] left-[7px] top-[624px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Income :</div>
-                <div class="w-[184px] h-8 left-[128px] top-[617px] absolute bg-white border border-black"></div>
-                <div class="w-[126px] left-[147px] top-[625px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalIncome)}</div>
-                <div class="w-[140px] h-[17px] left-[17px] top-[571px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Profit :</div>
-                <div class="w-[184px] h-8 left-[128px] top-[563px] absolute bg-white border border-black"></div>
-                <div class="w-[118px] left-[147px] top-[571px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(profit)}</div>
-                <div class="w-[118px] h-[17px] left-[7px] top-[113px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Investments :</div>
-                <div class="w-[167px] h-[13px] left-[172px] top-[44px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Ads Running: {adsRunning}</div>
-                <div class="w-[163px] h-[13px] left-[172px] top-[114px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Instructor Payment: {renderValue(instructorPayment)}</div>
-                <div class="w-[163px] h-[13px] left-[172px] top-[184px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">XYZ: 1000</div>
-                <div class="w-10 h-[0px] left-[128px] top-[124px] absolute border border-black"></div>
-                <div class="w-[141px] h-[0px] left-[140px] top-[53px] absolute origin-top-left rotate-90 border border-black"></div>
-                <div class="w-[27px] h-[0px] left-[141px] top-[53px] absolute border border-black"></div>
-                <div class="w-[26px] h-[0px] left-[141px] top-[194px] absolute border border-black"></div>
-                <div class="w-[140px] h-[17px] left-[8px] top-[248px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Invest :</div>
-                <div class="w-[184px] h-8 left-[128px] top-[242px] absolute bg-white border border-black"></div>
-                <div class="w-[110px] left-[147px] top-[250px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalInvestement)}</div>
+              <h2 className="text-center Inter text-[1.3rem] font-[600] mb-2">Details</h2>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="mb-4 border border-[#343434] w-[16rem] p-2 font-[600]"
+              >
+                <option value="">Select Month</option>
+                {monthsShort.map((month, index) => (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+              <div >
+                <div class="w-[345px] h-[725px] relative bg-white rounded-[18px]">
+                  <div class="w-[92px] h-[17px] left-[17px] top-[421px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Incomes :</div>
+                  <div class="w-[163px] h-[13px] left-[155px] top-[350px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Clients Payment: {renderValue(clientsPayment)}</div>
+                  <div class="w-[163px] h-[13px] left-[155px] top-[420px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Product: {Product}</div>
+                  <div class="w-[163px] h-[13px] left-[155px] top-[490px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Protein: {Protein}</div>
+                  <div class="w-[39px] h-[0px] left-[112px] top-[430px] absolute border border-black"></div>
+                  <div class="w-[141px] h-[0px] left-[124px] top-[359px] absolute origin-top-left rotate-90 border border-black"></div>
+                  <div class="w-[27px] h-[0px] left-[124px] top-[359px] absolute border border-black"></div>
+                  <div class="w-[26px] h-[0px] left-[124px] top-[500px] absolute border border-black"></div>
+                  <div class="w-[140px] h-[17px] left-[7px] top-[624px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Income :</div>
+                  <div class="w-[184px] h-8 left-[128px] top-[617px] absolute bg-white border border-black"></div>
+                  <div class="w-[126px] left-[147px] top-[625px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalIncome)}</div>
+                  <div class="w-[140px] h-[17px] left-[17px] top-[571px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Profit :</div>
+                  <div class="w-[184px] h-8 left-[128px] top-[563px] absolute bg-white border border-black"></div>
+                  <div class="w-[118px] left-[147px] top-[571px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(profit)}</div>
+                  <div class="w-[118px] h-[17px] left-[7px] top-[113px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Investments :</div>
+                  <div class="w-[167px] h-[13px] left-[172px] top-[44px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Ads Running: {adsRunning}</div>
+                  <div class="w-[163px] h-[13px] left-[172px] top-[114px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">Instructor Payment: {renderValue(instructorPayment)}</div>
+                  <div class="w-[163px] h-[13px] left-[172px] top-[184px] absolute text-black text-xs font-semibold font-['Inter'] tracking-tight">XYZ: 1000</div>
+                  <div class="w-10 h-[0px] left-[128px] top-[124px] absolute border border-black"></div>
+                  <div class="w-[141px] h-[0px] left-[140px] top-[53px] absolute origin-top-left rotate-90 border border-black"></div>
+                  <div class="w-[27px] h-[0px] left-[141px] top-[53px] absolute border border-black"></div>
+                  <div class="w-[26px] h-[0px] left-[141px] top-[194px] absolute border border-black"></div>
+                  <div class="w-[140px] h-[17px] left-[8px] top-[248px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Total Invest :</div>
+                  <div class="w-[184px] h-8 left-[128px] top-[242px] absolute bg-white border border-black"></div>
+                  <div class="w-[110px] left-[147px] top-[250px] absolute text-black text-base font-[600] font-['Inter'] tracking-wide">{renderValue(totalInvestement)}</div>
+                </div>
               </div>
+              <div><button className="absolute right-0 bottom-0 border rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
             </div>
-            <div><button className="absolute right-0 bottom-0 border rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
-          </div>
-        )
-      }
-      <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
+          )
+        }
+        <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
 
-      <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
-        <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
-          <div className="relative">
-            <div className="flex justify-between">
-              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
-                Total Revenue Trend
-              </h2>
-              <div>
-                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(3)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total revenue generated per month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[4rem] max600:right-[1rem]">{infoContent}</p>}
+        <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
+          <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
+            <div className="relative">
+              <div className="flex justify-between">
+                <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
+                  Total Revenue Trend
+                </h2>
+                <div>
+                  <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(3)} src={InfoPng} alt="" />
+                  {infoContent === "This graph shows the total revenue generated per month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[4rem] max600:right-[1rem]">{infoContent}</p>}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max600:mb-8" style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
-              <LineChart data={lineChartData} />
-            </div>
-            <p className="text-end Inter text-[1.15rem] font-[600] text-[#1A8C9B] mr-3 mt-2 cursor-pointer"
-              ref={detailsRef}
-              onClick={handleClick}
-            >
-              Details
-            </p>
-          </div>
-          <div className="relative">
-            <div className="flex justify-between">
-              <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
-                Total Monthly Attendance
-              </h2>
-              <div>
-                <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(4)} src={InfoPng} alt="" />
-                {infoContent === "This graph shows the total attendance increase each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[7rem] max600:right-[1rem]">{infoContent}</p>}
+              <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max600:mb-8" style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
+                <LineChart data={lineChartData} />
               </div>
+              <p className="text-end Inter text-[1.15rem] font-[600] text-[#1A8C9B] mr-3 mt-2 cursor-pointer"
+                ref={detailsRef}
+                onClick={handleClick}
+              >
+                Details
+              </p>
             </div>
-            <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
-              <BarChartAttendance data={barChartAttendance} />
+            <div className="relative">
+              <div className="flex justify-between">
+                <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] text-[1.6rem] ">
+                  Total Monthly Attendance
+                </h2>
+                <div>
+                  <img className="w-[1.7rem] mb-[-2rem] mt-[0.3rem] mr-[1rem] cursor-pointer opacity-[80%]" onClick={() => handleInfoClick(4)} src={InfoPng} alt="" />
+                  {infoContent === "This graph shows the total attendance increase each month" && <p className="absolute K2D font-[600] p-2 right-[4.5rem] bg-white top-[3.5rem] rounded-[16px] max600:left-[3rem] max600:top-[7rem] max600:right-[1rem]">{infoContent}</p>}
+                </div>
+              </div>
+              <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
+                <BarChartAttendance data={barChartAttendance} />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
 }

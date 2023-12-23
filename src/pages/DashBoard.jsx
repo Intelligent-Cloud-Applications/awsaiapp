@@ -13,7 +13,7 @@ import MonthlyReport from '../components/Dashboard/MonthlyReport/MonthlyReport';
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
- console.log(Ctx)
+  console.log(Ctx)
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
     if (selectedPage) {
@@ -47,7 +47,7 @@ const DashBoard = () => {
     } else if (Ctx.userData.institution !== "awsaiapp" && Ctx.userData.userType === "admin") {
       switch (click) {
         case 0:
-          return <MonthlyReport institution={localStorage.getItem('institution')} />
+          return <div className="mt-[-5rem]"><MonthlyReport institution={localStorage.getItem('institution')} /></div>
 
         case 1:
           return <div className="mr-[5rem] max850:mr-7"><MemberList institution={localStorage.getItem('institution')} /></div>
@@ -57,7 +57,7 @@ const DashBoard = () => {
           return <div>Please try again later</div>;
       }
     } else {
-      return ( 
+      return (
         <div className="bg-white w-[100vw] h-[200vh] z-6"></div>
       )
     }
