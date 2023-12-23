@@ -23,7 +23,7 @@ import SignUp from "./pages/SignUp";
 import SubscriptionPopup from "./pages/Subscribe_POPUP";
 import SubscriptionPopup1 from "./pages/Subscribe_POPUP1";
 import SubscriptionPopup2 from "./pages/Subscribe_POPUP2";
-// import Template  from "./pages/Template";
+import Template  from "./pages/Template";
 
 const RoutesContainer = () => {
   return (
@@ -51,7 +51,7 @@ const RoutesContainer = () => {
       <Route path="/payment" element={<Payment />} />
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
-      {/* <Route path="/template" element={<Template />} /> */}
+      <Route path="/template" element={<Template />} />
     </Routes>
   );
 };
