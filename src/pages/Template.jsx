@@ -8,7 +8,7 @@ import Navbar1 from '../components/Template/Preview/Navbar';
 import Services from '../components/Template/Form/Services';
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const totalSections = 9; // Total number of sections
+  const totalSections = 9; 
 
   const handleNextSection = () => {
     if (currentSection < totalSections - 1) {
@@ -23,7 +23,7 @@ const Template = () => {
   };
 
   const handleSubmit = () => {
-    // Handle submission action here
+    
   };
 
   return (
@@ -32,15 +32,12 @@ const Template = () => {
       <div className="flex justify-center items-center h-screen ">
         <div className="flex w-full ">
           <div className="w-4/6 h-screen pt-[8rem]  bg-[#30AFBC] relative">
-            {/* Render different components based on currentSection */}
+           
             {currentSection === 0 && <Navbar1 />}
             {currentSection === 1 && <Home1 />}
-            {/* Add conditions for other sections */}
-            {/* For example: */}
-            {/* {currentSection === 2 && <AnotherComponent />} */}
           </div>
           <div className="w-4/7 pt-[6rem]">
-            {/* Render different components based on currentSection */}
+           
             {currentSection === 0 && <Company />}
             {currentSection === 1 && <Home />}
             {currentSection === 2 && <Services />}
