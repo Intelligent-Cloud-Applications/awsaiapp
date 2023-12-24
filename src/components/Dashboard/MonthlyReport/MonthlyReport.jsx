@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import InfoPng from '../../../utils/Assets/Dashboard/images/PNG/about.png'
+import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
 import Chart from "chart.js/auto";
 import NavBar from "../../Home/Navbar";
 import Context from '../../../context/Context';
@@ -179,6 +181,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const { clients } = useContext(Context);
   const item = clients.data;
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
+  const Navigate = useNavigate();
 
   let Country;
   if (selectedClient) {
@@ -331,7 +334,13 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   return (
     <>
       <NavBar />
-      <div className="flex flex-col justify-center items-center mt-[6rem] max536:pt-0 gap-1">
+      <button onClick={() => Navigate("/dashboard")}
+        className=" mt-[5rem] ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md " style={{
+          boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
+        }}>
+        <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
+      </button>
+      <div className="flex flex-col justify-center items-center max536:pt-0 gap-1">
         <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
           <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
             <div className="relative">
