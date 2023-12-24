@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import Home1 from '../components/Template/Preview/Home';
 import Company from '../components/Template/Form/Company';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 import Home from '../components/Template/Form/Home';
-import Navbar1 from '../components/Template/Preview/Navbar';
 import Services from '../components/Template/Form/Services';
+import Preview from '../components/Template/Preview';
+
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const totalSections = 9; 
+  const totalSections = 9;
 
   const handleNextSection = () => {
     if (currentSection < totalSections - 1) {
@@ -23,7 +23,7 @@ const Template = () => {
   };
 
   const handleSubmit = () => {
-    
+
   };
 
   return (
@@ -31,13 +31,14 @@ const Template = () => {
       <Navbar />
       <div className="flex justify-center items-center h-screen ">
         <div className="flex w-full ">
-          <div className="w-4/6 h-screen pt-[8rem]  bg-[#30AFBC] relative">
-           
-            {currentSection === 0 && <Navbar1 />}
-            {currentSection === 1 && <Home1 />}
+          <div className=" flex w-[65%] h-screen pt-[8rem] bg-[#30AFBC] relative item-center">
+          <Preview
+            handleNextSection={handleNextSection}
+            handlePrevSection={handlePrevSection}
+            currentSection={currentSection}
+          />
           </div>
           <div className="w-4/7 pt-[6rem]">
-           
             {currentSection === 0 && <Company />}
             {currentSection === 1 && <Home />}
             {currentSection === 2 && <Services />}
@@ -57,5 +58,3 @@ const Template = () => {
 };
 
 export default Template;
-
-

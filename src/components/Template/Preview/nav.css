@@ -1,0 +1,15 @@
+@media (max-width:1160px){
+    .malt{
+        margin-left: 1%;
+        font-size: 14px;
+        padding: 1%;
+    }
+}
+@media (max-width:1025px){
+    .malt{
+        width: 50%;
+        font-size: 12px;
+        padding: 1%;
+        margin: 0;
+    }
+}
