@@ -6,7 +6,7 @@ const Home1 = () => {
 
   return (
     <div>
-      <NavBar1 />
+     
       <div className=" flex items-center justify-center h-[30rem] pb-20 w-[111.5vh]">
         <div className="absolute z-10 flex flex-col items-center ">
           <div className="w-[auto] text-left flex">
