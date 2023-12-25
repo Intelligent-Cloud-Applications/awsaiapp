@@ -1,8 +1,9 @@
 // Template.js
 import React, { useState } from 'react';
-import Company from '../components/Template/Form/Company';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
+import Preview from '../components/Template/Preview';
+import Company from '../components/Template/Form/Company';
 import Home from '../components/Template/Form/Home';
 import Services from '../components/Template/Form/Services';
 import Testimonials from '../components/Template/Form/Testimonials';
@@ -11,35 +12,30 @@ import FAQs from '../components/Template/Form/FAQs';
 import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
-import Preview from '../components/Template/Preview';
 
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const totalSections = 9; 
 
   const handleNextSection = () => {
-    if (currentSection < totalSections - 1) {
-      setCurrentSection(currentSection + 1);
-    }
+    setCurrentSection((prevSection) => {
+      const nextSection = Math.min(prevSection + 1, 8);
+      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
+      return nextSection;
+    });
   };
 
   const handlePrevSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(currentSection - 1);
-    }
-  };
-
-  const handleSubmit = () => {
+    setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
   };
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div className="flex-grow flex h-screen">
-        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[200rem]">
-          <Preview />
+      <div className="flex-grow flex">
+        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[230rem]">
+          <Preview currentSection={currentSection} />
         </div>
-          <div className="w-4/7 pt-[6rem]">
+        <div className="w-4/7 pt-[6rem] h-screen">
             {currentSection === 0 && <Company />}
             {currentSection === 1 && <Home />}
             {currentSection === 2 && <Services />}
@@ -56,7 +52,6 @@ const Template = () => {
           currentSection={currentSection}
           nextSection={handleNextSection}
           prevSection={handlePrevSection}
-          submitSections={handleSubmit}
         />
       </div>
     </div>
@@ -64,5 +59,3 @@ const Template = () => {
 };
 
 export default Template;
-
-
