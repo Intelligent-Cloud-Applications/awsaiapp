@@ -1,2 +1,7 @@
 .footer {
-    box-shadow: 0px -4px 16px rgb(52, 47, 47); }
+    box-shadow: 0px -4px 16px rgb(52, 47, 47);
+}
+
+.perv {
+    box-shadow: 0px 14px 16px rgb(52, 47, 47);
+}

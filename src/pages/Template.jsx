@@ -1,3 +1,4 @@
+// Template.js
 import React, { useState } from 'react';
 import Company from '../components/Template/Form/Company';
 import Navbar from '../components/Home/Navbar';
@@ -23,29 +24,23 @@ const Template = () => {
   };
 
   const handleSubmit = () => {
-
+    // Handle form submission
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div className="flex justify-center items-center h-screen ">
-        <div className="flex w-full ">
-          <div className=" flex w-[65%] h-screen pt-[8rem] bg-[#30AFBC] relative item-center">
-          <Preview
-            handleNextSection={handleNextSection}
-            handlePrevSection={handlePrevSection}
-            currentSection={currentSection}
-          />
-          </div>
-          <div className="w-4/7 pt-[6rem]">
-            {currentSection === 0 && <Company />}
-            {currentSection === 1 && <Home />}
-            {currentSection === 2 && <Services />}
-          </div>
+      <div className="flex-grow flex h-screen">
+        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[200rem]">
+          <Preview />
+        </div>
+        <div className="w-4/7 pt-[6rem]">
+          {currentSection === 0 && <Company />}
+          {currentSection === 1 && <Home />}
+          {currentSection === 2 && <Services />}
         </div>
       </div>
-      <div style={{ position: 'absolute', width: '100%', bottom: 0, zIndex: 999 }}>
+      <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
         <Footer
           currentSection={currentSection}
           nextSection={handleNextSection}
