@@ -23,7 +23,7 @@ function Footer({ currentSection, nextSection, prevSection, submitSections }) {
     <div className='footer-wrapper relative'>
       <div className='bg-white h-[4rem] footer flex justify-end items-center relative'>
         {/* Sections */}
-        <div className='flex flex-row gap-6 absolute left-[6rem] right-0 top-4'>
+        <div className='flex flex-row gap-6 max1320:gap-4 max1320:left-[4rem] absolute left-[6rem] right-0 top-4'>
           {sections.map((section, index) => (
             <div
               key={index}
@@ -37,7 +37,7 @@ function Footer({ currentSection, nextSection, prevSection, submitSections }) {
           ))}
         </div>
         
-        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] w-[50%] h-[3px] z-40'>
+        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[50%] h-[3px] z-40'>
           <div
             className='h-full bg-black rounded-lg'
             style={{
@@ -46,19 +46,19 @@ function Footer({ currentSection, nextSection, prevSection, submitSections }) {
           />
         </div>
        
-        <div className='absolute right-4 bottom-4'>
+        <div className='absolute right-4 bottom-4 flex gap-[19rem]'>
           {currentSection > 0 && (
-            <button onClick={prevSection} className='bg-black mr-[21rem] text-white px-4 py-2 rounded-[2px]'>
+            <button onClick={prevSection} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]'>
               BACK
             </button>
           )}
           {currentSection < sections.length - 1 && (
-            <button onClick={nextSection} className='bg-black text-white px-4 py-2 rounded-[2px]'>
+            <button onClick={nextSection} className='bg-black text-white px-4 py-2 w-24 rounded-[2px]'>
               NEXT
             </button>
           )}
           {currentSection === sections.length - 1 && (
-            <button onClick={submitSections} className='bg-black text-white px-4 py-2 rounded-[2px]'>
+            <button onClick={submitSections} className='bg-black text-white px-4 py-2 w-24 rounded-[2px]'>
               SUBMIT
             </button>
           )}
