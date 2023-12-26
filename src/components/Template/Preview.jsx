@@ -13,7 +13,7 @@ import Terms1 from './Preview/Terms1';
 const Preview = ({ currentSection }) => {
 
   return (
-    <div>
+    <div className='h-[100%] pb-[29%]'>
       <Navbar1 />
       {(currentSection === 0 ||
         currentSection === 1 ||
