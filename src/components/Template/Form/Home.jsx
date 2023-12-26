@@ -1,44 +1,52 @@
 import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
+
+
 function Home() {
   const [TaglineName, setTaglineName] = useState("");
-
   const [isTaglineInputVisible, setTaglineInputVisible] = useState(false);
-
   const [TaglineLineColor, setTaglineLineColor] = useState("#939393");
 
   const handleTaglineInputChange = (e) => {
     setTaglineName(e.target.value);
   };
+
   const toggleTaglineInputVisibility = () => {
     setTaglineInputVisible(true);
     setTaglineLineColor("#000000"); // Change Tagline line color to black on click
   };
 
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [mediaType, setMediaType] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setSelectedVideo(URL.createObjectURL(file));
+    setSelectedMedia(URL.createObjectURL(file));
+
+    // Determine the type of media selected (image or video)
+    if (file.type.includes("video")) {
+      setMediaType("video");
+    } else if (file.type.includes("image")) {
+      setMediaType("image");
+    }
   };
 
-  const handleVideoClick = () => {
+  const handleMediaClick = () => {
     document.getElementById("fileInput").click();
   };
 
-  const handleVideoMouseEnter = () => {
-    if (selectedVideo) {
+  const handleMediaMouseEnter = () => {
+    if (selectedMedia) {
       setFileOptionVisible(true);
     }
   };
 
-  const handleVideoMouseLeave = () => {
-    if (selectedVideo) {
+  const handleMediaMouseLeave = () => {
+    if (selectedMedia) {
       setFileOptionVisible(false);
     }
   };
-
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">HOME SECTION</h1>
@@ -70,15 +78,14 @@ function Home() {
           style={{ backgroundColor: TaglineLineColor }}
         ></div>
       </div>
-
       <div className="border border-black w-[16rem] h-[14rem] mt-[5rem] relative">
         <label
           htmlFor="fileInput"
           className="cursor-pointer"
-          onMouseEnter={handleVideoMouseEnter}
-          onMouseLeave={handleVideoMouseLeave}
+          onMouseEnter={handleMediaMouseEnter}
+          onMouseLeave={handleMediaMouseLeave}
         >
-          {!selectedVideo ? (
+          {!selectedMedia ? (
             <>
               <input
                 type="file"
@@ -90,21 +97,32 @@ function Home() {
                 <img
                   src={vupload}
                   alt="Upload"
-                  className=" w-[8rem] cursor-pointer"
-                  onClick={handleVideoClick}
+                  className="w-[8rem] cursor-pointer"
+                  onClick={handleMediaClick}
                 />
-
-                <h4 className="text-[#939393] mr-1 mb-3">Upload your video</h4>
+                <h4 className="text-[#939393] mr-1 mb-3">Upload your media</h4>
               </div>
             </>
           ) : (
             <>
-              <video
-                controls
-                src={selectedVideo}
-                className="w-full h-full object-cover"
-                onClick={handleVideoClick}
-              />
+              {mediaType === "video" ? (
+                <video
+                  controls
+                  src={selectedMedia}
+                  className="w-full h-full object-cover"
+                  onClick={handleMediaClick}
+                />
+              ) : (
+                <img
+                  src={selectedMedia}
+                  alt="Uploaded media"
+                  className="w-full h-full object-cover"
+                  onClick={handleMediaClick}
+                  onError={(e) => {
+                    e.target.src = vupload; // Display default image if image fails to load
+                  }}
+                />
+              )}
               {isFileOptionVisible && (
                 <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
                   <input

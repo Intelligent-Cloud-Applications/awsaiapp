@@ -33,17 +33,9 @@ function FAQs() {
 
   const faqsContainerRef = useRef(null);
 
-  const addNewFAQ = () => {
-    setFaqs([
-      ...faqs,
-      { question: '', answer: '' },
-    ]);
-    
-    // Scroll to the newly added FAQ
-    faqsContainerRef.current.scrollTo({
-      top: faqsContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
+  const removeFAQ = (indexToRemove) => {
+    const updatedFaqs = faqs.filter((_, index) => index !== indexToRemove);
+    setFaqs(updatedFaqs);
   };
 
   return (
@@ -52,9 +44,18 @@ function FAQs() {
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
-      <div className="mt-6 max-h-[480px] overflow-y-auto" ref={faqsContainerRef}>
+      <div className="mt-4 pb-4  max-h-[480px] overflow-y-auto" ref={faqsContainerRef}>
         {faqs.map((faq, index) => (
-          <div key={index} className="mt-4">
+          <div key={index} className="mt-4 relative">
+            {index >= 3 && (
+              <button
+                onClick={() => removeFAQ(index)}
+                className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 " 
+                
+              >
+                <span>✕</span>
+              </button>
+            )}
             <h2 className="font-medium text-xl">FAQ {index + 1}</h2>
             <div className="relative">
               <input
@@ -78,7 +79,7 @@ function FAQs() {
               value={faq.answer}
               onChange={(e) => handleFAQChange(index, e)}
               placeholder="Answer"
-              className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
+              className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none "
               rows={activeFAQIndex === index ? 2 : 1}
               onFocus={() => toggleActiveFAQ(index)}
               onBlur={() => toggleActiveFAQ(null)}
@@ -90,12 +91,13 @@ function FAQs() {
             ></div>
           </div>
         ))}
-        {/* Add FAQ Button */}
-        <div className="mt-4 mb-6 flex justify-center max950:mt-0">
-          <button onClick={addNewFAQ} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-            Add FAQ
-          </button>
-        </div>
+        {faqs.length < 5 && (
+          <div className="mt-4 flex justify-center">
+            <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+              Add FAQ
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

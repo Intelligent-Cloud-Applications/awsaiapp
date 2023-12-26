@@ -47,7 +47,10 @@ function Instructors() {
     }
     return fileName;
   };
-
+const removeInstructor = (indexToRemove) => {
+  const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
+  setInstructors(updatedInstructors);
+};
   const addNewInstructor = () => {
     setInstructors([
       ...instructors,
@@ -71,6 +74,7 @@ function Instructors() {
           {instructors.map((instructor, index) => (
             <div key={index} className="mt-2">
               <h2 className="font-medium text-[1.1rem]">INSTRUCTOR {index + 1}</h2>
+              
               <div className="relative flex items-center">
                 <input
                   type="file"
@@ -97,6 +101,7 @@ function Instructors() {
                   >
                     Choose File
                   </span>
+                  
                   <div
                     className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
                       instructor.uploadedFile ? 'block' : 'hidden'
@@ -113,12 +118,23 @@ function Instructors() {
                     >
                       Change
                     </span>
+                    
                   </div>
+
                 </label>
                 {/* Rest of your image upload structure */}
+                {index >= 4 && (
+                <button
+                  onClick={() => removeInstructor(index)}
+                  className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] "
+                >
+                  <span>✕</span>
+                </button>
+              )}
               </div>
               <div className="relative mt-2">
                 {/* Name input */}
+                
                 <input
     type="text"
     name="name"
