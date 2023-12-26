@@ -23,7 +23,7 @@ function Policy() {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">POLICY AND TERMS</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>
       <div className="mt-8">

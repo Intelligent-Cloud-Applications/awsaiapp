@@ -21,7 +21,7 @@ function Services() {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
       </h5>
       <div className="mt-8">

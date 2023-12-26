@@ -63,7 +63,7 @@ function Instructors() {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">INSTRUCTORS SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Introduce expert team members, emphasizing expertise and value they bring to your organization.
       </h5>
 <div className="max-h-[480px] overflow-y-auto">
@@ -141,7 +141,7 @@ function Instructors() {
         </div>
         {/* Add button after the third instructor */}
         {instructors.length >= 3 && (
-          <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex justify-center ">
             <button
               onClick={addNewInstructor}
               className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
