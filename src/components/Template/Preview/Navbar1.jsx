@@ -33,7 +33,7 @@ const NavBar1 = () => {
     <div
       className="h-8 "
     >
-      <div className="flex z-20 ml-[5%] malt fixed items-center justify-between text-white w-[50%] bg-black border-b border-[#1b7571]  h-[3.8rem] px-10 left-0 max536:bg-black">
+      <div className="flex z-20 ml-[7.56%] malt relative items-center justify-between text-white w-[78%] bg-black border-b border-[#1b7571]  h-[3.8rem] px-10 left-0 max536:bg-black">
         <a
           href="/"
           className={`logo bg-[#fff] w-[6rem] h-[2.4rem] rounded-xl flex items-center justify-center `}

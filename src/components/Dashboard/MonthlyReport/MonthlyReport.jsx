@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import InfoPng from '../../../utils/Assets/Dashboard/images/PNG/about.png'
 import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
 import Chart from "chart.js/auto";
@@ -331,18 +332,42 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     }
   };
 
+  const [IsDashboard, setIsDashboard] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes('dashboard')) {
+      setIsDashboard(true);
+    } else {
+      setIsDashboard(false);
+    }
+  }, [location.pathname]);
+
+  const renderButton = () => {
+    if (IsDashboard) {
+      return null;
+    } else {
+      return (
+        <button
+          onClick={() => Navigate("/dashboard")}
+          className="mt-[5rem] ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          style={{
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
+          }}
+        >
+          <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
+        </button>
+      );
+    }
+  };
+
   return (
     <>
       <NavBar />
-      <button onClick={() => Navigate("/dashboard")}
-        className=" mt-[5rem] ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md " style={{
-          boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
-        }}>
-        <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
-      </button>
-      <div className="flex flex-col justify-center items-center max536:pt-0 gap-1">
+      {renderButton()}
+      <div className={`flex flex-col justify-center items-center max536:pt-0 gap-1 ${IsDashboard ? 'flex flex-col justify-center items-center max536:pt-0 gap-1 mt-[5rem]' : ''}`}>
         <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
-          <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
+          <div className="flex mb-4 flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center">
             <div className="relative">
               <div className="flex justify-between">
                 <h2 className=" mb-[-1.5rem] ml-9 K2D font-[600] max850:text-[2rem] max1300:ml-0 text-[1.6rem] ">
@@ -427,7 +452,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
             </div>
           )
         }
-        <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-4 max850:hidden"></div>
+        <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-8 max850:hidden"></div>
 
         <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
           <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
