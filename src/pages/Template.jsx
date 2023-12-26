@@ -31,15 +31,12 @@ const Template = () => {
   return (
     <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div className="flex justify-center items-center h-screen ">
-        <div className="flex w-full ">
-          <div className="w-4/6 h-screen pt-[8rem]  bg-[#30AFBC] relative">
-           
-            {currentSection === 0 && <Navbar1 />}
-            {currentSection === 1 && <Home1 />}
-          </div>
-          <div className="w-4/7 pt-[6rem]">
-           
+      <div className="flex-grow flex">
+        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[230rem] max950:hidden">
+          <Preview currentSection={currentSection} />
+        </div>
+        
+        <div className="w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0  ">
             {currentSection === 0 && <Company />}
             {currentSection === 1 && <Home />}
             {currentSection === 2 && <Services />}
