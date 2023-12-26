@@ -1,0 +1,20 @@
+@media (max-width: 1585px){
+    .respo{
+        right: 5px;
+    }
+}
+@media (max-width: 1445px){
+    .respo{
+        right: 0;
+    }
+}
+@media (max-width: 1360px){
+    .cont{
+        width: 60%;
+    }
+}
+@media (max-width: 1188px){
+    .cont{
+        width: 55%;
+    }
+}

@@ -14,7 +14,7 @@ const Home2 = () => {
                 Why HAPPYPRANCER ?
             </h4>
             <div>
-                <ul className="flex justify-center flex-row items-center gap-5 text-[0.8rem]">
+                <ul className="flex justify-center flex-row items-center gap-5 text-[0.8rem] max1250:gap-2 max1250:flex-col">
                     <li className="flex flex-col items-center w-[12rem]">
                         <img
                             src={image1}

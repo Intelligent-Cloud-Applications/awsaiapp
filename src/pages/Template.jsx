@@ -12,6 +12,7 @@ import FAQs from '../components/Template/Form/FAQs';
 import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
+import "./Template.css";  
 
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -32,10 +33,10 @@ const Template = () => {
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
-        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden">
+        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
           <Preview currentSection={currentSection} />
         </div>
-        <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed">
+        <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
           {currentSection === 0 && <Company />}
           {currentSection === 1 && <Home />}
           {currentSection === 2 && <Services />}

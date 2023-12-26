@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import logo from "../../../utils/Template/logo.png";
-import MenuPng from "../../../utils/NavBar/Menu.svg";
-import CrossPng from "../../../utils/NavBar/cross.png";
-import { useLocation } from "react-router-dom";
 import "./nav.css";
 
 const NavBar1 = () => {
-  const [isNavActive, setIsNavActive] = useState(false);
-  const location = useLocation();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -31,7 +26,7 @@ const NavBar1 = () => {
 
   return (
     <div
-      className="h-8 "
+      className="h-8 max1250:ml-[6.6%] w-[100%]"
     >
       <div className="flex z-20 ml-[7.56%] malt relative items-center justify-between text-white w-[78%] bg-black border-b border-[#1b7571]  h-[3.8rem] px-10 left-0 max536:bg-black">
         <a
@@ -69,30 +64,6 @@ const NavBar1 = () => {
 
           </p>
         </ul>
-        <div className={`min536:hidden max536:fixed top-0 left-0 z-40 bg-black`}>
-          {isNavActive ? (
-            <img
-              src={CrossPng}
-              alt=""
-              className={` fixed top-10 right-6 z-60 cursor-pointer h-8 bg-[#1b7571]`}
-              onClick={() => {
-                setIsNavActive(!isNavActive);
-              }}
-            />
-          ) : (
-            <img
-              src={MenuPng}
-              alt=""
-              className={`${location.pathname !== "/dashboard"
-                ? "max536:hidden max536:bg-white"
-                : ""
-                } fixed top-4 right-6 z-60 cursor-pointer h-8 bg-transparent   `}
-              onClick={() => {
-                setIsNavActive(!isNavActive);
-              }}
-            />
-          )}
-        </div>
       </div>
     </div>
   );
