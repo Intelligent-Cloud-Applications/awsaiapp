@@ -65,7 +65,7 @@ const Testimonial1 = () => {
     };
 
     return (
-        <div className="sans-sarif ml-[7.56%] max500:h-[20rem] max700:h-[40rem] size w-[78%]">
+        <div className="sans-sarif ml-[7.56%] max500:h-[20rem] max700:h-[40rem] size w-[78%] new">
             <div className="Test-size bg-black py-[0.2rem] flex flex-col item-center">
                 <h1 className=" Test-text m-2 text-white-250 max478:text-white-[4rem] font-bold">
                     TESTIMONIAL

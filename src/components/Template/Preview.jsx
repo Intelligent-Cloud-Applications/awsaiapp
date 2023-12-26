@@ -17,17 +17,14 @@ const Preview = ({ currentSection }) => {
       <Navbar1 />
       {(currentSection === 0 ||
         currentSection === 1 ||
-        currentSection === 2 ||
-        currentSection === 3 ||
-        currentSection === 4 ||
-        currentSection === 5) &&
+        currentSection === 2) &&
         <div className=" bg-[#30AFBC]">
           <Home1 />
           <Home2 />
-          <Testimonial1 />
-          <Subscription1 />
-          <FAQ1 />
         </div>}
+      {currentSection === 3 && <Testimonial1 />}
+      {currentSection === 4 && <Subscription1 />}
+      {currentSection === 5 && <FAQ1 />}
       {currentSection === 6 && <Instructors1 />}
       {currentSection === 7 && <Terms1 />}
       <Footer1 />
