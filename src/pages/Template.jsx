@@ -32,10 +32,10 @@ const Template = () => {
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
-        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[110rem]">
+        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[110rem] max950:hidden">
           <Preview currentSection={currentSection} />
         </div>
-        <div className=" pt-[6rem] fixed right-10">
+        <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 ">
           {currentSection === 0 && <Company />}
           {currentSection === 1 && <Home />}
           {currentSection === 2 && <Services />}

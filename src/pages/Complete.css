@@ -1,16 +1,38 @@
 
-.hello1 {
+
+/* Add this CSS to your stylesheet */
+.congratulations-ui {
+  width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.scrolling-text {
   overflow: hidden;
+  white-space: nowrap;
+  opacity: 0.8; /* Adjust the opacity as needed */
 }
 
-.hello1 {
-  background: #ffffff;
+.scrolling-text p {
+  animation: scrollText 15s linear infinite;
 }
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
   /* CountdownTimer.css */
-
+.hello1{
+  position: fixed;
+}
 .countdown-timer {
   font-family: 'Arial', sans-serif;
   font-size: 2rem;

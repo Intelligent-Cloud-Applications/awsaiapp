@@ -10,7 +10,7 @@ const Complete = () => {
 
 
   return (
-    <div className='h-screen'>
+    <div className='hello1 h-screen'>
       <Navbar />
       <div className="pyro">
         <div className="before"></div>
