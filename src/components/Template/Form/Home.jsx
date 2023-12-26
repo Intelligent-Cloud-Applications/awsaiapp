@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import vupload  from "../../../utils/png/vupload.png";
+import vupload from "../../../utils/png/vupload.png";
 function Home() {
   const [TaglineName, setTaglineName] = useState("");
-  
+
   const [isTaglineInputVisible, setTaglineInputVisible] = useState(false);
- 
+
   const [TaglineLineColor, setTaglineLineColor] = useState("#939393");
- 
 
   const handleTaglineInputChange = (e) => {
     setTaglineName(e.target.value);
@@ -14,7 +13,6 @@ function Home() {
   const toggleTaglineInputVisibility = () => {
     setTaglineInputVisible(true);
     setTaglineLineColor("#000000"); // Change Tagline line color to black on click
- 
   };
 
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -43,13 +41,13 @@ function Home() {
 
   return (
     <div className="px-8">
-    <h1 className="font-medium text-7xl">HOME SECTION</h1>
-    <h5 class="w-[28rem] text-[#939393]">
-    Craft a compelling brand introduction, captivating visitors with your uniqueness and core values.
-    </h5>
+      <h1 className="font-medium text-7xl">HOME SECTION</h1>
+      <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
+        Craft a compelling brand introduction, captivating visitors with your
+        uniqueness and core values.
+      </h5>
 
-    
-    <div className="relative mt-10">
+      <div className="relative mt-10">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
           onClick={toggleTaglineInputVisibility}
@@ -89,8 +87,14 @@ function Home() {
                 onChange={handleFileChange}
               />
               <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
-                <img src={vupload} alt="Upload" className="ml-2" onClick={handleVideoClick} />
-                <h4 className="text-[#939393] mr-3 mb-3">Upload your video</h4>
+                <img
+                  src={vupload}
+                  alt="Upload"
+                  className=" w-[8rem] cursor-pointer"
+                  onClick={handleVideoClick}
+                />
+
+                <h4 className="text-[#939393] mr-1 mb-3">Upload your video</h4>
               </div>
             </>
           ) : (
@@ -116,8 +120,8 @@ function Home() {
           )}
         </label>
       </div>
-  </div>
-  )
+    </div>
+  );
 }
 
 export default Home;

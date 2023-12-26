@@ -37,7 +37,7 @@ function Subscription() {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">SUBSCRIPTION SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Outline subscription plans clearly, emphasizing features and benefits to aid user decision-making.
       </h5>
       <div className="mt-6">

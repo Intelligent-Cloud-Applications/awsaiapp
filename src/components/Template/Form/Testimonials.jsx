@@ -62,7 +62,7 @@ function Testimonials() {
    
       <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.
       </h5>
       <div className="max-h-[480px] overflow-y-auto">
@@ -140,7 +140,7 @@ function Testimonials() {
         </div>
         {/* Add button after the third testimonial */}
         {testimonials.length >= 3 && (
-        <div className="mt-2 flex justify-center">
+        <div className="mt-2 flex justify-center max950:mt-0">
           <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
             Add Testimonial
           </button>

@@ -35,7 +35,7 @@ const Template = () => {
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative h-[110rem]">
           <Preview currentSection={currentSection} />
         </div>
-        <div className=" pt-[6rem] fixed right-10">
+        {/* <div className=" pt-[6rem] fixed right-10">
           {currentSection === 0 && <Company />}
           {currentSection === 1 && <Home />}
           {currentSection === 2 && <Services />}
@@ -45,7 +45,18 @@ const Template = () => {
           {currentSection === 6 && <Instructors />}
           {currentSection === 7 && <Policy />}
           {currentSection === 8 && <Contact />}
-        </div>
+        </div> */}
+        <div className="w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0  ">
+            {currentSection === 0 && <Company />}
+            {currentSection === 1 && <Home />}
+            {currentSection === 2 && <Services />}
+            {currentSection === 3 && <Testimonials />}
+            {currentSection === 4 && <Subscription />}
+            {currentSection === 5 && <FAQs />}
+            {currentSection === 6 && <Instructors />}
+            {currentSection === 7 && <Policy />}
+            {currentSection === 8 && <Contact />}
+          </div>
       </div>
       <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
         <Footer
