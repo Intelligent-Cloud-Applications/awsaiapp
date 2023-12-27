@@ -11,6 +11,7 @@ function Company({clients, companyName, setCompanyName, domainName, setDomainNam
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
   // const [logoUrl, setLogoUrl] = useState(null);
 
+    // eslint-disable-next-line
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -19,8 +20,7 @@ function Company({clients, companyName, setCompanyName, domainName, setDomainNam
       alert('Please fill in all fields and upload a file.');
       return;
     }
-
-   
+    
 
     try {
       // Perform the API call using API.post or API.put based on your API endpoint and method
@@ -107,7 +107,6 @@ const handleUploadImageMouseEnter = () => {
 const handleUploadImageMouseLeave = () => {
   setFileOptionVisible(false);
 };
-
 
 
 
