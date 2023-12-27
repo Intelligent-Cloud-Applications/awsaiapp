@@ -1,4 +1,3 @@
-// Template.js
 import React, { useState } from 'react';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
@@ -16,11 +15,26 @@ import "./Template.css";
 
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
+  const [uploadedLogoUrl, setUploadedLogoUrl] = useState(null);
+  const [tagline, setTagline] = useState("");
+  const [media, setMedia] = useState(null);
+  const [servicesData, setServicesData] = useState([]); // New state to store services data
+
+  const handleTaglineChange = (newTagline) => {
+    setTagline(newTagline);
+  };
+
+  const handleMediaChange = (newMedia) => {
+    setMedia(newMedia);
+  };
+
+  const handleLogoUpload = (url) => {
+    setUploadedLogoUrl(url);
+  };
 
   const handleNextSection = () => {
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
-      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
       return nextSection;
     });
   };
@@ -29,17 +43,21 @@ const Template = () => {
     setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
   };
 
+  const handleServicesChange = (updatedServices) => {
+    setServicesData(updatedServices);
+  };
+
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} />
+          <Preview currentSection={currentSection} uploadedLogoUrl={uploadedLogoUrl} tagline={tagline} media={media} servicesData={servicesData}/>
         </div>
-        <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
-          {currentSection === 0 && <Company />}
-          {currentSection === 1 && <Home />}
-          {currentSection === 2 && <Services />}
+        <div className="w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
+          {currentSection === 0 && <Company onLogoUpload={handleLogoUpload} />}
+          {currentSection === 1 && <Home onTaglineChange={handleTaglineChange} onMediaChange={handleMediaChange} />}
+          {currentSection === 2 && <Services onServicesChange={handleServicesChange} />}
           {currentSection === 3 && <Testimonials />}
           {currentSection === 4 && <Subscription />}
           {currentSection === 5 && <FAQs />}

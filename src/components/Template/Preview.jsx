@@ -10,24 +10,22 @@ import Footer1 from './Preview/Footer1';
 import Instructors1 from './Preview/Instructors1';
 import Terms1 from './Preview/Terms1';
 
-const Preview = ({ currentSection }) => {
-
+const Preview = ({ currentSection, uploadedLogoUrl, tagline, media ,servicesData}) => {
   return (
     <div className='h-[100%] pb-[29%]'>
-      <Navbar1 />
-      {(currentSection === 0 ||
-        currentSection === 1 ||
-        currentSection === 2) &&
+      <Navbar1 uploadedLogoUrl={uploadedLogoUrl} />
+      {(currentSection === 0 || currentSection === 1 || currentSection === 2 || currentSection === 3 || currentSection === 4 || currentSection === 5) && (
         <div className=" bg-[#30AFBC]">
-          <Home1 />
-          <Home2 />
-        </div>}
-      {currentSection === 3 && <Testimonial1 />}
-      {currentSection === 4 && <Subscription1 />}
-      {currentSection === 5 && <FAQ1 />}
+          <Home1 tagline={tagline} media={media} />
+          <Home2 servicesData={servicesData}/>
+          <Testimonial1 />
+          <Subscription1 />
+          <FAQ1 />
+        </div>
+      )}
       {currentSection === 6 && <Instructors1 />}
       {currentSection === 7 && <Terms1 />}
-      <Footer1 />
+      <Footer1 uploadedLogoUrl={uploadedLogoUrl} />
     </div>
   );
 };

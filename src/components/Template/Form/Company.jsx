@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import upload  from "../../../utils/png/upload.png";
-function Company() {
+function Company({ onLogoUpload }) {
   const [companyName, setCompanyName] = useState("");
   const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -48,9 +48,11 @@ const [selectedFile, setSelectedFile] = useState(null);
 const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
 const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  setSelectedFile(URL.createObjectURL(file));
-};
+    const file = event.target.files[0];
+    const logoUrl = URL.createObjectURL(file);
+    setSelectedFile(logoUrl);
+    onLogoUpload(logoUrl); // Call the provided callback to update the logo in Main component
+  };
 
 const handleUploadImageClick = () => {
   document.getElementById("fileInput").click();

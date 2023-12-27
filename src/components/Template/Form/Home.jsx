@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
 
-function Home() {
+function Home({ onTaglineChange, onMediaChange }) {
   const [TaglineName, setTaglineName] = useState("");
   const [isTaglineInputVisible, setTaglineInputVisible] = useState(false);
   const [TaglineLineColor, setTaglineLineColor] = useState("#939393");
 
   const handleTaglineInputChange = (e) => {
     setTaglineName(e.target.value);
+    onTaglineChange(e.target.value); // Update tagline in the parent component
   };
 
   const toggleTaglineInputVisibility = () => {
@@ -23,7 +24,7 @@ function Home() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedMedia(URL.createObjectURL(file));
-
+    onMediaChange({ type: file.type, url: URL.createObjectURL(file) }); // Update media in the parent component
     // Determine the type of media selected (image or video)
     if (file.type.includes("video")) {
       setMediaType("video");

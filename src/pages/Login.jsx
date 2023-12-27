@@ -58,7 +58,7 @@ const Login = () => {
       if (user) {
         const userdata = await API.get(
           "clients",
-          `/self/read-self/${institution}`
+          "/user/SignUp-members"
         );
         if (
           userdata.userType === "admin" &&
@@ -111,7 +111,6 @@ const Login = () => {
   };
 
 
-  // `/memberlist?institution=${institution}`
   return (
     <>
       <Navbar />

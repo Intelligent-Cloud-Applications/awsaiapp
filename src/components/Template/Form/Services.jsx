@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Services() {
+function Services({ onServicesChange }) {
   const [services, setServices] = useState([
     { title: '', description: '' },
     { title: '', description: '' },
@@ -11,7 +11,10 @@ function Services() {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
     setServices(updatedServices);
-  };
+  
+    // Notify the parent component (Template) about the change
+    onServicesChange(updatedServices);
+  };  
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
 
   const toggleActiveService = (index) => {
