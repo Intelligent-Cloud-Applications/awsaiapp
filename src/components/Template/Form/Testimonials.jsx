@@ -47,22 +47,30 @@ function Testimonials() {
   };
 
   const addNewTestimonial = () => {
-    setTestimonials([
-      ...testimonials,
-      { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-    ]);
+    if (testimonials.length < 5) {
+      setTestimonials([
+        ...testimonials,
+        { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+      ]);
+    }
     // Scroll to the newly added testimonial
     testimonialsContainerRef.current.scrollTo({
       top: testimonialsContainerRef.current.scrollHeight,
       behavior: 'smooth',
     });
   };
+  const removeTestimonial = (index) => {
+    const updatedTestimonials = [...testimonials];
+    updatedTestimonials.splice(index, 1);
+    setTestimonials(updatedTestimonials);
+  };
+  
 
   return (
    
       <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.
       </h5>
       <div className="max-h-[480px] overflow-y-auto">
@@ -70,6 +78,7 @@ function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div key={index} className="mt-2">
               <h2 className="font-medium text-xl">Testimonial {index + 1}</h2>
+              
               <div className="relative flex items-center">
               <input
                 type="file"
@@ -93,6 +102,14 @@ function Testimonials() {
                 </div>
               </label>
                 {/* Rest of your image upload structure */}
+                {index >= 3 && (
+      <button
+        onClick={() => removeTestimonial(index)}
+        className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
+      >
+        <span>✕</span>
+      </button>
+    )}
               </div>
               <div className="relative">
                 {/* Name input */}
@@ -139,8 +156,8 @@ function Testimonials() {
           ))}
         </div>
         {/* Add button after the third testimonial */}
-        {testimonials.length >= 3 && (
-        <div className="mt-2 flex justify-center">
+        {testimonials.length < 5 && (
+        <div className="mt-2 flex justify-center max950:mt-0">
           <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
             Add Testimonial
           </button>

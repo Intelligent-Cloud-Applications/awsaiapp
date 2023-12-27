@@ -47,7 +47,10 @@ function Instructors() {
     }
     return fileName;
   };
-
+const removeInstructor = (indexToRemove) => {
+  const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
+  setInstructors(updatedInstructors);
+};
   const addNewInstructor = () => {
     setInstructors([
       ...instructors,
@@ -63,7 +66,7 @@ function Instructors() {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">INSTRUCTORS SECTION</h1>
-      <h5 className="w-[28rem] text-[#939393]">
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Introduce expert team members, emphasizing expertise and value they bring to your organization.
       </h5>
 <div className="max-h-[480px] overflow-y-auto">
@@ -71,6 +74,7 @@ function Instructors() {
           {instructors.map((instructor, index) => (
             <div key={index} className="mt-2">
               <h2 className="font-medium text-[1.1rem]">INSTRUCTOR {index + 1}</h2>
+              
               <div className="relative flex items-center">
                 <input
                   type="file"
@@ -97,6 +101,7 @@ function Instructors() {
                   >
                     Choose File
                   </span>
+                  
                   <div
                     className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
                       instructor.uploadedFile ? 'block' : 'hidden'
@@ -113,12 +118,23 @@ function Instructors() {
                     >
                       Change
                     </span>
+                    
                   </div>
+
                 </label>
                 {/* Rest of your image upload structure */}
+                {index >= 4 && (
+                <button
+                  onClick={() => removeInstructor(index)}
+                  className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] "
+                >
+                  <span>✕</span>
+                </button>
+              )}
               </div>
               <div className="relative mt-2">
                 {/* Name input */}
+                
                 <input
     type="text"
     name="name"
@@ -141,7 +157,7 @@ function Instructors() {
         </div>
         {/* Add button after the third instructor */}
         {instructors.length >= 3 && (
-          <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex justify-center ">
             <button
               onClick={addNewInstructor}
               className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"

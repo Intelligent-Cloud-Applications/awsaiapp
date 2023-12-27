@@ -5,8 +5,6 @@ import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
 import yellow_star from "../../../utils/Template/yellow star.png";
 import BapujiPng from "../../../utils/Template/Testimonial/Bapuji_Mallik.png";
 import MonalishaPng from "../../../utils/Template/Testimonial/Monalisha_Sahoo.png";
-import PriyankaPng from "../../../utils/Template/Testimonial/Priyanka_Biswal.jpg";
-
 import "./Testimonial1.css";
 import { useState } from "react";
 
@@ -23,21 +21,14 @@ const Testimonial1 = () => {
         description:
             "If you're new to exercise, you aren't sure what types of exercise you like, or you feel intimidated when walking into a new workout environment, online training is an excellent reprieve from the traditional gym or studio.According to me dance is the best fitness and workout where you never get bored,dance is the fun way to express yourself so yes this platform will give you such experience. Every session is mind blowing. Quality is awesome. Trainers are best.It is easy to learn for from  beginners to advanced. Motivation by the trainers and their coaching can't be described by words.Trainers are really comes with utmost positivity throughout the session.its been a good journey with happyprancers.\nThank you happyprancer",
     };
-    const testi3 = {
-        src: PriyankaPng,
-        name: "Priyanka Biswal",
-        description:
-            "Joining in this Live session ....I have learnt to spend time with myself and relative my stress in a fraction of minute.. delighted to be a part of this class...",
-    };
-
+    
     // {/*                Profile pics state                 */ }
     const [testimonials, setTestimonials] = useState([
         testi1,
         testi2,
-        testi3,
     ]);
 
-    const styles = ["ecllip4", "ecllip3", "ecllip2"];
+    const styles = ["ecllip4", "ecllip3"];
 
     const leftClicked = () => {
         setTestimonials((testi) => {
@@ -74,7 +65,7 @@ const Testimonial1 = () => {
     };
 
     return (
-        <div className="sans-sarif ml-[7.56%] max500:h-[20rem] max700:h-[40rem] size h-[40rem] w-[78%]">
+        <div className="sans-sarif ml-[7.56%] max500:h-[20rem] max700:h-[40rem] size w-[78%] new">
             <div className="Test-size bg-black py-[0.2rem] flex flex-col item-center">
                 <h1 className=" Test-text m-2 text-white-250 max478:text-white-[4rem] font-bold">
                     TESTIMONIAL
@@ -82,8 +73,6 @@ const Testimonial1 = () => {
                 <div className=" m-0 p-0">
                     <div className="">
                         <ul className="feedback">
-                            <div className="relative flex justify-center flex-col min-h-[20rem] ">
-                            </div>
                             {testimonials.map((test, i) => {
                                 return (
                                     <li key={styles[i]}>
@@ -100,7 +89,7 @@ const Testimonial1 = () => {
                             <BsArrowRightCircle
                                 color="white"
                                 size={"1.5rem"}
-                                className="absolute right-40 cursor-pointer max536:right-6 max500:right-2 max406:h-[1.5rem]"
+                                className="absolute right-40 cursor-pointer max536:right-6 max500:right-2 max406:h-[1.5rem] mr-[8%]"
                                 onClick={rightClicked}
                             />
                         </ul>

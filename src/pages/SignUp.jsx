@@ -146,12 +146,12 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
       alert("Signed Up");
       // client dashboard
-      // if (userdata.status === "Active") {
-      //   UtilCtx.setLoader(false);
-      //   Navigate("/dashboard");
-      // }
-      // UtilCtx.setLoader(false);
-      // Navigate("/subscription");
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
+      UtilCtx.setLoader(false);
+      Navigate("/subscription");
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
@@ -184,12 +184,12 @@ const SignUp = () => {
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
-      // if (userdata.status === "Active") {
-      //   UtilCtx.setLoader(false);
-      //   Navigate("/dashboard");
-      // }
-      // UtilCtx.setLoader(false);
-      // Navigate("/subscription");
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
+      UtilCtx.setLoader(false);
+      Navigate("/subscription");
     } catch (error) {
       UtilCtx.setLoader(false);
       console.log("Error:", error.message);
@@ -259,11 +259,11 @@ const SignUp = () => {
         UserCtx.setUserData(userdata);
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
-        // alert("Signed Up");
-        // if (userdata.status === "Active") {
-        //   Navigate("/dashboard");
-        // }
-        // Navigate("/subscription");
+        alert("Signed Up");
+        if (userdata.status === "Active") {
+          Navigate("/dashboard");
+        }
+        Navigate("/subscription");
       } else {
         UtilCtx.setLoader(false);
       }
@@ -279,19 +279,19 @@ const SignUp = () => {
       <form >
         <div className="flex max767:flex-col">
           <div
-            className=" mobile1 flex justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
+            className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
             style={{ boxShadow: "0 9px 14px rgba(48, 175, 188, 0.5)" }}
           >
             <img src={signUpPng} alt="" />
+            <div className="text-center">
+              <p className="Inter font-[500] my-1 text-[1rem] text-white">
+                Unlock Success Online! Sign Up for Your Professional Website Today.
+              </p>
+            </div>
           </div>
           <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
             style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}>
             <h3 className="text-[1.1rem] font-[700] text-center">Sign Up</h3>
-            <div className="text-center">
-              <p className="Inter font-[500] my-2 text-[0.8rem] ">
-                Unlock Success Online! Sign Up for Your Professional Website Today.
-              </p>
-            </div>
             <ul className="flex flex-col items-center px-0 pb-5">
               <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
                 <input
