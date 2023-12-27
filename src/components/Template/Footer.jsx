@@ -3,7 +3,7 @@ import React from 'react';
 import './Footer.css';
 
 
-function Footer({ currentSection, nextSection, prevSection, submitSections }) {
+function Footer({ currentSection, nextSection, prevSection, submitSections,saveData,handleFormSubmit }) {
  
   const sections = [
     'COMPANY INFO',
@@ -18,6 +18,19 @@ function Footer({ currentSection, nextSection, prevSection, submitSections }) {
   ];
 
   const progress = (currentSection / sections.length) * 100;
+
+  const handleNextClick = () => {
+    saveData();
+    handleFormSubmit() 
+    submitSections();
+   
+  };
+
+  const handlePrevClick = () => {
+    saveData(); 
+    nextSection();
+   
+  };
 
   return (
     <div className='footer-wrapper relative'>
@@ -53,7 +66,7 @@ function Footer({ currentSection, nextSection, prevSection, submitSections }) {
             </button>
           )}
           {currentSection < sections.length - 1 && (
-            <button onClick={nextSection} className='bg-black text-white px-4 py-2 w-24 rounded-[2px]'>
+            <button onClick={handleNextClick} className='bg-black text-white px-4 py-2 w-24 rounded-[2px]'>
               NEXT
             </button>
           )}

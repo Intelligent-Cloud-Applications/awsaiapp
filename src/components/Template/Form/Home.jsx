@@ -97,10 +97,10 @@ function Home() {
                 <img
                   src={vupload}
                   alt="Upload"
-                  className="w-[8rem] cursor-pointer"
+                  className="w-[5rem] cursor-pointer"
                   onClick={handleMediaClick}
                 />
-                <h4 className="text-[#939393] mr-1 mb-3">Upload your media</h4>
+                <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
               </div>
             </>
           ) : (

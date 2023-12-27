@@ -1,12 +1,50 @@
 import React, { useState } from "react";
 import upload  from "../../../utils/png/upload.png";
-function Company() {
+import { API } from "aws-amplify";
+function Company({clients}) {
   const [companyName, setCompanyName] = useState("");
   const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
   const [isDomainInputVisible, setDomainInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   const [domainLineColor, setDomainLineColor] = useState("#939393");
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate inputs as needed
+    if (!companyName || !domainName || !selectedColor1 || !selectedColor2 || !selectedFile) {
+      alert('Please fill in all fields and upload a file.');
+      return;
+    }
+
+   
+
+    try {
+      // Perform the API call using API.post or API.put based on your API endpoint and method
+      await API.post('/your-endpoint', {
+        body: {
+          companyName,
+          domainName,
+          selectedColor1,
+          selectedColor2,
+          selectedFile: selectedFile.name, // Assuming you need the filename in the request body
+          // Add other necessary data fields here
+        },
+      });
+
+      // Additional logic after successful API call, if needed
+      // ...
+
+      alert('Company profile updated successfully.');
+   
+    } catch (error) {
+      console.error('Error updating company profile:', error);
+      alert('Failed to update company profile. Please try again.');
+    
+    }
+  };
+
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
@@ -69,6 +107,9 @@ const handleUploadImageMouseLeave = () => {
       <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
         Company profile, design preferences, and essential details for creating
         a tailored website experience.
+        {/* {clients.map((client, index) => (
+          <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
+        ))} */}
       </h5>
 
       <div className="relative mt-6">
@@ -147,7 +188,7 @@ const handleUploadImageMouseLeave = () => {
             <img
               src={upload}
               alt="Upload"
-              className="ml-6"
+              className="ml-[3.5rem] mt-10 w-[7rem] "
               onClick={handleUploadImageClick}
             />
             {isFileOptionVisible && (
@@ -158,10 +199,10 @@ const handleUploadImageMouseLeave = () => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <h4 className="text-white">Choose your file</h4>
+                <h4 className="text-white ">Choose your file</h4>
               </div>
             )}
-            <h4 className="text-[#939393] ml-[55px]">Upload your logo</h4>
+            <h4 className="text-[#939393] ml-[60px] text-[15px]">Upload your logo</h4>
           </label>
         ) : (
           <label
