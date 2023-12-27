@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import upload  from "../../../utils/png/upload.png";
-import { API, Storage } from "aws-amplify";
+import { API } from "aws-amplify";
 
 function Company({clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo}) {
   // const [companyName, setCompanyName] = useState("");
