@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 
-function Subscription() {
-  const [subscriptions, setSubscriptions] = useState([
-    {
-      heading: '',
-      description: '',
-      priceAndBilling: '',
-    },
-    {
-      heading: '',
-      description: '',
-      priceAndBilling: '',
-    },
-    {
-      heading: '',
-      description: '',
-      priceAndBilling: '',
-    },
-  ]);
+function Subscription({ subscriptions, setSubscriptions }) {
+  // const [subscriptions, setSubscriptions] = useState([
+  //   {
+  //     heading: '',
+  //     description: '',
+  //     priceAndBilling: '',
+  //   },
+  //   {
+  //     heading: '',
+  //     description: '',
+  //     priceAndBilling: '',
+  //   },
+  //   {
+  //     heading: '',
+  //     description: '',
+  //     priceAndBilling: '',
+  //   },
+  // ]);
 
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
 

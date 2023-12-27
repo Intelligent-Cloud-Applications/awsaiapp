@@ -34,7 +34,7 @@ Amplify.configure({
   },
   Storage: {
     region: "us-east-1",
-    bucket: "beta-instructors",
+    bucket: "userprofilepict",
     identityPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"

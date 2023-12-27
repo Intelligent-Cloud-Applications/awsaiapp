@@ -3,7 +3,7 @@ import React from 'react';
 import './Footer.css';
 
 
-function Footer({ currentSection, nextSection, prevSection, submitSections,saveData,handleFormSubmit }) {
+function Footer({ currentSection, nextSection, prevSection, submitSections,saveData }) {
  
   const sections = [
     'COMPANY INFO',
@@ -21,9 +21,7 @@ function Footer({ currentSection, nextSection, prevSection, submitSections,saveD
 
   const handleNextClick = () => {
     saveData();
-    handleFormSubmit() 
-    submitSections();
-   
+    nextSection();
   };
 
   const handlePrevClick = () => {

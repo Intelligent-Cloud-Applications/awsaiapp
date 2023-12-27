@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-function Services() {
-  const [services, setServices] = useState([
-    { title: '', description: '' },
-    { title: '', description: '' },
-    { title: '', description: '' },
-  ]);
+function Services({ services, setServices }) {
+  // const [services, setServices] = useState([
+  //   { title: '', description: '' },
+  //   { title: '', description: '' },
+  //   { title: '', description: '' },
+  // ]);
 
   const handleServiceChange = (index, e) => {
     const updatedServices = [...services];

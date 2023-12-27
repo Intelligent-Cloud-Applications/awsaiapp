@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 
-function Instructors() {
-  const [instructors, setInstructors] = useState([
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-  ]);
+function Instructors({ instructors, setInstructors}) {
+  // const [instructors, setInstructors] = useState([
+  //   { imgSrc: '', name: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', uploadedFile: null },
+  // ]);
   
 
   const instructorsContainerRef = useRef(null);

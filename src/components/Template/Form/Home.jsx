@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
-
-function Home() {
-  const [TaglineName, setTaglineName] = useState("");
+function Home({ tagline, setTagline, video, setVideo }) {
+  // const [TaglineName, setTaglineName] = useState("");
   const [isTaglineInputVisible, setTaglineInputVisible] = useState(false);
   const [TaglineLineColor, setTaglineLineColor] = useState("#939393");
 
   const handleTaglineInputChange = (e) => {
-    setTaglineName(e.target.value);
+    setTagline(e.target.value);
   };
 
   const toggleTaglineInputVisibility = () => {
@@ -22,6 +21,7 @@ function Home() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setVideo(file);
     setSelectedMedia(URL.createObjectURL(file));
 
     // Determine the type of media selected (image or video)
@@ -47,6 +47,7 @@ function Home() {
       setFileOptionVisible(false);
     }
   };
+  
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">HOME SECTION</h1>
@@ -63,14 +64,14 @@ function Home() {
           {isTaglineInputVisible ? (
             <input
               type="text"
-              value={TaglineName}
+              value={tagline}
               onChange={handleTaglineInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent "
               placeholder="Enter Short Description Tagline "
               autoFocus
             />
           ) : (
-            <span>{TaglineName || "Short Description Tagline "}</span>
+            <span>{tagline || "Short Description Tagline "}</span>
           )}
         </h5>
         <div
