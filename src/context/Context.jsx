@@ -4,7 +4,7 @@ const Context = createContext({
   isAuth: "",
   setIsAuth: () => {},
   userData: "",
-  setUserData: () => { },
+  setUserData: () => {},
   isUserDataLoaded: false,
   setIsUserDataLoaded: () => {},
   util: {
@@ -14,15 +14,17 @@ const Context = createContext({
   clients: {
     data: {},
     fetchClients: () => {},
-    onReload:() => {},
+    onReload: () => {},
   },
+  products: [],
+  fetchProducts: () => {},
   // member: {
   //   data: [],
   //   fetchMember: () => {},
   // },
-  user: { 
+  user: {
     profile: {},
-    fetchUserProfile: () => { },
+    fetchUserProfile: () => {},
   },
 });
 
