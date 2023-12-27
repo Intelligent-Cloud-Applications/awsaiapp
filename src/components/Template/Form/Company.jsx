@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import upload  from "../../../utils/png/upload.png";
 import { API } from "aws-amplify";
-import AvatarEditor from "react-avatar-editor";
+// import AvatarEditor from "react-avatar-editor";
 
 function Company({clients}) {
   const [companyName, setCompanyName] = useState("");
@@ -17,6 +17,7 @@ function Company({clients}) {
     setLogoSrc(logoUrl);
   }, [logoUrl]);
 
+    // eslint-disable-next-line
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,8 +26,7 @@ function Company({clients}) {
       alert('Please fill in all fields and upload a file.');
       return;
     }
-
-   
+    
 
     try {
       // Perform the API call using API.post or API.put based on your API endpoint and method
@@ -111,7 +111,7 @@ const handleUploadImageMouseEnter = () => {
 const handleUploadImageMouseLeave = () => {
   setFileOptionVisible(false);
 };
-
+  // eslint-disable-next-line
 const handleHeroUpload = async (tagline, file) => {
   try {
     // Upload the file to S3 with the filename as Cognito User ID
@@ -161,7 +161,7 @@ const handleLogoUpload = async (file) => {
         {/* {clients.map((client, index) => (
           <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
         ))} */}
-        <img src={logoSrc} />
+        <img src={logoSrc} alt="" />
       </h5>
 
       <div className="relative mt-6">

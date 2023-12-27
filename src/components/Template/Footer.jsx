@@ -1,4 +1,3 @@
-
 import React from 'react';
 import './Footer.css';
 
@@ -26,6 +25,7 @@ function Footer({ currentSection, nextSection, prevSection, submitSections,saveD
    
   };
 
+    // eslint-disable-next-line
   const handlePrevClick = () => {
     saveData(); 
     nextSection();

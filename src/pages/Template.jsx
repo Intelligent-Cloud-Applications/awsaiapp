@@ -18,10 +18,16 @@
   const Template = () => {
     const [currentSection, setCurrentSection] = useState(0);
     const [savedData, setsavedData] = useState();
+    console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
     const [Companydata, setCompanydata] = useState([]);
     const [loader, setLoader] = useState(false);
+    console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
     const [error, setError] = useState(null);
+    console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
+    console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
     const [logo, setLogo] = useState(null);
+    console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
+    console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
 
     
 
