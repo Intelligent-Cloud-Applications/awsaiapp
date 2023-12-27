@@ -21,6 +21,9 @@
     const [Companydata, setCompanydata] = useState([]);
     const [loader, setLoader] = useState(false);
     const [error, setError] = useState(null);
+    const [logo, setLogo] = useState(null);
+
+    
 
     const fetchClients = async (institution) => {
       try {

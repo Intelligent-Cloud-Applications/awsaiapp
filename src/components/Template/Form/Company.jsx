@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import upload  from "../../../utils/png/upload.png";
 import { API } from "aws-amplify";
+import AvatarEditor from "react-avatar-editor";
+
 function Company({clients}) {
   const [companyName, setCompanyName] = useState("");
   const [domainName, setDomainName] = useState("");
@@ -8,6 +10,12 @@ function Company({clients}) {
   const [isDomainInputVisible, setDomainInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoSrc, setLogoSrc] = useState("");
+
+  useEffect(() => {
+    setLogoSrc(logoUrl);
+  }, [logoUrl]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -87,7 +95,9 @@ const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
-  setSelectedFile(URL.createObjectURL(file));
+  const url = handleLogoUpload(file);
+  setSelectedFile(url);
+  // setSelectedFile(URL.createObjectURL(file));
 };
 
 const handleUploadImageClick = () => {
@@ -101,6 +111,47 @@ const handleUploadImageMouseEnter = () => {
 const handleUploadImageMouseLeave = () => {
   setFileOptionVisible(false);
 };
+
+const handleHeroUpload = async (tagline, file) => {
+  try {
+    // Upload the file to S3 with the filename as Cognito User ID
+    const response = await Storage.put(`awsaiapp/${file.name}`, file);
+
+    // Get the URL of the uploaded file
+    let videoUrl = await Storage.get(response.key);
+    videoUrl = videoUrl.split("?")[0];
+
+    await API.put("clients", "/user/development-form/hero-page", {
+      body: {
+        institution: "awsaiapp",
+        tagline,
+        videoUrl,
+      },
+    });
+    
+    console.log("video: ", videoUrl);
+  } catch (error) {
+    console.error("Error uploading video: ", error);
+  }
+};
+
+const handleLogoUpload = async (file) => {
+  let imageUrl = null;
+  try {
+    // Upload the file to S3 with the filename as Cognito User ID
+    const response = await Storage.put(`awsaiapp/${file.name}`, file);
+
+    // Get the URL of the uploaded file
+    imageUrl = await Storage.get(response.key);
+    imageUrl = imageUrl.split("?")[0];
+    
+    console.log("logo: ", imageUrl);
+  } catch (error) {
+    console.error("Error uploading logo: ", error);
+  }
+  setLogoUrl(imageUrl);
+};
+
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
@@ -110,6 +161,7 @@ const handleUploadImageMouseLeave = () => {
         {/* {clients.map((client, index) => (
           <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
         ))} */}
+        <img src={logoSrc} />
       </h5>
 
       <div className="relative mt-6">
