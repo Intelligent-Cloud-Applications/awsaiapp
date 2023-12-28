@@ -1,9 +1,10 @@
 import React from 'react';
 import './Footer.css';
+import { useNavigate } from 'react-router-dom';
+import { API } from 'aws-amplify';
 
-
-function Footer({ currentSection, nextSection, prevSection, submitSections,saveData,handleFormSubmit }) {
- 
+function Footer({ currentSection, nextSection, prevSection, saveData }) {
+  const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
     'HOME',
@@ -20,17 +21,24 @@ function Footer({ currentSection, nextSection, prevSection, submitSections,saveD
 
   const handleNextClick = () => {
     saveData();
-    handleFormSubmit() 
-    submitSections();
-   
+    nextSection();
   };
 
-    // eslint-disable-next-line
+  // eslint-disable-next-line
   const handlePrevClick = () => {
-    saveData(); 
+    saveData();
     nextSection();
-   
+
   };
+  const submitSections = async () => {
+    nextSection();
+    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
+      body: {
+        submissiontime: new Date().getTime(),
+      },
+    });
+    Navigate("/pay");
+  }
 
   return (
     <div className='footer-wrapper relative'>
@@ -40,25 +48,24 @@ function Footer({ currentSection, nextSection, prevSection, submitSections,saveD
           {sections.map((section, index) => (
             <div
               key={index}
-              className={`text-xs relative ${
-                index < currentSection ? 'text-black' : 'text-gray-400'
-              }`}
-              style={{ marginTop: '1.5rem' }} 
+              className={`text-xs relative ${index < currentSection ? 'text-black' : 'text-gray-400'
+                }`}
+              style={{ marginTop: '1.5rem' }}
             >
               {section}
             </div>
           ))}
         </div>
-        
+
         <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[50%] h-[3px] z-40 max1250:hidden'>
           <div
             className='h-full bg-black rounded-lg'
             style={{
-              width: `${progress || 1}%`, 
+              width: `${progress || 1}%`,
             }}
           />
         </div>
-       
+
         <div className='absolute right-4 bottom-4 flex gap-[19rem] max950:gap-[32rem] max767:gap-36 max406:gap-[2rem] '>
           {currentSection > 0 && (
             <button onClick={prevSection} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
