@@ -182,7 +182,7 @@
             des_2: services[1].description,
             services_title_3: services[2].title,
             des_3: services[2].description,
-            dance_type: services[0].dance_type,
+            // dance_type: services[0].dance_type,
           },
         });
       } catch (error) {
@@ -267,10 +267,10 @@
             Des_Faq_2: faqs[1].answer,
             Faq_3: faqs[2].question,
             Des_Faq_3: faqs[2].answer,
-            Faq_4: faqs[3].question,
-            Des_Faq_4: faqs[3].answer,
-            Faq_5: faqs[4].question,
-            Des_Faq_5: faqs[4].answer,
+            Faq_4: faqs[3]?.question,
+            Des_Faq_4: faqs[3]?.answer,
+            Faq_5: faqs[4]?.question,
+            Des_Faq_5: faqs[4]?.answer,
           },
         });
       } catch (error) {
@@ -366,7 +366,9 @@
 
     const handleContactUpload = async () => {
       try {
-        await API.put("clients", "/user/development-form/contact", {
+        console.log("LOG +++++ " + contactInfo.address);
+
+        await API.put("clients", "/user/development-form/contact/awsaiapp", {
           body: {
             institution: "awsaiapp",
             Address: contactInfo.address,
@@ -409,6 +411,7 @@
     const handleNextSection = () => {
       setCurrentSection((prevSection) => {
         const nextSection = Math.min(prevSection + 1, 8);
+        console.log(currentSection);
 
         switch (currentSection) {
           case 0:

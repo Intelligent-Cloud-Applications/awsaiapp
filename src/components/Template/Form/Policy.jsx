@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-function Policy() {
-  const [policies, setPolicies] = useState([
-    { title: 'Privacy Policy', content: '' },
-    { title: 'Terms and Conditions', content: '' },
-    { title: 'Cancellation/Refund Policy', content: '' },
-    { title: 'About Us', content: '' },
-  ]);
+function Policy({ policies, setPolicies }) {
+  // const [policies, setPolicies] = useState([
+  //   { title: 'Privacy Policy', content: '' },
+  //   { title: 'Terms and Conditions', content: '' },
+  //   { title: 'Cancellation/Refund Policy', content: '' },
+  //   { title: 'About Us', content: '' },
+  // ]);
 
   const handlePolicyChange = (index, e) => {
     const updatedPolicies = [...policies];
