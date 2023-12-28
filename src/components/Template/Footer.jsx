@@ -1,6 +1,7 @@
 import React from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
+import { API } from 'aws-amplify';
 
 function Footer({ currentSection, nextSection, prevSection,saveData }) {
   const Navigate = useNavigate();
@@ -29,7 +30,12 @@ function Footer({ currentSection, nextSection, prevSection,saveData }) {
     nextSection();
    
   };
-  const submitSections= () =>{
+  const submitSections= async () =>{
+    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
+      body: {
+        submissiontime: new Date().getTime(),
+      },
+    });
     Navigate("/pay");
   }
 
