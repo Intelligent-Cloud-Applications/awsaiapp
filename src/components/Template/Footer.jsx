@@ -31,6 +31,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
 
   };
   const submitSections = async () => {
+    nextSection();
     await API.put("clients", "/user/development-form/put-time/awsaiapp", {
       body: {
         submissiontime: new Date().getTime(),

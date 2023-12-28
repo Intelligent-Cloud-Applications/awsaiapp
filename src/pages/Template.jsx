@@ -97,6 +97,7 @@
       { imgSrc: '', name: '', uploadedFile: null },
       { imgSrc: '', name: '', uploadedFile: null },
       { imgSrc: '', name: '', uploadedFile: null },
+      { imgSrc: '', name: '', uploadedFile: null },
     ]);
 
     const [policies, setPolicies] = useState([
@@ -181,6 +182,7 @@
             des_2: services[1].description,
             services_title_3: services[2].title,
             des_3: services[2].description,
+            // dance_type: services[0].dance_type,
           },
         });
       } catch (error) {
@@ -190,15 +192,42 @@
 
     const handleTestimonialsUpload = async () => {
       try {
+        const response1 = await Storage.put(`awsaiapp/${testimonials[0].uploadedFile.name}`, testimonials[0].uploadedFile, {
+          contentType: testimonials[0].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let imageUrl1 = await Storage.get(response1.key);
+        imageUrl1 = imageUrl1.split("?")[0];
+
+        const response2 = await Storage.put(`awsaiapp/${testimonials[1].uploadedFile.name}`, testimonials[1].uploadedFile, {
+          contentType: testimonials[1].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let imageUrl2 = await Storage.get(response2.key);
+        imageUrl2 = imageUrl2.split("?")[0];
+
+        const response3 = await Storage.put(`awsaiapp/${testimonials[2].uploadedFile.name}`, testimonials[2].uploadedFile, {
+          contentType: testimonials[2].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let imageUrl3 = await Storage.get(response3.key);
+        imageUrl3 = imageUrl3.split("?")[0];
+
         await API.put("clients", "/user/development-form/testimonial", {
           body: {
             institution: "awsaiapp",
             Testi_1: testimonials[0].name,
             Des_Testi_1: testimonials[0].feedback,
+            Img_Testi_1: imageUrl1,
             Testi_2: testimonials[1].name,
             Des_Testi_2: testimonials[1].feedback,
+            Img_Testi_2: imageUrl2,
             Testi_3: testimonials[2].name,
             Des_Testi_3: testimonials[2].feedback,
+            Img_Testi_3: imageUrl3,
           },
         });
       } catch (error) {
@@ -213,10 +242,13 @@
             institution: "awsaiapp",
             Sub_title_1: subscriptions[0].heading,
             Sub_Des_1: subscriptions[0].description,
+            Sub_Price_1: subscriptions[0].priceAndBilling,
             Sub_title_2: subscriptions[1].heading,
             Sub_Des_2: subscriptions[1].description,
+            Sub_Price_2: subscriptions[1].priceAndBilling,
             Sub_title_3: subscriptions[2].heading,
             Sub_Des_3: subscriptions[2].description,
+            Sub_Price_3: subscriptions[2].priceAndBilling,
           },
         });
       } catch (error) {
@@ -235,10 +267,10 @@
             Des_Faq_2: faqs[1].answer,
             Faq_3: faqs[2].question,
             Des_Faq_3: faqs[2].answer,
-            Faq_4: faqs[3].question,
-            Des_Faq_4: faqs[3].answer,
-            Faq_5: faqs[4].question,
-            Des_Faq_5: faqs[4].answer,
+            Faq_4: faqs[3]?.question,
+            Des_Faq_4: faqs[3]?.answer,
+            Faq_5: faqs[4]?.question,
+            Des_Faq_5: faqs[4]?.answer,
           },
         });
       } catch (error) {
@@ -248,10 +280,67 @@
 
     const handleInstructorsUpload = async () => {
       try {
+        const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile.name}`, instructors[0].uploadedFile, {
+          contentType: instructors[0].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let inst_pic_1 = await Storage.get(response1.key);
+        inst_pic_1 = inst_pic_1.split("?")[0];
+
+        const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile.name}`, instructors[1].uploadedFile, {
+          contentType: instructors[1].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let inst_pic_2 = await Storage.get(response2.key);
+        inst_pic_2 = inst_pic_2.split("?")[0];
+
+        const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile.name}`, instructors[2].uploadedFile, {
+          contentType: instructors[2].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let inst_pic_3 = await Storage.get(response3.key);
+        inst_pic_3 = inst_pic_3.split("?")[0];
+
+        const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile.name}`, instructors[3].uploadedFile, {
+          contentType: instructors[3].uploadedFile.type,
+        });
+
+        // Get the URL of the uploaded file
+        let inst_pic_4 = await Storage.get(response4.key);
+        inst_pic_4 = inst_pic_4.split("?")[0];
+
+        let inst_pic_5 = null;
+        if (instructors[4].uploadedFile) {
+          const response5 = await Storage.put(`awsaiapp/${instructors[4].uploadedFile.name}`, instructors[4].uploadedFile, {
+            contentType: instructors[4].uploadedFile.type,
+          });
+
+          // Get the URL of the uploaded file
+          let inst_pic_5 = await Storage.get(response5.key);
+          inst_pic_5 = inst_pic_5.split("?")[0];
+        }
+
         await API.put("clients", "/user/development-form/instructors", {
           body: {
             institution: "awsaiapp",
-            instructors,
+            instructor_1: instructors[0].name,
+            inst_position_1: instructors[0].position,
+            inst_pic_1,
+            instructor_2: instructors[1].name,
+            inst_position_2: instructors[1].position,
+            inst_pic_2,
+            instructor_3: instructors[2].name,
+            inst_position_3: instructors[2].position,
+            inst_pic_3,
+            instructor_4: instructors[3].name,
+            inst_position_4: instructors[3].position,
+            inst_pic_4,
+            instructor_5: instructors[4].name,
+            inst_position_5: instructors[4].position,
+            inst_pic_5,
           },
         });
       } catch (error) {
@@ -277,7 +366,9 @@
 
     const handleContactUpload = async () => {
       try {
-        await API.put("clients", "/user/development-form/contact", {
+        console.log("LOG +++++ " + contactInfo.address);
+
+        await API.put("clients", "/user/development-form/contact/awsaiapp", {
           body: {
             institution: "awsaiapp",
             Address: contactInfo.address,
@@ -320,6 +411,7 @@
     const handleNextSection = () => {
       setCurrentSection((prevSection) => {
         const nextSection = Math.min(prevSection + 1, 8);
+        console.log(currentSection);
 
         switch (currentSection) {
           case 0:

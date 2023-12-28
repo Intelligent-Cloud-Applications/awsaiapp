@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 
-function Services() {
-  const [services, setServices] = useState([
-    { title: '', description: '' },
-    { title: '', description: '' },
-    { title: '', description: '' },
-  ]);
+function Services({ services, setServices }) {
+  // const [services, setServices] = useState([
+  //   { title: '', description: '' },
+  //   { title: '', description: '' },
+  //   { title: '', description: '' },
+  // ]);
 
   const handleServiceChange = (index, e) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
     setServices(updatedServices);
-  
-    // Notify the parent component (Template) about the change
-  };  
+  };
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
 
   const toggleActiveService = (index) => {
@@ -75,7 +73,7 @@ function Services() {
             <input
               type="text"
               name="danceType"
-              value={services.danceType} // Assuming it's stored in the first service object
+              value={services[0].danceType} // Assuming it's stored in the first service object
               onChange={(e) => handleServiceChange(0, e)} // Assuming dance type modifies the first service object
               placeholder="What type of dance do you teach(like zumba,odishi)"
               className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
@@ -94,4 +92,3 @@ function Services() {
 }
 
 export default Services;
-
