@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Services({ onServicesChange }) {
+function Services() {
   const [services, setServices] = useState([
     { title: '', description: '' },
     { title: '', description: '' },
@@ -13,7 +13,6 @@ function Services({ onServicesChange }) {
     setServices(updatedServices);
   
     // Notify the parent component (Template) about the change
-    onServicesChange(updatedServices);
   };  
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
 

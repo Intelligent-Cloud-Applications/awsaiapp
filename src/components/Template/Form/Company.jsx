@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useRef } from "react";
 import upload  from "../../../utils/png/upload.png";
 function Company() {
   const [companyName, setCompanyName] = useState("");
@@ -7,6 +7,7 @@ function Company() {
   const [isDomainInputVisible, setDomainInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const fileInputRef = useRef(null);
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
@@ -53,7 +54,11 @@ const handleFileChange = (event) => {
 };
 
 const handleUploadImageClick = () => {
-  document.getElementById("fileInput").click();
+  if (fileInputRef.current) {
+    fileInputRef.current.click();
+  } else {
+    console.error("File input element not found.");
+  }
 };
 
 const handleUploadImageMouseEnter = () => {
@@ -180,6 +185,7 @@ const handleUploadImageMouseLeave = () => {
               <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
                 <input
                   type="file"
+                  ref={fileInputRef}
                   id="fileInput"
                   className="hidden"
                   onChange={handleFileChange}
