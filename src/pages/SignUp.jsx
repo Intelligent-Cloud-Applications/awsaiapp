@@ -27,9 +27,6 @@ const SignUp = () => {
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   };
-  // const data = {
-  //   Otp_Msg: `An OTP has been sent to +${countryCode}${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
-  // };
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
   const Navigate = useNavigate();
@@ -130,7 +127,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
       console.log("post");
-      await API.post("clients", "/user/create-member", {
+      await API.post("clients", "/user/SignUp-members", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -138,20 +135,15 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "/user/SignUp-members");
+      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
-      // client dashboard
-      if (userdata.status === "Active") {
-        UtilCtx.setLoader(false);
-        Navigate("/dashboard");
-      }
       UtilCtx.setLoader(false);
-      Navigate("/subscription");
+      Navigate("/template");
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
@@ -169,7 +161,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(email, password);
       console.log("post");
-      await API.post("clients", "/user/create-member", {
+      await API.post("clients", "/user/SignUp-members", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -177,19 +169,13 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "/user/SignUp-members");
-      //Temporary
-      // userdata.Status = true;
+      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
-      if (userdata.status === "Active") {
-        UtilCtx.setLoader(false);
-        Navigate("/dashboard");
-      }
       UtilCtx.setLoader(false);
-      Navigate("/subscription");
+      Navigate("/template");
     } catch (error) {
       UtilCtx.setLoader(false);
       console.log("Error:", error.message);
@@ -245,7 +231,7 @@ const SignUp = () => {
         );
         // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
         await Auth.signIn(email, password);
-        await API.post("clients", "/user/create-member", {
+        await API.post("clients", "/user/SignUp-members", {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
@@ -253,17 +239,14 @@ const SignUp = () => {
             country: country,
           },
         });
-        const userdata = await API.get("clients", "/user/SignUp-members");
+        const userdata = await API.get("clients", "/user/list-members/awsaiapp");
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
         alert("Signed Up");
-        if (userdata.status === "Active") {
-          Navigate("/dashboard");
-        }
-        Navigate("/subscription");
+        Navigate("/template");
       } else {
         UtilCtx.setLoader(false);
       }

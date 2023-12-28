@@ -10,7 +10,6 @@ import Instructors1 from './Preview/Instructors1';
 import Terms1 from './Preview/Terms1';
 
 const Preview = ({ currentSection, logo, setLogo }) => {
-  const navbarRef = useRef(null);
   const home1Ref = useRef(null);
   const testimonial1Ref = useRef(null);
   const subscription1Ref = useRef(null);
@@ -18,11 +17,6 @@ const Preview = ({ currentSection, logo, setLogo }) => {
   const home2Ref = useRef(null);
 
   useEffect(() => {
-
-    // Scroll to Navbar1 when currentSection is 0
-    if (currentSection === 0 && navbarRef.current) {
-      navbarRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
 
     // Scroll to Home1 when currentSection is 1
     if (currentSection === 1 && home1Ref.current) {
@@ -52,7 +46,7 @@ const Preview = ({ currentSection, logo, setLogo }) => {
 
   return (
     <div className='h-[100%] pb-[29%]'>
-      <div ref={navbarRef}><Navbar1 logo={logo} setLogo={setLogo} /></div>
+      <Navbar1 logo={logo} setLogo={setLogo} />
       {(currentSection === 0 || currentSection === 1 || currentSection === 2 || currentSection === 3 || currentSection === 4 || currentSection === 5) && (
         <div className=" bg-[#30AFBC]">
           <div ref={home1Ref} ><Home1 /></div>
