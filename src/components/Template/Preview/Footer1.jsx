@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import logo from "../../../utils/Template/logo2.png";
+import logo1 from "../../../utils/Template/logo2.png";
 import facebook from "../../../utils/Template/FB.png";
 import instagram from "../../../utils/Template/INSTA.png";
 import { Link } from "react-router-dom";
 import './Footer.css';
 
-const Footer1 = ({ uploadedLogoUrl }) => { // Destructure props correctly
+const Footer1 = ({ logo, setLogo }) => { // Destructure props correctly
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -16,7 +16,19 @@ const Footer1 = ({ uploadedLogoUrl }) => { // Destructure props correctly
                 <div className="footerheight flex flex-col justify-between sm:flex-row h-[15rem] max600:flex-col max600:justify-center p-12 gap-6 max1358:justify-center w-[100%]">
                     <div className="mb-5">
                         <a href="/" className="transition duration-200 flex justify-center">
-                            <img className="w-[15rem]" src={uploadedLogoUrl || logo} alt="" />
+                            {logo ? (
+                                <img
+                                    className="w-[15rem] "
+                                    alt="you"
+                                    src={logo}
+                                />
+                            ) : (
+                                <img
+                                    className="w-[15rem]"
+                                    alt=""
+                                    src={logo1}
+                                />
+                            )}
                         </a>
                     </div>
 

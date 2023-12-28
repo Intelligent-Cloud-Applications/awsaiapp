@@ -58,7 +58,7 @@ const Preview = ({ currentSection, logo, setLogo, tagline, setTagline, video, se
       )}
       {currentSection === 6 && <Instructors1 />}
       {currentSection === 7 && <Terms1 />}
-      <Footer1 />
+      <Footer1 logo={logo} setLogo={setLogo}/>
     </div>
   );
 };
