@@ -101,8 +101,7 @@ const Timer = () => {
         </div>
         ) : (
           <p className="text-center">
-    We are making your website. Please wait. For any modification and for more
-    information, contact us.
+   Get ready for an enhanced online presence your website's transformation is underway! Need changes or more info? Reach out anytime!
   </p>
         )}
       </div>
