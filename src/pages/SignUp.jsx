@@ -127,7 +127,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
       console.log("post");
-      await API.post("clients", "/user/signup-members", {
+      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -135,7 +135,6 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "user/profile/awsaiapp");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
@@ -161,7 +160,7 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(email, password);
       console.log("post");
-      await API.post("clients", "/user/signup-members", {
+      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
@@ -169,7 +168,6 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "user/profile/awsaiapp");
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
@@ -231,15 +229,14 @@ const SignUp = () => {
         );
         // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
         await Auth.signIn(email, password);
-        await API.post("clients", "/user/signup-members", {
+        const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
-            phoneNumber: `${countryCode}${phoneNumber}`,
+            phoneNumber: phoneNumber,
             country: country,
           },
         });
-        const userdata = await API.get("clients", "user/profile/awsaiapp");
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);
