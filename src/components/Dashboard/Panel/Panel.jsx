@@ -308,7 +308,7 @@ const Panel = () => {
                   setEmail(e.target.value);
                 }}
               />
-              <input
+              {/* <input
                 required
                 placeholder="Phone Number"
                 className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
@@ -317,7 +317,7 @@ const Panel = () => {
                 onChange={(e) => {
                   setPhoneNumber(e.target.value);
                 }}
-              />
+              /> */}
               <input
                 required
                 placeholder="Country"
@@ -331,7 +331,7 @@ const Panel = () => {
               <input
                 required
                 placeholder="Joining date"
-                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-5 rounded-[6px] w-full focus:border-opacity-20  "
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                 type="date"
                 value={JoiningDate}
                 onChange={(e) => {
