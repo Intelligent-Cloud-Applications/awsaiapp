@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import upload  from "../../../utils/png/upload.png";
-function Company({ onLogoUpload }) {
+function Company() {
   const [companyName, setCompanyName] = useState("");
   const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -48,11 +48,9 @@ const [selectedFile, setSelectedFile] = useState(null);
 const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
 const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const logoUrl = URL.createObjectURL(file);
-    setSelectedFile(logoUrl);
-    onLogoUpload(logoUrl); // Call the provided callback to update the logo in Main component
-  };
+  const file = event.target.files[0];
+  setSelectedFile(URL.createObjectURL(file));
+};
 
 const handleUploadImageClick = () => {
   document.getElementById("fileInput").click();
@@ -68,7 +66,7 @@ const handleUploadImageMouseLeave = () => {
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
-      <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
+      <h5 class="w-[28rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating
         a tailored website experience.
       </h5>
