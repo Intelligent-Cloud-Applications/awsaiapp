@@ -1,52 +1,13 @@
-import React, { useState } from "react";
+import React, { useState ,useRef } from "react";
 import upload  from "../../../utils/png/upload.png";
-import { API } from "aws-amplify";
-
-function Company({clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo}) {
-  // const [companyName, setCompanyName] = useState("");
-  // const [domainName, setDomainName] = useState("");
+function Company() {
+  const [companyName, setCompanyName] = useState("");
+  const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
   const [isDomainInputVisible, setDomainInputVisible] = useState(false);
-  // const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  // const [domainLineColor, setDomainLineColor] = useState("#939393");
-  // const [logoUrl, setLogoUrl] = useState(null);
-
-    // eslint-disable-next-line
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate inputs as needed
-    if (!companyName || !domainName || !selectedColor1 || !selectedColor2 || !selectedFile) {
-      alert('Please fill in all fields and upload a file.');
-      return;
-    }
-    
-
-    try {
-      // Perform the API call using API.post or API.put based on your API endpoint and method
-      await API.post('/your-endpoint', {
-        body: {
-          companyName,
-          domainName,
-          selectedColor1,
-          selectedColor2,
-          selectedFile: selectedFile.name, // Assuming you need the filename in the request body
-          // Add other necessary data fields here
-        },
-      });
-
-      // Additional logic after successful API call, if needed
-      // ...
-
-      alert('Company profile updated successfully.');
-   
-    } catch (error) {
-      console.error('Error updating company profile:', error);
-      alert('Failed to update company profile. Please try again.');
-    
-    }
-  };
-
+  const [companyLineColor, setCompanyLineColor] = useState("#939393");
+  const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const fileInputRef = useRef(null);
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
@@ -89,15 +50,15 @@ const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
-  // const url = handleLogoUpload(file);
-  // setSelectedFile(url);
-  setLogo(file);
   setSelectedFile(URL.createObjectURL(file));
 };
 
 const handleUploadImageClick = () => {
-  document.getElementById("fileInput").click();
-
+  if (fileInputRef.current) {
+    fileInputRef.current.click();
+  } else {
+    console.error("File input element not found.");
+  }
 };
 
 const handleUploadImageMouseEnter = () => {
@@ -107,19 +68,12 @@ const handleUploadImageMouseEnter = () => {
 const handleUploadImageMouseLeave = () => {
   setFileOptionVisible(false);
 };
-
-
-
-
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
-      <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
+      <h5 class="w-[28rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating
         a tailored website experience.
-        {/* {clients.map((client, index) => (
-          <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
-        ))} */}
       </h5>
 
       <div className="relative mt-6">
@@ -198,7 +152,7 @@ const handleUploadImageMouseLeave = () => {
             <img
               src={upload}
               alt="Upload"
-              className="ml-[3.5rem] mt-10 w-[7rem] "
+              className="ml-6"
               onClick={handleUploadImageClick}
             />
             {isFileOptionVisible && (
@@ -209,10 +163,10 @@ const handleUploadImageMouseLeave = () => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <h4 className="text-white ">Choose your file</h4>
+                <h4 className="text-white">Choose your file</h4>
               </div>
             )}
-            <h4 className="text-[#939393] ml-[60px] text-[15px]">Upload your logo</h4>
+            <h4 className="text-[#939393] ml-[55px]">Upload your logo</h4>
           </label>
         ) : (
           <label
@@ -231,6 +185,7 @@ const handleUploadImageMouseLeave = () => {
               <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
                 <input
                   type="file"
+                  ref={fileInputRef}
                   id="fileInput"
                   className="hidden"
                   onChange={handleFileChange}

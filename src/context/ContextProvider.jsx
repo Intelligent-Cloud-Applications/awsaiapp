@@ -6,7 +6,7 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [products, setProducts] = useState([]);
+  // const [member, setMember] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
@@ -16,27 +16,14 @@ const ContextProvider = (props) => {
   useEffect(() => {
     fetchClients();
     fetchUserProfile();
-    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setLoader(true);
-      const response = await API.get("clients", "/any/list-products");
-      setProducts(response);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
 
   const fetchClients = async (institution) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-institution");
-      console.log(response);
+      console.log(response)
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -49,10 +36,10 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       let response;
-      if (institution !== "awsaiapp") {
-        response = await API.get("clients", `/self/read-self/${institution}`);
+      if (institution !== 'awsaiapp') {
+        response = await API.get('clients', `/self/read-self/${institution}`);
       } else {
-        response = await API.get("clients", "/self/read-self/awsaiapp");
+        response = await API.get('clients', '/self/read-self/awsaiapp');
       }
       setUserProfile(response);
     } catch (error) {
@@ -61,7 +48,7 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-
+  
   const setLoaderFn = (data) => {
     setLoader(data);
   };
@@ -89,8 +76,6 @@ const ContextProvider = (props) => {
       fetchClients: fetchClients,
       onReload: fetchClients,
     },
-    products: products,
-    fetchProducts: () => {},
     // member: {
     //   data: member,
     //   fetchMember: fetchMember,

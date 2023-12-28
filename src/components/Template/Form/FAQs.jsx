@@ -1,20 +1,20 @@
 import React, { useState, useRef } from 'react';
 
-function FAQs({ faqs, setFaqs }) {
-  // const [faqs, setFaqs] = useState([
-  //   {
-  //     question: '',
-  //     answer: '',
-  //   },
-  //   {
-  //     question: '',
-  //     answer: '',
-  //   },
-  //   {
-  //     question: '',
-  //     answer: '',
-  //   },
-  // ]);
+function FAQs() {
+  const [faqs, setFaqs] = useState([
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+  ]);
 
   const [activeFAQIndex, setActiveFAQIndex] = useState(null);
 

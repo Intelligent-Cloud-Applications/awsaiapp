@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
-function Contact({ contactInfo, setContactInfo }) {
-  // const [contactInfo, setContactInfo] = useState({
-  //   address: '',
-  //   phoneNumber: '',
-  //   email: '',
-  //   upiId: '',
-  //   instagram: '',
-  //   youtube: '',
-  //   facebook: '',
-  // });
+function Contact() {
+  const [contactInfo, setContactInfo] = useState({
+    address: '',
+    phoneNumber: '',
+    email: '',
+    upiId: '',
+    instagram: '',
+    youtube: '',
+    facebook: '',
+  });
 
   const handleContactChange = (e) => {
     const { name, value } = e.target;

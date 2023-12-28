@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 
-function Services({ services, setServices }) {
-  // const [services, setServices] = useState([
-  //   { title: '', description: '' },
-  //   { title: '', description: '' },
-  //   { title: '', description: '' },
-  // ]);
+function Services() {
+  const [services, setServices] = useState([
+    { title: '', description: '' },
+    { title: '', description: '' },
+    { title: '', description: '' },
+  ]);
 
   const handleServiceChange = (index, e) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
     setServices(updatedServices);
-  };
+  
+    // Notify the parent component (Template) about the change
+  };  
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
 
   const toggleActiveService = (index) => {

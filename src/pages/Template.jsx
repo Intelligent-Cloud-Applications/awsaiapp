@@ -23,6 +23,8 @@
     const [loader, setLoader] = useState(false);
     console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
     const [error, setError] = useState(null);
+    const [logo, setLogo] = useState(null);
+
     // const [logo, setLogo] = useState(null);
 
     const [companyName, setCompanyName] = useState(null);
@@ -31,7 +33,6 @@
     const [domainLineColor, setDomainLineColor] = useState("#939393");
     console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
     console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
-    const [logo, setLogo] = useState(null);
     console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
     console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
 
@@ -123,14 +124,14 @@
         const response = await Storage.put(`awsaiapp/${logo.name}`, logo, {
           contentType: logo.type,
         });
-
+  
         // Get the URL of the uploaded file
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
-        
+        setLogo(imageUrl);
         console.log("logo: ", imageUrl);
-
-        API.put("clients", "/user/development-form/company", {
+  
+        await API.put("clients", "/user/development-form/company", {
           body: {
             institution: "awsaiapp",
             companyName,
@@ -144,7 +145,7 @@
         console.error("Error uploading logo: ", error);
       }
     };
-
+  
     const handleHomeUpload = async () => {
       try {
         // Upload the file to S3 with the filename as Cognito User ID
@@ -454,13 +455,15 @@
     const handlePrevSection = () => {
       setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
     };
-
+    console.log("Logo in Template:", logo);
     return (
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
         <div className="flex-grow flex">
           <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-            <Preview currentSection={currentSection} />
+            <Preview currentSection={currentSection} 
+            logo={logo}
+            setLogo={setLogo}/>
           </div>
           <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
             {currentSection === 0 && 

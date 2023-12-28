@@ -138,7 +138,7 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
+      const userdata = await API.get("clients", "/user/SignUp-members");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
@@ -177,7 +177,7 @@ const SignUp = () => {
           country: country,
         },
       });
-      const userdata = await API.get("clients", "/user/list-members/awsaiapp");
+      const userdata = await API.get("clients", "/user/SignUp-members");
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
@@ -253,7 +253,7 @@ const SignUp = () => {
             country: country,
           },
         });
-        const userdata = await API.get("clients", "/user/list-members/awsaiapp");
+        const userdata = await API.get("clients", "/user/SignUp-members");
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);

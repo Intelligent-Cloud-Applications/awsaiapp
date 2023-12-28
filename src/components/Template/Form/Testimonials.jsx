@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
 
-function Testimonials({ testimonials, setTestimonials }) {
-  // const [testimonials, setTestimonials] = useState([
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-  // ]);
+function Testimonials() {
+  const [testimonials, setTestimonials] = useState([
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+  ]);
 
   const testimonialsContainerRef = useRef(null);
 

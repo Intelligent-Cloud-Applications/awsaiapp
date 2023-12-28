@@ -1,5 +1,4 @@
-// Preview.js
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import Navbar1 from './Preview/Navbar1';
 import Home1 from './Preview/Home1';
 import Home2 from './Preview/Home2';
@@ -10,24 +9,62 @@ import Footer1 from './Preview/Footer1';
 import Instructors1 from './Preview/Instructors1';
 import Terms1 from './Preview/Terms1';
 
-const Preview = ({ currentSection }) => {
+const Preview = ({ currentSection, logo, setLogo }) => {
+  const navbarRef = useRef(null);
+  const home1Ref = useRef(null);
+  const testimonial1Ref = useRef(null);
+  const subscription1Ref = useRef(null);
+  const faq1Ref = useRef(null);
+  const home2Ref = useRef(null);
+
+  useEffect(() => {
+
+    // Scroll to Navbar1 when currentSection is 0
+    if (currentSection === 0 && navbarRef.current) {
+      navbarRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Scroll to Home1 when currentSection is 1
+    if (currentSection === 1 && home1Ref.current) {
+      home1Ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Scroll to Home2 when currentSection is 2
+    if (currentSection === 2 && home2Ref.current) {
+      home2Ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Scroll to Testimonial1 when currentSection is 3
+    if (currentSection === 3 && testimonial1Ref.current) {
+      testimonial1Ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Scroll to Subscription1 when currentSection is 4
+    if (currentSection === 4 && subscription1Ref.current) {
+      subscription1Ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Scroll to FAQ1 when currentSection is 5
+    if (currentSection === 5 && faq1Ref.current) {
+      faq1Ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+  }, [currentSection, logo]);
 
   return (
     <div className='h-[100%] pb-[29%]'>
-      <Navbar1 />
-      {(currentSection === 0 ||
-        currentSection === 1 ||
-        currentSection === 2) &&
+      <div ref={navbarRef}><Navbar1 logo={logo} setLogo={setLogo} /></div>
+      {(currentSection === 0 || currentSection === 1 || currentSection === 2 || currentSection === 3 || currentSection === 4 || currentSection === 5) && (
         <div className=" bg-[#30AFBC]">
-          <Home1 />
-          <Home2 />
-        </div>}
-      {currentSection === 3 && <Testimonial1 />}
-      {currentSection === 4 && <Subscription1 />}
-      {currentSection === 5 && <FAQ1 />}
+          <div ref={home1Ref} ><Home1 /></div>
+          <div ref={home2Ref}><Home2 /></div>
+          <div ref={testimonial1Ref}><Testimonial1 /></div>
+          <div ref={subscription1Ref}><Subscription1 /></div>
+          <div ref={faq1Ref}><FAQ1 /></div>
+        </div>
+      )}
       {currentSection === 6 && <Instructors1 />}
       {currentSection === 7 && <Terms1 />}
-      <Footer1 />
+      <Footer1 logo={logo} />
     </div>
   );
 };

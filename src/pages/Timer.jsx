@@ -14,7 +14,7 @@ const Timer = () => {
       try {
         const res = await API.get(
           "clients",
-          "/user/development-form/get-time/awsaiapp"
+          "/user/Development-form/Get-time/awsaiapp"
         );
         setSubmissionTime(res.submissiontime);
       } catch (e) {
@@ -88,7 +88,7 @@ const Timer = () => {
                   <p style={{ fontSize: "3em" }}>
                     🎉 Congratulations! Your website is completed. 🎉
                   </p>
-                  <p>We have sent the Website Details to your registered email ID.</p>
+                  <p>We have sent the domain name to your registered email ID.</p>
                 
                 </td>
               </tr>
