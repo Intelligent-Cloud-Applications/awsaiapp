@@ -6,6 +6,7 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
+  const [pending, setPending] = useState({});
   // const [member, setMember] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
@@ -16,9 +17,23 @@ const ContextProvider = (props) => {
   useEffect(() => {
     fetchClients();
     fetchUserProfile();
+    fetchPending();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+ const fetchPending = async (institution) => {
+    try {
+      console.log("Hello")
+      setLoader(true);
+      const response = await API.get("clients", "/admin/list-pending_clients");
+      console.log("Here is the :::",response)
+      setPending(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+      setLoader(false);
+    };
+  };
   const fetchClients = async (institution) => {
     try {
       setLoader(true);
@@ -75,6 +90,11 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
       onReload: fetchClients,
+    },
+    pending: {
+      data: pending,
+      fetchPending: fetchPending,
+      onReload: fetchPending,
     },
     // member: {
     //   data: member,

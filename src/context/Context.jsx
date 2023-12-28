@@ -16,6 +16,11 @@ const Context = createContext({
     fetchClients: () => {},
     onReload:() => {},
   },
+  pending: {
+    data: {},
+    fetchPending: () => {},
+    onReload:() => {},
+  },
   // member: {
   //   data: [],
   //   fetchMember: () => {},
