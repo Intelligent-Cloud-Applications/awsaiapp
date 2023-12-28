@@ -418,7 +418,7 @@ const MemberList = ({ institution: tempInstitution }) => {
 
           {/* form of creating new members */}
           {isUserAdd && (
-            <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+            <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
               <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
                 <input
                   required
