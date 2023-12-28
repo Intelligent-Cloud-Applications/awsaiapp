@@ -1,9 +1,9 @@
 import React from 'react';
 import './Footer.css';
+import { useNavigate } from 'react-router-dom';
 
-
-function Footer({ currentSection, nextSection, prevSection, submitSections,saveData }) {
- 
+function Footer({ currentSection, nextSection, prevSection,saveData }) {
+  const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
     'HOME',
@@ -29,6 +29,9 @@ function Footer({ currentSection, nextSection, prevSection, submitSections,saveD
     nextSection();
    
   };
+  const submitSections= () =>{
+    Navigate("/pay");
+  }
 
   return (
     <div className='footer-wrapper relative'>

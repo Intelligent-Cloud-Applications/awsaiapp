@@ -65,7 +65,7 @@ const Pay = () => {
               console.log(res);
               if (res.signatureIsValid) {
                 console.log(res.signatureIsValid);
-                Navigate("/dashboard", { state: { isReload: true } });
+                Navigate("/complete", { state: { isReload: true } });
               } else {
                 alert(
                   "Transaction Failed If your Amount was Deducted then Contact us"
