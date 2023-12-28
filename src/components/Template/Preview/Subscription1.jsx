@@ -8,7 +8,7 @@ const Subscription1 = () => {
                 <h3 class="text-[1rem] font-[600]">see what are the pricing in details</h3>
             </div>
             <ul class="flex flex-wrap justify-center w-[90vw] max-w-[80rem] gap-28 ">
-                <li class="bg-white w-[24rem] h-auto p-10 rounded-[2rem] z-0  flex flex-col items-center gap-8 shadowSubscribe  max450:w-[90vw] max450:gap-4 max450:text-[1rem] max450:min-h-[28rem] max450:h-auto max450:p-12 border-[#225c59] border-[0.1rem]">
+                <li class="bg-white w-[24rem] h-auto p-10 rounded-[2rem] z-0  flex flex-col items-center gap-8 shadowSubscribe  max1050:w-[30vw] max1050:gap-4 max1050:text-[1rem] max1050:min-h-[28rem] max450:h-auto max1050:p-12 border-[#225c59] border-[0.1rem]">
                     <p class="text-[1.6rem] font-bold">Hybrid Monthly Subscription</p>
                     <ul class=" text-[1rem] h-auto pl-0 flex flex-col">
                         <li>

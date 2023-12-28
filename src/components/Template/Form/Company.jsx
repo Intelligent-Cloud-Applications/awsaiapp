@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import upload  from "../../../utils/png/upload.png";
-import { API, Storage } from "aws-amplify";
+import React, { useState } from "react";
+import upload from "../../../utils/png/upload.png";
+import { API } from "aws-amplify";
 
-function Company({clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo}) {
+function Company({ clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -20,7 +20,7 @@ function Company({clients, companyName, setCompanyName, domainName, setDomainNam
       return;
     }
 
-   
+
 
     try {
       // Perform the API call using API.post or API.put based on your API endpoint and method
@@ -39,11 +39,11 @@ function Company({clients, companyName, setCompanyName, domainName, setDomainNam
       // ...
 
       alert('Company profile updated successfully.');
-   
+
     } catch (error) {
       console.error('Error updating company profile:', error);
       alert('Failed to update company profile. Please try again.');
-    
+
     }
   };
 
@@ -55,21 +55,21 @@ function Company({clients, companyName, setCompanyName, domainName, setDomainNam
   const handleDomainInputChange = (e) => {
     setDomainName(e.target.value);
   };
-  
 
- const toggleCompanyInputVisibility = () => {
-  setCompanyInputVisible(true);
-  setCompanyLineColor("#000000"); // Change company line color to black on click
-  setDomainInputVisible(false); // Hide domain input when company input is clicked
-  setDomainLineColor("#939393"); // Reset domain line color
-};
 
-const toggleDomainInputVisibility = () => {
-  setDomainInputVisible(true);
-  setDomainLineColor("#000000"); // Change domain line color to black on click
-  setCompanyInputVisible(false); // Hide company input when domain input is clicked
-  setCompanyLineColor("#939393"); // Reset company line color
-};
+  const toggleCompanyInputVisibility = () => {
+    setCompanyInputVisible(true);
+    setCompanyLineColor("#000000"); // Change company line color to black on click
+    setDomainInputVisible(false); // Hide domain input when company input is clicked
+    setDomainLineColor("#939393"); // Reset domain line color
+  };
+
+  const toggleDomainInputVisibility = () => {
+    setDomainInputVisible(true);
+    setDomainLineColor("#000000"); // Change domain line color to black on click
+    setCompanyInputVisible(false); // Hide company input when domain input is clicked
+    setCompanyLineColor("#939393"); // Reset company line color
+  };
 
   //color
   const [selectedColor1, setSelectedColor1] = useState("#1B7571");
@@ -83,34 +83,30 @@ const toggleDomainInputVisibility = () => {
     setSelectedColor2(e.target.value);
   };
 
-//file
-const [selectedFile, setSelectedFile] = useState(null);
-const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+  //file
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  // const url = handleLogoUpload(file);
-  // setSelectedFile(url);
-  setLogo(file);
-  setSelectedFile(URL.createObjectURL(file));
-};
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
+      setLogo(file);
+      setSelectedFile(URL.createObjectURL(file));
+      }
+  };
 
-const handleUploadImageClick = () => {
-  document.getElementById("fileInput").click();
+  const handleUploadImageClick = () => {
+    const element = document.getElementById('yourElementId');
+    element?.click();
+  };
 
-};
+  const handleUploadImageMouseEnter = () => {
+    setFileOptionVisible(true);
+  };
 
-const handleUploadImageMouseEnter = () => {
-  setFileOptionVisible(true);
-};
-
-const handleUploadImageMouseLeave = () => {
-  setFileOptionVisible(false);
-};
-
-
-
-
+  const handleUploadImageMouseLeave = () => {
+    setFileOptionVisible(false);
+  };
 
   return (
     <div className="px-8">
@@ -147,27 +143,27 @@ const handleUploadImageMouseLeave = () => {
         ></div>
       </div>
       <div className="relative mt-6">
-  <h5
-    className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
-    onClick={toggleDomainInputVisibility}
-  >
-    {isDomainInputVisible ? (
-      <input
-        type="text"
-        value={domainName}
-        onChange={handleDomainInputChange}
-        className="w-[28rem] text-black border-none outline-none bg-transparent"
-        placeholder="Enter Domain Name"
-      />
-    ) : (
-      <span>{domainName || "Domain Name"}</span>
-    )}
-  </h5>
-  <div
-    className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-    style={{ backgroundColor: domainLineColor }}
-  ></div>
-</div>
+        <h5
+          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
+          onClick={toggleDomainInputVisibility}
+        >
+          {isDomainInputVisible ? (
+            <input
+              type="text"
+              value={domainName}
+              onChange={handleDomainInputChange}
+              className="w-[28rem] text-black border-none outline-none bg-transparent"
+              placeholder="Enter Domain Name"
+            />
+          ) : (
+            <span>{domainName || "Domain Name"}</span>
+          )}
+        </h5>
+        <div
+          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
+          style={{ backgroundColor: domainLineColor }}
+        ></div>
+      </div>
 
       <div className="mt-8">
         <h4 className=" text-[#939393]">Choose Your Theme Color</h4>

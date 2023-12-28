@@ -1,7 +1,21 @@
-import React from "react";
-import video from "../../../utils/Template/backgroundvideo.mp4";
+import React, { useEffect } from "react";
+import vvideo from "../../../utils/Template/backgroundvideo.mp4";
 
-const Home1 = ({ tagline, media }) => {
+const Home1 = ({ tagline, setTagline, video, setVideo }) => {
+  useEffect(() => {
+    const videoUrl = video && video.url;
+    console.log("video.url", videoUrl); // Log the video URL to check if it's correct
+    const videoElement = document.getElementById("mainVideo");
+
+    if (videoElement) {
+      videoElement.src = videoUrl || vvideo;
+      videoElement.load();
+
+      // Ensure the video starts playing after the new source is loaded
+      videoElement.play().catch((error) => console.error("Autoplay failed:", error));
+    }
+  }, [video]);
+
   return (
     <div>
       <div className="flex relative items-center justify-center h-[25rem] w-[85.5%]">
@@ -14,19 +28,17 @@ const Home1 = ({ tagline, media }) => {
         </div>
         <div className="ml-[9%]">
           <video
+            id="mainVideo"
             autoPlay
             loop
             muted
             playsInline={true}
             controls={false}
             className="object-cover h-[25rem] w-screen"
-            onError={(e) => {
-              e.target.src = video; // Display default video if the main video fails to load
-            }}
-          >
-            <source src={video} type="video/mp4" />
-            {media && media.url && <source src={media.url} type="video/mp4" />}
-          </video>
+            src={video && video.url ? video.url : vvideo}
+            onClick={(e) => e.target.play()}
+          />
+
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 // NavBar1.jsx
 import React, { useState, useEffect } from "react";
-import logo1 from "../../../utils/Template/logo.png";
+import logo1 from "../../../utils/Template/logo2.png";
 import MenuPng from "../../../utils/NavBar/Menu.svg";
 import CrossPng from "../../../utils/NavBar/cross.png";
 import { useLocation } from "react-router-dom";
@@ -14,6 +14,7 @@ const NavBar1 = ({ logo, setLogo }) => {
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
   };
+  console.log("Logo URL in navbar:", logo);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -32,24 +33,21 @@ const NavBar1 = ({ logo, setLogo }) => {
   return (
     <div className="h-8">
       <div className="flex z-20 ml-[7.56%] malt relative items-center justify-between text-white w-[78%] bg-black border-b border-[#1b7571]  h-[3.8rem] px-10 left-0 max536:bg-black">
-        <a
-          href="/"
-          className={`logo  w-[6rem] h-[2.4rem] rounded-xl flex items-center justify-center `}
-        >
+        <div className="w-[6rem] h-[2.4rem] rounded-xl flex items-center justify-center">
           {logo ? (
             <img
-              className="relative rounded-301xl w-full p-1 h-[2rem] shrink-0 object-contain"
-              alt=""
-              src={logo} // Use the passed logo URL here
+              className="relative w-full p-1 h-[2rem] object-contain "
+              alt="you"
+              src={logo}
             />
           ) : (
             <img
-              className="relative rounded-301xl w-full p-1 h-[2rem] shrink-0 object-contain"
+              className="relative bg-[#fff] rounded-301xl w-full p-1 h-[2rem] shrink-0 object-contain"
               alt=""
               src={logo1}
             />
-          )}  
-        </a>
+          )}
+        </div>
         <ul className="flex gap-6 max800:hidden font-sans-sarif mt-[1rem]">
           {navBarContent.map((item) =>
             windowWidth >= 536 && item.label === "SETTINGS" ? null : (

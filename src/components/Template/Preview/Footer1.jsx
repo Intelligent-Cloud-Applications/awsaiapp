@@ -73,7 +73,7 @@ const Footer1 = ({ uploadedLogoUrl }) => { // Destructure props correctly
                     </div>
                 </div>
 
-                <div className="p-[0.5rem] flex justify-center text-white gap-2 font-sans max536:flex-col max536:text-center">
+                <div className="p-[0.5rem] flex justify-center text-white gap-2 font-sans max1050:flex-col max1050:text-center">
                     <Link className="text-white text-decoration-none">Privacy Policy</Link>
                     <div className="bg-[#225c59] w-1 border-white rounded-md"></div>
                     <Link className="text-white text-decoration-none">Terms and Condition</Link>

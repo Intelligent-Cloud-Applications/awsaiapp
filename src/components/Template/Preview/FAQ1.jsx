@@ -33,7 +33,7 @@ const config = {
   tabFocus: true,
 };
 
-export default function FAQ1() {
+export default function FAQ1( faqs, setFaqs) {
   return (
 
     <div className="home-faq flex flex-col  items-center justify-center gap-[3rem] max800:py-[10rem] w-[78%] ml-[7.56%] h-[40rem]">
