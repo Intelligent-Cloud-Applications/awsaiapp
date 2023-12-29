@@ -9,7 +9,7 @@ import Footer1 from './Preview/Footer1';
 import Instructors1 from './Preview/Instructors1';
 import Terms1 from './Preview/Terms1';
 
-const Preview = ({ currentSection, logo, setLogo, tagline, setTagline, video, setVideo, services, setServices, faqs, setFaqs}) => {
+const Preview = ({ currentSection, logo, setLogo, tagline, setTagline, video, setVideo, services, setServices, faqs, setFaqs, instructors, setInstructors}) => {
   const home1Ref = useRef(null);
   const testimonial1Ref = useRef(null);
   const subscription1Ref = useRef(null);
@@ -56,7 +56,7 @@ const Preview = ({ currentSection, logo, setLogo, tagline, setTagline, video, se
           <div ref={faq1Ref}><FAQ1 faqs={faqs} setFaqs={setFaqs}/></div>
         </div>
       )}
-      {currentSection === 6 && <Instructors1 />}
+      {currentSection === 6 && <Instructors1 instructors={instructors} setInstructors={setInstructors}/>}
       {currentSection === 7 && <Terms1 />}
       <Footer1 logo={logo} setLogo={setLogo}/>
     </div>

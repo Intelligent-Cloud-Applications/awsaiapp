@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import "./instructors.css";
 import Prajakta from "../../../utils/Template/instructor/Prajakta.jpg";
 
-const Instructor = () => {
+const Instructor1 = (instructors, setInstructors) => {
     return (
         <div>
             <div className="flex flex-col w-[78%] ml-[7.56%] instructor-contanier item-center">
@@ -32,4 +32,4 @@ const Instructor = () => {
     );
 };
 
-export default Instructor;
+export default Instructor1;
