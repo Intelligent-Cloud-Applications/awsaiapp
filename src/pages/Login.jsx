@@ -58,7 +58,7 @@ const Login = () => {
       if (user) {
         const userdata = await API.get(
           "clients",
-          "/user/SignUp-members"
+          `/self/read-self/${institution}`
         );
         if (
           userdata.userType === "admin" &&

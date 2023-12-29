@@ -1,27 +1,24 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Context from "../../../context/Context";
-import { API } from "aws-amplify";
 
-import Pagination from "@mui/material/Pagination";
+
+// import Pagination from "@mui/material/Pagination";
 // import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
 
 const PendingClients = () => {
-  const itemsPerPage = 6;
+  // const itemsPerPage = 6;
   const [status] = useState();
   const [memberCount] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow] = useState([]);
 
   const [data, setData] = useState([
     {
-      
       deliveryStatus: "Not Delivered",
-      
     },
-    
   ]);
   
   const { pending } = useContext(Context);
@@ -36,58 +33,22 @@ const PendingClients = () => {
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
   // eslint-disable-next-line
-  const [userCheck, setUserCheck] = useState(0);
+  // const [userCheck, setUserCheck] = useState(0);
   const [JoiningDate] = useState("");
 
   const [selectedUser] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  const [seconds, setSeconds] = useState(48 * 60 * 60);
-  const [submissionTime, setSubmissionTime] = useState(Date.now());
 
-  const totalTime = 48 * 60 * 60;
-  const [timerEnded, setTimerEnded] = useState(false);
-  useEffect(() => {
-    const onLoad = async () => {
-      try {
-        const res = await API.get(
-          "clients",
-          "/user/development-form/get-time/awsaiapp"
-        );
-        setSubmissionTime(res.submissiontime);
-      } catch (e) {
-        console.error(e);
-      } finally {
-      }
-    };
-
-    onLoad();
-  }, []);
-
-  useEffect(() => {
-    const usedTime = (Date.now() - submissionTime) / 1000;
-    const leftTime = totalTime - usedTime;
-
-    if (Math.floor(leftTime) < 0) {
-      setSeconds(0);
-      setTimerEnded(true);
-    } else {
-      setSeconds(Math.floor(leftTime));
-    }
-  }, [submissionTime, totalTime]);
-  const [deliveryStatus, setDeliveryStatus] = useState(
-    timerEnded ? "Delivered" : "Not Delivered"
-  );
+ 
 
   const handleStatusChange = (newStatus, index) => {
-   
     if (index >= 0 && index < data.length) {
       const updatedData = [...data];
       updatedData[index] = {
         ...updatedData[index],
-        deliveryStatus: newStatus
+        deliveryStatus: newStatus,
       };
-  
       setData(updatedData);
     }
   };
@@ -95,36 +56,36 @@ const PendingClients = () => {
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);
   };
-
   const filterClients = () => {
     if (!searchQuery) {
       return clientsData;
     }
-
+  
     const query = searchQuery.toLowerCase();
-
+  
     const filtered = clientsData?.filter(([key, client]) => {
-      const institution = client.institution
-        ? client.institution.toLowerCase()
-        : "";
-      const emailId = client.emailId ? client.emailId.toLowerCase() : "";
-
-      const matches = institution.includes(query) || emailId.includes(query);
-
+      const institution = client.institution ? client.institution.toLowerCase() : '';
+      const emailId = client.emailId ? client.emailId.toLowerCase() : '';
+  
+      const matches =
+        institution.includes(query) ||
+        emailId.includes(query);
+  
       return matches;
     });
-
+  
     console.log("Filtered Clients:", filtered);
     return filtered;
   };
-
+  
   const filteredClients = filterClients();
   console.log("Type = ", typeof filteredClients);
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+
+
+  // const startIndex = (currentPage - 1) * itemsPerPage;
+  // const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+  // const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
   const selectedRowCount = selectedRow.length;
 
@@ -137,9 +98,9 @@ const PendingClients = () => {
     return formattedDate;
   }
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
+  // const handlePageChange = (event, value) => {
+  //   setCurrentPage(value);
+  // };
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div className={`w-[90%] rounded-3xl p-3 `}>
@@ -211,7 +172,7 @@ const PendingClients = () => {
         </div>
 
         <div className="w-[76vw] min-h-[45vh] relative overflow-y-auto max-h-[48vh] scroll-container ml-[rem] pl-[7px] max1050:w-[90vw]">
-          {clientsToDisplay.map(([key, pending], index) => (
+        {filteredClients.map(([key, pending], index) => (
             <div
               key={pending.institution}
               className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
@@ -228,11 +189,9 @@ const PendingClients = () => {
                   : "none",
               }}
             >
-              {/* checkbox */}
-
               <div className="flex flex-row K2D items-center">
-                <div className=" flex gap-[2rem] pl-[2rem] items-center">
-                  {startIndex + index + 1}
+                <div className="pl-[2rem] flex gap-[2rem] items-center">
+                  {index + 1}
                   <div className="grid ml-[8rem] grid-cols-12 items-center w-[55vw]">
                     <div className="col-span-3 flex flex-col max600:w-[10rem]">
                       <div className="font-[900]  email-hover cursor-pointer">
@@ -273,7 +232,7 @@ const PendingClients = () => {
                             onChange={(e) =>
                               handleStatusChange(e.target.value, index)
                             }
-                            disabled={timerEnded}
+                           
                           >
                             <option value="Delivered">Delivered</option>
                             <option value="Not Delivered">Not Delivered</option>
@@ -386,12 +345,12 @@ const PendingClients = () => {
 
           {/* Pagination */}
           <div className="flex justify-start pt-4 ml-[2rem]">
-            <Pagination
+            {/* <Pagination
               count={totalPages}
               page={currentPage}
               onChange={handlePageChange}
               className="custom-pagination"
-            />
+            /> */}
           </div>
         </div>
       </div>
