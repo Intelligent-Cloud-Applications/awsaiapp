@@ -7,16 +7,14 @@ import { API } from "aws-amplify";
 const Pay = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const Ctx = useContext(Context);
-  const navigate = useNavigate();
+
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context).user;
   const Navigate = useNavigate();
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);
   };
-  const navigateToPricing = () => {
-    Navigate("/pricing");
-  };
+ 
 
   const handleSubscribe = async (productId) => {
     UtilCtx.setLoader(true);

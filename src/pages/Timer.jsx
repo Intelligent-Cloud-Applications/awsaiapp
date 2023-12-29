@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
-import { useLocation } from "react-router-dom";
 
 const Timer = () => {
   const [seconds, setSeconds] = useState(48 * 60 * 60);
   const [submissionTime, setSubmissionTime] = useState(Date.now());
-  const location = useLocation();
-  const institution = new URLSearchParams(location.search).get("institution");
   const totalTime = 48 * 60 * 60;
   const [timerEnded, setTimerEnded] = useState(false);
   useEffect(() => {
