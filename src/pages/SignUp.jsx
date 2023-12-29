@@ -27,6 +27,9 @@ const SignUp = () => {
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   };
+  // const data = {
+  //   Otp_Msg: `An OTP has been sent to +${countryCode}${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
+  // };
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
   const Navigate = useNavigate();
@@ -131,7 +134,7 @@ const SignUp = () => {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
-          phoneNumber: phoneNumber,
+          phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
         },
       });
@@ -141,8 +144,13 @@ const SignUp = () => {
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
+      // client dashboard
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
       UtilCtx.setLoader(false);
-      Navigate("/template");
+      Navigate("/Pricing");
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
@@ -164,16 +172,22 @@ const SignUp = () => {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
-          phoneNumber: phoneNumber,
+          phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
         },
       });
+      //Temporary
+      // userdata.Status = true;
       UserCtx.setUserData(userdata);
       UserCtx.setIsAuth(true);
       UtilCtx.setLoader(false);
       alert("Signed Up");
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
       UtilCtx.setLoader(false);
-      Navigate("/template");
+      Navigate("/Pricing");
     } catch (error) {
       UtilCtx.setLoader(false);
       console.log("Error:", error.message);
@@ -233,7 +247,7 @@ const SignUp = () => {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
-            phoneNumber: phoneNumber,
+            phoneNumber: `${countryCode}${phoneNumber}`,
             country: country,
           },
         });
@@ -243,7 +257,10 @@ const SignUp = () => {
         UserCtx.setIsAuth(true);
         UtilCtx.setLoader(false);
         alert("Signed Up");
-        Navigate("/template");
+        if (userdata.status === "Active") {
+          Navigate("/dashboard");
+        }
+        Navigate("/Pricing");
       } else {
         UtilCtx.setLoader(false);
       }
@@ -305,7 +322,7 @@ const SignUp = () => {
                   />
                 </div>
               </li>
-              {/* <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
+              <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
                 <select
                   value={countryCode}
                   name="countryCode"
@@ -327,7 +344,7 @@ const SignUp = () => {
                 >
                   {<Country />}
                 </select>
-              </li> */}
+              </li>
               <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
                 <div className="relative">
                   <input
