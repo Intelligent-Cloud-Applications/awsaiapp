@@ -5,15 +5,14 @@ import Context from "../context/Context";
 import PayItem from "../components/Pay/PayItem";
 import { API } from "aws-amplify";
 const Pay = () => {
-  const [selectedPlan, setSelectedPlan] = useState(null); // To keep track of the selected plan
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const Ctx = useContext(Context);
+  const navigate = useNavigate();
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context).user;
   const Navigate = useNavigate();
-
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);
-    navigateToPricing();
   };
   const navigateToPricing = () => {
     Navigate("/pricing");
@@ -29,6 +28,13 @@ const Pay = () => {
           productId: productId,
         },
       });
+      if (response.error) {
+        if (response.message === "Subscription already active") {
+          UtilCtx.setLoader(false);
+          alert("Subscription Already Active. Please Contact Support");
+          return;
+        }
+      }
       console.log(response);
     } catch (e) {
       console.log(e);
@@ -65,7 +71,7 @@ const Pay = () => {
               console.log(res);
               if (res.signatureIsValid) {
                 console.log(res.signatureIsValid);
-                Navigate("/complete", { state: { isReload: true } });
+                Navigate("/dashboard", { state: { isReload: true } });
               } else {
                 alert(
                   "Transaction Failed If your Amount was Deducted then Contact us"
@@ -112,7 +118,6 @@ const Pay = () => {
       UtilCtx.setLoader(false);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full">
