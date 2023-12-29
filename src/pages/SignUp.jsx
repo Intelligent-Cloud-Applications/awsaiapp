@@ -305,7 +305,7 @@ const SignUp = () => {
                   />
                 </div>
               </li>
-              <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
+              {/* <li className="flex gap-20 mt-2 ml-6 max500:flex-col max500:gap-2 max500:items-start relative ">
                 <select
                   value={countryCode}
                   name="countryCode"
@@ -327,7 +327,7 @@ const SignUp = () => {
                 >
                   {<Country />}
                 </select>
-              </li>
+              </li> */}
               <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
                 <div className="relative">
                   <input
