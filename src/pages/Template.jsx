@@ -313,13 +313,13 @@ const Template = () => {
 
       let inst_pic_5 = null;
       if (instructors[4].uploadedFile) {
-        const response5 = await Storage.put(`awsaiapp/${instructors[4].uploadedFile.name}`, instructors[4].uploadedFile, {
-          contentType: instructors[4].uploadedFile.type,
-        });
+        // const response5 = await Storage.put(`awsaiapp/${instructors[4].uploadedFile.name}`, instructors[4].uploadedFile, {
+        //   contentType: instructors[4].uploadedFile.type,
+        // });
 
         // Get the URL of the uploaded file
-        let inst_pic_5 = await Storage.get(response5.key);
-        inst_pic_5 = inst_pic_5.split("?")[0];
+        // let inst_pic_5 = await Storage.get(response5.key);
+        // inst_pic_5 = inst_pic_5.split("?")[0];
       }
 
       await API.put("clients", "/user/development-form/instructors", {

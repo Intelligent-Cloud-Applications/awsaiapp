@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import upload from "../../../utils/png/upload.png";
-import { API } from "aws-amplify";
 
 function Company({ clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo }) {
   // const [companyName, setCompanyName] = useState("");
@@ -11,41 +10,7 @@ function Company({ clients, companyName, setCompanyName, domainName, setDomainNa
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
   // const [logoUrl, setLogoUrl] = useState(null);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate inputs as needed
-    if (!companyName || !domainName || !selectedColor1 || !selectedColor2 || !selectedFile) {
-      alert('Please fill in all fields and upload a file.');
-      return;
-    }
-
-
-
-    try {
-      // Perform the API call using API.post or API.put based on your API endpoint and method
-      await API.post('/your-endpoint', {
-        body: {
-          companyName,
-          domainName,
-          selectedColor1,
-          selectedColor2,
-          selectedFile: selectedFile.name, // Assuming you need the filename in the request body
-          // Add other necessary data fields here
-        },
-      });
-
-      // Additional logic after successful API call, if needed
-      // ...
-
-      alert('Company profile updated successfully.');
-
-    } catch (error) {
-      console.error('Error updating company profile:', error);
-      alert('Failed to update company profile. Please try again.');
-
-    }
-  };
+  
 
 
   const handleCompanyInputChange = (e) => {

@@ -8,6 +8,7 @@ const ContextProvider = (props) => {
   const [clients, setClients] = useState({});
   const [pending, setPending] = useState({});
   // const [member, setMember] = useState([]);
+  const [products, setProducts] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
@@ -18,8 +19,22 @@ const ContextProvider = (props) => {
     fetchClients();
     fetchUserProfile();
     fetchPending();
+    fetchProducts();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const fetchProducts = async () => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/any/list-products");
+      setProducts(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
+
 
  const fetchPending = async (institution) => {
     try {
@@ -91,6 +106,8 @@ const ContextProvider = (props) => {
       fetchClients: fetchClients,
       onReload: fetchClients,
     },
+    products: products,
+    fetchProducts: () => {},
     pending: {
       data: pending,
       fetchPending: fetchPending,

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
-
+import { useLocation } from "react-router-dom";
 
 const Timer = () => {
   const [seconds, setSeconds] = useState(48 * 60 * 60);
   const [submissionTime, setSubmissionTime] = useState(Date.now());
-  
+  const location = useLocation();
+  const institution = new URLSearchParams(location.search).get("institution");
   const totalTime = 48 * 60 * 60;
   const [timerEnded, setTimerEnded] = useState(false);
   useEffect(() => {
@@ -14,8 +15,9 @@ const Timer = () => {
       try {
         const res = await API.get(
           "clients",
-          "/user/Development-form/Get-time/awsaiapp"
+          "/user/development-form/get-time/awsaiapp"
         );
+        
         setSubmissionTime(res.submissiontime);
       } catch (e) {
         console.error(e);
@@ -100,7 +102,7 @@ const Timer = () => {
           </div>
         </div>
         ) : (
-          <p className="text-center">
+          <p className="text-center max450:w-[20rem]">
    Get ready for an enhanced online presence your website's transformation is underway! Need changes or more info? Reach out anytime!
   </p>
         )}
