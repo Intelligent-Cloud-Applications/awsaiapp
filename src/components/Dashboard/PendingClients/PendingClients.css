@@ -8,7 +8,14 @@
   .custom-pagination li {
     font-size: 1rem;
   }
-  
+  .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+    padding: 1px;
+  }
+
+  .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select{
+
+   height:10px;
+  }
   .custom-pagination .Mui-selected {
     border-radius: 0.1875rem;
     background-color: #30AFBC !important;
