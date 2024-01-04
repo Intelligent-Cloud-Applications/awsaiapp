@@ -293,7 +293,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   useEffect(() => {
     fetchRevenueOfClients();
     // eslint-disable-next-line
-  }, [institution, selectedMonth]);
+  }, [institution]);
 
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
