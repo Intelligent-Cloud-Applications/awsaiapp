@@ -27,6 +27,7 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/any/list-products");
+      console.log(response);
       setProducts(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -35,25 +36,24 @@ const ContextProvider = (props) => {
     }
   };
 
-
- const fetchPending = async (institution) => {
+  const fetchPending = async (institution) => {
     try {
-      console.log("Hello")
+      console.log("Hello");
       setLoader(true);
       const response = await API.get("clients", "/admin/list-pending_clients");
-      console.log("Here is the :::",response)
+      console.log("Here is the :::", response);
       setPending(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
       setLoader(false);
-    };
+    }
   };
   const fetchClients = async (institution) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-institution");
-      console.log(response)
+      console.log(response);
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -66,10 +66,10 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       let response;
-      if (institution !== 'awsaiapp') {
-        response = await API.get('clients', `/self/read-self/${institution}`);
+      if (institution !== "awsaiapp") {
+        response = await API.get("clients", `/self/read-self/${institution}`);
       } else {
-        response = await API.get('clients', '/self/read-self/awsaiapp');
+        response = await API.get("clients", "/self/read-self/awsaiapp");
       }
       setUserProfile(response);
     } catch (error) {
@@ -78,7 +78,7 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
-  
+
   const setLoaderFn = (data) => {
     setLoader(data);
   };

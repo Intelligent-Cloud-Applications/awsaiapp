@@ -260,7 +260,7 @@ const SignUp = () => {
         if (userdata.status === "Active") {
           Navigate("/dashboard");
         }
-        Navigate("/Pricing");
+        Navigate("/template");
       } else {
         UtilCtx.setLoader(false);
       }
