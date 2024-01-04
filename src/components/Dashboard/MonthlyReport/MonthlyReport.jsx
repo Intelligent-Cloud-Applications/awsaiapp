@@ -207,6 +207,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   console.log(memberCountByMonth);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState('');
   const [revenueReport, setRevenueReport] = useState([])
   const [attendance, setAttendance] = useState([])
   const [leads, setLeads] = useState([])
@@ -220,7 +221,12 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const [Protein, setProtein] = useState("");
   const [clientsPayment, setClientsPayment] = useState("");
   const [monthDetails, setMonthDetails] = useState({});
-  console.log(selectedMonth)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, index) => currentYear - index);
+
+
+  console.log("revenueReport", revenueReport)
+
 
 
   const [infoContent, setInfoContent] = useState("");
@@ -240,33 +246,66 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     }
   };
 
-  const fetchRevenueOfClients = async () => {
+  const fetchRevenueOfClients = async (selectedYear, selectedMonth) => {
     try {
-      const RevenueApi = await API.get("clients", `/user/monthly-report/${institution}?month=${selectedMonth}`);
-      setRevenueReport(RevenueApi.Revenue)
-      setAttendance(RevenueApi.Attendance)
-      setLeads(RevenueApi.Leads)
-      setMembersCount(RevenueApi.MembersCount)
-      const revenueDetails = RevenueApi.Items[selectedMonth];
-      console.log(RevenueApi)
-      setMonthDetails(revenueDetails)
-      setAdsRunning(revenueDetails.investments.adsRunning)
-      setProfit(revenueDetails.profit);
-      setClientsPayment(revenueDetails.incomes.clientPayment);
-      setProtein(revenueDetails.incomes.protein);
-      setProduct(revenueDetails.incomes.product);
-      setTotalInvestement(revenueDetails.totalInvestment);
-      setTotalIncome(revenueDetails.totalIncome);
-      setInstructorPayment(revenueDetails.investments.instructorPayment)
+      let apiUrl = `/user/monthly-report/${institution}?year=${selectedYear}`;
+  
+      if (selectedMonth) {
+        apiUrl += `&month=${selectedMonth}`;
+      }
+  
+      const RevenueApi = await API.get("clients", apiUrl);
+      console.log("Revenue ", RevenueApi);
+  
+      setRevenueReport(RevenueApi.Revenue[selectedYear]);
+      setAttendance(RevenueApi.Attendance[selectedYear]);
+      setLeads(RevenueApi.Leads[selectedYear]);
+      setMembersCount(RevenueApi.MembersCount[selectedYear]);
+  
+      if (RevenueApi && RevenueApi.Items && selectedYear && selectedMonth) {
+        const itemsForSelectedYear = RevenueApi.Items[selectedYear];
+        if (itemsForSelectedYear) {
+          const revenueDetails = itemsForSelectedYear[selectedMonth];
+          if (revenueDetails) {
+            setMonthDetails(revenueDetails);
+            setAdsRunning(revenueDetails.investments.adsRunning);
+            setProfit(revenueDetails.profit);
+            setClientsPayment(revenueDetails.incomes.clientPayment);
+            setProtein(revenueDetails.incomes.protein);
+            setProduct(revenueDetails.incomes.product);
+            setTotalInvestement(revenueDetails.totalInvestment);
+            setTotalIncome(revenueDetails.totalIncome);
+            setInstructorPayment(revenueDetails.investments.instructorPayment);
+          } else {
+            console.log(`No data found for selected month: ${selectedMonth}`);
+          }
+        } else {
+          console.log(`No data found for selected year: ${selectedYear}`);
+        }
+      } else {
+        console.log('Incomplete data or invalid selection');
+      }
     } catch (error) {
       console.error("Error fetching clients:", error);
     }
   };
-
+  
   useEffect(() => {
     fetchRevenueOfClients();
     // eslint-disable-next-line
   }, [institution, selectedMonth]);
+
+  const handleYearChange = (e) => {
+    const selectedYear = e.target.value;
+    fetchRevenueOfClients(selectedYear, selectedMonth); // Update function call to include selectedMonth
+    setSelectedYear(selectedYear); // Update the state for selectedYear
+  };
+  
+  const handleMonthChange = (e) => {
+    const selectedMonth = e.target.value;
+    fetchRevenueOfClients(selectedYear, selectedMonth); // Update function call to include selectedYear
+    setSelectedMonth(selectedMonth); // Update the state for selectedMonth
+  };
 
   console.log(monthDetails);
   const lineChartData = {
@@ -360,12 +399,27 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       );
     }
   };
-
   return (
     <>
       <NavBar />
       {renderButton()}
       <div className={`flex flex-col justify-center items-center max536:pt-0 gap-1 ${IsDashboard ? 'flex flex-col justify-center items-center max536:pt-0 gap-1 mt-[5rem]' : ''}`}>
+        <select
+          className="text-left text-bold K2D text-[1.2rem] w-[15rem] mt-[-1rem] bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded" style={{
+            boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
+          }}
+          value={selectedYear}
+          onChange={handleYearChange}
+        >
+          <option disabled value="" className="text-left text-bold K2D text-[1.2rem]">
+            Select a year
+          </option>
+          {years.map((year) => (
+            <option className="text-center text-bold K2D text-[1.1rem]" key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
         <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
           <div className="flex mb-4 flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center">
             <div className="relative">
@@ -409,7 +463,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
               <h2 className="text-center Inter text-[1.3rem] font-[600] mb-2">Details</h2>
               <select
                 value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
+                onChange={handleMonthChange}
                 className="mb-4 border border-[#343434] w-[16rem] p-2 font-[600]"
               >
                 <option value="">Select Month</option>
