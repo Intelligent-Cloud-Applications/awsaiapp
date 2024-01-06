@@ -78,7 +78,7 @@ const PendingClients = () => {
   const [showDetails] = useState(false);
 
 
-  console.log("dfdfdfdfdfd", pending.isDelivered);
+  // console.log("dfdfdfdfdfd", pending.isDelivered);
 
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);
@@ -214,7 +214,7 @@ const PendingClients = () => {
                 <div className="pl-[2rem] flex gap-[2rem] items-center max1320:p-0">
                   {index + 1}
                   <div className="grid ml-[8rem] grid-cols-12 items-center w-[55vw] max1250:ml-12">
-                    <div className="col-span-3 flex flex-col max600:w-[10rem]">
+                    <div className="col-span-3 flex flex-col max600:w-[10rem] max600:ml-[-3rem] max450:ml-[-4rem] max375:ml-[-3.5rem] ">
                       <div className="font-[900]  email-hover cursor-pointer">
                         {pending.userName}
                       </div>
@@ -256,13 +256,13 @@ const PendingClients = () => {
                       </div>
                     <div className="flex flex-row justify-between w-[17vw]">
                       
-                      <div className="w-[10rem] ml-[17rem] text-center font-semibold text-sm max600:hidden ">
+                      <div className="w-[10rem] ml-[17rem] text-center font-semibold text-sm ">
                     
 
-                        <div className="w-[95%] flex  justify-end m-[0.8rem] gap-3">
+                        <div className="w-[95%] flex  justify-end m-[0.8rem] max600:ml-[-3rem] max450:mr-[-3rem] max375:ml-[-3rem] gap-3 ">
                           
-                          <div className=" ml-[-4rem] relative max1008:hidden h-6">
-                            <FormControl className=" flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[10rem] ">
+                          <div className=" ml-[-4rem] relative max950:mr-[3rem] max800:mr-28 h-6">
+                            <FormControl className=" flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[10rem] max600:w-[8rem]  max450:w-[6rem] max375:w-[5rem]  max800:font-[1px] ">
                               <Select
                                 value={
                                   pending.isDelivered
