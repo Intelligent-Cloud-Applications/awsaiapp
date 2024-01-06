@@ -18,9 +18,7 @@ const ContextProvider = (props) => {
   useEffect(() => {
     fetchClients();
     fetchUserProfile();
-    fetchPending();
     fetchProducts();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const fetchProducts = async () => {
@@ -49,6 +47,13 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchPending();
+    }
+  }, [isAuth]);
+
   const fetchClients = async (institution) => {
     try {
       setLoader(true);
