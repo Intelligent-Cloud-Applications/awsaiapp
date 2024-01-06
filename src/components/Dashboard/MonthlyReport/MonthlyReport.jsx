@@ -249,19 +249,19 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const fetchRevenueOfClients = async (selectedYear, selectedMonth) => {
     try {
       let apiUrl = `/user/monthly-report/${institution}?year=${selectedYear}`;
-  
+
       if (selectedMonth) {
         apiUrl += `&month=${selectedMonth}`;
       }
-  
+
       const RevenueApi = await API.get("clients", apiUrl);
       console.log("Revenue ", RevenueApi);
-  
+
       setRevenueReport(RevenueApi.Revenue[selectedYear]);
       setAttendance(RevenueApi.Attendance[selectedYear]);
       setLeads(RevenueApi.Leads[selectedYear]);
       setMembersCount(RevenueApi.MembersCount[selectedYear]);
-  
+
       if (RevenueApi && RevenueApi.Items && selectedYear && selectedMonth) {
         const itemsForSelectedYear = RevenueApi.Items[selectedYear];
         if (itemsForSelectedYear) {
@@ -289,18 +289,24 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       console.error("Error fetching clients:", error);
     }
   };
-  
+
   useEffect(() => {
-    fetchRevenueOfClients();
+    if (!selectedYear) {
+      fetchRevenueOfClients(currentYear, selectedMonth);
+      setSelectedYear(currentYear);
+    } else {
+      fetchRevenueOfClients(selectedYear, selectedMonth);
+    }
     // eslint-disable-next-line
-  }, [institution]);
+  }, [institution, selectedYear, selectedMonth]);
+
 
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
-    fetchRevenueOfClients(selectedYear, selectedMonth); // Update function call to include selectedMonth
-    setSelectedYear(selectedYear); // Update the state for selectedYear
+    fetchRevenueOfClients(selectedYear, selectedMonth); 
+    setSelectedYear(selectedYear);
   };
-  
+
   const handleMonthChange = (e) => {
     const selectedMonth = e.target.value;
     fetchRevenueOfClients(selectedYear, selectedMonth); // Update function call to include selectedYear
@@ -403,23 +409,30 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     <>
       <NavBar />
       {renderButton()}
+      <div className="flex w-[100%] justify-center mt-[-2rem]">
+        <div class="w-[90vw] h-14 relative rounded-2xl" style={{
+          boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
+        }}>
+          <div class="flex h-14 justify-center items-center text-stone-900 text-4xl font-bold font-['Inter'] leading-9">{selectedYear} REPORT</div>
+          <div class="flex justify-end mt-[-2.7rem] mr-[4rem] ">
+            <select
+              className="text-left text-bold K2D text-[1.1rem] text-[#000000] w-[12rem] h-8 bg-[#ffffff] border border-[#717171] hover:border-gray-500 px-4 py-1rounded-[5px]"
+              value={selectedYear}
+              onChange={handleYearChange}
+            >
+              <option disabled value="" className="text-[#000000] text-left text-bold K2D text-[1.2rem]">
+                Select a year
+              </option>
+              {years.map((year) => (
+                <option className="text-left text-[#000000] text-bold K2D text-[1.1rem]" key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
       <div className={`flex flex-col justify-center items-center max536:pt-0 gap-1 ${IsDashboard ? 'flex flex-col justify-center items-center max536:pt-0 gap-1 mt-[5rem]' : ''}`}>
-        <select
-          className="text-left text-bold K2D text-[1.2rem] w-[15rem] mt-[-1rem] bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded" style={{
-            boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
-          }}
-          value={selectedYear}
-          onChange={handleYearChange}
-        >
-          <option disabled value="" className="text-left text-bold K2D text-[1.2rem]">
-            Select a year
-          </option>
-          {years.map((year) => (
-            <option className="text-center text-bold K2D text-[1.1rem]" key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
         <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
           <div className="flex mb-4 flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center">
             <div className="relative">
