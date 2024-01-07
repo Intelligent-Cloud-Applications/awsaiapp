@@ -175,36 +175,20 @@ const LineChartLeads = ({ data }) => {
 
 
 const MonthlyReport = ({ institution: tempInstitution }) => {
-  console.log(window.location.search)
-  const searchParams = new URLSearchParams(window.location.search);
-  const institution = searchParams.get("institution") || tempInstitution;
-  console.log(searchParams)
+  const Navigate = useNavigate();
+  const location = useLocation();
+  const detailsRef = useRef(null);
   const { clients } = useContext(Context);
   const item = clients.data;
+  const searchParams = new URLSearchParams(window.location.search);
+  const institution = searchParams.get("institution") || tempInstitution;
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
-  const Navigate = useNavigate();
-
-  let Country;
-  if (selectedClient) {
-    Country = selectedClient.country;
-  } else {
-    console.log(`Country information not available for institution: ${institution}`);
-  }
-  console.log(Country);
-
-  const renderValue = (value) => {
-    if (Country === 'USA') {
-      return `$ ${value}`;
-    } else {
-      return `₹ ${value}`;
-    }
-  };
-
-  const institutionData = Array.isArray(clients.data)
-    ? clients.data.find(client => client.institution === institution)
-    : null;
+  const institutionData = Array.isArray(clients.data) ? clients.data.find(client => client.institution === institution) : null;
   const memberCountByMonth = institutionData ? institutionData.memberCountByMonth : null;
-  console.log(memberCountByMonth);
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, index) => currentYear - index);
+  const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
   const [showDetails, setShowDetails] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState('');
@@ -221,42 +205,17 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const [Protein, setProtein] = useState("");
   const [clientsPayment, setClientsPayment] = useState("");
   const [monthDetails, setMonthDetails] = useState({});
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 10 }, (_, index) => currentYear - index);
-
-
-  console.log("revenueReport", revenueReport)
-
-
-
   const [infoContent, setInfoContent] = useState("");
+  const [IsDashboard, setIsDashboard] = useState(false);
 
-  const handleInfoClick = (infoNumber) => {
-    const contentMap = {
-      1: "This graph represents the total number of members for each month",
-      2: "This graph shows the total number of Leads each month",
-      3: "This graph shows the total revenue generated per month",
-      4: "This graph shows the total attendance increase each month",
-    };
-
-    if (infoContent === contentMap[infoNumber]) {
-      setInfoContent("");
-    } else {
-      setInfoContent(contentMap[infoNumber]);
-    }
-  };
-
+  //Api call to retrive Monthly Report data
   const fetchRevenueOfClients = async (selectedYear, selectedMonth) => {
     try {
       let apiUrl = `/user/monthly-report/${institution}?year=${selectedYear}`;
-
       if (selectedMonth) {
         apiUrl += `&month=${selectedMonth}`;
       }
-
       const RevenueApi = await API.get("clients", apiUrl);
-      console.log("Revenue ", RevenueApi);
-
       setRevenueReport(RevenueApi.Revenue[selectedYear]);
       setAttendance(RevenueApi.Attendance[selectedYear]);
       setLeads(RevenueApi.Leads[selectedYear]);
@@ -300,73 +259,35 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [institution, selectedYear, selectedMonth]);
 
-
+  //function to change year in dropdown
   const handleYearChange = (e) => {
     const selectedYear = e.target.value;
-    fetchRevenueOfClients(selectedYear, selectedMonth); 
+    fetchRevenueOfClients(selectedYear, selectedMonth);
     setSelectedYear(selectedYear);
   };
 
+  //function to change month in dropdown
   const handleMonthChange = (e) => {
     const selectedMonth = e.target.value;
-    fetchRevenueOfClients(selectedYear, selectedMonth); // Update function call to include selectedYear
-    setSelectedMonth(selectedMonth); // Update the state for selectedMonth
+    fetchRevenueOfClients(selectedYear, selectedMonth);
+    setSelectedMonth(selectedMonth);
   };
 
-  console.log(monthDetails);
-  const lineChartData = {
-    datasets: [{
-      label: 'Revenue Generated',
-      data: revenueReport,
-      borderColor: 'white',
-      borderWidth: 2,
-      barPercentage: 0.45
-    }],
-  };
+  useEffect(() => {
+    if (location.pathname.includes('dashboard')) {
+      setIsDashboard(true);
+    } else {
+      setIsDashboard(false);
+    }
+  }, [location.pathname]);
 
-  const lineChartLeadsData = {
-    datasets: [{
-      label: 'Leads',
-      data: leads,
-      backgroundColor: "#079FB4",
-      borderColor: '#079FB4',
-      borderWidth: 2,
-      barPercentage: 0.45
-    }],
-  }
-
-  const barChartData = {
-    datasets: [{
-      label: 'Monthly members joined',
-      data: memberscount,
-      backgroundColor: "white",
-      barPercentage: 0.37
-    }],
-  };
-
-  const barChartAttendance = {
-    datasets: [{
-      label: 'Attendance',
-      data: attendance,
-      backgroundColor: "#079FB4",
-      barPercentage: 0.3,
-      borderRadius: 10
-    }],
-  };
-
-  const monthsShort = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
-
+  //function to scroll to top when clicked on details of revenue graph, handclick fuchtion will show the detail 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
   };
-
-  const detailsRef = useRef(null);
 
   const handleClick = () => {
     if (window.innerWidth > 600) {
@@ -377,17 +298,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     }
   };
 
-  const [IsDashboard, setIsDashboard] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.pathname.includes('dashboard')) {
-      setIsDashboard(true);
-    } else {
-      setIsDashboard(false);
-    }
-  }, [location.pathname]);
-
+  // function to go back to dashboard
   const renderButton = () => {
     if (IsDashboard) {
       return null;
@@ -405,10 +316,94 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       );
     }
   };
+
+  //function to so the description of graphs
+  const handleInfoClick = (infoNumber) => {
+    const contentMap = {
+      1: "This graph represents the total number of members for each month",
+      2: "This graph shows the total number of Leads each month",
+      3: "This graph shows the total revenue generated per month",
+      4: "This graph shows the total attendance increase each month",
+    };
+
+    if (infoContent === contentMap[infoNumber]) {
+      setInfoContent("");
+    } else {
+      setInfoContent(contentMap[infoNumber]);
+    }
+  };
+
+  // revenue graph data 
+  const lineChartData = {
+    datasets: [{
+      label: 'Revenue Generated',
+      data: revenueReport,
+      borderColor: 'white',
+      borderWidth: 2,
+      barPercentage: 0.45
+    }],
+  };
+
+  // Leads graph data 
+  const lineChartLeadsData = {
+    datasets: [{
+      label: 'Leads',
+      data: leads,
+      backgroundColor: "#079FB4",
+      borderColor: '#079FB4',
+      borderWidth: 2,
+      barPercentage: 0.45
+    }],
+  }
+
+  // Monthly members joined graph data 
+  const barChartData = {
+    datasets: [{
+      label: 'Monthly members joined',
+      data: memberscount,
+      backgroundColor: "white",
+      barPercentage: 0.37
+    }],
+  };
+
+  // Attendance graph data 
+  const barChartAttendance = {
+    datasets: [{
+      label: 'Attendance',
+      data: attendance,
+      backgroundColor: "#079FB4",
+      barPercentage: 0.3,
+      borderRadius: 10
+    }],
+  };
+
+  //check selected client country and display the currency value
+  let Country;
+  if (selectedClient) {
+    Country = selectedClient.country;
+  } else {
+    console.log(`Country information not available for institution: ${institution}`);
+  }
+
+  const renderValue = (value) => {
+    if (Country === 'USA') {
+      return `$ ${value}`;
+    } else {
+      return `₹ ${value}`;
+    }
+  };
+
+  console.log(searchParams)
+  console.log(Country);
+  console.log(memberCountByMonth);
+  console.log("revenueReport", revenueReport)
+  console.log(monthDetails);
+
   return (
     <>
       <NavBar />
       {renderButton()}
+      {/* dropdown to select year */}
       <div className="flex w-[100%] justify-center mt-[5rem]">
         <div class="w-[90vw] h-14 relative rounded-2xl" style={{
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
@@ -432,7 +427,9 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
           </div>
         </div>
       </div>
+
       <div className={`flex flex-col justify-center items-center max536:pt-0 gap-1 ${IsDashboard ? 'flex flex-col justify-center items-center max536:pt-0 gap-1 mt-[5rem]' : ''}`}>
+        {/* first two graph */}
         <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
           <div className="flex mb-4 flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center">
             <div className="relative">
@@ -465,6 +462,8 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
             </div>
           </div>
         </div>
+
+        {/* dropdow to select month and month wise detail */}
         {
           showDetails && (
             <div
@@ -521,6 +520,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
         }
         <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-8 max850:hidden"></div>
 
+        {/* last two graph */}
         <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
           <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
             <div className="relative">
@@ -559,6 +559,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
             </div>
           </div>
         </div>
+
       </div>
     </>
   );
