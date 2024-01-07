@@ -81,8 +81,7 @@ const Panel = () => {
       return clientsData;
     }
 
-    const query = searchQuery.toLowerCase();
-
+    const query = searchQuery.toLowerCase()
     const filtered = clientsData?.filter(([key, client]) => {
       const institution = client.institution ? client.institution.toLowerCase() : '';
       const emailId = client.emailId ? client.emailId.toLowerCase() : '';
