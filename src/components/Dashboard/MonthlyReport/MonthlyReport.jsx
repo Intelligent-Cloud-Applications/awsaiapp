@@ -416,7 +416,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
           <div class="flex h-14 justify-center items-center text-stone-900 text-4xl font-bold font-['Inter'] leading-9">{selectedYear} REPORT</div>
           <div class="flex justify-end mt-[-2.7rem] mr-[4rem] ">
             <select
-              className="text-left text-bold K2D text-[1.1rem] text-[#000000] w-[12rem] h-8 bg-[#ffffff] border border-[#717171] hover:border-gray-500 px-4 py-1rounded-[5px]"
+              className="text-left text-bold K2D text-[1.1rem] text-[#000000] w-[12rem] h-8 bg-[#ffffff] border border-[#717171] hover:border-gray-500 px-4 py-1rounded-[5px] max600:w-[60vw]"
               value={selectedYear}
               onChange={handleYearChange}
             >
