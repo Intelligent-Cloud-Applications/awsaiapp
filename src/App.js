@@ -1,15 +1,17 @@
 import { useContext, useEffect, useRef } from "react";
 import { Auth, API } from "aws-amplify";
+import { useLocation } from "react-router-dom";
 import Context from "./context/Context";
 import RoutesContainer from "./Routes";
 import LoaderProvider from "./components/LoaderProvider";
 
-
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
-
-  // console.log(process.env)
+  const location = useLocation();
+  const institutionFromParams = new URLSearchParams(location.search).get("institution");
+  const institutionFromLocalStorage = localStorage.getItem('institution');
+  const institution = institutionFromParams || institutionFromLocalStorage;
 
   useEffect(() => {
     const check = async () => {
@@ -17,26 +19,41 @@ function App() {
 
       try {
         await Auth.currentAuthenticatedUser();
-        const userdata = await API.get('clients', '/self/read-self/awsaiapp');
-        if(userdata.userType === 'admin'){ 
-        console.log(userdata);
-        // userdata.Status = true;
-        UserCtx.current.setUserData(userdata);
-        UserCtx.current.setIsAuth(true);
-        UtilCtx.current.setLoader(false);
+
+        if (institution) {
+          const userdata = await API.get("clients", `/self/read-self/${institution}`);
+
+          if (userdata.userType === "admin") {
+            UserCtx.current.setUserData(userdata);
+            UserCtx.current.setIsAuth(true);
+          } else {
+          }
+        } else {
+          const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
+
+          if (defaultUserdata.userType === "admin") {
+            UserCtx.current.setUserData(defaultUserdata);
+            UserCtx.current.setIsAuth(true);
+          } else {
+            // Handle cases where userType is not 'admin' for default institution
+          }
         }
       } catch (e) {
         console.log(e);
-        // UserCtx.current.setUserData({});
+      } finally {
         UtilCtx.current.setLoader(false);
       }
     };
+
     check();
-  }, []);
+  }, [UtilCtx, UserCtx, institution]);
+
+
   return (
     <LoaderProvider>
       <RoutesContainer />
     </LoaderProvider>
   );
 }
+
 export default App;

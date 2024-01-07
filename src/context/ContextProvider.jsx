@@ -1,26 +1,62 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Context from "./Context";
 import { API } from "aws-amplify";
 
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
+  const [pending, setPending] = useState({});
   // const [member, setMember] = useState([]);
+  const [products, setProducts] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
+  const location = useLocation();
+  const institution = new URLSearchParams(location.search).get("institution");
 
   useEffect(() => {
     fetchClients();
-    // fetchMember({ institution: "happyprancer" });
-    fetchUserProfile(); // Fetch user profile when the component mounts
+    fetchUserProfile();
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Function to fetch the list of clients
-  const fetchClients = async () => {
+  const fetchProducts = async () => {
     try {
       setLoader(true);
-      const response = await API.get("clients", "/admin/list-clients");
+      const response = await API.get("clients", "/any/list-products");
+      console.log(response);
+      setProducts(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const fetchPending = async (institution) => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/admin/list-pending_clients");
+      setPending(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchPending();
+    }
+  }, [isAuth]);
+
+  const fetchClients = async (institution) => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/admin/list-institution");
+      console.log(response);
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -29,28 +65,15 @@ const ContextProvider = (props) => {
     }
   };
 
-  // const fetchMember = async ({ institution = "happyprancer" }) => {
-  //   try {
-  //     setLoader(true);
-  //     const response = await API.get(
-  //       "clients",
-  //       `/user/list-member/${institution}`
-  //     );
-  //     console.log("members", response);
-  //     setMember(response);
-  //   } catch (error) {
-  //     console.error("Error fetching member:", error);
-  //     console.error("Error details:", error.response);
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // };
-
-  // Function to fetch the user profile
   const fetchUserProfile = async () => {
     try {
       setLoader(true);
-      const response = await API.get('clients', '/self/read-self/awsaiapp');
+      let response;
+      if (institution !== "awsaiapp") {
+        response = await API.get("clients", `/self/read-self/${institution}`);
+      } else {
+        response = await API.get("clients", "/self/read-self/awsaiapp");
+      }
       setUserProfile(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -85,6 +108,13 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
       onReload: fetchClients,
+    },
+    products: products,
+    fetchProducts: () => {},
+    pending: {
+      data: pending,
+      fetchPending: fetchPending,
+      onReload: fetchPending,
     },
     // member: {
     //   data: member,

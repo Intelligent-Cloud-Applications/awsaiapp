@@ -32,13 +32,21 @@ Amplify.configure({
       responseType: "token",
     },
   },
+  Storage: {
+    region: "us-east-1",
+    bucket: "userprofilepict",
+    identityPoolId:
+      process.env.STAGE === "PROD"
+        ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"
+        : "us-east-2:6a989bd3-6905-4c5d-b2ea-6101ccfbedd3",
+  },
   API: {
     endpoints: [
       {
         name: "clients",
         endpoint:
           process.env.STAGE === "PROD"
-            ? "https://edmrgkqe9b.execute-api.us-east-1.amazonaws.com/prod"
+            ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
             : "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
             region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
           },

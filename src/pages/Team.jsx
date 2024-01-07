@@ -67,7 +67,7 @@ const teamMembers = [
     imageSrc: Soumya,
   },
   {
-    name: "Jogalakshmi",
+    name: "Jogalaxmi",
     role: "SDE 1",
     imageSrc: Jogalaxmi,
   },

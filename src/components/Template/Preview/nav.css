@@ -1,0 +1,14 @@
+@media (max-width:1208px) {
+    .malt {
+        margin-left: 7.5%;
+        font-size: 14px;
+        padding: 1%;
+    }
+}
+
+@media (max-width:1025px) {
+    .malt {
+        font-size: 12px;
+        padding: 1%;
+    }
+}

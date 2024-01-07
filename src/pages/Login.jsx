@@ -10,7 +10,6 @@ import LockIcon from "../utils/Assets/Dashboard/images/SVG/LockIcon.svg";
 // import GoogleIcon from '../utils/png/Google.png';
 // import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from "../utils/Assets/Login.png";
-import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import "./Login.css";
 
 const Login = () => {
@@ -24,6 +23,17 @@ const Login = () => {
   const UserCtx = useContext(Context);
   const institutionName = ["happyprancer", "bworkz", "awsaiapp"];
   const [institution, setInstitution] = useState("");
+
+  const handleInstitutionChange = (selectedInstitution) => {
+    if (selectedInstitution !== 'awsaiapp') {
+      setInstitution(selectedInstitution);
+      localStorage.setItem('institution', selectedInstitution);
+    } else {
+      setInstitution(selectedInstitution);
+      localStorage.removeItem('institution', selectedInstitution)
+    }
+  };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +73,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate("/dashboard");
+          Navigate("/dashboard", { state: { institution: institution } });
         } else if (userdata.userType === "admin") {
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -73,7 +83,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/memberlist?institution=${institution}`);
+          Navigate(`/dashboard`, { state: { institution: institution } });
         } else {
           Navigate("/");
           Swal.fire({
@@ -100,18 +110,11 @@ const Login = () => {
     }
   };
 
-  // const handleGoogleLogin = async () => {
-  //   Add Google authentication logic here
-  // };
-
-  // const handleFacebookLogin = async () => {
-  //   Add Facebook authentication logic here
-  // };
 
   return (
     <>
       <Navbar />
-      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh]">
+      <div className=" bg-[#f7f7f7] flex justify-center items-center h-[100vh] pt-[2rem]">
         <div className="flex max767:flex-col h-[35rem]">
           <div
             className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
@@ -122,7 +125,6 @@ const Login = () => {
               Let’s Get Started
             </h1>
           </div>
-
           <div
             className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw]"
             style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}
@@ -134,9 +136,8 @@ const Login = () => {
               <select
                 className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
                 value={institution}
-                onChange={(e) => {
-                  setInstitution(e.target.value);
-                }}
+                onChange={(e) => handleInstitutionChange(e.target.value)}
+
               >
                 <option value="">Select your Institution</option>
                 {institutionName.map((name) => (
@@ -196,45 +197,23 @@ const Login = () => {
               >
                 Login
               </button>
+              <p
+                className="text-green cursor-pointer pt-2"
+                onClick={() => {
+                  Navigate("/signup");
+                }}
+              >
+                Create a New Account {" "}
+              </p>
               {error && (
                 <div className=" mt-[1rem] font-bold text-[#db3d3d] text-center K2D">
                   {error}
                 </div>
               )}
-
-              {/* <div className='flex flex-row items-center justify-center mt-[4rem] mb-[1rem]'>
-                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] mr-1"></div>
-                <p className='font-bold'> OR </p>
-                <div className=" w-[6rem] bg-[#000000] h-[0.09rem] ml-1"></div>
-              </div> */}
-
-              {/* <button
-                onClick={handleGoogleLogin}
-                className="border w-[20rem] mb-2 p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
-              >
-                <img
-                  src={GoogleIcon}
-                  alt="Google Icon"
-                  className=" w-6 h-6 ml-4"
-                />
-                <div >Continue with Google</div>
-              </button>
-              <button
-                onClick={handleFacebookLogin}
-                className="border w-[20rem] p-1 rounded-[2rem] mt-2 flex items-center justify-start gap-[4rem] max767:bg-white"
-              >
-                <img
-                  src={FacebookIcon}
-                  alt="Facebook Icon"
-                  className="w-6 h-6 ml-4"
-                />
-                <div className="text-center">Continue with Facebook</div>
-              </button> */}
             </form>
           </div>
         </div>
       </div>
-      <LeftBanner institution={institution} />
     </>
   );
 };
