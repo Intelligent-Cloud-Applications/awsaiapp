@@ -21,7 +21,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
-  const institutionName = ["happyprancer", "bworkz", "awsaiapp"];
+  const institutionName = ["awsaiapp", "happyprancer", "Bworkz", "lissome", "rtiger", "iconic", "moda"];
   const [institution, setInstitution] = useState("");
 
   const handleInstitutionChange = (selectedInstitution) => {
@@ -33,7 +33,7 @@ const Login = () => {
       localStorage.removeItem('institution', selectedInstitution)
     }
   };
-  
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
