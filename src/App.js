@@ -21,7 +21,7 @@ function App() {
         await Auth.currentAuthenticatedUser();
 
         if (institution) {
-          const userdata = await API.get("clients", `/self/read-self/${institution}`);
+          const userdata = await API.get("clients", `/admin/read-any/${institution}`);
 
           if (userdata.userType === "admin") {
             UserCtx.current.setUserData(userdata);
