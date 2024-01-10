@@ -12,6 +12,7 @@ function App() {
   const institutionFromParams = new URLSearchParams(location.search).get("institution");
   const institutionFromLocalStorage = localStorage.getItem('institution');
   const institution = institutionFromParams || institutionFromLocalStorage;
+  console.log(institution)
 
   useEffect(() => {
     const check = async () => {
@@ -21,7 +22,7 @@ function App() {
         await Auth.currentAuthenticatedUser();
 
         if (institution) {
-          const userdata = await API.get("clients", `/admin/read-any/${institution}`);
+          const userdata = await API.get("clients", `/self/read-self/${institution}`);
 
           if (userdata.userType === "admin") {
             UserCtx.current.setUserData(userdata);
