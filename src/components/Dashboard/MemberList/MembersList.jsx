@@ -50,7 +50,6 @@ const MemberList = ({ institution: tempInstitution }) => {
 
   const fetchMembersForInstitution = async (institution) => {
     try {
-      util.setLoader(true);
       const response = await API.get(
         "clients",
         `/user/list-members/${institution}`
