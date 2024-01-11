@@ -14,7 +14,6 @@ const Pay = () => {
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);
   };
- 
 
   const handleSubscribe = async (productId) => {
     UtilCtx.setLoader(true);
@@ -42,7 +41,10 @@ const Pay = () => {
     console.log("started");
     try {
       const options = {
-        key: "rzp_test_1nTmB013tmcWZS",
+        key:
+          process.env.STAGE === "PROD"
+            ? process.env.RAZORPAY_KEY_ID
+            : process.env.RAZORPAY_TEST_KEY_ID,
         subscription_id: response.paymentId,
         name: "AWSAIAPP",
         description: response.subscriptionType,
