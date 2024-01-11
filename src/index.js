@@ -6,6 +6,12 @@ import ContextProvider from "./context/ContextProvider";
 import "./index.css";
 import App from "./App";
 
+const process = {
+  env: {
+    STAGE: "PROD",
+  },
+};
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
