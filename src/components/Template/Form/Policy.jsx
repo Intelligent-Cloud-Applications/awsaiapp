@@ -23,6 +23,9 @@ function Policy({ policies, setPolicies }) {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">POLICY AND TERMS</h1>
+      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+      ** The Privacy page shown is just an example how your given data will look like for the Privacy page it will not change on giving your input.**
+      </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>

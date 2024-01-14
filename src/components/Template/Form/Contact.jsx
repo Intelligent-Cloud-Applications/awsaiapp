@@ -25,6 +25,9 @@ function Contact({ contactInfo, setContactInfo }) {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">CONTACT INFORMATION</h1>
+      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+      ** The Footer shown is just an example how your given data will look like for the Footer it will not change on giving your input.**
+      </h5>
       <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
       Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
