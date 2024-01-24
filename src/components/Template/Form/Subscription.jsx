@@ -37,6 +37,9 @@ function Subscription({ subscriptions, setSubscriptions }) {
   return (
     <div className="mx-auto max-w-[800px] px-8">
       <h1 className="font-medium text-7xl">SUBSCRIPTION SECTION</h1>
+      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+      ** The subscription model shown is just an example how your given data will look like for the subscription it will not change on giving your input.**
+      </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Outline subscription plans clearly, emphasizing features and benefits to aid user decision-making.
       </h5>
