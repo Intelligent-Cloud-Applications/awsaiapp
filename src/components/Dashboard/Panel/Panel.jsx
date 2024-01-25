@@ -436,8 +436,8 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to={`/MonthlyReport?institution=${client.institution} `}>
-                <div className=" flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
+              <Link to={`/Dashboard?institution=${client.institution}`}>
+                <div className="flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
                   <img
                     src={personIcon}
                     alt=""

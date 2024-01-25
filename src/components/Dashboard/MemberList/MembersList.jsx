@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Context from "../../../context/Context";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Swal from "sweetalert2";
+import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
@@ -37,16 +39,35 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
+  const [IsDashboard, setIsDashboard] = useState(false);
+  const Navigate = useNavigate();
   const { util, user } = useContext(Context);
   const searchParams = new URLSearchParams(window.location.search);
   let institution
   if (user.profile.institution === "awsaiapp") {
     institution = searchParams.get("institution");
   } else {
-    institution = tempInstitution
+    institution = tempInstitution || searchParams.get("institution");
   }
   console.log(userCheck);
 
+  const renderButton = () => {
+    if (IsDashboard) {
+      return null;
+    } else {
+      return (
+        <button
+          onClick={() => Navigate("/dashboard")}
+          className="top-[6.7rem] absolute z-10 ml-[-3rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          style={{
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
+          }}
+        >
+          <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
+        </button>
+      );
+    }
+  };
 
   const fetchMembersForInstitution = async (institution) => {
     try {
@@ -345,6 +366,9 @@ const MemberList = ({ institution: tempInstitution }) => {
   return (
     <div className="w-[93vw] flex flex-col items-center gap-10">
       <Navbar />
+      <div className="flex w-full flex-start">
+        {renderButton()}
+      </div>
       <div className="flex justify-center">
         <div className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[5rem] `}>
           <div className="flex flex-row justify-between pb-2  max850:hidden">
@@ -783,12 +807,14 @@ const MemberList = ({ institution: tempInstitution }) => {
                   >
                     Update
                   </button>
-                  <button
-                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
-                    onClick={handleDeleteMember}
-                  >
-                    Delete
-                  </button>
+                  {institution && institution !== tempInstitution && (
+                    <button
+                      className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
+                      onClick={handleDeleteMember}
+                    >
+                      Delete
+                    </button>
+                  )}
                   <button
                     className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
                     onClick={handleCancelEdit}
