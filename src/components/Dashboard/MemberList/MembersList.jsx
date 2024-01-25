@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Context from "../../../context/Context";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
@@ -41,6 +42,7 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [memberData, setMemberData] = useState([]);
   const [IsDashboard, setIsDashboard] = useState(false);
   const Navigate = useNavigate();
+  const location = useLocation();
   const { util, user } = useContext(Context);
   const searchParams = new URLSearchParams(window.location.search);
   let institution
@@ -50,6 +52,14 @@ const MemberList = ({ institution: tempInstitution }) => {
     institution = tempInstitution || searchParams.get("institution");
   }
   console.log(userCheck);
+
+  useEffect(() => {
+    if (location.pathname.includes('dashboard')) {
+      setIsDashboard(true);
+    } else {
+      setIsDashboard(false);
+    }
+  }, [location.pathname]);
 
   const renderButton = () => {
     if (IsDashboard) {
