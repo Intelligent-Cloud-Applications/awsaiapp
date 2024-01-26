@@ -70,7 +70,7 @@ const DashBoard = () => {
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
 
-        <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 max850:mt-[0] ">
+        <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 ">
           <LeftBanner
             displayAfterClick={(data) => {
               setClick(data);

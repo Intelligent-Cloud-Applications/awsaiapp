@@ -68,7 +68,7 @@ const MemberList = ({ institution: tempInstitution }) => {
       return (
         <button
           onClick={() => Navigate("/dashboard")}
-          className="top-[6.7rem] absolute z-10 ml-[-3rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          className="relative z-10 left-[-2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
           }}
@@ -394,13 +394,13 @@ const MemberList = ({ institution: tempInstitution }) => {
 
           <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
 
-          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0">
+          <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0 max600:mt-[-3rem]">
             Memberlists
           </h2>
 
           <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem] max600:flex-col max600:justify-center max600:items-center max600:mb-[-1rem] max600:mt-0">
             {/* searchBar */}
-            <div className="flex justify-center items-center max850:w-[80vw]">
+            <div className="flex justify-center items-center max600:w-[80vw]">
               <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
                 <img
                   className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
