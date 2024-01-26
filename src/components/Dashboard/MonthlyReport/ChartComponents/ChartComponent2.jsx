@@ -61,6 +61,11 @@ const ChartComponent2 = ({ data, type }) => {
               },
             },
           },
+          elements: {
+            point: {
+              radius: 1, // Set point radius to 0 to hide points
+            },
+          },
         },
       });
   

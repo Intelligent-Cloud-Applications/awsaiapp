@@ -33,7 +33,7 @@ const ChartComponent = ({ data, type }) => {
             },
           },
         },
-      });  
+      });
     } else if (type === "line") {
       chart = new Chart(ctx, {
         type: "line",
@@ -58,9 +58,13 @@ const ChartComponent = ({ data, type }) => {
               },
             },
           },
+          elements: {
+            point: {
+              radius: 1, // Set point radius to 0 to hide points
+            },
+          },
         },
       });
-  
     }
 
     return () => {
