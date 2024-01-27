@@ -97,11 +97,11 @@ const Template = () => {
   ]);
 
   const [instructors, setInstructors] = useState([
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
   ]);
 
   const [policies, setPolicies] = useState([
@@ -354,22 +354,54 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/instructors", {
         body: {
-          institution: "awsaiapp",
-          instructor_1: instructors[0].name,
-          inst_position_1: instructors[0].position,
-          inst_pic_1,
-          instructor_2: instructors[1].name,
-          inst_position_2: instructors[1].position,
-          inst_pic_2,
-          instructor_3: instructors[2].name,
-          inst_position_3: instructors[2].position,
-          inst_pic_3,
-          instructor_4: instructors[3].name,
-          inst_position_4: instructors[3].position,
-          inst_pic_4,
-          instructor_5: instructors[4].name,
-          inst_position_5: instructors[4].position,
-          inst_pic_5,
+          // institution: "awsaiapp",
+          // instructor_1: instructors[0].name,
+          // inst_position_1: instructors[0].position,
+          // inst_pic_1,
+          // instructor_2: instructors[1].name,
+          // inst_position_2: instructors[1].position,
+          // inst_pic_2,
+          // instructor_3: instructors[2].name,
+          // inst_position_3: instructors[2].position,
+          // inst_pic_3,
+          // instructor_4: instructors[3].name,
+          // inst_position_4: instructors[3].position,
+          // inst_pic_4,
+          // instructor_5: instructors[4].name,
+          // inst_position_5: instructors[4].position,
+          // inst_pic_5,
+          Instructor: [
+            {
+              name: instructors[0].name,
+              emailId: instructors[0].emailId,
+              image: inst_pic_1,
+              position:instructors[0].position,
+            },
+            {
+              name: instructors[1].name,
+              emailId: instructors[1].emailId,
+              image: inst_pic_2,
+              position:instructors[1].position,
+            },
+            {
+              name: instructors[2].name,
+              emailId: instructors[2].emailId,
+              image: inst_pic_3,
+              position:instructors[2].position,
+            },
+            {
+              name: instructors[3].name,
+              emailId: instructors[3].emailId,
+              image: inst_pic_4,
+              position:instructors[3].position,
+            },
+            {
+              name: instructors[4].name,
+              emailId: instructors[4].emailId,
+              image: inst_pic_5,
+              position:instructors[4].position,
+            },
+          ]
         },
       });
     } catch (error) {

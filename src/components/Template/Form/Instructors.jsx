@@ -51,17 +51,19 @@ const removeInstructor = (indexToRemove) => {
   const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
   setInstructors(updatedInstructors);
 };
-  const addNewInstructor = () => {
+const addNewInstructor = () => {
+  if (instructors.length < 5) {
     setInstructors([
       ...instructors,
-      { imgSrc: '', name: '', uploadedFile: null },
+      { imgSrc: '', name: '', uploadedFile: null, emailId: '', position: '' },
     ]);
     // Scroll to the newly added instructor
     instructorsContainerRef.current.scrollTo({
       top: instructorsContainerRef.current.scrollHeight,
       behavior: 'smooth',
     });
-  };
+  }
+};
 
   return (
     <div className="mx-auto max-w-[800px] px-8">
@@ -154,13 +156,48 @@ const removeInstructor = (indexToRemove) => {
       activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
     }`}
   ></div>
+
               </div>
+              <div className="relative">    
+<input
+    type="text"
+    name="emailId"
+    value={instructor.emailId}
+    onChange={(e) => handleInstructorChange(index, 'emailId', e.target.value)}
+    placeholder="emailId"
+    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent"
+    onFocus={() => toggleActiveInstructor(index)}
+    onBlur={() => toggleActiveInstructor(null)}
+  />
+                {/* Name line container */}
+                <div
+    className={`absolute left-0 right-0  h-[0.5px] ${
+      activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
+    }`}
+  ></div>
+</div> <div className="relative">
+<input
+    type="text"
+    name="position"
+    value={instructor.position}
+    onChange={(e) => handleInstructorChange(index, 'position', e.target.value)}
+    placeholder="position"
+    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent"
+    onFocus={() => toggleActiveInstructor(index)}
+    onBlur={() => toggleActiveInstructor(null)}
+  />
+                {/* Name line container */}
+                <div
+    className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${
+      activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
+    }`}
+  ></div></div>
             </div>
           ))}
         </div>
         {/* Add button after the third instructor */}
         {instructors.length >= 3 && (
-          <div className="mt-2 flex justify-center ">
+          <div className="mb-10 flex justify-center ">
             <button
               onClick={addNewInstructor}
               className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
