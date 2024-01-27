@@ -1,12 +1,40 @@
 import React, { useState } from 'react';
 
-function Services({ services, setServices }) {
+function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Components_Home_Why__h1,src_Components_Home_Header3__h1,setsrc_Components_Home_Header3__h1,src_Components_Home_Header3__h2,setsrc_Components_Home_Header3__h2 }) {
   // const [services, setServices] = useState([
   //   { title: '', description: '' },
   //   { title: '', description: '' },
   //   { title: '', description: '' },
   // ]);
+  const [isHeading, setHeading] = useState(false);
+  const [issmallHeading, setsmallHeading] = useState(false);
+  const [issubHeading, setsubHeading] = useState(false);
 
+  const handleHeadingInputChange = (e) => {
+    setsrc_Components_Home_Why__h1(e.target.value);
+  };
+
+  const handlesmallHeadingInputChange = (e) => {
+    setsrc_Components_Home_Header3__h1(e.target.value);
+  };
+  
+
+  const handlesubHeadingInputChange = (e) => {
+    setsrc_Components_Home_Header3__h2(e.target.value);
+  };
+
+  const toggleHeadingInputVisibility = () => {
+    setHeading(true);
+  };
+
+  const togglesmallHeadingInputVisibility = () => {
+    setsmallHeading(true);
+  };
+
+  const togglesubHeadingInputVisibility = () => {
+    setsubHeading(true);
+  };
+  // const [smallHeadingLineColor, setsmallHeadingLineColor] = useState("#939393");
   const handleServiceChange = (index, e) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
@@ -24,7 +52,69 @@ function Services({ services, setServices }) {
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
       </h5>
-      <div className="mt-8">
+      <div className="mt-4">
+      <h5
+          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
+          onClick={toggleHeadingInputVisibility}
+        >
+          {isHeading ? (
+            <input
+              type="text"
+              value={src_Components_Home_Why__h1}
+              onChange={handleHeadingInputChange}
+              className="w-[28rem] text-black border-none outline-none bg-transparent"
+              placeholder="Enter Heading"
+            />
+          ) : (
+            <span>{src_Components_Home_Why__h1 || "Heading (Why choose HappyPrancer?)"}</span>
+          )}
+        </h5>
+        <div
+          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          // style={{ backgroundColor: HeadingLineColor }}
+        ></div>
+        <h5
+          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
+          onClick={togglesmallHeadingInputVisibility}
+        >
+          {issmallHeading ? (
+            <input
+              type="text"
+              value={src_Components_Home_Header3__h1}
+              onChange={handlesmallHeadingInputChange}
+              className="w-[28rem] text-black border-none outline-none bg-transparent"
+              placeholder="Enter Sub Heading"
+            />
+          ) : (
+            <span>{src_Components_Home_Header3__h1 || "Sub Heading (A Fitness Movement)"}</span>
+          )}
+        </h5>
+        
+        <div
+          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          // style={{ backgroundColor: smallHeadingLineColor }}
+        ></div>
+         <h5
+          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
+          onClick={togglesubHeadingInputVisibility}
+        >
+          {issubHeading ? (
+            <input
+              type="text"
+              value={src_Components_Home_Header3__h2}
+              onChange={handlesubHeadingInputChange}
+              className="w-[28rem] text-black border-none outline-none bg-transparent"
+              placeholder="Enter Heading"
+            />
+          ) : (
+            <span>{src_Components_Home_Header3__h2 || "Sub Heading (Why HappyPrancer?)"}</span>
+          )}
+        </h5>
+        
+        <div
+          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          // style={{ backgroundColor: smallHeadingLineColor }}
+        ></div>
         {services.map((service, index) => (
           <div key={index} className="mt-4">
             <h2 className="font-medium text-xl">Service {index + 1}</h2>
@@ -70,7 +160,7 @@ function Services({ services, setServices }) {
       </div>
       
           <div className="relative mt-4">
-            <input
+            {/* <input
               type="text"
               name="danceType"
               value={services[0].danceType} // Assuming it's stored in the first service object
@@ -84,7 +174,7 @@ function Services({ services, setServices }) {
               className={`absolute left-0 right-0 bottom-0 h-[1.5px] ${
                 activeServiceIndex === services.length ? 'bg-black' : 'bg-[#939393]'
               }`}
-            ></div>
+            ></div> */}
           </div>
     </div>
   

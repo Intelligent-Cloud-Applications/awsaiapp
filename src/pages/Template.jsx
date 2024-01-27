@@ -24,18 +24,23 @@ const Template = () => {
   const [error, setError] = useState(null);
   const [logo, setLogo] = useState(null);
 
+  //
+  const [LightPrimaryColor] = useState(null);
+  const [LightestPrimaryColor] = useState(null);
   // const [logo, setLogo] = useState(null);
-
+  const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
+  const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
+  const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(null);
+  
   const [companyName, setCompanyName] = useState(null);
-  const [domainName, setDomainName] = useState("");
-  const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
+  const [SecondaryColor, setSecondaryColor] = useState("#000000");
   console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
   console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
   console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
   console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
 
-  const [tagline, setTagline] = useState("");
+  const [TagLine, setTagLine] = useState("");
   const [video, setVideo] = useState(null);
 
   const [services, setServices] = useState([
@@ -129,15 +134,18 @@ const Template = () => {
       imageUrl = imageUrl.split("?")[0];
       setLogo(imageUrl);
       console.log("logo: ", imageUrl);
-
+      const additionalAttributes = {
+        LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
+        LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
+      };
       await API.put("clients", "/user/development-form/company", {
         body: {
           institution: "awsaiapp",
           companyName,
-          domainName,
-          companyLineColor,
-          domainLineColor,
+          PrimaryColor,
+          SecondaryColor,
           logoUrl: imageUrl,
+          ...additionalAttributes,
         },
       });
     } catch (error) {
@@ -159,7 +167,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
           institution: "awsaiapp",
-          tagline,
+          TagLine,
           videoUrl,
         },
       });
@@ -175,12 +183,15 @@ const Template = () => {
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institution: "awsaiapp",
-          service_title_1: services[0].title,
-          des_1: services[0].description,
-          services_title_2: services[1].title,
-          des_2: services[1].description,
-          services_title_3: services[2].title,
-          des_3: services[2].description,
+          src_Components_Home_Why__h1,
+          src_Components_Home_Header3__h1,
+          src_Components_Home_Header3__h2,
+          src_Components_Home_Header3__h5_1: services[0].title,
+          src_Components_Home_Header3__p_1: services[0].description,
+          src_Components_Home_Header3__h5_2: services[1].title,
+          src_Components_Home_Header3__p_2: services[1].description,
+          src_Components_Home_Header3__h5_3: services[2].title,
+          src_Components_Home_Header3__p_3: services[2].description,
           // dance_type: services[0].dance_type,
         },
       });
@@ -214,6 +225,7 @@ const Template = () => {
       // Get the URL of the uploaded file
       let imageUrl3 = await Storage.get(response3.key);
       imageUrl3 = imageUrl3.split("?")[0];
+      
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
@@ -463,7 +475,7 @@ const Template = () => {
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} tagline={tagline} setTagline={setTagline} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
+          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
         </div>
         <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
           {currentSection === 0 &&
@@ -471,26 +483,30 @@ const Template = () => {
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
-              domainName={domainName}
-              setDomainName={setDomainName}
-              companyLineColor={companyLineColor}
-              setCompanyLineColor={setCompanyLineColor}
-              domainLineColor={domainLineColor}
-              setDomainLineColor={setDomainLineColor}
+              PrimaryColor={PrimaryColor}
+              setPrimaryColor={setPrimaryColor}
+              SecondaryColor={SecondaryColor}
+              setSecondaryColor={setSecondaryColor}
               logo={logo}
               setLogo={setLogo}
             />}
 
           {currentSection === 1 &&
             <Home
-              tagline={tagline}
-              setTagline={setTagline}
+              TagLine={TagLine}
+              setTagLine={setTagLine}
               video={video}
               setVideo={setVideo}
             />}
 
           {currentSection === 2 &&
             <Services
+              src_Components_Home_Why__h1={src_Components_Home_Why__h1}
+              setsrc_Components_Home_Why__h1={setsrc_Components_Home_Why__h1}
+              src_Components_Home_Header3__h1={src_Components_Home_Header3__h1}
+              setsrc_Components_Home_Header3__h1={setsrc_Components_Home_Header3__h1}
+              src_Components_Home_Header3__h2={src_Components_Home_Header3__h2}
+              setsrc_Components_Home_Header3__h2={setsrc_Components_Home_Header3__h2}
               services={services}
               setServices={setServices}
             />}

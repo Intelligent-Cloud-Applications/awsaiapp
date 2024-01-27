@@ -38,6 +38,7 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/admin/list-pending_clients");
+      console.log(response);
       setPending(response);
     } catch (error) {
       console.error("Error fetching clients:", error);

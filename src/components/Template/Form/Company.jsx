@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import upload from "../../../utils/png/upload.png";
 
-function Company({ clients, companyName, setCompanyName, domainName, setDomainName, companyLineColor, setCompanyLineColor, domainLineColor, setDomainLineColor, logo, setLogo }) {
+function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
-  const [isDomainInputVisible, setDomainInputVisible] = useState(false);
+  // const [isDomainInputVisible, setDomainInputVisible] = useState(false);
   // const [companyLineColor, setCompanyLineColor] = useState("#939393");
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
   // const [logoUrl, setLogoUrl] = useState(null);
-
+  const [companyLineColor, setCompanyLineColor] = useState("#939393");
+  // const [domainLineColor, setDomainLineColor] = useState("#939393");
   
 
 
@@ -17,35 +18,31 @@ function Company({ clients, companyName, setCompanyName, domainName, setDomainNa
     setCompanyName(e.target.value);
   };
 
-  const handleDomainInputChange = (e) => {
-    setDomainName(e.target.value);
-  };
 
 
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
     setCompanyLineColor("#000000"); // Change company line color to black on click
-    setDomainInputVisible(false); // Hide domain input when company input is clicked
-    setDomainLineColor("#939393"); // Reset domain line color
+  
+     
   };
 
-  const toggleDomainInputVisibility = () => {
-    setDomainInputVisible(true);
-    setDomainLineColor("#000000"); // Change domain line color to black on click
-    setCompanyInputVisible(false); // Hide company input when domain input is clicked
-    setCompanyLineColor("#939393"); // Reset company line color
-  };
+  // const toggleDomainInputVisibility = () => {
+  //   setDomainLineColor("#000000"); // Change domain line color to black on click
+  //   setCompanyInputVisible(false); // Hide company input when domain input is clicked
+  //   setCompanyLineColor("#939393"); // Reset company line color
+  // };
 
   //color
-  const [selectedColor1, setSelectedColor1] = useState("#1B7571");
+  // const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
 
   const handleColorChange1 = (e) => {
-    setSelectedColor1(e.target.value);
+    setPrimaryColor(e.target.value);
   };
-  const [selectedColor2, setSelectedColor2] = useState("#000000");
+  // const [SecondaryColor, setSecondaryColor] = useState("#000000");
 
   const handleColorChange2 = (e) => {
-    setSelectedColor2(e.target.value);
+    setSecondaryColor(e.target.value);
   };
 
   //file
@@ -108,26 +105,11 @@ function Company({ clients, companyName, setCompanyName, domainName, setDomainNa
         ></div>
       </div>
       <div className="relative mt-6">
-        <h5
-          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
-          onClick={toggleDomainInputVisibility}
-        >
-          {isDomainInputVisible ? (
-            <input
-              type="text"
-              value={domainName}
-              onChange={handleDomainInputChange}
-              className="w-[28rem] text-black border-none outline-none bg-transparent"
-              placeholder="Enter Domain Name"
-            />
-          ) : (
-            <span>{domainName || "Domain Name"}</span>
-          )}
-        </h5>
-        <div
+        
+        {/* <div
           className="absolute left-0 right-0 bottom-0 h-[1.5px]"
           style={{ backgroundColor: domainLineColor }}
-        ></div>
+        ></div> */}
       </div>
 
       <div className="mt-8">
@@ -135,7 +117,7 @@ function Company({ clients, companyName, setCompanyName, domainName, setDomainNa
         <div className="flex gap-8">
           <input
             type="color"
-            value={selectedColor1}
+            value={PrimaryColor}
             onChange={handleColorChange1}
             class="rounded-full h-12 w-12 cursor-pointer border-none outline-none"
             alt=""
@@ -143,7 +125,7 @@ function Company({ clients, companyName, setCompanyName, domainName, setDomainNa
 
           <input
             type="color"
-            value={selectedColor2}
+            value={SecondaryColor}
             onChange={handleColorChange2}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
           />
