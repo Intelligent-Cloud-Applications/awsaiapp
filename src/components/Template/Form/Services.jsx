@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useRef} from 'react';
 
-function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Components_Home_Why__h1,src_Components_Home_Header3__h1,setsrc_Components_Home_Header3__h1,src_Components_Home_Header3__h2,setsrc_Components_Home_Header3__h2 }) {
+function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Components_Home_Why__h1,src_Components_Home_Header3__h1,setsrc_Components_Home_Header3__h1,src_Components_Home_Header3__h2,setsrc_Components_Home_Header3__h2, danceTypes, setDanceTypes }) {
   // const [services, setServices] = useState([
   //   { title: '', description: '' },
   //   { title: '', description: '' },
@@ -46,13 +46,45 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
     setActiveServiceIndex(index === activeServiceIndex ? null : index);
   };
 
+  const danceTypesContainerRef = useRef(null);
+
+  const handleDanceTypeChange = (index, value) => {
+    const updatedDanceTypes = [...danceTypes];
+    updatedDanceTypes[index] = value;
+    setDanceTypes(updatedDanceTypes);
+  };
+
+  const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
+
+  const toggleActiveDanceType = (index) => {
+    setActiveDanceTypeIndex(index === activeDanceTypeIndex ? null : index);
+  };
+
+  const addNewDanceType = () => {
+    if (danceTypes.length < 5) {
+      setDanceTypes([...danceTypes, '']);
+    }
+    // Scroll to the newly added dance type
+    danceTypesContainerRef.current.scrollTo({
+      top: danceTypesContainerRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  const removeDanceType = (index) => {
+    const updatedDanceTypes = [...danceTypes];
+    updatedDanceTypes.splice(index, 1);
+    setDanceTypes(updatedDanceTypes);
+  };
+
   return (
-    <div className="mx-auto max-w-[800px] px-8">
+    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '510px' }}>
       <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
       </h5>
       <div className="mt-4">
+      <div className="relative">
       <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={toggleHeadingInputVisibility}
@@ -70,9 +102,9 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           )}
         </h5>
         <div
-          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           // style={{ backgroundColor: HeadingLineColor }}
-        ></div>
+        ></div></div><div className="relative">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={togglesmallHeadingInputVisibility}
@@ -91,9 +123,10 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
         </h5>
         
         <div
-          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           // style={{ backgroundColor: smallHeadingLineColor }}
-        ></div>
+        ></div> </div>
+        <div className="relative">
          <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={togglesubHeadingInputVisibility}
@@ -112,9 +145,9 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
         </h5>
         
         <div
-          className="absolute left-[33px] right-0 w-[86%] h-[1px] bg-[#939393]"
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           // style={{ backgroundColor: smallHeadingLineColor }}
-        ></div>
+        ></div></div>
         {services.map((service, index) => (
           <div key={index} className="mt-4">
             <h2 className="font-medium text-xl">Service {index + 1}</h2>
@@ -158,26 +191,59 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           </div>
         ))}
       </div>
-      
+     
           <div className="relative mt-4">
-            {/* <input
-              type="text"
-              name="danceType"
-              value={services[0].danceType} // Assuming it's stored in the first service object
-              onChange={(e) => handleServiceChange(0, e)} // Assuming dance type modifies the first service object
-              placeholder="What type of dance do you teach(like zumba,odishi)"
-              className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
-              onFocus={() => toggleActiveService(services.length)} // Use a unique index for the dance type container
-              onBlur={() => toggleActiveService(null)}
-            />
-            <div
-              className={`absolute left-0 right-0 bottom-0 h-[1.5px] ${
-                activeServiceIndex === services.length ? 'bg-black' : 'bg-[#939393]'
-              }`}
-            ></div> */}
+            
+          <div ref={danceTypesContainerRef} className="pb-6">
+          {danceTypes.map((danceType, index) => (
+            
+            <div key={index} className="mt-2">
+              <h2 className="font-medium text-xl">Dance Type {index + 1}</h2>
+              <div className="relative">
+                {/* Dance Type input */}
+                {index >= 3 && (
+                // <button
+                //   onClick={() => removeDanceType(index)}
+                //   className="mt-2 bg-red-500 text-white px-2 rounded-md text-xs"
+                // >
+                //   Remove Dance Type
+                // </button>
+                <button
+                onClick={() => removeDanceType(index)}
+                className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] "
+              >
+                <span>✕</span>
+              </button>
+              )}
+                <input
+                  type="text"
+                  value={danceType}
+                  onChange={(e) => handleDanceTypeChange(index, e.target.value)}
+                  placeholder="Dance Type"
+                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
+                  onFocus={() => toggleActiveDanceType(index)}
+                  onBlur={() => toggleActiveDanceType(null)}
+                />
+                {/* Dance Type line container */}
+                <div
+                  className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeDanceTypeIndex === index ? 'bg-black' : 'bg-[#939393]'
+                    }`}
+                ></div>
+              </div>
+             
+            </div>
+          ))}
+        </div>
+        {/* Add button after the third dance type */}
+        {danceTypes.length < 5 && (
+          <div className="mt-2 flex justify-center ">
+            <button onClick={addNewDanceType} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+              Add Dance Type
+            </button>
           </div>
+        )}
+      </div>
     </div>
-  
   );
 }
 

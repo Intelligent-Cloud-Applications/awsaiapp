@@ -23,7 +23,7 @@ const Template = () => {
   console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   const [error, setError] = useState(null);
   const [logo, setLogo] = useState(null);
-
+  const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
   const [LightPrimaryColor] = useState(null);
   const [LightestPrimaryColor] = useState(null);
@@ -193,6 +193,7 @@ const Template = () => {
           src_Components_Home_Header3__h5_3: services[2].title,
           src_Components_Home_Header3__p_3: services[2].description,
           // dance_type: services[0].dance_type,
+          dance_type: danceTypes,
         },
       });
     } catch (error) {
@@ -352,7 +353,7 @@ const Template = () => {
         // inst_pic_5 = inst_pic_5.split("?")[0];
       }
 
-      await API.put("clients", "/user/development-form/instructors", {
+      await API.put("clients", "/user/development-form/instructor", {
         body: {
           // institution: "awsaiapp",
           // instructor_1: instructors[0].name,
@@ -559,6 +560,8 @@ const Template = () => {
               setsrc_Components_Home_Header3__h2={setsrc_Components_Home_Header3__h2}
               services={services}
               setServices={setServices}
+              danceTypes={danceTypes}
+              setDanceTypes= {setDanceTypes}
             />}
 
           {currentSection === 3 &&
