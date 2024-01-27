@@ -229,16 +229,23 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
-          institution: "awsaiapp",
-          Testi_1: testimonials[0].name,
-          Des_Testi_1: testimonials[0].feedback,
-          Img_Testi_1: imageUrl1,
-          Testi_2: testimonials[1].name,
-          Des_Testi_2: testimonials[1].feedback,
-          Img_Testi_2: imageUrl2,
-          Testi_3: testimonials[2].name,
-          Des_Testi_3: testimonials[2].feedback,
-          Img_Testi_3: imageUrl3,
+          Testimonial: [
+            {
+              name: testimonials[0].name,
+              description: testimonials[0].feedback,
+              image: imageUrl1,
+            },
+            {
+              name: testimonials[1].name,
+              description: testimonials[1].feedback,
+              image: imageUrl2,
+            },
+            {
+              name: testimonials[2].name,
+              description: testimonials[2].feedback,
+              image: imageUrl3,
+            },
+          ]
         },
       });
     } catch (error) {
