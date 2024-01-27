@@ -364,10 +364,10 @@ const Template = () => {
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institution: "awsaiapp",
-          Policy_des: policies[0].content,
-          Terms_des: policies[1].content,
-          Refund_des: policies[2].content,
-          About_des: policies[3].content,
+          PrivacyPolicy: policies[0].content,
+          TermsData: policies[1].content,
+          Refund: policies[2].content,
+          AboutUs: policies[3].content,
         },
       });
     } catch (error) {
@@ -379,16 +379,16 @@ const Template = () => {
     try {
       console.log("LOG +++++ " + contactInfo.address);
 
-      await API.put("clients", "/user/development-form/contact/awsaiapp", {
+      await API.put("clients", "/user/development-form/contact", {
         body: {
           institution: "awsaiapp",
-          Address: contactInfo.address,
-          Phone_Num: contactInfo.phoneNumber,
-          Email: contactInfo.email,
-          Facebook_des: contactInfo.facebook,
-          Instagram_des: contactInfo.instagram,
-          Youtube_des: contactInfo.youtube,
-          Upi_id: contactInfo.upiId,
+          Query_Address: contactInfo.address,
+          Query_PhoneNumber: contactInfo.phoneNumber,
+          Query_EmailId: contactInfo.email,
+          Footer_Link_Facebook: contactInfo.facebook,
+          Footer_Link_Instagram: contactInfo.instagram,
+          YTLink: contactInfo.youtube,
+          UpiId: contactInfo.upiId,
 
         },
       });
