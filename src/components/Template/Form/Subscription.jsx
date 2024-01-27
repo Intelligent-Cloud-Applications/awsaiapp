@@ -43,9 +43,9 @@ function Subscription({ subscriptions, setSubscriptions }) {
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Outline subscription plans clearly, emphasizing features and benefits to aid user decision-making.
       </h5>
-      <div className="mt-6">
+      <div className="mt-4">
         {subscriptions.map((subscription, index) => (
-          <div key={index} className="mt-4">
+          <div key={index} className="mt-2">
             <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
             <div className="relative">
               <input

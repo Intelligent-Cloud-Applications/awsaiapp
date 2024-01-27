@@ -46,19 +46,19 @@ function Testimonials({ testimonials, setTestimonials }) {
     return fileName;
   };
 
-  const addNewTestimonial = () => {
-    if (testimonials.length < 5) {
-      setTestimonials([
-        ...testimonials,
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-      ]);
-    }
-    // Scroll to the newly added testimonial
-    testimonialsContainerRef.current.scrollTo({
-      top: testimonialsContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
-  };
+  // const addNewTestimonial = () => {
+  //   if (testimonials.length < 3) {
+  //     setTestimonials([
+  //       ...testimonials,
+  //       { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+  //     ]);
+  //   }
+  //   // Scroll to the newly added testimonial
+  //   testimonialsContainerRef.current.scrollTo({
+  //     top: testimonialsContainerRef.current.scrollHeight,
+  //     behavior: 'smooth',
+  //   });
+  // };
   const removeTestimonial = (index) => {
     const updatedTestimonials = [...testimonials];
     updatedTestimonials.splice(index, 1);
@@ -158,9 +158,9 @@ function Testimonials({ testimonials, setTestimonials }) {
         {/* Add button after the third testimonial */}
         {testimonials.length < 5 && (
           <div className="mt-2 flex justify-center max950:mt-0">
-            <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+            {/* <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
               Add Testimonial
-            </button>
+            </button> */}
           </div>
         )}
       </div>
