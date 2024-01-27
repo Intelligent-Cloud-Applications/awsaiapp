@@ -278,17 +278,28 @@ const Template = () => {
     try {
       await API.put("clients", "/user/development-form/faq", {
         body: {
-          institution: "awsaiapp",
-          Faq_1: faqs[0].question,
-          Des_Faq_1: faqs[0].answer,
-          Faq_2: faqs[1].question,
-          Des_Faq_2: faqs[1].answer,
-          Faq_3: faqs[2].question,
-          Des_Faq_3: faqs[2].answer,
-          Faq_4: faqs[3]?.question,
-          Des_Faq_4: faqs[3]?.answer,
-          Faq_5: faqs[4]?.question,
-          Des_Faq_5: faqs[4]?.answer,
+          FAQ: [
+            {
+              Title: faqs[0].question,
+              Content: faqs[0].answer,
+            },
+            {
+              Title: faqs[1].question,
+              Content: faqs[1].answer,
+            },
+            {
+              Title: faqs[2].question,
+              Content: faqs[2].answer,
+            },
+            {
+              Title: faqs[3].question,
+              Content: faqs[3].answer,
+            },
+            {
+              Title: faqs[4].question,
+              Content: faqs[4].answer,
+            },
+          ]
         },
       });
     } catch (error) {
