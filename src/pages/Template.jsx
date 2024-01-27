@@ -309,32 +309,32 @@ const Template = () => {
 
   const handleInstructorsUpload = async () => {
     try {
-      const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile.name}`, instructors[0].uploadedFile, {
-        contentType: instructors[0].uploadedFile.type,
+      const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile}`, instructors[0].actualFile, {
+        contentType: instructors[0].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_1 = await Storage.get(response1.key);
       inst_pic_1 = inst_pic_1.split("?")[0];
 
-      const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile.name}`, instructors[1].uploadedFile, {
-        contentType: instructors[1].uploadedFile.type,
+      const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile}`, instructors[1].actualFile, {
+        contentType: instructors[1].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_2 = await Storage.get(response2.key);
       inst_pic_2 = inst_pic_2.split("?")[0];
 
-      const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile.name}`, instructors[2].uploadedFile, {
-        contentType: instructors[2].uploadedFile.type,
+      const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile}`, instructors[2].actualFile, {
+        contentType: instructors[2].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_3 = await Storage.get(response3.key);
       inst_pic_3 = inst_pic_3.split("?")[0];
 
-      const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile.name}`, instructors[3].uploadedFile, {
-        contentType: instructors[3].uploadedFile.type,
+      const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile}`, instructors[3].actualFile, {
+        contentType: instructors[3].actualFile.type,
       });
 
       // Get the URL of the uploaded file

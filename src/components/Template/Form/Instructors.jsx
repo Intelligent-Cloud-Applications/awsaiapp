@@ -32,6 +32,7 @@ function Instructors({ instructors, setInstructors}) {
         const updatedInstructors = [...instructors];
         updatedInstructors[index].imgSrc = reader.result;
         updatedInstructors[index].uploadedFile = file.name;
+        updatedInstructors[index].actualFile = file;
         setInstructors(updatedInstructors);
       };
     }
