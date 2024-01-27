@@ -152,7 +152,7 @@ const PendingClients = () => {
               <input
                 className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem]"
                 type="text"
-                placeholder="Search “Name, Email, Number”"
+                placeholder="Search “Email”"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

@@ -25,8 +25,8 @@ const Template = () => {
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
-  const [LightPrimaryColor] = useState(null);
-  const [LightestPrimaryColor] = useState(null);
+  const [LightPrimaryColor] = useState("#225c59");
+  const [LightestPrimaryColor] = useState("#c3f3f1");
   // const [logo, setLogo] = useState(null);
   const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
   const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
