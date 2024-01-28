@@ -196,7 +196,7 @@ const addNewInstructor = () => {
             </div>
           ))}
         </div>
-        {/* Add button after the third instructor */}
+       
         {instructors.length >= 3 && (
           <div className="mb-10 flex justify-center ">
             <button

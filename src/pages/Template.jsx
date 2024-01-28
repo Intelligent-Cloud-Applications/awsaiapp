@@ -39,7 +39,8 @@ const Template = () => {
   console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
   console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
   console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
-
+  const [countryCode, setCountryCode] = useState("INR");
+  const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
   const [video, setVideo] = useState(null);
 
@@ -58,20 +59,31 @@ const Template = () => {
   const [subscriptions, setSubscriptions] = useState([
     {
       heading: '',
-      description: '',
       priceAndBilling: '',
+      countryCode: 'INR',
+      country: 'India',
+      subscriptionType: 'monthly',
+      services: [{ description: '' }],
     },
     {
       heading: '',
-      description: '',
       priceAndBilling: '',
+      countryCode: 'INR',
+      country: 'India',
+      subscriptionType: 'monthly', 
+      services: [{ description: '' }],
     },
     {
       heading: '',
-      description: '',
       priceAndBilling: '',
+      countryCode: 'INR',
+      country: 'India',
+      subscriptionType: 'monthly', 
+      services: [{ description: '' }],
     },
   ]);
+  
+  
 
   const [faqs, setFaqs] = useState([
     {
@@ -256,19 +268,37 @@ const Template = () => {
 
   const handleSubscriptionUpload = async () => {
     try {
+      const subscriptionObject = {
+        Subscription: [
+          {
+            heading: '',
+            priceAndBilling: '',
+            countryCode: 'INR',
+            country: 'India',
+            subscriptionType: 'monthly',
+            services: [{ description: '' }],
+          },
+          {
+            heading: '',
+            priceAndBilling: '',
+            countryCode: 'INR',
+            country: 'India',
+            subscriptionType: 'monthly',
+            services: [{ description: '' }],
+          },
+          {
+            heading: '',
+            priceAndBilling: '',
+            countryCode: 'INR',
+            country: 'India',
+            subscriptionType: 'monthly',
+            services: [{ description: '' }],
+          },
+        ]
+      };
+      
       await API.put("clients", "/user/development-form/subscriptions", {
-        body: {
-          institution: "awsaiapp",
-          Sub_title_1: subscriptions[0].heading,
-          Sub_Des_1: subscriptions[0].description,
-          Sub_Price_1: subscriptions[0].priceAndBilling,
-          Sub_title_2: subscriptions[1].heading,
-          Sub_Des_2: subscriptions[1].description,
-          Sub_Price_2: subscriptions[1].priceAndBilling,
-          Sub_title_3: subscriptions[2].heading,
-          Sub_Des_3: subscriptions[2].description,
-          Sub_Price_3: subscriptions[2].priceAndBilling,
-        },
+       body: subscriptionObject,
       });
     } catch (error) {
       console.error("Error uploading subscription: ", error);
@@ -574,6 +604,10 @@ const Template = () => {
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
+              country={country}
+              setCountry={setCountry}
+              countryCode={countryCode}
+              setCountryCode={setCountryCode}
             />}
 
           {currentSection === 5 &&
