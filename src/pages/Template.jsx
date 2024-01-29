@@ -55,34 +55,56 @@ const Template = () => {
     { imgSrc: '', name: '', feedback: '', uploadedFile: null },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   ]);
+  
+  const calculateDuration = (subscriptionType) => {
+    const daysInMonth = 30; // assuming 30 days in a month
 
+    if (subscriptionType === 'monthly') {
+      return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'weekly') {
+      return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'yearly') {
+      return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    }
+
+    return 0;
+  };
   const [subscriptions, setSubscriptions] = useState([
+    
     {
       heading: '',
-      priceAndBilling: '',
-      countryCode: 'INR',
-      country: 'India',
+      amount: '',
+      currency: 'INR',
+      country: 'INDIA',
       subscriptionType: 'monthly',
-      services: [{ description: '' }],
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
     {
       heading: '',
-      priceAndBilling: '',
-      countryCode: 'INR',
-      country: 'India',
+      amount: '',
+      currency: 'INR',
+      country: 'INDIA',
       subscriptionType: 'monthly', 
-      services: [{ description: '' }],
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
     {
       heading: '',
-      priceAndBilling: '',
-      countryCode: 'INR',
-      country: 'India',
+      amount: '',
+      currency: '',
+      country: 'INDIA',
       subscriptionType: 'monthly', 
-      services: [{ description: '' }],
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
   ]);
-  
   
 
   const [faqs, setFaqs] = useState([

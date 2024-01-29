@@ -10,7 +10,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     const { name, value } = e.target;
     const updatedSubscriptions = [...subscriptions];
 
-    if (name === 'countryCode') {
+    if (name === 'currency') {
       setCountryCodes((prevCountryCodes) => {
         const newCountryCodes = [...prevCountryCodes];
         newCountryCodes[subscriptionIndex] = value;
@@ -32,14 +32,27 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         newSubscriptionTypes[subscriptionIndex] = value;
         return newSubscriptionTypes;
       });
-  
+
+      const duration = calculateDuration(value);
+      
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
         subscriptionType: value,
+        durationText: value.charAt(0).toUpperCase() + value.slice(1), // capitalize first letter
+        duration,
       };
-    }  else if (name.includes('services')) {
-      const [, serviceIndex, serviceProperty] = name.split('.');
-      updatedSubscriptions[subscriptionIndex].services[serviceIndex][serviceProperty] = value;
+    }  else if (name.includes('provides')) {
+      const [, serviceIndex] = name.split('.');
+    const serviceArray = [...updatedSubscriptions[subscriptionIndex].provides];
+
+    // Update the value in the provides array
+    serviceArray[serviceIndex] = value;
+
+    // Update the provides array in the subscription object
+    updatedSubscriptions[subscriptionIndex] = {
+      ...updatedSubscriptions[subscriptionIndex],
+      provides: serviceArray,
+    };
     } else {
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
@@ -49,20 +62,49 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   
     setSubscriptions(updatedSubscriptions);
   };
+  const calculateDuration = (subscriptionType) => {
+    const daysInMonth = 30; // assuming 30 days in a month
 
+    if (subscriptionType === 'monthly') {
+      return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'weekly') {
+      return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'yearly') {
+      return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    }
+
+    return 0;
+  };
   const addService = (index) => {
     console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
-    updatedSubscriptions[index].services.push({ description: '' });
+    updatedSubscriptions[index].provides.push({ description: '' });
     setSubscriptions(updatedSubscriptions);
   };
 
   const removeService = (subscriptionIndex, serviceIndex) => {
     const updatedSubscriptions = [...subscriptions];
-    updatedSubscriptions[subscriptionIndex].services.splice(serviceIndex, 1);
+    updatedSubscriptions[subscriptionIndex].provides.splice(serviceIndex, 1);
     setSubscriptions(updatedSubscriptions);
   };
+  // const toggleIndiaAttribute = (index) => {
+  //   const updatedSubscriptions = [...subscriptions];
+  //   updatedSubscriptions[index] = {
+  //     ...updatedSubscriptions[index],
+  //     india: !updatedSubscriptions[index].india,
+  //   };
+  //   setSubscriptions(updatedSubscriptions);
+  // };
 
+  const updateIndiaAttribute = (index, value) => {
+    const updatedSubscriptions = [...subscriptions];
+    updatedSubscriptions[index] = {
+      ...updatedSubscriptions[index],
+      india: value,
+    };
+    setSubscriptions(updatedSubscriptions);
+  };
+  
 
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '510px' }}>
@@ -112,7 +154,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
             <li className="flex gap-20 max500:flex-col max500:gap-2 max500:items-start relative ">
                 <select
                 value={countryCodes[index]}
-                name="countryCode"
+                name="currency"
                 id=""
                 className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78]   max500:w-[80vw] mt-6"
                 onChange={(e) => {
@@ -127,8 +169,8 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
             <div className="relative">
               <input
                 type="text"
-                name="priceAndBilling"
-                value={subscription.priceAndBilling}
+                name="amount"
+                value={subscription.amount}
                 onChange={(e) => handleSubscriptionChange(index, e)}
                 placeholder="Pricing and Billing (e.g.100)"
                 className={`w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 ${
@@ -142,9 +184,34 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           
         ></div>
+      
             </div>
+            <div className="relative mt-2">
+  <label className="mr-2">India:</label>
+  <div className="flex items-center">
+    <div
+      className={`w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer ${
+        subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+      }`}
+      onClick={() => updateIndiaAttribute(index, true)}
+    >
+      {subscription.india && <div className="w-full h-full bg-[#30AFBC] rounded-full" />}
+      <span className="text-xs font-semibold ml-14 ">True</span>
+    </div>
+    <div
+      className={`w-6 h-6 rounded-full border border-gray-500 ml-10 flex items-center justify-center cursor-pointer ${
+        !subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+      }`}
+      onClick={() => updateIndiaAttribute(index, false)}
+    >
+      {!subscription.india && <div className="w-full h-full bg-transparent rounded-full" />}
+      <span className="text-xs font-semibold ml-14">False</span>
+    </div>
+  </div>
+</div>
+
             <div className="relative">
-              {subscription.services.map((service, serviceIndex) => (
+              {subscription.provides.map((service, serviceIndex) => (
                 <div key={serviceIndex} className="mt-2">
                     <button
       type="button"
@@ -154,7 +221,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       <span>✕</span>
     </button>
                   <textarea
-                    name={`services.${serviceIndex}.description`}
+                    name={`provides.${serviceIndex}.description`}
                     value={service.description}
                     onChange={(e) => handleSubscriptionChange(index, e)}
                     placeholder={`Service ${serviceIndex + 1} Description`}
