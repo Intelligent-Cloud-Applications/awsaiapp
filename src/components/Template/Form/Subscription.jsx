@@ -51,6 +51,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   };
 
   const addService = (index) => {
+    console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
     updatedSubscriptions[index].services.push({ description: '' });
     setSubscriptions(updatedSubscriptions);

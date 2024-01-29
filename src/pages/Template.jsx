@@ -270,44 +270,7 @@ const Template = () => {
     try {
       console.log(subscriptions);
       const subscriptionObject = {
-        Subscription: [
-          {
-            heading: subscriptions[0].heading,
-            priceAndBilling: subscriptions[0].priceAndBilling,
-            countryCode: subscriptions[0].countryCode,
-            country: subscriptions[0].country,
-            subscriptionType: subscriptions[0].subscriptionType,
-            services: [
-              {
-                description: subscriptions[0].services[0].description,
-              },
-            ],
-          },
-          {
-            heading: subscriptions[1].heading,
-            priceAndBilling: subscriptions[1].priceAndBilling,
-            countryCode: subscriptions[1].countryCode,
-            country: subscriptions[1].country,
-            subscriptionType: subscriptions[1].subscriptionType,
-            services: [
-              {
-                description: subscriptions[1].services[0].description,
-              },
-            ],
-          },
-          {
-            heading: subscriptions[2].heading,
-            priceAndBilling: subscriptions[2].priceAndBilling,
-            countryCode: subscriptions[2].countryCode,
-            country: subscriptions[2].country,
-            subscriptionType: subscriptions[2].subscriptionType,
-            services: [
-              {
-                description: subscriptions[2].services[0].description,
-              },
-            ],
-          },
-        ]
+        Subscription: subscriptions,
       };
       
       await API.put("clients", "/user/development-form/subscriptions", {
