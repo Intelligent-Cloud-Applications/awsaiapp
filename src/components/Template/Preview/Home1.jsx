@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import vvideo from "../../../utils/Template/backgroundvideo.mp4";
 
-const Home1 = ({ tagline, setTagline, video, setVideo }) => {
+const Home1 = ({ TagLine, setTagLine, video, setVideo }) => {
   useEffect(() => {
     const videoUrl = video && video.url;
     console.log("video.url", videoUrl); // Log the video URL to check if it's correct
@@ -22,7 +22,7 @@ const Home1 = ({ tagline, setTagline, video, setVideo }) => {
         <div className="absolute z-10 flex flex-col items-center">
           <div className="w-[auto] text-left flex">
             <h1 className="text-center max536:w-[90%] max800:w-[80%] text-[3.5rem] max800:text-[2rem] max1250:text-[3rem] text-white max1250:ml-[10%] ml-[5%]">
-              {tagline || "Fitness at your fingertips"}
+              {TagLine || "Fitness at your fingertips"}
             </h1>
           </div>
         </div>

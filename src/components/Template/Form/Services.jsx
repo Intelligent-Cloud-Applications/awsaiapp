@@ -78,7 +78,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
   };
 
   return (
-    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '510px' }}>
+    <div className="mx-auto max-w-[800px] px-4" style={{ overflowY: 'auto', maxHeight: '600px' }}>
       <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
@@ -127,7 +127,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           // style={{ backgroundColor: smallHeadingLineColor }}
         ></div> </div>
         <div className="relative">
-         <h5
+        <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={togglesubHeadingInputVisibility}
         >
