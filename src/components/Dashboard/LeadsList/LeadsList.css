@@ -1,6 +1,6 @@
 .table__body::-webkit-scrollbar{
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.2rem;
+    height: 0.2rem;
 }
 
 .table__body::-webkit-scrollbar-thumb{

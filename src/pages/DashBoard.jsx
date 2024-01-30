@@ -17,10 +17,14 @@ const DashBoard = () => {
   console.log(Ctx)
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
-    if (selectedPage) {
+    if (selectedPage !== null) {
       setClick(parseInt(selectedPage));
+    } else {
+      // If there's no selected page, set the default to 0 (Panel)
+      setClick(0);
     }
   }, []);
+  
   useEffect(() => {
     localStorage.setItem("selectedPage", click.toString());
   }, [click]);

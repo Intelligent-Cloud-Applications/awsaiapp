@@ -21,7 +21,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
+  const [emailId2, setEmailId2] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber2, setPhoneNumber2] = useState("");
+  const [age, setAge] = useState("");
   const [date, setdate] = useState("");
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
@@ -66,7 +69,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   useEffect(() => {
     fetchLeads(institution);
     // eslint-disable-next-line
-  },[institution]);
+  }, [institution]);
 
   const handleAddLeads = async (e) => {
     e.preventDefault();
@@ -77,7 +80,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
         institution: institution,
         name: name,
         emailId: emailId,
+        emailId2: emailId2,
         phoneNumber: phoneNumber,
+        phoneNumber2: phoneNumber2,
+        age: age,
         date: new Date(date).getTime(),
       },
     };
@@ -90,7 +96,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
           institution: institution,
           name: name,
           emailId: emailId,
+          emailId2: emailId2,
           phoneNumber: phoneNumber,
+          phoneNumber2: phoneNumber2,
+          age: age,
           date: date,
         },
       ]);
@@ -134,7 +143,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
         institution: institution,
         name: name,
         emailId: emailId,
+        emailId2: emailId2,
         phoneNumber: phoneNumber,
+        phoneNumber2: phoneNumber2,
+        age: age,
         date: new Date(date).getTime(),
       },
     };
@@ -162,7 +174,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
     if (editUser) {
       setName(editUser.name || "");
       setEmailId(editUser.emailId || "");
+      setEmailId2(editUser.emailId2 || "");
       setPhoneNumber(editUser.phoneNumber || "");
+      setPhoneNumber2(editUser.phoneNumber2 || "");
+      setAge(editUser.age || "");
+      setdate(editUser.date || "")
       // setCountry(editUser.country || "");
     }
   }, [editUser]);
@@ -207,16 +223,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
               alt=""
             />
           </div>
-          <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:absolute max600:top-[13%] max600:right-[-2%] max600:p-1 max600:rounded-[7px] z-[-5]"
+          <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:absolute max600:top-[13%] max600:right-[-2%] max600:p-1 max600:rounded-[7px]"
             onClick={() => setIsUserAdd(true)}
           >
             <span className="mr-2">+</span> Add Leads
           </button>
         </section>
-        
+
         {isUserAdd && (
-          <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
-            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[35rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw]">
+            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[auto] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
               <input
                 required
                 placeholder="Name"
@@ -239,6 +255,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
               />
               <input
                 required
+                placeholder="Alternate Email"
+                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                type="email"
+                value={emailId2}
+                onChange={(e) => {
+                  setEmailId2(e.target.value);
+                }}
+              />
+              <input
+                required
                 placeholder="Phone Number"
                 className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
                 type="number"
@@ -249,14 +275,36 @@ const LeadsList = ({ institution: tempInstitution }) => {
               />
               <input
                 required
-                placeholder="Joining date"
+                placeholder="Alternate Phone Number"
                 className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="date"
-                value={date}
+                type="number"
+                value={phoneNumber2}
                 onChange={(e) => {
-                  setdate(e.target.value);
+                  setPhoneNumber2(e.target.value);
                 }}
               />
+              <div className="flex gap-4">
+                <input
+                  required
+                  placeholder="age"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[6rem] focus:border-opacity-20 border border-[#acacac]  "
+                  type="number"
+                  value={age}
+                  onChange={(e) => {
+                    setAge(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Joining date"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  type="date"
+                  value={date}
+                  onChange={(e) => {
+                    setdate(e.target.value);
+                  }}
+                />
+              </div>
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
@@ -307,7 +355,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </table>
           )}
           {isEditUser && (
-            <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
+            <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw] max1050:left-[5%]">
               <form className="relative h-auto m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
                 <input
                   required
@@ -319,16 +367,23 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     setName(e.target.value);
                   }}
                 />
-                {/* <input
+                <input
                   required
-                  placeholder="Email Address"
+                  placeholder=" Email "
                   className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
                   type="email"
                   value={emailId}
+                />
+                <input
+                  required
+                  placeholder="Alternarte Email "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="email"
+                  value={emailId2}
                   onChange={(e) => {
-                    setEmailId(e.target.value);
+                    setEmailId2(e.target.value);
                   }}
-                /> */}
+                />
                 <input
                   required
                   placeholder="Phone Number"
@@ -339,16 +394,35 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     setPhoneNumber(e.target.value);
                   }}
                 />
-                {/* <input
+                <input
                   required
-                  placeholder="date"
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                  type="date"
-                  value={date}
+                  placeholder="Alternate Phone Number"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  type="number"
+                  value={phoneNumber2}
                   onChange={(e) => {
-                    setdate(e.target.value);
+                    setPhoneNumber2(e.target.value);
                   }}
-                /> */}
+                />
+                <div className="flex gap-4">
+                  <input
+                    required
+                    placeholder="age"
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[6rem] focus:border-opacity-20 border border-[#acacac]  "
+                    type="number"
+                    value={age}
+                    onChange={(e) => {
+                      setAge(e.target.value);
+                    }}
+                  />
+                  <input
+                    required
+                    placeholder="Joining date"
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]"
+                    type="date"
+                    value={date}
+                  />
+                </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
