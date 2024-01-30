@@ -179,7 +179,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setPhoneNumber2(editUser.phoneNumber2 || "");
       setAge(editUser.age || "");
       setdate(editUser.date || "")
-      // setCountry(editUser.country || "");
     }
   }, [editUser]);
 
@@ -367,13 +366,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     setName(e.target.value);
                   }}
                 />
-                <input
-                  required
-                  placeholder=" Email "
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                  type="email"
-                  value={emailId}
-                />
+
+                <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
+                  {emailId}
+                </div>
+
                 <input
                   required
                   placeholder="Alternarte Email "
@@ -415,13 +412,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       setAge(e.target.value);
                     }}
                   />
-                  <input
-                    required
-                    placeholder="Joining date"
-                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]"
-                    type="date"
-                    value={date}
-                  />
+                  <div className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
+                    {date}
+                  </div>
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
