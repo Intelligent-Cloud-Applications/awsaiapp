@@ -30,6 +30,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
+  console.log(userCheck)
 
   useEffect(() => {
     setFilteredLeads(filterLeadsByNameEmailIdPhoneNumber(leadsData, searchInput));
@@ -64,7 +65,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   useEffect(() => {
     fetchLeads(institution);
-  }, [institution]);
+    // eslint-disable-next-line
+  },[institution]);
 
   const handleAddLeads = async (e) => {
     e.preventDefault();
