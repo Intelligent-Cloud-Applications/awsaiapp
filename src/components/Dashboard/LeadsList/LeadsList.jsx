@@ -159,7 +159,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   useEffect(() => {
     if (editUser) {
       setName(editUser.name || "");
-      // setEmailId(editUser.emailId || "");
+      setEmailId(editUser.emailId || "");
       setPhoneNumber(editUser.phoneNumber || "");
       // setCountry(editUser.country || "");
     }
