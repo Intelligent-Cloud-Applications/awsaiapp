@@ -5,6 +5,9 @@ import Context from "../../../context/Context";
 import EditImage from '../../../utils/Assets/Dashboard/images/PNG/Edit.png';
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
+import PhoneImg from '../../../utils/Assets/Dashboard/images/PNG/smartphone.png'
+import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
+import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
 
@@ -25,6 +28,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [age, setAge] = useState("");
+  const [device, setDevice] = useState("");
   const [date, setdate] = useState("");
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
@@ -33,6 +37,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
+  const [selectedDevices, setSelectedDevices] = useState({
+    SmartPhone: false,
+    Tablet: false,
+    Laptop: false,
+  });
   console.log(userCheck)
 
   useEffect(() => {
@@ -73,6 +82,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   const handleAddLeads = async (e) => {
     e.preventDefault();
+    if (!name || !emailId || !phoneNumber || date) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Name, Email, Date and Phone Number are mandatory fields.",
+      });
+      return;
+    }
     const apiName = "clients";
     const path = "/user/create-Leads";
     const myInit = {
@@ -84,6 +101,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         phoneNumber: phoneNumber,
         phoneNumber2: phoneNumber2,
         age: age,
+        device: device,
         date: new Date(date).getTime(),
       },
     };
@@ -100,6 +118,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
           phoneNumber: phoneNumber,
           phoneNumber2: phoneNumber2,
           age: age,
+          device: device,
           date: date,
         },
       ]);
@@ -147,6 +166,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         phoneNumber: phoneNumber,
         phoneNumber2: phoneNumber2,
         age: age,
+        device: device,
         date: new Date(date).getTime(),
       },
     };
@@ -178,10 +198,24 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setPhoneNumber(editUser.phoneNumber || "");
       setPhoneNumber2(editUser.phoneNumber2 || "");
       setAge(editUser.age || "");
-      setdate(editUser.date || "")
+      setdate(editUser.date || "");
+      setDevice(editUser.device || "");
     }
   }, [editUser]);
 
+  const handleDeviceSelect = (deviceType) => {
+    const updatedDevices = { ...selectedDevices };
+    updatedDevices[deviceType] = !updatedDevices[deviceType];
+    setSelectedDevices(updatedDevices);
+    const selectedDevice = Object.keys(updatedDevices).find(
+      (deviceType) => updatedDevices[deviceType]
+    );
+    setDevice(selectedDevice || "");
+  };
+
+  const selectedDeviceNames = Object.keys(selectedDevices)
+    .filter((deviceType) => selectedDevices[deviceType])
+    .join(", ");
   const indexOfLastLead = currentPage * itemsPerPage;
   const indexOfFirstLead = indexOfLastLead - itemsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
@@ -231,80 +265,116 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
         {isUserAdd && (
           <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw]">
-            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[auto] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-              <input
-                required
-                placeholder="Name"
-                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="text"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-              <input
-                required
-                placeholder="Email Address"
-                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="email"
-                value={emailId}
-                onChange={(e) => {
-                  setEmailId(e.target.value);
-                }}
-              />
-              <input
-                required
-                placeholder="Alternate Email"
-                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="email"
-                value={emailId2}
-                onChange={(e) => {
-                  setEmailId2(e.target.value);
-                }}
-              />
-              <input
-                required
-                placeholder="Phone Number"
-                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="number"
-                value={phoneNumber}
-                onChange={(e) => {
-                  setPhoneNumber(e.target.value);
-                }}
-              />
-              <input
-                required
-                placeholder="Alternate Phone Number"
-                className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                type="number"
-                value={phoneNumber2}
-                onChange={(e) => {
-                  setPhoneNumber2(e.target.value);
-                }}
-              />
-              <div className="flex gap-4">
+            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <input
+                  required
+                  placeholder="Name"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20 border border-[#acacac]  "
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
                 <input
                   required
                   placeholder="age"
-                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[6rem] focus:border-opacity-20 border border-[#acacac]  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20 border border-[#acacac]  "
                   type="number"
                   value={age}
                   onChange={(e) => {
                     setAge(e.target.value);
                   }}
                 />
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <input
+                  required
+                  placeholder="Email Address"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]"
+                  type="email"
+                  value={emailId}
+                  onChange={(e) => {
+                    setEmailId(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Alternate Email"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]"
+                  type="email"
+                  value={emailId2}
+                  onChange={(e) => {
+                    setEmailId2(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <input
+                  required
+                  placeholder="Phone Number"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  type="number"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Alternate Phone Number"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  type="number"
+                  value={phoneNumber2}
+                  onChange={(e) => {
+                    setPhoneNumber2(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
                   required
                   placeholder="Joining date"
-                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 h-12 rounded-[6px] focus:border-opacity-20 border border-[#acacac]  "
                   type="date"
                   value={date}
                   onChange={(e) => {
                     setdate(e.target.value);
                   }}
                 />
+                <div className="flex gap-6">
+                  <div>
+                    <img className="w-[3rem]" src={PhoneImg} alt="" />
+                    <input
+                      className="ml-4 rounded-full"
+                      type="checkbox"
+                      checked={selectedDevices.phone}
+                      onChange={() => handleDeviceSelect('SmartPhone')}
+                    />
+                  </div>
+                  <div>
+                    <img className="w-[3rem]" src={TabletImg} alt="" />
+                    <input
+                      className="ml-4 rounded-full"
+                      type="checkbox"
+                      checked={selectedDevices.tablet}
+                      onChange={() => handleDeviceSelect('Tablet')}
+                    />
+                  </div>
+                  <div>
+                    <img className="w-[3rem]" src={LaptopImg} alt="" />
+                    <input
+                      className="ml-4 rounded-full"
+                      type="checkbox"
+                      checked={selectedDevices.laptop}
+                      onChange={() => handleDeviceSelect('Laptop')}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col  gap-3 w-full justify-center items-center">
+              <p className="mb-[-2rem]">You have selected {selectedDeviceNames}</p>
+              <div className="flex flex-col gap-3 w-full justify-center items-center">
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
                   onClick={handleAddLeads}
@@ -355,67 +425,105 @@ const LeadsList = ({ institution: tempInstitution }) => {
           )}
           {isEditUser && (
             <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw] max1050:left-[5%]">
-              <form className="relative h-auto m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                <input
-                  required
-                  placeholder="Name"
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                  type="text"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                />
-
-                <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
-                  {emailId}
-                </div>
-
-                <input
-                  required
-                  placeholder="Alternarte Email "
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                  type="email"
-                  value={emailId2}
-                  onChange={(e) => {
-                    setEmailId2(e.target.value);
-                  }}
-                />
-                <input
-                  required
-                  placeholder="Phone Number"
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                  type="number"
-                  value={phoneNumber}
-                  onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                  }}
-                />
-                <input
-                  required
-                  placeholder="Alternate Phone Number"
-                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                  type="number"
-                  value={phoneNumber2}
-                  onChange={(e) => {
-                    setPhoneNumber2(e.target.value);
-                  }}
-                />
-                <div className="flex gap-4">
+              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
+                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                   <input
                     required
-                    placeholder="age"
-                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[6rem] focus:border-opacity-20 border border-[#acacac]  "
-                    type="number"
-                    value={age}
+                    placeholder="Name"
+                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="text"
+                    value={name}
                     onChange={(e) => {
-                      setAge(e.target.value);
+                      setName(e.target.value);
                     }}
                   />
-                  <div className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
-                    {date}
+                  <div className="flex">
+                    <div className="text-[1.05rem] text-[#2b2b2b] font-bold mt-2">Age:</div>
+                    <input
+                      required
+                      placeholder="age"
+                      className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[full] focus:border-opacity-20 border border-[#acacac]  "
+                      type="number"
+                      value={age}
+                      onChange={(e) => {
+                        setAge(e.target.value);
+                      }}
+                    />
                   </div>
                 </div>
+                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                  <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
+                    {emailId}
+                  </div>
+
+                  <input
+                    required
+                    placeholder="Alternarte Email "
+                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="email"
+                    value={emailId2}
+                    onChange={(e) => {
+                      setEmailId2(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                  <input
+                    required
+                    placeholder="Phone Number"
+                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                    type="number"
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value);
+                    }}
+                  />
+                  <input
+                    required
+                    placeholder="Alternate Phone Number"
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                    type="number"
+                    value={phoneNumber2}
+                    onChange={(e) => {
+                      setPhoneNumber2(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
+                  <div className="bg-[#f7f7f7] text-[#000] text-center h-[3rem] K2D py-3 rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
+                    {date}
+                  </div>
+                  <div className="flex gap-6">
+                    <div>
+                      <img className="w-[3rem]" src={PhoneImg} alt="" />
+                      <input
+                        className="ml-4 rounded-full"
+                        type="checkbox"
+                        checked={selectedDevices.phone}
+                        onChange={() => handleDeviceSelect('SmartPhone')}
+                      />
+                    </div>
+                    <div>
+                      <img className="w-[3rem]" src={TabletImg} alt="" />
+                      <input
+                        className="ml-4 rounded-full"
+                        type="checkbox"
+                        checked={selectedDevices.tablet}
+                        onChange={() => handleDeviceSelect('Tablet')}
+                      />
+                    </div>
+                    <div>
+                      <img className="w-[3rem]" src={LaptopImg} alt="" />
+                      <input
+                        className="ml-4 rounded-full"
+                        type="checkbox"
+                        checked={selectedDevices.laptop}
+                        onChange={() => handleDeviceSelect('Laptop')}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[1.1rem] K2D font-[600]"><span className="text-[#257d8d]">{name}</span> uses <span >{device}</span></p>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
