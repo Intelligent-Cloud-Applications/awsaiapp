@@ -52,7 +52,7 @@ const DashBoard = () => {
     } else if (Ctx.userData.institution !== "awsaiapp" && Ctx.userData.userType === "admin") {
       switch (click) {
         case 0:
-          return <div className=""><MonthlyReport institution={localStorage.getItem('institution')} /></div>
+          return <div className="mt-5"><MonthlyReport institution={localStorage.getItem('institution')} /></div>
 
         case 1:
           return <div className="mr-[5rem] max850:mr-7"><MemberList institution={localStorage.getItem('institution')} /></div>
