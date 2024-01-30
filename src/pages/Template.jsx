@@ -23,19 +23,25 @@ const Template = () => {
   console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   const [error, setError] = useState(null);
   const [logo, setLogo] = useState(null);
-
+  const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
+  //
+  const [LightPrimaryColor] = useState("#225c59");
+  const [LightestPrimaryColor] = useState("#c3f3f1");
   // const [logo, setLogo] = useState(null);
-
+  const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
+  const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
+  const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(null);
+  
   const [companyName, setCompanyName] = useState(null);
-  const [domainName, setDomainName] = useState("");
-  const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
+  const [SecondaryColor, setSecondaryColor] = useState("#000000");
   console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
   console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
   console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
   console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
-
-  const [tagline, setTagline] = useState("");
+  const [countryCode, setCountryCode] = useState("INR");
+  const [country, setCountry] = useState("India");
+  const [TagLine, setTagLine] = useState("");
   const [video, setVideo] = useState(null);
 
   const [services, setServices] = useState([
@@ -49,24 +55,57 @@ const Template = () => {
     { imgSrc: '', name: '', feedback: '', uploadedFile: null },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   ]);
+  
+  const calculateDuration = (subscriptionType) => {
+    const daysInMonth = 30; // assuming 30 days in a month
 
+    if (subscriptionType === 'monthly') {
+      return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'weekly') {
+      return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    } else if (subscriptionType === 'yearly') {
+      return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+    }
+
+    return 0;
+  };
   const [subscriptions, setSubscriptions] = useState([
+    
     {
       heading: '',
-      description: '',
-      priceAndBilling: '',
+      amount: '',
+      currency: 'INR',
+      country: 'INDIA',
+      subscriptionType: 'monthly',
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
     {
       heading: '',
-      description: '',
-      priceAndBilling: '',
+      amount: '',
+      currency: 'INR',
+      country: 'INDIA',
+      subscriptionType: 'monthly', 
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
     {
       heading: '',
-      description: '',
-      priceAndBilling: '',
+      amount: '',
+      currency: '',
+      country: 'INDIA',
+      subscriptionType: 'monthly', 
+      provides: [''],
+      duration: calculateDuration('monthly'), 
+      durationText: 'Monthly', 
+      india: true,
     },
   ]);
+  
 
   const [faqs, setFaqs] = useState([
     {
@@ -92,11 +131,11 @@ const Template = () => {
   ]);
 
   const [instructors, setInstructors] = useState([
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
-    { imgSrc: '', name: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
   ]);
 
   const [policies, setPolicies] = useState([
@@ -129,15 +168,18 @@ const Template = () => {
       imageUrl = imageUrl.split("?")[0];
       setLogo(imageUrl);
       console.log("logo: ", imageUrl);
-
+      const additionalAttributes = {
+        LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
+        LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
+      };
       await API.put("clients", "/user/development-form/company", {
         body: {
           institution: "awsaiapp",
           companyName,
-          domainName,
-          companyLineColor,
-          domainLineColor,
+          PrimaryColor,
+          SecondaryColor,
           logoUrl: imageUrl,
+          ...additionalAttributes,
         },
       });
     } catch (error) {
@@ -159,7 +201,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
           institution: "awsaiapp",
-          tagline,
+          TagLine,
           videoUrl,
         },
       });
@@ -175,13 +217,17 @@ const Template = () => {
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institution: "awsaiapp",
-          service_title_1: services[0].title,
-          des_1: services[0].description,
-          services_title_2: services[1].title,
-          des_2: services[1].description,
-          services_title_3: services[2].title,
-          des_3: services[2].description,
+          src_Components_Home_Why__h1,
+          src_Components_Home_Header3__h1,
+          src_Components_Home_Header3__h2,
+          src_Components_Home_Header3__h5_1: services[0].title,
+          src_Components_Home_Header3__p_1: services[0].description,
+          src_Components_Home_Header3__h5_2: services[1].title,
+          src_Components_Home_Header3__p_2: services[1].description,
+          src_Components_Home_Header3__h5_3: services[2].title,
+          src_Components_Home_Header3__p_3: services[2].description,
           // dance_type: services[0].dance_type,
+          dance_type: danceTypes,
         },
       });
     } catch (error) {
@@ -214,19 +260,27 @@ const Template = () => {
       // Get the URL of the uploaded file
       let imageUrl3 = await Storage.get(response3.key);
       imageUrl3 = imageUrl3.split("?")[0];
+      
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
-          institution: "awsaiapp",
-          Testi_1: testimonials[0].name,
-          Des_Testi_1: testimonials[0].feedback,
-          Img_Testi_1: imageUrl1,
-          Testi_2: testimonials[1].name,
-          Des_Testi_2: testimonials[1].feedback,
-          Img_Testi_2: imageUrl2,
-          Testi_3: testimonials[2].name,
-          Des_Testi_3: testimonials[2].feedback,
-          Img_Testi_3: imageUrl3,
+          Testimonial: [
+            {
+              name: testimonials[0].name,
+              description: testimonials[0].feedback,
+              image: imageUrl1,
+            },
+            {
+              name: testimonials[1].name,
+              description: testimonials[1].feedback,
+              image: imageUrl2,
+            },
+            {
+              name: testimonials[2].name,
+              description: testimonials[2].feedback,
+              image: imageUrl3,
+            },
+          ]
         },
       });
     } catch (error) {
@@ -236,19 +290,13 @@ const Template = () => {
 
   const handleSubscriptionUpload = async () => {
     try {
+      console.log(subscriptions);
+      const subscriptionObject = {
+        Subscription: subscriptions,
+      };
+      
       await API.put("clients", "/user/development-form/subscriptions", {
-        body: {
-          institution: "awsaiapp",
-          Sub_title_1: subscriptions[0].heading,
-          Sub_Des_1: subscriptions[0].description,
-          Sub_Price_1: subscriptions[0].priceAndBilling,
-          Sub_title_2: subscriptions[1].heading,
-          Sub_Des_2: subscriptions[1].description,
-          Sub_Price_2: subscriptions[1].priceAndBilling,
-          Sub_title_3: subscriptions[2].heading,
-          Sub_Des_3: subscriptions[2].description,
-          Sub_Price_3: subscriptions[2].priceAndBilling,
-        },
+       body: subscriptionObject,
       });
     } catch (error) {
       console.error("Error uploading subscription: ", error);
@@ -259,17 +307,28 @@ const Template = () => {
     try {
       await API.put("clients", "/user/development-form/faq", {
         body: {
-          institution: "awsaiapp",
-          Faq_1: faqs[0].question,
-          Des_Faq_1: faqs[0].answer,
-          Faq_2: faqs[1].question,
-          Des_Faq_2: faqs[1].answer,
-          Faq_3: faqs[2].question,
-          Des_Faq_3: faqs[2].answer,
-          Faq_4: faqs[3]?.question,
-          Des_Faq_4: faqs[3]?.answer,
-          Faq_5: faqs[4]?.question,
-          Des_Faq_5: faqs[4]?.answer,
+          FAQ: [
+            {
+              Title: faqs[0].question,
+              Content: faqs[0].answer,
+            },
+            {
+              Title: faqs[1].question,
+              Content: faqs[1].answer,
+            },
+            {
+              Title: faqs[2].question,
+              Content: faqs[2].answer,
+            },
+            {
+              Title: faqs[3].question,
+              Content: faqs[3].answer,
+            },
+            {
+              Title: faqs[4].question,
+              Content: faqs[4].answer,
+            },
+          ]
         },
       });
     } catch (error) {
@@ -279,32 +338,32 @@ const Template = () => {
 
   const handleInstructorsUpload = async () => {
     try {
-      const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile.name}`, instructors[0].uploadedFile, {
-        contentType: instructors[0].uploadedFile.type,
+      const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile}`, instructors[0].actualFile, {
+        contentType: instructors[0].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_1 = await Storage.get(response1.key);
       inst_pic_1 = inst_pic_1.split("?")[0];
 
-      const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile.name}`, instructors[1].uploadedFile, {
-        contentType: instructors[1].uploadedFile.type,
+      const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile}`, instructors[1].actualFile, {
+        contentType: instructors[1].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_2 = await Storage.get(response2.key);
       inst_pic_2 = inst_pic_2.split("?")[0];
 
-      const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile.name}`, instructors[2].uploadedFile, {
-        contentType: instructors[2].uploadedFile.type,
+      const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile}`, instructors[2].actualFile, {
+        contentType: instructors[2].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let inst_pic_3 = await Storage.get(response3.key);
       inst_pic_3 = inst_pic_3.split("?")[0];
 
-      const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile.name}`, instructors[3].uploadedFile, {
-        contentType: instructors[3].uploadedFile.type,
+      const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile}`, instructors[3].actualFile, {
+        contentType: instructors[3].actualFile.type,
       });
 
       // Get the URL of the uploaded file
@@ -322,24 +381,56 @@ const Template = () => {
         // inst_pic_5 = inst_pic_5.split("?")[0];
       }
 
-      await API.put("clients", "/user/development-form/instructors", {
+      await API.put("clients", "/user/development-form/instructor", {
         body: {
-          institution: "awsaiapp",
-          instructor_1: instructors[0].name,
-          inst_position_1: instructors[0].position,
-          inst_pic_1,
-          instructor_2: instructors[1].name,
-          inst_position_2: instructors[1].position,
-          inst_pic_2,
-          instructor_3: instructors[2].name,
-          inst_position_3: instructors[2].position,
-          inst_pic_3,
-          instructor_4: instructors[3].name,
-          inst_position_4: instructors[3].position,
-          inst_pic_4,
-          instructor_5: instructors[4].name,
-          inst_position_5: instructors[4].position,
-          inst_pic_5,
+          // institution: "awsaiapp",
+          // instructor_1: instructors[0].name,
+          // inst_position_1: instructors[0].position,
+          // inst_pic_1,
+          // instructor_2: instructors[1].name,
+          // inst_position_2: instructors[1].position,
+          // inst_pic_2,
+          // instructor_3: instructors[2].name,
+          // inst_position_3: instructors[2].position,
+          // inst_pic_3,
+          // instructor_4: instructors[3].name,
+          // inst_position_4: instructors[3].position,
+          // inst_pic_4,
+          // instructor_5: instructors[4].name,
+          // inst_position_5: instructors[4].position,
+          // inst_pic_5,
+          Instructor: [
+            {
+              name: instructors[0].name,
+              emailId: instructors[0].emailId,
+              image: inst_pic_1,
+              position:instructors[0].position,
+            },
+            {
+              name: instructors[1].name,
+              emailId: instructors[1].emailId,
+              image: inst_pic_2,
+              position:instructors[1].position,
+            },
+            {
+              name: instructors[2].name,
+              emailId: instructors[2].emailId,
+              image: inst_pic_3,
+              position:instructors[2].position,
+            },
+            {
+              name: instructors[3].name,
+              emailId: instructors[3].emailId,
+              image: inst_pic_4,
+              position:instructors[3].position,
+            },
+            {
+              name: instructors[4].name,
+              emailId: instructors[4].emailId,
+              image: inst_pic_5,
+              position:instructors[4].position,
+            },
+          ]
         },
       });
     } catch (error) {
@@ -352,10 +443,10 @@ const Template = () => {
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institution: "awsaiapp",
-          Policy_des: policies[0].content,
-          Terms_des: policies[1].content,
-          Refund_des: policies[2].content,
-          About_des: policies[3].content,
+          PrivacyPolicy: policies[0].content,
+          TermsData: policies[1].content,
+          Refund: policies[2].content,
+          AboutUs: policies[3].content,
         },
       });
     } catch (error) {
@@ -367,16 +458,16 @@ const Template = () => {
     try {
       console.log("LOG +++++ " + contactInfo.address);
 
-      await API.put("clients", "/user/development-form/contact/awsaiapp", {
+      await API.put("clients", "/user/development-form/contact", {
         body: {
           institution: "awsaiapp",
-          Address: contactInfo.address,
-          Phone_Num: contactInfo.phoneNumber,
-          Email: contactInfo.email,
-          Facebook_des: contactInfo.facebook,
-          Instagram_des: contactInfo.instagram,
-          Youtube_des: contactInfo.youtube,
-          Upi_id: contactInfo.upiId,
+          Query_Address: contactInfo.address,
+          Query_PhoneNumber: contactInfo.phoneNumber,
+          Query_EmailId: contactInfo.email,
+          Footer_Link_Facebook: contactInfo.facebook,
+          Footer_Link_Instagram: contactInfo.instagram,
+          YTLink: contactInfo.youtube,
+          UpiId: contactInfo.upiId,
 
         },
       });
@@ -463,7 +554,7 @@ const Template = () => {
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} tagline={tagline} setTagline={setTagline} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
+          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
         </div>
         <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
           {currentSection === 0 &&
@@ -471,28 +562,34 @@ const Template = () => {
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
-              domainName={domainName}
-              setDomainName={setDomainName}
-              companyLineColor={companyLineColor}
-              setCompanyLineColor={setCompanyLineColor}
-              domainLineColor={domainLineColor}
-              setDomainLineColor={setDomainLineColor}
+              PrimaryColor={PrimaryColor}
+              setPrimaryColor={setPrimaryColor}
+              SecondaryColor={SecondaryColor}
+              setSecondaryColor={setSecondaryColor}
               logo={logo}
               setLogo={setLogo}
             />}
 
           {currentSection === 1 &&
             <Home
-              tagline={tagline}
-              setTagline={setTagline}
+              TagLine={TagLine}
+              setTagLine={setTagLine}
               video={video}
               setVideo={setVideo}
             />}
 
           {currentSection === 2 &&
             <Services
+              src_Components_Home_Why__h1={src_Components_Home_Why__h1}
+              setsrc_Components_Home_Why__h1={setsrc_Components_Home_Why__h1}
+              src_Components_Home_Header3__h1={src_Components_Home_Header3__h1}
+              setsrc_Components_Home_Header3__h1={setsrc_Components_Home_Header3__h1}
+              src_Components_Home_Header3__h2={src_Components_Home_Header3__h2}
+              setsrc_Components_Home_Header3__h2={setsrc_Components_Home_Header3__h2}
               services={services}
               setServices={setServices}
+              danceTypes={danceTypes}
+              setDanceTypes= {setDanceTypes}
             />}
 
           {currentSection === 3 &&
@@ -505,6 +602,10 @@ const Template = () => {
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
+              country={country}
+              setCountry={setCountry}
+              countryCode={countryCode}
+              setCountryCode={setCountryCode}
             />}
 
           {currentSection === 5 &&

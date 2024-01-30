@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
-function Home({ tagline, setTagline, video, setVideo }) {
-  // const [TaglineName, setTaglineName] = useState("");
-  const [isTaglineInputVisible, setTaglineInputVisible] = useState(false);
-  const [TaglineLineColor, setTaglineLineColor] = useState("#939393");
+function Home({ TagLine, setTagLine, video, setVideo }) {
+  // const [TagLineName, setTagLineName] = useState("");
+  const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
+  const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
 
-  const handleTaglineInputChange = (e) => {
-    setTagline(e.target.value);
+  const handleTagLineInputChange = (e) => {
+    setTagLine(e.target.value);
   };
 
-  const toggleTaglineInputVisibility = () => {
-    setTaglineInputVisible(true);
-    setTaglineLineColor("#000000"); // Change Tagline line color to black on click
+  const toggleTagLineInputVisibility = () => {
+    setTagLineInputVisible(true);
+    setTagLineLineColor("#000000"); // Change TagLine line color to black on click
   };
 
   const [selectedMedia, setSelectedMedia] = useState(null);
@@ -59,24 +59,24 @@ function Home({ tagline, setTagline, video, setVideo }) {
       <div className="relative mt-10">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
-          onClick={toggleTaglineInputVisibility}
+          onClick={toggleTagLineInputVisibility}
         >
-          {isTaglineInputVisible ? (
+          {isTagLineInputVisible ? (
             <input
               type="text"
-              value={tagline}
-              onChange={handleTaglineInputChange}
+              value={TagLine}
+              onChange={handleTagLineInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent "
-              placeholder="Enter Short Description Tagline "
+              placeholder="Enter Short Description TagLine "
               autoFocus
             />
           ) : (
-            <span>{tagline || "Short Description Tagline "}</span>
+            <span>{TagLine || "Short Description TagLine "}</span>
           )}
         </h5>
         <div
           className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-          style={{ backgroundColor: TaglineLineColor }}
+          style={{ backgroundColor: TagLineLineColor }}
         ></div>
       </div>
       <div className="border border-black w-[16rem] h-[14rem] mt-[5rem] relative">
