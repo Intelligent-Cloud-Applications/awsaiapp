@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Currency from "../../Auth/Currency";
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
+  const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
 
 
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
+  useEffect(() => {
+  
+    const savedSubscriptionTypes = JSON.parse(localStorage.getItem('subscriptionTypes')) || Array(subscriptions.length).fill('monthly');
+    const savedCountryCodes = JSON.parse(localStorage.getItem('countryCodes')) || Array(subscriptions.length).fill('');
+    const savedProvides = JSON.parse(localStorage.getItem('provides')) || Array(subscriptions.length).fill([]);
+  
+    setSubscriptionTypes(savedSubscriptionTypes);
+    setCountryCodes(savedCountryCodes);
+    setProvides(savedProvides); // Corrected here
+  }, [subscriptions.length]);
+  
+
   const handleSubscriptionChange = (subscriptionIndex, e) => {
     const { name, value } = e.target;
     const updatedSubscriptions = [...subscriptions];
@@ -19,14 +32,13 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
 
       const countries = e.target.options;
       const selectedCountry = countries[countries.selectedIndex].text;
-      
+
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
         countryCode: value,
         country: selectedCountry,
       };
-    } 
-    else if (name === 'subscriptionType') {
+    } else if (name === 'subscriptionType') {
       setSubscriptionTypes((prevSubscriptionTypes) => {
         const newSubscriptionTypes = [...prevSubscriptionTypes];
         newSubscriptionTypes[subscriptionIndex] = value;
@@ -34,47 +46,50 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       });
 
       const duration = calculateDuration(value);
-      
+
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
         subscriptionType: value,
         durationText: value.charAt(0).toUpperCase() + value.slice(1), // capitalize first letter
         duration,
       };
-    }  else if (name.includes('provides')) {
+    } else if (name.includes('provides')) {
       const [, serviceIndex] = name.split('.');
     const serviceArray = [...updatedSubscriptions[subscriptionIndex].provides];
 
     // Update the value in the provides array
-    serviceArray[serviceIndex] = value;
+    const updatedService = { ...serviceArray[serviceIndex], description: value };
+    serviceArray[serviceIndex] = updatedService;
 
     // Update the provides array in the subscription object
     updatedSubscriptions[subscriptionIndex] = {
       ...updatedSubscriptions[subscriptionIndex],
       provides: serviceArray,
-    };
-    } else {
+    };}else {
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
         [name]: value,
       };
     }
-  
+
     setSubscriptions(updatedSubscriptions);
   };
-  const calculateDuration = (subscriptionType) => {
-    const daysInMonth = 30; // assuming 30 days in a month
 
+  const calculateDuration = (subscriptionType) => {
+    const daysInMonth = 30; 
     if (subscriptionType === 'monthly') {
-      return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
+      return daysInMonth * 24 * 60 * 60 * 1000; 
     } else if (subscriptionType === 'weekly') {
-      return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+      return 7 * 24 * 60 * 60 * 1000; 
     } else if (subscriptionType === 'yearly') {
-      return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+      return 365 * 24 * 60 * 60 * 1000; 
     }
 
     return 0;
   };
+
+  
+  
   const addService = (index) => {
     console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
@@ -87,14 +102,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     updatedSubscriptions[subscriptionIndex].provides.splice(serviceIndex, 1);
     setSubscriptions(updatedSubscriptions);
   };
-  // const toggleIndiaAttribute = (index) => {
-  //   const updatedSubscriptions = [...subscriptions];
-  //   updatedSubscriptions[index] = {
-  //     ...updatedSubscriptions[index],
-  //     india: !updatedSubscriptions[index].india,
-  //   };
-  //   setSubscriptions(updatedSubscriptions);
-  // };
+ 
 
   const updateIndiaAttribute = (index, value) => {
     const updatedSubscriptions = [...subscriptions];
@@ -105,7 +113,11 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setSubscriptions(updatedSubscriptions);
   };
   
-
+  useEffect(() => {
+    localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
+    localStorage.setItem('countryCodes', JSON.stringify(countryCodes));
+    localStorage.setItem('provides', JSON.stringify(provides));
+  }, [subscriptionTypes, countryCodes, provides]);
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '510px' }}>
       <h1 className="font-medium text-7xl">SUBSCRIPTION SECTION</h1>
