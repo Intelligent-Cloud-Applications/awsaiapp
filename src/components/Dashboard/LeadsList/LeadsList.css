@@ -1,19 +1,13 @@
-.table__body::-webkit-scrollbar{
-    width: 0.2rem;
-    height: 0.2rem;
+
+.custom-scrollbar {
+  overflow-x: auto; 
+  scrollbar-color: #2297a7 #f0f0f0;
 }
 
-.table__body::-webkit-scrollbar-thumb{
-    border-radius: .5rem;
-    background-color: #0004;
-    visibility: hidden;
-}
 
-.table__body:hover::-webkit-scrollbar-thumb{ 
-    visibility: visible;
-}
-
-table, th, td {
+table,
+th,
+td {
     border-collapse: collapse;
     padding: 1rem;
     text-align: left;
@@ -50,8 +44,8 @@ tbody tr:hover {
     margin-left: 2rem;
     margin-bottom: 2rem;
     justify-content: start !important;
-  }
+}
 
-  tbody tr td img{
-max-width: 1.5rem !important;
-  }
+tbody tr td img {
+    max-width: 1.5rem !important;
+}

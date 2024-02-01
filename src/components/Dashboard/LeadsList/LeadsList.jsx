@@ -24,11 +24,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
+  const [others, setOthers] = useState({});
   const [emailId2, setEmailId2] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [age, setAge] = useState("");
-  const [device, setDevice] = useState("");
+  const [device, setDevice] = useState([]);
   const [date, setdate] = useState("");
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
@@ -67,6 +68,17 @@ const LeadsList = ({ institution: tempInstitution }) => {
       const response = await API.get("clients", `/user/get-leads/${institution}`);
       console.log(response.Items);
       setLeadsData(response.Items);
+  
+      // Find the lead object with 'other' property
+      const leadWithOther = response.Items.find(lead => lead.other);
+  
+      // Check if leadWithOther is found
+      if (leadWithOther) {
+        setOthers(leadWithOther.other);
+        console.log(leadWithOther.other);
+      } else {
+        console.warn("No lead object with 'other' property found.");
+      }
     } catch (error) {
       console.error("Error fetching leads:", error);
       console.error("Error details:", error.response);
@@ -74,11 +86,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
       util.setLoader(false);
     }
   };
+  
 
   useEffect(() => {
     fetchLeads(institution);
     // eslint-disable-next-line
   }, [institution]);
+
+  console.log(others)
 
   const handleAddLeads = async (e) => {
     e.preventDefault();
@@ -204,18 +219,19 @@ const LeadsList = ({ institution: tempInstitution }) => {
   }, [editUser]);
 
   const handleDeviceSelect = (deviceType) => {
-    const updatedDevices = { ...selectedDevices };
-    updatedDevices[deviceType] = !updatedDevices[deviceType];
-    setSelectedDevices(updatedDevices);
-    const selectedDevice = Object.keys(updatedDevices).find(
-      (deviceType) => updatedDevices[deviceType]
-    );
-    setDevice(selectedDevice || "");
-  };
+    const updatedDevices = [...device]; // Copy the array
+    const index = updatedDevices.indexOf(deviceType);
 
-  const selectedDeviceNames = Object.keys(selectedDevices)
-    .filter((deviceType) => selectedDevices[deviceType])
-    .join(", ");
+    if (index !== -1) {
+      updatedDevices.splice(index, 1); // Remove the device type if it exists
+    } else {
+      updatedDevices.push(deviceType); // Add the device type if it doesn't exist
+    }
+
+    setDevice(updatedDevices);
+  };
+  const selectedDeviceNames = device.join(", ");
+
   const indexOfLastLead = currentPage * itemsPerPage;
   const indexOfFirstLead = indexOfLastLead - itemsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
@@ -230,7 +246,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     <div className="ml-[5rem] max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
       <main
-        className="w-[82vw] max-h-[45.5rem] min-h-[43rem] bg-[#fff5] max600:w-[90vw]"
+        className="w-[82vw] max-h-[auto] min-h-[43rem] bg-[#fff5] max600:w-[90vw]"
         style={{
           boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.1)",
           borderRadius: "0.8rem",
@@ -349,7 +365,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <input
                       className="ml-4 rounded-full"
                       type="checkbox"
-                      checked={selectedDevices.phone}
+                      checked={selectedDevices.SmartPhone}
                       onChange={() => handleDeviceSelect('SmartPhone')}
                     />
                   </div>
@@ -358,7 +374,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <input
                       className="ml-4 rounded-full"
                       type="checkbox"
-                      checked={selectedDevices.tablet}
+                      checked={selectedDevices.Tablet}
                       onChange={() => handleDeviceSelect('Tablet')}
                     />
                   </div>
@@ -367,7 +383,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <input
                       className="ml-4 rounded-full"
                       type="checkbox"
-                      checked={selectedDevices.laptop}
+                      checked={selectedDevices.Laptop}
                       onChange={() => handleDeviceSelect('Laptop')}
                     />
                   </div>
@@ -394,28 +410,32 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </form>
           </div>
         )}
-        <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[0.8rem] mx-auto ">
+        <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[0.8rem] mx-auto custom-scrollbar">
           {filteredLeads.length === 0 ? (
             <p>No results found.</p>
           ) : (
             <table className="w-[100%]">
               <thead className="border-b text-[1.1rem] font-[600] border-[#2e2e2e]">
                 <tr>
-                  <th className="w-1/4 ">Name</th>
-                  <th className="w-1/4 ">EmailId</th>
-                  <th className="w-1/4">PhoneNumber</th>
-                  <th className="w-1/4">date</th>
-                  <th className="w-1/4"></th>
+                  <th className="w-1/6 ">Name</th>
+                  <th className="w-1/6 ">EmailId</th>
+                  <th className="w-1/6">PhoneNumber</th>
+                  <th className="w-1/6">Date</th>
+                  <th className="w-1/6">Device</th>
+                  <th className="w-1/6">Age</th>
+                  <th className="w-1/6"></th>
                 </tr>
               </thead>
               <tbody>
                 {currentLeads.map((lead, index) => (
                   <tr key={index} className="font-[500]">
-                    <td className="w-1/4">{lead.name}</td>
-                    <td className="w-1/4">{lead.emailId}</td>
-                    <td className="w-1/4">{lead.phoneNumber}</td>
-                    <td className="w-1/4">{lead.date}</td>
-                    <td className="w-1/4" onClick={() => handleEditUser(lead)}>
+                    <td className="w-1/6">{lead.name}</td>
+                    <td className="w-1/6">{lead.emailId}</td>
+                    <td className="w-1/6">{lead.phoneNumber}</td>
+                    <td className="w-1/6">{lead.date}</td>
+                    <td className="w-1/6">{lead.device ? lead.device.join(', ') : ''}</td>
+                    <td className="w-1/6">{lead.age}</td>
+                    <td className="w-1/6" onClick={() => handleEditUser(lead)}>
                       <img src={EditImage} alt="Edit" width="100px" />
                     </td>
                   </tr>
@@ -499,7 +519,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       <input
                         className="ml-4 rounded-full"
                         type="checkbox"
-                        checked={selectedDevices.phone}
+                        checked={selectedDevices.SmartPhone}
                         onChange={() => handleDeviceSelect('SmartPhone')}
                       />
                     </div>
@@ -508,7 +528,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       <input
                         className="ml-4 rounded-full"
                         type="checkbox"
-                        checked={selectedDevices.tablet}
+                        checked={selectedDevices.Tablet}
                         onChange={() => handleDeviceSelect('Tablet')}
                       />
                     </div>
@@ -517,12 +537,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       <input
                         className="ml-4 rounded-full"
                         type="checkbox"
-                        checked={selectedDevices.laptop}
+                        checked={selectedDevices.Laptop}
                         onChange={() => handleDeviceSelect('Laptop')}
                       />
                     </div>
                   </div>
                 </div>
+                <div>{others.income}</div>
                 <p className="text-[1.1rem] K2D font-[600]"><span className="text-[#257d8d]">{name}</span> uses <span >{device}</span></p>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
