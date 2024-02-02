@@ -38,7 +38,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
-  const [selectedDevices, setSelectedDevices] = useState({
+  //setSelectedDevices
+  const [selectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
     Laptop: false,
