@@ -20,24 +20,28 @@ const LeadsList = ({ institution: tempInstitution }) => {
   } else {
     institution = tempInstitution || searchParams.get("institution");
   }
+  const itemsPerPage = 9;
   const [leadsData, setLeadsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
-  const [others, setOthers] = useState({});
+  // const [others, setOthers] = useState({});
   const [emailId2, setEmailId2] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [age, setAge] = useState("");
   const [device, setDevice] = useState([]);
   const [date, setdate] = useState("");
+  const [education, setEducation] = useState(" ");
+  const [income, setIncome] = useState(" ");
+  const [occupation, setOccupation] = useState(" ");
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const itemsPerPage = 9;
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
+  // eslint-disable-next-line
   const [selectedDevices, setSelectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
@@ -68,17 +72,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
       const response = await API.get("clients", `/user/get-leads/${institution}`);
       console.log(response.Items);
       setLeadsData(response.Items);
-  
-      // Find the lead object with 'other' property
-      const leadWithOther = response.Items.find(lead => lead.other);
-  
-      // Check if leadWithOther is found
-      if (leadWithOther) {
-        setOthers(leadWithOther.other);
-        console.log(leadWithOther.other);
-      } else {
-        console.warn("No lead object with 'other' property found.");
-      }
     } catch (error) {
       console.error("Error fetching leads:", error);
       console.error("Error details:", error.response);
@@ -86,25 +79,25 @@ const LeadsList = ({ institution: tempInstitution }) => {
       util.setLoader(false);
     }
   };
-  
+
 
   useEffect(() => {
     fetchLeads(institution);
     // eslint-disable-next-line
   }, [institution]);
 
-  console.log(others)
-
+  // console.log(others)
   const handleAddLeads = async (e) => {
     e.preventDefault();
-    if (!name || !emailId || !phoneNumber || date) {
+    if (!name || !emailId || !phoneNumber || !date || !education || !income || !occupation) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
-        text: "Name, Email, Date and Phone Number are mandatory fields.",
+        text: "Name, Email, Date, Phone Number, Education, Income, and Occupation are mandatory fields.",
       });
       return;
     }
+
     const apiName = "clients";
     const path = "/user/create-Leads";
     const myInit = {
@@ -118,6 +111,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
         age: age,
         device: device,
         date: new Date(date).getTime(),
+        other: {
+          education: education,
+          income: income,
+          occupation: occupation,
+        },
       },
     };
 
@@ -135,6 +133,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
           age: age,
           device: device,
           date: date,
+          education: education,
+          income: income,
+          occupation: occupation,
         },
       ]);
       console.log("User created successfully:", create);
@@ -147,6 +148,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setName("");
       setEmailId("");
       setPhoneNumber("");
+      setEducation("");
+      setIncome("");
+      setOccupation("");
       util.setLoader(false);
     } catch (e) {
       console.log(e);
@@ -156,6 +160,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
         text: "An error occurred while creating the user.",
       });
       util.setLoader(false);
+    } finally {
+      setSelectedDevices({
+        SmartPhone: false,
+        Tablet: false,
+        Laptop: false,
+      });
     }
   };
 
@@ -183,6 +193,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
         age: age,
         device: device,
         date: new Date(date).getTime(),
+        other: {
+          education: education,
+          income: income,
+          occupation: occupation
+        }
       },
     };
     try {
@@ -202,6 +217,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
         text: "An error occurred while updating the user.",
       });
       util.setLoader(false);
+    } finally {
+      setSelectedDevices({
+        SmartPhone: false,
+        Tablet: false,
+        Laptop: false,
+      });
     }
   };
 
@@ -214,22 +235,27 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setPhoneNumber2(editUser.phoneNumber2 || "");
       setAge(editUser.age || "");
       setdate(editUser.date || "");
-      setDevice(editUser.device || "");
+      setDevice(editUser.device || []);
+      setEducation(editUser.other?.education || "");
+      setIncome(editUser.other?.income || "");
+      setOccupation(editUser.other?.occupation || "");
     }
   }, [editUser]);
 
   const handleDeviceSelect = (deviceType) => {
-    const updatedDevices = [...device]; // Copy the array
-    const index = updatedDevices.indexOf(deviceType);
-
-    if (index !== -1) {
-      updatedDevices.splice(index, 1); // Remove the device type if it exists
-    } else {
-      updatedDevices.push(deviceType); // Add the device type if it doesn't exist
-    }
-
-    setDevice(updatedDevices);
+    setSelectedDevices((prevDevices) => ({
+      ...prevDevices,
+      [deviceType]: !prevDevices[deviceType],
+    }));
   };
+
+  useEffect(() => {
+    const updatedDevices = Object.keys(selectedDevices).filter(
+      (device) => selectedDevices[device]
+    );
+    setDevice(updatedDevices);
+  }, [selectedDevices]);
+
   const selectedDeviceNames = device.join(", ");
 
   const indexOfLastLead = currentPage * itemsPerPage;
@@ -280,7 +306,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         </section>
 
         {isUserAdd && (
-          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw]">
+          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw] max1050:mb-[6rem]">
             <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
@@ -412,7 +438,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         )}
         <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[0.8rem] mx-auto custom-scrollbar">
           {filteredLeads.length === 0 ? (
-            <p>No results found.</p>
+            <p>Loading...</p>
           ) : (
             <table className="w-[100%]">
               <thead className="border-b text-[1.1rem] font-[600] border-[#2e2e2e]">
@@ -433,7 +459,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <td className="w-1/6">{lead.emailId}</td>
                     <td className="w-1/6">{lead.phoneNumber}</td>
                     <td className="w-1/6">{lead.date}</td>
-                    <td className="w-1/6">{lead.device ? lead.device.join(', ') : ''}</td>
+                    <td className="w-1/6">{lead.device ? lead.device.join(', ') : lead.device}</td>
                     <td className="w-1/6">{lead.age}</td>
                     <td className="w-1/6" onClick={() => handleEditUser(lead)}>
                       <img src={EditImage} alt="Edit" width="100px" />
@@ -444,8 +470,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </table>
           )}
           {isEditUser && (
-            <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw] max1050:left-[5%]">
-              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
+            <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[30] max1050:w-[85vw] max1050:left-[5%]">
+              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff]">
                 <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                   <input
                     required
@@ -509,15 +535,15 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     }}
                   />
                 </div>
-                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="bg-[#f7f7f7] text-[#000] text-center h-[3rem] K2D py-3 rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
+                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
+                  <div className="bg-[#f7f7f7] text-[#000] flex justify-center items-center text-center h-[2.5rem] K2D rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
                     {date}
                   </div>
                   <div className="flex gap-6">
                     <div>
                       <img className="w-[3rem]" src={PhoneImg} alt="" />
                       <input
-                        className="ml-4 rounded-full"
+                        className="ml-4"
                         type="checkbox"
                         checked={selectedDevices.SmartPhone}
                         onChange={() => handleDeviceSelect('SmartPhone')}
@@ -526,7 +552,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <div>
                       <img className="w-[3rem]" src={TabletImg} alt="" />
                       <input
-                        className="ml-4 rounded-full"
+                        className="ml-4"
                         type="checkbox"
                         checked={selectedDevices.Tablet}
                         onChange={() => handleDeviceSelect('Tablet')}
@@ -535,7 +561,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <div>
                       <img className="w-[3rem]" src={LaptopImg} alt="" />
                       <input
-                        className="ml-4 rounded-full"
+                        className="ml-4"
                         type="checkbox"
                         checked={selectedDevices.Laptop}
                         onChange={() => handleDeviceSelect('Laptop')}
@@ -543,8 +569,48 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
                 </div>
-                <div>{others.income}</div>
-                <p className="text-[1.1rem] K2D font-[600]"><span className="text-[#257d8d]">{name}</span> uses <span >{device}</span></p>
+                <div className="flex gap-2 flex-col w-full justify-start K2D text-[1.2rem] font-[600] mt-[-1rem]">
+                  {education && (
+                    <div className="flex gap-2 items-center">
+                      Education:
+                      <input
+                        placeholder="Education"
+                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                        type="text"
+                        value={education}
+                        onChange={(e) => setEducation(e.target.value)}
+                      />
+                    </div>
+                  )}
+                  {occupation && (
+                    <div className="flex gap-2 items-center">
+                      Occupation:
+                      <input
+                        placeholder="Occupation"
+                        className="flex w-[63%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                        type="text"
+                        value={occupation}
+                        onChange={(e) => setOccupation(e.target.value)}
+                      />
+                    </div>
+                  )}
+                  {income && (
+                    <div className="flex gap-2 items-center">
+                      Income:
+                      <input
+                        placeholder="Income"
+                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                        type="text"
+                        value={income}
+                        onChange={(e) => setIncome(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+                <p className="text-[1.1rem] K2D font-[600]">
+                  <span className="text-[#257d8d]">{name}</span>
+                  {device ? <span> uses <span>{device.join(', ')}</span></span> : ' has no device information'}
+                </p>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
