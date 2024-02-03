@@ -25,7 +25,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
-  // const [others, setOthers] = useState({});
   const [emailId2, setEmailId2] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumber2, setPhoneNumber2] = useState("");
@@ -41,7 +40,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
-  // eslint-disable-next-line
   const [selectedDevices, setSelectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
