@@ -67,7 +67,7 @@ function Testimonials({ testimonials, setTestimonials }) {
 
 
   return (
-    <div className="mx-auto max-w-[800px] px-8">
+    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
       ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**

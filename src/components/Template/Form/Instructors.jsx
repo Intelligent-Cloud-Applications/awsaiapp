@@ -67,7 +67,7 @@ const addNewInstructor = () => {
 };
 
   return (
-    <div className="mx-auto max-w-[800px] px-8">
+    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">INSTRUCTORS SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
       ** The Instructor page shown is just an example how your given data will look like for the Instructors page it will not change on giving your input.**
@@ -75,7 +75,7 @@ const addNewInstructor = () => {
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
       Introduce expert team members, emphasizing expertise and value they bring to your organization.
       </h5>
-<div className="max-h-[480px] overflow-y-auto">
+<div className="">
         <div ref={instructorsContainerRef} className="pb-6">
           {instructors.map((instructor, index) => (
             <div key={index} className="mt-2">
