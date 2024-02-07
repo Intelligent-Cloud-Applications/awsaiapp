@@ -30,16 +30,19 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [phoneNumber2, setPhoneNumber2] = useState("");
   const [age, setAge] = useState("");
   const [device, setDevice] = useState([]);
-  const [date, setdate] = useState("");
-  const [education, setEducation] = useState(" ");
-  const [income, setIncome] = useState(" ");
-  const [occupation, setOccupation] = useState(" ");
+  const [date, setdate] = useState("");;
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [userCheck, setUserCheck] = useState(0);
+  const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
+  const [additionalInfoArray, setAdditionalInfoArray] = useState([
+    { title: "", info: "" },
+  ]);
   const [selectedDevices, setSelectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
@@ -78,24 +81,21 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
-
   useEffect(() => {
     fetchLeads(institution);
     // eslint-disable-next-line
   }, [institution]);
 
-  // console.log(others)
   const handleAddLeads = async (e) => {
     e.preventDefault();
-    if (!name || !emailId || !phoneNumber || !date || !education || !income || !occupation) {
+    if (!name || !emailId || !phoneNumber || !date) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
-        text: "Name, Email, Date, Phone Number, Education, Income, and Occupation are mandatory fields.",
+        text: "Name, Email, Date, Phone Number are mandatory fields.",
       });
       return;
     }
-
     const apiName = "clients";
     const path = "/user/create-Leads";
     const myInit = {
@@ -109,46 +109,29 @@ const LeadsList = ({ institution: tempInstitution }) => {
         age: age,
         device: device,
         date: new Date(date).getTime(),
-        other: {
-          education: education,
-          income: income,
-          occupation: occupation,
-        },
+        other: {},
       },
     };
-
+    // Include additionalInfoTitle and additionalInfo if available
+    if (additionalInfoArray.length > 0) {
+      additionalInfoArray.forEach((info) => {
+        if (info.title && info.info) {
+          myInit.body.other[info.title] = info.info;
+        }
+      });
+    }
     try {
       const create = await API.post(apiName, path, myInit);
-      setLeadsData([
-        ...leadsData,
-        {
-          institution: institution,
-          name: name,
-          emailId: emailId,
-          emailId2: emailId2,
-          phoneNumber: phoneNumber,
-          phoneNumber2: phoneNumber2,
-          age: age,
-          device: device,
-          date: date,
-          education: education,
-          income: income,
-          occupation: occupation,
-        },
-      ]);
-      console.log("User created successfully:", create);
+      console.log(create);
+      setLeadsData((prevLeadsData) => [...prevLeadsData, myInit.body]);
       Swal.fire({
         icon: "success",
         title: "User Added",
       });
-      await fetchLeads(institution);
       setIsUserAdd(false);
       setName("");
       setEmailId("");
       setPhoneNumber("");
-      setEducation("");
-      setIncome("");
-      setOccupation("");
       util.setLoader(false);
     } catch (e) {
       console.log(e);
@@ -191,13 +174,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
         age: age,
         device: device,
         date: new Date(date).getTime(),
-        other: {
-          education: education,
-          income: income,
-          occupation: occupation
-        }
+        other: {}
       },
     };
+    if (additionalInfoTitle && additionalInfo) {
+      myInit.body.other[additionalInfoTitle] = additionalInfo;
+    }
+
     try {
       const update = await API.put(apiName, path, myInit);
       await fetchLeads(institution);
@@ -234,9 +217,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setAge(editUser.age || "");
       setdate(editUser.date || "");
       setDevice(editUser.device || []);
-      setEducation(editUser.other?.education || "");
-      setIncome(editUser.other?.income || "");
-      setOccupation(editUser.other?.occupation || "");
+      // Destructure the additional data fields from the other object
+      const { additionalInfoTitle = "", additionalInfo = "" } = editUser.other || {};
+      setAdditionalInfoTitle(additionalInfoTitle);
+      setAdditionalInfo(additionalInfo);
     }
   }, [editUser]);
 
@@ -266,6 +250,33 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setCurrentPage(1);
   }, [filteredLeads])
 
+  const handleAddMoreInfo = () => {
+    setAdditionalInfoArray((prevArray) => [
+      ...prevArray,
+      { title: "", info: "" },
+    ]);
+    setIsAddingMoreInfo(true);
+  };
+
+  const handleRemoveMoreInfo = (index) => {
+    const updatedInfoArray = [...additionalInfoArray];
+    updatedInfoArray.splice(index, 1);
+    setAdditionalInfoArray(updatedInfoArray);
+  };
+
+  const handleInfoTitleChange = (e, index) => {
+    const updatedInfoArray = [...additionalInfoArray];
+    updatedInfoArray[index].title = e.target.value;
+    setAdditionalInfoArray(updatedInfoArray);
+  };
+
+  const handleInfoChange = (e, index) => {
+    const updatedInfoArray = [...additionalInfoArray];
+    updatedInfoArray[index].info = e.target.value;
+    setAdditionalInfoArray(updatedInfoArray);
+  };
+  console.log("additionalInfoTitle:", additionalInfoTitle);
+  console.log("additionalInfo:", additionalInfo);
   return (
     <div className="ml-[5rem] max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
@@ -302,7 +313,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
             <span className="mr-2">+</span> Add Leads
           </button>
         </section>
-
         {isUserAdd && (
           <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw] max1050:mb-[6rem]">
             <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
@@ -414,6 +424,41 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 </div>
               </div>
               <p className="mb-[-2rem]">You have selected {selectedDeviceNames}</p>
+              {isAddingMoreInfo && (
+                <div className="flex flex-col gap-3 w-full justify-center items-center">
+                  {additionalInfoArray.map((info, index) => (
+                    <div key={index} className="flex flex-col gap-3 w-full">
+                      <input
+                        placeholder="Title"
+                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                        type="text"
+                        value={info.title}
+                        onChange={(e) => handleInfoTitleChange(e, index)}
+                      />
+                      <textarea
+                        placeholder="Info"
+                        className="flex w-[65%] h-[6rem] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2 resize-none"
+                        value={info.info}
+                        onChange={(e) => handleInfoChange(e, index)}
+                      />
+                      <button
+                        className="flex text-[white] w-[8rem] p-2 rounded-[10px] justify-center bg-[#a72222]"
+                        onClick={() => handleRemoveMoreInfo(index)}
+                      >
+                        Remove Info
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex justify-end w-full">
+                <div
+                  className="flex text-[white] w-[8rem] h-[2.5rem] p-2 rounded-[10px] justify-center bg-[#1d1d1d] mt-[-3rem]"
+                  onClick={handleAddMoreInfo}
+                >
+                  Add More Info
+                </div>
+              </div>
               <div className="flex flex-col gap-3 w-full justify-center items-center">
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
@@ -568,47 +613,58 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   </div>
                 </div>
                 <div className="flex gap-2 flex-col w-full justify-start K2D text-[1.2rem] font-[600] mt-[-1rem]">
-                  {education && (
-                    <div className="flex gap-2 items-center">
-                      Education:
-                      <input
-                        placeholder="Education"
-                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
-                        type="text"
-                        value={education}
-                        onChange={(e) => setEducation(e.target.value)}
-                      />
-                    </div>
-                  )}
-                  {occupation && (
-                    <div className="flex gap-2 items-center">
-                      Occupation:
-                      <input
-                        placeholder="Occupation"
-                        className="flex w-[63%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
-                        type="text"
-                        value={occupation}
-                        onChange={(e) => setOccupation(e.target.value)}
-                      />
-                    </div>
-                  )}
-                  {income && (
-                    <div className="flex gap-2 items-center">
-                      Income:
-                      <input
-                        placeholder="Income"
-                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
-                        type="text"
-                        value={income}
-                        onChange={(e) => setIncome(e.target.value)}
-                      />
-                    </div>
-                  )}
+                  <div className="flex gap-2 items-center">
+                    {isEditUser && currentLeads.map((lead, index) => (
+                      <div key={index} className="font-[500]">
+                        {lead.other && typeof lead.other === 'object' && Object.entries(lead.other).map(([key, value]) => (
+                          <div key={key}>
+                            <span className="text-[#257d8d] font-bold">{key}:</span>
+                            <span className="text-[#2b2b2b]">{value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <p className="text-[1.1rem] K2D font-[600]">
                   <span className="text-[#257d8d]">{name}</span>
                   {device ? <span> uses <span>{device.join(', ')}</span></span> : ' has no device information'}
                 </p>
+                {isAddingMoreInfo && (
+                  <div className="flex flex-col gap-3 w-full justify-center items-center">
+                    {additionalInfoArray.map((info, index) => (
+                      <div key={index} className="flex flex-col gap-3 w-full">
+                        <input
+                          placeholder="Title"
+                          className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                          type="text"
+                          value={info.title}
+                          onChange={(e) => handleInfoTitleChange(e, index)}
+                        />
+                        <textarea
+                          placeholder="Info"
+                          className="flex w-[65%] h-[6rem] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2 resize-none"
+                          value={info.info}
+                          onChange={(e) => handleInfoChange(e, index)}
+                        />
+                        <button
+                          className="flex text-[white] w-[8rem] p-2 rounded-[10px] justify-center bg-[#a72222]"
+                          onClick={() => handleRemoveMoreInfo(index)}
+                        >
+                          Remove Info
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="flex justify-end w-full">
+                  <div
+                    className="flex text-[white] w-[8rem] h-[2.5rem] p-2 rounded-[10px] justify-center bg-[#1d1d1d] mt-[-3rem]"
+                    onClick={handleAddMoreInfo}
+                  >
+                    Add More Info
+                  </div>
+                </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"

@@ -606,6 +606,7 @@ const MemberList = ({ institution: tempInstitution }) => {
               <div className="font-[700] max850:hidden">Attendance</div>
               <div className="font-[700] max850:hidden">Status</div>
               <div className="font-[700] pr-[7rem] max850:hidden">Due</div>
+              <div className="font-[700] pr-[7rem] max850:hidden">Product</div>
               <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
             </div>
           </div>
@@ -721,7 +722,6 @@ const MemberList = ({ institution: tempInstitution }) => {
               </div>
             ))}
           </div>
-
           {/* form to update member */}
           {isEditUser && (
             <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
