@@ -281,7 +281,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     <div className="ml-[5rem] max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
       <main
-        className="w-[82vw] max-h-[auto] min-h-[43rem] bg-[#fff5] max600:w-[90vw]"
+        className="w-[82vw] max-h-[auto] min-h-[43rem] bg-[#fff5] max600:w-[90vw] max600:relative"
         style={{
           boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.1)",
           borderRadius: "0.8rem",
@@ -307,7 +307,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
               alt=""
             />
           </div>
-          <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:absolute max600:top-[13%] max600:right-[-2%] max600:p-1 max600:rounded-[7px]"
+          <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:absolute max600:top-[-5%] max600:right-[-5%] max600:p-1 max600:rounded-[7px]"
             onClick={() => setIsUserAdd(true)}
           >
             <span className="mr-2">+</span> Add Leads
