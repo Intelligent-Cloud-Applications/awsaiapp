@@ -314,8 +314,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
           </button>
         </section>
         {isUserAdd && (
-          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[85vw] max1050:mb-[6rem]">
-            <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]">
+          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
+            <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] max850:h-[100vh] Poppins bg-[#ffffff] z-[50]">
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
                   required
@@ -451,7 +451,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   ))}
                 </div>
               )}
-              <div className="flex justify-end w-full">
+              <div className="flex justify-end w-full mt-2 mb-[-2rem] max850:mt-[4rem]">
                 <div
                   className="flex text-[white] w-[8rem] h-[2.5rem] p-2 rounded-[10px] justify-center bg-[#1d1d1d] mt-[-3rem]"
                   onClick={handleAddMoreInfo}
