@@ -48,6 +48,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     Tablet: false,
     Laptop: false,
   });
+  const [id, setId] = useState("");
   console.log(userCheck)
 
   useEffect(() => {
@@ -151,6 +152,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   };
 
   const handleEditUser = (user) => {
+    setId(user.emailId);
     setEditUser(user);
     setIsEditUser(true);
   };
@@ -625,16 +627,29 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 </div>
                 <div className="flex gap-2 flex-col w-full justify-start K2D text-[1.2rem] font-[600] mt-[-1rem]">
                   <div className="flex gap-2 items-center">
-                    {isEditUser && currentLeads.map((lead, index) => (
-                      <div key={index} className="font-[500]">
-                        {lead.other && typeof lead.other === 'object' && Object.entries(lead.other).map(([key, value]) => (
-                          <div key={key}>
-                            <span className="text-[#257d8d] font-bold">{key}:</span>
-                            <span className="text-[#2b2b2b]">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
+                    <div className="flex gap-2 items-center">
+                      {isEditUser && (
+                        <div className="font-[500]">
+                          {leadsData.map((lead) => {
+                            if (lead.emailId === id) {
+                              return (
+                                <div key={lead.id}>
+                                  {lead.other &&
+                                    Object.entries(lead.other).map(([key, value]) => (
+                                      <div key={key}>
+                                        <span className="text-[#257d8d] font-bold">{key}:</span>
+                                        <span className="text-[#2b2b2b]">{value}</span>
+                                      </div>
+                                    ))}
+                                </div>
+                              );
+                            } else {
+                              return null;
+                            }
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <p className="text-[1.1rem] K2D font-[600]">
