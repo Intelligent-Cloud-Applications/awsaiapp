@@ -157,6 +157,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const handleCancelEdit = () => {
     setIsEditUser(false);
     setEditUser(null);
+    setIsAddingMoreInfo(false);
   };
 
   const handleEdit = async (e) => {
@@ -174,11 +175,19 @@ const LeadsList = ({ institution: tempInstitution }) => {
         age: age,
         device: device,
         date: new Date(date).getTime(),
-        other: {}
+        other: {
+          ...editUser.other,
+        }
       },
     };
-    if (additionalInfoTitle && additionalInfo) {
-      myInit.body.other[additionalInfoTitle] = additionalInfo;
+
+    // Include additionalInfoTitle and additionalInfo if available
+    if (additionalInfoArray.length > 0) {
+      additionalInfoArray.forEach((info) => {
+        if (info.title && info.info) {
+          myInit.body.other[info.title] = info.info;
+        }
+      });
     }
 
     try {
@@ -199,6 +208,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       });
       util.setLoader(false);
     } finally {
+      setIsAddingMoreInfo(false);
       setSelectedDevices({
         SmartPhone: false,
         Tablet: false,
@@ -471,6 +481,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   onClick={() => {
                     setIsUserAdd(false);
                     setUserCheck(0);
+                    setIsAddingMoreInfo(false);
                   }}
                 >
                   Cancel
