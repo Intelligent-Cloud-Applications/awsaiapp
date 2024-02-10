@@ -81,6 +81,8 @@ const Template = () => {
       duration: calculateDuration('monthly'), 
       durationText: 'Monthly', 
       india: true,
+      planId:0,
+      description:0,
     },
     {
       heading: '',
@@ -92,6 +94,8 @@ const Template = () => {
       duration: calculateDuration('monthly'), 
       durationText: 'Monthly', 
       india: true,
+      planId:0,
+      description:0,
     },
     {
       heading: '',
@@ -103,6 +107,8 @@ const Template = () => {
       duration: calculateDuration('monthly'), 
       durationText: 'Monthly', 
       india: true,
+      planId:0,
+      description:0,
     },
   ]);
   
@@ -174,7 +180,7 @@ const Template = () => {
       };
       await API.put("clients", "/user/development-form/company", {
         body: {
-          institution: "awsaiapp",
+          institutionid: companyName,
           companyName,
           PrimaryColor,
           SecondaryColor,
@@ -200,7 +206,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
-          institution: "awsaiapp",
+          institutionid: companyName,
           TagLine,
           videoUrl,
         },
@@ -216,7 +222,7 @@ const Template = () => {
     try {
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
-          institution: "awsaiapp",
+          institutionid: companyName,
           src_Components_Home_Why__h1,
           src_Components_Home_Header3__h1,
           src_Components_Home_Header3__h2,
@@ -264,6 +270,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
+          institutionid: companyName,
           Testimonial: [
             {
               name: testimonials[0].name,
@@ -289,24 +296,36 @@ const Template = () => {
   };
 
   const handleSubscriptionUpload = async () => {
+    console.log(subscriptions);
     try {
-      console.log(subscriptions);
-      const subscriptionObject = {
-        Subscription: subscriptions,
-      };
-      
-      await API.put("clients", "/user/development-form/subscriptions", {
-       body: subscriptionObject,
-      });
+      // Loop through each subscription
+      for (let i = 0; i < subscriptions.length; i++) {
+        const subscription = subscriptions[i];
+        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
+        subscription.provides = subscription.provides.map((provide) => provide.description);
+
+        // Make API call for each subscription
+        await API.put("clients", "/user/development-form/subscriptions", {
+          body: {
+            institution: companyName,
+            ...subscription // Send individual subscription inside an array
+          }
+        });
+      }
     } catch (error) {
-      console.error("Error uploading subscription: ", error);
+      console.error("Error uploading subscriptions:", error);
     }
   };
+  
+  
+
+
 
   const handleFAQsUpload = async () => {
     try {
       await API.put("clients", "/user/development-form/faq", {
         body: {
+          institutionid: companyName,
           FAQ: [
             {
               Title: faqs[0].question,
@@ -338,111 +357,41 @@ const Template = () => {
 
   const handleInstructorsUpload = async () => {
     try {
-      const response1 = await Storage.put(`awsaiapp/${instructors[0].uploadedFile}`, instructors[0].actualFile, {
-        contentType: instructors[0].actualFile.type,
-      });
+        let instructorsArray = [];
+        for (let i = 0; i < instructors.length; i++) {
+            const instructor = instructors[i];
+            if (instructor.name && instructor.emailId && instructor.position) {
+                const response = await Storage.put(`awsaiapp/${instructor.uploadedFile}`, instructor.actualFile, {
+                    contentType: instructor.actualFile.type,
+                });
+                let inst_pic = await Storage.get(response.key);
+                inst_pic = inst_pic.split("?")[0];
+                instructorsArray.push({
+                    name: instructor.name,
+                    emailId: instructor.emailId,
+                    image: inst_pic,
+                    position: instructor.position,
+                });
+            }
+        }
 
-      // Get the URL of the uploaded file
-      let inst_pic_1 = await Storage.get(response1.key);
-      inst_pic_1 = inst_pic_1.split("?")[0];
-
-      const response2 = await Storage.put(`awsaiapp/${instructors[1].uploadedFile}`, instructors[1].actualFile, {
-        contentType: instructors[1].actualFile.type,
-      });
-
-      // Get the URL of the uploaded file
-      let inst_pic_2 = await Storage.get(response2.key);
-      inst_pic_2 = inst_pic_2.split("?")[0];
-
-      const response3 = await Storage.put(`awsaiapp/${instructors[2].uploadedFile}`, instructors[2].actualFile, {
-        contentType: instructors[2].actualFile.type,
-      });
-
-      // Get the URL of the uploaded file
-      let inst_pic_3 = await Storage.get(response3.key);
-      inst_pic_3 = inst_pic_3.split("?")[0];
-
-      const response4 = await Storage.put(`awsaiapp/${instructors[3].uploadedFile}`, instructors[3].actualFile, {
-        contentType: instructors[3].actualFile.type,
-      });
-
-      // Get the URL of the uploaded file
-      let inst_pic_4 = await Storage.get(response4.key);
-      inst_pic_4 = inst_pic_4.split("?")[0];
-
-      let inst_pic_5 = null;
-      if (instructors[4].uploadedFile) {
-        // const response5 = await Storage.put(`awsaiapp/${instructors[4].uploadedFile.name}`, instructors[4].uploadedFile, {
-        //   contentType: instructors[4].uploadedFile.type,
-        // });
-
-        // Get the URL of the uploaded file
-        // let inst_pic_5 = await Storage.get(response5.key);
-        // inst_pic_5 = inst_pic_5.split("?")[0];
-      }
-
-      await API.put("clients", "/user/development-form/instructor", {
-        body: {
-          // institution: "awsaiapp",
-          // instructor_1: instructors[0].name,
-          // inst_position_1: instructors[0].position,
-          // inst_pic_1,
-          // instructor_2: instructors[1].name,
-          // inst_position_2: instructors[1].position,
-          // inst_pic_2,
-          // instructor_3: instructors[2].name,
-          // inst_position_3: instructors[2].position,
-          // inst_pic_3,
-          // instructor_4: instructors[3].name,
-          // inst_position_4: instructors[3].position,
-          // inst_pic_4,
-          // instructor_5: instructors[4].name,
-          // inst_position_5: instructors[4].position,
-          // inst_pic_5,
-          Instructor: [
-            {
-              name: instructors[0].name,
-              emailId: instructors[0].emailId,
-              image: inst_pic_1,
-              position:instructors[0].position,
+        await API.put("clients", "/user/development-form/instructor", {
+            body: {
+                institution: companyName,
+                Instructor: instructorsArray,
             },
-            {
-              name: instructors[1].name,
-              emailId: instructors[1].emailId,
-              image: inst_pic_2,
-              position:instructors[1].position,
-            },
-            {
-              name: instructors[2].name,
-              emailId: instructors[2].emailId,
-              image: inst_pic_3,
-              position:instructors[2].position,
-            },
-            {
-              name: instructors[3].name,
-              emailId: instructors[3].emailId,
-              image: inst_pic_4,
-              position:instructors[3].position,
-            },
-            {
-              name: instructors[4].name,
-              emailId: instructors[4].emailId,
-              image: inst_pic_5,
-              position:instructors[4].position,
-            },
-          ]
-        },
-      });
+        });
     } catch (error) {
-      console.error("Error uploading instructors: ", error);
+        console.error("Error uploading instructors: ", error);
     }
-  }
+}
+
 
   const handlePolicyUpload = async () => {
     try {
       await API.put("clients", "/user/development-form/policy", {
         body: {
-          institution: "awsaiapp",
+          institutionid: companyName,
           PrivacyPolicy: policies[0].content,
           TermsData: policies[1].content,
           Refund: policies[2].content,
@@ -460,7 +409,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/contact", {
         body: {
-          institution: "awsaiapp",
+          institutionid: companyName,
           Query_Address: contactInfo.address,
           Query_PhoneNumber: contactInfo.phoneNumber,
           Query_EmailId: contactInfo.email,
