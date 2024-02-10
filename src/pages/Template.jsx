@@ -51,9 +51,9 @@ const Template = () => {
   ]);
 
   const [testimonials, setTestimonials] = useState([
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
   ]);
   
   const calculateDuration = (subscriptionType) => {
@@ -165,7 +165,7 @@ const Template = () => {
   const handleCompanyUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`awsaiapp/${logo.name}`, logo, {
+      const response = await Storage.put(`institution-utils/happyprancer/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
 
@@ -242,25 +242,26 @@ const Template = () => {
   };
 
   const handleTestimonialsUpload = async () => {
+    console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
     try {
-      const response1 = await Storage.put(`awsaiapp/${testimonials[0].uploadedFile.name}`, testimonials[0].uploadedFile, {
-        contentType: testimonials[0].uploadedFile.type,
+      const response1 = await Storage.put(`institution-utils/happyprancer/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
+        contentType: testimonials[0].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let imageUrl1 = await Storage.get(response1.key);
       imageUrl1 = imageUrl1.split("?")[0];
 
-      const response2 = await Storage.put(`awsaiapp/${testimonials[1].uploadedFile.name}`, testimonials[1].uploadedFile, {
-        contentType: testimonials[1].uploadedFile.type,
+      const response2 = await Storage.put(`institution-utils/happyprancer/images/Testimonial/${testimonials[1].uploadedFile}`, testimonials[1].actualFile, {
+        contentType: testimonials[1].actualFile.type,
       });
 
       // Get the URL of the uploaded file
       let imageUrl2 = await Storage.get(response2.key);
       imageUrl2 = imageUrl2.split("?")[0];
 
-      const response3 = await Storage.put(`awsaiapp/${testimonials[2].uploadedFile.name}`, testimonials[2].uploadedFile, {
-        contentType: testimonials[2].uploadedFile.type,
+      const response3 = await Storage.put(`institution-utils/happyprancer/images/Testimonial/${testimonials[2].uploadedFile}`, testimonials[2].actualFile, {
+        contentType: testimonials[2].actualFile.type,
       });
 
       // Get the URL of the uploaded file
@@ -302,7 +303,7 @@ const Template = () => {
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i];
         console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
-        subscription.provides = subscription.provides.map((provide) => provide.description);
+        // subscription.provides = subscription.provides.map((provide) => provide.description);
 
         // Make API call for each subscription
         await API.put("clients", "/user/development-form/subscriptions", {
@@ -356,12 +357,13 @@ const Template = () => {
   }
 
   const handleInstructorsUpload = async () => {
+
     try {
         let instructorsArray = [];
         for (let i = 0; i < instructors.length; i++) {
             const instructor = instructors[i];
             if (instructor.name && instructor.emailId && instructor.position) {
-                const response = await Storage.put(`awsaiapp/${instructor.uploadedFile}`, instructor.actualFile, {
+                const response = await Storage.put(`institution-utils/happyprancer/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
                     contentType: instructor.actualFile.type,
                 });
                 let inst_pic = await Storage.get(response.key);

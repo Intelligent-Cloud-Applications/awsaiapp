@@ -30,6 +30,7 @@ function Testimonials({ testimonials, setTestimonials }) {
         const updatedTestimonials = [...testimonials];
         updatedTestimonials[index].imgSrc = reader.result;
         updatedTestimonials[index].uploadedFile = file.name;
+        updatedTestimonials[index].actualFile = file;
         setTestimonials(updatedTestimonials);
       };
     }

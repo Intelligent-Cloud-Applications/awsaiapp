@@ -8,15 +8,16 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
 
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
   useEffect(() => {
-  
     const savedSubscriptionTypes = JSON.parse(localStorage.getItem('subscriptionTypes')) || Array(subscriptions.length).fill('monthly');
     const savedCountryCodes = JSON.parse(localStorage.getItem('countryCodes')) || Array(subscriptions.length).fill('');
     const savedProvides = JSON.parse(localStorage.getItem('provides')) || Array(subscriptions.length).fill([]);
-  
+    
     setSubscriptionTypes(savedSubscriptionTypes);
     setCountryCodes(savedCountryCodes);
-    setProvides(savedProvides); // Corrected here
+    setProvides(savedProvides);
   }, [subscriptions.length]);
+  
+  
   
 
   const handleSubscriptionChange = (subscriptionIndex, e) => {
@@ -58,7 +59,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     const serviceArray = [...updatedSubscriptions[subscriptionIndex].provides];
 
     // Update the value in the provides array
-    const updatedService = { ...serviceArray[serviceIndex], description: value };
+    const updatedService = value;
     serviceArray[serviceIndex] = updatedService;
 
     // Update the provides array in the subscription object
@@ -93,7 +94,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   const addService = (index) => {
     console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
-    updatedSubscriptions[index].provides.push({ description: '' });
+    updatedSubscriptions[index].provides.push('');
     setSubscriptions(updatedSubscriptions);
   };
 
@@ -113,6 +114,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setSubscriptions(updatedSubscriptions);
   };
   
+ 
   useEffect(() => {
     localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
     localStorage.setItem('countryCodes', JSON.stringify(countryCodes));
@@ -234,7 +236,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     </button>
                   <textarea
                     name={`provides.${serviceIndex}.description`}
-                    value={service.description}
+                    value={service}
                     onChange={(e) => handleSubscriptionChange(index, e)}
                     placeholder={`Service ${serviceIndex + 1} Description`}
                     className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
@@ -242,6 +244,16 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                     onFocus={() => setActiveSubscriptionIndex(index)}
                     onBlur={() => setActiveSubscriptionIndex(null)}
                   />
+                   {/* <textarea
+      name={`provides.${serviceIndex}.description`}
+      value={service && service.description} // Add check for service
+      onChange={(e) => handleSubscriptionChange(index, e)}
+      placeholder={`Service ${serviceIndex + 1} Description`}
+      className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
+      rows={1}
+      onFocus={() => setActiveSubscriptionIndex(index)}
+      onBlur={() => setActiveSubscriptionIndex(null)}
+    /> */}
                   <div
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           
