@@ -300,7 +300,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       case 'Bronze':
         return '#a25b15';
       default:
-        return '#2297a7'; // Default color
+        return '#DAA520';
     }
   };
 
