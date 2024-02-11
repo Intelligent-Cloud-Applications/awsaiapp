@@ -344,7 +344,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         </section>
         {isUserAdd && (
           <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
-            <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] max850:h-[100vh] Poppins bg-[#ffffff] z-[50]" >
+              <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]" >
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
                   required
@@ -543,8 +543,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </table>
           )}
           {isEditUser && (
-            <div className=" absolute top-[18%] flex w-[84vw] right-[5%] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[30] max1050:w-[85vw] max1050:left-[5%]">
-              <form className="relative m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-[#2297a7] border-x-[#404040] border-y-[1.2rem] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff]">
+            <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[auto] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
+              <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50] max600:mr-[1rem]" >
                 <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                   <input
                     required
@@ -609,31 +609,33 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   />
                 </div>
                 <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="flex">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="30"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill={getCategoryColor()} // Fill color based on category color
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-star"
-                    >
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                    <select
-                      className="bg-[#f0f0f0] h-10 text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="Gold">Gold</option>
-                      <option value="Silver">Silver</option>
-                      <option value="Bronze">Bronze</option>
-                    </select>
-                  </div>
-                  <div className="bg-[#f7f7f7] text-[#000] flex justify-center items-center text-center h-[2.5rem] K2D rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
-                    {date}
+                  <div className="max600:flex gap-2">
+                    <div className="flex">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="40"
+                        viewBox="0 0 24 24"
+                        fill={getCategoryColor()} // Fill color based on category color
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="feather feather-star"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                      <select
+                        className="bg-[#f0f0f0] h-10 text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                      >
+                        <option value="Gold">Gold</option>
+                        <option value="Silver">Silver</option>
+                        <option value="Bronze">Bronze</option>
+                      </select>
+                    </div>
+                    <div className="bg-[#f7f7f7] text-[#000] flex justify-center items-center text-center h-[2.5rem] K2D rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
+                      {date}
+                    </div>
                   </div>
                   <div className="flex gap-6">
                     <div>
