@@ -178,7 +178,7 @@ const PendingClients = () => {
 
               <div className="flex gap-[8rem]">
                 <div className="font-[700]">Paymeent Status</div>
-                <div className="font-[700] ">Product Id</div>
+                <div className="font-[700] ">Payment Id</div>
                 <div className="font-[700] ">Website Status</div>
               </div>
             </div>
@@ -252,7 +252,7 @@ const PendingClients = () => {
                       {pending.country}
                     </div> */}
                     <div className="ml-[9rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                        {pending.productId}
+                        {pending.paymentId}
                       </div>
                     <div className="flex flex-row justify-between w-[17vw]">
                       
