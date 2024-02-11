@@ -220,6 +220,13 @@ const Template = () => {
 
   const handleServicesUpload = async () => {
     try {
+      const filledDanceTypes = danceTypes.filter(type => type.trim() !== '').slice(0, 5);
+    
+      // Pad the array with empty strings to ensure it has a length of 5
+      const paddedDanceTypes = filledDanceTypes.concat(Array(5 - filledDanceTypes.length).fill(''));
+      
+      // Filter out empty strings from the paddedDanceTypes array
+      const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: companyName,
@@ -233,7 +240,7 @@ const Template = () => {
           src_Components_Home_Header3__h5_3: services[2].title,
           src_Components_Home_Header3__p_3: services[2].description,
           // dance_type: services[0].dance_type,
-          dance_type: danceTypes,
+          dance_type: nonEmptyDanceTypes,
         },
       });
     } catch (error) {
