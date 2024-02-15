@@ -19,7 +19,7 @@ Amplify.configure({
     userPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2_9joxeJ5EP"
-        : "us-east-2_uwdNo4K2o",
+        : "us-east-2_9OhXG0Jjk",
     identityPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"
