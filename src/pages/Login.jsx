@@ -21,18 +21,19 @@ const Login = () => {
   const [error, setError] = useState("");
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
-  const institutionName = ["awsaiapp", "happyprancer", "Bworkz", "lissome", "rtiger", "iconic", "moda"];
-  const [institution, setInstitution] = useState("");
+  console.log(UserCtx)
+  // const institutionName = ["awsaiapp", "happyprancer", "Bworkz", "lissome", "rtiger", "iconic", "moda"];
+  // const [institution, setInstitution] = useState("");
 
-  const handleInstitutionChange = (selectedInstitution) => {
-    if (selectedInstitution !== 'awsaiapp') {
-      setInstitution(selectedInstitution);
-      localStorage.setItem('institution', selectedInstitution);
-    } else {
-      setInstitution(selectedInstitution);
-      localStorage.removeItem('institution', selectedInstitution)
-    }
-  };
+  // const handleInstitutionChange = (selectedInstitution) => {
+  //   if (selectedInstitution !== 'awsaiapp') {
+  //     setInstitution(selectedInstitution);
+  //     localStorage.setItem('institution', selectedInstitution);
+  //   } else {
+  //     setInstitution(selectedInstitution);
+  //     localStorage.removeItem('institution', selectedInstitution)
+  //   }
+  // };
 
 
   const handleInputChange = (e) => {
@@ -49,32 +50,34 @@ const Login = () => {
 
   const handelSubmit = async (event) => {
     event.preventDefault();
-
     UtilCtx.setLoader(true);
-
     try {
       const user = await Auth.signIn(formData.email, formData.password);
-
       if (user) {
         const userdata = await API.get(
           "clients",
-          `/self/read-self/${institution}`
+          `/self/read-self/awsaiapp`
         );
+        console.log(userdata)
         if (
           userdata.userType === "admin" &&
-          userdata.institution === "awsaiapp"
+          userdata.institutionName === "awsaiapp"
         ) {
+          // Store institutionName in local storage
+          localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
           UtilCtx.setLoader(false);
-          console.log(userdata);
           await UserCtx.clients.onReload();
           Swal.fire({
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate("/dashboard", { state: { institution: institution } });
+          Navigate("/dashboard");
         } else if (userdata.userType === "admin") {
+          // Store institutionName in local storage
+          localStorage.setItem('institution', userdata.institutionName);
+  
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
           UtilCtx.setLoader(false);
@@ -83,7 +86,7 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/dashboard`, { state: { institution: institution } });
+          Navigate(`/dashboard`);
         } else {
           Navigate("/");
           Swal.fire({
@@ -108,8 +111,7 @@ const Login = () => {
       }
       UtilCtx.setLoader(false);
     }
-  };
-
+  };  
 
   return (
     <>
@@ -133,7 +135,7 @@ const Login = () => {
               Login
             </h2>
             <form className="flex flex-col items-center">
-              <select
+              {/* <select
                 className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
                 value={institution}
                 onChange={(e) => handleInstitutionChange(e.target.value)}
@@ -145,7 +147,7 @@ const Login = () => {
                     {name}
                   </option>
                 ))}
-              </select>
+              </select> */}
               <div className="mb-4 relative flex items-center">
                 <img
                   src={EmailIcon}

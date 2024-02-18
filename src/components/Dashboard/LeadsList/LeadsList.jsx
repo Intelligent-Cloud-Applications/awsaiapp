@@ -609,7 +609,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   />
                 </div>
                 <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="max600:flex gap-2">
+                  <div className="flex gap-2">
                     <div className="flex">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

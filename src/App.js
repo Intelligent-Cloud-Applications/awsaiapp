@@ -8,11 +8,11 @@ import LoaderProvider from "./components/LoaderProvider";
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
-  const location = useLocation();
-  const institutionFromParams = new URLSearchParams(location.search).get("institution");
-  const institutionFromLocalStorage = localStorage.getItem('institution');
-  const institution = institutionFromParams || institutionFromLocalStorage;
-  console.log(institution)
+  // const location = useLocation();
+  // const institutionFromParams = new URLSearchParams(location.search).get("institution");
+  // const institutionFromLocalStorage = localStorage.getItem('institution');
+  // const institution = institutionFromParams || institutionFromLocalStorage;
+  console.log(UserCtx)
 
   useEffect(() => {
     const check = async () => {
@@ -21,24 +21,24 @@ function App() {
       try {
         await Auth.currentAuthenticatedUser();
 
-        if (institution) {
-          const userdata = await API.get("clients", `/self/read-self/${institution}`);
+        // if (institution) {
+        //   const userdata = await API.get("clients", `/self/read-self/${institution}`);
 
-          if (userdata.userType === "admin") {
-            UserCtx.current.setUserData(userdata);
-            UserCtx.current.setIsAuth(true);
-          } else {
-          }
+        //   if (userdata.userType === "admin") {
+        //     UserCtx.current.setUserData(userdata);
+        //     UserCtx.current.setIsAuth(true);
+        //   } else {
+        //   }
+        // } else {
+        const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
+        console.log(defaultUserdata)
+        if (defaultUserdata.userType === "admin") {
+          UserCtx.current.setUserData(defaultUserdata);
+          UserCtx.current.setIsAuth(true);
         } else {
-          const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
-
-          if (defaultUserdata.userType === "admin") {
-            UserCtx.current.setUserData(defaultUserdata);
-            UserCtx.current.setIsAuth(true);
-          } else {
-            // Handle cases where userType is not 'admin' for default institution
-          }
+          // Handle cases where userType is not 'admin' for default institution
         }
+        // }
       } catch (e) {
         console.log(e);
       } finally {
@@ -47,7 +47,7 @@ function App() {
     };
 
     check();
-  }, [UtilCtx, UserCtx, institution]);
+  }, [UtilCtx, UserCtx]);
 
 
   return (
