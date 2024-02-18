@@ -220,6 +220,13 @@ const Template = () => {
 
   const handleServicesUpload = async () => {
     try {
+      const filledDanceTypes = danceTypes.filter(type => type.trim() !== '').slice(0, 5);
+    
+      // Pad the array with empty strings to ensure it has a length of 5
+      const paddedDanceTypes = filledDanceTypes.concat(Array(5 - filledDanceTypes.length).fill(''));
+      
+      // Filter out empty strings from the paddedDanceTypes array
+      const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: companyName,
@@ -233,7 +240,7 @@ const Template = () => {
           src_Components_Home_Header3__h5_3: services[2].title,
           src_Components_Home_Header3__p_3: services[2].description,
           // dance_type: services[0].dance_type,
-          dance_type: danceTypes,
+          dance_type: nonEmptyDanceTypes,
         },
       });
     } catch (error) {
@@ -242,8 +249,10 @@ const Template = () => {
   };
 
   const handleTestimonialsUpload = async () => {
-    console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
+    // console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
+    
     try {
+      
       const response1 = await Storage.put(`institution-utils/happyprancer/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
         contentType: testimonials[0].actualFile.type,
       });
@@ -324,32 +333,40 @@ const Template = () => {
 
   const handleFAQsUpload = async () => {
     try {
+      const filledFAQs = faqs.filter(faq => faq.question && faq.answer);
+    
+      // Create an array of objects with only filled FAQs
+      const faqsToUpload = filledFAQs.map(faq => ({
+        Title: faq.question,
+        Content: faq.answer,
+      }));
       await API.put("clients", "/user/development-form/faq", {
         body: {
           institutionid: companyName,
-          FAQ: [
-            {
-              Title: faqs[0].question,
-              Content: faqs[0].answer,
-            },
-            {
-              Title: faqs[1].question,
-              Content: faqs[1].answer,
-            },
-            {
-              Title: faqs[2].question,
-              Content: faqs[2].answer,
-            },
-            {
-              Title: faqs[3].question,
-              Content: faqs[3].answer,
-            },
-            {
-              Title: faqs[4].question,
-              Content: faqs[4].answer,
-            },
-          ]
-        },
+        //   FAQ: [
+        //     {
+        //       Title: faqs[0].question,
+        //       Content: faqs[0].answer,
+        //     },
+        //     {
+        //       Title: faqs[1].question,
+        //       Content: faqs[1].answer,
+        //     },
+        //     {
+        //       Title: faqs[2].question,
+        //       Content: faqs[2].answer,
+        //     },
+        //     {
+        //       Title: faqs[3].question,
+        //       Content: faqs[3].answer,
+        //     },
+        //     {
+        //       Title: faqs[4].question,
+        //       Content: faqs[4].answer,
+        //     },
+        //   ]
+        FAQ: faqsToUpload
+         },
       });
     } catch (error) {
       console.error("Error uploading FAQs: ", error);
@@ -450,36 +467,99 @@ const Template = () => {
 
 
   const handleNextSection = () => {
+   
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
       console.log(currentSection);
 
       switch (currentSection) {
         case 0:
+          if (!logo) {
+            alert("Please upload a company logo before proceeding.");
+            return prevSection;
+          }
+          if (!companyName) {
+            alert("Please enter the company name before proceeding.");
+            return prevSection;
+          }
           handleCompanyUpload();
           break;
         case 1:
+          if (!video || !TagLine) {
+            if (!video) {
+              alert("Please upload a video before proceeding.");
+            }
+            if (!TagLine) {
+              alert("Please provide a tagline before proceeding.");
+            }
+            return prevSection;
+          }
           handleHomeUpload();
           break;
         case 2:
           handleServicesUpload();
           break;
         case 3:
+          const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
+          if (!isTestimonialsFilled) {
+            alert("Please fill three testimonials before proceeding.");
+            return prevSection; 
+          }
+          if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.");
+            return prevSection;
+          }
+          if (!testimonials[1].name || !testimonials[1].feedback || !testimonials[1].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.");
+            return prevSection;
+          }
+          if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.");
+            return prevSection;
+          }
           handleTestimonialsUpload();
           break;
         case 4:
+          const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
+          if (invalidPriceIndex !== -1) {
+            alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+            return prevSection;
+          }
           handleSubscriptionUpload();
           break;
         case 5:
+          const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
+    
+          // Check if both title and answer are filled for each FAQ
+          const allFAQsFilled = filledFAQs.length === faqs.length;
+      
+          if (!allFAQsFilled) {
+            alert("Please fill both the question and answer for each FAQ before proceeding.");
+            return prevSection;
+          }
           handleFAQsUpload();
           break;
         case 6:
+          const incompleteIndex = instructors.findIndex(instructor => {
+            return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
+          });
+      
+          // If incompleteIndex is not -1, it means there's at least one incomplete instructor
+          if (incompleteIndex !== -1) {
+            // Check if all fields for the incomplete instructor are filled
+            const incompleteInstructor = instructors[incompleteIndex];
+            if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
+              alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
+              return prevSection;
+            }
+          }
           handleInstructorsUpload();
           break;
         case 7:
           handlePolicyUpload();
           break;
         case 8:
+          
           handleContactUpload();
           break;
         default:
