@@ -238,7 +238,7 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
+    <div className="w-[85vw] flex flex-col items-center mt-[-5rem] gap-10 mx-[4rem] max1050:mr-[8rem] max1300:mt-0">
       <div
         className={`w-[90%] rounded-3xl p-3 `}
       >
@@ -436,8 +436,8 @@ const Panel = () => {
                 </div>
               </label>
 
-              <Link to={`/MonthlyReport?institution=${client.institution} `}>
-                <div className=" flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
+              <Link to={`/Dashboard?institution=${client.institution}`}>
+                <div className="flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
                   <img
                     src={personIcon}
                     alt=""

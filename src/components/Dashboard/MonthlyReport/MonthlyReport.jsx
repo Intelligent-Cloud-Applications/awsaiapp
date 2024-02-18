@@ -3,176 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import InfoPng from '../../../utils/Assets/Dashboard/images/PNG/about.png'
 import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
-import Chart from "chart.js/auto";
 import NavBar from "../../Home/Navbar";
 import Context from '../../../context/Context';
+import ChartComponent from './ChartComponents/ChartComponents';
+import ChartComponent2 from "./ChartComponents/ChartComponent2";
 import { API } from "aws-amplify";
 import './MonthlyReport.css'
 
 const BarChart = ({ data }) => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-    const barChart = new Chart(ctx, {
-      type: "bar",
-      data,
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              color: "white",
-            },
-          },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: 'white',
-            },
-          },
-          y: {
-            ticks: {
-              color: 'white',
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      barChart.destroy();
-    };
-  }, [data]);
-
-  return <canvas className="p" ref={chartRef}></canvas>;
-};
-
-const BarChartAttendance = ({ data }) => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-    const barChart = new Chart(ctx, {
-      type: "bar",
-      data,
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              color: "black",
-            },
-          },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: 'black',
-            },
-            grid: {
-              display: false
-            },
-          },
-        },
-        y: {
-          ticks: {
-            color: 'black',
-          },
-        },
-      },
-    });
-
-    return () => {
-      barChart.destroy();
-    };
-  }, [data]);
-
-  return <canvas className="p" ref={chartRef}></canvas>;
+  return <ChartComponent data={data} type="bar" />;
 };
 
 const LineChart = ({ data }) => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-    const barChart = new Chart(ctx, {
-      type: 'line',
-      data,
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              usePointStyle: true,
-              color: "white",
-            },
-          },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: 'white',
-            },
-          },
-          y: {
-            ticks: {
-              color: 'white',
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      barChart.destroy();
-    };
-  }, [data]);
-
-  return <canvas className="p" ref={chartRef}></canvas>;
+  return <ChartComponent data={data} type="line" />;
 };
 
-const LineChartLeads = ({ data }) => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-    const barChart = new Chart(ctx, {
-      type: 'line',
-      data,
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              usePointStyle: true,
-              color: "black",
-            },
-          },
-        },
-        scales: {
-          x: {
-            grid: {
-              display: false
-            },
-            ticks: {
-              color: 'black',
-            },
-          },
-          y: {
-            ticks: {
-              color: 'black',
-            },
-          },
-        },
-      },
-    });
-
-    return () => {
-      barChart.destroy();
-    };
-  }, [data]);
-
-  return <canvas className="p" ref={chartRef}></canvas>;
+const BarChartATT = ({ data }) => {
+  return <ChartComponent2 data={data} type="bar" />;
 };
 
+const LineChartATT = ({ data }) => {
+  return <ChartComponent2 data={data} type="line" />;
+};
 
 const MonthlyReport = ({ institution: tempInstitution }) => {
   const Navigate = useNavigate();
@@ -187,6 +39,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const memberCountByMonth = institutionData ? institutionData.memberCountByMonth : null;
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, index) => currentYear - index);
+  years.push('Last3YearsData', 'Last2YearsData');
   const monthsShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const [showDetails, setShowDetails] = useState(false);
@@ -216,10 +69,38 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
         apiUrl += `&month=${selectedMonth}`;
       }
       const RevenueApi = await API.get("clients", apiUrl);
-      setRevenueReport(RevenueApi.Revenue[selectedYear]);
-      setAttendance(RevenueApi.Attendance[selectedYear]);
-      setLeads(RevenueApi.Leads[selectedYear]);
-      setMembersCount(RevenueApi.MembersCount[selectedYear]);
+      console.log(RevenueApi)
+      const last3YearsAttendance = RevenueApi.Attendance.last3YearsData;
+      const last3YearsRevenue = RevenueApi.Revenue.last3YearsData;
+      const last3YearsLeads = RevenueApi.Leads.last3YearsData;
+      const last3YearsMembers = RevenueApi.MembersCount.last3YearsData;
+      const last2YearsRevenue = RevenueApi.Revenue.last2YearsData;
+      const last2YearsAttendance = RevenueApi.Attendance.last2YearsData;
+      const last2YearsLeads = RevenueApi.Leads.last2YearsData;
+      const last2YearsMembers = RevenueApi.MembersCount.last2YearsData;
+
+      console.log(last3YearsLeads)
+      console.log(last3YearsRevenue)
+      console.log(last3YearsAttendance)
+      console.log(last3YearsMembers)
+
+      if (RevenueApi && RevenueApi.Revenue && selectedYear && selectedYear !== 'Last3YearsData' && selectedYear !== 'Last2YearsData') {
+        setRevenueReport(RevenueApi.Revenue[selectedYear] || {});
+        setAttendance(RevenueApi.Attendance[selectedYear] || {});
+        setLeads(RevenueApi.Leads[selectedYear] || {});
+        setMembersCount(RevenueApi.MembersCount[selectedYear] || {});
+      } else if (selectedYear === 'Last3YearsData') {
+        setRevenueReport(last3YearsRevenue);
+        setAttendance(last3YearsAttendance);
+        setLeads(last3YearsLeads);
+        setMembersCount(last3YearsMembers);
+      } else if (selectedYear === 'Last2YearsData') {
+        setRevenueReport(last2YearsRevenue);
+        setAttendance(last2YearsAttendance);
+        setLeads(last2YearsLeads);
+        setMembersCount(last2YearsMembers);
+      }
+
 
       if (RevenueApi && RevenueApi.Items && selectedYear && selectedMonth) {
         const itemsForSelectedYear = RevenueApi.Items[selectedYear];
@@ -306,7 +187,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       return (
         <button
           onClick={() => Navigate("/dashboard")}
-          className="top-[5.5rem] absolute z-10 ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          className=" relative z-10 ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
           }}
@@ -362,7 +243,9 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       label: 'Monthly members joined',
       data: memberscount,
       backgroundColor: "white",
-      barPercentage: 0.37
+      borderColor: 'white',
+      borderWidth: 2,
+      barPercentage: 0.35
     }],
   };
 
@@ -372,7 +255,9 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       label: 'Attendance',
       data: attendance,
       backgroundColor: "#079FB4",
-      barPercentage: 0.3,
+      borderColor: '#079FB4',
+      barPercentage: 0.25,
+      borderWidth: 2,
       borderRadius: 10
     }],
   };
@@ -404,11 +289,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       <NavBar />
       {renderButton()}
       {/* dropdown to select year */}
-      <div className="flex w-[100%] justify-center mt-[5rem]">
+      <div className="flex w-[100vw] justify-center mt-[-2.5rem]">
         <div class="w-[90vw] h-14 relative rounded-2xl" style={{
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
         }}>
-          <div class="flex h-14 justify-center items-center text-stone-900 text-4xl font-bold font-['Inter'] leading-9">{selectedYear} REPORT</div>
+          <div class="flex h-14 justify-center items-center text-stone-900 text-4xl font-bold font-['Inter'] leading-9 max800:text-[white]">{selectedYear} REPORT</div>
           <div class="flex justify-end mt-[-2.7rem] mr-[4rem] ">
             <select
               className="text-left text-bold K2D text-[1.1rem] text-[#000000] w-[12rem] h-8 bg-[#ffffff] border border-[#717171] hover:border-gray-500 px-4 py-1rounded-[5px] max600:w-[60vw]"
@@ -443,7 +328,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 </div>
               </div>
               <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] mt-[2rem] max600:w-[95vw] max600:h-[60vw] ml-6 max1300:ml-0 max600:mb-8 " style={{ background: "linear-gradient(180deg, #30AFBC 0%, #000 100%)" }}>
-                <BarChart data={barChartData} />
+                {selectedYear === 'Last3YearsData' || selectedYear === 'Last2YearsData' ? (
+                  <LineChart data={barChartData} />
+                ) : (
+                  <BarChart data={barChartData} />
+                )}
               </div>
             </div>
             <div className="relative">
@@ -457,7 +346,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 </div>
               </div>
               <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 max1300:ml-0 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
-                <LineChartLeads data={lineChartLeadsData} />
+                <LineChartATT data={lineChartLeadsData} />
               </div>
             </div>
           </div>
@@ -554,7 +443,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
                 </div>
               </div>
               <div className="flex items-center border-1 px-2 rounded-[20px] border-[#545454] w-[35rem] h-[20rem] max600:w-[95vw] max600:h-[60vw] mt-[2rem] ml-8 " style={{ background: "white", boxShadow: "0 4px 40px rgba(0, 0, 0, 0.3)" }}>
-                <BarChartAttendance data={barChartAttendance} />
+                {selectedYear === 'Last3YearsData' || selectedYear === 'Last2YearsData' ? (
+                  <LineChartATT data={barChartAttendance} />
+                ) : (
+                  <BarChartATT data={barChartAttendance} />
+                )}
               </div>
             </div>
           </div>

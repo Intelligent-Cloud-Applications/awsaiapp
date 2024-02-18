@@ -96,7 +96,7 @@ const Testimonial1 = () => {
                     </div>
                     <h1 className="mona h-[4.5rem] w-[100%] font-[400] " style={{ fontSize: '1.5rem' }}>{testimonials[1].name}</h1>
                     <div className="flex relative z-2 object-cover  justify-center max1050:pl-8 max1050:pr-8">
-                        <h2 className="text-[1rem] z-2 pt-4  text-white w-[50rem] max478:text-[0.75rem] text-center font-sans" style={{ letterSpacing: '1.2px' }}>
+                        <h2 className="text-[1rem] z-2 pt-4  text-white w-[40rem] max478:text-[0.75rem] text-center font-sans" style={{ letterSpacing: '1.2px' }}>
                             <span className=" text-[1.2rem]">"</span>
                             {testimonials[1].description}
                             <span className="text-[1.2rem]">"</span>

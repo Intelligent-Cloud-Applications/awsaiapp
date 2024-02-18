@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOMClient from "react-dom/client";
+import ReactDOMClient from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import ContextProvider from "./context/ContextProvider";
@@ -10,7 +10,7 @@ const process = {
   env: {
     STAGE: "PROD",
   },
-};
+}
 
 Amplify.configure({
   Auth: {
@@ -34,7 +34,7 @@ Amplify.configure({
   },
   Storage: {
     region: "us-east-1",
-    bucket: "userprofilepict",
+    bucket: "institution-utils",
     identityPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"
@@ -48,8 +48,8 @@ Amplify.configure({
           process.env.STAGE === "PROD"
             ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
             : "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
-      },
+            region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
+          },
       // {
       //   name: "clients",
       //   endpoint: "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
@@ -61,11 +61,11 @@ Amplify.configure({
 
 // ReactDOM.render(<App />, document.getElementById('root'));
 
-const root = ReactDOMClient.createRoot(document.getElementById("root"));
+const root = ReactDOMClient.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <ContextProvider>
       <App />
     </ContextProvider>
-  </BrowserRouter>
+  </BrowserRouter>,
 );

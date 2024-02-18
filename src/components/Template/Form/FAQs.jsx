@@ -39,12 +39,12 @@ function FAQs({ faqs, setFaqs }) {
   };
 
   return (
-    <div className="mx-auto max-w-[800px] px-8">
+    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">FAQs SECTION</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
-      <div className="mt-4 pb-4  max-h-[480px] overflow-y-auto" ref={faqsContainerRef}>
+      <div className="mt-4 pb-4  " ref={faqsContainerRef}>
         {faqs.map((faq, index) => (
           <div key={index} className="mt-4 relative">
             {index >= 3 && (

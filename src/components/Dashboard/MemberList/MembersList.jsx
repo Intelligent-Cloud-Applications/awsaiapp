@@ -1,8 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Context from "../../../context/Context";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Swal from "sweetalert2";
+import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
 import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
@@ -37,20 +40,47 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
+  const [IsDashboard, setIsDashboard] = useState(false);
+  const Navigate = useNavigate();
+  const location = useLocation();
   const { util, user } = useContext(Context);
   const searchParams = new URLSearchParams(window.location.search);
   let institution
   if (user.profile.institution === "awsaiapp") {
     institution = searchParams.get("institution");
   } else {
-    institution = tempInstitution
+    institution = tempInstitution || searchParams.get("institution");
   }
   console.log(userCheck);
 
+  useEffect(() => {
+    if (location.pathname.includes('dashboard')) {
+      setIsDashboard(true);
+    } else {
+      setIsDashboard(false);
+    }
+  }, [location.pathname]);
+
+  const renderButton = () => {
+    if (IsDashboard) {
+      return null;
+    } else {
+      return (
+        <button
+          onClick={() => Navigate("/dashboard")}
+          className="relative z-10 left-[-2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          style={{
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
+          }}
+        >
+          <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
+        </button>
+      );
+    }
+  };
 
   const fetchMembersForInstitution = async (institution) => {
     try {
-      util.setLoader(true);
       const response = await API.get(
         "clients",
         `/user/list-members/${institution}`
@@ -346,9 +376,12 @@ const MemberList = ({ institution: tempInstitution }) => {
   return (
     <div className="w-[93vw] flex flex-col items-center gap-10">
       <Navbar />
-      <div className="flex justify-center">
-        <div className={`w-[90%] mt-[1rem] rounded-3xl p-3 max850:ml-[5rem] `}>
-          <div className="flex flex-row justify-between pb-2  max850:hidden">
+      <div className="flex w-full flex-start">
+        {renderButton()}
+      </div>
+      <div className="flex justify-center mt-[-5rem]">
+        <div className={`w-[90%] rounded-3xl p-3 max850:ml-[5rem] `}>
+          <div className="flex flex-row justify-between pb-2 max850:hidden">
             <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop">
               Welcome, Boss👋
             </h1>
@@ -360,14 +393,13 @@ const MemberList = ({ institution: tempInstitution }) => {
           {/* {isSuperAdmin && <LeftBanner />} */}
 
           <div className=" w-[102%] bg-[#96969680] h-[0.095rem] mb-2 max850:hidden"></div>
-
           <h2 className=" w-[22rem] pl-5 text-[2.3125rem] K2D mb-[-1rem] font-[600] max850:text-[2rem] moveRight max850:mt-0">
             Memberlists
           </h2>
 
           <div className="flex flex-row justify-evenly mr-[4rem] mt-[1rem] max600:flex-col max600:justify-center max600:items-center max600:mb-[-1rem] max600:mt-0">
             {/* searchBar */}
-            <div className="flex justify-center items-center max850:w-[80vw]">
+            <div className="flex justify-center items-center max600:w-[80vw]">
               <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
                 <img
                   className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
@@ -574,6 +606,7 @@ const MemberList = ({ institution: tempInstitution }) => {
               <div className="font-[700] max850:hidden">Attendance</div>
               <div className="font-[700] max850:hidden">Status</div>
               <div className="font-[700] pr-[7rem] max850:hidden">Due</div>
+              <div className="font-[700] pr-[7rem] max850:hidden">Product</div>
               <div className="absolute w-[8px] h-[8px] top-[0.45rem] right-3 bg-black rounded-[4px]" />
             </div>
           </div>
@@ -689,7 +722,6 @@ const MemberList = ({ institution: tempInstitution }) => {
               </div>
             ))}
           </div>
-
           {/* form to update member */}
           {isEditUser && (
             <div className=" absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[85vw]">
@@ -784,12 +816,14 @@ const MemberList = ({ institution: tempInstitution }) => {
                   >
                     Update
                   </button>
-                  <button
-                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
-                    onClick={handleDeleteMember}
-                  >
-                    Delete
-                  </button>
+                  {institution && institution !== tempInstitution && (
+                    <button
+                      className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
+                      onClick={handleDeleteMember}
+                    >
+                      Delete
+                    </button>
+                  )}
                   <button
                     className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
                     onClick={handleCancelEdit}
