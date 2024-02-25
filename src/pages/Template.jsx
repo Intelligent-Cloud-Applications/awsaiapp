@@ -27,6 +27,8 @@ const Template = () => {
   //
   const [LightPrimaryColor] = useState("#225c59");
   const [LightestPrimaryColor] = useState("#c3f3f1");
+  const[Footer_Link_1]=useState("https://bworkzlive.com/");
+  const[Footer_Link_2]=useState("https://Zumba.com/");
   // const [logo, setLogo] = useState(null);
   const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
   const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
@@ -434,6 +436,8 @@ const Template = () => {
           Instagram: contactInfo.instagram,
           YTLink: contactInfo.youtube,
           UpiId: contactInfo.upiId,
+          Footer_Link_1,
+          Footer_Link_2,
 
         },
       });
