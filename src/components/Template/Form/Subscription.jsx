@@ -38,6 +38,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         ...updatedSubscriptions[subscriptionIndex],
         countryCode: value,
         country: selectedCountry,
+        currency: value,
       };
     } else if (name === 'subscriptionType') {
       setSubscriptionTypes((prevSubscriptionTypes) => {
