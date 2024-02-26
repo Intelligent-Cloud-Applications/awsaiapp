@@ -25,27 +25,6 @@ const Login = () => {
   const Navigate = useNavigate();
 
   console.log(UserCtx)
-  // const institutionName = ["awsaiapp", "happyprancer", "Bworkz", "lissome", "rtiger", "iconic", "moda"];
-  // const [institution, setInstitution] = useState("");
-
-  // const handleInstitutionChange = (selectedInstitution) => {
-  //   if (selectedInstitution !== 'awsaiapp') {
-  //     setInstitution(selectedInstitution);
-  //     localStorage.setItem('institution', selectedInstitution);
-  //   } else {
-  //     setInstitution(selectedInstitution);
-  //     localStorage.removeItem('institution', selectedInstitution)
-  //   }
-  // };
-
-
-  // const togglePasswordVisibility = (e) => {
-  //   e.preventDefault();
-  //   setPasswordVisible(!passwordVisible);
-  // };
-
-  // console.log(formData.email)
-  // console.log(formData.password)
   const sendOTP = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
@@ -74,7 +53,7 @@ const Login = () => {
         console.log(user)
         const userdata = await API.get("clients", '/self/read-self/awsaiapp');
         console.log("User data:", userdata);
-        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp" && userdata.web === true) {
+        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp") {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -96,7 +75,8 @@ const Login = () => {
             title: "Welcome Back",
           });
           Navigate(`/Dashboard`);
-        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === false) {
+        }
+        else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === false) {
           const continueResult = await Swal.fire({
             title: 'Continue?',
             text: 'Do you want to continue where you left off?',

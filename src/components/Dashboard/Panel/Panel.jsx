@@ -656,14 +656,16 @@ const Panel = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-start pt-4 ml-[2rem]">
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)}
-              className="custom-pagination"
-            />
-          </div>
+          {itemsPerPage > 7 && (
+            <div className="flex justify-start pt-4 ml-[2rem]">
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(event, value) => setCurrentPage(value)}
+                className="custom-pagination"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
