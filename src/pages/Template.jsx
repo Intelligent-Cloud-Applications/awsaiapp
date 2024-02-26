@@ -379,31 +379,49 @@ const Template = () => {
 
   const handleInstructorsUpload = async () => {
     try {
+        // Upload images first
+        let uploadedImages = [];
         for (let i = 0; i < instructors.length; i++) {
             const instructor = instructors[i];
-            if (instructor.name && instructor.emailId && instructor.position && instructor.actualFile) {
-                const response = await Storage.put(`institution-utils/${companyName}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+            if (instructor.actualFile) {
+                const response = await Storage.put(`institution-utils/happyprancer/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
                     contentType: instructor.actualFile.type,
                 });
                 let inst_pic = await Storage.get(response.key);
                 inst_pic = inst_pic.split("?")[0];
-                await API.put("clients", "/user/development-form/instructor", {
-                    body: {
-                        institution: companyName,
-                     
-                            name: instructor.name,
-                            emailId: instructor.emailId,
-                            image: inst_pic,
-                            position: instructor.position,
-                       
-                    },
-                });
+                uploadedImages.push(inst_pic);
+            } else {
+                uploadedImages.push(null); 
             }
         }
+
+      
+for (let i = 0; i < instructors.length; i++) {
+  const instructor = instructors[i];
+  if (instructor.name && instructor.emailId && instructor.position) {
+      try {
+          const response = await API.put("clients", "/user/development-form/instructor", {
+              body: {
+                  institution: companyName,
+                  name: instructor.name,
+                  emailId: instructor.emailId,
+                  image: uploadedImages[i],
+                  position: instructor.position,
+              },
+          });
+          console.log("API Response:", response); 
+      } catch (error) {
+          console.error("Error uploading instructor:", instructor.name, error);
+      }
+  } else {
+      console.log("Skipping instructor due to missing data:", instructor.name);
+  }
+}
+
     } catch (error) {
         console.error("Error uploading instructors: ", error);
     }
-};
+}
 
 
   const handlePolicyUpload = async () => {
