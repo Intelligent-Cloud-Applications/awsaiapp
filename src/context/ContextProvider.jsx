@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import Context from "./Context";
 import { API } from "aws-amplify";
 
@@ -12,8 +12,8 @@ const ContextProvider = (props) => {
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState({});
-  const location = useLocation();
-  const institution = new URLSearchParams(location.search).get("institution");
+  // const location = useLocation();
+  // const institution = new URLSearchParams(location.search).get("institution");
 
   useEffect(() => {
     fetchClients();

@@ -4,7 +4,6 @@ import NavBar from "../components/Home/Navbar";
 // import DanceAuth from "../Utils/Png/danceAuth.png";
 import Context from "../context/Context";
 import { useNavigate } from "react-router-dom";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import Country from "../components/Auth/Country";
 import signUpPng from "../utils/Signup.png";
@@ -17,12 +16,14 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("91");
   const [country, setCountry] = useState("India");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [institutionName, setInstitutionName] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
   const [newUser, setNewUser] = useState(null);
+  const [signinResponse, setSigninResponse] = useState(null);
   const [confirmationCode, setConfirmationCode] = useState(0);
   const [err, setErr] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  // const [passwordVisible, setPasswordVisible] = useState(false);
   const [isNewUser, setIsNewUser] = useState(true);
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
@@ -49,10 +50,8 @@ const SignUp = () => {
   const resendOTP = async (event) => {
     event.preventDefault();
     try {
-      // if (phoneNumber) {
-      //   await Auth.resendSignUp(`+${countryCode}${phoneNumber}`);
-      if (email) {
-        await Auth.resendSignUp(email);
+      if (phoneNumber) {
+        await Auth.resendSignUp(`+${countryCode}${phoneNumber}`);
         setCounter(60); // Reset the timer
         setResendVisible(false); // Hide the resend button
         setErr("OTP resent successfully."); // Provide appropriate feedback to the user
@@ -81,9 +80,9 @@ const SignUp = () => {
     };
   }, [counter]);
 
-  const passwordVisibilityChange = () => {
-    setPasswordVisible((prevState) => !prevState);
-  };
+  // const passwordVisibilityChange = () => {
+  //   setPasswordVisible((prevState) => !prevState);
+  // };
 
   const form1Validator = () => {
     console.log(phoneNumber.length);
@@ -103,11 +102,8 @@ const SignUp = () => {
     } else if (country.length === 0) {
       setErr("Enter a Country Name");
       return false;
-    } else if (password.length < 8) {
-      setErr("Password is too Short");
-      return false;
-    } else if (password !== confirmPassword) {
-      setErr("Password Doesn't Match");
+    } else if (institutionName.length === 0) { // Added validation for institutionName
+      setErr("Enter the Institution Name");
       return false;
     } else {
       setErr("");
@@ -128,7 +124,7 @@ const SignUp = () => {
   const userExistPhoneNumberSignUp = async () => {
     try {
       console.log("Sign in");
-      await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
+      await Auth.signIn(`+${countryCode}${phoneNumber}`);
       console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
@@ -166,7 +162,7 @@ const SignUp = () => {
   const userExistEmailIdSignUp = async () => {
     try {
       console.log("Sign in");
-      await Auth.signIn(email, password);
+      await Auth.signIn(`+${countryCode}${phoneNumber}`);
       console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
@@ -174,6 +170,7 @@ const SignUp = () => {
           userName: `${firstName} ${lastName}`,
           phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
+          institutionName: institutionName
         },
       });
       //Temporary
@@ -211,15 +208,16 @@ const SignUp = () => {
         }
         console.log(phoneNumber);
         const newUserCheck = await Auth.signUp({
-          // username: `+${countryCode}${phoneNumber}`,
-          username: email,
-          password: password,
+          username: `+${countryCode}${phoneNumber}`,
+          password: "Avishek@123",
           attributes: {
             phone_number: `+${countryCode}${phoneNumber}`,
-            given_name: `${firstName} ${lastName}`,
+            name: `${firstName} ${lastName}`,
             email: email,
           },
         });
+        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+        setSigninResponse(response);
         setNewUser(newUserCheck);
       }
       UtilCtx.setLoader(false);
@@ -236,13 +234,15 @@ const SignUp = () => {
 
     try {
       if (form2Validator()) {
-        await Auth.confirmSignUp(
-          // `+${countryCode}${phoneNumber}`,
-          email,
-          confirmationCode
-        );
-        // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
-        await Auth.signIn(email, password);
+        // await Auth.confirmSignUp(
+        //   `+${countryCode}${phoneNumber}`,
+        //   confirmationCode
+        // );
+        // // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
+        // const uses = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+        // console.log(uses)
+        await Auth.sendCustomChallengeAnswer(signinResponse, `${confirmationCode}`);
+        await Auth.currentSession();
         const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
           body: {
             emailId: email,
@@ -309,6 +309,17 @@ const SignUp = () => {
                 />
               </li>
               <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
+                <input
+                  className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
+                  type="text"
+                  placeholder="Enter Institution Name" // Input field for institutionName
+                  value={institutionName}
+                  onChange={(e) => {
+                    setInstitutionName(e.target.value);
+                  }}
+                />
+              </li>
+              <li className="flex gap-20 mt-8  max500:flex-col max500:gap-2 max500:items-start relative">
                 <div className="relative">
                   <input
                     className="w-[19.5rem] border-[2px] px-6 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
@@ -362,7 +373,7 @@ const SignUp = () => {
                 </div>
               </li>
               <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start">
-                <input
+                {/* <input
                   className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw]"
                   type={"password"}
                   placeholder="Password"
@@ -370,10 +381,10 @@ const SignUp = () => {
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
-                />
+                /> */}
               </li>
               <li className="flex items-center gap-1 mt-6 max500:flex-col max500:gap-2 max500:items-start relative">
-                <input
+                {/* <input
                   className="w-[19.5rem] border-[2px] px-3 py-2 border-[#9d9d9d78] rounded-[0.5rem] max500:w-[80vw]"
                   type={!passwordVisible && "password"}
                   placeholder="Confirm Password"
@@ -381,8 +392,8 @@ const SignUp = () => {
                   onChange={(e) => {
                     setConfirmPassword(e.target.value);
                   }}
-                />
-                {passwordVisible ? (
+                /> */}
+                {/* {passwordVisible ? (
                   <AiFillEye
                     onClick={passwordVisibilityChange}
                     className="absolute right-4 "
@@ -394,17 +405,17 @@ const SignUp = () => {
                     className="absolute right-4 "
                     size={"1.25rem"}
                   />
-                )}
+                )} */}
               </li>
             </ul>
             {err && <p className="text-[0.8rem]  mt-2 text-red-500">{err}</p>}
             <div className="item-center pb-5">
               <button
-              className="w-[19.5rem] max500:w-[80vw] bg-[#30AFBC] text-[1.1rem] text-white p-1 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
-              onClick={onSubmit}
-            >
-              Sign Up
-            </button>
+                className="w-[19.5rem] max500:w-[80vw] bg-[#30AFBC] text-[1.1rem] text-white p-1 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+                onClick={onSubmit}
+              >
+                Sign Up
+              </button>
             </div>
             <p
               className=" text-[0.85rem] text-black cursor-pointer"

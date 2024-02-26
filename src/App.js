@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { Auth, API } from "aws-amplify";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import Context from "./context/Context";
 import RoutesContainer from "./Routes";
 import LoaderProvider from "./components/LoaderProvider";
@@ -47,7 +47,7 @@ function App() {
     };
 
     check();
-  }, [UtilCtx, UserCtx]);
+  }, []);
 
 
   return (

@@ -3,24 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { Auth, API } from "aws-amplify";
 import Context from "../context/Context";
 import Swal from "sweetalert2";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Navbar from "../components/Home/Navbar";
-import EmailIcon from "../utils/Assets/Dashboard/images/SVG/EmailIcon.svg";
 import LockIcon from "../utils/Assets/Dashboard/images/SVG/LockIcon.svg";
 // import GoogleIcon from '../utils/png/Google.png';
 // import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from "../utils/Assets/Login.png";
+import Country from "../components/Auth/Country";
 import "./Login.css";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [passwordVisible, setPasswordVisible] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("91");
+  const [isPhoneNumberLoginValid, setIsPhoneNumberLoginValid] = useState(true);
+  // const [passwordVisible, setPasswordVisible] = useState(true);
   const [error, setError] = useState("");
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
+  const [otp, setOtp] = useState("")
+  const [signinResponse, setSigninResponse] = useState(null);
+  const [email, setEmail] = useState("");
+  const Navigate = useNavigate();
+
   console.log(UserCtx)
   // const institutionName = ["awsaiapp", "happyprancer", "Bworkz", "lissome", "rtiger", "iconic", "moda"];
   // const [institution, setInstitution] = useState("");
@@ -36,34 +39,42 @@ const Login = () => {
   // };
 
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const togglePasswordVisibility = (e) => {
+  //   e.preventDefault();
+  //   setPasswordVisible(!passwordVisible);
+  // };
 
-  const Navigate = useNavigate();
-
-  const togglePasswordVisibility = (e) => {
-    e.preventDefault();
-    setPasswordVisible(!passwordVisible);
-  };
+  // console.log(formData.email)
+  // console.log(formData.password)
+  const sendOTP = async (event) => {
+    event.preventDefault();
+    UtilCtx.setLoader(true);
+    try {
+      const response = await Auth.signIn(
+        `+${countryCode}${phoneNumber}`
+      );
+      setSigninResponse(response);
+      console.log(response);
+    }
+    catch (e) {
+      setError(e.message);
+    }
+    finally {
+      UtilCtx.setLoader(false);
+    }
+  }
 
   const handelSubmit = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
     try {
-      const user = await Auth.signIn(formData.email, formData.password);
+      const user = await Auth.sendCustomChallengeAnswer(signinResponse, otp);
+      // console.log(await Auth.currentSession());
       if (user) {
-        const userdata = await API.get(
-          "clients",
-          `/self/read-self/awsaiapp`
-        );
-        console.log(userdata)
-        if (
-          userdata.userType === "admin" &&
-          userdata.institutionName === "awsaiapp"
-        ) {
-          // Store institutionName in local storage
+        console.log(user)
+        const userdata = await API.get("clients", '/self/read-self/awsaiapp');
+        console.log("User data:", userdata);
+        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp" && userdata.web === true) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -74,10 +85,8 @@ const Login = () => {
             title: "Welcome Back",
           });
           Navigate("/dashboard");
-        } else if (userdata.userType === "admin") {
-          // Store institutionName in local storage
+        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true) {
           localStorage.setItem('institution', userdata.institutionName);
-  
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
           UtilCtx.setLoader(false);
@@ -86,8 +95,28 @@ const Login = () => {
             icon: "success",
             title: "Welcome Back",
           });
-          Navigate(`/dashboard`);
+          Navigate(`/Dashboard`);
+        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === false) {
+          const continueResult = await Swal.fire({
+            title: 'Continue?',
+            text: 'Do you want to continue where you left off?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'Not Now'
+          });
+          if (continueResult.isConfirmed) {
+            localStorage.setItem('institution', userdata.institutionName);
+            UserCtx.setUserData(userdata);
+            UserCtx.setIsAuth(true);
+            UtilCtx.setLoader(false);
+            Navigate("/template");
+          } else {
+            // If not now is clicked, stay at /login
+            Navigate("/login");
+          }
         } else {
+          console.log("Invalid user:", userdata);
           Navigate("/");
           Swal.fire({
             icon: "error",
@@ -97,10 +126,12 @@ const Login = () => {
           UtilCtx.setLoader(false);
         }
       } else {
-        setError(`Incorrect ${formData.email} or password`);
+        setError(`Incorrect`);
         UtilCtx.setLoader(false);
       }
     } catch (e) {
+      console.error("Error during login:", e);
+      console.log("Error code:", e.code); // Log the error code
       if (e.toString().split(" code ")[1]?.trim() === "404") {
         console.log("User Not Found");
         alert("Contact us for login");
@@ -111,7 +142,9 @@ const Login = () => {
       }
       UtilCtx.setLoader(false);
     }
-  };  
+  };
+
+
 
   return (
     <>
@@ -148,20 +181,61 @@ const Login = () => {
                   </option>
                 ))}
               </select> */}
-              <div className="mb-4 relative flex items-center">
-                <img
-                  src={EmailIcon}
-                  alt="Email Icon"
-                  className="absolute left-3 top-3 pointer-events-none w-[1rem] h-[1rem]"
-                />
-                <input
+              {isPhoneNumberLoginValid && (
+                <select
+                  name="countryCode"
+                  id=""
+                  value={countryCode}
+                  className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
+                  onChange={(e) => {
+                    setCountryCode(e.target.value.toString());
+                  }}
+                >
+                  {<Country />}
+                </select>
+              )}
+              <div className="mb-4 relative flex flex-col items-end">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="absolute left-3 top-3 h-[1rem] w-[1rem] pointer-events-none opacity-70"
+                >
+                  <path fillRule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clipRule="evenodd" />
+                </svg>
+                {/* <input
                   type="text"
                   name="email"
-                  value={formData.email}
+                  value={phoneNumber}
                   onChange={handleInputChange}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
-                  placeholder="Email"
+                  placeholder="phone number"
+                /> */}
+                <input
+                  className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
+                  type="text"
+                  placeholder="Enter Phone"
+                  value={isPhoneNumberLoginValid ? phoneNumber : email}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (/^\d+$/.test(inputValue)) {
+                      if (inputValue.length >= 0 && inputValue.length <= 10) {
+                        setIsPhoneNumberLoginValid(true);
+                        setPhoneNumber(inputValue);
+                      }
+                    } else {
+                      setIsPhoneNumberLoginValid(false);
+                      setEmail(inputValue);
+                    }
+                  }}
                 />
+                <button
+                  className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline"
+                  // style={{
+                  //   backgroundColor: InstitutionData.LightPrimaryColor,
+                  //   opacity: phoneNumber ? 1 : 0.5,
+                  // }}
+                  onClick={sendOTP}
+                // disabled={!phoneNumber}
+                >
+                  {signinResponse ? "Resend OTP" : "Send OTP"}
+                </button>
               </div>
               <div className="mb-2 relative flex items-center">
                 <img
@@ -170,35 +244,46 @@ const Login = () => {
                   className="absolute left-3 top-3 h-[1rem] w-[1rem] pointer-events-none"
                 />
                 <input
-                  type={passwordVisible ? "password" : "text"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  // type={passwordVisible ? "password" : "text"}
+                  name="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
-                  placeholder="Password"
+                  placeholder="otp"
                 />
-                <button
+                {/* <button
                   onClick={togglePasswordVisibility}
                   className="absolute right-3 top-3"
                 >
                   {passwordVisible ? <AiFillEyeInvisible /> : <AiFillEye />}
-                </button>
+                </button> */}
               </div>
               <div className="w-[20rem] mb-6">
-                <a
+                {/* <a
                   href="/forgot-password"
                   className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline"
                 >
                   Forgot Password?
-                </a>
+                </a> */}
               </div>
               <button
+                className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+                // style={{
+                //   backgroundColor: InstitutionData.LightPrimaryColor,
+                //   opacity:otp ? 1 : 0.5,
+                // }}
+                onClick={handelSubmit}
+              // disabled={!otp}
+              >
+                Sign in
+              </button>
+              {/* <button
                 type="submit"
                 onClick={handelSubmit}
                 className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
               >
                 Login
-              </button>
+              </button> */}
               <p
                 className="text-green cursor-pointer pt-2"
                 onClick={() => {

@@ -43,16 +43,16 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [IsDashboard, setIsDashboard] = useState(false);
   const Navigate = useNavigate();
   const location = useLocation();
-  const { util, user } = useContext(Context);
-  const searchParams = new URLSearchParams(window.location.search);
+  const { util, user, userData, setUserData } = useContext(Context);
+  // const searchParams = new URLSearchParams(window.location.search);
   let institution
-  if (user.profile.institution === "awsaiapp") {
-    institution = searchParams.get("institution");
+  if (user.profile.institutionName === "awsaiapp") {
+    institution = userData.institutionName;
   } else {
-    institution = tempInstitution || searchParams.get("institution");
+    institution = userData.institutionName || tempInstitution;
   }
   console.log(userCheck);
-
+  console.log(institution)
   useEffect(() => {
     if (location.pathname.includes('dashboard')) {
       setIsDashboard(true);
@@ -61,13 +61,33 @@ const MemberList = ({ institution: tempInstitution }) => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (location.pathname === "/dashboard") {
+      util.setLoader(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      util.setLoader(false);
+    }
+    // eslint-disable-next-line
+  }, [location.pathname]);
+
+  const handleNavigationAndUserDataUpdate = () => {
+    // Navigate to "/dashboard"
+    Navigate("/dashboard");
+
+    // Update userData with the new institution name
+    const updatedUserData = { ...userData, institutionName: "awsaiapp" };
+    setUserData(updatedUserData);
+  };
   const renderButton = () => {
     if (IsDashboard) {
       return null;
     } else {
       return (
         <button
-          onClick={() => Navigate("/dashboard")}
+          onClick={handleNavigationAndUserDataUpdate}
           className="relative z-10 left-[-2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
