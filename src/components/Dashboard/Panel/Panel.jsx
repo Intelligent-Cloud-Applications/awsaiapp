@@ -446,14 +446,15 @@ const Panel = () => {
                   )}
                 </div>
               </label>
-
+              
               <Link to={`/Dashboard?institution=${client.institution}`}>
-                <div className="flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
+                <div className="w-[70vw] absolute h-[3rem] right-2 cursor-pointer"
+                  onClick={() => handlePersonIconClick(client.institution)}
+                >
                   <img
                     src={personIcon}
                     alt=""
-                    className="cursor-pointer"
-                    onClick={() => handlePersonIconClick(client.institution)}
+                    className="flex mt-1 absolute right-2 h-[2rem] z-10 cursor-pointer"
                   />
                 </div>
               </Link>
