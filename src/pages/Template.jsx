@@ -25,8 +25,8 @@ const Template = () => {
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
-  const [LightPrimaryColor] = useState("#225c59");
-  const [LightestPrimaryColor] = useState("#c3f3f1");
+  const [LightPrimaryColor,setLightPrimaryColor] = useState("#225c59");
+  const [LightestPrimaryColor,setLightestPrimaryColor] = useState("#c3f3f1");
   const[Footer_Link_1]=useState("https://bworkzlive.com/");
   const[Footer_Link_2]=useState("https://Zumba.com/");
   // const [logo, setLogo] = useState(null);
@@ -169,7 +169,7 @@ const Template = () => {
   const handleCompanyUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`institution-utils/${companyName}/images/${logo.name}`, logo, {
+      const response = await Storage.put(`${companyName}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
 
@@ -384,7 +384,7 @@ const Template = () => {
         for (let i = 0; i < instructors.length; i++) {
             const instructor = instructors[i];
             if (instructor.actualFile) {
-                const response = await Storage.put(`institution-utils/happyprancer/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+                const response = await Storage.put(`institution-utils/${companyName}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
                     contentType: instructor.actualFile.type,
                 });
                 let inst_pic = await Storage.get(response.key);
@@ -417,6 +417,8 @@ for (let i = 0; i < instructors.length; i++) {
       console.log("Skipping instructor due to missing data:", instructor.name);
   }
 }
+
+
 
     } catch (error) {
         console.error("Error uploading instructors: ", error);
@@ -619,6 +621,11 @@ for (let i = 0; i < instructors.length; i++) {
               setSecondaryColor={setSecondaryColor}
               logo={logo}
               setLogo={setLogo}
+              LightestPrimaryColor={LightestPrimaryColor}
+              setLightestPrimaryColor={setLightestPrimaryColor}
+              LightPrimaryColor={LightPrimaryColor}
+              setLightPrimaryColor={setLightPrimaryColor}
+
             />}
 
           {currentSection === 1 &&
