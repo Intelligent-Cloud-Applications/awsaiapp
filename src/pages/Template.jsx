@@ -50,6 +50,8 @@ const Template = () => {
   const [country, setCountry] = useState(existingData.country || "India");
   const [TagLine, setTagLine] = useState(existingData.TagLine || "");
   const [video, setVideo] = useState(existingData.videoUrl || null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
 
   const [services, setServices] = useState([
     { title: existingData.src_Components_Home_Header3__h5_1 || '', description: existingData.src_Components_Home_Header3__p_1 || '' },
@@ -62,9 +64,9 @@ const Template = () => {
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
   ];
-  
+
   const [testimonials, setTestimonials] = useState(testimonialData);
-  
+
   const calculateDuration = (type) => {
     if (type === 'monthly') {
       return 30;
@@ -207,7 +209,8 @@ const Template = () => {
       // Get the URL of the uploaded file
       let imageUrl = await Storage.get(response.key);
       imageUrl = imageUrl.split("?")[0];
-      setLogo(imageUrl);
+      setLogo(imageUrl)
+      setSelectedFile(imageUrl);
       console.log("logo: ", imageUrl);
       const additionalAttributes = {
         LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
@@ -434,8 +437,14 @@ const Template = () => {
         body: {
           institutionid: companyName,
           PrivacyPolicy: policies[0].content,
-          TermsData: policies[1].content,
-          Refund: policies[2].content,
+          TermsData: [{
+            title: "",
+            content: policies[1].content
+          }],
+          Refund: [{
+            heading: "",
+            content: policies[2].content
+          }],
           AboutUs: policies[3].content,
         },
       });
@@ -619,6 +628,8 @@ const Template = () => {
               setSecondaryColor={setSecondaryColor}
               logo={logo}
               setLogo={setLogo}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
             />}
 
           {currentSection === 1 &&

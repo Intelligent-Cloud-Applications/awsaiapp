@@ -96,7 +96,7 @@ function Testimonials({ testimonials, setTestimonials }) {
                   className={`w-[150px] h-[25px] border  border-[#3f3e3e] flex items-center justify-center cursor-pointer relative`}
                   style={{ borderColor: 'cement', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#D9D9D9' }}
                 >
-                  <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
+                  <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile || testimonial.img ? 'hidden' : 'block'}`}>
                     Choose File
                   </span>
                   <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile || testimonial.img ? 'block' : 'hidden'}`}>
