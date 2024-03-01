@@ -81,14 +81,15 @@ const MemberList = ({ institution: tempInstitution }) => {
     const updatedUserData = { ...userData, institutionName: "awsaiapp" };
     setUserData(updatedUserData);
   };
+
   const renderButton = () => {
-    if (IsDashboard) {
+    if (userData.institutionName !== 'awsaiapp') {
       return null;
     } else {
       return (
         <button
           onClick={handleNavigationAndUserDataUpdate}
-          className="relative z-10 left-[-2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
+          className="relative z-10 left-[2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
           }}

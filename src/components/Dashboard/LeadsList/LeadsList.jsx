@@ -68,6 +68,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
     );
   };
 
+  console.log(userData)
+
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
@@ -114,6 +116,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         device: device,
         date: new Date(date).getTime(),
         other: {},
+        type: "lead",
       },
     };
     // Include additionalInfoTitle and additionalInfo if available
@@ -168,7 +171,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     const apiName = "clients";
-    const path = `/user/update-Leads`;
+    const path = '/user/update-Leads';
     const myInit = {
       body: {
         institution: institution,
@@ -183,7 +186,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
         category: category, // Include the category field
         other: {
           ...editUser.other,
-        }
+        },
+        type: "lead",
       },
     };
 

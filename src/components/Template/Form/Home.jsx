@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
+import Context from "../../../context/Context";
 
 function Home({ TagLine, setTagLine, video, setVideo }) {
   // const [TagLineName, setTagLineName] = useState("");
@@ -47,7 +48,7 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
       setFileOptionVisible(false);
     }
   };
-  
+
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">HOME SECTION</h1>

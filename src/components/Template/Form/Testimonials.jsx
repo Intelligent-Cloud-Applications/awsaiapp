@@ -99,7 +99,7 @@ function Testimonials({ testimonials, setTestimonials }) {
                   <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
                     Choose File
                   </span>
-                  <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile ? 'block' : 'hidden'}`}>
+                  <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile || testimonial.img ? 'block' : 'hidden'}`}>
                     <span className="text-[#636262]">{shortenFileName(testimonial.uploadedFile)}</span>
                     <span onClick={() => handleImageChange(index, { target: { files: [null] } })} className="text-[#3b9d33] cursor-pointer">Change</span>
                   </div>
@@ -136,7 +136,7 @@ function Testimonials({ testimonials, setTestimonials }) {
                 {/* Feedback input */}
                 <textarea
                   name="feedback"
-                  value={testimonial.feedback}
+                  value={testimonial.description}
                   onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
                   placeholder="Feedback"
                   className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"

@@ -31,6 +31,10 @@ const Context = createContext({
     profile: {},
     fetchUserProfile: () => { },
   },
+  templateDetails: {
+    details:{},
+    fetchTemplateDetails: () => {},
+  },
 });
 
 export default Context;

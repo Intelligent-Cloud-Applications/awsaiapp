@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import upload from "../../../utils/png/upload.png";
+import Context from "../../../context/Context";
+import { useEffect } from "react";
 
 function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo }) {
   // const [companyName, setCompanyName] = useState("");
@@ -11,8 +13,6 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   // const [logoUrl, setLogoUrl] = useState(null);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
-  
-
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
@@ -23,8 +23,6 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
     setCompanyLineColor("#000000"); // Change company line color to black on click
-  
-     
   };
 
   // const toggleDomainInputVisibility = () => {
@@ -54,7 +52,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
     if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
       setLogo(file);
       setSelectedFile(URL.createObjectURL(file));
-      }
+    }
   };
 
   const handleUploadImageClick = () => {
@@ -105,7 +103,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         ></div>
       </div>
       <div className="relative mt-6">
-        
+
         {/* <div
           className="absolute left-0 right-0 bottom-0 h-[1.5px]"
           style={{ backgroundColor: domainLineColor }}

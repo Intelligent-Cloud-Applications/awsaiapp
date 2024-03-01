@@ -206,7 +206,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const renderButton = () => {
     // const updatedUserData = { ...userData, institutionName: "awsaiapp" };
     // setUserData(updatedUserData);
-    if (IsDashboard) {
+    if (userData.institutionName !== 'awsaiapp') {
       return null;
     } else {
       return (

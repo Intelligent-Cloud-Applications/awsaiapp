@@ -14,6 +14,7 @@ function App() {
   // const institution = institutionFromParams || institutionFromLocalStorage;
   console.log(UserCtx)
 
+
   useEffect(() => {
     const check = async () => {
       UtilCtx.current.setLoader(true);
