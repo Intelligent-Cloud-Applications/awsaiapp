@@ -3,7 +3,7 @@ import upload from "../../../utils/png/upload.png";
 import Context from "../../../context/Context";
 import { useEffect } from "react";
 
-function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo }) {
+function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -42,7 +42,12 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   const handleColorChange2 = (e) => {
     setSecondaryColor(e.target.value);
   };
-
+  const handleColorChange3 = (e) => {
+    setLightPrimaryColor(e.target.value);
+  };
+  const handleColorChange4 = (e) => {
+    setLightestPrimaryColor(e.target.value);
+  };
   //file
   const [selectedFile, setSelectedFile] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
@@ -125,6 +130,18 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
             type="color"
             value={SecondaryColor}
             onChange={handleColorChange2}
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
+          />
+          <input
+            type="color"
+            value={LightPrimaryColor}
+            onChange={handleColorChange3}
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
+          />
+          <input
+            type="color"
+            value={LightestPrimaryColor}
+            onChange={handleColorChange4}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
           />
         </div>
