@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import upload from "../../../utils/png/upload.png";
 
-function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor }) {
+function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor,selectedFile,setSelectedFile }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -51,7 +51,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
     setLightestPrimaryColor(e.target.value);
   };
   //file
-  const [selectedFile, setSelectedFile] = useState(null);
+  // const [selectedFile, setSelectedFile] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
@@ -149,6 +149,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         </div>
       </div>
       <div className="border border-black w-[15rem] h-[12rem] mt-6 relative">
+        
         {!selectedFile ? (
           <label
             htmlFor="fileInput"

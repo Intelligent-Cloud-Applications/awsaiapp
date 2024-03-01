@@ -47,7 +47,7 @@ const Template = () => {
   const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
   const [video, setVideo] = useState(null);
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const [services, setServices] = useState([
     { title: '', description: '' },
     { title: '', description: '' },
@@ -176,7 +176,7 @@ const Template = () => {
       // Get the URL of the uploaded file
       let imageUrl = await Storage.get(response.key);
       imageUrl = imageUrl.split("?")[0];
-      setLogo(imageUrl);
+      setSelectedFile(imageUrl);
       console.log("logo: ", imageUrl);
       const additionalAttributes = {
         LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
@@ -207,7 +207,7 @@ const Template = () => {
       // Get the URL of the uploaded file
       let videoUrl = await Storage.get(response.key);
       videoUrl = videoUrl.split("?")[0];
-
+      setVideo(videoUrl);
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
           institutionid: companyName,
@@ -432,8 +432,10 @@ for (let i = 0; i < instructors.length; i++) {
         body: {
           institutionid: companyName,
           PrivacyPolicy: policies[0].content,
-          TermsData: policies[1].content,
-          Refund: policies[2].content,
+          TermsData: [{title:"",
+            content:policies[1].content}],
+          Refund: [{heading:"",
+          content:policies[2].content}],
           AboutUs: policies[3].content,
         },
       });
@@ -625,7 +627,7 @@ for (let i = 0; i < instructors.length; i++) {
               setLightestPrimaryColor={setLightestPrimaryColor}
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
-
+              selectedFile={selectedFile} setSelectedFile={setSelectedFile}
             />}
 
           {currentSection === 1 &&
