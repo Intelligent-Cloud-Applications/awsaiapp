@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import { API } from "aws-amplify";
 import Context from "../context/Context";
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const Timer = () => {
   const { userData, setUserData } = useContext(Context);
   const [seconds, setSeconds] = useState(48 * 60 * 60);
   const [submissionTime, setSubmissionTime] = useState(Date.now());
-  const totalTime = 48 * 60 * 60;
+  const totalTime = 1 * 1 * 60;
   const [timerEnded, setTimerEnded] = useState(false);
+  const navigate = useNavigate(); // Get navigate function from useNavigate
 
   useEffect(() => {
     const onLoad = async () => {
@@ -54,10 +57,43 @@ const Timer = () => {
 
   useEffect(() => {
     if (timerEnded) {
-      // Timer ended, set isVerified to true
       setUserData(userData => ({ ...userData, isVerified: true }));
+      if (userData.isDelivered) {
+        // Display SweetAlert message
+        Swal.fire({
+          title: '🎉 Congratulations!',
+          html: `
+            <p>Your website is Ready.</p>
+            <p>We will send the domain name to your registered Phone number or email ID.</p>
+          `,
+          icon: 'success',
+          confirmButtonText: 'OK',
+          onClose: () => {
+            // Redirect to /Dashboard using navigate function
+            navigate('/Dashboard');
+          }
+        });
+      } else {
+        // Display apology message
+        Swal.fire({
+          title: 'Apology!',
+          html: `
+            <p>The delivery of your website is delayed.</p>
+            <p>Please contact us for further assistance.</p>
+          `,
+          icon: 'error',
+          confirmButtonText: 'OK',
+          onClose: () => {
+            // Redirect to home page using navigate function
+            navigate('/');
+          }
+        });
+      }
     }
-  }, [timerEnded]);
+    // eslint-disable-next-line
+  }, [timerEnded, navigate, userData.isDelivered]);
+
+
 
   const formatTime = () => {
     const hours = Math.floor(seconds / 3600);
@@ -82,33 +118,11 @@ const Timer = () => {
         </div>
       </div>
       <div className="px-4 ml-3 text-white">
-        {timerEnded ? (
-          <div className="congratulations-ui bg-black opacity-75 p-10 rounded-md absolute inset-0 flex flex-col justify-center items-center">
-            <table className="text-center">
-              <tbody>
-                <tr>
-                  <td>
-                    <p style={{ fontSize: "3em" }}>
-                      🎉 Congratulations! Your website is Verfied. 🎉
-                    </p>
-                    <p>
-                      We will send the domain name to your registered Phone number or email ID.
-                    </p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="scrolling-text">
-              <p>Congratulations! Congratulations! Congratulations!</p>
-            </div>
-          </div>
-        ) : (
-          <p className="text-center max450:w-[20rem]">
-            Get ready for an enhanced online presence your website's
-            transformation is underway! Need changes or more info? Reach out
-            anytime!
-          </p>
-        )}
+        <p className="text-center max450:w-[20rem]">
+          Get ready for an enhanced online presence your website's
+          transformation is underway! Need changes or more info? Reach out
+          anytime!
+        </p>
       </div>
     </div>
   );

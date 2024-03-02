@@ -24,7 +24,7 @@ const PendingClients = () => {
     },
   ]);
 
-  const { pending } = useContext(Context);
+  const { userData,setUserData,pending } = useContext(Context);
   const UtilCtx = useContext(Context).util;
   const clientsData = Object.entries(pending.data);
   async function updateDelivery(paymentId, isDelivered, cognitoId) {
@@ -42,6 +42,7 @@ const PendingClients = () => {
       throw error; // Throw the error for further handling
     }
   }
+
   const handleStatusChanged = async (newStatus, index) => {
     UtilCtx.setLoader(true);
     if (index >= 0 && index < clientsData.length) {
@@ -49,13 +50,26 @@ const PendingClients = () => {
         const updatedClients = [...clientsData];
         const selectedClient = updatedClients[index][1];
         selectedClient.isDelivered = newStatus;
-
+  
         await updateDelivery(
           selectedClient.productId,
           newStatus,
           selectedClient.cognitoId
         );
-
+  
+        // Update userData context
+        const updatedUserData = { ...userData }; // Make a copy of userData
+        // Find the user in userData by cognitoId
+        const userToUpdateIndex = updatedUserData.findIndex(
+          (user) => user.cognitoId === selectedClient.cognitoId
+        );
+        if (userToUpdateIndex !== -1) {
+          // Update isDelivered property of the user
+          updatedUserData[userToUpdateIndex].isDelivered = newStatus;
+          // Update userData context with modified user information
+          setUserData(updatedUserData); // Assuming setUserData is a function to update the userData context
+        }
+  
         UtilCtx.setLoader(false);
         setData(updatedClients); // Update state after successful API call
       } catch (error) {
@@ -65,6 +79,7 @@ const PendingClients = () => {
       }
     }
   };
+  
 
 
   // const Navigate = useNavigate();
