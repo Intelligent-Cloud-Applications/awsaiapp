@@ -92,7 +92,7 @@ const Timer = () => {
                       🎉 Congratulations! Your website is Verfied. 🎉
                     </p>
                     <p>
-                      We have sent the domain name to your registered email ID.
+                      We will send the domain name to your registered Phone number or email ID.
                     </p>
                   </td>
                 </tr>

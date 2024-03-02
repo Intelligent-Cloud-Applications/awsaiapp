@@ -92,6 +92,12 @@ const Navbar = () => {
                   ) {
                     console.log("Navigating to /template");
                     Navigate("/template");
+                  } else if (
+                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.web === true
+                  ) {
+                    console.log("Navigating to /template");
+                    Navigate("/complete");
                   } else {
                     console.log("Navigating to /dashboard");
                     Navigate("/dashboard");
