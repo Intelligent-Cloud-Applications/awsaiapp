@@ -150,12 +150,11 @@ const Template = () => {
     { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
   ]);
 
-  const [policies, setPolicies] = useState({
-    PrivacyPolicy: existingData.PrivacyPolicy || '',
-    Refund: existingData.Refund || [],
-    TermsData: existingData.TermsData || [],
-  });
-  
+  const [policies, setPolicies] = useState(existingData.TermsData || [{ content: '' }]);
+  const [refundPolicies, setRefundPolicies] = useState(existingData.Refund || [{ heading: '', content: '' }]);
+  const [privacyPolicy, setPrivacyPolicy] = useState(existingData.PrivacyPolicy || [{ heading: '', content: '' }]);
+
+
 
   useEffect(() => {
     if (currentSection === 1) {
@@ -675,9 +674,12 @@ const Template = () => {
 
           {currentSection === 7 &&
             <Policy
-              policies={policies}
-              setPolicies={setPolicies}
-            />}
+              refundPolicies={refundPolicies}
+              setRefundPolicies={setRefundPolicies}
+              privacyPolicy={privacyPolicy}
+              setPrivacyPolicy={setPrivacyPolicy}
+            />
+          }
 
           {currentSection === 8 &&
             <Contact
