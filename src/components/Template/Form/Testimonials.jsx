@@ -136,7 +136,7 @@ function Testimonials({ testimonials, setTestimonials }) {
                 {/* Feedback input */}
                 <textarea
                   name="feedback"
-                  value={testimonial.description}
+                  value={testimonial.feedback || testimonial.description}
                   onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
                   placeholder="Feedback"
                   className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
