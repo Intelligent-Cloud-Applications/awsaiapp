@@ -76,7 +76,7 @@ function FAQs({ faqs, setFaqs }) {
             </div>
             <textarea
               name="answer"
-              value={faq.content}
+              value={faq.answer || faq.content}
               onChange={(e) => handleFAQChange(index, e)}
               placeholder="Answer"
               className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none "
@@ -92,7 +92,7 @@ function FAQs({ faqs, setFaqs }) {
           </div>
         ))}
         {faqs.length < 5 && (
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-center"> 
             <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
               Add FAQ
             </button>

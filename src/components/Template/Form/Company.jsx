@@ -18,11 +18,6 @@ function Company({ clients, selectedFile, setSelectedFile, companyName, setCompa
     setCompanyName(e.target.value);
   };
 
-  if (logo != null) {
-    setSelectedFile(logo);
-  } else {
-    setSelectedFile(null)
-  }
 
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
