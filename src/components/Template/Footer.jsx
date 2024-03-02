@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
 import { API } from 'aws-amplify';
+import Context from '../../context/Context';
 
 function Footer({ currentSection, nextSection, prevSection, saveData }) {
+  const {userData,setUserData} = useContext(Context)
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
@@ -30,6 +32,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
     nextSection();
 
   };
+  
   const submitSections = async () => {
     nextSection();
     await API.put("clients", "/user/development-form/put-time/awsaiapp", {
@@ -38,7 +41,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
       },
     });
     Navigate("/pay");
-  }
+    setUserData(userData => ({ ...userData, web: true, isVerified: false }));  }
 
   return (
     <div className='footer-wrapper relative'>

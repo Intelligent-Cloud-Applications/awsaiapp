@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { API } from "aws-amplify";
+import Context from "../context/Context";
 
 const Timer = () => {
+  const { userData, setUserData } = useContext(Context);
   const [seconds, setSeconds] = useState(48 * 60 * 60);
   const [submissionTime, setSubmissionTime] = useState(Date.now());
   const totalTime = 48 * 60 * 60;
   const [timerEnded, setTimerEnded] = useState(false);
+
   useEffect(() => {
     const onLoad = async () => {
-      
       try {
         const res = await API.get(
           "clients",
           "/user/development-form/get-time/awsaiapp"
         );
-        
         setSubmissionTime(res.submissiontime);
       } catch (e) {
         console.error(e);
-      } finally {
-      
       }
     };
 
@@ -29,16 +28,14 @@ const Timer = () => {
   useEffect(() => {
     const usedTime = (Date.now() - submissionTime) / 1000;
     const leftTime = totalTime - usedTime;
- 
+
     if (Math.floor(leftTime) < 0) {
       setSeconds(0);
       setTimerEnded(true);
     } else {
       setSeconds(Math.floor(leftTime));
-      
     }
-  }, [submissionTime, totalTime]); 
-  
+  }, [submissionTime, totalTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,14 +43,21 @@ const Timer = () => {
         if (prevSeconds > 0) {
           return prevSeconds - 1;
         } else {
-          setTimerEnded(true); 
-          clearInterval(interval); 
-          return 0; 
+          setTimerEnded(true);
+          clearInterval(interval);
+          return 0;
         }
       });
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (timerEnded) {
+      // Timer ended, set isVerified to true
+      setUserData(userData => ({ ...userData, isVerified: true }));
+    }
+  }, [timerEnded]);
 
   const formatTime = () => {
     const hours = Math.floor(seconds / 3600);
@@ -66,7 +70,7 @@ const Timer = () => {
 
   return (
     <div className="flex flex-col justify-center p-12 gap-5">
-    <div className="countdown-timer px-3">
+      <div className="countdown-timer px-3">
         <div className="timer-display">
           {formatTime()
             .split(":")
@@ -80,28 +84,30 @@ const Timer = () => {
       <div className="px-4 ml-3 text-white">
         {timerEnded ? (
           <div className="congratulations-ui bg-black opacity-75 p-10 rounded-md absolute inset-0 flex flex-col justify-center items-center">
-          <table className="text-center">
-            <tbody>
-              <tr>
-                <td>
-                  <p style={{ fontSize: "3em" }}>
-                    🎉 Congratulations! Your website is completed. 🎉
-                  </p>
-                  <p>We have sent the domain name to your registered email ID.</p>
-                
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="scrolling-text">
-            <p>Congratulations! Congratulations! Congratulations!</p>
-            
+            <table className="text-center">
+              <tbody>
+                <tr>
+                  <td>
+                    <p style={{ fontSize: "3em" }}>
+                      🎉 Congratulations! Your website is Verfied. 🎉
+                    </p>
+                    <p>
+                      We have sent the domain name to your registered email ID.
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="scrolling-text">
+              <p>Congratulations! Congratulations! Congratulations!</p>
+            </div>
           </div>
-        </div>
         ) : (
           <p className="text-center max450:w-[20rem]">
-   Get ready for an enhanced online presence your website's transformation is underway! Need changes or more info? Reach out anytime!
-  </p>
+            Get ready for an enhanced online presence your website's
+            transformation is underway! Need changes or more info? Reach out
+            anytime!
+          </p>
         )}
       </div>
     </div>

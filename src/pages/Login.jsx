@@ -53,7 +53,7 @@ const Login = () => {
         console.log(user)
         const userdata = await API.get("clients", '/self/read-self/awsaiapp');
         console.log("User data:", userdata);
-        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp") {
+        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp" && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === true) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -64,7 +64,19 @@ const Login = () => {
             title: "Welcome Back",
           });
           Navigate("/dashboard");
-        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true) {
+        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === false  && userdata.isDelivered === false) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
+          Swal.fire({
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/complete`);
+        }
+        else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === true) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);

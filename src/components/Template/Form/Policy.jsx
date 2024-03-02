@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Policy({ policies, setPolicies }) {
-  // const [policies, setPolicies] = useState([
-  //   { title: 'Privacy Policy', content: '' },
-  //   { title: 'Terms and Conditions', content: '' },
-  //   { title: 'Cancellation/Refund Policy', content: '' },
-  //   { title: 'About Us', content: '' },
-  // ]);
 
   const handlePolicyChange = (index, e) => {
     const updatedPolicies = [...policies];
-    updatedPolicies[index] = { ...updatedPolicies[index], [e.target.name]: e.target.value };
+    updatedPolicies[index] = { ...updatedPolicies[index], content: e.target.value };
     setPolicies(updatedPolicies);
   };
 
@@ -20,6 +14,16 @@ function Policy({ policies, setPolicies }) {
     setActivePolicyIndex(index === activePolicyIndex ? null : index);
   };
 
+  useEffect(() => {
+    console.log("Policies:", policies);
+    console.log("Is Array:", Array.isArray(policies));
+    console.log("Length:", policies.length);
+    if (!Array.isArray(policies) || policies.length === 0) {
+      console.log("Setting initial policy");
+      setPolicies([{ content: '' }]);
+    }
+  }, [policies, setPolicies]);
+  
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '500px' }}>
       <h1 className="font-medium text-7xl">POLICY AND TERMS</h1>
@@ -32,7 +36,7 @@ function Policy({ policies, setPolicies }) {
       <div className="mt-8">
         {policies.map((policy, index) => (
           <div key={index} className="mt-4">
-            {/* <h2 className="font-medium text-xl">{policy.title}</h2> */}
+            <h2 className="font-medium text-xl">{policy.title}</h2>
             <div className="relative">
               <textarea
                 name="content"

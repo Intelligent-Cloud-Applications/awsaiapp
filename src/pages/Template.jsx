@@ -18,7 +18,7 @@ import Context from '../context/Context';
 
 
 const Template = () => {
-  const { templateDetails,subscriptionDetails } = useContext(Context);
+  const { templateDetails, subscriptionDetails } = useContext(Context);
   const existingData = templateDetails.details;
   console.log(existingData);
 
@@ -152,10 +152,10 @@ const Template = () => {
 
   const [policies, setPolicies] = useState({
     PrivacyPolicy: existingData.PrivacyPolicy || '',
-    Refund: existingData.Refund || '',
-    TermsData: existingData.TermsData || '',
+    Refund: existingData.Refund || [],
+    TermsData: existingData.TermsData || [],
   });
-
+  
 
   useEffect(() => {
     if (currentSection === 1) {
@@ -436,16 +436,10 @@ const Template = () => {
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institutionid: companyName,
-          PrivacyPolicy: policies[0].content,
-          TermsData: [{
-            title: "",
-            content: policies[1].content
-          }],
-          Refund: [{
-            heading: "",
-            content: policies[2].content
-          }],
-          AboutUs: policies[3].content,
+          PrivacyPolicy: policies.PrivacyPolicy,
+          TermsData: policies.TermsData.map(item => ({ title: '', content: item })),
+          Refund: policies.Refund.map(item => ({ heading: '', content: item })),
+          AboutUs: policies.AboutUs,
         },
       });
     } catch (error) {
