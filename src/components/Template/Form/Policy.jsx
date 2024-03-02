@@ -32,7 +32,7 @@ function Policy({ policies, setPolicies }) {
       <div className="mt-8">
         {policies.map((policy, index) => (
           <div key={index} className="mt-4">
-            <h2 className="font-medium text-xl">{policy.title}</h2>
+            {/* <h2 className="font-medium text-xl">{policy.title}</h2> */}
             <div className="relative">
               <textarea
                 name="content"

@@ -1,6 +1,10 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import Currency from "../../Auth/Currency";
+import Context from '../../../context/Context';
+
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
+  const { subscriptionDetails } = useContext(Context);
+console.log("subercribe",subscriptionDetails)
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));

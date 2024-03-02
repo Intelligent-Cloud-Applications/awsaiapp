@@ -18,7 +18,7 @@ import Context from '../context/Context';
 
 
 const Template = () => {
-  const { templateDetails } = useContext(Context);
+  const { templateDetails,subscriptionDetails } = useContext(Context);
   const existingData = templateDetails.details;
   console.log(existingData);
 
@@ -79,7 +79,7 @@ const Template = () => {
     }
   };
 
-  const [subscriptions, setSubscriptions] = useState(existingData.subscriptions || [
+  const [subscriptions, setSubscriptions] = useState(subscriptionDetails || [
     {
       heading: '',
       amount: '',
@@ -529,20 +529,17 @@ const Template = () => {
           handleServicesUpload();
           break;
         case 3:
-          const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
+          const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.description).length >= 3;
           if (!isTestimonialsFilled) {
             alert("Please fill three testimonials before proceeding.");
             return prevSection;
-          }
-          if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
-            alert("Please fill up all fields for testimonial 3 before proceeding.");
+          } else if (!testimonials[0].name || !testimonials[0].description || !testimonials[0].img) {
+            alert("Please fill up all fields for testimonial 1 before proceeding.");
             return prevSection;
-          }
-          if (!testimonials[1].name || !testimonials[1].feedback || !testimonials[1].actualFile) {
-            alert("Please fill up all fields for testimonial 3 before proceeding.");
+          } else if (!testimonials[1].name || !testimonials[1].description || !testimonials[1].img) {
+            alert("Please fill up all fields for testimonial 2 before proceeding.");
             return prevSection;
-          }
-          if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
+          } else if (!testimonials[2].name || !testimonials[2].description || !testimonials[2].img) {
             alert("Please fill up all fields for testimonial 3 before proceeding.");
             return prevSection;
           }

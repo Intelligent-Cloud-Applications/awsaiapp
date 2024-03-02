@@ -10,9 +10,11 @@ const ContextProvider = (props) => {
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [templateDetails, setTemplateDetails] = useState({});
+  const [subscriptionDetails, setSubscriptionDetails] = useState();
+  const [instructordetails, setInstructordetails] = useState()
   const [userData, setUserData] = useState({});
-const institutionId = localStorage.getItem('institution')
-  
+  const institutionId = localStorage.getItem('institution');
+
   useEffect(() => {
     fetchClients();
     fetchUserProfile();
@@ -78,12 +80,30 @@ const institutionId = localStorage.getItem('institution')
   const fetchTemplateDetails = async () => {
     try {
       const response = await API.get("clients", `/user/development-form/get-user/${institutionId}`);
-      console.log("response",response)
+      console.log("response", response)
       setTemplateDetails(response)
     } catch (error) {
       console.error("Error fetching template details:", error);
     } finally {
       setLoader(false);
+    }
+  };
+
+  const fetchProductDetails = async () => {
+    try {
+      const response = await API.get("clients", `/user/development-form/get-product/${institutionId}`);
+      setSubscriptionDetails(response)
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+
+  const fetchInstructorDetails = async () => {
+    try {
+      const response = await API.get("clients", `/user/development-form/get-instructor/${institutionId}`);
+      setInstructordetails(response)
+    } catch (error) {
+      console.error("Error fetching instructor details:", error);
     }
   };
 
@@ -128,6 +148,10 @@ const institutionId = localStorage.getItem('institution')
       details: templateDetails,
       fetchTemplateDetails: fetchTemplateDetails,
     },
+    subscriptionDetails: subscriptionDetails,
+    instructorDetails: instructordetails,
+    fetchProductDetails: fetchProductDetails,
+    fetchInstructorDetails: fetchInstructorDetails,
   };
 
   return (

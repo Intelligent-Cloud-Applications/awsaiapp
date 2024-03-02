@@ -61,7 +61,7 @@ function FAQs({ faqs, setFaqs }) {
               <input
                 type="text"
                 name="question"
-                value={faq.question}
+                value={faq.title}
                 onChange={(e) => handleFAQChange(index, e)}
                 placeholder="Question"
                 className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
@@ -76,7 +76,7 @@ function FAQs({ faqs, setFaqs }) {
             </div>
             <textarea
               name="answer"
-              value={faq.answer}
+              value={faq.content }
               onChange={(e) => handleFAQChange(index, e)}
               placeholder="Answer"
               className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none "
