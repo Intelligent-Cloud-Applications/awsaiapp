@@ -3,7 +3,7 @@ import upload from "../../../utils/png/upload.png";
 import Context from "../../../context/Context";
 import { useEffect } from "react";
 
-function Company({ clients,selectedFile,setSelectedFile, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor }) {
+function Company({ clients, selectedFile, setSelectedFile, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo, LightPrimaryColor, setLightPrimaryColor, LightestPrimaryColor, setLightestPrimaryColor }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
@@ -18,7 +18,9 @@ function Company({ clients,selectedFile,setSelectedFile, companyName, setCompany
     setCompanyName(e.target.value);
   };
 
-
+  if (selectedFile === null) {
+    setSelectedFile(logo)
+  }
 
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
@@ -180,7 +182,7 @@ function Company({ clients,selectedFile,setSelectedFile, companyName, setCompany
             onMouseLeave={handleUploadImageMouseLeave}
           >
             <img
-              src={selectedFile || logo}
+              src={selectedFile}
               alt="Uploaded"
               className="absolute top-0 left-0 w-[100%] h-[100%] cursor-pointer"
               onClick={handleUploadImageClick}
