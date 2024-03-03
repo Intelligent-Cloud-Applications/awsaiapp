@@ -1,7 +1,7 @@
 import React, {useState } from "react";
 import upload from "../../../utils/png/upload.png";
 
-function Company({ clients, selectedFile, setSelectedFile, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo, LightPrimaryColor, setLightPrimaryColor, LightestPrimaryColor, setLightestPrimaryColor }) {
+function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor,selectedFile,setSelectedFile }) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
