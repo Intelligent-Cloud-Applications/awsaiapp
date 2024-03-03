@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import Context from '../../../context/Context';
 
-function Testimonials({testimonials, setTestimonials }) {
+function Testimonials({ testimonials, setTestimonials }) {
   // const [testimonials, setTestimonials] = useState([
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
@@ -69,11 +69,12 @@ function Testimonials({testimonials, setTestimonials }) {
     updatedTestimonials.splice(index, 1);
     setTestimonials(updatedTestimonials);
   };
-  
+
   useEffect(() => {
     if (TestimonialData) {
       setTestimonials(TestimonialData);
     }
+    // eslint-disable-next-line
   }, [TestimonialData]);
 
   return (

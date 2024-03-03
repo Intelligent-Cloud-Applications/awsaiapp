@@ -64,7 +64,7 @@ const Login = () => {
             title: "Welcome Back",
           });
           Navigate("/dashboard");
-        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === false  && userdata.isDelivered === false) {
+        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === false && userdata.isDelivered === false) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -103,9 +103,12 @@ const Login = () => {
             UserCtx.setIsAuth(true);
             UtilCtx.setLoader(false);
             Navigate("/template");
-          } else {
-            // If not now is clicked, stay at /login
-            Navigate("/login");
+          } else if (!continueResult.isConfirmed) {
+            localStorage.setItem('institution', userdata.institutionName);
+            UserCtx.setUserData(userdata);
+            UserCtx.setIsAuth(true);
+            UtilCtx.setLoader(false);
+            Navigate("/");
           }
         } else {
           console.log("Invalid user:", userdata);

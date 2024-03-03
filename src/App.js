@@ -8,6 +8,13 @@ import LoaderProvider from "./components/LoaderProvider";
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
+  const { templateDetails} = useContext(Context);
+
+  useEffect(() => {
+    templateDetails.fetchTemplateDetails()
+    // eslint-disable-next-line
+  }, [])
+
   // const location = useLocation();
   // const institutionFromParams = new URLSearchParams(location.search).get("institution");
   // const institutionFromLocalStorage = localStorage.getItem('institution');

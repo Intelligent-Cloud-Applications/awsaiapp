@@ -18,9 +18,14 @@ import Context from '../context/Context';
 
 
 const Template = () => {
-  const { templateDetails, subscriptionDetails } = useContext(Context);
+  const { templateDetails, subscriptionDetails,} = useContext(Context);
   const existingData = templateDetails.details;
   console.log(existingData);
+
+  useEffect(() => {
+    templateDetails.fetchTemplateDetails()
+    // eslint-disable-next-line
+  }, [])
 
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState({});
