@@ -211,11 +211,11 @@ const SignUp = () => {
         const newUserCheck = await Auth.signUp({
           username: `+${countryCode}${phoneNumber}`,
           password: "Avishek@123",
+          institutionName: institutionName,
           attributes: {
             phone_number: `+${countryCode}${phoneNumber}`,
             name: `${firstName} ${lastName}`,
             email: email,
-            // institutionName: institutionName
           },
         });
         const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
@@ -251,6 +251,7 @@ const SignUp = () => {
             userName: `${firstName} ${lastName}`,
             phoneNumber: `${countryCode}${phoneNumber}`,
             country: country,
+            institutionName: institutionName,
           },
         });
         //Temporary
