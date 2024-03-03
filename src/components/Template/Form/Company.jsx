@@ -1,7 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, {useState } from "react";
 import upload from "../../../utils/png/upload.png";
-import Context from "../../../context/Context";
-import { useEffect } from "react";
 
 function Company({ clients, selectedFile, setSelectedFile, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo, LightPrimaryColor, setLightPrimaryColor, LightestPrimaryColor, setLightestPrimaryColor }) {
   // const [companyName, setCompanyName] = useState("");

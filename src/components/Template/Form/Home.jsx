@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
-import Context from "../../../context/Context";
 
 function Home({ TagLine, setTagLine, video, setVideo }) {
   // const [TagLineName, setTagLineName] = useState("");

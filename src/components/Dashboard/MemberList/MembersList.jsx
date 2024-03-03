@@ -40,6 +40,7 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
+      // eslint-disable-next-line
   const [IsDashboard, setIsDashboard] = useState(false);
   const Navigate = useNavigate();
   const location = useLocation();

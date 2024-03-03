@@ -26,22 +26,25 @@ const Template = () => {
   const [savedData, setsavedData] = useState({});
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState(null);
-
+  // eslint-disable-next-line
   const [LightPrimaryColor, setLightPrimaryColor] = useState(existingData.LightPrimaryColor || "#225c59");
+  // eslint-disable-next-line
   const [LightestPrimaryColor, setLightestPrimaryColor] = useState(existingData.LightestPrimaryColor || "#c3f3f1");
+  // eslint-disable-next-line
   const [Footer_Link_1, setFooter_Link_1] = useState(existingData.Footer_Link_1 || "https://bworkzlive.com/");
+  // eslint-disable-next-line
   const [Footer_Link_2, setFooter_Link_2] = useState(existingData.Footer_Link_2 || "https://Zumba.com/");
 
   const [logo, setLogo] = useState(existingData.logoUrl || null);
   const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(existingData.src_Components_Home_Why__h1 || null);
   const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(existingData.src_Components_Home_Header3__h1 || null);
   const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(existingData.src_Components_Home_Header3__h2 || null);
-  const [src_Components_Home_Header3__h5_1, setsrc_Components_Home_Header3__h5_1] = useState(existingData.src_Components_Home_Header3__h5_1 || null);
-  const [src_Components_Home_Header3__p_1, setsrc_Components_Home_Header3__p_1] = useState(existingData.src_Components_Home_Header3__p_1 || null);
-  const [src_Components_Home_Header3__h5_2, setsrc_Components_Home_Header3__h5_2] = useState(existingData.src_Components_Home_Header3__h5_2 || null);
-  const [src_Components_Home_Header3__p_2, setsrc_Components_Home_Header3__p_2] = useState(existingData.src_Components_Home_Header3__p_2 || null);
-  const [src_Components_Home_Header3__h5_3, setsrc_Components_Home_Header3__h5_3] = useState(existingData.src_Components_Home_Header3__h5_3 || null);
-  const [src_Components_Home_Header3__p_3, setsrc_Components_Home_Header3__p_3] = useState(existingData.src_Components_Home_Header3__p_3 || null);
+  // const [src_Components_Home_Header3__h5_1, setsrc_Components_Home_Header3__h5_1] = useState(existingData.src_Components_Home_Header3__h5_1 || null);
+  // const [src_Components_Home_Header3__p_1, setsrc_Components_Home_Header3__p_1] = useState(existingData.src_Components_Home_Header3__p_1 || null);
+  // const [src_Components_Home_Header3__h5_2, setsrc_Components_Home_Header3__h5_2] = useState(existingData.src_Components_Home_Header3__h5_2 || null);
+  // const [src_Components_Home_Header3__p_2, setsrc_Components_Home_Header3__p_2] = useState(existingData.src_Components_Home_Header3__p_2 || null);
+  // const [src_Components_Home_Header3__h5_3, setsrc_Components_Home_Header3__h5_3] = useState(existingData.src_Components_Home_Header3__h5_3 || null);
+  // const [src_Components_Home_Header3__p_3, setsrc_Components_Home_Header3__p_3] = useState(existingData.src_Components_Home_Header3__p_3 || null);
 
   const [companyName, setCompanyName] = useState(existingData.companyName || null);
   const [PrimaryColor, setPrimaryColor] = useState(existingData.PrimaryColor || "#1B7571");
@@ -149,7 +152,7 @@ const Template = () => {
     { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
     { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
   ]);
-
+    // eslint-disable-next-line
   const [policies, setPolicies] = useState(existingData.TermsData || [{ content: '' }]);
   const [refundPolicies, setRefundPolicies] = useState(existingData.Refund || [{ heading: '', content: '' }]);
   const [privacyPolicy, setPrivacyPolicy] = useState(existingData.PrivacyPolicy || [{ heading: '', content: '' }]);

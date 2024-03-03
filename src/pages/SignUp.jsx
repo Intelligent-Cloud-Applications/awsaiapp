@@ -132,6 +132,7 @@ const SignUp = () => {
           userName: `${firstName} ${lastName}`,
           phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
+          institutionName: institutionName
         },
       });
       //Temporary
@@ -214,6 +215,7 @@ const SignUp = () => {
             phone_number: `+${countryCode}${phoneNumber}`,
             name: `${firstName} ${lastName}`,
             email: email,
+            // institutionName: institutionName
           },
         });
         const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
