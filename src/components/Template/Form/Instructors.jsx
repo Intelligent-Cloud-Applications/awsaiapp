@@ -1,6 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+import Context from '../../../context/Context';
 
-function Instructors({ instructors, setInstructors}) {
+function Instructors({ instructors, setInstructors }) {
+  const { instructordetails } = useContext(Context)
+  console.log(instructordetails)
   // const [instructors, setInstructors] = useState([
   //   { imgSrc: '', name: '', uploadedFile: null },
   //   { imgSrc: '', name: '', uploadedFile: null },
