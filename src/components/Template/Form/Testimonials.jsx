@@ -1,11 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import Context from '../../../context/Context';
 
-function Testimonials({ testimonials, setTestimonials }) {
+function Testimonials({testimonials, setTestimonials }) {
   // const [testimonials, setTestimonials] = useState([
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   // ]);
+  const { templateDetails } = useContext(Context);
+  const existingData = templateDetails.details
+  const TestimonialData = existingData.Testimonial;
 
   const testimonialsContainerRef = useRef(null);
 
@@ -65,13 +69,18 @@ function Testimonials({ testimonials, setTestimonials }) {
     updatedTestimonials.splice(index, 1);
     setTestimonials(updatedTestimonials);
   };
-
+  
+  useEffect(() => {
+    if (TestimonialData) {
+      setTestimonials(TestimonialData);
+    }
+  }, [TestimonialData]);
 
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-      ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
+        ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
       </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.

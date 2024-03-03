@@ -3,7 +3,7 @@ import Context from '../../../context/Context';
 
 function Instructors({ instructors, setInstructors }) {
   const { instructordetails } = useContext(Context)
-  console.log(instructordetails)
+  console.log("instructordetails",instructordetails)
   // const [instructors, setInstructors] = useState([
   //   { imgSrc: '', name: '', uploadedFile: null },
   //   { imgSrc: '', name: '', uploadedFile: null },

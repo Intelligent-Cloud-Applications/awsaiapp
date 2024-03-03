@@ -8,7 +8,7 @@ const Timer = () => {
   const { userData, setUserData } = useContext(Context);
   const [seconds, setSeconds] = useState(48 * 60 * 60);
   const [submissionTime, setSubmissionTime] = useState(Date.now());
-  const totalTime = 1 * 1 * 60;
+  const totalTime = 48 * 60 * 60;
   const [timerEnded, setTimerEnded] = useState(false);
   const navigate = useNavigate(); // Get navigate function from useNavigate
 
@@ -24,7 +24,6 @@ const Timer = () => {
         console.error(e);
       }
     };
-
     onLoad();
   }, []);
 

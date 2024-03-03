@@ -11,7 +11,7 @@ const ContextProvider = (props) => {
   const [isAuth, setIsAuth] = useState(false);
   const [templateDetails, setTemplateDetails] = useState({});
   const [subscriptionDetails, setSubscriptionDetails] = useState();
-  const [instructordetails, setInstructordetails] = useState()
+  const [instructordetails, setInstructordetails] = useState({})
   const [userData, setUserData] = useState({});
   const institutionId = localStorage.getItem('institution');
 
@@ -20,6 +20,7 @@ const ContextProvider = (props) => {
     fetchUserProfile();
     fetchProducts();
     fetchTemplateDetails();
+    fetchInstructorDetails()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,6 +102,7 @@ const ContextProvider = (props) => {
   const fetchInstructorDetails = async () => {
     try {
       const response = await API.get("clients", `/user/development-form/get-instructor/${institutionId}`);
+      console.log("zvfwsefwsfwsef", response)
       setInstructordetails(response)
     } catch (error) {
       console.error("Error fetching instructor details:", error);
