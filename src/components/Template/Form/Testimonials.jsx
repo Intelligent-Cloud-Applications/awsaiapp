@@ -1,5 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react';
-import Context from '../../../context/Context';
+import React, { useState, useRef } from 'react';
 
 function Testimonials({ testimonials, setTestimonials }) {
   // const [testimonials, setTestimonials] = useState([
@@ -7,9 +6,6 @@ function Testimonials({ testimonials, setTestimonials }) {
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   // ]);
-  const { templateDetails } = useContext(Context);
-  const existingData = templateDetails.details
-  const TestimonialData = existingData.Testimonial;
 
   const testimonialsContainerRef = useRef(null);
 
@@ -70,18 +66,12 @@ function Testimonials({ testimonials, setTestimonials }) {
     setTestimonials(updatedTestimonials);
   };
 
-  useEffect(() => {
-    if (TestimonialData) {
-      setTestimonials(TestimonialData);
-    }
-    // eslint-disable-next-line
-  }, [TestimonialData]);
 
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-        ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
+      ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
       </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.
@@ -106,10 +96,10 @@ function Testimonials({ testimonials, setTestimonials }) {
                   className={`w-[150px] h-[25px] border  border-[#3f3e3e] flex items-center justify-center cursor-pointer relative`}
                   style={{ borderColor: 'cement', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#D9D9D9' }}
                 >
-                  <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile || testimonial.img ? 'hidden' : 'block'}`}>
+                  <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
                     Choose File
                   </span>
-                  <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile || testimonial.img ? 'block' : 'hidden'}`}>
+                  <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile ? 'block' : 'hidden'}`}>
                     <span className="text-[#636262]">{shortenFileName(testimonial.uploadedFile)}</span>
                     <span onClick={() => handleImageChange(index, { target: { files: [null] } })} className="text-[#3b9d33] cursor-pointer">Change</span>
                   </div>
@@ -119,10 +109,10 @@ function Testimonials({ testimonials, setTestimonials }) {
                   <button
                     onClick={() => removeTestimonial(index)}
                     className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
-                  >
+                    >
                     <span>✕</span>
                   </button>
-                )}
+                  )}
               </div>
               <div className="relative">
                 {/* Name input */}
@@ -139,14 +129,14 @@ function Testimonials({ testimonials, setTestimonials }) {
                 {/* Name line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                    }`}
-                ></div>
+                }`}
+                  ></div>
               </div>
               <div className="relative">
                 {/* Feedback input */}
                 <textarea
                   name="feedback"
-                  value={testimonial.feedback || testimonial.description}
+                  value={testimonial.feedback}
                   onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
                   placeholder="Feedback"
                   className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
@@ -154,17 +144,17 @@ function Testimonials({ testimonials, setTestimonials }) {
                   onBlur={() => toggleActiveTestimonial(null)}
                   rows={1}
                   style={{
-                    height: activeTestimonialIndex === index ? '2rem' : 'auto',
+                  height: activeTestimonialIndex === index ? '2rem' : 'auto',
                   }}
                 />
                 {/* Feedback line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                    }`}
-                ></div>
+                }`}
+                  ></div>
               </div>
             </div>
-          ))}
+            ))}
         </div>
         {/* Add button after the third testimonial */}
         {testimonials.length < 5 && (
@@ -173,10 +163,10 @@ function Testimonials({ testimonials, setTestimonials }) {
               Add Testimonial
             </button> */}
           </div>
-        )}
+          )}
       </div>
     </div>
-  );
+    );
 }
 
 export default Testimonials;

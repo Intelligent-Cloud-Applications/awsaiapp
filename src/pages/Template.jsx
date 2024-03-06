@@ -14,66 +14,52 @@ import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
 import "./Template.css";
-import Context from '../context/Context';
-
-
+import Context from "../context/Context";
 const Template = () => {
-  const { templateDetails, subscriptionDetails,} = useContext(Context);
-  const existingData = templateDetails.details;
-  console.log(existingData);
-
-  useEffect(() => {
-    templateDetails.fetchTemplateDetails()
-    // eslint-disable-next-line
-  }, [])
-
   const [currentSection, setCurrentSection] = useState(0);
-  const [savedData, setsavedData] = useState({});
+  const [savedData, setsavedData] = useState();
+  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
+  const [Companydata, setCompanydata] = useState([]);
   const [loader, setLoader] = useState(false);
+  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   const [error, setError] = useState(null);
-  // eslint-disable-next-line
-  const [LightPrimaryColor, setLightPrimaryColor] = useState(existingData.LightPrimaryColor || "#225c59");
-  // eslint-disable-next-line
-  const [LightestPrimaryColor, setLightestPrimaryColor] = useState(existingData.LightestPrimaryColor || "#c3f3f1");
-  // eslint-disable-next-line
-  const [Footer_Link_1, setFooter_Link_1] = useState(existingData.Footer_Link_1 || "https://bworkzlive.com/");
-  // eslint-disable-next-line
-  const [Footer_Link_2, setFooter_Link_2] = useState(existingData.Footer_Link_2 || "https://Zumba.com/");
+  const [logo, setLogo] = useState(null);
+  const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
+  //
+  const [LightPrimaryColor,setLightPrimaryColor] = useState("#225c59");
+  const [LightestPrimaryColor,setLightestPrimaryColor] = useState("#c3f3f1");
+  const[Footer_Link_1]=useState("https://bworkzlive.com/");
+  const[Footer_Link_2]=useState("https://Zumba.com/");
+  // const [logo, setLogo] = useState(null);
+  const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
+  const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
+  const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(null);
 
-  const [logo, setLogo] = useState(existingData.logoUrl || null);
-  const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(existingData.src_Components_Home_Why__h1 || null);
-  const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(existingData.src_Components_Home_Header3__h1 || null);
-  const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(existingData.src_Components_Home_Header3__h2 || null);
-  // const [src_Components_Home_Header3__h5_1, setsrc_Components_Home_Header3__h5_1] = useState(existingData.src_Components_Home_Header3__h5_1 || null);
-  // const [src_Components_Home_Header3__p_1, setsrc_Components_Home_Header3__p_1] = useState(existingData.src_Components_Home_Header3__p_1 || null);
-  // const [src_Components_Home_Header3__h5_2, setsrc_Components_Home_Header3__h5_2] = useState(existingData.src_Components_Home_Header3__h5_2 || null);
-  // const [src_Components_Home_Header3__p_2, setsrc_Components_Home_Header3__p_2] = useState(existingData.src_Components_Home_Header3__p_2 || null);
-  // const [src_Components_Home_Header3__h5_3, setsrc_Components_Home_Header3__h5_3] = useState(existingData.src_Components_Home_Header3__h5_3 || null);
-  // const [src_Components_Home_Header3__p_3, setsrc_Components_Home_Header3__p_3] = useState(existingData.src_Components_Home_Header3__p_3 || null);
+  const [companyName, setCompanyName] = useState(null);
 
-  const [companyName, setCompanyName] = useState(existingData.companyName || null);
-  const [PrimaryColor, setPrimaryColor] = useState(existingData.PrimaryColor || "#1B7571");
-  const [SecondaryColor, setSecondaryColor] = useState(existingData.SecondaryColor || "#000000");
-  const [countryCode, setCountryCode] = useState(existingData.countryCode || "INR");
-  const [country, setCountry] = useState(existingData.country || "India");
-  const [TagLine, setTagLine] = useState(existingData.TagLine || "");
-  const [video, setVideo] = useState(existingData.videoUrl || null);
+
+  const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
+  const [SecondaryColor, setSecondaryColor] = useState("#000000");
+  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
+  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
+  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
+  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
+  const [countryCode, setCountryCode] = useState("INR");
+  const [country, setCountry] = useState("India");
+  const [TagLine, setTagLine] = useState("");
+  const [video, setVideo] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
-
   const [services, setServices] = useState([
-    { title: existingData.src_Components_Home_Header3__h5_1 || '', description: existingData.src_Components_Home_Header3__p_1 || '' },
-    { title: existingData.src_Components_Home_Header3__h5_2 || '', description: existingData.src_Components_Home_Header3__p_2 || '' },
-    { title: existingData.src_Components_Home_Header3__h5_3 || '', description: existingData.src_Components_Home_Header3__p_3 || '' },
-  ]);
+    { title: '', description: '' },
+    { title: '', description: '' },
+    { title: '', description: '' },
+    ]);
 
-  const testimonialData = existingData.Testimonial || [
+  const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-  ];
-
-  const [testimonials, setTestimonials] = useState(testimonialData);
+    ]);
 
   const calculateDuration = (subscriptionType) => {
     const daysInMonth = 30; // assuming 30 days in a month
@@ -88,9 +74,8 @@ const Template = () => {
 
     return 0;
   };
+  const [subscriptions, setSubscriptions] = useState([
 
-
-  const [subscriptions, setSubscriptions] = useState(subscriptionDetails || [
     {
       heading: '',
       amount: '',
@@ -101,8 +86,8 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId: 0,
-      description: 0,
+      planId:0,
+      description:0,
     },
     {
       heading: '',
@@ -114,8 +99,8 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId: 0,
-      description: 0,
+      planId:0,
+      description:0,
     },
     {
       heading: '',
@@ -127,89 +112,168 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId: 0,
-      description: 0,
+      planId:0,
+      description:0,
     },
-  ]);
+    ]);
 
-  const [faqs, setFaqs] = useState(existingData.FAQ || [
-    {
-      question: '',
-      answer: '',
-    },
-    {
-      question: '',
-      answer: '',
-    },
-    {
-      question: '',
-      answer: '',
-    },
-    {
-      question: '',
-      answer: '',
-    },
-    {
-      question: '',
-      answer: '',
-    },
-  ]);
 
-  const [instructors, setInstructors] = useState(existingData.Instructor || [
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-  ]);
-  // eslint-disable-next-line
+  const [faqs, setFaqs] = useState([
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+    {
+      question: '',
+      answer: '',
+    },
+    ]);
+
+  const [instructors, setInstructors] = useState([
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
+    ]);
+
   const [policies, setPolicies] = useState([
     { title: 'Privacy Policy', content: '' },
     { title: 'Terms and Conditions', content: '' },
     { title: 'Cancellation/Refund Policy', content: '' },
     { title: 'About Us', content: '' },
-  ]);
-
-
-
-  useEffect(() => {
-    if (currentSection === 1) {
-      setLoader(true);
-      fetchData();
-    }
-  }, [currentSection]);
-
-  const fetchData = async () => {
-    try {
-      const data = await API.get('apiName', '/path');
-      console.log(data);
-      // Do something with the data
-      setLoader(false);
-    } catch (error) {
-      console.log('Error fetching data: ', error);
-      setError(error);
-      setLoader(false);
-    }
-  };
-
-  console.log(existingData)
-  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
-  const [Companydata, setCompanydata] = useState([]);
-  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
-  const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
-  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
-  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
-  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
-  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
+    ]);
 
   const [contactInfo, setContactInfo] = useState({
-    address: existingData.Query_Address || '',
-    phoneNumber: existingData.Query_PhoneNumber || '',
-    email: existingData.Query_EmailId || '',
-    upiId: existingData.UpiId || '',
-    instagram: existingData.Instagram || '',
-    youtube: existingData.YTLink || '',
-    facebook: existingData.Facebook || '',
+    address: '',
+    phoneNumber: '',
+    email: '',
+    upiId: '',
+    instagram: '',
+    youtube: '',
+    facebook: '',
   });
 
+  const Ctx = useContext(Context);
+
+  useEffect(() => {
+    async function fetchData() {
+      const institutionId = Ctx.userData.institutionName;
+      try {
+        const templateResponse = await API.get(
+          "clients",
+          `/user/development-form/get-user/${institutionId}`
+          );
+
+        const productResponse = await API.get(
+          "clients",
+          `/user/development-form/get-product/${institutionId}`
+          );
+
+        const instructorResponse = await API.get(
+          "clients",
+          `/user/development-form/get-instructor/${institutionId}`
+          );
+
+        console.log(templateResponse);
+        console.log(productResponse);
+        console.log(instructorResponse);
+
+        if (templateResponse) {
+          console.log("HELLO1");
+          setPrimaryColor(templateResponse.PrimaryColor);
+          setSecondaryColor(templateResponse.SecondaryColor);
+          setTagLine(templateResponse.TagLine);
+          setCompanyName(templateResponse.companyName);
+
+          let response = await fetch(templateResponse.logoUrl);
+          let data = await response.blob();
+          let metadata = {
+            type: data.type
+          };
+          let file = new File([data], "filename.jpg", metadata);
+          setLogo(file);
+
+          response = await fetch(templateResponse.videoUrl);
+          data = await response.blob();
+          metadata = {
+            type: data.type
+          };
+          file = new File([data], "filename.jpg", metadata);
+          setVideo(file);
+
+          setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1);
+          setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2);
+          setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1);
+
+          setServices([
+            {title: templateResponse.src_Components_Home_Header3__h5_1, description: templateResponse.src_Components_Home_Header3__p_1},
+            {title: templateResponse.src_Components_Home_Header3__h5_2, description: templateResponse.src_Components_Home_Header3__p_2},
+            {title: templateResponse.src_Components_Home_Header3__h5_3, description: templateResponse.src_Components_Home_Header3__p_3}
+          ]);
+
+          setDanceTypes(templateResponse.ClassTypes);
+
+          response = await fetch(templateResponse.Testimonial[0].img);
+          data = await response.blob();
+          metadata = {
+            type: data.type
+          };
+          file = new File([data], "filename.jpg", metadata);
+          templateResponse.Testimonial[0].uploadedFile = file;
+
+          response = await fetch(templateResponse.Testimonial[1].img);
+          data = await response.blob();
+          metadata = {
+            type: data.type
+          };
+          file = new File([data], "filename.jpg", metadata);
+          templateResponse.Testimonial[1].uploadedFile = file;
+
+          response = await fetch(templateResponse.Testimonial[2].img);
+          data = await response.blob();
+          metadata = {
+            type: data.type
+          };
+          file = new File([data], "filename.jpg", metadata);
+          templateResponse.Testimonial[1].uploadedFile = file;
+
+          setTestimonials([
+            {name: templateResponse.Testimonial[0].name, feedback: templateResponse.Testimonial[0].description, actualFile: templateResponse.Testimonial[0].uploadedFile},
+            {name: templateResponse.Testimonial[1].name, feedback: templateResponse.Testimonial[1].description, actualFile: templateResponse.Testimonial[1].uploadedFile},
+            {name: templateResponse.Testimonial[2].name, feedback: templateResponse.Testimonial[2].description, actualFile: templateResponse.Testimonial[2].uploadedFile},
+          ]);
+
+          setFaqs(templateResponse.FAQ);
+        }
+        if (productResponse.length > 0) {
+          console.log("HELLO2");
+        }
+        if (instructorResponse.length > 0) {
+          console.log("HELLO3");
+        }
+
+        setLoader(false);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+        setLoader(false);
+      }
+    }
+
+    fetchData();
+  }, [Ctx.userData.institutionName]);
 
 
   const handleCompanyUpload = async () => {
@@ -222,7 +286,6 @@ const Template = () => {
       // Get the URL of the uploaded file
       let imageUrl = await Storage.get(response.key);
       imageUrl = imageUrl.split("?")[0];
-      setLogo(imageUrl)
       setSelectedFile(imageUrl);
       console.log("logo: ", imageUrl);
       const additionalAttributes = {
@@ -348,7 +411,7 @@ const Template = () => {
               description: testimonials[2].feedback,
               img: imageUrl3,
             },
-          ]
+            ]
         },
       });
     } catch (error) {
@@ -362,7 +425,7 @@ const Template = () => {
       // Loop through each subscription
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i];
-        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF", subscription);
+        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
         // subscription.provides = subscription.provides.map((provide) => provide.description);
 
         // Make API call for each subscription
@@ -378,6 +441,10 @@ const Template = () => {
     }
   };
 
+
+
+
+
   const handleFAQsUpload = async () => {
     try {
       const filledFAQs = faqs.filter(faq => faq.question && faq.answer);
@@ -390,6 +457,28 @@ const Template = () => {
       await API.put("clients", "/user/development-form/faq", {
         body: {
           institutionid: companyName,
+          //   FAQ: [
+          //     {
+          //       Title: faqs[0].question,
+          //       Content: faqs[0].answer,
+          //     },
+          //     {
+          //       Title: faqs[1].question,
+          //       Content: faqs[1].answer,
+          //     },
+          //     {
+          //       Title: faqs[2].question,
+          //       Content: faqs[2].answer,
+          //     },
+          //     {
+          //       Title: faqs[3].question,
+          //       Content: faqs[3].answer,
+          //     },
+          //     {
+          //       Title: faqs[4].question,
+          //       Content: faqs[4].answer,
+          //     },
+          //   ]
           FAQ: faqsToUpload
         },
       });
@@ -439,10 +528,13 @@ const Template = () => {
         }
       }
 
+
+
     } catch (error) {
       console.error("Error uploading instructors: ", error);
     }
   }
+
 
   const handlePolicyUpload = async () => {
     try {
@@ -450,14 +542,10 @@ const Template = () => {
         body: {
           institutionid: companyName,
           PrivacyPolicy: policies[0].content,
-          TermsData: [{
-            title: "",
-            content: policies[1].content
-          }],
-          Refund: [{
-            heading: "",
-            content: policies[2].content
-          }],
+          TermsData: [{title:"",
+            content:policies[1].content}],
+          Refund: [{heading:"",
+            content:policies[2].content}],
           AboutUs: policies[3].content,
         },
       });
@@ -490,6 +578,9 @@ const Template = () => {
     }
   }
 
+
+
+
   const fetchClients = async (institution) => {
     try {
       setLoader(true);
@@ -506,16 +597,11 @@ const Template = () => {
   useEffect(() => {
     fetchClients();
     console.log("The daTa are fetching!");
-  }, []);
+    }, []);
 
-  const TestimonialData = existingData.Testimonial;
-  useEffect(() => {
-    if (TestimonialData) {
-      setTestimonials(TestimonialData);
-    }
-  }, [TestimonialData]);
 
   const handleNextSection = () => {
+
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
       console.log(currentSection);
@@ -532,48 +618,53 @@ const Template = () => {
           }
           handleCompanyUpload();
           break;
-        case 1:
-          if (!video || !TagLine) {
-            if (!video) {
-              alert("Please upload a video before proceeding.");
+          case 1:
+            if (!video || !TagLine) {
+              if (!video) {
+                alert("Please upload a video before proceeding.");
+              }
+              if (!TagLine) {
+                alert("Please provide a tagline before proceeding.");
+              }
+              return prevSection;
             }
-            if (!TagLine) {
-              alert("Please provide a tagline before proceeding.");
-            }
-            return prevSection;
-          }
           handleHomeUpload();
-          break;
-        case 2:
-          handleServicesUpload();
-          break;
-        case 3:
-          if (TestimonialData) {
-            return nextSection;
-          }
-          const isAnyTestimonialFilled = testimonials.some(testimonial => testimonial.name && testimonial.feedback && testimonial.actualFile);
-          if (!isAnyTestimonialFilled) {
-            alert("Please fill at least one testimonial before proceeding.");
-            return prevSection;
-          } else if (testimonials.length < 3 || testimonials.some(testimonial => !testimonial.name || !testimonial.feedback || !testimonial.actualFile)) {
-            alert("Please fill all fields for all three testimonials before proceeding.");
-            return prevSection;
-          } else {
-            handleTestimonialsUpload();
             break;
-          }
-        case 4:
-          const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-          if (invalidPriceIndex !== -1) {
-            alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+            case 2:
+              handleServicesUpload();
+              break;
+              case 3:
+                const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
+                if (!isTestimonialsFilled) {
+                  alert("Please fill three testimonials before proceeding.");
+                  return prevSection;
+                }
+          if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.1");
             return prevSection;
           }
-          handleSubscriptionUpload();
+          if (!testimonials[1].name || !testimonials[1].feedback || !testimonials[1].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.2");
+            return prevSection;
+          }
+          if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
+            alert("Please fill up all fields for testimonial 3 before proceeding.3");
+            return prevSection;
+          }
+          handleTestimonialsUpload();
           break;
-        case 5:
-          const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
+          case 4:
+            const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
+            if (invalidPriceIndex !== -1) {
+              alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+              return prevSection;
+            }
+          handleSubscriptionUpload();
+            break;
+            case 5:
+              const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
-          // Check if both title and answer are filled for each FAQ
+              // Check if both title and answer are filled for each FAQ
           const allFAQsFilled = filledFAQs.length === faqs.length;
 
           if (!allFAQsFilled) {
@@ -582,11 +673,12 @@ const Template = () => {
           }
           handleFAQsUpload();
           break;
-        case 6:
-          const incompleteIndex = instructors.findIndex(instructor => {
-            return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-          });
-          // If incompleteIndex is not -1, it means there's at least one incomplete instructor
+          case 6:
+            const incompleteIndex = instructors.findIndex(instructor => {
+              return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
+            });
+
+            // If incompleteIndex is not -1, it means there's at least one incomplete instructor
           if (incompleteIndex !== -1) {
             // Check if all fields for the incomplete instructor are filled
             const incompleteInstructor = instructors[incompleteIndex];
@@ -597,14 +689,15 @@ const Template = () => {
           }
           handleInstructorsUpload();
           break;
-        case 7:
-          handlePolicyUpload();
-          break;
-        case 8:
-          handleContactUpload();
-          break;
-        default:
-          break;
+          case 7:
+            handlePolicyUpload();
+            break;
+            case 8:
+
+              handleContactUpload();
+              break;
+              default:
+                break;
       }
 
       console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
@@ -626,7 +719,7 @@ const Template = () => {
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
+          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
         </div>
         <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
           {currentSection === 0 &&
@@ -644,8 +737,7 @@ const Template = () => {
               setLightestPrimaryColor={setLightestPrimaryColor}
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
+              selectedFile={selectedFile} setSelectedFile={setSelectedFile}
             />}
 
           {currentSection === 1 &&
@@ -667,7 +759,7 @@ const Template = () => {
               services={services}
               setServices={setServices}
               danceTypes={danceTypes}
-              setDanceTypes={setDanceTypes}
+              setDanceTypes= {setDanceTypes}
             />}
 
           {currentSection === 3 &&
@@ -702,8 +794,7 @@ const Template = () => {
             <Policy
               policies={policies}
               setPolicies={setPolicies}
-            />
-          }
+            />}
 
           {currentSection === 8 &&
             <Contact
@@ -721,7 +812,7 @@ const Template = () => {
         </div>
       </div>
     </div>
-  );
+    );
 };
 
 export default Template;
