@@ -27,6 +27,7 @@ import Template from "./pages/Template";
 import Complete from "./pages/Complete";
 import Pay from "./pages/Pay";
 import Context from "./context/Context";
+import Full from "./pages/Full";
 
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
@@ -67,6 +68,8 @@ const RoutesContainer = () => {
       <Route path="/template" element={<Template />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />
+      {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
+      <Route path="/full" element={<Full />} />
     </Routes>
   );
 };
