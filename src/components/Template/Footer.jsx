@@ -42,7 +42,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
       },
     });
     Navigate("/pay");
-    setUserData(userData => ({ ...userData, web: true, isVerified: false }));
+    setUserData(userData => ({ ...userData, web: false, isVerified: false }));
   }
 
   return (

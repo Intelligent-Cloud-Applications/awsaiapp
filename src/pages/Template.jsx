@@ -86,8 +86,6 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId:0,
-      description:0,
     },
     {
       heading: '',
@@ -99,8 +97,6 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId:0,
-      description:0,
     },
     {
       heading: '',
@@ -112,8 +108,6 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      planId:0,
-      description:0,
     },
     ]);
 
@@ -248,7 +242,7 @@ const Template = () => {
             type: data.type
           };
           file = new File([data], "filename.jpg", metadata);
-          templateResponse.Testimonial[1].uploadedFile = file;
+          templateResponse.Testimonial[2].uploadedFile = file;
 
           setTestimonials([
             {name: templateResponse.Testimonial[0].name, feedback: templateResponse.Testimonial[0].description, actualFile: templateResponse.Testimonial[0].uploadedFile},
@@ -256,7 +250,22 @@ const Template = () => {
             {name: templateResponse.Testimonial[2].name, feedback: templateResponse.Testimonial[2].description, actualFile: templateResponse.Testimonial[2].uploadedFile},
           ]);
 
-          setFaqs(templateResponse.FAQ);
+          setFaqs(templateResponse.FAQ.map(obj => {
+            return {
+              question: obj.title,
+              answer: obj.content,
+            };
+          }));
+
+          setContactInfo({
+            address: templateResponse.Query_Address,
+            phoneNumber: templateResponse.Query_PhoneNumber,
+            email: templateResponse.Query_EmailId,
+            upidId: templateResponse.UpiId,
+            instagram: templateResponse.Instagram,
+            facebook: templateResponse.Facebook,
+            youtube: templateResponse.YTLink,
+          })
         }
         if (productResponse.length > 0) {
           console.log("HELLO2");
@@ -648,7 +657,9 @@ const Template = () => {
             return prevSection;
           }
           if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
-            alert("Please fill up all fields for testimonial 3 before proceeding.3");
+            console.log("HELLO: ");
+            console.log(testimonials);
+            alert("Please fill up all fields for testimonial 3 before proceeding.");
             return prevSection;
           }
           handleTestimonialsUpload();
