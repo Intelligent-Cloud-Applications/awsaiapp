@@ -1,7 +1,7 @@
 import React, {useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
-function Home({ TagLine, setTagLine, video, setVideo }) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
   const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
@@ -15,8 +15,8 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
     setTagLineLineColor("#000000"); // Change TagLine line color to black on click
   };
 
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [mediaType, setMediaType] = useState(null);
+//  const [selectedMedia, setSelectedMedia] = useState(null);
+//  const [mediaType, setMediaType] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {

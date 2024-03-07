@@ -56,7 +56,7 @@ const removeInstructor = (indexToRemove) => {
   setInstructors(updatedInstructors);
 };
 const addNewInstructor = () => {
-  if (instructors.length < 5) {
+  if (instructors.length ) {
     setInstructors([
       ...instructors,
       { imgSrc: '', name: '', uploadedFile: null, emailId: '', position: '' },
@@ -200,7 +200,7 @@ const addNewInstructor = () => {
           ))}
         </div>
        
-        {instructors.length >= 3 && (
+        
           <div className="mb-10 flex justify-center ">
             <button
               onClick={addNewInstructor}
@@ -209,7 +209,7 @@ const addNewInstructor = () => {
               Add Instructor
             </button>
           </div>
-        )}
+      
       </div>      
     </div>
   );

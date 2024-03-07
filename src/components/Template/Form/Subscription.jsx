@@ -1,10 +1,6 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState,useEffect } from 'react';
 import Currency from "../../Auth/Currency";
-import Context from '../../../context/Context';
-
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
-  const { subscriptionDetails } = useContext(Context);
-console.log("subercribe",subscriptionDetails)
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
@@ -118,7 +114,21 @@ console.log("subercribe",subscriptionDetails)
     };
     setSubscriptions(updatedSubscriptions);
   };
-  
+  const addSubscription = () => {
+    const newSubscription = {
+      heading: '',
+      amount: '',
+      currency: '',
+      country: 'INDIA',
+      subscriptionType: 'monthly',
+      provides: [''],
+      duration: calculateDuration('monthly'),
+      durationText: 'Monthly',
+      india: true,
+    };
+
+    setSubscriptions([...subscriptions, newSubscription]);
+  };
  
   useEffect(() => {
     localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
@@ -273,6 +283,10 @@ console.log("subercribe",subscriptionDetails)
           </div>
         ))}
       </div>
+      <div className="mb-10 flex justify-center ">
+      <button type="button" onClick={addSubscription} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
+        Add Subscription
+      </button></div>
     </div>
   );
 }

@@ -51,17 +51,17 @@ function FAQs({ faqs, setFaqs }) {
               <button
                 onClick={() => removeFAQ(index)}
                 className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 " 
-                
-              >
+
+                >
                 <span>✕</span>
               </button>
-            )}
+              )}
             <h2 className="font-medium text-xl">FAQ {index + 1}</h2>
             <div className="relative">
               <input
                 type="text"
                 name="question"
-                value={faq.question || faq.title}
+                value={faq.question}
                 onChange={(e) => handleFAQChange(index, e)}
                 placeholder="Question"
                 className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
@@ -70,13 +70,13 @@ function FAQs({ faqs, setFaqs }) {
               />
               <div
                 className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${
-                  activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
-                }`}
-              ></div>
+                activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
+              }`}
+                ></div>
             </div>
             <textarea
               name="answer"
-              value={faq.answer || faq.content}
+              value={faq.answer}
               onChange={(e) => handleFAQChange(index, e)}
               placeholder="Answer"
               className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none "
@@ -86,21 +86,21 @@ function FAQs({ faqs, setFaqs }) {
             />
             <div
               className={`h-[0.5px] ${
-                activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
-              }`}
-            ></div>
+              activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
+            }`}
+              ></div>
           </div>
-        ))}
+          ))}
         {faqs.length < 5 && (
-          <div className="mt-4 flex justify-center"> 
+          <div className="mt-4 flex justify-center">
             <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
               Add FAQ
             </button>
           </div>
-        )}
+          )}
       </div>
     </div>
-  );
+    );
 }
 
 export default FAQs;
