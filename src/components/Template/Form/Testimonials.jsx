@@ -84,6 +84,7 @@ function Testimonials({ testimonials, setTestimonials }) {
 
               <div className="relative flex items-center">
                 <input
+                  ref={testimonial.fileInputRef}
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleImageChange(index, e)}

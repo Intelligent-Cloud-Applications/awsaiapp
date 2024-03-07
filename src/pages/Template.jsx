@@ -1,5 +1,5 @@
 // Template.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 import Preview from '../components/Template/Preview';
@@ -48,6 +48,8 @@ const Template = () => {
   const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
   const [video, setVideo] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [services, setServices] = useState([
     { title: '', description: '' },
@@ -56,9 +58,9 @@ const Template = () => {
     ]);
 
   const [testimonials, setTestimonials] = useState([
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
     ]);
 
   const calculateDuration = (subscriptionType) => {
@@ -166,6 +168,7 @@ const Template = () => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
       try {
+        setLoader(true);
         const templateResponse = await API.get(
           "clients",
           `/user/development-form/get-user/${institutionId}`
@@ -187,27 +190,42 @@ const Template = () => {
 
         if (templateResponse) {
           console.log("HELLO1");
+
+          // COMPANY
+          setCompanyName(templateResponse.companyName);
           setPrimaryColor(templateResponse.PrimaryColor);
           setSecondaryColor(templateResponse.SecondaryColor);
-          setTagLine(templateResponse.TagLine);
-          setCompanyName(templateResponse.companyName);
+          setSelectedFile(templateResponse.logoUrl);
 
-          let response = await fetch(templateResponse.logoUrl);
+          let url = templateResponse.logoUrl
+          let response = await fetch(url);
           let data = await response.blob();
           let metadata = {
             type: data.type
           };
-          let file = new File([data], "filename.jpg", metadata);
+          let file = new File([data], url.split('/').pop(), metadata);
           setLogo(file);
 
-          response = await fetch(templateResponse.videoUrl);
+          // HOME
+          setTagLine(templateResponse.TagLine);
+
+          url = templateResponse.videoUrl;
+          response = await fetch(url);
           data = await response.blob();
           metadata = {
             type: data.type
           };
-          file = new File([data], "filename.jpg", metadata);
+          file = new File([data], url.split('/').pop(), metadata);
           setVideo(file);
+          setSelectedMedia(templateResponse.videoUrl);
 
+          if (file.type.includes("video")) {
+            setMediaType("video");
+          } else if (file.type.includes("image")) {
+            setMediaType("image");
+          }
+
+          // SERVICES
           setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1);
           setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2);
           setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1);
@@ -220,36 +238,59 @@ const Template = () => {
 
           setDanceTypes(templateResponse.ClassTypes);
 
-          response = await fetch(templateResponse.Testimonial[0].img);
+          // TESTIMONIALS
+          url = templateResponse.Testimonial[0].img;
+          response = await fetch(url);
           data = await response.blob();
           metadata = {
             type: data.type
           };
-          file = new File([data], "filename.jpg", metadata);
+          file = new File([data], url.split('/').pop(), metadata);
           templateResponse.Testimonial[0].uploadedFile = file;
 
-          response = await fetch(templateResponse.Testimonial[1].img);
+          url = templateResponse.Testimonial[1].img;
+          response = await fetch(url);
           data = await response.blob();
           metadata = {
             type: data.type
           };
-          file = new File([data], "filename.jpg", metadata);
+          file = new File([data], url.split('/').pop(), metadata);
           templateResponse.Testimonial[1].uploadedFile = file;
 
-          response = await fetch(templateResponse.Testimonial[2].img);
+          url = templateResponse.Testimonial[2].img;
+          response = await fetch(url);
           data = await response.blob();
           metadata = {
             type: data.type
           };
-          file = new File([data], "filename.jpg", metadata);
+          file = new File([data], url.split('/').pop(), metadata);
           templateResponse.Testimonial[2].uploadedFile = file;
 
-          setTestimonials([
-            {name: templateResponse.Testimonial[0].name, feedback: templateResponse.Testimonial[0].description, actualFile: templateResponse.Testimonial[0].uploadedFile},
-            {name: templateResponse.Testimonial[1].name, feedback: templateResponse.Testimonial[1].description, actualFile: templateResponse.Testimonial[1].uploadedFile},
-            {name: templateResponse.Testimonial[2].name, feedback: templateResponse.Testimonial[2].description, actualFile: templateResponse.Testimonial[2].uploadedFile},
-          ]);
+          const test = [...testimonials];
+          test[0].name = templateResponse.Testimonial[0].name;
+          test[0].feedback = templateResponse.Testimonial[0].description;
+          test[0].imgSrc = templateResponse.Testimonial[0].img;
+          test[0].uploadedFile = templateResponse.Testimonial[0].uploadedFile.name;
+          test[0].actualFile = templateResponse.Testimonial[0].uploadedFile;
+          test[0].type = templateResponse.Testimonial[0].uploadedFile.type;
 
+          test[1].name = templateResponse.Testimonial[1].name;
+          test[1].feedback = templateResponse.Testimonial[1].description;
+          test[1].imgSrc = templateResponse.Testimonial[1].img;
+          test[1].uploadedFile = templateResponse.Testimonial[1].uploadedFile.name;
+          test[1].actualFile = templateResponse.Testimonial[1].uploadedFile;
+          test[1].type = templateResponse.Testimonial[1].uploadedFile.type;
+
+          test[2].name = templateResponse.Testimonial[2].name;
+          test[2].feedback = templateResponse.Testimonial[2].description;
+          test[2].imgSrc = templateResponse.Testimonial[2].img;
+          test[2].uploadedFile = templateResponse.Testimonial[2].uploadedFile.name;
+          test[2].actualFile = templateResponse.Testimonial[2].uploadedFile;
+          test[2].type = templateResponse.Testimonial[2].uploadedFile.type;
+
+          setTestimonials(test);
+
+          // FAQ
           setFaqs(templateResponse.FAQ.map(obj => {
             return {
               question: obj.title,
@@ -257,6 +298,7 @@ const Template = () => {
             };
           }));
 
+          // CONTACT
           setContactInfo({
             address: templateResponse.Query_Address,
             phoneNumber: templateResponse.Query_PhoneNumber,
@@ -757,6 +799,10 @@ const Template = () => {
               setTagLine={setTagLine}
               video={video}
               setVideo={setVideo}
+              selectedMedia={selectedMedia}
+              setSelectedMedia={setSelectedMedia}
+              mediaType={mediaType}
+              setMediaType={setMediaType}
             />}
 
           {currentSection === 2 &&
