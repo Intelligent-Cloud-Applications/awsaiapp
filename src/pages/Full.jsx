@@ -294,10 +294,8 @@ const Full = () => {
                 durationText: subscription.durationText,
                 heading: subscription.heading,
                 india: subscription.india,
-                planId: subscription.planId,
                 provides: subscription.provides,
                 subscriptionType: subscription.subscriptionType,
-                description: subscription.description,
               },
             }));
           } else {
@@ -312,12 +310,8 @@ const Full = () => {
                 durationText: subscription.durationText,
                 heading: subscription.heading,
                 india: subscription.india,
-                //dumy
-                planId: 0,
                 provides: subscription.provides,
                 subscriptionType: subscription.subscriptionType,
-                //dumy
-                description: 0,
               },
             }));
           }

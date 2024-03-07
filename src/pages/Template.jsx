@@ -322,10 +322,7 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
-          setSubscriptions(productResponse.map(obj => {
-            obj.institution = undefined;
-            return obj;
-          }))
+          setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {
 //          console.log("HELLO3");
@@ -348,6 +345,7 @@ const Template = () => {
             inst[i].name = instructorResponse[i].name;
             inst[i].emailId = instructorResponse[i].emailId;
             inst[i].position = instructorResponse[i].position;
+            inst[i].instructorId = instructorResponse[i].instructorId;
           }
           setInstructors(inst);
         }
@@ -515,13 +513,24 @@ const Template = () => {
 //        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
         // subscription.provides = subscription.provides.map((provide) => provide.description);
 
-        // Make API call for each subscription
-        await API.put("clients", "/user/development-form/subscriptions", {
-          body: {
-            institution: companyName,
-            ...subscription
-          }
-        });
+        if (subscription.productId) {
+          await API.put("clients", "/user/development-form/update-subscription", {
+            body: subscription,
+          });
+        }
+        else {
+          // Make API call for each subscription
+          const response = await API.put("clients", "/user/development-form/subscriptions", {
+            body: {
+              institution: companyName,
+              ...subscription
+            }
+          });
+          const sub = [...subscription];
+          sub[i].institution = response.institution;
+          sub[i].productId = response.productId;
+          setSubscriptions(sub);
+        }
       }
     } catch (error) {
       console.error("Error uploading subscriptions:", error);
@@ -595,17 +604,33 @@ const Template = () => {
 
       for (let i = 0; i < instructors.length; i++) {
         const instructor = instructors[i];
-        if (instructor.name && instructor.emailId && instructor.position) {
+        if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
           try {
-            const response = await API.put("clients", "/user/development-form/instructor", {
-              body: {
-                institution: companyName,
-                name: instructor.name,
-                emailId: instructor.emailId,
-                image: uploadedImages[i],
-                position: instructor.position,
-              },
-            });
+            if (instructor.instructorId) {
+              await API.put("clients", `/user/development-form/update-instructor`, {
+                body: {
+                  instructorId: instructor.instructorId,
+                  institution: Ctx.userData.institutionName,
+                  name: instructor.name,
+                  emailId: instructor.emailId,
+                  image: instructor.imgSrc,
+                  position: instructor.position,
+                },
+              });
+            }
+            else {
+              const response = await API.put("clients", "/user/development-form/instructor", {
+                body: {
+                  institution: companyName,
+                  name: instructor.name,
+                  emailId: instructor.emailId,
+                  image: uploadedImages[i],
+                  position: instructor.position,
+                },
+              });
+              const inst = [...instructor];
+              inst[i].instructorId = response.instructorId;
+            }
 //            console.log("API Response:", response);
           } catch (error) {
             console.error("Error uploading instructor:", instructor.name, error);
