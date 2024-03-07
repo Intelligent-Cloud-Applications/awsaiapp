@@ -18,10 +18,10 @@ import Context from "../context/Context";
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
-  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
+//  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   const [loader, setLoader] = useState(false);
-  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   const [error, setError] = useState(null);
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
@@ -40,10 +40,10 @@ const Template = () => {
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
-  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
-  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
-  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
-  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
+//  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
+//  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
+//  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
+//  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
@@ -58,9 +58,9 @@ const Template = () => {
     ]);
 
   const [testimonials, setTestimonials] = useState([
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
-    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '', fileInputRef: useRef() },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     ]);
 
   const calculateDuration = (subscriptionType) => {
@@ -145,12 +145,19 @@ const Template = () => {
     { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
     ]);
 
-  const [policies, setPolicies] = useState([
-    { title: 'Privacy Policy', content: '' },
-    { title: 'Terms and Conditions', content: '' },
-    { title: 'Cancellation/Refund Policy', content: '' },
-    { title: 'About Us', content: '' },
-    ]);
+//  const [policies, setPolicies] = useState([
+//    { title: 'Privacy Policy', content: '' },
+//    { title: 'Terms and Conditions', content: '' },
+//    { title: 'Cancellation/Refund Policy', content: '' },
+//    { title: 'About Us', content: '' },
+//    ]);
+
+  const [policies, setPolicies] = useState({
+    'Privacy Policy': '',
+    'About Us': '',
+    'Refund Policy': [{ heading: '', content: '' }],
+    'Terms and Conditions': [{ heading: '', content: '' }]
+  });
 
   const [contactInfo, setContactInfo] = useState({
     address: '',
@@ -163,6 +170,10 @@ const Template = () => {
   });
 
   const Ctx = useContext(Context);
+
+  useEffect(() => {
+    console.log(policies);
+    }, [policies]);
 
   useEffect(() => {
     async function fetchData() {
@@ -184,12 +195,12 @@ const Template = () => {
           `/user/development-form/get-instructor/${institutionId}`
           );
 
-        console.log(templateResponse);
-        console.log(productResponse);
-        console.log(instructorResponse);
+//        console.log(templateResponse);
+//        console.log(productResponse);
+//        console.log(instructorResponse);
 
         if (templateResponse) {
-          console.log("HELLO1");
+//          console.log("HELLO1");
 
           // COMPANY
           setCompanyName(templateResponse.companyName);
@@ -266,27 +277,15 @@ const Template = () => {
           file = new File([data], url.split('/').pop(), metadata);
           templateResponse.Testimonial[2].uploadedFile = file;
 
-          const test = [...testimonials];
-          test[0].name = templateResponse.Testimonial[0].name;
-          test[0].feedback = templateResponse.Testimonial[0].description;
-          test[0].imgSrc = templateResponse.Testimonial[0].img;
-          test[0].uploadedFile = templateResponse.Testimonial[0].uploadedFile.name;
-          test[0].actualFile = templateResponse.Testimonial[0].uploadedFile;
-          test[0].type = templateResponse.Testimonial[0].uploadedFile.type;
-
-          test[1].name = templateResponse.Testimonial[1].name;
-          test[1].feedback = templateResponse.Testimonial[1].description;
-          test[1].imgSrc = templateResponse.Testimonial[1].img;
-          test[1].uploadedFile = templateResponse.Testimonial[1].uploadedFile.name;
-          test[1].actualFile = templateResponse.Testimonial[1].uploadedFile;
-          test[1].type = templateResponse.Testimonial[1].uploadedFile.type;
-
-          test[2].name = templateResponse.Testimonial[2].name;
-          test[2].feedback = templateResponse.Testimonial[2].description;
-          test[2].imgSrc = templateResponse.Testimonial[2].img;
-          test[2].uploadedFile = templateResponse.Testimonial[2].uploadedFile.name;
-          test[2].actualFile = templateResponse.Testimonial[2].uploadedFile;
-          test[2].type = templateResponse.Testimonial[2].uploadedFile.type;
+          const test = [{}, {}, {}];
+          for (let i = 0; i < 3; i++) {
+            test[i].name = templateResponse.Testimonial[i].name;
+            test[i].feedback = templateResponse.Testimonial[i].description;
+            test[i].imgSrc = templateResponse.Testimonial[i].img;
+            test[i].uploadedFile = templateResponse.Testimonial[i].uploadedFile.name;
+            test[i].actualFile = templateResponse.Testimonial[i].uploadedFile;
+            test[i].type = templateResponse.Testimonial[i].uploadedFile.type;
+          }
 
           setTestimonials(test);
 
@@ -297,6 +296,18 @@ const Template = () => {
               answer: obj.content,
             };
           }));
+
+          // POLICY
+          setPolicies({
+            'Privacy Policy': templateResponse.PrivacyPolicy,
+            'About Us': templateResponse.AboutUs,
+            'Refund Policy': templateResponse.Refund,
+            'Terms and Conditions': templateResponse.TermsData.map(obj => {
+              obj.heading = obj.title;
+              obj.title = undefined;
+              return obj;
+            }),
+          })
 
           // CONTACT
           setContactInfo({
@@ -310,10 +321,31 @@ const Template = () => {
           })
         }
         if (productResponse.length > 0) {
-          console.log("HELLO2");
+//          console.log("HELLO2");
         }
         if (instructorResponse.length > 0) {
-          console.log("HELLO3");
+//          console.log("HELLO3");
+
+          const inst = [];
+          for (let i = 0; i < instructorResponse.length; i++) {
+            inst.push({});
+
+            const url = instructorResponse[i].image;
+            const response = await fetch(url);
+            const data = await response.blob();
+            const metadata = {
+              type: data.type
+            }
+            const file = new File([data], url.split('/').pop(), metadata);
+
+            inst[i].imgSrc = instructorResponse[i].image;
+            inst[i].uploadedFile = file.name;
+            inst[i].actualFile = file;
+            inst[i].name = instructorResponse[i].name;
+            inst[i].emailId = instructorResponse[i].emailId;
+            inst[i].position = instructorResponse[i].position;
+          }
+          setInstructors(inst);
         }
 
         setLoader(false);
@@ -338,7 +370,7 @@ const Template = () => {
       let imageUrl = await Storage.get(response.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-      console.log("logo: ", imageUrl);
+//      console.log("logo: ", imageUrl);
       const additionalAttributes = {
         LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
         LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
@@ -377,9 +409,9 @@ const Template = () => {
         },
       });
 
-      console.log("video: ", videoUrl);
+//      console.log("video: ", videoUrl);
     } catch (error) {
-      console.error("Error uploading video: ", error);
+//      console.error("Error uploading video: ", error);
     }
   }
 
@@ -471,12 +503,12 @@ const Template = () => {
   };
 
   const handleSubscriptionUpload = async () => {
-    console.log(subscriptions);
+//    console.log(subscriptions);
     try {
       // Loop through each subscription
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i];
-        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
+//        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
         // subscription.provides = subscription.provides.map((provide) => provide.description);
 
         // Make API call for each subscription
@@ -570,12 +602,12 @@ const Template = () => {
                 position: instructor.position,
               },
             });
-            console.log("API Response:", response);
+//            console.log("API Response:", response);
           } catch (error) {
             console.error("Error uploading instructor:", instructor.name, error);
           }
         } else {
-          console.log("Skipping instructor due to missing data:", instructor.name);
+//          console.log("Skipping instructor due to missing data:", instructor.name);
         }
       }
 
@@ -592,12 +624,13 @@ const Template = () => {
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institutionid: companyName,
-          PrivacyPolicy: policies[0].content,
-          TermsData: [{title:"",
-            content:policies[1].content}],
-          Refund: [{heading:"",
-            content:policies[2].content}],
-          AboutUs: policies[3].content,
+          PrivacyPolicy: policies['Privacy Policy'],
+          TermsData: policies['Terms and Conditions'].map(obj => {
+            obj.title = obj.heading;
+            return obj;
+          }),
+          Refund: policies['Refund Policy'],
+          AboutUs: policies['About Us'],
         },
       });
     } catch (error) {
@@ -607,7 +640,7 @@ const Template = () => {
 
   const handleContactUpload = async () => {
     try {
-      console.log("LOG +++++ " + contactInfo.address);
+//      console.log("LOG +++++ " + contactInfo.address);
 
       await API.put("clients", "/user/development-form/contact", {
         body: {
@@ -636,7 +669,7 @@ const Template = () => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
-      console.log(response)
+//      console.log(response)
       setCompanydata(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -647,15 +680,14 @@ const Template = () => {
 
   useEffect(() => {
     fetchClients();
-    console.log("The daTa are fetching!");
+//    console.log("The daTa are fetching!");
     }, []);
 
 
   const handleNextSection = () => {
-
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
-      console.log(currentSection);
+//      console.log(currentSection);
 
       switch (currentSection) {
         case 0:
@@ -699,8 +731,8 @@ const Template = () => {
             return prevSection;
           }
           if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
-            console.log("HELLO: ");
-            console.log(testimonials);
+//            console.log("HELLO: ");
+//            console.log(testimonials);
             alert("Please fill up all fields for testimonial 3 before proceeding.");
             return prevSection;
           }
@@ -753,20 +785,20 @@ const Template = () => {
                 break;
       }
 
-      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
+//      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
       return nextSection;
     });
   };
 
   const saveData = () => {
     setsavedData({});
-    console.log("Saved Trigger")
+//    console.log("Saved Trigger")
   };
 
   const handlePrevSection = () => {
     setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
   };
-  console.log("Logo in Template:", logo);
+//  console.log("Logo in Template:", logo);
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
