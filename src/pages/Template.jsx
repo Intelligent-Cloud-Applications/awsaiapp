@@ -322,6 +322,10 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
+          setSubscriptions(productResponse.map(obj => {
+            obj.institution = undefined;
+            return obj;
+          }))
         }
         if (instructorResponse.length > 0) {
 //          console.log("HELLO3");
