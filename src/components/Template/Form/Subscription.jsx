@@ -114,7 +114,21 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     };
     setSubscriptions(updatedSubscriptions);
   };
-  
+  const addSubscription = () => {
+    const newSubscription = {
+      heading: '',
+      amount: '',
+      currency: '',
+      country: 'INDIA',
+      subscriptionType: 'monthly',
+      provides: [''],
+      duration: calculateDuration('monthly'),
+      durationText: 'Monthly',
+      india: true,
+    };
+
+    setSubscriptions([...subscriptions, newSubscription]);
+  };
  
   useEffect(() => {
     localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
@@ -269,6 +283,10 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
           </div>
         ))}
       </div>
+      <div className="mb-10 flex justify-center ">
+      <button type="button" onClick={addSubscription} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
+        Add Subscription
+      </button></div>
     </div>
   );
 }

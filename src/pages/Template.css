@@ -18,3 +18,7 @@
         width: 50%;
     }
 }
+.policy-input,
+.policy-textarea {
+  border-bottom: 1px solid black;
+}
