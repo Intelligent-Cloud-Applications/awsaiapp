@@ -381,14 +381,8 @@ const Full = () => {
         API.put("clients", "/user/development-form/policy", {
           body: {
             institutionid: institutionNames,
-            TermsData: [{
-              title: "", 
-              content: templateDetails.TermsData[0].content 
-            }],
-            Refund: [{
-              heading: "", 
-              content: templateDetails.Refund[0].content 
-            }],
+            Refund: templateDetails.Refund,
+            TermsData: templateDetails.TermsData,
             AboutUs:templateDetails.AboutUs,
             PrivacyPolicy:templateDetails.PrivacyPolicy,
           },
@@ -457,21 +451,53 @@ const Full = () => {
       FAQ: updatedFAQ,
     }));
   };
-  const handleRefundChange = (event) => {
+  const handleRefundChange = (event, index, field) => {
     const { value } = event.target;
+    setTemplateDetails((prevState) => {
+      const updatedRefund = [...prevState.Refund];
+      updatedRefund[index][field] = value;
+      return { ...prevState, Refund: updatedRefund };
+    });
+  };
+  
+  const addRefundItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
-      Refund: [{ content: value }],
+      Refund: [...prevState.Refund, { heading: '', content: '' }],
     }));
   };
-
-  const handleTermsDataChange = (event) => {
+  
+  const removeRefundItem = (index) => {
+    setTemplateDetails((prevState) => {
+      const updatedRefund = [...prevState.Refund];
+      updatedRefund.splice(index, 1);
+      return { ...prevState, Refund: updatedRefund };
+    });
+  };
+  const handleTermsDataChange = (event, index, field) => {
     const { value } = event.target;
+    setTemplateDetails((prevState) => {
+      const updatedTermsData = [...prevState.TermsData];
+      updatedTermsData[index][field] = value;
+      return { ...prevState, TermsData: updatedTermsData };
+    });
+  };
+  
+  const addTermsDataItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
-      TermsData: [{ content: value }],
+      TermsData: [...prevState.TermsData, { title: '', content: '' }],
     }));
   };
+  
+  const removeTermsDataItem = (index) => {
+    setTemplateDetails((prevState) => {
+      const updatedTermsData = [...prevState.TermsData];
+      updatedTermsData.splice(index, 1);
+      return { ...prevState, TermsData: updatedTermsData };
+    });
+  };
+  
   const addClassType = () => {
     setTemplateDetails({
       ...templateDetails,
@@ -858,7 +884,7 @@ const Full = () => {
           onClick={() => downloadImage(templateDetails.Testimonial[0].img)}
           className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
         >
-          Download
+          View
         </button>
                     </div>
                     <h1 className="text-[20px] font-bold">Testimonial Description 1:</h1>
@@ -898,7 +924,7 @@ const Full = () => {
           onClick={() => downloadImage(templateDetails.Testimonial[1].img)}
           className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
         >
-          Download
+          View
         </button>
                     </div>
                     <h1 className="text-[20px] font-bold">Testimonial Description 2:</h1>
@@ -938,7 +964,7 @@ const Full = () => {
           onClick={() => downloadImage(templateDetails.Testimonial[2].img)}
           className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
         >
-          Download
+          View
         </button>
                     </div>
                     <h1 className="text-[20px] font-bold">Testimonial Description 3:</h1>
@@ -1029,24 +1055,70 @@ const Full = () => {
 
 
                     
-                    <div className="rectangular-box">
-                      <textarea
-                        value={templateDetails.Refund[0].content}
-                        onChange={handleRefundChange}
-                        className="w-full text-black border-none outline-none bg-transparent"
-                        placeholder="Enter Refund Policy Content"
-                        autoFocus
-                      />
-                    </div>
-                    <div className="rectangular-box">
-                      <textarea
-                        value={templateDetails.TermsData[0].content}
-                        onChange={handleTermsDataChange}
-                        className="w-full text-black border-none outline-none bg-transparent"
-                        placeholder="Enter Terms Data Content"
-                        autoFocus
-                      />
-                    </div>
+                   
+  {templateDetails.Refund.map((item, index) => (
+    <div key={index}>
+        <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold mt-4">Refund Policy{index + 1}</h2>
+                <button
+                  onClick={() => removeRefundItem(index)}
+                  className="rounded-full bg-red-500 text-white px-2"
+                >
+                  X
+                </button>
+              </div>
+       <div className="rectangular-box">
+      <input
+        value={item.heading}
+        onChange={(event) => handleRefundChange(event, index, 'heading')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter Refund Policy Heading"
+      /></div>
+       <div className="rectangular-box">
+      <textarea
+        value={item.content}
+        onChange={(event) => handleRefundChange(event, index, 'content')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter Refund Policy Content"
+      /></div>
+       
+    </div>
+  ))}
+ <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+       <button onClick={addRefundItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Refund Item</button></div>
+
+       <div>
+
+  {templateDetails.TermsData.map((item, index) => (
+    <div key={index}>
+      <div className="flex justify-between items-center">
+      <h2 className="text-lg font-bold mt-4">Terms And Data{index + 1}</h2>
+      <button onClick={() => removeTermsDataItem(index)}className="rounded-full bg-red-500 text-white px-2"
+                >
+                  X
+                </button></div>
+                <div className="rectangular-box">
+      <input
+        value={item.title}
+        onChange={(event) => handleTermsDataChange(event, index, 'title')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter Terms Data Title"
+      /></div>
+        <div className="rectangular-box">
+      <textarea
+        value={item.content}
+        onChange={(event) => handleTermsDataChange(event, index, 'content')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter Terms Data Content"
+        autoFocus={index === 0} 
+      />
+      </div>
+    </div>
+  ))}
+   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  <button onClick={addTermsDataItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Terms Data Item</button></div>
+</div>
+
 
 
 
@@ -1179,7 +1251,7 @@ const Full = () => {
                         onClick={() => downloadImage(templateDetails.logoUrl)}
                         className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
                       >
-                        Download
+                        View
                       </button>
                     </div>
                     <h1 className="text-[20px] font-bold">Video:</h1>
@@ -1193,7 +1265,7 @@ const Full = () => {
                         onClick={() => downloadImage(templateDetails.videoUrl)}
                         className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
                       >
-                        Download
+                        View
                       </button>
                     </div>
                     {instructorDetails.map((instructor, index) => (
@@ -1246,7 +1318,7 @@ const Full = () => {
              onClick={() => downloadImage(instructor.image)}
              className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
            >
-             Download
+             View
            </button>
          </div>
        </div>

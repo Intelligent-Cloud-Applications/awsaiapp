@@ -1,5 +1,5 @@
 // Template.js
-import React, {useState, useEffect, useContext, useRef} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 import Preview from '../components/Template/Preview';
@@ -18,11 +18,13 @@ import Context from "../context/Context";
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
-//  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
+
+ console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   const [loader, setLoader] = useState(false);
-//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
-  const [error, setError] = useState(null);
+ console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+  // const [error, setError] = useState(null);
+  
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
