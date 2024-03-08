@@ -206,6 +206,8 @@ const Template = () => {
 
           // COMPANY
           setCompanyName(templateResponse.companyName);
+          setLightPrimaryColor(templateResponse.LightPrimaryColor);
+          setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
           setPrimaryColor(templateResponse.PrimaryColor);
           setSecondaryColor(templateResponse.SecondaryColor);
           setSelectedFile(templateResponse.logoUrl);
@@ -305,9 +307,10 @@ const Template = () => {
             'About Us': templateResponse.AboutUs,
             'Refund Policy': templateResponse.Refund,
             'Terms and Conditions': templateResponse.TermsData.map(obj => {
-              obj.heading = obj.title;
-              obj.title = undefined;
-              return obj;
+              const obj2 = {...obj}
+              obj2.heading = obj2.title;
+              obj2.title = undefined;
+              return obj2;
             }),
           })
 
@@ -528,9 +531,9 @@ const Template = () => {
               ...subscription
             }
           });
-          const sub = [...subscription];
-          sub[i].institution = response.institution;
-          sub[i].productId = response.productId;
+          const sub = [...subscriptions];
+          sub[i].institution = response.Attributes.institution;
+          sub[i].productId = response.Attributes.productId;
           setSubscriptions(sub);
         }
       }
@@ -615,7 +618,7 @@ const Template = () => {
                   institution: Ctx.userData.institutionName,
                   name: instructor.name,
                   emailId: instructor.emailId,
-                  image: instructor.imgSrc,
+                  image: uploadedImages[i],
                   position: instructor.position,
                 },
               });
@@ -630,8 +633,12 @@ const Template = () => {
                   position: instructor.position,
                 },
               });
-              const inst = [...instructor];
-              inst[i].instructorId = response.instructorId;
+              const inst = [...instructors];
+              console.log(inst);
+              console.log(response);
+              inst[i].instructorId = response.Attributes.instructorId;
+              console.log(inst);
+              setInstructors(inst)
             }
 //            console.log("API Response:", response);
           } catch (error) {
@@ -657,8 +664,10 @@ const Template = () => {
           institutionid: companyName,
           PrivacyPolicy: policies['Privacy Policy'],
           TermsData: policies['Terms and Conditions'].map(obj => {
-            obj.title = obj.heading;
-            return obj;
+            const obj2 = {...obj};
+            obj2.title = obj2.heading;
+            obj2.heading = undefined;
+            return obj2;
           }),
           Refund: policies['Refund Policy'],
           AboutUs: policies['About Us'],
