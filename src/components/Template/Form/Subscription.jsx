@@ -129,6 +129,24 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
 
     setSubscriptions([...subscriptions, newSubscription]);
   };
+
+  const removeSubscription = async (indexToRemove) => {
+    //  const subscription = subscriptions[indexToRemove]
+    //  if (subscription.productId) {
+    //    try {
+    //      await API.del("clients", "/user/development-form/delete-subscription", {
+    //        body: {
+    //          institution: subscription.institution,
+    //          instructorId: subscription.productId,
+    //        }
+    //      });
+    //    } catch (e) {
+    //      console.log(e);
+    //    }
+    //  }
+    const updatedSubscriptions = subscriptions.filter((_, index) => index !== indexToRemove);
+    setSubscriptions(updatedSubscriptions);
+  }
  
   useEffect(() => {
     localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
@@ -148,6 +166,14 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         {subscriptions.map((subscription, index) => (
           <div key={index} className="mt-2">
             <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
+            {index >= 3 && (
+              <button
+                onClick={() => removeSubscription(index)}
+                className="bg-[#ff0000] text-white px-4 py-2 mt-4 rounded-md"
+                >
+                Delete Subscription
+              </button>
+              )}
             <div className="relative">
               <input
                 type="text"
@@ -276,10 +302,12 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 </div>
               ))}
               <div className="mb-10 flex justify-center ">
+
               <button type="button" onClick={() => addService(index)} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
                 Add Service
               </button>
-            </div> </div>
+            </div>
+            </div>
           </div>
         ))}
       </div>
