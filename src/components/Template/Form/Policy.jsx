@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function Policy({policies, setPolicies}) {
 //  const [policies, setPolicies] = useState({
