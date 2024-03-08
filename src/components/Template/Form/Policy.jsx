@@ -7,7 +7,7 @@ function Policy({ policies, setPolicies }) {
   //   { title: 'Cancellation/Refund Policy', content: '' },
   //   { title: 'About Us', content: '' },
   // ]);
-
+// ddsdsd
   const handlePolicyChange = (index, e) => {
     const updatedPolicies = [...policies];
     updatedPolicies[index] = { ...updatedPolicies[index], [e.target.name]: e.target.value };
