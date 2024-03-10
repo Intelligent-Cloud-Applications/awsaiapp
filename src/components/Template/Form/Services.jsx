@@ -92,7 +92,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           {isHeading ? (
             <input
               type="text"
-              value={src_Components_Home_Why__h1}
+              value={src_Components_Home_Why__h1 || ''}
               onChange={handleHeadingInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent"
               placeholder="Enter Heading"
@@ -112,7 +112,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           {issmallHeading ? (
             <input
               type="text"
-              value={src_Components_Home_Header3__h1}
+              value={src_Components_Home_Header3__h1 || ''}
               onChange={handlesmallHeadingInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent"
               placeholder="Enter Sub Heading"
@@ -134,7 +134,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           {issubHeading ? (
             <input
               type="text"
-              value={src_Components_Home_Header3__h2}
+              value={src_Components_Home_Header3__h2 || ''}
               onChange={handlesubHeadingInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent"
               placeholder="Enter Heading"
@@ -148,14 +148,14 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
           // style={{ backgroundColor: smallHeadingLineColor }}
         ></div></div>
-        {services.map((service, index) => (
+        {services.map ((service, index) => (
           <div key={index} className="mt-4">
             <h2 className="font-medium text-xl">Service {index + 1}</h2>
             <div className="relative">
               <input
                 type="text"
                 name="title"
-                value={service.title}
+                value={service.title || ''}
                 onChange={(e) => handleServiceChange(index, e)}
                 placeholder="Service Title"
                 className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
@@ -171,7 +171,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
             <div className="relative">
               <textarea
                 name="description"
-                value={service.description}
+                value={service.description || ''}
                 onChange={(e) => handleServiceChange(index, e)}
                 placeholder="Service Description"
                 className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none" // Added 'resize-none' class
@@ -217,7 +217,7 @@ function Services({ services, setServices,src_Components_Home_Why__h1,setsrc_Com
               )}
                 <input
                   type="text"
-                  value={danceType}
+                  value={danceType || ''}
                   onChange={(e) => handleDanceTypeChange(index, e.target.value)}
                   placeholder="Dance Type"
                   className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
