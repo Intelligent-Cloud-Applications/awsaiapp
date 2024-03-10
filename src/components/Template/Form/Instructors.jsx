@@ -3,7 +3,7 @@ import Context from '../../../context/Context';
 import {API} from "aws-amplify";
 
 function Instructors({ instructors, setInstructors }) {
-  const { instructordetails } = useContext(Context)
+  const { instructordetails, util } = useContext(Context)
   console.log("instructordetails",instructordetails)
   // const [instructors, setInstructors] = useState([
   //   { imgSrc: '', name: '', uploadedFile: null },
@@ -55,6 +55,7 @@ function Instructors({ instructors, setInstructors }) {
 const removeInstructor = async (indexToRemove) => {
   const instructor = instructors[indexToRemove]
   if (instructor.instructorId) {
+    util.setLoader(true);
     try {
       await API.del("clients", `/user/development-form/delete-instructor/${instructor.institution}`, {
         body: {
@@ -63,6 +64,8 @@ const removeInstructor = async (indexToRemove) => {
       });
     } catch (e) {
       console.log(e);
+    } finally {
+      util.setLoader(false);
     }
   }
   const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);

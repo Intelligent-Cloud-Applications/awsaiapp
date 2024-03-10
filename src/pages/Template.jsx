@@ -353,6 +353,7 @@ const Template = () => {
             inst[i].emailId = instructorResponse[i].emailId;
             inst[i].position = instructorResponse[i].position;
             inst[i].instructorId = instructorResponse[i].instructorId;
+            inst[i].institution = instructorResponse[i].institution;
           }
           setInstructors(inst);
         }
@@ -639,6 +640,7 @@ const Template = () => {
               console.log(inst);
               console.log(response);
               inst[i].instructorId = response.Attributes.instructorId;
+              inst[i].institution = response.Attributes.institution;
               console.log(inst);
               setInstructors(inst)
             }
