@@ -404,6 +404,7 @@ const Full = () => {
       ]);
 
       alert("Changes saved successfully!");
+      navigate('/');
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -434,6 +435,7 @@ const Full = () => {
     });
   };
   const removeInstructor = async (instructorId) => {
+    if (instructorId) {
     const confirmed = window.confirm("Are you sure you want to delete this instructor?");
     if (!confirmed) return;
   
@@ -445,18 +447,18 @@ const Full = () => {
         }
       });
       
-      // Update the state to remove the instructor from the list
-      setInstructorDetails(prevState => {
-        return prevState.filter(instructor => instructor.instructorId !== instructorId);
-      });
+     
       
       alert("Instructor removed successfully!");
     } catch (error) {
       console.error("Error removing instructor:", error);
       alert("Failed to remove instructor. Please try again.");
-    }
+    }} setInstructorDetails(prevState => {
+      return prevState.filter(instructor => instructor.instructorId !== instructorId);
+    });
   };
   const removeSubscription = async (productId) => {
+    if (productId) {
     const confirm = window.confirm("Are you sure you want to delete this Subscription?");
     if (!confirm) return;
     try {
@@ -468,15 +470,16 @@ const Full = () => {
       });
       
      
-      setSubscriptionDetails(prevDetails => {
-        return prevDetails.filter(subscription => subscription.productId !== productId);
-      });
+     
       
       alert("Subscription deleted successfully!");
     } catch (error) {
       console.error("Error removing subscription:", error);
       alert("Failed to delete subscription. Please try again.");
-    }
+    }}
+    setSubscriptionDetails(prevDetails => {
+      return prevDetails.filter(subscription => subscription.productId !== productId);
+    });
   };
   
   
