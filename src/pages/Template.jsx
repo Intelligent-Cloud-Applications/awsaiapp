@@ -205,7 +205,7 @@ const Template = () => {
 //          console.log("HELLO1");
 
           // COMPANY
-          setCompanyName(templateResponse.companyName);
+          setCompanyName(institutionId);
           setLightPrimaryColor(templateResponse.LightPrimaryColor);
           setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
           setPrimaryColor(templateResponse.PrimaryColor);

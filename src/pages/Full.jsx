@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Navbar from "../components/Home/Navbar";
@@ -6,6 +6,7 @@ import { Storage } from "aws-amplify";
 import Currency from "../components/Auth/Currency";
 import "./Full.css";
 import { useNavigate } from 'react-router-dom';
+import Context from "../context/Context";
 const Full = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,6 +17,8 @@ const Full = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [instructorDetails, setInstructorDetails] = useState(null);
   const [loader, setLoader] = useState(true);
+
+  const util = useContext(Context).util;
   const goBack = () => {
     navigate('/');
   };
@@ -23,28 +26,34 @@ const Full = () => {
     const fetchData = async () => {
       if (institutionNames) {
         try {
+          util.setLoader(true);
+
           const templateResponse = await API.get(
             "clients",
             `/user/development-form/get-user/${institutionNames}`
           );
-          setTemplateDetails(templateResponse);
+          await setTemplateDetails(templateResponse);
 
           const productResponse = await API.get(
             "clients",
             `/user/development-form/get-product/${institutionNames}`
           );
-          setSubscriptionDetails(productResponse);
+          await setSubscriptionDetails(productResponse);
 
           const instructorResponse = await API.get(
             "clients",
             `/user/development-form/get-instructor/${institutionNames}`
           );
-          setInstructorDetails(instructorResponse);
-
-          setLoader(false);
+          await setInstructorDetails(instructorResponse);
+//          setLoader(false);
+//          util.setLoader(false);
+//          setLoader(false);
         } catch (error) {
           console.error("Error fetching details:", error);
+
+        } finally {
           setLoader(false);
+          util.setLoader(false);
         }
       }
     };
@@ -241,6 +250,7 @@ const Full = () => {
   
   
   const saveChanges = async () => {
+    util.setLoader(true);
     try {
       if (instructorDetails && instructorDetails.length > 0) {
         
@@ -404,11 +414,13 @@ const Full = () => {
       ]);
 
       alert("Changes saved successfully!");
+      util.setLoader(false);
       navigate('/');
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
     }
+    util.setLoader(false);
   };
 
   const handleChange = (event, key) => {
@@ -440,6 +452,7 @@ const Full = () => {
     if (!confirmed) return;
   
     try {
+      util.setLoader(true);
       // Make the API call to delete the instructor
       await API.del("clients", `/user/development-form/delete-instructor/${institutionNames}`, {
         body: {
@@ -453,7 +466,10 @@ const Full = () => {
     } catch (error) {
       console.error("Error removing instructor:", error);
       alert("Failed to remove instructor. Please try again.");
-    }} setInstructorDetails(prevState => {
+    } finally {
+      util.setLoader(false);
+    }
+    } setInstructorDetails(prevState => {
       return prevState.filter(instructor => instructor.instructorId !== instructorId);
     });
   };
@@ -462,6 +478,7 @@ const Full = () => {
     const confirm = window.confirm("Are you sure you want to delete this Subscription?");
     if (!confirm) return;
     try {
+      util.setLoader(true);
       // Make the API call to delete the subscription
       await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
         body: {
@@ -476,6 +493,8 @@ const Full = () => {
     } catch (error) {
       console.error("Error removing subscription:", error);
       alert("Failed to delete subscription. Please try again.");
+    } finally {
+      util.setLoader(false);
     }}
     setSubscriptionDetails(prevDetails => {
       return prevDetails.filter(subscription => subscription.productId !== productId);
