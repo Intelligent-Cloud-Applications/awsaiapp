@@ -171,7 +171,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     const apiName = "clients";
-    const path = '/user/update-Leads';
+    const path = '/user/update-Leads/awsaiapp';
     const myInit = {
       body: {
         institution: institution,

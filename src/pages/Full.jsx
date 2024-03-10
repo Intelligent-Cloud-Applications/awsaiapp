@@ -433,7 +433,53 @@ const Full = () => {
       return { ...prevState, Testimonial: updatedTestimonials };
     });
   };
-
+  const removeInstructor = async (instructorId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this instructor?");
+    if (!confirmed) return;
+  
+    try {
+      // Make the API call to delete the instructor
+      await API.del("clients", `/user/development-form/delete-instructor/${institutionNames}`, {
+        body: {
+          instructorId: instructorId
+        }
+      });
+      
+      // Update the state to remove the instructor from the list
+      setInstructorDetails(prevState => {
+        return prevState.filter(instructor => instructor.instructorId !== instructorId);
+      });
+      
+      alert("Instructor removed successfully!");
+    } catch (error) {
+      console.error("Error removing instructor:", error);
+      alert("Failed to remove instructor. Please try again.");
+    }
+  };
+  const removeSubscription = async (productId) => {
+    const confirm = window.confirm("Are you sure you want to delete this Subscription?");
+    if (!confirm) return;
+    try {
+      // Make the API call to delete the subscription
+      await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
+        body: {
+          productId: productId
+        }
+      });
+      
+     
+      setSubscriptionDetails(prevDetails => {
+        return prevDetails.filter(subscription => subscription.productId !== productId);
+      });
+      
+      alert("Subscription deleted successfully!");
+    } catch (error) {
+      console.error("Error removing subscription:", error);
+      alert("Failed to delete subscription. Please try again.");
+    }
+  };
+  
+  
   const downloadImage = (imageUrl) => {
     if (imageUrl) {
       
@@ -1273,12 +1319,12 @@ const Full = () => {
        
        <div className="flex justify-between items-center">
        <h2 className="text-lg font-bold mt-4">Instructor {index + 1}</h2>
-                {/* <button
-                  onClick={() =>removeInstructor(index)}
-                  className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
-                >
-                  X
-                </button>  */}
+       <button
+        onClick={() => removeInstructor(instructor.instructorId)}
+        className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
+      >
+        X
+      </button>
                 </div>
        <div>
          <div className="rectangular-box">
@@ -1331,7 +1377,16 @@ const Full = () => {
       </div>
               {subscriptionDetails.map((subscription, index) => (
   <div key={index}>
+      <div className="flex justify-between items-center">
     <h2 className="text-lg font-bold mt-4">Subscription {index + 1}</h2>
+    <button
+        onClick={() => removeSubscription(subscription.productId)}
+        className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
+      >
+        X
+      </button>
+   
+                </div>
     <h2 className="text-lg font-bold mt-4">Heading</h2>
     <div className="rectangular-box">
     

@@ -197,9 +197,9 @@ const Template = () => {
           `/user/development-form/get-instructor/${institutionId}`
           );
 
-//        console.log(templateResponse);
-//        console.log(productResponse);
-//        console.log(instructorResponse);
+       console.log(templateResponse);
+       console.log(productResponse);
+       console.log(instructorResponse);
 
         if (templateResponse) {
 //          console.log("HELLO1");
