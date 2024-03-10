@@ -10,15 +10,17 @@ import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
+import { useLocation } from "react-router-dom";
 
 const LeadsList = ({ institution: tempInstitution }) => {
-  const { util, user } = useContext(Context);
-  const searchParams = new URLSearchParams(window.location.search);
+  const { util, user, userData } = useContext(Context);
+  const location = useLocation()
+  // const searchParams = new URLSearchParams(window.location.search);
   let institution;
-  if (user.profile.institution === "awsaiapp") {
-    institution = searchParams.get("institution");
+  if (user.profile.institutionName === "awsaiapp") {
+    institution = userData.institutionName;
   } else {
-    institution = tempInstitution || searchParams.get("institution");
+    institution = userData.institutionName || tempInstitution;
   }
   const itemsPerPage = 9;
   const [leadsData, setLeadsData] = useState([]);
@@ -66,6 +68,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
     );
   };
 
+  console.log(userData)
+
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
@@ -112,6 +116,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         device: device,
         date: new Date(date).getTime(),
         other: {},
+        type: "lead",
       },
     };
     // Include additionalInfoTitle and additionalInfo if available
@@ -166,7 +171,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     const apiName = "clients";
-    const path = `/user/update-Leads`;
+    const path = `/user/update-Leads/awsaiapp`;
     const myInit = {
       body: {
         institution: institution,
@@ -181,7 +186,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
         category: category, // Include the category field
         other: {
           ...editUser.other,
-        }
+        },
+        type: "lead",
       },
     };
 
@@ -304,6 +310,18 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
+  useEffect(() => {
+    if (location.pathname === "/dashboard") {
+      util.setLoader(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      util.setLoader(false);
+    }
+    // eslint-disable-next-line
+  }, [location.pathname]);
+
   console.log("additionalInfoTitle:", additionalInfoTitle);
   console.log("additionalInfo:", additionalInfo);
   return (
@@ -344,7 +362,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
         </section>
         {isUserAdd && (
           <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
-              <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]" >
+            <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]" >
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
                   required
@@ -609,7 +627,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   />
                 </div>
                 <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="max600:flex gap-2">
+                  <div className="flex gap-2">
                     <div className="flex">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

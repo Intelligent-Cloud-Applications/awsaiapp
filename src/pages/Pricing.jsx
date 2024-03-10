@@ -37,10 +37,7 @@ const Pricing = () => {
     console.log("started");
     try {
       const options = {
-        key:
-          process.env.STAGE === "PROD"
-            ? process.env.RAZORPAY_KEY_ID
-            : process.env.RAZORPAY_TEST_KEY_ID,
+        key: "rzp_test_1nTmB013tmcWZS",
         subscription_id: response.paymentId,
         name: "AWSAIAPP",
         description: response.subscriptionType,

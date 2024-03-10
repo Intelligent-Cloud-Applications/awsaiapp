@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import upload from "../../../utils/png/upload.png";
 
 function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor,selectedFile,setSelectedFile }) {
@@ -11,20 +11,15 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   // const [logoUrl, setLogoUrl] = useState(null);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
-  
-
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
   };
 
 
-
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
     setCompanyLineColor("#000000"); // Change company line color to black on click
-  
-     
   };
 
   // const toggleDomainInputVisibility = () => {
@@ -51,7 +46,6 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
     setLightestPrimaryColor(e.target.value);
   };
   //file
-  // const [selectedFile, setSelectedFile] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
@@ -59,7 +53,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
     if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
       setLogo(file);
       setSelectedFile(URL.createObjectURL(file));
-      }
+    }
   };
 
   const handleUploadImageClick = () => {
@@ -86,7 +80,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         ))} */}
       </h5>
 
-      <div className="relative mt-6">
+      <div className="relative mt-6 hidden">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={toggleCompanyInputVisibility}
@@ -110,7 +104,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         ></div>
       </div>
       <div className="relative mt-6">
-        
+
         {/* <div
           className="absolute left-0 right-0 bottom-0 h-[1.5px]"
           style={{ backgroundColor: domainLineColor }}
@@ -149,7 +143,6 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         </div>
       </div>
       <div className="border border-black w-[15rem] h-[12rem] mt-6 relative">
-        
         {!selectedFile ? (
           <label
             htmlFor="fileInput"

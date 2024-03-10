@@ -3,7 +3,7 @@ import Context from "../../../context/Context"
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
+import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg';
 // import Pagination from "@mui/material/Pagination";
 // import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
@@ -11,12 +11,16 @@ import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
 
 import { API } from "aws-amplify";
 
-const PendingClients = () => {
+import { Link } from "react-router-dom";
+
+const PendingClients = (props) => {
   // const itemsPerPage = 6;
  
   // const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow] = useState([]);
+
+ 
 
   const [setData] = useState([
     {
@@ -24,7 +28,7 @@ const PendingClients = () => {
     },
   ]);
 
-  const { pending } = useContext(Context);
+  const { userData,setUserData,pending } = useContext(Context);
   const UtilCtx = useContext(Context).util;
   const clientsData = Object.entries(pending.data);
   async function updateDelivery(paymentId, isDelivered, cognitoId) {
@@ -42,6 +46,7 @@ const PendingClients = () => {
       throw error; // Throw the error for further handling
     }
   }
+
   const handleStatusChanged = async (newStatus, index) => {
     UtilCtx.setLoader(true);
     if (index >= 0 && index < clientsData.length) {
@@ -49,13 +54,26 @@ const PendingClients = () => {
         const updatedClients = [...clientsData];
         const selectedClient = updatedClients[index][1];
         selectedClient.isDelivered = newStatus;
-
+  
         await updateDelivery(
           selectedClient.productId,
           newStatus,
           selectedClient.cognitoId
         );
-
+  
+        // Update userData context
+        const updatedUserData = { ...userData }; // Make a copy of userData
+        // Find the user in userData by cognitoId
+        const userToUpdateIndex = updatedUserData.findIndex(
+          (user) => user.cognitoId === selectedClient.cognitoId
+        );
+        if (userToUpdateIndex !== -1) {
+          // Update isDelivered property of the user
+          updatedUserData[userToUpdateIndex].isDelivered = newStatus;
+          // Update userData context with modified user information
+          setUserData(updatedUserData); // Assuming setUserData is a function to update the userData context
+        }
+  
         UtilCtx.setLoader(false);
         setData(updatedClients); // Update state after successful API call
       } catch (error) {
@@ -65,6 +83,7 @@ const PendingClients = () => {
       }
     }
   };
+  
 
 
   // const Navigate = useNavigate();
@@ -120,7 +139,7 @@ const PendingClients = () => {
   const selectedRowCount = selectedRow.length;
 
  
- 
+
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
@@ -188,6 +207,7 @@ const PendingClients = () => {
               <div className="font-[700] mr-9">Attendance</div> */}
             {/* <div className="font-[700] mr-[-3rem] max1300:hidden">Leads</div> */}
             {/* </div> */}
+        
             <div></div>
           </div>
         </div>
@@ -216,7 +236,7 @@ const PendingClients = () => {
                   <div className="grid ml-[8rem] grid-cols-12 items-center w-[55vw] max1250:ml-12">
                     <div className="col-span-3 flex flex-col max600:w-[10rem] max600:ml-[-3rem] max450:ml-[-4rem] max375:ml-[-3.5rem] ">
                       <div className="font-[900]  email-hover cursor-pointer">
-                        {pending.userName}
+                        {pending.institutionName}
                       </div>
                       <div className="overflow-auto text-[0.8rem] font-[600]">
                         {pending.emailId}
@@ -225,7 +245,9 @@ const PendingClients = () => {
                     {/* <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">
                       {pending.country}
                     </div> */}
+                    
                     <div className="col-span-2 ml-[-4rem] relative max1008:hidden pl-[7rem]">
+                      
                       <div
                         className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[7rem] pl-2 K2D ${
                           pending.isVerified === true
@@ -245,15 +267,19 @@ const PendingClients = () => {
                             ? "Complete"
                             : "Pending"}
                         </div>
+                        
                       </div>
                       
                     </div>
+                 
                     {/* <div className="col-span-3 ml-[1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
                       {pending.country}
                     </div> */}
+                    
                     <div className="ml-[9rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">
                         {pending.paymentId}
                       </div>
+                      
                     <div className="flex flex-row justify-between w-[17vw]">
                       
                       <div className="w-[10rem] ml-[17rem] text-center font-semibold text-sm ">
@@ -291,9 +317,34 @@ const PendingClients = () => {
                         {pending.recentMonthLeads}
                       </div> */}
                     </div>
+                    
                   </div>
                 </div>
+                <Link
+  to={{
+    pathname: "/full",
+    search: `?institutionName=${pending.institutionName}`,
+  }}
+  // to={{
+  //   pathname: "/full",
+  //   search: `?institutionName=happyprancer`,
+  // }}
+  className="ml-8 focus:outline-none"
+>
+  <img
+    className="w-6 h-6"
+    src={personIcon}
+    alt="Track"
+  />
+</Link>
+
+
+
+
+
+              
               </div>
+              
             </div>
           ))}
         </div>
@@ -323,6 +374,7 @@ const PendingClients = () => {
               onChange={handlePageChange}
               className="custom-pagination"
             /> */}
+           
           </div>
         </div>
       </div>

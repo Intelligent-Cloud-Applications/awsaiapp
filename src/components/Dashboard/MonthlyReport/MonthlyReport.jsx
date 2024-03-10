@@ -30,10 +30,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const Navigate = useNavigate();
   const location = useLocation();
   const detailsRef = useRef(null);
-  const { clients } = useContext(Context);
+  const { util, clients, userData, setUserData } = useContext(Context);
   const item = clients.data;
   const searchParams = new URLSearchParams(window.location.search);
-  const institution = searchParams.get("institution") || tempInstitution;
+  const institution = userData.institutionName || tempInstitution;
+  console.log("inst", institution)
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
   const institutionData = Array.isArray(clients.data) ? clients.data.find(client => client.institution === institution) : null;
   const memberCountByMonth = institutionData ? institutionData.memberCountByMonth : null;
@@ -179,14 +180,38 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     }
   };
 
+  useEffect(() => {
+    if (location.pathname === "/dashboard") {
+      util.setLoader(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+    } else {
+      util.setLoader(false);
+    }
+    // eslint-disable-next-line
+  }, [location.pathname]);
+
+  const handleNavigationAndUserDataUpdate = () => {
+    // Navigate to "/dashboard"
+    Navigate("/dashboard");
+
+    // Update userData with the new institution name
+    const updatedUserData = { ...userData, institutionName: "awsaiapp" };
+    setUserData(updatedUserData);
+  };
+
   // function to go back to dashboard
   const renderButton = () => {
-    if (IsDashboard) {
+    // const updatedUserData = { ...userData, institutionName: "awsaiapp" };
+    // setUserData(updatedUserData);
+    if (userData.institutionName !== 'awsaiapp') {
       return null;
     } else {
       return (
         <button
-          onClick={() => Navigate("/dashboard")}
+          onClick={handleNavigationAndUserDataUpdate}
           className=" relative z-10 ml-[-1rem] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",

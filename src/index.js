@@ -15,19 +15,19 @@ const process = {
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: "us-east-2",
+    region: "us-east-1",
     userPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2_9joxeJ5EP"
-        : "us-east-2_uwdNo4K2o",
+        : "us-east-1_a3Fk5S3hh",
     identityPoolId:
       process.env.STAGE === "PROD"
         ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"
-        : "us-east-2:6a989bd3-6905-4c5d-b2ea-6101ccfbedd3",
+        : "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6",
     userPoolWebClientId:
       process.env.STAGE === "PROD"
         ? "5ej5844tf42rf77slua0a8q9o3"
-        : "21hf8if0vuceksuds2o42ahsa3",
+        :"jevucp6v2ehehqerq0rlgn4d8",
     oauth: {
       responseType: "token",
     },

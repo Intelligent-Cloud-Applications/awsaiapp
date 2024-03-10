@@ -1,5 +1,7 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
+import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
+import Context from "../../../context/Context";
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
@@ -17,7 +19,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setProvides(savedProvides);
   }, [subscriptions.length]);
   
-  
+  const util = useContext(Context).util;
   
 
   const handleSubscriptionChange = (subscriptionIndex, e) => {
@@ -114,7 +116,41 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     };
     setSubscriptions(updatedSubscriptions);
   };
-  
+  const addSubscription = () => {
+    const newSubscription = {
+      heading: '',
+      amount: '',
+      currency: '',
+      country: 'INDIA',
+      subscriptionType: 'monthly',
+      provides: [''],
+      duration: calculateDuration('monthly'),
+      durationText: 'Monthly',
+      india: true,
+    };
+
+    setSubscriptions([...subscriptions, newSubscription]);
+  };
+
+  const removeSubscription = async (indexToRemove) => {
+      const subscription = subscriptions[indexToRemove]
+      if (subscription.productId) {
+        try {
+          util.setLoader(true);
+          await API.del("clients", `/user/development-form/delete-subscription/${subscription.institution}`, {
+            body: {
+              productId: subscription.productId,
+            }
+          });
+        } catch (e) {
+          console.log(e);
+        } finally {
+          util.setLoader(false);
+        }
+      }
+    const updatedSubscriptions = subscriptions.filter((_, index) => index !== indexToRemove);
+    setSubscriptions(updatedSubscriptions);
+  }
  
   useEffect(() => {
     localStorage.setItem('subscriptionTypes', JSON.stringify(subscriptionTypes));
@@ -134,6 +170,14 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         {subscriptions.map((subscription, index) => (
           <div key={index} className="mt-2">
             <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
+            {index >= 3 && (
+              <button
+                onClick={() => removeSubscription(index)}
+                className="bg-[#ff0000] text-white px-4 py-2 mt-4 rounded-md"
+                >
+                Delete Subscription
+              </button>
+              )}
             <div className="relative">
               <input
                 type="text"
@@ -262,13 +306,19 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 </div>
               ))}
               <div className="mb-10 flex justify-center ">
+
               <button type="button" onClick={() => addService(index)} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
                 Add Service
               </button>
-            </div> </div>
+            </div>
+            </div>
           </div>
         ))}
       </div>
+      <div className="mb-10 flex justify-center ">
+      <button type="button" onClick={addSubscription} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
+        Add Subscription
+      </button></div>
     </div>
   );
 }

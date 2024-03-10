@@ -15,15 +15,15 @@ const DashBoard = () => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
   console.log(Ctx)
-  useEffect(() => {
-    const selectedPage = localStorage.getItem("selectedPage");
-    if (selectedPage !== null) {
-      setClick(parseInt(selectedPage));
-    } else {
-      // If there's no selected page, set the default to 0 (Panel)
-      setClick(0);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const selectedPage = localStorage.getItem("selectedPage");
+  //   if (selectedPage !== null) {
+  //     setClick(parseInt(selectedPage));
+  //   } else {
+  //     // If there's no selected page, set the default to 0 (Panel)
+  //     setClick(0);
+  //   }
+  // }, []);
   
   useEffect(() => {
     localStorage.setItem("selectedPage", click.toString());
@@ -31,7 +31,7 @@ const DashBoard = () => {
 
   const displayAfterClick = () => {
     if (
-      Ctx.userData.institution === "awsaiapp"
+      Ctx.userData.institutionName === "awsaiapp"
     ) {
       switch (click) {
         case 0:
@@ -49,16 +49,16 @@ const DashBoard = () => {
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }
-    } else if (Ctx.userData.institution !== "awsaiapp" && Ctx.userData.userType === "admin") {
+    } else if (Ctx.userData.institutionName !== "awsaiapp" && Ctx.userData.userType === "admin") {
       switch (click) {
         case 0:
-          return <div className="mt-5"><MonthlyReport institution={localStorage.getItem('institution')} /></div>
+          return <div className="mt-5"><MonthlyReport institution={localStorage.getItem('institutionName')} /></div>
 
         case 1:
-          return <div className="mr-[5rem] max850:mr-7"><MemberList institution={localStorage.getItem('institution')} /></div>
+          return <div className="mr-[5rem] max850:mr-7"><MemberList institution={localStorage.getItem('institutionName')} /></div>
         // institution = "happyprancer"
         case 2:
-          return <div className="mt-[-10rem] max1300:mt-[0rem] max1300:pb-10"><LeadsList institution={localStorage.getItem('institution')} /></div>
+          return <div className="mt-[-10rem] max1300:mt-[0rem] max1300:pb-10"><LeadsList institution={localStorage.getItem('institutionName')} /></div>
         default:
           return <div>Please try again later</div>;
       }

@@ -14,7 +14,7 @@ const NavBar1 = ({ logo, setLogo }) => {
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
   };
-  console.log("Logo URL in navbar:", logo);
+//  console.log("Logo URL in navbar:", logo);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);

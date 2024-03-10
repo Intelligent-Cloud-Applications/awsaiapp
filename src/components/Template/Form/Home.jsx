@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
-function Home({ TagLine, setTagLine, video, setVideo }) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
   const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
@@ -15,8 +15,8 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
     setTagLineLineColor("#000000"); // Change TagLine line color to black on click
   };
 
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [mediaType, setMediaType] = useState(null);
+//  const [selectedMedia, setSelectedMedia] = useState(null);
+//  const [mediaType, setMediaType] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
@@ -32,9 +32,9 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
     }
   };
 
-  const handleMediaClick = () => {
-    document.getElementById("fileInput").click();
-  };
+//  const handleMediaClick = () => {
+//    document.getElementById("fileInput").click();
+//  };
 
   const handleMediaMouseEnter = () => {
     if (selectedMedia) {
@@ -47,7 +47,7 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
       setFileOptionVisible(false);
     }
   };
-  
+
   return (
     <div className="px-8">
       <h1 className="font-medium text-7xl">HOME SECTION</h1>
@@ -99,7 +99,7 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
                   src={vupload}
                   alt="Upload"
                   className="w-[5rem] cursor-pointer"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
                 <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
               </div>
@@ -111,14 +111,14 @@ function Home({ TagLine, setTagLine, video, setVideo }) {
                   controls
                   src={selectedMedia}
                   className="w-full h-full object-cover"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
               ) : (
                 <img
                   src={selectedMedia}
                   alt="Uploaded media"
                   className="w-full h-full object-cover"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                   onError={(e) => {
                     e.target.src = vupload; // Display default image if image fails to load
                   }}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -23,10 +23,19 @@ import SignUp from "./pages/SignUp";
 import SubscriptionPopup from "./pages/Subscribe_POPUP";
 import SubscriptionPopup1 from "./pages/Subscribe_POPUP1";
 import SubscriptionPopup2 from "./pages/Subscribe_POPUP2";
-import Template  from "./pages/Template";
+import Template from "./pages/Template";
 import Complete from "./pages/Complete";
 import Pay from "./pages/Pay";
+import Context from "./context/Context";
+import Full from "./pages/Full";
+
 const RoutesContainer = () => {
+  const Ctx = useContext(Context);
+  const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
+  console.log("routes", Ctx.userData.institutionName)
+
+  const redirectToDashboard = !web || !isVerified || !isDelivered;
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -35,8 +44,12 @@ const RoutesContainer = () => {
       <Route path="/subpopup" element={<SubscriptionPopup />} />
       <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
       <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
-      <Route path="/logout" element={<Logout/>} />
-      <Route path="/dashboard" element={<DashBoard />} />
+      <Route path="/logout" element={<Logout />} />
+      { institutionName !== 'awsaiapp' && redirectToDashboard ? (
+        <Route path="/dashboard" element={<DashBoard />} />
+      ) : (
+        <Route path="/Dashboard" element={<DashBoard />} />
+      )}
       <Route path="/memberlist" element={<MemberList institution={null} />} />
       <Route path="/MonthlyReport" element={<MonthlyReport institution={null} />} />
       <Route path="/Pricing" element={<Pricing />} />
@@ -55,6 +68,8 @@ const RoutesContainer = () => {
       <Route path="/template" element={<Template />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />
+      {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
+      <Route path="/full" element={<Full />} />
     </Routes>
   );
 };

@@ -84,6 +84,7 @@ function Testimonials({ testimonials, setTestimonials }) {
 
               <div className="relative flex items-center">
                 <input
+                  ref={testimonial.fileInputRef}
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleImageChange(index, e)}
@@ -109,10 +110,10 @@ function Testimonials({ testimonials, setTestimonials }) {
                   <button
                     onClick={() => removeTestimonial(index)}
                     className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
-                  >
+                    >
                     <span>✕</span>
                   </button>
-                )}
+                  )}
               </div>
               <div className="relative">
                 {/* Name input */}
@@ -129,8 +130,8 @@ function Testimonials({ testimonials, setTestimonials }) {
                 {/* Name line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                    }`}
-                ></div>
+                }`}
+                  ></div>
               </div>
               <div className="relative">
                 {/* Feedback input */}
@@ -144,17 +145,17 @@ function Testimonials({ testimonials, setTestimonials }) {
                   onBlur={() => toggleActiveTestimonial(null)}
                   rows={1}
                   style={{
-                    height: activeTestimonialIndex === index ? '2rem' : 'auto',
+                  height: activeTestimonialIndex === index ? '2rem' : 'auto',
                   }}
                 />
                 {/* Feedback line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                    }`}
-                ></div>
+                }`}
+                  ></div>
               </div>
             </div>
-          ))}
+            ))}
         </div>
         {/* Add button after the third testimonial */}
         {testimonials.length < 5 && (
@@ -163,10 +164,10 @@ function Testimonials({ testimonials, setTestimonials }) {
               Add Testimonial
             </button> */}
           </div>
-        )}
+          )}
       </div>
     </div>
-  );
+    );
 }
 
 export default Testimonials;

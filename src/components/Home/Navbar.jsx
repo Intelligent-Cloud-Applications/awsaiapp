@@ -28,7 +28,6 @@ const Navbar = () => {
       text-gray-800"
         >
           <img
-            onClick={() => Navigate("/")}
             className="h-[3.5rem]"
             src={logo}
             alt=""
@@ -75,39 +74,61 @@ const Navbar = () => {
             </li>
           ))}
           <li>
-
-          {UserCtx.isAuth ? (
+            {UserCtx.isAuth ? (
               <button
                 onClick={() => {
-                  Navigate("/dashboard");
+                  console.log("User data:", UserCtx.userData);
+                  if (
+                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.web === true &&
+                    UserCtx.userData.isDelivered === true &&
+                    UserCtx.userData.isVerified === true
+                  ) {
+                    console.log("Navigating to /Dashboard");
+                    Navigate("/Dashboard");
+                  } else if (
+                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.web === false
+                  ) {
+                    console.log("Navigating to /template");
+                    Navigate("/template");
+                  } else if (
+                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.web === true
+                  ) {
+                    console.log("Navigating to /template");
+                    Navigate("/complete");
+                  } else {
+                    console.log("Navigating to /dashboard");
+                    Navigate("/dashboard");
+                  }
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
-                >
-                {UserCtx.userData.institution.split(" ")[0]}
+              >
+                {UserCtx.userData.institutionName}
               </button>
             ) : (
               <div className="flex flex-row">
-              <button
-              className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
-                onClick={() => {
-                  Navigate("/login");
-                }}
-              >
-                Login
-              </button>
+                <button
+                  className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                  onClick={() => {
+                    Navigate("/login");
+                  }}
+                >
+                  Login
+                </button>
               </div>
             )}
-
           </li>
-          
-          <li><button
-            onClick={() => {
-              Navigate("/query");
-            }}
-            className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200"
-          >
-            Contact Us
-          </button>
+          <li>
+            <button
+              onClick={() => {
+                Navigate("/query");
+              }}
+              className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200"
+            >
+              Contact Us
+            </button>
           </li>
         </ul>
       </div>

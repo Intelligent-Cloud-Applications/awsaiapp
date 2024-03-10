@@ -1,6 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+import Context from '../../../context/Context';
+import {API} from "aws-amplify";
 
-function Instructors({ instructors, setInstructors}) {
+function Instructors({ instructors, setInstructors }) {
+  const { instructordetails, util } = useContext(Context)
+  console.log("instructordetails",instructordetails)
   // const [instructors, setInstructors] = useState([
   //   { imgSrc: '', name: '', uploadedFile: null },
   //   { imgSrc: '', name: '', uploadedFile: null },
@@ -48,12 +52,27 @@ function Instructors({ instructors, setInstructors}) {
     }
     return fileName;
   };
-const removeInstructor = (indexToRemove) => {
+const removeInstructor = async (indexToRemove) => {
+  const instructor = instructors[indexToRemove]
+  if (instructor.instructorId) {
+    util.setLoader(true);
+    try {
+      await API.del("clients", `/user/development-form/delete-instructor/${instructor.institution}`, {
+        body: {
+          instructorId: instructor.instructorId,
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      util.setLoader(false);
+    }
+  }
   const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
   setInstructors(updatedInstructors);
 };
 const addNewInstructor = () => {
-  if (instructors.length < 5) {
+  if (instructors.length ) {
     setInstructors([
       ...instructors,
       { imgSrc: '', name: '', uploadedFile: null, emailId: '', position: '' },
@@ -197,7 +216,7 @@ const addNewInstructor = () => {
           ))}
         </div>
        
-        {instructors.length >= 3 && (
+        
           <div className="mb-10 flex justify-center ">
             <button
               onClick={addNewInstructor}
@@ -206,7 +225,7 @@ const addNewInstructor = () => {
               Add Instructor
             </button>
           </div>
-        )}
+      
       </div>      
     </div>
   );

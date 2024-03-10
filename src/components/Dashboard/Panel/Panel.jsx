@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Context from "../../../context/Context";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { API } from "aws-amplify";
 import Swal from 'sweetalert2';
 import Pagination from "@mui/material/Pagination";
@@ -16,6 +16,7 @@ import Selections from '../../../utils/Assets/Dashboard/images/SVG/Selections.sv
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import Update from '../../../utils/Assets/Dashboard/images/SVG/Update.svg';
 import "./Panel.css";
+import { useEffect } from "react";
 
 const Panel = () => {
   const itemsPerPage = 6;
@@ -26,9 +27,10 @@ const Panel = () => {
   const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
   const [isMonthlyReport, setisMonthlyReport] = useState("");
-  const { clients, util } = useContext(Context);
+  const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
   console.log(clientsData)
+  console.log(userData)
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -121,10 +123,19 @@ const Panel = () => {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
-
+  const location = useLocation();
+  console.log("path", location.pathname)
+  useEffect(() => {
+    if (location.pathname === "/dashboard") {
+      util.setLoader(true);
+      util.setLoader(false)
+    }
+  })
 
   const handlePersonIconClick = (institution) => {
     setisMonthlyReport(institution);
+    const updatedUserData = { ...userData, institutionName: institution };
+    setUserData(updatedUserData);
   };
 
   const toggleAddUserForm = () => {
@@ -435,14 +446,15 @@ const Panel = () => {
                   )}
                 </div>
               </label>
-
+              
               <Link to={`/Dashboard?institution=${client.institution}`}>
-                <div className="flex mt-1 justify-end w-[70vw] absolute right-2 items-center h-[2rem] z-10">
+                <div className="w-[70vw] absolute h-[3rem] right-2 cursor-pointer"
+                  onClick={() => handlePersonIconClick(client.institution)}
+                >
                   <img
                     src={personIcon}
                     alt=""
-                    className="cursor-pointer"
-                    onClick={() => handlePersonIconClick(client.institution)}
+                    className="flex mt-1 absolute right-2 h-[2rem] z-10 cursor-pointer"
                   />
                 </div>
               </Link>
@@ -645,14 +657,16 @@ const Panel = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-start pt-4 ml-[2rem]">
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={(event, value) => setCurrentPage(value)}
-              className="custom-pagination"
-            />
-          </div>
+          {itemsPerPage > 7 && (
+            <div className="flex justify-start pt-4 ml-[2rem]">
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(event, value) => setCurrentPage(value)}
+                className="custom-pagination"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
