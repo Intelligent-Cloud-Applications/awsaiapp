@@ -19,6 +19,9 @@ const Full = () => {
   const [loader, setLoader] = useState(true);
 
   const util = useContext(Context).util;
+  const utilLoader = useContext(Context).utilLoader;
+
+ 
   const goBack = () => {
     navigate('/');
   };
@@ -26,8 +29,6 @@ const Full = () => {
     const fetchData = async () => {
       if (institutionNames) {
         try {
-          util.setLoader(true);
-
           const templateResponse = await API.get(
             "clients",
             `/user/development-form/get-user/${institutionNames}`
@@ -45,21 +46,20 @@ const Full = () => {
             `/user/development-form/get-instructor/${institutionNames}`
           );
           await setInstructorDetails(instructorResponse);
-//          setLoader(false);
-//          util.setLoader(false);
-//          setLoader(false);
+
         } catch (error) {
           console.error("Error fetching details:", error);
 
         } finally {
           setLoader(false);
-          util.setLoader(false);
+         
         }
       }
     };
 
     fetchData();
   }, [institutionNames]);
+  
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
     try {
@@ -692,9 +692,11 @@ const Full = () => {
       <div className="bg-[#30AFBC]">
         <div className="mt-[4.5rem] ">
          
-          {loader ? (
-            <div className="bg-[#30AFBC] h-screen">
-            <p>Loading...</p> </div>
+        {loader || (utilLoader && utilLoader.loader) ? (
+  <div className="bg-[#30AFBC] h-screen flex items-center justify-center">
+
+    {utilLoader && utilLoader.loader}
+  </div>
           ) : (
             
             <>
