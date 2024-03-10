@@ -19,47 +19,51 @@ const Full = () => {
   const [loader, setLoader] = useState(true);
 
   const util = useContext(Context).util;
-  const utilLoader = useContext(Context).utilLoader;
-
- 
   const goBack = () => {
     navigate('/');
   };
+  const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       if (institutionNames) {
         try {
+          if (!loaderInitialized) { // Check if loader is false and not initialized
+            util.setLoader(true); 
+            setLoaderInitialized(true);
+          }
+  
           const templateResponse = await API.get(
             "clients",
             `/user/development-form/get-user/${institutionNames}`
           );
           await setTemplateDetails(templateResponse);
-
+  
           const productResponse = await API.get(
             "clients",
             `/user/development-form/get-product/${institutionNames}`
           );
           await setSubscriptionDetails(productResponse);
-
+  
           const instructorResponse = await API.get(
             "clients",
             `/user/development-form/get-instructor/${institutionNames}`
           );
           await setInstructorDetails(instructorResponse);
-
         } catch (error) {
           console.error("Error fetching details:", error);
-
         } finally {
           setLoader(false);
-         
+          util.setLoader(false);
         }
       }
     };
-
-    fetchData();
-  }, [institutionNames]);
   
+    fetchData();
+  }, [institutionNames, loader, loaderInitialized, util]);
+  
+  
+  
+  // util.setLoader(false);
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
     try {
@@ -692,11 +696,9 @@ const Full = () => {
       <div className="bg-[#30AFBC]">
         <div className="mt-[4.5rem] ">
          
-        {loader || (utilLoader && utilLoader.loader) ? (
-  <div className="bg-[#30AFBC] h-screen flex items-center justify-center">
-
-    {utilLoader && utilLoader.loader}
-  </div>
+          {loader ? (
+            <div className="bg-[#30AFBC] h-screen">
+            <p>Loading...</p> </div>
           ) : (
             
             <>
