@@ -21,8 +21,8 @@ const Template = () => {
 
  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
-  const [loader, setLoader] = useState(false);
- console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+  // const [loader, setLoader] = useState(false);
+//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   // const [error, setError] = useState(null);
   
   const [logo, setLogo] = useState(null);
@@ -172,15 +172,18 @@ const Template = () => {
   });
 
   const Ctx = useContext(Context);
-
+  const util = useContext(Context).util;
   useEffect(() => {
     console.log(policies);
     }, [policies]);
-
+    const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
-      Ctx.util.setLoader(true);
+      if (!loaderInitialized) { 
+        util.setLoader(true); 
+        setLoaderInitialized(true);
+      }
       try {
         const templateResponse = await API.get(
           "clients",
@@ -363,12 +366,12 @@ const Template = () => {
         console.error("Error fetching details:", error);
 //        setLoader(false);
       } finally {
-        Ctx.util.setLoader(false);
+        util.setLoader(false);
       }
     }
 
     fetchData();
-  }, [Ctx.userData.institutionName]);
+  }, [Ctx.userData.institutionName, loaderInitialized, util]);
 
 
   const handleCompanyUpload = async () => {
