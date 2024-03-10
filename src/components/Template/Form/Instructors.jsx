@@ -53,19 +53,18 @@ function Instructors({ instructors, setInstructors }) {
     return fileName;
   };
 const removeInstructor = async (indexToRemove) => {
-//  const instructor = instructors[indexToRemove]
-//  if (instructor.instructorId) {
-//    try {
-//      await API.del("clients", "/user/development-form/delete-instructor", {
-//        body: {
-//          institution: instructor.institution,
-//          instructorId: instructor.instructorId,
-//        }
-//      });
-//    } catch (e) {
-//      console.log(e);
-//    }
-//  }
+  const instructor = instructors[indexToRemove]
+  if (instructor.instructorId) {
+    try {
+      await API.del("clients", `/user/development-form/delete-instructor/${instructor.institution}`, {
+        body: {
+          instructorId: instructor.instructorId,
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
   const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
   setInstructors(updatedInstructors);
 };

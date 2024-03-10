@@ -1,5 +1,7 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
+import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
+import Context from "../../../context/Context";
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
@@ -17,7 +19,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setProvides(savedProvides);
   }, [subscriptions.length]);
   
-  
+  const util = useContext(Context).util;
   
 
   const handleSubscriptionChange = (subscriptionIndex, e) => {
@@ -131,19 +133,21 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   };
 
   const removeSubscription = async (indexToRemove) => {
-    //  const subscription = subscriptions[indexToRemove]
-    //  if (subscription.productId) {
-    //    try {
-    //      await API.del("clients", "/user/development-form/delete-subscription", {
-    //        body: {
-    //          institution: subscription.institution,
-    //          instructorId: subscription.productId,
-    //        }
-    //      });
-    //    } catch (e) {
-    //      console.log(e);
-    //    }
-    //  }
+      const subscription = subscriptions[indexToRemove]
+      if (subscription.productId) {
+        try {
+          util.setLoader(true);
+          await API.del("clients", `/user/development-form/delete-subscription/${subscription.institution}`, {
+            body: {
+              productId: subscription.productId,
+            }
+          });
+        } catch (e) {
+          console.log(e);
+        } finally {
+          util.setLoader(false);
+        }
+      }
     const updatedSubscriptions = subscriptions.filter((_, index) => index !== indexToRemove);
     setSubscriptions(updatedSubscriptions);
   }
