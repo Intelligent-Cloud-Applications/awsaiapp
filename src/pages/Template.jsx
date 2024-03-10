@@ -251,9 +251,8 @@ const Template = () => {
             {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
           ]);
 
-          if (templateResponse.ClassTypes) {
+          if (templateResponse.ClassTypes)
             setDanceTypes(templateResponse.ClassTypes);
-          }
 
           // TESTIMONIALS
           url = templateResponse.Testimonial[0].img;
@@ -328,7 +327,8 @@ const Template = () => {
           })
         }
         if (productResponse.length > 0) {
-         console.log("HELLO2");
+//          console.log("HELLO2");
+          console.log(productResponse);
           setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {
