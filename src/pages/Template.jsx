@@ -180,8 +180,8 @@ const Template = () => {
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
+      Ctx.util.setLoader(true);
       try {
-        setLoader(true);
         const templateResponse = await API.get(
           "clients",
           `/user/development-form/get-user/${institutionId}`
@@ -358,10 +358,12 @@ const Template = () => {
           setInstructors(inst);
         }
 
-        setLoader(false);
+//        setLoader(false);
       } catch (error) {
         console.error("Error fetching details:", error);
-        setLoader(false);
+//        setLoader(false);
+      } finally {
+        Ctx.util.setLoader(false);
       }
     }
 
@@ -711,14 +713,14 @@ const Template = () => {
 
   const fetchClients = async (institution) => {
     try {
-      setLoader(true);
+//      setLoader(true);
       const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
 //      console.log(response)
       setCompanydata(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
-      setLoader(false);
+//      setLoader(false);
     }
   };
 
