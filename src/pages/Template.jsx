@@ -246,12 +246,13 @@ const Template = () => {
           setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1);
 
           setServices([
-            {title: templateResponse.src_Components_Home_Header3__h5_1, description: templateResponse.src_Components_Home_Header3__p_1},
-            {title: templateResponse.src_Components_Home_Header3__h5_2, description: templateResponse.src_Components_Home_Header3__p_2},
-            {title: templateResponse.src_Components_Home_Header3__h5_3, description: templateResponse.src_Components_Home_Header3__p_3}
+            {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
+            {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
+            {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
           ]);
 
-          setDanceTypes(templateResponse.ClassTypes);
+          if (templateResponse.ClassTypes)
+            setDanceTypes(templateResponse.ClassTypes);
 
           // TESTIMONIALS
           url = templateResponse.Testimonial[0].img;
@@ -327,6 +328,7 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
+          console.log(productResponse);
           setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {
