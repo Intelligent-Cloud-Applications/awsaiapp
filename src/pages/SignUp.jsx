@@ -102,7 +102,8 @@ const SignUp = () => {
     } else if (country.length === 0) {
       setErr("Enter a Country Name");
       return false;
-    } else if (institutionName.length === 0) { // Added validation for institutionName
+    } else if (institutionName.length === 0) {
+      // Added validation for institutionName
       setErr("Enter the Institution Name");
       return false;
     } else {
@@ -126,15 +127,19 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
       console.log("post");
-      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
-        body: {
-          emailId: email,
-          userName: `${firstName} ${lastName}`,
-          phoneNumber: `${countryCode}${phoneNumber}`,
-          country: country,
-          institutionName: institutionName
-        },
-      });
+      const userdata = await API.post(
+        "clients",
+        "/user/signup-members/awsaiapp",
+        {
+          body: {
+            emailId: email,
+            userName: `${firstName} ${lastName}`,
+            phoneNumber: `${countryCode}${phoneNumber}`,
+            country: country,
+            institutionName: institutionName,
+          },
+        }
+      );
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
@@ -165,15 +170,19 @@ const SignUp = () => {
       console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
       console.log("post");
-      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
-        body: {
-          emailId: email,
-          userName: `${firstName} ${lastName}`,
-          phoneNumber: `${countryCode}${phoneNumber}`,
-          country: country,
-          institutionName: institutionName
-        },
-      });
+      const userdata = await API.post(
+        "clients",
+        "/user/signup-members/awsaiapp",
+        {
+          body: {
+            emailId: email,
+            userName: `${firstName} ${lastName}`,
+            phoneNumber: `${countryCode}${phoneNumber}`,
+            country: country,
+            institutionName: institutionName,
+          },
+        }
+      );
       //Temporary
       // userdata.Status = true;
       UserCtx.setUserData(userdata);
@@ -190,6 +199,20 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
       console.log("Error:", error.message);
       throw error;
+    } finally {
+      UtilCtx.setLoader(false);
+    }
+  };
+
+  const sendOTP = async () => {
+    UtilCtx.setLoader(true);
+    try {
+      const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+      setSigninResponse(response);
+      setNewUser(true);
+      console.log(response);
+    } catch (e) {
+      setErr(e.message);
     } finally {
       UtilCtx.setLoader(false);
     }
@@ -224,6 +247,11 @@ const SignUp = () => {
       }
       UtilCtx.setLoader(false);
     } catch (e) {
+      if (e.message === "User already exists") {
+        await sendOTP();
+        UtilCtx.setLoader(false);
+        return;
+      }
       setErr(e.message);
       UtilCtx.setLoader(false);
     }
@@ -243,17 +271,25 @@ const SignUp = () => {
         // // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
         // const uses = await Auth.signIn(`+${countryCode}${phoneNumber}`);
         // console.log(uses)
-        await Auth.sendCustomChallengeAnswer(signinResponse, `${confirmationCode}`);
-        await Auth.currentSession();
-        const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
-          body: {
-            emailId: email,
-            userName: `${firstName} ${lastName}`,
-            phoneNumber: `${countryCode}${phoneNumber}`,
-            country: country,
-            institutionName: institutionName,
-          },
-        });
+        await Auth.sendCustomChallengeAnswer(
+          signinResponse,
+          `${confirmationCode}`
+        );
+        const data = await Auth.currentSession();
+        console.log(data);
+        const userdata = await API.post(
+          "clients",
+          "/user/signup-members/awsaiapp",
+          {
+            body: {
+              emailId: email,
+              userName: `${firstName} ${lastName}`,
+              phoneNumber: `${countryCode}${phoneNumber}`,
+              country: country,
+              institutionName: institutionName,
+            },
+          }
+        );
         //Temporary
         // userdata.Status = true;
         UserCtx.setUserData(userdata);
@@ -276,7 +312,7 @@ const SignUp = () => {
 
   const form1 = () => {
     return (
-      <form >
+      <form>
         <div className="flex max767:flex-col">
           <div
             className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
@@ -285,12 +321,15 @@ const SignUp = () => {
             <img src={signUpPng} alt="" />
             <div className="text-center">
               <p className="Inter font-[500] my-1 text-[1rem] text-white">
-                Unlock Success Online! Sign Up for Your Professional Website Today.
+                Unlock Success Online! Sign Up for Your Professional Website
+                Today.
               </p>
             </div>
           </div>
-          <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
-            style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}>
+          <div
+            className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
+            style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}
+          >
             <h3 className="text-[1.1rem] font-[700] text-center">Sign Up</h3>
             <ul className="flex flex-col items-center px-0 pb-5">
               <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
@@ -427,7 +466,9 @@ const SignUp = () => {
               }}
             >
               Already logged In ?{" "}
-              <span className="font-[500] text-[#225c59] max767:text-[#ffff]">Log In</span>{" "}
+              <span className="font-[500] text-[#225c59] max767:text-[#ffff]">
+                Log In
+              </span>{" "}
             </p>
           </div>
         </div>

@@ -9,8 +9,6 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const Navigate = useNavigate();
   const UserCtx = useContext(Context);
-  console.log(UserCtx)
-
 
   let Links = [
     { name: "Home", link: "/" },
