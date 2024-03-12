@@ -21,8 +21,8 @@ const Template = () => {
 
  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
-  const [loader, setLoader] = useState(false);
- console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+  // const [loader, setLoader] = useState(false);
+//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   // const [error, setError] = useState(null);
   
   const [logo, setLogo] = useState(null);
@@ -172,16 +172,19 @@ const Template = () => {
   });
 
   const Ctx = useContext(Context);
-
+  const util = useContext(Context).util;
   useEffect(() => {
     console.log(policies);
     }, [policies]);
-
+    const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
+      if (!loaderInitialized) { 
+        util.setLoader(true); 
+        setLoaderInitialized(true);
+      }
       try {
-        setLoader(true);
         const templateResponse = await API.get(
           "clients",
           `/user/development-form/get-user/${institutionId}`
@@ -205,7 +208,7 @@ const Template = () => {
 //          console.log("HELLO1");
 
           // COMPANY
-          setCompanyName(templateResponse.companyName);
+          setCompanyName(institutionId);
           setLightPrimaryColor(templateResponse.LightPrimaryColor);
           setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
           setPrimaryColor(templateResponse.PrimaryColor);
@@ -353,19 +356,22 @@ const Template = () => {
             inst[i].emailId = instructorResponse[i].emailId;
             inst[i].position = instructorResponse[i].position;
             inst[i].instructorId = instructorResponse[i].instructorId;
+            inst[i].institution = instructorResponse[i].institution;
           }
           setInstructors(inst);
         }
 
-        setLoader(false);
+//        setLoader(false);
       } catch (error) {
         console.error("Error fetching details:", error);
-        setLoader(false);
+//        setLoader(false);
+      } finally {
+        util.setLoader(false);
       }
     }
 
     fetchData();
-  }, [Ctx.userData.institutionName]);
+  }, [Ctx.userData.institutionName, loaderInitialized, util]);
 
 
   const handleCompanyUpload = async () => {
@@ -639,6 +645,7 @@ const Template = () => {
               console.log(inst);
               console.log(response);
               inst[i].instructorId = response.Attributes.instructorId;
+              inst[i].institution = response.Attributes.institution;
               console.log(inst);
               setInstructors(inst)
             }
@@ -709,14 +716,14 @@ const Template = () => {
 
   const fetchClients = async (institution) => {
     try {
-      setLoader(true);
+//      setLoader(true);
       const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
 //      console.log(response)
       setCompanydata(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
-      setLoader(false);
+//      setLoader(false);
     }
   };
 

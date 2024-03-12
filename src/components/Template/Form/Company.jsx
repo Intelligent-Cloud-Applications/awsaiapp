@@ -80,7 +80,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         ))} */}
       </h5>
 
-      <div className="relative mt-6">
+      <div className="relative mt-6 hidden">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={toggleCompanyInputVisibility}

@@ -32,9 +32,9 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
     }
   };
 
-  const handleMediaClick = () => {
-    document.getElementById("fileInput").click();
-  };
+//  const handleMediaClick = () => {
+//    document.getElementById("fileInput").click();
+//  };
 
   const handleMediaMouseEnter = () => {
     if (selectedMedia) {
@@ -99,7 +99,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                   src={vupload}
                   alt="Upload"
                   className="w-[5rem] cursor-pointer"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
                 <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
               </div>
@@ -111,14 +111,14 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                   controls
                   src={selectedMedia}
                   className="w-full h-full object-cover"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
               ) : (
                 <img
                   src={selectedMedia}
                   alt="Uploaded media"
                   className="w-full h-full object-cover"
-                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                   onError={(e) => {
                     e.target.src = vupload; // Display default image if image fails to load
                   }}
