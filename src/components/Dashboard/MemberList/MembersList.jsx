@@ -266,7 +266,7 @@ const MemberList = ({ institution: tempInstitution }) => {
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     const apiName = "clients";
-    const path = `/user/update-member`;
+    const path = `/user/update-member/awsaiapp`;
     const myInit = {
       body: {
         cognitoId: cognitoId,

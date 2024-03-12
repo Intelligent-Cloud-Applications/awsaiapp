@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth, API } from "aws-amplify";
 import Context from "../context/Context";
@@ -15,34 +15,46 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("91");
   const [isPhoneNumberLoginValid, setIsPhoneNumberLoginValid] = useState(true);
-  // const [passwordVisible, setPasswordVisible] = useState(true);
   const [error, setError] = useState("");
   const UtilCtx = useContext(Context).util;
   const UserCtx = useContext(Context);
-  const [otp, setOtp] = useState("")
+  const [otp, setOtp] = useState("");
   const [signinResponse, setSigninResponse] = useState(null);
   const [email, setEmail] = useState("");
   const Navigate = useNavigate();
+  const [resendTimeout, setResendTimeout] = useState(null);
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendTimer, setResendTimer] = useState(30);
 
-  console.log(UserCtx)
+  useEffect(() => {
+    if (resendTimer === 0) {
+      clearTimeout(resendTimeout);
+      setResendDisabled(false);
+      setResendTimer(30);
+    }
+  }, [resendTimer, resendTimeout]);
+
+  const startResendTimer = () => {
+    setResendDisabled(true);
+    const intervalId = setInterval(() => {
+      setResendTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    setResendTimeout(intervalId);
+  };
+
   const sendOTP = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
     try {
-      const response = await Auth.signIn(
-        `+${countryCode}${phoneNumber}`
-      );
+      const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
       setSigninResponse(response);
-      console.log(response);
-    }
-    catch (e) {
+      startResendTimer(); // Start the resend timer
+    } catch (e) {
       setError(e.message);
-    }
-    finally {
+    } finally {
       UtilCtx.setLoader(false);
     }
-  }
-
+  };
   const handelSubmit = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
@@ -65,6 +77,17 @@ const Login = () => {
           });
           Navigate("/dashboard");
         } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === false && userdata.isDelivered === false) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
+          Swal.fire({
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/pay`);
+        }else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === false) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
           UserCtx.setIsAuth(true);
@@ -220,17 +243,6 @@ const Login = () => {
                     }
                   }}
                 />
-                <button
-                  className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline"
-                  // style={{
-                  //   backgroundColor: InstitutionData.LightPrimaryColor,
-                  //   opacity: phoneNumber ? 1 : 0.5,
-                  // }}
-                  onClick={sendOTP}
-                // disabled={!phoneNumber}
-                >
-                  {signinResponse ? "Resend OTP" : "Send OTP"}
-                </button>
               </div>
               <div className="mb-2 relative flex items-center">
                 <img
@@ -261,17 +273,26 @@ const Login = () => {
                   Forgot Password?
                 </a> */}
               </div>
-              <button
-                className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
-                // style={{
-                //   backgroundColor: InstitutionData.LightPrimaryColor,
-                //   opacity:otp ? 1 : 0.5,
-                // }}
-                onClick={handelSubmit}
-              // disabled={!otp}
-              >
-                Sign in
-              </button>
+              <div className="flex flex-col gap-4">
+                <button
+                  className="w-[20rem] bg-[#3ec084] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+                  onClick={sendOTP}
+                  disabled={resendDisabled}
+                >
+                  {resendDisabled ? `Resend OTP in ${resendTimer} seconds` : "Send OTP"}
+                </button>
+                <button
+                  className="w-[20rem] bg-[#30AFBC] text-[1.1rem] text-white p-2 rounded-[0.5rem] max767:bg-white max767:text-[#30AFBC] max767:text-[1.2rem] max767:font-bold"
+                  // style={{
+                  //   backgroundColor: InstitutionData.LightPrimaryColor,
+                  //   opacity:otp ? 1 : 0.5,
+                  // }}
+                  onClick={handelSubmit}
+                // disabled={!otp}
+                >
+                  Submit
+                </button>
+              </div>
               {/* <button
                 type="submit"
                 onClick={handelSubmit}
