@@ -1,16 +1,12 @@
-import React from 'react';
-import './Complete.css'; 
-import Navbar from '../components/Home/Navbar';
+import React from 'react'
+import './Complete.css'
+import Navbar from '../components/Home/Navbar'
 
-import Timer from './Timer';
+import Timer from './Timer'
 
 const Complete = () => {
-  
-
-
-
   return (
-    <div className='hello1 h-screen'>
+    <div className="hello1 h-screen">
       <Navbar />
       <div className="pyro">
         <div className="before"></div>
@@ -24,7 +20,7 @@ const Complete = () => {
         <div className="after"></div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Complete;
+export default Complete

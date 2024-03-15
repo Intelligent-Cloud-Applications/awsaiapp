@@ -1,9 +1,9 @@
-import { createContext } from "react";
+import { createContext } from 'react'
 
 const Context = createContext({
-  isAuth: "",
+  isAuth: '',
   setIsAuth: () => {},
-  userData: "",
+  userData: '',
   setUserData: () => {},
   isUserDataLoaded: false,
   setIsUserDataLoaded: () => {},
@@ -35,6 +35,6 @@ const Context = createContext({
   instructorDetails: {},
   fetchProductDetails: () => {},
   fetchInstructorDetails: () => {},
-});
+})
 
-export default Context;
+export default Context

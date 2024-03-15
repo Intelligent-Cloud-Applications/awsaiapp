@@ -1,11 +1,10 @@
 @media (max-width: 478px) {
-    .video   {
-      width: 24rem ;
-    }
+  .video {
+    width: 24rem;
   }
+}
 @media (max-width: 380px) {
-    .video   {
-      width: 18rem ;
-    }
+  .video {
+    width: 18rem;
   }
-  
+}

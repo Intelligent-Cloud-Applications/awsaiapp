@@ -1,23 +1,23 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Context from "../../context/Context";
-import logo from "../../utils/awsaiappLogo.png";
-import cross from "../../utils/Assets/icons8-cross-100.png";
-import Menu from "../../utils/Assets/icons8-menu-100.png";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Context from '../../context/Context'
+import logo from '../../utils/awsaiappLogo.png'
+import cross from '../../utils/Assets/icons8-cross-100.png'
+import Menu from '../../utils/Assets/icons8-menu-100.png'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
-  const Navigate = useNavigate();
-  const UserCtx = useContext(Context);
+  const Navigate = useNavigate()
+  const UserCtx = useContext(Context)
 
   let Links = [
-    { name: "Home", link: "/" },
-    { name: "About Us", link: "/aboutus" },
-    { name: "Pricing", link: "/Pricing" },
-    { name: "Team", link: "/team" },
+    { name: 'Home', link: '/' },
+    { name: 'About Us', link: '/aboutus' },
+    { name: 'Pricing', link: '/Pricing' },
+    { name: 'Team', link: '/team' },
     // {name:"C",link:"/"},
-  ];
-  let [open, setOpen] = useState(false);
+  ]
+  let [open, setOpen] = useState(false)
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-50">
       <div className="md:flex items-center justify-between bg-black py-2 lg:px-10 px-2">
@@ -25,11 +25,7 @@ const Navbar = () => {
           className="font-bold lg:text-2xl text-lg cursor-pointer flex items-center font-[Poppins] 
       text-gray-800"
         >
-          <img
-            className="h-[3.5rem]"
-            src={logo}
-            alt=""
-          />
+          <img className="h-[3.5rem]" src={logo} alt="" />
         </div>
 
         <div
@@ -58,11 +54,15 @@ const Navbar = () => {
         </div>
 
         <ul
-          className={`bg-black md:flex md:items-center md:pb-0 pb-12 absolute md:static md:z-auto z-[1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? "top-[4.5rem] " : "top-[-490px]"
-            }`}
+          className={`bg-black md:flex md:items-center md:pb-0 pb-12 absolute md:static md:z-auto z-[1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
+            open ? 'top-[4.5rem] ' : 'top-[-490px]'
+          }`}
         >
           {Links.map((link) => (
-            <li key={link.name} className="lg:ml-8 md:ml-2 text-xl md:my-0 my-7">
+            <li
+              key={link.name}
+              className="lg:ml-8 md:ml-2 text-xl md:my-0 my-7"
+            >
               <Link
                 to={link.link}
                 className="text-white max670:text- mx-2 hover:text-gray-400 duration-500"
@@ -75,30 +75,30 @@ const Navbar = () => {
             {UserCtx.isAuth ? (
               <button
                 onClick={() => {
-                  console.log("User data:", UserCtx.userData);
+                  console.log('User data:', UserCtx.userData)
                   if (
-                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.institutionName !== 'awsaiapp' &&
                     UserCtx.userData.web === true &&
                     UserCtx.userData.isDelivered === true &&
                     UserCtx.userData.isVerified === true
                   ) {
-                    console.log("Navigating to /Dashboard");
-                    Navigate("/Dashboard");
+                    console.log('Navigating to /Dashboard')
+                    Navigate('/Dashboard')
                   } else if (
-                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.institutionName !== 'awsaiapp' &&
                     UserCtx.userData.web === false
                   ) {
-                    console.log("Navigating to /template");
-                    Navigate("/template");
+                    console.log('Navigating to /template')
+                    Navigate('/template')
                   } else if (
-                    UserCtx.userData.institutionName !== "awsaiapp" &&
+                    UserCtx.userData.institutionName !== 'awsaiapp' &&
                     UserCtx.userData.web === true
                   ) {
-                    console.log("Navigating to /template");
-                    Navigate("/complete");
+                    console.log('Navigating to /template')
+                    Navigate('/complete')
                   } else {
-                    console.log("Navigating to /dashboard");
-                    Navigate("/dashboard");
+                    console.log('Navigating to /dashboard')
+                    Navigate('/dashboard')
                   }
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
@@ -110,7 +110,7 @@ const Navbar = () => {
                 <button
                   className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
                   onClick={() => {
-                    Navigate("/login");
+                    Navigate('/login')
                   }}
                 >
                   Login
@@ -121,7 +121,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => {
-                Navigate("/query");
+                Navigate('/query')
               }}
               className="bg-[#30AFBC] text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200"
             >
@@ -131,7 +131,7 @@ const Navbar = () => {
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

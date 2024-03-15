@@ -1,98 +1,123 @@
-import {React, useState} from "react";
-import Faq from "react-faq-component";
-import "./Faq.css";
-import plus from "../../utils/plus.svg";
-import one from "../../utils/Assets/01.png";
-import two from "../../utils/Assets/02.png";
-import three from "../../utils/Assets/03.png";
-import four from "../../utils/Assets/04.png";
-import minus from "../../utils/minus.png";
+import { React, useState } from 'react'
+import Faq from 'react-faq-component'
+import './Faq.css'
+import plus from '../../utils/plus.svg'
+import one from '../../utils/Assets/01.png'
+import two from '../../utils/Assets/02.png'
+import three from '../../utils/Assets/03.png'
+import four from '../../utils/Assets/04.png'
+import minus from '../../utils/minus.png'
 
 const data = {
   rows: [
     {
       title: (
         <div className="flex items-center">
-        <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={one} alt="" />
-        <span className="flex">
-        How do I connect with your website development team?
-        </span>
-      </div>
+          <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={one} alt="" />
+          <span className="flex">
+            How do I connect with your website development team?
+          </span>
+        </div>
       ),
-      content:(
-      <p className="pl-12 pr-2">Connecting with our website development team is easy! Simply fill out the form on our website and pay the first month's fee. Our team will get to work on developing a prototype of your website within 15 days of receiving your completed form. Once the prototype is approved, we will work to have your website fully developed and ready to launch within a month.</p> 
+      content: (
+        <p className="pl-12 pr-2">
+          Connecting with our website development team is easy! Simply fill out
+          the form on our website and pay the first month's fee. Our team will
+          get to work on developing a prototype of your website within 15 days
+          of receiving your completed form. Once the prototype is approved, we
+          will work to have your website fully developed and ready to launch
+          within a month.
+        </p>
       ),
     },
     {
       title: (
         <div className="flex items-center">
-        <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={two} alt="" />
-        <span className="flex-grow">
-        What if I want changes made to my website after it has launched?
-        </span>
-      </div>
+          <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={two} alt="" />
+          <span className="flex-grow">
+            What if I want changes made to my website after it has launched?
+          </span>
+        </div>
       ),
-      content:(
-        <p className="pl-12 pr-2">We offer ongoing website maintenance and support services to our clients. If you need changes made to your website after it has launched, simply contact our team and we will work with you to make the necessary updates.</p> 
-        ),
+      content: (
+        <p className="pl-12 pr-2">
+          We offer ongoing website maintenance and support services to our
+          clients. If you need changes made to your website after it has
+          launched, simply contact our team and we will work with you to make
+          the necessary updates.
+        </p>
+      ),
     },
     {
       title: (
         <div className="flex items-center">
-          <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={three} alt="" />
+          <img
+            className="w-10 max600:w-8 max-h-[100%] mr-3"
+            src={three}
+            alt=""
+          />
           <span className="flex-grow">
             Do you offer website hosting services?
           </span>
         </div>
       ),
-      content:(
-        <p className="pl-12 pr-2">Yes, we offer website hosting services to our clients. Our hosting services include website backups, security updates, and ongoing support to ensure that your website is always up and running smoothly.</p> 
-        ),
+      content: (
+        <p className="pl-12 pr-2">
+          Yes, we offer website hosting services to our clients. Our hosting
+          services include website backups, security updates, and ongoing
+          support to ensure that your website is always up and running smoothly.
+        </p>
+      ),
     },
     {
       title: (
         <div className="flex items-center">
-        <img className="w-10 max600:w-8 max-h-[100%] mr-3" src={four} alt="" />
-        <span className="flex-grow">
-        What if I have questions during the website development process?
-        </span>
-      </div>
+          <img
+            className="w-10 max600:w-8 max-h-[100%] mr-3"
+            src={four}
+            alt=""
+          />
+          <span className="flex-grow">
+            What if I have questions during the website development process?
+          </span>
+        </div>
       ),
-      content:(
-        <p className="pl-12 pr-2">We pride ourselves on providing excellent customer service and support to our clients. If you have any questions or concerns during the website development process, simply reach out to our team and we will be happy to assist you.</p> 
-        ),
+      content: (
+        <p className="pl-12 pr-2">
+          We pride ourselves on providing excellent customer service and support
+          to our clients. If you have any questions or concerns during the
+          website development process, simply reach out to our team and we will
+          be happy to assist you.
+        </p>
+      ),
     },
   ],
-};
-
-
+}
 
 export default function FAQ() {
-
-  const [openRows, setOpenRows] = useState([]); // Maintain state for open rows
+  const [openRows, setOpenRows] = useState([]) // Maintain state for open rows
 
   const toggleRow = (index) => {
     if (openRows.includes(index)) {
       // Row is open, so close it
-      setOpenRows(openRows.filter((item) => item !== index));
+      setOpenRows(openRows.filter((item) => item !== index))
     } else {
       // Row is closed, so open it
-      setOpenRows([...openRows, index]);
+      setOpenRows([...openRows, index])
     }
-  };
+  }
 
-  
   const styles = {
-    bgColor: "#ffffff",
-    rowTitleColor: "#151618",
-    rowContentColor: "#555555",
-    arrowColor: "#30AFBC",
-  };
-  
+    bgColor: '#ffffff',
+    rowTitleColor: '#151618',
+    rowContentColor: '#555555',
+    arrowColor: '#30AFBC',
+  }
+
   const config = {
     animate: true,
     tabFocus: true,
-  };
+  }
 
   return (
     <div className="home-faq flex flex-col items-center justify-center gap-[5rem] max800:py-[20rem] mb-20">
@@ -115,11 +140,11 @@ export default function FAQ() {
           <img
             className="h-[1.5rem] max1008:h-[1rem]"
             src={openRows.includes(props.index) ? minus : plus}
-            alt={openRows.includes(props.index) ? "Minus" : "Plus"}
+            alt={openRows.includes(props.index) ? 'Minus' : 'Plus'}
             onClick={() => toggleRow(props.index)}
           />
         )}
       />
     </div>
-  );
-};
+  )
+}

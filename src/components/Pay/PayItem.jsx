@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const PayItem = ({
   product,
@@ -9,12 +9,12 @@ const PayItem = ({
   return (
     <div
       onClick={() => {
-        setSelectedPlan(product.productId.toString());
+        setSelectedPlan(product.productId.toString())
       }}
       className={`flex flex-col gap-6 bg-white p-4 rounded-md shadow relative cursor-pointer ${
         selectedPlan === product.productId.toString()
-          ? "border-2 border-blue-500"
-          : ""
+          ? 'border-2 border-blue-500'
+          : ''
       }`}
     >
       <div className="absolute -left-4 top-4 w-6 h-6 rounded-full border-2 ml-5 border-gray-400"></div>
@@ -32,7 +32,7 @@ const PayItem = ({
         Learn More
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default PayItem;
+export default PayItem

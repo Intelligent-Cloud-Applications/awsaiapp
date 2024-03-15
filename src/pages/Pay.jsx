@@ -1,88 +1,87 @@
-import { useContext, useState } from "react";
-import Navbar from "../components/Home/Navbar";
-import { useNavigate } from "react-router-dom";
-import Context from "../context/Context";
-import PayItem from "../components/Pay/PayItem";
-import { API } from "aws-amplify";
+import { useContext, useState } from 'react'
+import Navbar from '../components/Home/Navbar'
+import { useNavigate } from 'react-router-dom'
+import Context from '../context/Context'
+import PayItem from '../components/Pay/PayItem'
+import { API } from 'aws-amplify'
 const Pay = () => {
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const Ctx = useContext(Context);
+  const [selectedPlan, setSelectedPlan] = useState(null)
+  const Ctx = useContext(Context)
 
-  const UtilCtx = useContext(Context).util;
-  const UserCtx = useContext(Context).user;
-  const Navigate = useNavigate();
+  const UtilCtx = useContext(Context).util
+  const UserCtx = useContext(Context).user
+  const Navigate = useNavigate()
   const handleLearnMoreClick = (plan) => {
-    setSelectedPlan(plan);
-  };
- 
+    setSelectedPlan(plan)
+  }
 
   const handleSubscribe = async (productId) => {
-    UtilCtx.setLoader(true);
-    let response;
+    UtilCtx.setLoader(true)
+    let response
     try {
-      console.log("before");
-      response = await API.put("clients", "/user/billing/subscription", {
+      console.log('before')
+      response = await API.put('clients', '/user/billing/subscription', {
         body: {
           productId: productId,
         },
-      });
+      })
       if (response.error) {
-        if (response.message === "Subscription already active") {
-          UtilCtx.setLoader(false);
-          alert("Subscription Already Active. Please Contact Support");
-          return;
+        if (response.message === 'Subscription already active') {
+          UtilCtx.setLoader(false)
+          alert('Subscription Already Active. Please Contact Support')
+          return
         }
       }
-      console.log(response);
+      console.log(response)
     } catch (e) {
-      console.log(e);
-      UtilCtx.setLoader(false);
+      console.log(e)
+      UtilCtx.setLoader(false)
     }
-    console.log(response.paymentId);
-    console.log("started");
+    console.log(response.paymentId)
+    console.log('started')
     try {
       const options = {
-        key: "rzp_test_1nTmB013tmcWZS",
+        key: 'rzp_test_1nTmB013tmcWZS',
         subscription_id: response.paymentId,
-        name: "AWSAIAPP",
+        name: 'AWSAIAPP',
         description: response.subscriptionType,
         handler: function (r) {
-          console.log(r);
+          console.log(r)
           const verify = async () => {
-            console.log("EARLY");
-            UtilCtx.setLoader(true);
+            console.log('EARLY')
+            UtilCtx.setLoader(true)
             try {
               const res = await API.put(
-                "clients",
-                "/user/billing/subscription/verify",
+                'clients',
+                '/user/billing/subscription/verify',
                 {
                   body: {
                     subscriptionId: response.paymentId,
                   },
-                }
-              );
+                },
+              )
               const tempUserdata = await API.get(
-                "clients",
-                "/self/read-self/awsaiapp"
-              );
-              Ctx.setUserData(tempUserdata);
-              console.log(res);
+                'clients',
+                '/self/read-self/awsaiapp',
+              )
+              Ctx.setUserData(tempUserdata)
+              console.log(res)
               if (res.signatureIsValid) {
-                console.log(res.signatureIsValid);
-                Navigate("/dashboard", { state: { isReload: true } });
+                console.log(res.signatureIsValid)
+                Navigate('/dashboard', { state: { isReload: true } })
               } else {
                 alert(
-                  "Transaction Failed If your Amount was Deducted then Contact us"
-                );
+                  'Transaction Failed If your Amount was Deducted then Contact us',
+                )
               }
               // alert(res);
-              UtilCtx.setLoader(false);
+              UtilCtx.setLoader(false)
             } catch (e) {
-              console.log(e);
-              UtilCtx.setLoader(false);
+              console.log(e)
+              UtilCtx.setLoader(false)
             }
-          };
-          verify();
+          }
+          verify()
         },
         prefill: {
           name: UserCtx.userName,
@@ -90,13 +89,13 @@ const Pay = () => {
           contact: UserCtx.phoneNumber,
         },
         theme: {
-          color: "#00b4bb",
+          color: '#00b4bb',
         },
-      };
-      console.log("started 2");
-      const rzp1 = new window.Razorpay(options);
-      console.log("started 3");
-      rzp1.on("payment.failed", function (response) {
+      }
+      console.log('started 2')
+      const rzp1 = new window.Razorpay(options)
+      console.log('started 3')
+      rzp1.on('payment.failed', function (response) {
         // alert(response.error.code);
         // alert(response.error.description);
         // alert(response.error.source);
@@ -104,18 +103,18 @@ const Pay = () => {
         // alert(response.error.reason);
         // alert(response.error.metadata.order_id);
         // alert(response.error.metadata.payment_id);
-        console.log(response);
-        UtilCtx.setLoader(false);
-      });
-      const fields = rzp1.open();
-      console.log(fields);
-      UtilCtx.setLoader(false);
+        console.log(response)
+        UtilCtx.setLoader(false)
+      })
+      const fields = rzp1.open()
+      console.log(fields)
+      UtilCtx.setLoader(false)
     } catch (e) {
-      console.log(e.message);
-      console.log(e);
-      UtilCtx.setLoader(false);
+      console.log(e.message)
+      console.log(e)
+      UtilCtx.setLoader(false)
     }
-  };
+  }
   return (
     <div className="flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full">
@@ -131,7 +130,7 @@ const Pay = () => {
                 handleLearnMoreClick={handleLearnMoreClick}
                 selectedPlan={selectedPlan}
               />
-            );
+            )
           })}
         </div>
       </div>
@@ -146,7 +145,7 @@ const Pay = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Pay;
+export default Pay

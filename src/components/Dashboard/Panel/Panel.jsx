@@ -1,60 +1,62 @@
-import React, { useState, useContext } from "react";
-import Context from "../../../context/Context";
-import { Link, useLocation } from 'react-router-dom';
-import { API } from "aws-amplify";
-import Swal from 'sweetalert2';
-import Pagination from "@mui/material/Pagination";
+import React, { useState, useContext } from 'react'
+import Context from '../../../context/Context'
+import { Link, useLocation } from 'react-router-dom'
+import { API } from 'aws-amplify'
+import Swal from 'sweetalert2'
+import Pagination from '@mui/material/Pagination'
 // import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
-import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
-import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
-import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg';
+import SearchIcon from '../../../utils/Assets/Dashboard/images/SVG/Search.svg'
+import Arrow from '../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg'
+import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg'
 // import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
-import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg';
-import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg';
+import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg'
+import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg'
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
-import Selections from '../../../utils/Assets/Dashboard/images/SVG/Selections.svg';
+import Selections from '../../../utils/Assets/Dashboard/images/SVG/Selections.svg'
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
-import Update from '../../../utils/Assets/Dashboard/images/SVG/Update.svg';
-import "./Panel.css";
-import { useEffect } from "react";
+import Update from '../../../utils/Assets/Dashboard/images/SVG/Update.svg'
+import './Panel.css'
+import { useEffect } from 'react'
 
 const Panel = () => {
-  const itemsPerPage = 6;
-  const [status, setStatus] = useState();
-  const [memberCount, setMemberCount] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRow, setSelectedRow] = useState([]);
+  const itemsPerPage = 6
+  const [status, setStatus] = useState()
+  const [memberCount, setMemberCount] = useState()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedRow, setSelectedRow] = useState([])
   // eslint-disable-next-line
-  const [isMonthlyReport, setisMonthlyReport] = useState("");
-  const { clients, util, userData, setUserData } = useContext(Context);
-  const clientsData = Object.entries(clients.data);
+  const [isMonthlyReport, setisMonthlyReport] = useState('')
+  const { clients, util, userData, setUserData } = useContext(Context)
+  const clientsData = Object.entries(clients.data)
   console.log(clientsData)
   console.log(userData)
-  const [isUserAdd, setIsUserAdd] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [Country, setCountry] = useState("")
-  const [TotalIncome, setTotalIncome] = useState("")
-  const [TotalAttendance, setTotalAttendance] = useState("")
-  const [TotalLeads, setTotalLeads] = useState("")
+  const [isUserAdd, setIsUserAdd] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [Country, setCountry] = useState('')
+  const [TotalIncome, setTotalIncome] = useState('')
+  const [TotalAttendance, setTotalAttendance] = useState('')
+  const [TotalLeads, setTotalLeads] = useState('')
   // eslint-disable-next-line
-  const [Revenue, setRevenue] = useState("");
+  const [Revenue, setRevenue] = useState('')
   // eslint-disable-next-line
-  const [userCheck, setUserCheck] = useState(0);
-  const [JoiningDate, setJoiningDate] = useState("")
-  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
+  const [userCheck, setUserCheck] = useState(0)
+  const [JoiningDate, setJoiningDate] = useState('')
+  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [showDetails, setShowDetails] = useState(false)
 
   const showDetailForm = (institution) => {
-    const userDetail = clientsData.find(([key, client]) => client.institution === institution);
-    setSelectedUser(userDetail);
-    setName(userDetail[1].institution);
-    setEmail(userDetail[1].emailId);
+    const userDetail = clientsData.find(
+      ([key, client]) => client.institution === institution,
+    )
+    setSelectedUser(userDetail)
+    setName(userDetail[1].institution)
+    setEmail(userDetail[1].emailId)
     setCountry(userDetail[1].country)
-    setPhoneNumber(userDetail[1].phoneNumber);
+    setPhoneNumber(userDetail[1].phoneNumber)
     setTotalLeads(userDetail[1].recentMonthLeads)
     setTotalAttendance(userDetail[1].recentMonthAttendance)
     setTotalIncome(userDetail[1].recentMonthIncome)
@@ -62,92 +64,85 @@ const Panel = () => {
     setStatus(userDetail[1].status)
     setCountry(userDetail[1].country)
     setJoiningDate(userDetail[1].JoiningDate)
-    setShowDetails(true);
-  };
-
+    setShowDetails(true)
+  }
 
   const handleCheckboxChange = (institution) => {
     if (selectedRow.includes(institution)) {
-      setSelectedRow(selectedRow.filter((id) => id !== institution));
+      setSelectedRow(selectedRow.filter((id) => id !== institution))
     } else {
-      setSelectedRow([...selectedRow, institution]);
+      setSelectedRow([...selectedRow, institution])
     }
-  };
+  }
 
   const isRowSelected = (institution) => {
-    return selectedRow.includes(institution);
-  };
+    return selectedRow.includes(institution)
+  }
 
   const filterClients = () => {
     if (!searchQuery) {
-      return clientsData;
+      return clientsData
     }
 
     const query = searchQuery.toLowerCase()
     const filtered = clientsData?.filter(([key, client]) => {
-      const institution = client.institution ? client.institution.toLowerCase() : '';
-      const emailId = client.emailId ? client.emailId.toLowerCase() : '';
+      const institution = client.institution
+        ? client.institution.toLowerCase()
+        : ''
+      const emailId = client.emailId ? client.emailId.toLowerCase() : ''
 
-      const matches =
-        institution.includes(query) ||
-        emailId.includes(query);
+      const matches = institution.includes(query) || emailId.includes(query)
 
-      return matches;
-    });
+      return matches
+    })
 
-    console.log("Filtered Clients:", filtered);
-    return filtered;
-  };
+    console.log('Filtered Clients:', filtered)
+    return filtered
+  }
 
+  const filteredClients = filterClients()
+  console.log('Type = ', typeof filteredClients)
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage)
 
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length)
+  const clientsToDisplay = filteredClients.slice(startIndex, endIndex)
 
-
-  const filteredClients = filterClients();
-  console.log("Type = ", typeof filteredClients);
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-
-
-
-
-  const selectedRowCount = selectedRow.length;
+  const selectedRowCount = selectedRow.length
 
   function formatEpochToReadableDate(epochDate) {
-    const date = new Date(epochDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
+    const date = new Date(epochDate)
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    const formattedDate = `${year}-${month}-${day}`
+    return formattedDate
   }
-  const location = useLocation();
-  console.log("path", location.pathname)
+  const location = useLocation()
+  console.log('path', location.pathname)
   useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      util.setLoader(true);
+    if (location.pathname === '/dashboard') {
+      util.setLoader(true)
       util.setLoader(false)
     }
   })
 
   const handlePersonIconClick = (institution) => {
-    setisMonthlyReport(institution);
-    const updatedUserData = { ...userData, institutionName: institution };
-    setUserData(updatedUserData);
-  };
+    setisMonthlyReport(institution)
+    const updatedUserData = { ...userData, institutionName: institution }
+    setUserData(updatedUserData)
+  }
 
   const toggleAddUserForm = () => {
-    setIsUserAdd(!isUserAdd);
-  };
+    setIsUserAdd(!isUserAdd)
+  }
 
   // Function to add a new client
   const handleAddClient = async (e) => {
     e.preventDefault()
     try {
-      const apiName = 'clients';
-      const path = '/admin/create-clients';
+      const apiName = 'clients'
+      const path = '/admin/create-clients'
       const myInit = {
         body: {
           institution: name,
@@ -155,106 +150,104 @@ const Panel = () => {
           phoneNumber: phoneNumber,
           country: Country,
           JoiningDate: JoiningDate,
-          status: status
+          status: status,
         },
-      };
-      const response = await API.post(apiName, path, myInit);
+      }
+      const response = await API.post(apiName, path, myInit)
       Swal.fire({
         icon: 'success',
         title: 'User Added',
-      });
-      clients.onReload();
-      console.log("Client added successfully:", response);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("");
-      setRevenue("");
-      setJoiningDate("");
-      setStatus("")
-      toggleAddUserForm();
-      util.setLoader(false);
-
+      })
+      clients.onReload()
+      console.log('Client added successfully:', response)
+      setName('')
+      setEmail('')
+      setPhoneNumber('')
+      setCountry('')
+      setRevenue('')
+      setJoiningDate('')
+      setStatus('')
+      toggleAddUserForm()
+      util.setLoader(false)
     } catch (error) {
-      console.error("Error adding client:", error);
+      console.error('Error adding client:', error)
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'An error occurred while creating the user.',
-      });
-      util.setLoader(false);
+      })
+      util.setLoader(false)
     }
-  };
-
-
+  }
 
   const handleUpdateClient = async (e) => {
-    setIsUpdateFormVisible(true);
+    setIsUpdateFormVisible(true)
     try {
-      const apiName = 'clients';
-      const path = '/admin/update-clients';
+      const apiName = 'clients'
+      const path = '/admin/update-clients'
       const myInit = {
         body: {
           institution: name,
           emailId: email,
           phoneNumber: phoneNumber,
           country: Country,
-          status: status
+          status: status,
         },
-      };
-      console.log("my init", myInit);
-      const response = await API.put(apiName, path, myInit);
+      }
+      console.log('my init', myInit)
+      const response = await API.put(apiName, path, myInit)
       Swal.fire({
         icon: 'success',
         title: 'User Updated',
-      });
-      clients.onReload();
-      console.log("Client updated successfully:", response);
-      setIsUpdateFormVisible(false);
-      setSelectedUser(null);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("")
+      })
+      clients.onReload()
+      console.log('Client updated successfully:', response)
+      setIsUpdateFormVisible(false)
+      setSelectedUser(null)
+      setName('')
+      setEmail('')
+      setPhoneNumber('')
+      setCountry('')
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'An error occurred while updating the user.',
-      });
-      console.error("Error updating client:", error);
+      })
+      console.error('Error updating client:', error)
     }
-  };
+  }
 
   const handleCancelUpdate = () => {
-    setIsUpdateFormVisible(false);
-    setSelectedUser(null);
-    setName("");
-    setEmail("");
-    setPhoneNumber("");
-    setStatus("");
-  };
-
+    setIsUpdateFormVisible(false)
+    setSelectedUser(null)
+    setName('')
+    setEmail('')
+    setPhoneNumber('')
+    setStatus('')
+  }
 
   const showUpdateForm = (institution) => {
-    const userToUpdate = clientsData.find(([key, client]) => client.institution === institution);
-    setSelectedUser(userToUpdate);
-    setName(userToUpdate[1].institution);
-    setEmail(userToUpdate[1].emailId);
-    setPhoneNumber(userToUpdate[1].phoneNumber);
+    const userToUpdate = clientsData.find(
+      ([key, client]) => client.institution === institution,
+    )
+    setSelectedUser(userToUpdate)
+    setName(userToUpdate[1].institution)
+    setEmail(userToUpdate[1].emailId)
+    setPhoneNumber(userToUpdate[1].phoneNumber)
     setMemberCount(userToUpdate[1].memberCount)
     setStatus(userToUpdate[1].status)
     setCountry(userToUpdate[1].country)
-    setIsUpdateFormVisible(true);
-  };
+    setIsUpdateFormVisible(true)
+  }
 
   return (
     <div className="w-[85vw] flex flex-col items-center mt-[-5rem] gap-10 mx-[4rem] max1050:mr-[8rem] max1300:mt-0">
-      <div
-        className={`w-[90%] rounded-3xl p-3 `}
-      >
+      <div className={`w-[90%] rounded-3xl p-3 `}>
         <div className="flex flex-row justify-between max850:justify-end pb-2">
-          <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">Welcome, Boss👋</h1>
+          <h1 className="text-[1.4rem] K2D font-[600] pl-5 drop  max850:hidden">
+            Welcome, Boss👋
+          </h1>
           <div className="relative">
             {/* <img src={AdminPic} alt="" /> */}
             {/* <div className="absolute w-[9px] h-[8px] top-[0.45rem] right-[-0.3rem] bg-black rounded-[4px]" /> */}
@@ -270,7 +263,11 @@ const Panel = () => {
           {/* searchBar */}
           <div className="flex justify-center items-center max850:w-[80vw]">
             <div className="flex w-[28.25rem] border-2 border-solid border-[#000] border-opacity-20 rounded-[0.1875rem] p-[0.1rem] mb-8 mt-6 max850:mb-4 ">
-              <img className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2" src={SearchIcon} alt="" />
+              <img
+                className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
+                src={SearchIcon}
+                alt=""
+              />
               <input
                 className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem]"
                 type="text"
@@ -278,7 +275,11 @@ const Panel = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <img className="w-[1rem] h-[1.5rem] mt-1 mr-[0.8rem] opacity-50" src={Arrow} alt="" />
+              <img
+                className="w-[1rem] h-[1.5rem] mt-1 mr-[0.8rem] opacity-50"
+                src={Arrow}
+                alt=""
+              />
             </div>
           </div>
 
@@ -286,9 +287,13 @@ const Panel = () => {
           <div className=" relative border border-black min-w-[9rem] rounded-[1.3125rem] h-8 mt-[1.56rem] ml-[4rem] bg-white max850:mt-0 max850:mb-6 max600:ml-[2rem]">
             <div className="flex flex-row justify-evenly gap-3 p-[0.3rem] px-5">
               {/* <button><img className="w-[1.2rem]" src={CSV} alt="" /></button> */}
-              <button onClick={() => setIsUserAdd(true)}><img className="w-[1rem]" src={Add} alt="" /></button>
+              <button onClick={() => setIsUserAdd(true)}>
+                <img className="w-[1rem]" src={Add} alt="" />
+              </button>
               {/* <button><img className="w-[1.2rem]" src={Filter} alt="" /></button> */}
-              <button><img className="w-[1.1rem]" src={Selections} alt="" /></button>
+              <button>
+                <img className="w-[1.1rem]" src={Selections} alt="" />
+              </button>
             </div>
             <div className=" absolute right-[4px] bottom-[-7px] border border-[#989898b8] w-[9rem] rounded-[1.3125rem] h-8 mt-6 z-[-1]"></div>
           </div>
@@ -305,7 +310,7 @@ const Panel = () => {
                 type="text"
                 value={name}
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setName(e.target.value)
                 }}
               />
               <input
@@ -315,7 +320,7 @@ const Panel = () => {
                 type="email"
                 value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setEmail(e.target.value)
                 }}
               />
               {/* <input
@@ -335,7 +340,7 @@ const Panel = () => {
                 type="text"
                 value={Country}
                 onChange={(e) => {
-                  setCountry(e.target.value);
+                  setCountry(e.target.value)
                 }}
               />
               <input
@@ -345,7 +350,7 @@ const Panel = () => {
                 type="date"
                 value={JoiningDate}
                 onChange={(e) => {
-                  setJoiningDate(e.target.value);
+                  setJoiningDate(e.target.value)
                 }}
               />
               <div className="flex mt-[-1.5rem] mb-[-1rem] ml-[-4rem]">
@@ -355,18 +360,18 @@ const Panel = () => {
                   name="memberStatus"
                   value="Active"
                   className="ml-3"
-                  checked={status === "Active"}
-                  onChange={() => setStatus("Active")}
-                />{" "}
+                  checked={status === 'Active'}
+                  onChange={() => setStatus('Active')}
+                />{' '}
                 <p className="ml-1"> Active</p>
                 <input
                   type="radio"
                   name="memberStatus"
                   value="InActive"
                   className="ml-3"
-                  checked={status === "InActive"}
-                  onChange={() => setStatus("InActive")}
-                />{" "}
+                  checked={status === 'InActive'}
+                  onChange={() => setStatus('InActive')}
+                />{' '}
                 <p className="ml-1">InActive</p>
               </div>
               <div className="flex flex-col  gap-3 w-full justify-center items-center">
@@ -379,8 +384,8 @@ const Panel = () => {
                 <button
                   className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                   onClick={() => {
-                    setIsUserAdd(false);
-                    setUserCheck(0);
+                    setIsUserAdd(false)
+                    setUserCheck(0)
                   }}
                 >
                   Cancel
@@ -390,12 +395,13 @@ const Panel = () => {
           </div>
         )}
 
-
         {/* Headings */}
         <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:hidden">
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
           <div className="flex flex-row justify-between">
-            <div className=" font-[700] pl-[5rem] ">Company(Owner's detail)</div>
+            <div className=" font-[700] pl-[5rem] ">
+              Company(Owner's detail)
+            </div>
             <div className="font-[700] max600:hidden">Country</div>
             <div className="font-[700]">Status</div>
             <div className="font-[700] max600:hidden ">Revenue</div>
@@ -415,17 +421,20 @@ const Panel = () => {
             <div
               key={client.institution}
               onClick={() => {
-                setisMonthlyReport(clients.institution);
+                setisMonthlyReport(clients.institution)
               }}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(client.institution)
-                ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
-                : "border-[#a2a2a280]"
-                }`}
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
+                isRowSelected(client.institution)
+                  ? 'my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out'
+                  : 'border-[#a2a2a280]'
+              }`}
               style={{
-                margin: isRowSelected(client.institution) ? "1rem 0" : "0.5rem 0",
+                margin: isRowSelected(client.institution)
+                  ? '1rem 0'
+                  : '0.5rem 0',
                 boxShadow: isRowSelected(client.institution)
-                  ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)"
-                  : "none",
+                  ? '0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)'
+                  : 'none',
               }}
             >
               {/* checkbox */}
@@ -446,9 +455,10 @@ const Panel = () => {
                   )}
                 </div>
               </label>
-              
+
               <Link to={`/Dashboard?institution=${client.institution}`}>
-                <div className="w-[70vw] absolute h-[3rem] right-2 cursor-pointer"
+                <div
+                  className="w-[70vw] absolute h-[3rem] right-2 cursor-pointer"
                   onClick={() => handlePersonIconClick(client.institution)}
                 >
                   <img
@@ -469,23 +479,43 @@ const Panel = () => {
                       <div className="font-[900] email-hover cursor-pointer">
                         {client.institution}
                       </div>
-                      <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">{client.emailId}</div>
-                      <div className="overflow-auto text-[0.8rem] font-[600]">{client.phoneNumber}</div>
+                      <div className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer">
+                        {client.emailId}
+                      </div>
+                      <div className="overflow-auto text-[0.8rem] font-[600]">
+                        {client.phoneNumber}
+                      </div>
                     </div>
-                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">{client.country}</div>
+                    <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">
+                      {client.country}
+                    </div>
                     <div className="col-span-2 ml-[-2rem] relative max1008:hidden">
-                      <div className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === "Active" ? "border-[#99EF72] text-[#99EF72]" : "border-[#FF4343AB] text-[#FF4343AB]"}`}>
-                        <div className={`w-3 h-3 mt-[0.4rem] ${client.status === "Active" ? "bg-[#99EF72]" : "bg-[#FF4343AB]"} rounded-full transform K2D`}></div>
-                        <div>{client.status === "Active" ? "Active" : "Inactive"}</div>
+                      <div
+                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${client.status === 'Active' ? 'border-[#99EF72] text-[#99EF72]' : 'border-[#FF4343AB] text-[#FF4343AB]'}`}
+                      >
+                        <div
+                          className={`w-3 h-3 mt-[0.4rem] ${client.status === 'Active' ? 'bg-[#99EF72]' : 'bg-[#FF4343AB]'} rounded-full transform K2D`}
+                        ></div>
+                        <div>
+                          {client.status === 'Active' ? 'Active' : 'Inactive'}
+                        </div>
                       </div>
                     </div>
                     <div className="col-span-3 ml-[1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                      {client.country === 'USA' ? `$${client.recentMonthIncome}` : `₹${client.recentMonthIncome}`}
+                      {client.country === 'USA'
+                        ? `$${client.recentMonthIncome}`
+                        : `₹${client.recentMonthIncome}`}
                     </div>
                     <div className="flex flex-row justify-between w-[17vw]">
-                      <div className="ml-[-1rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">{client.recentMonthMembers}</div>
-                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">{client.recentMonthAttendance}</div>
-                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">{client.recentMonthLeads}</div>
+                      <div className="ml-[-1rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">
+                        {client.recentMonthMembers}
+                      </div>
+                      <div className="w-[10rem] ml-[4rem] text-center font-semibold text-sm max600:hidden">
+                        {client.recentMonthAttendance}
+                      </div>
+                      <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">
+                        {client.recentMonthLeads}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -499,45 +529,94 @@ const Panel = () => {
                     alt=""
                     onClick={() => showUpdateForm(client.institution)}
                   />
-                )}</div>
+                )}
+              </div>
             </div>
-
           ))}
         </div>
         {clientsToDisplay.map(([key, client], index) => (
           <div key={client.institution}>
             {isRowSelected(client.institution) && (
-              <p className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[11rem] min600:hidden" onClick={() => showDetailForm(client.institution)}>-- See Details --</p>
+              <p
+                className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[11rem] min600:hidden"
+                onClick={() => showDetailForm(client.institution)}
+              >
+                -- See Details --
+              </p>
             )}
           </div>
         ))}
 
         {showDetails && selectedUser && (
-          <div class=" mt-[-55vh] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white z-50" style={{
-            boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-          }}>
+          <div
+            class=" mt-[-55vh] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white z-50"
+            style={{
+              boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
+            }}
+          >
             <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
               <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
-                <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Email Id:</div>
-                <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{email}</div>
-                <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Country:</div>
-                <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{Country}</div>
-                <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Status:</div>
-                <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{status}</div>
-                <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Joining Date:</div>
-                <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{formatEpochToReadableDate(JoiningDate)}</div>
+                <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Email Id:
+                </div>
+                <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {email}
+                </div>
+                <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Country:
+                </div>
+                <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {Country}
+                </div>
+                <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Status:
+                </div>
+                <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {status}
+                </div>
+                <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Joining Date:
+                </div>
+                <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {formatEpochToReadableDate(JoiningDate)}
+                </div>
               </div>
-              <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Revenue:</div>
-              <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalIncome}</div>
-              <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Members:</div>
-              <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{memberCount}</div>
-              <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Attendance:</div>
-              <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalAttendance}</div>
-              <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">Leads:</div>
-              <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">{TotalLeads}</div>
-              <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">{name}</div>
+              <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Revenue:
+              </div>
+              <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalIncome}
+              </div>
+              <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Members:
+              </div>
+              <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {memberCount}
+              </div>
+              <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Attendance:
+              </div>
+              <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalAttendance}
+              </div>
+              <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Leads:
+              </div>
+              <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalLeads}
+              </div>
+              <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">
+                {name}
+              </div>
             </div>
-            <div><button className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]" onClick={() => setShowDetails(false)}>Close</button></div>
+            <div>
+              <button
+                className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]"
+                onClick={() => setShowDetails(false)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         )}
 
@@ -576,7 +655,7 @@ const Panel = () => {
                 type="text"
                 value={Country}
                 onChange={(e) => {
-                  setCountry(e.target.value);
+                  setCountry(e.target.value)
                 }}
               />
               {/* <div className="flex gap-1">
@@ -612,18 +691,18 @@ const Panel = () => {
                   name="memberStatus"
                   value="Active"
                   className="ml-3"
-                  checked={status === "Active"}
-                  onChange={() => setStatus("Active")}
-                />{" "}
+                  checked={status === 'Active'}
+                  onChange={() => setStatus('Active')}
+                />{' '}
                 <p className="ml-1 text-[#85e758]"> Active</p>
                 <input
                   type="radio"
                   name="memberStatus"
                   value="InActive"
                   className="ml-3"
-                  checked={status === "InActive"}
-                  onChange={() => setStatus("InActive")}
-                />{" "}
+                  checked={status === 'InActive'}
+                  onChange={() => setStatus('InActive')}
+                />{' '}
                 <p className="ml-1 text-[#ff1010d9]">InActive</p>
               </div>
 
@@ -670,7 +749,7 @@ const Panel = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Panel;
+export default Panel

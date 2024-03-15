@@ -1,26 +1,41 @@
-import React, {useState } from "react";
-import upload from "../../../utils/png/upload.png";
+import React, { useState } from 'react'
+import upload from '../../../utils/png/upload.png'
 
-function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor,selectedFile,setSelectedFile }) {
+function Company({
+  clients,
+  companyName,
+  setCompanyName,
+  PrimaryColor,
+  setPrimaryColor,
+  SecondaryColor,
+  setSecondaryColor,
+  logo,
+  setLogo,
+  LightPrimaryColor,
+  setLightPrimaryColor,
+  LightestPrimaryColor,
+  setLightestPrimaryColor,
+  selectedFile,
+  setSelectedFile,
+}) {
   // const [companyName, setCompanyName] = useState("");
   // const [domainName, setDomainName] = useState("");
-  const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
+  const [isCompanyInputVisible, setCompanyInputVisible] = useState(false)
   // const [isDomainInputVisible, setDomainInputVisible] = useState(false);
   // const [companyLineColor, setCompanyLineColor] = useState("#939393");
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
   // const [logoUrl, setLogoUrl] = useState(null);
-  const [companyLineColor, setCompanyLineColor] = useState("#939393");
+  const [companyLineColor, setCompanyLineColor] = useState('#939393')
   // const [domainLineColor, setDomainLineColor] = useState("#939393");
 
   const handleCompanyInputChange = (e) => {
-    setCompanyName(e.target.value);
-  };
-
+    setCompanyName(e.target.value)
+  }
 
   const toggleCompanyInputVisibility = () => {
-    setCompanyInputVisible(true);
-    setCompanyLineColor("#000000"); // Change company line color to black on click
-  };
+    setCompanyInputVisible(true)
+    setCompanyLineColor('#000000') // Change company line color to black on click
+  }
 
   // const toggleDomainInputVisibility = () => {
   //   setDomainLineColor("#000000"); // Change domain line color to black on click
@@ -32,42 +47,47 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   // const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
 
   const handleColorChange1 = (e) => {
-    setPrimaryColor(e.target.value);
-  };
+    setPrimaryColor(e.target.value)
+  }
   // const [SecondaryColor, setSecondaryColor] = useState("#000000");
 
   const handleColorChange2 = (e) => {
-    setSecondaryColor(e.target.value);
-  };
+    setSecondaryColor(e.target.value)
+  }
   const handleColorChange3 = (e) => {
-    setLightPrimaryColor(e.target.value);
-  };
+    setLightPrimaryColor(e.target.value)
+  }
   const handleColorChange4 = (e) => {
-    setLightestPrimaryColor(e.target.value);
-  };
+    setLightestPrimaryColor(e.target.value)
+  }
   //file
-  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false)
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
-      setLogo(file);
-      setSelectedFile(URL.createObjectURL(file));
+    const file = event.target.files[0]
+    if (
+      file instanceof File &&
+      (file.type.startsWith('image/') ||
+        file.type.startsWith('video/') ||
+        file.type.startsWith('audio/'))
+    ) {
+      setLogo(file)
+      setSelectedFile(URL.createObjectURL(file))
     }
-  };
+  }
 
   const handleUploadImageClick = () => {
-    const element = document.getElementById('yourElementId');
-    element?.click();
-  };
+    const element = document.getElementById('yourElementId')
+    element?.click()
+  }
 
   const handleUploadImageMouseEnter = () => {
-    setFileOptionVisible(true);
-  };
+    setFileOptionVisible(true)
+  }
 
   const handleUploadImageMouseLeave = () => {
-    setFileOptionVisible(false);
-  };
+    setFileOptionVisible(false)
+  }
 
   return (
     <div className="px-8">
@@ -95,7 +115,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
               autoFocus
             />
           ) : (
-            <span>{companyName || "Company Name"}</span>
+            <span>{companyName || 'Company Name'}</span>
           )}
         </h5>
         <div
@@ -104,7 +124,6 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         ></div>
       </div>
       <div className="relative mt-6">
-
         {/* <div
           className="absolute left-0 right-0 bottom-0 h-[1.5px]"
           style={{ backgroundColor: domainLineColor }}
@@ -167,7 +186,9 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
                 <h4 className="text-white ">Choose your file</h4>
               </div>
             )}
-            <h4 className="text-[#939393] ml-[60px] text-[15px]">Upload your logo</h4>
+            <h4 className="text-[#939393] ml-[60px] text-[15px]">
+              Upload your logo
+            </h4>
           </label>
         ) : (
           <label
@@ -197,7 +218,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default Company;
+export default Company

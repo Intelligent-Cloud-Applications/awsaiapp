@@ -1,54 +1,54 @@
-import React from "react";
-import ReactDOMClient from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { Amplify } from "aws-amplify";
-import ContextProvider from "./context/ContextProvider";
-import "./index.css";
-import App from "./App";
+import React from 'react'
+import ReactDOMClient from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { Amplify } from 'aws-amplify'
+import ContextProvider from './context/ContextProvider'
+import './index.css'
+import App from './App'
 
 const process = {
   env: {
-    STAGE: "PROD",
+    STAGE: 'PROD',
   },
 }
 
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: "us-east-1",
+    region: 'us-east-1',
     userPoolId:
-      process.env.STAGE === "PROD"
-        ? "us-east-1_a3Fk5S3hh"
-        : "us-east-1_a3Fk5S3hh",
+      process.env.STAGE === 'PROD'
+        ? 'us-east-1_a3Fk5S3hh'
+        : 'us-east-1_a3Fk5S3hh',
     identityPoolId:
-      process.env.STAGE === "PROD"
-        ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
-        : "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6",
+      process.env.STAGE === 'PROD'
+        ? 'us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6'
+        : 'us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6',
     userPoolWebClientId:
-      process.env.STAGE === "PROD"
-        ? "jevucp6v2ehehqerq0rlgn4d8"
-        : "jevucp6v2ehehqerq0rlgn4d8",
+      process.env.STAGE === 'PROD'
+        ? 'jevucp6v2ehehqerq0rlgn4d8'
+        : 'jevucp6v2ehehqerq0rlgn4d8',
     oauth: {
-      responseType: "token",
+      responseType: 'token',
     },
   },
   Storage: {
-    region: "us-east-1",
-    bucket: "institution-utils",
+    region: 'us-east-1',
+    bucket: 'institution-utils',
     identityPoolId:
-      process.env.STAGE === "PROD"
-        ? "us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe"
-        : "us-east-2:6a989bd3-6905-4c5d-b2ea-6101ccfbedd3",
+      process.env.STAGE === 'PROD'
+        ? 'us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe'
+        : 'us-east-2:6a989bd3-6905-4c5d-b2ea-6101ccfbedd3',
   },
   API: {
     endpoints: [
       {
-        name: "clients",
+        name: 'clients',
         endpoint:
-          process.env.STAGE === "PROD"
-            ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
-            : "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
+          process.env.STAGE === 'PROD'
+            ? 'https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev'
+            : 'https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev',
+        region: process.env.STAGE === 'PROD' ? 'us-east-1' : 'us-east-2',
       },
       // {
       //   name: "clients",
@@ -57,15 +57,15 @@ Amplify.configure({
       // },
     ],
   },
-});
+})
 
 // ReactDOM.render(<App />, document.getElementById('root'));
 
-const root = ReactDOMClient.createRoot(document.getElementById("root"));
+const root = ReactDOMClient.createRoot(document.getElementById('root'))
 root.render(
   <BrowserRouter>
     <ContextProvider>
       <App />
     </ContextProvider>
-  </BrowserRouter>
-);
+  </BrowserRouter>,
+)

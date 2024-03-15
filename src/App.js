@@ -1,14 +1,14 @@
-import { useContext, useEffect, useRef } from "react";
-import { Auth, API } from "aws-amplify";
+import { useContext, useEffect, useRef } from 'react'
+import { Auth, API } from 'aws-amplify'
 // import { useLocation } from "react-router-dom";
-import Context from "./context/Context";
-import RoutesContainer from "./Routes";
-import LoaderProvider from "./components/LoaderProvider";
+import Context from './context/Context'
+import RoutesContainer from './Routes'
+import LoaderProvider from './components/LoaderProvider'
 
 function App() {
-  const UtilCtx = useRef(useContext(Context).util);
-  const UserCtx = useRef(useContext(Context));
-  const { templateDetails} = useContext(Context);
+  const UtilCtx = useRef(useContext(Context).util)
+  const UserCtx = useRef(useContext(Context))
+  const { templateDetails } = useContext(Context)
 
   useEffect(() => {
     templateDetails.fetchTemplateDetails()
@@ -21,13 +21,12 @@ function App() {
   // const institution = institutionFromParams || institutionFromLocalStorage;
   console.log(UserCtx)
 
-
   useEffect(() => {
     const check = async () => {
-      UtilCtx.current.setLoader(true);
+      UtilCtx.current.setLoader(true)
 
       try {
-        await Auth.currentAuthenticatedUser();
+        await Auth.currentAuthenticatedUser()
 
         // if (institution) {
         //   const userdata = await API.get("clients", `/self/read-self/${institution}`);
@@ -38,31 +37,33 @@ function App() {
         //   } else {
         //   }
         // } else {
-        const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
+        const defaultUserdata = await API.get(
+          'clients',
+          '/self/read-self/awsaiapp',
+        )
         console.log(defaultUserdata)
-        if (defaultUserdata.userType === "admin") {
-          UserCtx.current.setUserData(defaultUserdata);
-          UserCtx.current.setIsAuth(true);
+        if (defaultUserdata.userType === 'admin') {
+          UserCtx.current.setUserData(defaultUserdata)
+          UserCtx.current.setIsAuth(true)
         } else {
           // Handle cases where userType is not 'admin' for default institution
         }
         // }
       } catch (e) {
-        console.log(e);
+        console.log(e)
       } finally {
-        UtilCtx.current.setLoader(false);
+        UtilCtx.current.setLoader(false)
       }
-    };
+    }
 
-    check();
-  }, []);
-
+    check()
+  }, [])
 
   return (
     <LoaderProvider>
       <RoutesContainer />
     </LoaderProvider>
-  );
+  )
 }
 
-export default App;
+export default App

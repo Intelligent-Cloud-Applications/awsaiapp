@@ -11,13 +11,13 @@
 
 .custom-pagination .Mui-selected {
   border-radius: 0.1875rem;
-  background-color: #30AFBC !important;
+  background-color: #30afbc !important;
   color: #fff;
 }
 
 .css-yuzg60-MuiButtonBase-root-MuiPaginationItem-root {
   border: 1px solid rgba(174, 174, 174, 0.475) !important;
-  border-radius: .1875rem !important;
+  border-radius: 0.1875rem !important;
   min-width: 1rem !important;
   height: 1.3rem !important;
 }
@@ -26,10 +26,9 @@
   display: inline !important;
 }
 
-
 .scroll-container::-webkit-scrollbar {
   width: 4px;
-  background-color: #DBDBDB;
+  background-color: #dbdbdb;
   height: 4px;
 }
 
@@ -72,13 +71,12 @@
   }
 }
 
-
-[class^=swal2] {
+[class^='swal2'] {
   -webkit-tap-highlight-color: rgb(0 0 0 / 65%) !important;
 }
 
 .swal2-container::before {
-  content: "";
+  content: '';
   position: fixed;
   top: 0;
   left: 0;
@@ -93,7 +91,8 @@
   background: #232323;
 }
 
-div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left] {
+div:where(.swal2-icon).swal2-success
+  [class^='swal2-success-circular-line'][class$='left'] {
   background: #232323;
 }
 
@@ -107,7 +106,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 div:where(.swal2-container) button:where(.swal2-styled) {
   margin: 0.3125em;
   padding: 5px 77px;
-  transition: box-shadow .1s;
+  transition: box-shadow 0.1s;
   box-shadow: 0 0 0 3px rgb(213 213 213 / 39%);
   font-weight: 500;
 }
@@ -130,9 +129,9 @@ div:where(.swal2-container) button:where(.swal2-styled) {
 }
 
 @media (max-width: 600px) {
-.respons{
-  width: 80vw;
-}
+  .respons {
+    width: 80vw;
+  }
 }
 
 div:where(.swal2-container) .swal2-html-container {

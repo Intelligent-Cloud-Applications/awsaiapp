@@ -9,7 +9,7 @@
 }
 
 .curve::before {
-  content: "";
+  content: '';
   display: block;
   background: black;
   position: absolute;
@@ -21,8 +21,8 @@
   height: 300vw;
   z-index: -1;
   -webkit-box-shadow: 0 15px 8.5px -0.5px #bababa;
--moz-box-shadow: 0 15px 8.5px -0.5px #bababa;
-box-shadow: 0 15px 8.5px -0.5px #bababa;
+  -moz-box-shadow: 0 15px 8.5px -0.5px #bababa;
+  box-shadow: 0 15px 8.5px -0.5px #bababa;
   margin-bottom: 2rem;
 }
 

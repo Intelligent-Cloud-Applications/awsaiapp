@@ -1,13 +1,10 @@
 import React from 'react'
 
 const ClientsPayments = () => {
-  return (
-    <div>ClientsPayments</div>
-  )
+  return <div>ClientsPayments</div>
 }
 
 export default ClientsPayments
-
 
 // import React, { useState, useContext, useEffect } from "react"
 // import Context from "../../../context/Context";

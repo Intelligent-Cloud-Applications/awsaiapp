@@ -1,10 +1,10 @@
-import React from "react";
-import Navbar from "../components/Home/Navbar";
-import { useState, useRef } from "react";
-import Pic from "../utils/contactusPic.png";
-import { motion } from "framer-motion";
-import ReCAPTCHA from "react-google-recaptcha";
-import { API } from "aws-amplify";
+import React from 'react'
+import Navbar from '../components/Home/Navbar'
+import { useState, useRef } from 'react'
+import Pic from '../utils/contactusPic.png'
+import { motion } from 'framer-motion'
+import ReCAPTCHA from 'react-google-recaptcha'
+import { API } from 'aws-amplify'
 
 const Query = () => {
   // //Get the action url by inspecting the form
@@ -18,42 +18,42 @@ const Query = () => {
   // const FORMS_PROJECT_DETAILS = "entry.218886769";
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    companyName: "",
-    email: "",
-    address: "",
-    projectDetails: "",
-  });
+    fullName: '',
+    companyName: '',
+    email: '',
+    address: '',
+    projectDetails: '',
+  })
 
   // const [captchaValue] = useState(null);
 
-  const recaptchaRef = useRef();
+  const recaptchaRef = useRef()
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
-      const token = await recaptchaRef.current.executeAsync();
+      const token = await recaptchaRef.current.executeAsync()
 
       if (!token) {
-        alert("Please fill out the CAPTCHA.");
-        return;
+        alert('Please fill out the CAPTCHA.')
+        return
       }
 
       if (
-        formData.fullName === "" ||
-        formData.companyName === "" ||
-        formData.email === "" ||
-        formData.address === "" ||
-        formData.projectDetails === ""
+        formData.fullName === '' ||
+        formData.companyName === '' ||
+        formData.email === '' ||
+        formData.address === '' ||
+        formData.projectDetails === ''
       ) {
-        alert("Please fill out all form fields.");
-        return;
+        alert('Please fill out all form fields.')
+        return
       }
 
       // const bodyData = new FormData();
@@ -72,8 +72,8 @@ const Query = () => {
       //   }
       // });
 
-      const apiName = "clients";
-      const path = "/any/create-query";
+      const apiName = 'clients'
+      const path = '/any/create-query'
       const myInit = {
         body: {
           fullName: formData.fullName,
@@ -82,26 +82,26 @@ const Query = () => {
           address: formData.address,
           projectDetails: formData.projectDetails,
         },
-      };
+      }
 
-      await API.post(apiName, path, myInit);
+      await API.post(apiName, path, myInit)
 
-      alert("Submitted Successfully");
+      alert('Submitted Successfully')
 
       setFormData({
-        fullName: "",
-        companyName: "",
-        email: "",
-        address: "",
-        projectDetails: "",
-      });
+        fullName: '',
+        companyName: '',
+        email: '',
+        address: '',
+        projectDetails: '',
+      })
 
-      console.log(formData);
-      console.log("reCAPTCHA Token:", token);
+      console.log(formData)
+      console.log('reCAPTCHA Token:', token)
     } catch (error) {
-      console.error("reCAPTCHA error:", error);
+      console.error('reCAPTCHA error:', error)
     }
-  };
+  }
 
   return (
     <>
@@ -247,7 +247,7 @@ const Query = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Query;
+export default Query

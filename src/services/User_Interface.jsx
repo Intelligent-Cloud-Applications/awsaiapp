@@ -1,29 +1,29 @@
 /* eslint-disable jsx-a11y/alt-text */
-import Navbar from "../components/Home/Navbar";
-import Footer from "../components/Home/Footer";
-import Serv_img from "../utils/Assets/Services_User.png";
-import "./Services.css";
-import React, { useState, useEffect } from "react";
-import plus from "../utils/Assets/p2.png";
-import cross from "../utils/Assets/cross.png";
-import Common from "./Common";
-import { Link } from "react-router-dom";
+import Navbar from '../components/Home/Navbar'
+import Footer from '../components/Home/Footer'
+import Serv_img from '../utils/Assets/Services_User.png'
+import './Services.css'
+import React, { useState, useEffect } from 'react'
+import plus from '../utils/Assets/p2.png'
+import cross from '../utils/Assets/cross.png'
+import Common from './Common'
+import { Link } from 'react-router-dom'
 
 const User_Interface = () => {
-  const [screensize, setScreensize] = useState({ width: window.innerWidth });
+  const [screensize, setScreensize] = useState({ width: window.innerWidth })
 
   useEffect(() => {
     const handleResize = () => {
-      setScreensize({ width: window.innerWidth });
-    };
+      setScreensize({ width: window.innerWidth })
+    }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  const shouldDisplayContainer = screensize.width <= 600;
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+  const shouldDisplayContainer = screensize.width <= 600
   return (
     <div className="h-full">
       <Navbar />
@@ -139,6 +139,6 @@ const User_Interface = () => {
       </div>
       <Footer />
     </div>
-  );
-};
-export default User_Interface;
+  )
+}
+export default User_Interface

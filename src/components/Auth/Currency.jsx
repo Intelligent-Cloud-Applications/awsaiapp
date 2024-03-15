@@ -1,22 +1,22 @@
-import React from "react";
+import React from 'react'
 
 const Currency = () => {
   return (
     <>
-    <option data-countryCode="IN" value="INR">
-    India (INR)
-  </option>
-  <option data-countryCode="US" value="USD">
-    USA (USD)
-  </option>
-  <optgroup label="Other countries">
-    <option data-countryCode="DZ" value="DZD">
-      Algeria (DZD)
-    </option>
-    <option data-countryCode="AD" value="EUR">
-      Andorra (EUR)
-    </option>
-    <option data-countryCode="AO" value="AOA">
+      <option data-countryCode="IN" value="INR">
+        India (INR)
+      </option>
+      <option data-countryCode="US" value="USD">
+        USA (USD)
+      </option>
+      <optgroup label="Other countries">
+        <option data-countryCode="DZ" value="DZD">
+          Algeria (DZD)
+        </option>
+        <option data-countryCode="AD" value="EUR">
+          Andorra (EUR)
+        </option>
+        <option data-countryCode="AO" value="AOA">
           Angola (AOA)
         </option>
         <option data-countryCode="AI" value="XCD">
@@ -493,6 +493,6 @@ const Currency = () => {
         </option>
       </optgroup>
     </>
-  );
-};
-export default Currency;
+  )
+}
+export default Currency

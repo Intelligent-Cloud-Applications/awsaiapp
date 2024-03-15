@@ -1,30 +1,29 @@
 /* eslint-disable jsx-a11y/alt-text */
-import Navbar from "../components/Home/Navbar";
-import Footer from "../components/Home/Footer";
-import Serv_img from "../utils/Assets/Services_Payment.png";
-import "./Services.css";
-import { React, useState, useEffect } from "react";
-import plus from "../utils/Assets/p2.png";
-import cross from "../utils/Assets/cross.png";
-import Common from "./Common";
-import { Link } from "react-router-dom";
-
+import Navbar from '../components/Home/Navbar'
+import Footer from '../components/Home/Footer'
+import Serv_img from '../utils/Assets/Services_Payment.png'
+import './Services.css'
+import { React, useState, useEffect } from 'react'
+import plus from '../utils/Assets/p2.png'
+import cross from '../utils/Assets/cross.png'
+import Common from './Common'
+import { Link } from 'react-router-dom'
 
 const Payment = () => {
-  const [screensize, setScreensize] = useState({ width: window.innerWidth });
+  const [screensize, setScreensize] = useState({ width: window.innerWidth })
 
   useEffect(() => {
     const handleResize = () => {
-      setScreensize({ width: window.innerWidth });
-    };
+      setScreensize({ width: window.innerWidth })
+    }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  const shouldDisplayContainer = screensize.width <= 600;
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+  const shouldDisplayContainer = screensize.width <= 600
   return (
     <div className="h-full">
       <Navbar />
@@ -93,7 +92,7 @@ const Payment = () => {
               <li>
                 <h1>Secure Payment Gateways:</h1>
                 <p>
-                  {" "}
+                  {' '}
                   We integrate robust and secure payment gateways to facilitate
                   smooth and secure transactions.
                 </p>
@@ -101,7 +100,7 @@ const Payment = () => {
               <li>
                 <h1>Multiple Payment Options:</h1>
                 <p>
-                  {" "}
+                  {' '}
                   Allow your customers to pay using various methods, such as
                   credit cards, digital wallets, and bank transfers, catering to
                   different preferences.
@@ -110,7 +109,7 @@ const Payment = () => {
               <li>
                 <h1>Recurring Billing:</h1>
                 <p>
-                  {" "}
+                  {' '}
                   Enable subscription-based models and recurring billing options
                   for your services, enhancing customer convenience and
                   retention.
@@ -119,7 +118,7 @@ const Payment = () => {
               <li>
                 <h1>Payment Tracking and Reporting:</h1>
                 <p>
-                  {" "}
+                  {' '}
                   Gain valuable insights into payment trends and performance
                   through comprehensive tracking and reporting features.
                 </p>
@@ -127,7 +126,7 @@ const Payment = () => {
               <li>
                 <h1>Invoice Generation:</h1>
                 <p>
-                  {" "}
+                  {' '}
                   Automatically generate and send professional invoices to
                   customers upon successful transactions, streamlining your
                   billing process.
@@ -139,6 +138,6 @@ const Payment = () => {
       </div>
       <Footer />
     </div>
-  );
-};
-export default Payment;
+  )
+}
+export default Payment

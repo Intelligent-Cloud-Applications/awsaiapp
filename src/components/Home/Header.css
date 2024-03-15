@@ -1,18 +1,17 @@
-
 *,
 *:before,
-*:after{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+*:after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-.heropic{
+.heropic {
   background: url(/src/utils/waves/2-removebg\ 3.png);
   background-repeat: no-repeat;
 }
 
-.wow{
+.wow {
   --background: url(/src/utils/Animate.svg);
   --bg-image-opacity: 1;
   background-color: black;
@@ -21,7 +20,7 @@
   width: 100%;
   height: 100vh;
 }
-.wow::after{
+.wow::after {
   content: '';
   opacity: var(--bg-image-opacity);
   background: var(--background);
@@ -44,23 +43,23 @@
 /* Media query for small screens (up to 600px) */
 @media (max-width: 600px) {
   .responsive-button {
-      font-size: 75%;
-      padding: 8px 16px;
+    font-size: 75%;
+    padding: 8px 16px;
   }
 }
 
 /* Media query for medium screens (601px to 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
   .responsive-button {
-      font-size: 85%;
-      padding: 12px 24px;
+    font-size: 85%;
+    padding: 12px 24px;
   }
 }
 
 /* Media query for large screens (greater than 1024px) */
 @media (min-width: 1025px) {
   .responsive-button {
-      padding: 14px 28px;
+    padding: 14px 28px;
   }
 }
 
@@ -77,9 +76,7 @@
   }
 } */
 
-
-
-.wrapper{
+.wrapper {
   box-sizing: content-box;
   background-color: transparent;
   height: 50px;
@@ -88,34 +85,34 @@
   color: white;
   width: auto;
 }
-.words{
+.words {
   overflow: hidden;
 }
-.txt{
+.txt {
   display: block;
   height: 100%;
   padding-left: 10px;
-  color: #30AFBC;
+  color: #30afbc;
   animation: spin_words 6s infinite;
 }
-@keyframes spin_words{
-  10%{
-      transform: translateY(-112%);
+@keyframes spin_words {
+  10% {
+    transform: translateY(-112%);
   }
-  25%{
-      transform: translateY(-100%);
+  25% {
+    transform: translateY(-100%);
   }
-  40%{
-      transform: translateY(-212%);
+  40% {
+    transform: translateY(-212%);
   }
-  65%{
-      transform: translateY(-200%);
+  65% {
+    transform: translateY(-200%);
   }
-  75%{
-      transform: translateY(-312%);
+  75% {
+    transform: translateY(-312%);
   }
-  100%{
-      transform: translateY(-300%);
+  100% {
+    transform: translateY(-300%);
   }
   /* 85%{
       transform: translateY(-412%);
