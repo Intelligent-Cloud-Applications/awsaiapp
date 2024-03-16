@@ -233,7 +233,7 @@ const SignUp = () => {
         console.log(phoneNumber)
         const newUserCheck = await Auth.signUp({
           username: `+${countryCode}${phoneNumber}`,
-          password: 'Avishek@123',
+          password: 'Password@123',
           institutionName: institutionName,
           attributes: {
             phone_number: `+${countryCode}${phoneNumber}`,
