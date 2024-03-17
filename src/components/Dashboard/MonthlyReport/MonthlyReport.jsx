@@ -314,7 +314,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       <NavBar />
       {renderButton()}
       {/* dropdown to select year */}
-      <div className="flex w-[100vw] justify-center mt-[-2.5rem]">
+      <div className="flex w-[100vw] justify-center mt-[-6.5rem]">
         <div class="w-[90vw] h-14 relative rounded-2xl" style={{
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
         }}>

@@ -287,7 +287,7 @@ const PendingClients = (props) => {
 
                         <div className="w-[95%] flex  justify-end m-[0.8rem] max600:ml-[-3rem] max450:mr-[-3rem] max375:ml-[-3rem] gap-3 ">
                           
-                          <div className=" ml-[-4rem] relative max950:mr-[3rem] max800:mr-28 h-6">
+                          <div className=" ml-[-4rem] relative max950:mr-[3rem] max800:mr-28 h-6 max450:hidden">
                             <FormControl className=" flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[10rem] max600:w-[8rem]  max450:w-[6rem] max375:w-[5rem]  max800:font-[1px] ">
                               <Select
                                 value={
@@ -329,12 +329,13 @@ const PendingClients = (props) => {
   //   pathname: "/full",
   //   search: `?institutionName=happyprancer`,
   // }}
-  className="ml-8 focus:outline-none"
+  className="ml-8 focus:outline-none "
 >
   <img
-    className="w-6 h-6"
+    className="w-6 h-6 max478:w-10 "
     src={personIcon}
     alt="Track"
+    
   />
 </Link>
 

@@ -9,7 +9,7 @@ import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
 import MemberList from '../components/Dashboard/MemberList/MembersList';
 import MonthlyReport from '../components/Dashboard/MonthlyReport/MonthlyReport';
 import LeadsList from "../components/Dashboard/LeadsList/LeadsList";
-
+import { Link } from 'react-router-dom';
 
 const DashBoard = () => {
   const [click, setClick] = useState(0);
@@ -73,6 +73,19 @@ const DashBoard = () => {
     <div className="flex flex-col items-center w-screen h-screen">
       <div className="w-[100vw]">
         <NavBar />
+       
+      </div>
+      <div>
+      {Ctx.userData.userType === 'admin' && Ctx.userData.institutionName !== 'awsaiapp' && (
+  <div class="w-[90vw] h-14 ml-2 relative rounded-2xl mt-20" style={{
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
+  }}>
+    <div className="flex justify-between items-center h-full text-stone-900 text-xl max800:text-[white]">
+      <p className="max700:text-[20px] pl-4">Do you want to change your Website?</p>
+      <Link to="/edit" className="text-white bg-[#30AFBC] px-4 py-0.5 rounded text-small mr-4">Edit</Link>
+    </div>
+  </div>
+)}
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
         <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 ">
@@ -84,6 +97,7 @@ const DashBoard = () => {
         </div>
 
         <div className="flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]">
+      
           <div className="">{displayAfterClick()}</div>
         </div>
       </div>

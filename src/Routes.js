@@ -28,7 +28,7 @@ import Complete from "./pages/Complete";
 import Pay from "./pages/Pay";
 import Context from "./context/Context";
 import Full from "./pages/Full";
-
+import Edit from "./pages/Edit";
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
   const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
@@ -70,6 +70,7 @@ const RoutesContainer = () => {
       <Route path="/pay" element={<Pay />} />
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
       <Route path="/full" element={<Full />} />
+      <Route path="/edit" element={<Edit />} />
     </Routes>
   );
 };
