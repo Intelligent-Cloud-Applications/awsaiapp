@@ -41,7 +41,7 @@ const Full = () => {
 
           const productResponse = await API.get(
             'clients',
-            `/user/development-form/get-product/${institutionNames}`,
+            `/user/development-form/get-subscription/${institutionNames}`,
           )
           await setSubscriptionDetails(productResponse)
 

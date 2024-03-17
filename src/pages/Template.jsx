@@ -192,7 +192,7 @@ const Template = () => {
 
         const productResponse = await API.get(
           "clients",
-          `/user/development-form/get-product/${institutionId}`
+          `/user/development-form/get-subscription/${institutionId}`
           );
 
         const instructorResponse = await API.get(
