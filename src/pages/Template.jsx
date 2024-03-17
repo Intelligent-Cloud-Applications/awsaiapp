@@ -21,8 +21,8 @@ const Template = () => {
 
  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
-  const [loader, setLoader] = useState(false);
- console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+  // const [loader, setLoader] = useState(false);
+//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   // const [error, setError] = useState(null);
   
   const [logo, setLogo] = useState(null);
@@ -172,16 +172,19 @@ const Template = () => {
   });
 
   const Ctx = useContext(Context);
-
+  const util = useContext(Context).util;
   useEffect(() => {
     console.log(policies);
     }, [policies]);
-
+    const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
+      if (!loaderInitialized) { 
+        util.setLoader(true); 
+        setLoaderInitialized(true);
+      }
       try {
-        setLoader(true);
         const templateResponse = await API.get(
           "clients",
           `/user/development-form/get-user/${institutionId}`
@@ -197,15 +200,17 @@ const Template = () => {
           `/user/development-form/get-instructor/${institutionId}`
           );
 
-//        console.log(templateResponse);
-//        console.log(productResponse);
-//        console.log(instructorResponse);
+       console.log('hhhhssdsdsd',templateResponse);
+       console.log("😒😒😒😒",productResponse);
+       console.log("disidisdd",instructorResponse);
 
         if (templateResponse) {
 //          console.log("HELLO1");
 
           // COMPANY
-          setCompanyName(templateResponse.companyName);
+          setCompanyName(institutionId);
+          setLightPrimaryColor(templateResponse.LightPrimaryColor);
+          setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
           setPrimaryColor(templateResponse.PrimaryColor);
           setSecondaryColor(templateResponse.SecondaryColor);
           setSelectedFile(templateResponse.logoUrl);
@@ -239,17 +244,18 @@ const Template = () => {
           }
 
           // SERVICES
-          setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1);
-          setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2);
-          setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1);
+          setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1 || '');
+          setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2 || '');
+          setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1 || '');
 
           setServices([
-            {title: templateResponse.src_Components_Home_Header3__h5_1, description: templateResponse.src_Components_Home_Header3__p_1},
-            {title: templateResponse.src_Components_Home_Header3__h5_2, description: templateResponse.src_Components_Home_Header3__p_2},
-            {title: templateResponse.src_Components_Home_Header3__h5_3, description: templateResponse.src_Components_Home_Header3__p_3}
+            {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
+            {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
+            {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
           ]);
 
-          setDanceTypes(templateResponse.ClassTypes);
+          if (templateResponse.ClassTypes)
+            setDanceTypes(templateResponse.ClassTypes);
 
           // TESTIMONIALS
           url = templateResponse.Testimonial[0].img;
@@ -305,9 +311,10 @@ const Template = () => {
             'About Us': templateResponse.AboutUs,
             'Refund Policy': templateResponse.Refund,
             'Terms and Conditions': templateResponse.TermsData.map(obj => {
-              obj.heading = obj.title;
-              obj.title = undefined;
-              return obj;
+              const obj2 = {...obj}
+              obj2.heading = obj2.title;
+              obj2.title = undefined;
+              return obj2;
             }),
           })
 
@@ -324,6 +331,7 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
+          console.log(productResponse);
           setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {
@@ -348,25 +356,28 @@ const Template = () => {
             inst[i].emailId = instructorResponse[i].emailId;
             inst[i].position = instructorResponse[i].position;
             inst[i].instructorId = instructorResponse[i].instructorId;
+            inst[i].institution = instructorResponse[i].institution;
           }
           setInstructors(inst);
         }
 
-        setLoader(false);
+//        setLoader(false);
       } catch (error) {
         console.error("Error fetching details:", error);
-        setLoader(false);
+//        setLoader(false);
+      } finally {
+        util.setLoader(false);
       }
     }
 
     fetchData();
-  }, [Ctx.userData.institutionName]);
-
+  }, [Ctx.userData.institutionName, loaderInitialized, util]);
+  const institutionId = Ctx.userData.institutionName;
 
   const handleCompanyUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`${companyName}/images/${logo.name}`, logo, {
+      const response = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
 
@@ -381,8 +392,8 @@ const Template = () => {
       };
       await API.put("clients", "/user/development-form/company", {
         body: {
-          institutionid: companyName,
-          companyName,
+          institutionid: institutionId ,
+          companyName:institutionId ,
           PrimaryColor,
           SecondaryColor,
           logoUrl: imageUrl,
@@ -397,7 +408,7 @@ const Template = () => {
   const handleHomeUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`${companyName}/${video.name}`, video, {
+      const response = await Storage.put(`${institutionId}/${video.name}`, video, {
         contentType: video.type,
       });
 
@@ -407,7 +418,7 @@ const Template = () => {
       setVideo(videoUrl);
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           TagLine,
           videoUrl,
         },
@@ -430,7 +441,7 @@ const Template = () => {
       const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           src_Components_Home_Why__h1,
           src_Components_Home_Header3__h1,
           src_Components_Home_Header3__h2,
@@ -454,7 +465,7 @@ const Template = () => {
 
     try {
 
-      const response1 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
+      const response1 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
         contentType: testimonials[0].actualFile.type,
       });
 
@@ -462,7 +473,7 @@ const Template = () => {
       let imageUrl1 = await Storage.get(response1.key);
       imageUrl1 = imageUrl1.split("?")[0];
 
-      const response2 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[1].uploadedFile}`, testimonials[1].actualFile, {
+      const response2 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[1].uploadedFile}`, testimonials[1].actualFile, {
         contentType: testimonials[1].actualFile.type,
       });
 
@@ -470,7 +481,7 @@ const Template = () => {
       let imageUrl2 = await Storage.get(response2.key);
       imageUrl2 = imageUrl2.split("?")[0];
 
-      const response3 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[2].uploadedFile}`, testimonials[2].actualFile, {
+      const response3 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[2].uploadedFile}`, testimonials[2].actualFile, {
         contentType: testimonials[2].actualFile.type,
       });
 
@@ -481,7 +492,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           Testimonial: [
             {
               name: testimonials[0].name,
@@ -524,13 +535,13 @@ const Template = () => {
           // Make API call for each subscription
           const response = await API.put("clients", "/user/development-form/subscriptions", {
             body: {
-              institution: companyName,
+              institution: institutionId,
               ...subscription
             }
           });
-          const sub = [...subscription];
-          sub[i].institution = response.institution;
-          sub[i].productId = response.productId;
+          const sub = [...subscriptions];
+          sub[i].institution = response.Attributes.institution;
+          sub[i].productId = response.Attributes.productId;
           setSubscriptions(sub);
         }
       }
@@ -554,7 +565,7 @@ const Template = () => {
       }));
       await API.put("clients", "/user/development-form/faq", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           //   FAQ: [
           //     {
           //       Title: faqs[0].question,
@@ -592,7 +603,7 @@ const Template = () => {
       for (let i = 0; i < instructors.length; i++) {
         const instructor = instructors[i];
         if (instructor.actualFile) {
-          const response = await Storage.put(`institution-utils/${companyName}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+          const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
             contentType: instructor.actualFile.type,
           });
           let inst_pic = await Storage.get(response.key);
@@ -615,7 +626,7 @@ const Template = () => {
                   institution: Ctx.userData.institutionName,
                   name: instructor.name,
                   emailId: instructor.emailId,
-                  image: instructor.imgSrc,
+                  image: uploadedImages[i],
                   position: instructor.position,
                 },
               });
@@ -623,15 +634,20 @@ const Template = () => {
             else {
               const response = await API.put("clients", "/user/development-form/instructor", {
                 body: {
-                  institution: companyName,
+                  institution: institutionId,
                   name: instructor.name,
                   emailId: instructor.emailId,
                   image: uploadedImages[i],
                   position: instructor.position,
                 },
               });
-              const inst = [...instructor];
-              inst[i].instructorId = response.instructorId;
+              const inst = [...instructors];
+              console.log(inst);
+              console.log(response);
+              inst[i].instructorId = response.Attributes.instructorId;
+              inst[i].institution = response.Attributes.institution;
+              console.log(inst);
+              setInstructors(inst)
             }
 //            console.log("API Response:", response);
           } catch (error) {
@@ -654,11 +670,13 @@ const Template = () => {
     try {
       await API.put("clients", "/user/development-form/policy", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           PrivacyPolicy: policies['Privacy Policy'],
           TermsData: policies['Terms and Conditions'].map(obj => {
-            obj.title = obj.heading;
-            return obj;
+            const obj2 = {...obj};
+            obj2.title = obj2.heading;
+            obj2.heading = undefined;
+            return obj2;
           }),
           Refund: policies['Refund Policy'],
           AboutUs: policies['About Us'],
@@ -675,7 +693,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/contact", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           Query_Address: contactInfo.address,
           Query_PhoneNumber: contactInfo.phoneNumber,
           Query_EmailId: contactInfo.email,
@@ -698,14 +716,14 @@ const Template = () => {
 
   const fetchClients = async (institution) => {
     try {
-      setLoader(true);
+//      setLoader(true);
       const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
 //      console.log(response)
       setCompanydata(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
-      setLoader(false);
+//      setLoader(false);
     }
   };
 
@@ -726,10 +744,7 @@ const Template = () => {
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-          if (!companyName) {
-            alert("Please enter the company name before proceeding.");
-            return prevSection;
-          }
+       
           handleCompanyUpload();
           break;
           case 1:
