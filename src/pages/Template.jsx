@@ -744,10 +744,7 @@ const Template = () => {
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-          if (!companyName) {
-            alert("Please enter the company name before proceeding.");
-            return prevSection;
-          }
+       
           handleCompanyUpload();
           break;
           case 1:
