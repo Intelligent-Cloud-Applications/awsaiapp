@@ -372,12 +372,12 @@ const Template = () => {
 
     fetchData();
   }, [Ctx.userData.institutionName, loaderInitialized, util]);
-
+  const institutionId = Ctx.userData.institutionName;
 
   const handleCompanyUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`${companyName}/images/${logo.name}`, logo, {
+      const response = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
 
@@ -392,8 +392,8 @@ const Template = () => {
       };
       await API.put("clients", "/user/development-form/company", {
         body: {
-          institutionid: companyName,
-          companyName,
+          institutionid: institutionId ,
+          companyName:institutionId ,
           PrimaryColor,
           SecondaryColor,
           logoUrl: imageUrl,
@@ -408,7 +408,7 @@ const Template = () => {
   const handleHomeUpload = async () => {
     try {
       // Upload the file to S3 with the filename as Cognito User ID
-      const response = await Storage.put(`${companyName}/${video.name}`, video, {
+      const response = await Storage.put(`${institutionId}/${video.name}`, video, {
         contentType: video.type,
       });
 
@@ -418,7 +418,7 @@ const Template = () => {
       setVideo(videoUrl);
       await API.put("clients", "/user/development-form/hero-page", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           TagLine,
           videoUrl,
         },
@@ -441,7 +441,7 @@ const Template = () => {
       const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           src_Components_Home_Why__h1,
           src_Components_Home_Header3__h1,
           src_Components_Home_Header3__h2,
@@ -465,7 +465,7 @@ const Template = () => {
 
     try {
 
-      const response1 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
+      const response1 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
         contentType: testimonials[0].actualFile.type,
       });
 
@@ -473,7 +473,7 @@ const Template = () => {
       let imageUrl1 = await Storage.get(response1.key);
       imageUrl1 = imageUrl1.split("?")[0];
 
-      const response2 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[1].uploadedFile}`, testimonials[1].actualFile, {
+      const response2 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[1].uploadedFile}`, testimonials[1].actualFile, {
         contentType: testimonials[1].actualFile.type,
       });
 
@@ -481,7 +481,7 @@ const Template = () => {
       let imageUrl2 = await Storage.get(response2.key);
       imageUrl2 = imageUrl2.split("?")[0];
 
-      const response3 = await Storage.put(`institution-utils/${companyName}/images/Testimonial/${testimonials[2].uploadedFile}`, testimonials[2].actualFile, {
+      const response3 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[2].uploadedFile}`, testimonials[2].actualFile, {
         contentType: testimonials[2].actualFile.type,
       });
 
@@ -492,7 +492,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           Testimonial: [
             {
               name: testimonials[0].name,
@@ -535,7 +535,7 @@ const Template = () => {
           // Make API call for each subscription
           const response = await API.put("clients", "/user/development-form/subscriptions", {
             body: {
-              institution: companyName,
+              institution: institutionId,
               ...subscription
             }
           });
@@ -565,7 +565,7 @@ const Template = () => {
       }));
       await API.put("clients", "/user/development-form/faq", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           //   FAQ: [
           //     {
           //       Title: faqs[0].question,
@@ -603,7 +603,7 @@ const Template = () => {
       for (let i = 0; i < instructors.length; i++) {
         const instructor = instructors[i];
         if (instructor.actualFile) {
-          const response = await Storage.put(`institution-utils/${companyName}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+          const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
             contentType: instructor.actualFile.type,
           });
           let inst_pic = await Storage.get(response.key);
@@ -634,7 +634,7 @@ const Template = () => {
             else {
               const response = await API.put("clients", "/user/development-form/instructor", {
                 body: {
-                  institution: companyName,
+                  institution: institutionId,
                   name: instructor.name,
                   emailId: instructor.emailId,
                   image: uploadedImages[i],
@@ -670,7 +670,7 @@ const Template = () => {
     try {
       await API.put("clients", "/user/development-form/policy", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           PrivacyPolicy: policies['Privacy Policy'],
           TermsData: policies['Terms and Conditions'].map(obj => {
             const obj2 = {...obj};
@@ -693,7 +693,7 @@ const Template = () => {
 
       await API.put("clients", "/user/development-form/contact", {
         body: {
-          institutionid: companyName,
+          institutionid: institutionId,
           Query_Address: contactInfo.address,
           Query_PhoneNumber: contactInfo.phoneNumber,
           Query_EmailId: contactInfo.email,
