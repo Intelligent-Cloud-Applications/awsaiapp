@@ -40,7 +40,7 @@ const MemberList = ({ institution: tempInstitution }) => {
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [memberData, setMemberData] = useState([]);
-  // eslint-disable-next-line
+      // eslint-disable-next-line
   const [IsDashboard, setIsDashboard] = useState(false);
   const Navigate = useNavigate();
   const location = useLocation();
@@ -310,56 +310,47 @@ const MemberList = ({ institution: tempInstitution }) => {
 
   const handleDeleteMember = async (e) => {
     e.preventDefault();
-    if (institution !== "awsaiapp") {
-      Swal.fire({
-        icon: "error",
-        title: "You can't delete a member",
-      });
-      util.setLoader(false);
-      setIsEditUser(false);
-    } else {
-      Swal.fire({
-        title: "Delete User",
-        text: "Are you sure you want to delete this user?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const apiName = "clients";
-          const path = "/user/delete-member";
-          const myInit = {
-            body: {
-              institution: institution,
-              cognitoId: cognitoId,
-            },
-          };
+    Swal.fire({
+      title: "Delete User",
+      text: "Are you sure you want to delete this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const apiName = "clients";
+        const path = "/user/delete-member";
+        const myInit = {
+          body: {
+            institution: institution,
+            cognitoId: cognitoId,
+          },
+        };
 
-          API.del(apiName, path, myInit)
-            .then(() => {
-              const updatedMemberData = memberData.filter(
-                (member) => member.cognitoId !== cognitoId
-              );
-              setMemberData(updatedMemberData);
-              Swal.fire({
-                icon: "success",
-                title: "User Deleted",
-              });
-              util.setLoader(false);
-              setIsEditUser(false);
-            })
-            .catch((error) => {
-              console.error("Error deleting member:", error);
-              Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "An error occurred while deleting the member.",
-              });
+        API.del(apiName, path, myInit)
+          .then(() => {
+            const updatedMemberData = memberData.filter(
+              (member) => member.cognitoId !== cognitoId
+            );
+            setMemberData(updatedMemberData);
+            Swal.fire({
+              icon: "success",
+              title: "User Deleted",
             });
-        }
-      });
-    }
+            util.setLoader(false);
+            setIsEditUser(false);
+          })
+          .catch((error) => {
+            console.error("Error deleting member:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "An error occurred while deleting the member.",
+            });
+          });
+      }
+    });
   };
 
   const handleDeleteSelected = async () => {
@@ -847,13 +838,14 @@ const MemberList = ({ institution: tempInstitution }) => {
                   >
                     Update
                   </button>
-                  <button
-                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
-                    onClick={handleDeleteMember}
-                  >
-                    Delete
-                  </button>
-
+                  {institution && institution !== tempInstitution && (
+                    <button
+                      className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222] hover:bg-[#ff3333] "
+                      onClick={handleDeleteMember}
+                    >
+                      Delete
+                    </button>
+                  )}
                   <button
                     className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
                     onClick={handleCancelEdit}
