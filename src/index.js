@@ -19,15 +19,15 @@ Amplify.configure({
     userPoolId:
       process.env.STAGE === 'PROD'
         ? 'us-east-1_a3Fk5S3hh'
-        : 'us-east-1_a3Fk5S3hh',
+        : 'us-east-2_L3E5BSjIf',
     identityPoolId:
       process.env.STAGE === 'PROD'
         ? 'us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6'
-        : 'us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6',
+        : 'us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d',
     userPoolWebClientId:
       process.env.STAGE === 'PROD'
         ? 'jevucp6v2ehehqerq0rlgn4d8'
-        : 'jevucp6v2ehehqerq0rlgn4d8',
+        : '5pqia04a65b3ef6fbmpoccj4vl',
     oauth: {
       responseType: 'token',
     },
@@ -37,8 +37,8 @@ Amplify.configure({
     bucket: 'institution-utils',
     identityPoolId:
       process.env.STAGE === 'PROD'
-        ? 'us-east-2:fcc57a23-9e12-4bd0-9266-3fa44581bebe'
-        : 'us-east-2:6a989bd3-6905-4c5d-b2ea-6101ccfbedd3',
+        ? 'us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6'
+        : 'us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d',
   },
   API: {
     endpoints: [
