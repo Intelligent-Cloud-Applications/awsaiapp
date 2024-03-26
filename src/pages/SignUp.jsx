@@ -24,7 +24,6 @@ const SignUp = () => {
   const [confirmationCode, setConfirmationCode] = useState(0)
   const [err, setErr] = useState('')
   // const [passwordVisible, setPasswordVisible] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(true)
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   }
@@ -38,13 +37,13 @@ const SignUp = () => {
   const [counter, setCounter] = useState(60) // Timer counter
   const [resendVisible, setResendVisible] = useState(false) // Resend OTP visibility
 
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search)
+  // useEffect(() => {
+  //   const query = new URLSearchParams(window.location.search)
 
-    if (query.get('newuser') === 'false') {
-      setIsNewUser(false)
-    }
-  }, [])
+  //   if (query.get('newuser') === 'false') {
+  //     setIsNewUser(false)
+  //   }
+  // }, [])
 
   // Function to handle resend OTP
   const resendOTP = async (event) => {
@@ -80,10 +79,6 @@ const SignUp = () => {
     }
   }, [counter])
 
-  // const passwordVisibilityChange = () => {
-  //   setPasswordVisible((prevState) => !prevState);
-  // };
-
   const form1Validator = () => {
     console.log(phoneNumber.length)
 
@@ -103,7 +98,6 @@ const SignUp = () => {
       setErr('Enter a Country Name')
       return false
     } else if (institutionName.length === 0) {
-      // Added validation for institutionName
       setErr('Enter the Institution Name')
       return false
     } else {
@@ -122,102 +116,6 @@ const SignUp = () => {
     }
   }
 
-  const userExistPhoneNumberSignUp = async () => {
-    try {
-      console.log('Sign in')
-      await Auth.signIn(`+${countryCode}${phoneNumber}`)
-      console.log('post')
-      const userdata = await API.post(
-        'clients',
-        '/user/signup-members/awsaiapp',
-        {
-          body: {
-            emailId: email,
-            userName: `${firstName} ${lastName}`,
-            phoneNumber: `${countryCode}${phoneNumber}`,
-            country: country,
-            institutionName: institutionName,
-          },
-        },
-      )
-      //Temporary
-      // userdata.Status = true;
-      UserCtx.setUserData(userdata)
-      UserCtx.setIsAuth(true)
-      UtilCtx.setLoader(false)
-      alert('Signed Up')
-      // client dashboard
-      if (userdata.status === 'Active') {
-        UtilCtx.setLoader(false)
-        Navigate('/dashboard')
-      }
-      UtilCtx.setLoader(false)
-      Navigate('/Pricing')
-    } catch (error) {
-      UtilCtx.setLoader(false)
-      if (error.message === 'Incorrect username or password.') {
-        console.log("Phone Number User Doesn't Exist")
-        await userExistEmailIdSignUp()
-      }
-      throw error
-    } finally {
-      UtilCtx.setLoader(false)
-    }
-  }
-
-  const userExistEmailIdSignUp = async () => {
-    try {
-      console.log('Sign in')
-      await Auth.signIn(`+${countryCode}${phoneNumber}`)
-      console.log('post')
-      const userdata = await API.post(
-        'clients',
-        '/user/signup-members/awsaiapp',
-        {
-          body: {
-            emailId: email,
-            userName: `${firstName} ${lastName}`,
-            phoneNumber: `${countryCode}${phoneNumber}`,
-            country: country,
-            institutionName: institutionName,
-          },
-        },
-      )
-      //Temporary
-      // userdata.Status = true;
-      UserCtx.setUserData(userdata)
-      UserCtx.setIsAuth(true)
-      UtilCtx.setLoader(false)
-      alert('Signed Up')
-      if (userdata.status === 'Active') {
-        UtilCtx.setLoader(false)
-        Navigate('/dashboard')
-      }
-      UtilCtx.setLoader(false)
-      Navigate('/Pricing')
-    } catch (error) {
-      UtilCtx.setLoader(false)
-      console.log('Error:', error.message)
-      throw error
-    } finally {
-      UtilCtx.setLoader(false)
-    }
-  }
-
-  const sendOTP = async () => {
-    UtilCtx.setLoader(true)
-    try {
-      const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-      setSigninResponse(response)
-      setNewUser(true)
-      console.log(response)
-    } catch (e) {
-      setErr(e.message)
-    } finally {
-      UtilCtx.setLoader(false)
-    }
-  }
-
   const onSubmit = async (event) => {
     event.preventDefault()
 
@@ -225,30 +123,36 @@ const SignUp = () => {
 
     try {
       if (form1Validator()) {
-        if (!isNewUser) {
-          await userExistPhoneNumberSignUp()
-          UtilCtx.setLoader(false)
-          return
+        //        if (!isNewUser) {
+        //          await userExistPhoneNumberSignUp()
+        //          UtilCtx.setLoader(false)
+        //          return
+        //        }
+        // TRY TO SIGNUP
+        try {
+          await Auth.signUp({
+            username: `+${countryCode}${phoneNumber}`,
+            password: 'Password@123',
+            attributes: {
+              phone_number: `+${countryCode}${phoneNumber}`,
+              name: `${firstName} ${lastName}`,
+              email: email,
+            },
+          })
+        } catch (e) {
+          console.error(e)
+        } finally {
+          // EVEN IF THERE IS AN ERROR, TRY TO SIGNIN
+          const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
+          console.log(response)
+          setSigninResponse(response)
+          setNewUser(true)
         }
-        console.log(phoneNumber)
-        const newUserCheck = await Auth.signUp({
-          username: `+${countryCode}${phoneNumber}`,
-          password: 'Password@123',
-          institutionName: institutionName,
-          attributes: {
-            phone_number: `+${countryCode}${phoneNumber}`,
-            name: `${firstName} ${lastName}`,
-            email: email,
-          },
-        })
-        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-        setSigninResponse(response)
-        setNewUser(newUserCheck)
       }
       UtilCtx.setLoader(false)
     } catch (e) {
       if (e.message === 'User already exists') {
-        await sendOTP()
+        await resendOTP()
         UtilCtx.setLoader(false)
         return
       }

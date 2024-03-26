@@ -5,8 +5,6 @@ import Context from '../context/Context'
 import Swal from 'sweetalert2'
 import Navbar from '../components/Home/Navbar'
 import LockIcon from '../utils/Assets/Dashboard/images/SVG/LockIcon.svg'
-// import GoogleIcon from '../utils/png/Google.png';
-// import FacebookIcon from '../utils/png/Facebook.png';
 import LoginPng from '../utils/Assets/Login.png'
 import Country from '../components/Auth/Country'
 import './Login.css'
@@ -14,24 +12,34 @@ import './Login.css'
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [countryCode, setCountryCode] = useState('91')
-  const [isPhoneNumberLoginValid, setIsPhoneNumberLoginValid] = useState(true)
-  // const [passwordVisible, setPasswordVisible] = useState(true);
   const [error, setError] = useState('')
   const UtilCtx = useContext(Context).util
   const UserCtx = useContext(Context)
   const [otp, setOtp] = useState('')
   const [signinResponse, setSigninResponse] = useState(null)
-  const [email, setEmail] = useState('')
   const Navigate = useNavigate()
 
   console.log(UserCtx)
   const sendOTP = async (event) => {
     event.preventDefault()
     UtilCtx.setLoader(true)
+
     try {
-      const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-      setSigninResponse(response)
-      console.log(response)
+      const exist = await API.post('clients', `/any/phone-exists/awsaiapp`, {
+        body: {
+          phoneNumber: `+${countryCode}${phoneNumber}`,
+        },
+      })
+      if (exist) {
+        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
+        setSigninResponse(response)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Sign Up First',
+        })
+        Navigate('/signup')
+      }
     } catch (e) {
       setError(e.message)
     } finally {
@@ -44,11 +52,9 @@ const Login = () => {
     UtilCtx.setLoader(true)
     try {
       const user = await Auth.sendCustomChallengeAnswer(signinResponse, otp)
-      // console.log(await Auth.currentSession());
+      console.log(await Auth.currentSession())
       if (user) {
-        console.log(user)
         const userdata = await API.get('clients', '/self/read-self/awsaiapp')
-        console.log('User data:', userdata)
         if (
           userdata.userType === 'admin' &&
           userdata.institution === 'awsaiapp' &&
@@ -150,7 +156,7 @@ const Login = () => {
       if (e.toString().split(' code ')[1]?.trim() === '404') {
         console.log('User Not Found')
         alert('Contact us for login')
-        Navigate('/Query?newuser=false')
+        // Navigate('/Query?newuser=false')
         setError('')
       } else {
         setError(e.message)
@@ -181,32 +187,17 @@ const Login = () => {
               Login
             </h2>
             <form className="flex flex-col items-center">
-              {/* <select
+              <select
+                name="countryCode"
+                id=""
+                value={countryCode}
                 className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
-                value={institution}
-                onChange={(e) => handleInstitutionChange(e.target.value)}
-
+                onChange={(e) => {
+                  setCountryCode(e.target.value.toString())
+                }}
               >
-                <option value="">Select your Institution</option>
-                {institutionName.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select> */}
-              {isPhoneNumberLoginValid && (
-                <select
-                  name="countryCode"
-                  id=""
-                  value={countryCode}
-                  className="Inter text-[#a0a0a0] pl-2 w-[20rem] p-2 border rounded-[0.5rem] mb-6"
-                  onChange={(e) => {
-                    setCountryCode(e.target.value.toString())
-                  }}
-                >
-                  {<Country />}
-                </select>
-              )}
+                {<Country />}
+              </select>
               <div className="mb-4 relative flex flex-col items-end">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -220,40 +211,23 @@ const Login = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                {/* <input
-                  type="text"
-                  name="email"
-                  value={phoneNumber}
-                  onChange={handleInputChange}
-                  className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
-                  placeholder="phone number"
-                /> */}
                 <input
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem] mb-2"
                   type="text"
                   placeholder="Enter Phone"
-                  value={isPhoneNumberLoginValid ? phoneNumber : email}
+                  value={phoneNumber}
                   onChange={(e) => {
                     const inputValue = e.target.value
                     if (/^\d+$/.test(inputValue)) {
                       if (inputValue.length >= 0 && inputValue.length <= 10) {
-                        setIsPhoneNumberLoginValid(true)
                         setPhoneNumber(inputValue)
                       }
-                    } else {
-                      setIsPhoneNumberLoginValid(false)
-                      setEmail(inputValue)
                     }
                   }}
                 />
                 <button
                   className="text-[#017E2B] text-[0.8rem] font-[600] hover:underline"
-                  // style={{
-                  //   backgroundColor: InstitutionData.LightPrimaryColor,
-                  //   opacity: phoneNumber ? 1 : 0.5,
-                  // }}
                   onClick={sendOTP}
-                  // disabled={!phoneNumber}
                 >
                   {signinResponse ? 'Resend OTP' : 'Send OTP'}
                 </button>
