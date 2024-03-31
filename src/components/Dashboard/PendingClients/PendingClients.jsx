@@ -31,19 +31,18 @@ const PendingClients = (props) => {
   const { userData,setUserData,pending } = useContext(Context);
   const UtilCtx = useContext(Context).util;
   const clientsData = Object.entries(pending.data);
-  async function updateDelivery(paymentId, isDelivered, cognitoId) {
+  async function updateDelivery(isDelivered, cognitoId) {
     try {
       const response = await API.put("clients", "/admin/update-delivery", {
         body: {
-          paymentId,
           isDelivered,
-          cognitoId,
+          cognitoId
         },
       });
-      return response; // Return the response if needed
+      return response;
     } catch (error) {
       console.error("Error updating delivery status:", error);
-      throw error; // Throw the error for further handling
+      throw error;
     }
   }
 
@@ -54,36 +53,29 @@ const PendingClients = (props) => {
         const updatedClients = [...clientsData];
         const selectedClient = updatedClients[index][1];
         selectedClient.isDelivered = newStatus;
-  
+
         await updateDelivery(
-          selectedClient.productId,
           newStatus,
           selectedClient.cognitoId
         );
-  
-        // Update userData context
-        const updatedUserData = { ...userData }; // Make a copy of userData
-        // Find the user in userData by cognitoId
+
+        const updatedUserData = { ...userData };
         const userToUpdateIndex = updatedUserData.findIndex(
           (user) => user.cognitoId === selectedClient.cognitoId
         );
         if (userToUpdateIndex !== -1) {
-          // Update isDelivered property of the user
           updatedUserData[userToUpdateIndex].isDelivered = newStatus;
-          // Update userData context with modified user information
-          setUserData(updatedUserData); // Assuming setUserData is a function to update the userData context
+          setUserData(updatedUserData); 
         }
-  
+
         UtilCtx.setLoader(false);
-        setData(updatedClients); // Update state after successful API call
+        setData(updatedClients); 
       } catch (error) {
         UtilCtx.setLoader(false);
-        console.error("Error updating delivery status:", error);
-        // Handle error, show a message, or revert changes if needed
+        console.error("Error updating delivery status:", error);  
       }
     }
   };
-  
 
 
   // const Navigate = useNavigate();
