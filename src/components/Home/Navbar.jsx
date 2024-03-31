@@ -78,7 +78,7 @@ const Navbar = () => {
               <button
                 onClick={() => {
                   console.log("User data:", UserCtx.userData);
-                  if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
+                  if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName !== "awsaiapp" && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
                     console.log("Navigating to /Dashboard");
                     Navigate("/Dashboard");
                   } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === false) {
