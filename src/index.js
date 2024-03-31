@@ -17,15 +17,15 @@ Amplify.configure({
     mandatorySignIn: true,
     region: "us-east-1",
     userPoolId:
-      process.env.REACT_APP_STAGE === "PROD"
+      process.env.STAGE === "PROD"
         ? "us-east-1_a3Fk5S3hh"
         : "us-east-2_L3E5BSjIf",
     identityPoolId:
-      process.env.REACT_APP_STAGE === "PROD"
+      process.env.STAGE === "PROD"
         ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
         : "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
     userPoolWebClientId:
-      process.env.REACT_APP_STAGE === "PROD"
+      process.env.STAGE === "PROD"
         ? "jevucp6v2ehehqerq0rlgn4d8"
         : "5pqia04a65b3ef6fbmpoccj4vl",
     oauth: {
