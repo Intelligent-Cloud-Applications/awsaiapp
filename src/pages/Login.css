@@ -1,13 +1,13 @@
 @media (max-width: 767px) {
-  .mobile1 {
-    width: 100vw;
-    box-shadow: none !important;
-    margin-top: 2rem;
-  }
+    .mobile1 {
+        width: 100vw;
+        box-shadow: none !important;
+        margin-top: 2rem;
+    }
 
-  .mobile2 {
-    background-color: #30afbc;
-    width: 100vw;
-    border-radius: 2rem 2rem 0 0;
-  }
+    .mobile2 {
+        background-color: #30AFBC;
+        width: 100vw;
+        border-radius: 2rem 2rem 0 0;
+    }
 }

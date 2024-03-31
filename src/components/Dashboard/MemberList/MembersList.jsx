@@ -1,199 +1,199 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
-import Context from '../../../context/Context'
-import { API } from 'aws-amplify'
-import Pagination from '@mui/material/Pagination'
-import Swal from 'sweetalert2'
+import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+import Context from "../../../context/Context";
+import { API } from "aws-amplify";
+import Pagination from "@mui/material/Pagination";
+import Swal from "sweetalert2";
 import BackImg from '../../../utils/Assets/Dashboard/images/PNG/Back.png'
-import Bworkz from '../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg'
-import SearchIcon from '../../../utils/Assets/Dashboard/images/SVG/Search.svg'
-import Arrow from '../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg'
-import personIcon from '../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg'
-import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png'
-import Select from '../../../utils/Assets/Dashboard/images/SVG/Thunder.svg'
-import Add from '../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg'
-import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg'
-import Selections from '../../../utils/Assets/Dashboard/images/SVG/Selections.svg'
-import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg'
-import Navbar from '../../Home/Navbar'
+import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
+import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
+import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
+import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
+import AdminPic from "../../../utils/Assets/Dashboard/images/PNG/Adminuser.png";
+import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
+import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
+import CSV from "../../../utils/Assets/Dashboard/images/SVG/CSV.svg";
+import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
+import Filter from "../../../utils/Assets/Dashboard/images/SVG/Filter.svg";
+import Navbar from "../../Home/Navbar";
 // import LeftBanner from "../LeftBanner/LeftBanner";
-import './MembersList.css'
+import "./MembersList.css";
 
 const MemberList = ({ institution: tempInstitution }) => {
-  const itemsPerPage = 5
-  const [currentPage, setCurrentPage] = useState(1)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [userStatus, setUserStatus] = useState('all')
-  const [selectedRow, setSelectedRow] = useState([])
-  const [isUserAdd, setIsUserAdd] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [balance, setbalance] = useState('')
-  const [Country, setCountry] = useState('')
-  const [cognitoId, setcognitoId] = useState('')
-  const [userCheck, setUserCheck] = useState(0)
-  const [JoiningDate, setJoiningDate] = useState('')
-  const [activeUserList, setActiveUserList] = useState([])
-  const [inactiveUserList, setInactiveUserList] = useState([])
-  const [isEditUser, setIsEditUser] = useState(false)
-  const [editUser, setEditUser] = useState(null)
-  const [memberData, setMemberData] = useState([])
-  // eslint-disable-next-line
-  const [IsDashboard, setIsDashboard] = useState(false)
-  const Navigate = useNavigate()
-  const location = useLocation()
-  const { util, user, userData, setUserData } = useContext(Context)
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [userStatus, setUserStatus] = useState("all");
+  const [selectedRow, setSelectedRow] = useState([]);
+  const [isUserAdd, setIsUserAdd] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [balance, setbalance] = useState("");
+  const [Country, setCountry] = useState("");
+  const [cognitoId, setcognitoId] = useState("");
+  const [userCheck, setUserCheck] = useState(0);
+  const [JoiningDate, setJoiningDate] = useState("");
+  const [activeUserList, setActiveUserList] = useState([]);
+  const [inactiveUserList, setInactiveUserList] = useState([]);
+  const [isEditUser, setIsEditUser] = useState(false);
+  const [editUser, setEditUser] = useState(null);
+  const [memberData, setMemberData] = useState([]);
+      // eslint-disable-next-line
+  const [IsDashboard, setIsDashboard] = useState(false);
+  const Navigate = useNavigate();
+  const location = useLocation();
+  const { util, user, userData, setUserData } = useContext(Context);
   // const searchParams = new URLSearchParams(window.location.search);
   let institution
-  if (user.profile.institutionName === 'awsaiapp') {
-    institution = userData.institutionName
+  if (user.profile.institutionName === "awsaiapp") {
+    institution = userData.institutionName;
   } else {
-    institution = userData.institutionName || tempInstitution
+    institution = userData.institutionName || tempInstitution;
   }
-  console.log(userCheck)
+  console.log(userCheck);
   console.log(institution)
   useEffect(() => {
     if (location.pathname.includes('dashboard')) {
-      setIsDashboard(true)
+      setIsDashboard(true);
     } else {
-      setIsDashboard(false)
+      setIsDashboard(false);
     }
-  }, [location.pathname])
+  }, [location.pathname]);
 
   useEffect(() => {
-    if (location.pathname === '/dashboard') {
-      util.setLoader(true)
+    if (location.pathname === "/dashboard") {
+      util.setLoader(true);
       setTimeout(() => {
-        window.location.reload()
-      }, 2000)
+        window.location.reload();
+      }, 2000);
     } else {
-      util.setLoader(false)
+      util.setLoader(false);
     }
     // eslint-disable-next-line
-  }, [location.pathname])
+  }, [location.pathname]);
 
   const handleNavigationAndUserDataUpdate = () => {
     // Navigate to "/dashboard"
-    Navigate('/dashboard')
+    Navigate("/dashboard");
 
     // Update userData with the new institution name
-    const updatedUserData = { ...userData, institutionName: 'awsaiapp' }
-    setUserData(updatedUserData)
-  }
+    const updatedUserData = { ...userData, institutionName: "awsaiapp" };
+    setUserData(updatedUserData);
+  };
 
   const renderButton = () => {
     if (userData.institutionName !== 'awsaiapp') {
-      return null
+      return null;
     } else {
       return (
         <button
           onClick={handleNavigationAndUserDataUpdate}
           className="relative z-10 left-[2.5%] bg-[#ffffff] text-black px-4 py-2 rounded-md"
           style={{
-            boxShadow: '0 0 20px rgba(0, 0, 0, 0.4)',
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.4)",
           }}
         >
           <img className="w-[1rem] ml-[1rem]" src={BackImg} alt="" />
         </button>
-      )
+      );
     }
-  }
+  };
 
   const fetchMembersForInstitution = async (institution) => {
     try {
       const response = await API.get(
-        'clients',
-        `/user/list-members/${institution}`,
-      )
+        "clients",
+        `/user/list-members/${institution}`
+      );
       console.log(response)
       const activeUsers = response.filter(
-        (memberData) => memberData.status === 'Active',
-      )
+        (memberData) => memberData.status === "Active"
+      );
       const inactiveUsers = response.filter(
-        (memberData) => memberData.status === 'InActive',
-      )
+        (memberData) => memberData.status === "InActive"
+      );
 
-      setActiveUserList(activeUsers)
-      setInactiveUserList(inactiveUsers)
-      setMemberData(response)
+      setActiveUserList(activeUsers);
+      setInactiveUserList(inactiveUsers);
+      setMemberData(response);
+
     } catch (error) {
-      console.error('Error fetching members:', error)
-      console.error('Error details:', error.response)
+      console.error("Error fetching members:", error);
+      console.error("Error details:", error.response);
     } finally {
-      util.setLoader(false)
+      util.setLoader(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchMembersForInstitution(institution)
+    fetchMembersForInstitution(institution);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [institution])
+  }, [institution]);
+
 
   const filtermember = () => {
     if (!searchQuery) {
-      if (userStatus === 'active') {
-        return memberData.filter((member) => member.status === 'Active')
-      } else if (userStatus === 'inactive') {
-        return memberData.filter((member) => member.status === 'InActive')
+      if (userStatus === "active") {
+        return memberData.filter((member) => member.status === "Active");
+      } else if (userStatus === "inactive") {
+        return memberData.filter((member) => member.status === "InActive");
       }
-      return memberData
+      return memberData;
     }
 
-    const query = searchQuery.toLowerCase()
+    const query = searchQuery.toLowerCase();
 
     const filtered = memberData?.filter((member) => {
       const matches =
         member.userName.toLowerCase().includes(query) ||
         member.emailId.toLowerCase().includes(query) ||
-        member.phoneNumber.toLowerCase().includes(query)
-      return matches
-    })
-    return filtered
-  }
+        member.phoneNumber.toLowerCase().includes(query);
+      return matches;
+    });
+    return filtered;
+  };
 
-  const filteredmember = filtermember()
-  const totalPages = Math.ceil(filteredmember.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const MembersData = filteredmember.slice(startIndex, endIndex)
+  const filteredmember = filtermember();
+  const totalPages = Math.ceil(filteredmember.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const MembersData = filteredmember.slice(startIndex, endIndex);
 
   const handleCheckboxChange = (cognitoId) => {
     if (selectedRow.includes(cognitoId)) {
-      setSelectedRow(selectedRow.filter((id) => id !== cognitoId))
+      setSelectedRow(selectedRow.filter((id) => id !== cognitoId));
     } else {
-      setSelectedRow([...selectedRow, cognitoId])
+      setSelectedRow([...selectedRow, cognitoId]);
     }
-  }
+  };
 
   const isRowSelected = (cognitoId) => {
-    return selectedRow.includes(cognitoId)
-  }
+    return selectedRow.includes(cognitoId);
+  };
 
-  const selectedRowCount = selectedRow.length
-  const AllUserCount = memberData.length
-  const inactiveUserCount = inactiveUserList.length
-  const activeUserCount = activeUserList.length
+  const selectedRowCount = selectedRow.length;
+  const AllUserCount = memberData.length;
+  const inactiveUserCount = inactiveUserList.length;
+  const activeUserCount = activeUserList.length;
 
   function formatEpochToReadableDate(epochDate) {
-    const date = isNaN(epochDate)
-      ? new Date(parseFloat(epochDate))
-      : new Date(epochDate)
+    const date = isNaN(epochDate) ? new Date(parseFloat(epochDate)) : new Date(epochDate);
     if (!isNaN(date.getTime())) {
-      const year = date.getFullYear()
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      const day = date.getDate().toString().padStart(2, '0')
-      const formattedDate = `${year}-${month}-${day}`
-      return formattedDate
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+      return formattedDate;
     }
-    return ''
+    return '';
   }
 
   const handleAddMember = async (e) => {
-    e.preventDefault()
-    const apiName = 'clients'
-    const path = '/user/create-member'
+    e.preventDefault();
+    const apiName = "clients";
+    const path = "/user/create-member";
     const myInit = {
       body: {
         institution: institution,
@@ -205,10 +205,10 @@ const MemberList = ({ institution: tempInstitution }) => {
         balance: balance,
         joiningDate: JoiningDate,
       },
-    }
+    };
 
     try {
-      const create = await API.post(apiName, path, myInit)
+      const create = await API.post(apiName, path, myInit);
       setMemberData([
         ...memberData,
         {
@@ -220,53 +220,53 @@ const MemberList = ({ institution: tempInstitution }) => {
           balance: balance,
           joiningDate: JoiningDate,
         },
-      ])
-      console.log('User created successfully:', create)
+      ]);
+      console.log("User created successfully:", create);
       Swal.fire({
-        icon: 'success',
-        title: 'User Added',
-      })
-      await fetchMembersForInstitution(institution)
-      setIsUserAdd(false)
-      setName('')
-      setEmail('')
-      setPhoneNumber('')
-      setUserStatus('')
-      setbalance('')
-      util.setLoader(false)
+        icon: "success",
+        title: "User Added",
+      });
+      await fetchMembersForInstitution(institution);
+      setIsUserAdd(false);
+      setName("");
+      setEmail("");
+      setPhoneNumber("");
+      setUserStatus("");
+      setbalance("");
+      util.setLoader(false);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while creating the user.',
-      })
-      util.setLoader(false)
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while creating the user.",
+      });
+      util.setLoader(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (editUser) {
-      setcognitoId(editUser.cognitoId || '')
-      setName(editUser.userName || '')
-      setEmail(editUser.emailId || '')
-      setPhoneNumber(editUser.phoneNumber || '')
-      setCountry(editUser.country || '')
-      setUserStatus(editUser.status || 'Active')
-      setbalance(editUser.balance || '')
-      setJoiningDate(formatEpochToReadableDate(editUser.joiningDate) || '')
+      setcognitoId(editUser.cognitoId || "");
+      setName(editUser.userName || "");
+      setEmail(editUser.emailId || "");
+      setPhoneNumber(editUser.phoneNumber || "");
+      setCountry(editUser.country || "");
+      setUserStatus(editUser.status || "Active");
+      setbalance(editUser.balance || "");
+      setJoiningDate(formatEpochToReadableDate(editUser.joiningDate) || "");
     }
-  }, [editUser])
+  }, [editUser]);
 
   const handleEditUser = (user) => {
-    setEditUser(user)
-    setIsEditUser(true)
-  }
+    setEditUser(user);
+    setIsEditUser(true);
+  };
 
   const handleUpdateUser = async (e) => {
-    e.preventDefault()
-    const apiName = 'clients'
-    const path = `/user/update-member`
+    e.preventDefault();
+    const apiName = "clients";
+    const path = `/user/update-member/awsaiapp`;
     const myInit = {
       body: {
         cognitoId: cognitoId,
@@ -279,90 +279,90 @@ const MemberList = ({ institution: tempInstitution }) => {
         balance: balance,
         joiningDate: new Date(JoiningDate).getTime(),
       },
-    }
+    };
 
     try {
-      const update = await API.put(apiName, path, myInit)
-      await fetchMembersForInstitution(institution)
-      console.log(update)
+      const update = await API.put(apiName, path, myInit);
+      await fetchMembersForInstitution(institution);
+      console.log(update);
       Swal.fire({
-        icon: 'success',
-        title: 'User Updated',
-      })
-      setIsEditUser(false)
-      setEditUser(null)
-      util.setLoader(false)
+        icon: "success",
+        title: "User Updated",
+      });
+      setIsEditUser(false);
+      setEditUser(null);
+      util.setLoader(false);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while updating the user.',
-      })
-      util.setLoader(false)
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the user.",
+      });
+      util.setLoader(false);
     }
-  }
+  };
 
   const handleCancelEdit = () => {
-    setIsEditUser(false)
-    setEditUser(null)
-  }
+    setIsEditUser(false);
+    setEditUser(null);
+  };
 
   const handleDeleteMember = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     Swal.fire({
-      title: 'Delete User',
-      text: 'Are you sure you want to delete this user?',
-      icon: 'warning',
+      title: "Delete User",
+      text: "Are you sure you want to delete this user?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        const apiName = 'clients'
-        const path = '/user/delete-member'
+        const apiName = "clients";
+        const path = "/user/delete-member";
         const myInit = {
           body: {
             institution: institution,
             cognitoId: cognitoId,
           },
-        }
+        };
 
         API.del(apiName, path, myInit)
           .then(() => {
             const updatedMemberData = memberData.filter(
-              (member) => member.cognitoId !== cognitoId,
-            )
-            setMemberData(updatedMemberData)
+              (member) => member.cognitoId !== cognitoId
+            );
+            setMemberData(updatedMemberData);
             Swal.fire({
-              icon: 'success',
-              title: 'User Deleted',
-            })
-            util.setLoader(false)
-            setIsEditUser(false)
+              icon: "success",
+              title: "User Deleted",
+            });
+            util.setLoader(false);
+            setIsEditUser(false);
           })
           .catch((error) => {
-            console.error('Error deleting member:', error)
+            console.error("Error deleting member:", error);
             Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred while deleting the member.',
-            })
-          })
+              icon: "error",
+              title: "Error",
+              text: "An error occurred while deleting the member.",
+            });
+          });
       }
-    })
-  }
+    });
+  };
 
   const handleDeleteSelected = async () => {
     if (selectedRow.length === 0) {
-      return
+      return;
     }
 
-    const apiName = 'clients'
-    const path = '/user/delete-member'
+    const apiName = "clients";
+    const path = "/user/delete-member";
 
     try {
-      util.setLoader(true)
+      util.setLoader(true);
 
       for (const cognitoId of selectedRow) {
         const myInit = {
@@ -370,34 +370,37 @@ const MemberList = ({ institution: tempInstitution }) => {
             institution: institution,
             cognitoId: cognitoId,
           },
-        }
-        await API.del(apiName, path, myInit)
+        };
+        await API.del(apiName, path, myInit);
       }
       const updatedMemberData = memberData.filter(
-        (member) => !selectedRow.includes(member.cognitoId),
-      )
-      setMemberData(updatedMemberData)
+        (member) => !selectedRow.includes(member.cognitoId)
+      );
+      setMemberData(updatedMemberData);
       Swal.fire({
-        icon: 'success',
-        title: 'Selected Users Deleted',
-      })
+        icon: "success",
+        title: "Selected Users Deleted",
+      });
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while deleting selected users.',
-      })
-      console.error('Error deleting selected users:', error)
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while deleting selected users.",
+      });
+      console.error("Error deleting selected users:", error);
     } finally {
-      util.setLoader(false)
-      setSelectedRow([])
+      util.setLoader(false);
+      setSelectedRow([]);
     }
-  }
+  };
+
 
   return (
     <div className="w-[93vw] flex flex-col items-center gap-10">
       <Navbar />
-      <div className="flex w-full flex-start">{renderButton()}</div>
+      <div className="flex w-full flex-start">
+        {renderButton()}
+      </div>
       <div className="flex justify-center mt-[-5rem]">
         <div className={`w-[90%] rounded-3xl p-3 max850:ml-[5rem] `}>
           <div className="flex flex-row justify-between pb-2 max850:hidden">
@@ -428,7 +431,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                 <input
                   className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem] "
                   type="text"
-                  placeholder={'Search “Name, Email, Number”'}
+                  placeholder={"Search “Name, Email, Number”"}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -478,7 +481,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="text"
                   value={name}
                   onChange={(e) => {
-                    setName(e.target.value)
+                    setName(e.target.value);
                   }}
                 />
                 <input
@@ -488,7 +491,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="email"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
+                    setEmail(e.target.value);
                   }}
                 />
                 <input
@@ -498,7 +501,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="number"
                   value={phoneNumber}
                   onChange={(e) => {
-                    setPhoneNumber(e.target.value)
+                    setPhoneNumber(e.target.value);
                   }}
                 />
                 <input
@@ -508,7 +511,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="date"
                   value={JoiningDate}
                   onChange={(e) => {
-                    setJoiningDate(e.target.value)
+                    setJoiningDate(e.target.value);
                   }}
                 />
                 <div className="flex gap-2">
@@ -519,7 +522,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                     type="text"
                     value={Country}
                     onChange={(e) => {
-                      setCountry(e.target.value)
+                      setCountry(e.target.value);
                     }}
                   />
                   <input
@@ -529,7 +532,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                     type="number"
                     value={balance}
                     onChange={(e) => {
-                      setbalance(e.target.value)
+                      setbalance(e.target.value);
                     }}
                   />
                 </div>
@@ -540,18 +543,18 @@ const MemberList = ({ institution: tempInstitution }) => {
                     name="memberStatus"
                     value="Active"
                     className="ml-3"
-                    checked={userStatus === 'Active'}
-                    onChange={() => setUserStatus('Active')}
-                  />{' '}
+                    checked={userStatus === "Active"}
+                    onChange={() => setUserStatus("Active")}
+                  />{" "}
                   <p className="ml-1"> Active</p>
                   <input
                     type="radio"
                     name="memberStatus"
                     value="InActive"
                     className="ml-3"
-                    checked={userStatus === 'InActive'}
-                    onChange={() => setUserStatus('InActive')}
-                  />{' '}
+                    checked={userStatus === "InActive"}
+                    onChange={() => setUserStatus("InActive")}
+                  />{" "}
                   <p className="ml-1">InActive</p>
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
@@ -564,8 +567,8 @@ const MemberList = ({ institution: tempInstitution }) => {
                   <button
                     className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
                     onClick={() => {
-                      setIsUserAdd(false)
-                      setUserCheck(0)
+                      setIsUserAdd(false);
+                      setUserCheck(0);
                     }}
                   >
                     Cancel
@@ -578,37 +581,34 @@ const MemberList = ({ institution: tempInstitution }) => {
           {/* filter */}
           <div className="flex flex-row gap-6 ml-[3rem] relative mb-3 w-[18rem]">
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer max850:ml-[-1.5rem] ${
-                userStatus === 'all'
-                  ? 'text-[#30afbc] border-b-2 border-[#30AFBC]'
-                  : 'text-[#000] hover:text-[#30afbc]'
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer max850:ml-[-1.5rem] ${userStatus === "all"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
-                setUserStatus('all')
+                setUserStatus("all");
               }}
             >
               All ({AllUserCount})
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-                userStatus === 'active'
-                  ? 'text-[#30afbc] border-b-2 border-[#30AFBC]'
-                  : 'text-[#000] hover:text-[#30afbc]'
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "active"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
-                setUserStatus('active')
+                setUserStatus("active");
               }}
             >
               Active ({activeUserCount})
             </div>
             <div
-              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${
-                userStatus === 'inactive'
-                  ? 'text-[#30afbc] border-b-2 border-[#30AFBC]'
-                  : 'text-[#000] hover:text-[#30afbc]'
-              }`}
+              className={`Poppins tracking-[0.4px] font-[600] text-[0.9rem] cursor-pointer ${userStatus === "inactive"
+                ? "text-[#30afbc] border-b-2 border-[#30AFBC]"
+                : "text-[#000] hover:text-[#30afbc]"
+                }`}
               onClick={() => {
-                setUserStatus('inactive')
+                setUserStatus("inactive");
               }}
             >
               Inactive ({inactiveUserCount})
@@ -639,18 +639,17 @@ const MemberList = ({ institution: tempInstitution }) => {
             {MembersData.map((memberData, index) => (
               <div
                 key={memberData.cognitoId}
-                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
-                  isRowSelected(memberData.cognitoId)
-                    ? 'my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out'
-                    : 'border-[#a2a2a280]'
-                }`}
+                className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(memberData.cognitoId)
+                  ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
+                  : "border-[#a2a2a280]"
+                  }`}
                 style={{
                   margin: isRowSelected(memberData.cognitoId)
-                    ? '1rem 0'
-                    : '0.5rem 0',
+                    ? "1rem 0"
+                    : "0.5rem 0",
                   boxShadow: isRowSelected(memberData.cognitoId)
-                    ? '0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)' // Spread shadow both above and below
-                    : 'none',
+                    ? "0px -7px 9px rgba(0, 0, 0, 0.2), 0px 7px 9px rgba(0, 0, 0, 0.2)" // Spread shadow both above and below
+                    : "none",
                 }}
               >
                 {/* checkbox */}
@@ -693,13 +692,13 @@ const MemberList = ({ institution: tempInstitution }) => {
                           className="font-[900] email-hover cursor-pointer"
                           title={memberData.userName}
                         >
-                          {memberData.userName.split(' ')[0]}
+                          {memberData.userName.split(" ")[0]}
                         </div>
                         <div
                           className="overflow-auto text-[0.8rem] font-[600] email-hover cursor-pointer"
                           title={memberData.emailId}
                         >
-                          {memberData.emailId.split('@ ')[0]}
+                          {memberData.emailId.split("@ ")[0]}
                         </div>
                         <div className="overflow-auto text-[0.8rem] font-[600]">
                           ({memberData.phoneNumber})
@@ -709,38 +708,36 @@ const MemberList = ({ institution: tempInstitution }) => {
                         {memberData.country}
                       </div>
                       <div className="col-span-3 ml-[4rem] font-semibold text-sm max850:hidden">
-                        {memberData.joiningDate
-                          ? formatEpochToReadableDate(memberData.joiningDate)
-                          : ''}
+                        {memberData.joiningDate ? formatEpochToReadableDate(memberData.joiningDate) : ''}
                       </div>
                       <div className="col-span-2 font-semibold text-sm max850:hidden">
                         {memberData.zPoints}
                       </div>
                       <div className="col-span-2 relative max850:hidden">
                         <div
-                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${
-                            memberData.status === 'Active'
-                              ? 'border-[#99EF72] text-[#99EF72]'
-                              : 'border-[#FF4343AB] text-[#FF4343AB]'
-                          }`}
+                          className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[6rem] pl-2 K2D ${memberData.status === "Active"
+                            ? "border-[#99EF72] text-[#99EF72]"
+                            : "border-[#FF4343AB] text-[#FF4343AB]"
+                            }`}
                         >
                           <div
-                            className={`w-3 h-3 mt-[0.4rem] ${
-                              memberData.status === 'Active'
-                                ? 'bg-[#99EF72]'
-                                : 'bg-[#FF4343AB]'
-                            } rounded-full transform K2D`}
-                          ></div>
+                            className={`w-3 h-3 mt-[0.4rem] ${memberData.status === "Active"
+                              ? "bg-[#99EF72]"
+                              : "bg-[#FF4343AB]"
+                              } rounded-full transform K2D`}
+                          >
+
+                          </div>
                           <div>
-                            {memberData.status === 'Active'
-                              ? 'Active'
-                              : 'Inactive'}
+                            {memberData.status === "Active"
+                              ? "Active"
+                              : "Inactive"}
                           </div>
                         </div>
                       </div>
                       <div className="font-[600] text-[0.9rem] max850:hidden">
                         {memberData.balance}
-                      </div>{' '}
+                      </div>{" "}
                     </div>
                   </div>
                 </div>
@@ -758,7 +755,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="text"
                   value={name}
                   onChange={(e) => {
-                    setName(e.target.value)
+                    setName(e.target.value);
                   }}
                 />
                 <input
@@ -768,7 +765,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="email"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
+                    setEmail(e.target.value);
                   }}
                 />
                 <input
@@ -778,7 +775,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                   type="number"
                   value={phoneNumber}
                   onChange={(e) => {
-                    setPhoneNumber(e.target.value)
+                    setPhoneNumber(e.target.value);
                   }}
                 />
                 {/* <input
@@ -799,7 +796,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                     type="text"
                     value={Country}
                     onChange={(e) => {
-                      setCountry(e.target.value)
+                      setCountry(e.target.value);
                     }}
                   />
                   <input
@@ -809,7 +806,7 @@ const MemberList = ({ institution: tempInstitution }) => {
                     type="number"
                     value={balance}
                     onChange={(e) => {
-                      setbalance(e.target.value)
+                      setbalance(e.target.value);
                     }}
                   />
                 </div>
@@ -820,18 +817,18 @@ const MemberList = ({ institution: tempInstitution }) => {
                     name="memberStatus"
                     value="Active"
                     className="ml-3"
-                    checked={userStatus === 'Active'}
-                    onChange={() => setUserStatus('Active')}
-                  />{' '}
+                    checked={userStatus === "Active"}
+                    onChange={() => setUserStatus("Active")}
+                  />{" "}
                   <p className="ml-1"> Active</p>
                   <input
                     type="radio"
                     name="memberStatus"
                     value="InActive"
                     className="ml-3"
-                    checked={userStatus === 'InActive'}
-                    onChange={() => setUserStatus('InActive')}
-                  />{' '}
+                    checked={userStatus === "InActive"}
+                    onChange={() => setUserStatus("InActive")}
+                  />{" "}
                   <p className="ml-1">InActive</p>
                 </div>
                 <div className="flex flex-col  gap-3 w-full justify-center items-center">
@@ -880,7 +877,7 @@ const MemberList = ({ institution: tempInstitution }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MemberList
+export default MemberList;

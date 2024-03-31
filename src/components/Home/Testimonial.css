@@ -1,4 +1,4 @@
-.testi {
+.testi{
   --background: url(/src/utils/TestimonialBack.png);
   --bg-image-opacity: 1;
   position: relative;
@@ -6,7 +6,7 @@
   width: 100%;
   height: 120vh;
 }
-.testi::after {
+.testi::after{
   content: '';
   opacity: var(--bg-image-opacity);
   background: var(--background);

@@ -4,12 +4,14 @@
   }
 }
 
+
 .custom-chart {
   width: 369px !important;
   /* Adjust the width as needed */
   height: 369px !important;
   /* Adjust the height as needed */
 }
+
 
 .round-legend-label {
   display: inline-block;

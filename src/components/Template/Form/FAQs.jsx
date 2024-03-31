@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react';
 
 function FAQs({ faqs, setFaqs }) {
   // const [faqs, setFaqs] = useState([
@@ -16,37 +16,33 @@ function FAQs({ faqs, setFaqs }) {
   //   },
   // ]);
 
-  const [activeFAQIndex, setActiveFAQIndex] = useState(null)
+  const [activeFAQIndex, setActiveFAQIndex] = useState(null);
 
   const handleFAQChange = (index, e) => {
-    const updatedFaqs = [...faqs]
+    const updatedFaqs = [...faqs];
     updatedFaqs[index] = {
       ...updatedFaqs[index],
       [e.target.name]: e.target.value,
-    }
-    setFaqs(updatedFaqs)
-  }
+    };
+    setFaqs(updatedFaqs);
+  };
 
   const toggleActiveFAQ = (index) => {
-    setActiveFAQIndex(index === activeFAQIndex ? null : index)
-  }
+    setActiveFAQIndex(index === activeFAQIndex ? null : index);
+  };
 
-  const faqsContainerRef = useRef(null)
+  const faqsContainerRef = useRef(null);
 
   const removeFAQ = (indexToRemove) => {
-    const updatedFaqs = faqs.filter((_, index) => index !== indexToRemove)
-    setFaqs(updatedFaqs)
-  }
+    const updatedFaqs = faqs.filter((_, index) => index !== indexToRemove);
+    setFaqs(updatedFaqs);
+  };
 
   return (
-    <div
-      className="mx-auto max-w-[800px] px-8"
-      style={{ overflowY: 'auto', maxHeight: '525px' }}
-    >
+    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">FAQs SECTION</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
-        Address common inquiries efficiently, ensuring users find answers to
-        their most pressing questions.
+        Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
       <div className="mt-4 pb-4  " ref={faqsContainerRef}>
         {faqs.map((faq, index) => (
@@ -54,11 +50,12 @@ function FAQs({ faqs, setFaqs }) {
             {index >= 3 && (
               <button
                 onClick={() => removeFAQ(index)}
-                className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 "
-              >
+                className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 " 
+
+                >
                 <span>✕</span>
               </button>
-            )}
+              )}
             <h2 className="font-medium text-xl">FAQ {index + 1}</h2>
             <div className="relative">
               <input
@@ -73,9 +70,9 @@ function FAQs({ faqs, setFaqs }) {
               />
               <div
                 className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${
-                  activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
-                }`}
-              ></div>
+                activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
+              }`}
+                ></div>
             </div>
             <textarea
               name="answer"
@@ -89,24 +86,21 @@ function FAQs({ faqs, setFaqs }) {
             />
             <div
               className={`h-[0.5px] ${
-                activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
-              }`}
-            ></div>
+              activeFAQIndex === index ? 'bg-black' : 'bg-[#939393]'
+            }`}
+              ></div>
           </div>
-        ))}
+          ))}
         {faqs.length < 5 && (
           <div className="mt-4 flex justify-center">
-            <button
-              onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
-              className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
-            >
+            <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
               Add FAQ
             </button>
           </div>
-        )}
+          )}
       </div>
     </div>
-  )
+    );
 }
 
-export default FAQs
+export default FAQs;

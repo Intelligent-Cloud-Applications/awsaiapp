@@ -1,29 +1,30 @@
 /* eslint-disable jsx-a11y/alt-text */
-import Navbar from '../components/Home/Navbar'
-import Footer from '../components/Home/Footer'
-import Serv_img from '../utils/Assets/Services_Personalization.png'
-import './Services.css'
-import { React, useState, useEffect } from 'react'
-import plus from '../utils/Assets/p2.png'
-import cross from '../utils/Assets/cross.png'
-import Common from './Common'
-import { Link } from 'react-router-dom'
+import Navbar from "../components/Home/Navbar";
+import Footer from "../components/Home/Footer";
+import Serv_img from "../utils/Assets/Services_Personalization.png";
+import "./Services.css";
+import { React, useState, useEffect } from "react";
+import plus from "../utils/Assets/p2.png";
+import cross from "../utils/Assets/cross.png";
+import Common from "./Common";
+import { Link } from "react-router-dom";
+
 
 const Personalization = () => {
-  const [screensize, setScreensize] = useState({ width: window.innerWidth })
+  const [screensize, setScreensize] = useState({ width: window.innerWidth });
 
   useEffect(() => {
     const handleResize = () => {
-      setScreensize({ width: window.innerWidth })
-    }
+      setScreensize({ width: window.innerWidth });
+    };
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-  const shouldDisplayContainer = screensize.width <= 600
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const shouldDisplayContainer = screensize.width <= 600;
   return (
     <div className="h-full">
       <Navbar />
@@ -93,7 +94,7 @@ const Personalization = () => {
               <li>
                 <h1>Dynamic Content Personalization:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   We use data-driven insights to deliver personalized content,
                   product recommendations, and notifications tailored to each
                   user's interests and behavior.
@@ -102,7 +103,7 @@ const Personalization = () => {
               <li>
                 <h1>Segmentation:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Group your users based on demographics, behavior, or
                   preferences, allowing you to target specific segments with
                   personalized experiences.
@@ -111,7 +112,7 @@ const Personalization = () => {
               <li>
                 <h1>Contextual Recommendations:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Our algorithms consider the user's current context, location,
                   and previous interactions to offer real-time personalized
                   recommendations.
@@ -120,7 +121,7 @@ const Personalization = () => {
               <li>
                 <h1>User Preference Management:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Empower users to customize their settings, enabling them to
                   control the level of personalization they receive.
                 </p>
@@ -128,7 +129,7 @@ const Personalization = () => {
               <li>
                 <h1>Adaptive User Interfaces:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Personalize the user interface based on user preferences and
                   roles, ensuring each user sees the most relevant information
                   and features.
@@ -140,6 +141,6 @@ const Personalization = () => {
       </div>
       <Footer />
     </div>
-  )
-}
-export default Personalization
+  );
+};
+export default Personalization;

@@ -1,11 +1,11 @@
-import React from 'react'
-import { useNavigate } from 'react-router'
-import '../Home/Price.css'
-import Faq from 'react-faq-component'
-import plus1 from '../../utils/plus.svg'
+import React from "react";
+import { useNavigate } from "react-router";
+import "../Home/Price.css";
+import Faq from "react-faq-component";
+import plus1 from "../../utils/plus.svg";
 
 const Price = () => {
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
   const data = {
     rows: [
@@ -14,34 +14,30 @@ const Price = () => {
         content: `The "Advance" plan offers a complete paperless ecosystem, integrated payment solutions, expert ads management, digital marketing, data analysis, and SEO integration, providing a comprehensive growth package.`,
       },
       {
-        title: 'Can I switch plans as my business evolves?',
+        title: "Can I switch plans as my business evolves?",
         content: `Yes, you can easily upgrade or downgrade plans to match your changing business needs and goals.`,
       },
       {
-        title: 'Can I customize features beyond the listed options?',
+        title: "Can I customize features beyond the listed options?",
         content: `Absolutely, our plans offer customization flexibility to cater to your specific requirements. Feel free to discuss your customization needs with our team to create a tailored solution.`,
       },
     ],
-  }
+  };
 
   const styles = {
-    bgColor: '#ffffff',
-    rowTitleColor: '#151618',
-    rowContentColor: '#555555',
-    arrowColor: '#30AFBC',
-  }
+    bgColor: "#ffffff",
+    rowTitleColor: "#151618",
+    rowContentColor: "#555555",
+    arrowColor: "#30AFBC",
+  };
 
   const config = {
     animate: true,
     arrowIcon: (
-      <img
-        className="h-[1.5rem] max1008:h-[1rem] max450:mt-5"
-        src={plus1}
-        alt="Arrow"
-      />
+      <img className="h-[1.5rem] max1008:h-[1rem] max450:mt-5" src={plus1} alt="Arrow" />
     ),
     tabFocus: true,
-  }
+  };
 
   return (
     <div className="w-full flex md:flex-row max1008:flex-col-reverse justify-center border-2 px-5 overflow-hidden py-[8rem]">
@@ -67,7 +63,7 @@ const Price = () => {
             <div className="flex items-end justify-start">
               <button
                 onClick={() => {
-                  Navigate('/Pricing')
+                  Navigate("/Pricing");
                 }}
                 className="bg-[#30AFBC] hover:bg-slate-900 text-white  py-1 px-3 rounded duration-300 hover:scale-105 shadow-lg"
               >
@@ -85,7 +81,7 @@ const Price = () => {
           <div className="flex items-end justify-start">
             <button
               onClick={() => {
-                Navigate('/Pricing')
+                Navigate("/Pricing");
               }}
               className="bg-[#30AFBC] hover:bg-slate-900 text-white  py-1 px-3 rounded duration-300 hover:scale-105 shadow-lg"
             >
@@ -102,7 +98,7 @@ const Price = () => {
           <div className="flex items-end justify-start">
             <button
               onClick={() => {
-                Navigate('/Pricing')
+                Navigate("/Pricing");
               }}
               className="bg-[#30AFBC] hover:bg-slate-900 text-white  py-1 px-3 rounded duration-300 hover:scale-105 shadow-lg"
             >
@@ -114,7 +110,7 @@ const Price = () => {
         {/* Repeat the above code for other items as needed */}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Price
+export default Price;

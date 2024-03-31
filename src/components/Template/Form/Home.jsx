@@ -1,61 +1,52 @@
-import React, { useState } from 'react'
-import vupload from '../../../utils/png/vupload.png'
+import React, {useState } from "react";
+import vupload from "../../../utils/png/vupload.png";
 
-function Home({
-  TagLine,
-  setTagLine,
-  video,
-  setVideo,
-  selectedMedia,
-  setSelectedMedia,
-  mediaType,
-  setMediaType,
-}) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
-  const [isTagLineInputVisible, setTagLineInputVisible] = useState(false)
-  const [TagLineLineColor, setTagLineLineColor] = useState('#939393')
+  const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
+  const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
 
   const handleTagLineInputChange = (e) => {
-    setTagLine(e.target.value)
-  }
+    setTagLine(e.target.value);
+  };
 
   const toggleTagLineInputVisibility = () => {
-    setTagLineInputVisible(true)
-    setTagLineLineColor('#000000') // Change TagLine line color to black on click
-  }
+    setTagLineInputVisible(true);
+    setTagLineLineColor("#000000"); // Change TagLine line color to black on click
+  };
 
-  //  const [selectedMedia, setSelectedMedia] = useState(null);
-  //  const [mediaType, setMediaType] = useState(null);
-  const [isFileOptionVisible, setFileOptionVisible] = useState(false)
+//  const [selectedMedia, setSelectedMedia] = useState(null);
+//  const [mediaType, setMediaType] = useState(null);
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0]
-    setVideo(file)
-    setSelectedMedia(URL.createObjectURL(file))
+    const file = event.target.files[0];
+    setVideo(file);
+    setSelectedMedia(URL.createObjectURL(file));
 
     // Determine the type of media selected (image or video)
-    if (file.type.includes('video')) {
-      setMediaType('video')
-    } else if (file.type.includes('image')) {
-      setMediaType('image')
+    if (file.type.includes("video")) {
+      setMediaType("video");
+    } else if (file.type.includes("image")) {
+      setMediaType("image");
     }
-  }
+  };
 
-  //  const handleMediaClick = () => {
-  //    document.getElementById("fileInput").click();
-  //  };
+//  const handleMediaClick = () => {
+//    document.getElementById("fileInput").click();
+//  };
 
   const handleMediaMouseEnter = () => {
     if (selectedMedia) {
-      setFileOptionVisible(true)
+      setFileOptionVisible(true);
     }
-  }
+  };
 
   const handleMediaMouseLeave = () => {
     if (selectedMedia) {
-      setFileOptionVisible(false)
+      setFileOptionVisible(false);
     }
-  }
+  };
 
   return (
     <div className="px-8">
@@ -80,7 +71,7 @@ function Home({
               autoFocus
             />
           ) : (
-            <span>{TagLine || 'Short Description TagLine '}</span>
+            <span>{TagLine || "Short Description TagLine "}</span>
           )}
         </h5>
         <div
@@ -108,30 +99,28 @@ function Home({
                   src={vupload}
                   alt="Upload"
                   className="w-[5rem] cursor-pointer"
-                  //                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
-                <h4 className="text-[#939393] text-[15px] mr-1 mb-3">
-                  Upload your media
-                </h4>
+                <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
               </div>
             </>
           ) : (
             <>
-              {mediaType === 'video' ? (
+              {mediaType === "video" ? (
                 <video
                   controls
                   src={selectedMedia}
                   className="w-full h-full object-cover"
-                  //                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                 />
               ) : (
                 <img
                   src={selectedMedia}
                   alt="Uploaded media"
                   className="w-full h-full object-cover"
-                  //                  onClick={handleMediaClick}
+//                  onClick={handleMediaClick}
                   onError={(e) => {
-                    e.target.src = vupload // Display default image if image fails to load
+                    e.target.src = vupload; // Display default image if image fails to load
                   }}
                 />
               )}
@@ -151,7 +140,7 @@ function Home({
         </label>
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

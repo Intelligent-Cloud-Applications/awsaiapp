@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useContext } from 'react'
-import Mnagement from '../../../utils/Assets/Dashboard/images/SVG/PendingPayments.svg'
-import graph from '../../../utils/Assets/Dashboard/images/PNG/Graph.png'
+import React, { useState, useEffect, useContext } from "react";
+import Mnagement from "../../../utils/Assets/Dashboard/images/SVG/PendingPayments.svg";
+import graph from "../../../utils/Assets/Dashboard/images/PNG/Graph.png";
 import lead from '../../../utils/Assets/Dashboard/images/PNG/leads.png'
-import Members from '../../../utils/Assets/Dashboard/images/PNG/Members.png'
-import Bit from '../../../utils/Assets/Dashboard/images/SVG/ClientsPayment.svg'
+import Members from "../../../utils/Assets/Dashboard/images/PNG/Members.png";
+import Bit from "../../../utils/Assets/Dashboard/images/SVG/ClientsPayment.svg";
 // import Home from "../../../utils/Assets/Dashboard/images/SVG/Home.svg"
-import './LeftBanner.css'
-import context from '../../../context/Context'
+import "./LeftBanner.css";
+import context from "../../../context/Context";
 // import { Navigate } from "react-router-dom";
 
 const LeftBanner = ({ displayAfterClick }) => {
-  const [click, setClick] = useState(0)
-  const Ctx = useContext(context)
-  const isSuperAdmin = Ctx.userData.institutionName === 'awsaiapp'
-  const isNotSuperAdmin = Ctx.userData.institutionName !== 'awsaiapp'
+  const [click, setClick] = useState(0);
+  const Ctx = useContext(context);
+  const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
+  const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   console.log(Ctx.userData.institutionName)
 
   useEffect(() => {
-    const selectedPage = localStorage.getItem('selectedPage')
+    const selectedPage = localStorage.getItem("selectedPage");
     if (selectedPage) {
-      setClick(parseInt(selectedPage))
+      setClick(parseInt(selectedPage));
     }
-  }, [])
+  }, []);
 
   return (
     <div className="flex justify-center items-center h-[100vh] bg-white max1300:h-0">
@@ -33,20 +33,18 @@ const LeftBanner = ({ displayAfterClick }) => {
                 <li
                   className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer `}
                   onClick={() => {
-                    setClick(0)
-                    displayAfterClick(0)
+                    setClick(0);
+                    displayAfterClick(0);
                   }}
                 >
                   <img
                     src={Members}
                     alt=""
                     style={{
-                      width: '1.9rem',
-                      minWidth: '1.9rem',
+                      width: "1.9rem",
+                      minWidth: "1.9rem",
                       filter:
-                        click === 0
-                          ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                          : 'none',
+                        click === 0 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                     }}
                   />
                 </li>
@@ -55,20 +53,18 @@ const LeftBanner = ({ displayAfterClick }) => {
                 <li
                   className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer`}
                   onClick={() => {
-                    setClick(1)
-                    displayAfterClick(1)
+                    setClick(1);
+                    displayAfterClick(1);
                   }}
                 >
                   <img
                     src={graph}
                     alt=""
                     style={{
-                      width: '1.3rem',
-                      minWidth: '1.3rem',
+                      width: "1.3rem",
+                      minWidth: "1.3rem",
                       filter:
-                        click === 1
-                          ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                          : 'none',
+                        click === 1 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                     }}
                   />
                 </li>
@@ -77,20 +73,18 @@ const LeftBanner = ({ displayAfterClick }) => {
                 <li
                   className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer `}
                   onClick={() => {
-                    setClick(2)
-                    displayAfterClick(2)
+                    setClick(2);
+                    displayAfterClick(2);
                   }}
                 >
                   <img
                     src={Bit}
                     alt=""
                     style={{
-                      width: '1.5rem',
-                      minWidth: '1.5rem',
+                      width: "1.5rem",
+                      minWidth: "1.5rem",
                       filter:
-                        click === 2
-                          ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                          : 'none',
+                        click === 2 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                     }}
                   />
                 </li>
@@ -99,20 +93,18 @@ const LeftBanner = ({ displayAfterClick }) => {
                 <li
                   className={`relative z-[2] gap-1 items-center text-[1.1rem] w-[86%] p-2 font-bold rounded-md`}
                   onClick={() => {
-                    setClick(3)
-                    displayAfterClick(3)
+                    setClick(3);
+                    displayAfterClick(3);
                   }}
                 >
                   <img
                     src={Mnagement}
                     alt=""
                     style={{
-                      width: '1.9rem',
-                      minWidth: '1.9rem',
+                      width: "1.9rem",
+                      minWidth: "1.9rem",
                       filter:
-                        click === 3
-                          ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                          : 'none',
+                        click === 3 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                     }}
                   />
                 </li>
@@ -122,8 +114,8 @@ const LeftBanner = ({ displayAfterClick }) => {
                   <li
                     className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer `}
                     onClick={() => {
-                      setClick(0)
-                      displayAfterClick(0)
+                      setClick(0);
+                      displayAfterClick(0);
                       // Navigate(``)
                     }}
                   >
@@ -131,20 +123,18 @@ const LeftBanner = ({ displayAfterClick }) => {
                       src={graph}
                       alt=""
                       style={{
-                        width: '1.3rem',
-                        minWidth: '1.3rem',
+                        width: "1.3rem",
+                        minWidth: "1.3rem",
                         filter:
-                          click === 0
-                            ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                            : 'none',
+                          click === 0 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                       }}
                     />
                   </li>
                   <li
                     className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer `}
                     onClick={() => {
-                      setClick(1)
-                      displayAfterClick(1)
+                      setClick(1);
+                      displayAfterClick(1);
                       // Navigate(``)
                     }}
                   >
@@ -152,32 +142,28 @@ const LeftBanner = ({ displayAfterClick }) => {
                       src={Members}
                       alt=""
                       style={{
-                        width: '1.9rem',
-                        minWidth: '1.9rem',
+                        width: "1.9rem",
+                        minWidth: "1.9rem",
                         filter:
-                          click === 1
-                            ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                            : 'none',
+                          click === 1 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                       }}
                     />
                   </li>
                   <li
                     className={`relative z-[2] gap-1 py-[0.3rem] items-center text-[1.1rem] w-[auto] p-2 font-bold rounded-md cursor-pointer`}
                     onClick={() => {
-                      setClick(2)
-                      displayAfterClick(2)
+                      setClick(2);
+                      displayAfterClick(2);
                     }}
                   >
                     <img
                       src={lead}
                       alt=""
                       style={{
-                        width: '2rem',
-                        minWidth: '2rem',
+                        width: "2rem",
+                        minWidth: "2rem",
                         filter:
-                          click === 2
-                            ? 'drop-shadow(#30AFBC 0px 3px 3px)'
-                            : 'none',
+                          click === 2 ? "drop-shadow(#30AFBC 0px 3px 3px)" : "none",
                       }}
                     />
                   </li>
@@ -188,7 +174,7 @@ const LeftBanner = ({ displayAfterClick }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LeftBanner
+export default LeftBanner;

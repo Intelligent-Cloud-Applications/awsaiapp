@@ -1,22 +1,22 @@
-import React, { useEffect, useRef } from 'react'
-import Chart from 'chart.js/auto'
+import React, { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
 
 const ChartComponent = ({ data, type }) => {
-  const chartRef = useRef(null)
+  const chartRef = useRef(null);
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext('2d')
+    const ctx = chartRef.current.getContext("2d");
 
-    let chart
-    if (type === 'bar') {
+    let chart;
+    if (type === "bar") {
       chart = new Chart(ctx, {
-        type: 'bar',
+        type: "bar",
         data,
         options: {
           plugins: {
             legend: {
               labels: {
-                color: 'white',
+                color: "white",
               },
             },
           },
@@ -33,16 +33,16 @@ const ChartComponent = ({ data, type }) => {
             },
           },
         },
-      })
-    } else if (type === 'line') {
+      });
+    } else if (type === "line") {
       chart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data,
         options: {
           plugins: {
             legend: {
               labels: {
-                color: 'white',
+                color: "white",
               },
             },
           },
@@ -64,15 +64,15 @@ const ChartComponent = ({ data, type }) => {
             },
           },
         },
-      })
+      });
     }
 
     return () => {
-      chart.destroy()
-    }
-  }, [data, type])
+      chart.destroy();
+    };
+  }, [data, type]);
 
-  return <canvas className="p" ref={chartRef}></canvas>
-}
+  return <canvas className="p" ref={chartRef}></canvas>;
+};
 
-export default ChartComponent
+export default ChartComponent;

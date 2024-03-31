@@ -1,170 +1,238 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Auth, API } from 'aws-amplify'
-import NavBar from '../components/Home/Navbar'
+import React, { useContext, useState, useEffect } from "react";
+import { Auth, API } from "aws-amplify";
+import NavBar from "../components/Home/Navbar";
 // import DanceAuth from "../Utils/Png/danceAuth.png";
-import Context from '../context/Context'
-import { useNavigate } from 'react-router-dom'
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
-import Country from '../components/Auth/Country'
-import signUpPng from '../utils/Signup.png'
-import './Login.css'
+import Context from "../context/Context";
+import { useNavigate } from "react-router-dom";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import Country from "../components/Auth/Country";
+import signUpPng from "../utils/Signup.png";
+import "./Login.css";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState('') // Added for first name
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [countryCode, setCountryCode] = useState('91')
-  const [country, setCountry] = useState('India')
-  const [institutionName, setInstitutionName] = useState('')
+  const [firstName, setFirstName] = useState(""); // Added for first name
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("91");
+  const [country, setCountry] = useState("India");
+  const [institutionName, setInstitutionName] = useState("");
   // const [password, setPassword] = useState("");
   // const [confirmPassword, setConfirmPassword] = useState("");
-  const [newUser, setNewUser] = useState(null)
-  const [signinResponse, setSigninResponse] = useState(null)
-  const [confirmationCode, setConfirmationCode] = useState(0)
-  const [err, setErr] = useState('')
+  const [newUser, setNewUser] = useState(null);
+  const [signinResponse, setSigninResponse] = useState(null);
+  const [confirmationCode, setConfirmationCode] = useState(0);
+  const [err, setErr] = useState("");
   // const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(true);
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
-  }
+  };
   // const data = {
   //   Otp_Msg: `An OTP has been sent to +${countryCode}${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   // };
-  const UtilCtx = useContext(Context).util
-  const UserCtx = useContext(Context)
-  const Navigate = useNavigate()
+  const UtilCtx = useContext(Context).util;
+  const UserCtx = useContext(Context);
+  const Navigate = useNavigate();
 
-  const [counter, setCounter] = useState(60) // Timer counter
-  const [resendVisible, setResendVisible] = useState(false) // Resend OTP visibility
+  const [counter, setCounter] = useState(60); // Timer counter
+  const [resendVisible, setResendVisible] = useState(false); // Resend OTP visibility
 
-  // useEffect(() => {
-  //   const query = new URLSearchParams(window.location.search)
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
 
-  //   if (query.get('newuser') === 'false') {
-  //     setIsNewUser(false)
-  //   }
-  // }, [])
+    if (query.get("newuser") === "false") {
+      setIsNewUser(false);
+    }
+  }, []);
 
   // Function to handle resend OTP
   const resendOTP = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     try {
       if (phoneNumber) {
-        await Auth.resendSignUp(`+${countryCode}${phoneNumber}`)
-        setCounter(60) // Reset the timer
-        setResendVisible(false) // Hide the resend button
-        setErr('OTP resent successfully.') // Provide appropriate feedback to the user
+        await Auth.resendSignUp(`+${countryCode}${phoneNumber}`);
+        setCounter(60); // Reset the timer
+        setResendVisible(false); // Hide the resend button
+        setErr("OTP resent successfully."); // Provide appropriate feedback to the user
       } else {
         // setErr("Please enter your Phone Number."); // Provide appropriate feedback to the user
-        setErr('Please enter your Email Id.') // Provide appropriate feedback to the user
+        setErr("Please enter your Email Id."); // Provide appropriate feedback to the user
       }
     } catch (error) {
-      setErr(error.message)
+      setErr(error.message);
     }
-  }
+  };
 
   useEffect(() => {
-    let timer = null
+    let timer = null;
     if (counter > 0) {
       timer = setInterval(
         () => setCounter((prevCounter) => prevCounter - 1),
-        1000,
-      )
+        1000
+      );
     } else {
-      setResendVisible(true)
+      setResendVisible(true);
     }
 
     return () => {
-      clearInterval(timer)
-    }
-  }, [counter])
+      clearInterval(timer);
+    };
+  }, [counter]);
+
+  // const passwordVisibilityChange = () => {
+  //   setPasswordVisible((prevState) => !prevState);
+  // };
 
   const form1Validator = () => {
-    console.log(phoneNumber.length)
+    console.log(phoneNumber.length);
 
     if (firstName.length === 0) {
-      setErr('Enter the Name')
-      return false
+      setErr("Enter the Name");
+      return false;
     } else if (phoneNumber.length < 10) {
-      setErr('Enter a Valid Phone Number')
-      return false
+      setErr("Enter a Valid Phone Number");
+      return false;
     } else if (countryCode.length === 0) {
-      setErr('Choose Country')
-      return false
-    } else if (!(email.includes('@') && email.includes('.'))) {
-      setErr('Enter a Valid Email')
-      return false
+      setErr("Choose Country");
+      return false;
+    } else if (!(email.includes("@") && email.includes("."))) {
+      setErr("Enter a Valid Email");
+      return false;
     } else if (country.length === 0) {
-      setErr('Enter a Country Name')
-      return false
-    } else if (institutionName.length === 0) {
-      setErr('Enter the Institution Name')
-      return false
+      setErr("Enter a Country Name");
+      return false;
+    } else if (institutionName.length === 0) { // Added validation for institutionName
+      setErr("Enter the Institution Name");
+      return false;
     } else {
-      setErr('')
-      return true
+      setErr("");
+      return true;
     }
-  }
+  };
 
   const form2Validator = () => {
     if (confirmationCode.length === 0) {
-      setErr('Enter a Valid Code')
-      return false
+      setErr("Enter a Valid Code");
+      return false;
     } else {
-      setErr('')
-      return true
+      setErr("");
+      return true;
     }
-  }
+  };
+
+  const userExistPhoneNumberSignUp = async () => {
+    try {
+      console.log("Sign in");
+      await Auth.signIn(`+${countryCode}${phoneNumber}`);
+      console.log("post");
+      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
+        body: {
+          emailId: email,
+          userName: `${firstName} ${lastName}`,
+          phoneNumber: `${countryCode}${phoneNumber}`,
+          country: country,
+          institutionName: institutionName
+        },
+      });
+      //Temporary
+      // userdata.Status = true;
+      UserCtx.setUserData(userdata);
+      UserCtx.setIsAuth(true);
+      UtilCtx.setLoader(false);
+      alert("Signed Up");
+      // client dashboard
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
+      UtilCtx.setLoader(false);
+      Navigate("/Pricing");
+    } catch (error) {
+      UtilCtx.setLoader(false);
+      if (error.message === "Incorrect username or password.") {
+        console.log("Phone Number User Doesn't Exist");
+        await userExistEmailIdSignUp();
+      }
+      throw error;
+    } finally {
+      UtilCtx.setLoader(false);
+    }
+  };
+
+  const userExistEmailIdSignUp = async () => {
+    try {
+      console.log("Sign in");
+      await Auth.signIn(`+${countryCode}${phoneNumber}`);
+      console.log("post");
+      const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
+        body: {
+          emailId: email,
+          userName: `${firstName} ${lastName}`,
+          phoneNumber: `${countryCode}${phoneNumber}`,
+          country: country,
+          institutionName: institutionName
+        },
+      });
+      //Temporary
+      // userdata.Status = true;
+      UserCtx.setUserData(userdata);
+      UserCtx.setIsAuth(true);
+      UtilCtx.setLoader(false);
+      alert("Signed Up");
+      if (userdata.status === "Active") {
+        UtilCtx.setLoader(false);
+        Navigate("/dashboard");
+      }
+      UtilCtx.setLoader(false);
+      Navigate("/Pricing");
+    } catch (error) {
+      UtilCtx.setLoader(false);
+      console.log("Error:", error.message);
+      throw error;
+    } finally {
+      UtilCtx.setLoader(false);
+    }
+  };
 
   const onSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    UtilCtx.setLoader(true)
+    UtilCtx.setLoader(true);
 
     try {
       if (form1Validator()) {
-        //        if (!isNewUser) {
-        //          await userExistPhoneNumberSignUp()
-        //          UtilCtx.setLoader(false)
-        //          return
-        //        }
-        // TRY TO SIGNUP
-        try {
-          await Auth.signUp({
-            username: `+${countryCode}${phoneNumber}`,
-            password: 'Password@123',
-            attributes: {
-              phone_number: `+${countryCode}${phoneNumber}`,
-              name: `${firstName} ${lastName}`,
-              email: email,
-            },
-          })
-        } catch (e) {
-          console.error(e)
-        } finally {
-          // EVEN IF THERE IS AN ERROR, TRY TO SIGNIN
-          const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-          console.log(response)
-          setSigninResponse(response)
-          setNewUser(true)
+        if (!isNewUser) {
+          await userExistPhoneNumberSignUp();
+          UtilCtx.setLoader(false);
+          return;
         }
+        console.log(phoneNumber);
+        const newUserCheck = await Auth.signUp({
+          username: `+${countryCode}${phoneNumber}`,
+          password: "Avishek@123",
+          institutionName: institutionName,
+          attributes: {
+            phone_number: `+${countryCode}${phoneNumber}`,
+            name: `${firstName} ${lastName}`,
+            email: email,
+          },
+        });
+        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+        setSigninResponse(response);
+        setNewUser(newUserCheck);
       }
-      UtilCtx.setLoader(false)
+      UtilCtx.setLoader(false);
     } catch (e) {
-      if (e.message === 'User already exists') {
-        await resendOTP()
-        UtilCtx.setLoader(false)
-        return
-      }
-      setErr(e.message)
-      UtilCtx.setLoader(false)
+      setErr(e.message);
+      UtilCtx.setLoader(false);
     }
-  }
+  };
 
   const onConfirmationSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    UtilCtx.setLoader(true)
+    UtilCtx.setLoader(true);
 
     try {
       if (form2Validator()) {
@@ -175,65 +243,54 @@ const SignUp = () => {
         // // await Auth.signIn(`+${countryCode}${phoneNumber}`, password);
         // const uses = await Auth.signIn(`+${countryCode}${phoneNumber}`);
         // console.log(uses)
-        await Auth.sendCustomChallengeAnswer(
-          signinResponse,
-          `${confirmationCode}`,
-        )
-        const data = await Auth.currentSession()
-        console.log(data)
-        const userdata = await API.post(
-          'clients',
-          '/user/signup-members/awsaiapp',
-          {
-            body: {
-              emailId: email,
-              userName: `${firstName} ${lastName}`,
-              phoneNumber: `${countryCode}${phoneNumber}`,
-              country: country,
-              institutionName: institutionName,
-            },
+        await Auth.sendCustomChallengeAnswer(signinResponse, `${confirmationCode}`);
+        await Auth.currentSession();
+        const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
+          body: {
+            emailId: email,
+            userName: `${firstName} ${lastName}`,
+            phoneNumber: `${countryCode}${phoneNumber}`,
+            country: country,
+            institutionName: institutionName,
           },
-        )
+        });
         //Temporary
         // userdata.Status = true;
-        UserCtx.setUserData(userdata)
-        UserCtx.setIsAuth(true)
-        UtilCtx.setLoader(false)
-        alert('Signed Up')
-        if (userdata.status === 'Active') {
-          Navigate('/dashboard')
+        UserCtx.setUserData(userdata);
+        UserCtx.setIsAuth(true);
+        UtilCtx.setLoader(false);
+        alert("Signed Up");
+        if (userdata.status === "Active") {
+          Navigate("/dashboard");
         }
-        Navigate('/template')
+        Navigate("/template");
       } else {
-        UtilCtx.setLoader(false)
+        UtilCtx.setLoader(false);
       }
-      UtilCtx.setLoader(false)
+      UtilCtx.setLoader(false);
     } catch (e) {
-      setErr(e.message)
-      UtilCtx.setLoader(false)
+      setErr(e.message);
+      UtilCtx.setLoader(false);
     }
-  }
+  };
 
   const form1 = () => {
     return (
-      <form>
+      <form >
         <div className="flex max767:flex-col">
           <div
             className=" mobile1 flex flex-col justify-evenly items-center Inter bg-[#30AFBC] p-8 rounded-tl-[2rem] rounded-bl-[2rem] shadow-md w-[30rem] max767:bg-transparent max1050:w-[48vw]"
-            style={{ boxShadow: '0 9px 14px rgba(48, 175, 188, 0.5)' }}
+            style={{ boxShadow: "0 9px 14px rgba(48, 175, 188, 0.5)" }}
           >
             <img src={signUpPng} alt="" />
             <div className="text-center">
               <p className="Inter font-[500] my-1 text-[1rem] text-white">
-                Unlock Success Online! Sign Up for Your Professional Website
-                Today.
+                Unlock Success Online! Sign Up for Your Professional Website Today.
               </p>
             </div>
           </div>
-          <div
-            className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
-            style={{ boxShadow: '12px 9px 14px rgba(48, 175, 188, 0.5)' }}
-          >
+          <div className=" mobile2 Inter flex flex-col justify-evenly bg-white p-8 rounded-tr-[2rem] rounded-br-[2rem] shadow-md w-[30rem] max1050:w-[48vw] text-center"
+            style={{ boxShadow: "12px 9px 14px rgba(48, 175, 188, 0.5)" }}>
             <h3 className="text-[1.1rem] font-[700] text-center">Sign Up</h3>
             <ul className="flex flex-col items-center px-0 pb-5">
               <li className="flex items-center gap-1 mt-8 max500:flex-col max500:gap-2 max500:items-start">
@@ -242,7 +299,7 @@ const SignUp = () => {
                   value={firstName}
                   placeholder="First Name"
                   onChange={(e) => {
-                    setFirstName(e.target.value)
+                    setFirstName(e.target.value);
                   }}
                 />
                 <input
@@ -250,7 +307,7 @@ const SignUp = () => {
                   value={lastName}
                   placeholder="Last Name"
                   onChange={(e) => {
-                    setLastName(e.target.value)
+                    setLastName(e.target.value);
                   }}
                 />
               </li>
@@ -261,7 +318,7 @@ const SignUp = () => {
                   placeholder="Enter Institution Name" // Input field for institutionName
                   value={institutionName}
                   onChange={(e) => {
-                    setInstitutionName(e.target.value)
+                    setInstitutionName(e.target.value);
                   }}
                 />
               </li>
@@ -273,8 +330,8 @@ const SignUp = () => {
                     placeholder="Enter Email"
                     value={email}
                     onChange={(e) => {
-                      const inputValue = e.target.value
-                      setEmail(inputValue)
+                      const inputValue = e.target.value;
+                      setEmail(inputValue);
                     }}
                   />
                 </div>
@@ -286,17 +343,17 @@ const SignUp = () => {
                   id=""
                   className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1.5rem] py-2 border-[#9d9d9d78]  rounded-[0.5rem] max500:w-[80vw] mt-6"
                   onChange={(e) => {
-                    let countries = e.target.innerText.split('\n')
-                    const countryCodes = []
+                    let countries = e.target.innerText.split("\n");
+                    const countryCodes = [];
                     countries = countries.map((item) => {
-                      countryCodes.push(item.split(' (')[1].split(')')[0])
-                      return item.split(' (')[0]
-                    })
+                      countryCodes.push(item.split(" (")[1].split(")")[0]);
+                      return item.split(" (")[0];
+                    });
 
                     setCountry(
-                      countries[countryCodes.indexOf(`+${e.target.value}`)],
-                    )
-                    setCountryCode(e.target.value.toString())
+                      countries[countryCodes.indexOf(`+${e.target.value}`)]
+                    );
+                    setCountryCode(e.target.value.toString());
                   }}
                 >
                   {<Country />}
@@ -310,9 +367,9 @@ const SignUp = () => {
                     placeholder="Enter Phone Number"
                     value={phoneNumber}
                     onChange={(e) => {
-                      const inputValue = e.target.value
+                      const inputValue = e.target.value;
                       if (inputValue.length >= 0 && inputValue.length <= 10) {
-                        setPhoneNumber(inputValue.toString())
+                        setPhoneNumber(inputValue.toString());
                       }
                     }}
                   />
@@ -366,19 +423,17 @@ const SignUp = () => {
             <p
               className=" text-[0.85rem] text-black cursor-pointer"
               onClick={() => {
-                Navigate('/login')
+                Navigate("/login");
               }}
             >
-              Already logged In ?{' '}
-              <span className="font-[500] text-[#225c59] max767:text-[#ffff]">
-                Log In
-              </span>{' '}
+              Already logged In ?{" "}
+              <span className="font-[500] text-[#225c59] max767:text-[#ffff]">Log In</span>{" "}
             </p>
           </div>
         </div>
       </form>
-    )
-  }
+    );
+  };
 
   const form2 = () => {
     return (
@@ -390,7 +445,7 @@ const SignUp = () => {
             <ValidatorForm>
               <TextValidator
                 label={
-                  <span style={{ color: '#225c59' }}>Enter 6 Digit OTP</span>
+                  <span style={{ color: "#225c59" }}>Enter 6 Digit OTP</span>
                 }
                 variant="outlined"
                 inputProps={{ maxLength: 6 }}
@@ -398,11 +453,11 @@ const SignUp = () => {
                 size="small"
                 type="text"
                 fullWidth
-                validators={['required']}
-                errorMessages={['OTP is required']}
-                value={confirmationCode === 0 ? '' : confirmationCode}
+                validators={["required"]}
+                errorMessages={["OTP is required"]}
+                value={confirmationCode === 0 ? "" : confirmationCode}
                 onChange={(e) => {
-                  setConfirmationCode(e.target.value)
+                  setConfirmationCode(e.target.value);
                 }}
               />
             </ValidatorForm>
@@ -413,8 +468,8 @@ const SignUp = () => {
             </button>
           ) : (
             <p className="mt-[1rem]">
-              Resend OTP in{' '}
-              <span className="text-[#225c59] font-bold">{counter}</span>{' '}
+              Resend OTP in{" "}
+              <span className="text-[#225c59] font-bold">{counter}</span>{" "}
               seconds
             </p>
           )}
@@ -431,8 +486,8 @@ const SignUp = () => {
           Confirm code
         </button>
       </form>
-    )
-  }
+    );
+  };
 
   return (
     <div className="w-screen min-h-screen bg-[#f0efef]">
@@ -443,7 +498,7 @@ const SignUp = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

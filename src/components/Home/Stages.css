@@ -6,6 +6,7 @@
   opacity: 0;
 }
 
+
 @keyframes slideFromRight1 {
   from {
     transform: translateX(15%);
@@ -42,7 +43,7 @@
       opacity: 1;
     }
     to {
-      transform: translateY(105%);
+      transform: translateY(105%); 
       opacity: 1;
     }
   }
@@ -54,7 +55,7 @@
       opacity: 1;
     }
     to {
-      transform: translateY(90%);
+      transform: translateY(90%); 
       opacity: 1;
     }
   }

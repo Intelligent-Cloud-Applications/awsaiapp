@@ -1,20 +1,20 @@
-import logo from '../../utils/Assets/logo2.png'
-import { Link, useNavigate } from 'react-router-dom'
-import React, { useEffect } from 'react'
-import gmail from '../../utils/Assets/icons8-mail-100.png'
-import web from '../../utils/Assets/icons8-website-100.png'
-import phone from '../../utils/Assets/icons8-phone-100.png'
-import whatsapp from '../../utils/Assets/icons8-whatsapp-100.png'
-import instagram from '../../utils/Assets/icons8-instagram-100.png'
-import linkdin from '../../utils/Assets/icons8-linkedin-100.png'
-import './Footer.css'
+import logo from "../../utils/Assets/logo2.png";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import gmail from "../../utils/Assets/icons8-mail-100.png";
+import web from "../../utils/Assets/icons8-website-100.png";
+import phone from "../../utils/Assets/icons8-phone-100.png";
+import whatsapp from "../../utils/Assets/icons8-whatsapp-100.png";
+import instagram from "../../utils/Assets/icons8-instagram-100.png";
+import linkdin from "../../utils/Assets/icons8-linkedin-100.png";
+import "./Footer.css";
 
 export default function Footer(props) {
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [props.initialContent])
+    window.scrollTo(0, 0);
+  }, [props.initialContent]);
 
   return (
     <div className="w-full flex flex-col">
@@ -32,7 +32,7 @@ export default function Footer(props) {
         <div className="flex justify-center items-center">
           <button
             onClick={() => {
-              Navigate('/query')
+              Navigate("/query");
             }}
             className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full text-base md:text-xl lg:text-xl "
           >
@@ -97,7 +97,7 @@ export default function Footer(props) {
                       className=" w-5 h-5 cursor-pointer"
                     />
                     <a
-                      className="cursor-pointer text-black text-decoration-none"
+                        className="cursor-pointer text-black text-decoration-none"
                       href="tel:+918249675567"
                       target="_blank"
                       rel="noreferrer"
@@ -222,25 +222,25 @@ export default function Footer(props) {
           </div>
 
           <div className="px-[0.5rem] pt-8 flex flex-row max500:flex-col justify-center text-black max500:gap-1 gap-2 md:gap-4 font-sans max600:text-center max600:text-xs">
-            <Link className="text-black text-decoration-none" to={'/privacy'}>
+            <Link className="text-black text-decoration-none" to={"/privacy"}>
               Privacy Policy
             </Link>
             <div className="bg-black w-0.5 border-black rounded-md"></div>
-            <Link className="text-black text-decoration-none" to={'/term'}>
+            <Link className="text-black text-decoration-none" to={"/term"}>
               Terms and Condition
             </Link>
             <div className="bg-black w-0.5 border-black rounded-md"></div>
-            <Link className="text-black text-decoration-none" to={'/refund'}>
+            <Link className="text-black text-decoration-none" to={"/refund"}>
               Cancellation/Refund Policy
             </Link>
             <div className="bg-black w-0.5 border-black rounded-md"></div>
             <h5 className="text-black sans-sarif mb-0 font-[400]">
-              {' '}
+              {" "}
               All rights reserved. © 2023 awsaiapp.com
             </h5>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

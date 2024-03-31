@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Country = () => {
   return (
@@ -654,7 +654,7 @@ const Country = () => {
         </option>
       </optgroup>
     </>
-  )
-}
+  );
+};
 
-export default Country
+export default Country;

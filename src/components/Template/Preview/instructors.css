@@ -1,61 +1,67 @@
 .instructor-contanier {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-  border-bottom: 2px solid #225c59;
-  background-image: url(../../../utils/Template/FAQ.jpg);
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    border-bottom: 2px solid #225c59;
+    background-image: url(../../../utils/Template/FAQ.jpg);
+    
 }
 
 .inst-card {
-  margin-bottom: 3rem;
-  z-index: 10;
-  align-items: center;
-  justify-content: center;
-  margin-left: 75%;
+    margin-bottom: 3rem;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    margin-left: 75%;
 }
 
 .instructor-card-text {
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  height: 9rem;
-  bottom: 0;
-  padding-top: 4rem;
-  color: #ffff;
-  background: linear-gradient(180deg, #ffffff00 0%, #225c59 100%);
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 9rem;
+    bottom: 0;
+    padding-top: 4rem;
+    color: #ffff;
+    background: linear-gradient(180deg,
+            #ffffff00 0%,
+            #225c59 100%);
 }
 
+
 .Box {
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.342);
-  width: 12rem;
-  height: 24rem;
-  background-size: cover;
-  background-repeat: no-repeat;
-  position: relative;
-  z-index: -20;
-  background-position: center center;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.342);
+    width: 12rem;
+    height: 24rem;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: -20;
+    background-position: center center;
 }
 
 @media only screen and (max-width: 720px) {
-  .instructor-contanier {
-    margin-bottom: none;
-  }
 
-  .inst-card {
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 3rem;
-  }
+    .instructor-contanier {
+        margin-bottom: none;
+    }
 
-  .inst-card .Box {
-    width: 17rem;
-    height: 23rem;
-  }
+    .inst-card {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 3rem;
+    }
+
+    .inst-card .Box {
+        width: 17rem;
+        height: 23rem;
+    }
+
 }
 
-@media (orientation: landscape) {
-  .inst-card .Box {
-    width: 21rem;
-    height: 29rem;
-  }
+@media (orientation : landscape) {
+    .inst-card .Box {
+        width: 21rem;
+        height: 29rem;
+    }
 }

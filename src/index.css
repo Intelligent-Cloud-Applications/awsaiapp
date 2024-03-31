@@ -12,33 +12,33 @@ body {
   overflow-x: hidden;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sansita&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sansita&display=swap");
 
 .JustAnotherHand {
-  font-family: 'Just Another Hand', cursive;
+  font-family: "Just Another Hand", cursive;
 }
 
 .RussoOne {
-  font-family: 'Russo One';
+  font-family: "Russo One";
 }
 
 .Sansita {
-  font-family: 'Sansita';
+  font-family: "Sansita";
 }
 
-.K2D {
+.K2D{
   font-family: 'K2D', sans-serif;
 }
 
-.Poppins {
+.Poppins{
   font-family: 'Poppins', sans-serif;
 }
 
-.Inter {
+.Inter{
   font-family: 'Inter', sans-serif;
 }
-.Laila {
+.Laila{
   font-family: 'Laila', serif;
 }
 
@@ -46,53 +46,54 @@ body {
   transform: rotate(180deg);
 }
 
-.shadowSubscribe {
+.shadowSubscribe{
   box-shadow: 20px 10px 20px #225c59;
 }
-.shadowSubscribe2 {
-  box-shadow: 20px 10px 20px #86cb92;
+.shadowSubscribe2{
+  box-shadow: 20px 10px 20px  #86CB92;
 }
-.shadowSubscribe3 {
-  box-shadow: 20px 10px 20px #ffc73b;
+.shadowSubscribe3{
+  box-shadow: 20px 10px 20px  #FFC73B;
 }
 
-.loader {
-  animation: rotate 1s infinite;
+
+.loader  {
+  animation: rotate 1s infinite;  
   height: 50px;
   width: 50px;
 }
 
 .loader:before,
-.loader:after {
+.loader:after {   
   border-radius: 50%;
   content: '';
   display: block;
-  height: 20px;
+  height: 20px;  
   width: 20px;
 }
 .loader:before {
-  animation: ball1 1s infinite;
+  animation: ball1 1s infinite;  
   background-color: #00a2ff;
   box-shadow: 30px 0 0 #ffffff;
   margin-bottom: 10px;
 }
 .loader:after {
-  animation: ball2 1s infinite;
+  animation: ball2 1s infinite; 
   background-color: #00ffee;
   box-shadow: 30px 0 0 #000000;
 }
 
 @keyframes rotate {
-  0% {
-    -webkit-transform: rotate(0deg) scale(0.8);
+  0% { 
+    -webkit-transform: rotate(0deg) scale(0.8); 
     -moz-transform: rotate(0deg) scale(0.8);
   }
-  50% {
-    -webkit-transform: rotate(360deg) scale(1.2);
+  50% { 
+    -webkit-transform: rotate(360deg) scale(1.2); 
     -moz-transform: rotate(360deg) scale(1.2);
   }
-  100% {
-    -webkit-transform: rotate(720deg) scale(0.8);
+  100% { 
+    -webkit-transform: rotate(720deg) scale(0.8); 
     -moz-transform: rotate(720deg) scale(0.8);
   }
 }
@@ -104,7 +105,7 @@ body {
   50% {
     box-shadow: 0 0 0 #09ff00;
     margin-bottom: 0;
-    -webkit-transform: translate(15px, 15px);
+    -webkit-transform: translate(15px,15px);
     -moz-transform: translate(15px, 15px);
   }
   100% {
@@ -120,7 +121,7 @@ body {
   50% {
     box-shadow: 0 0 0 #ffffff;
     margin-top: -20px;
-    -webkit-transform: translate(15px, 15px);
+    -webkit-transform: translate(15px,15px);
     -moz-transform: translate(15px, 15px);
   }
   100% {
@@ -133,16 +134,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  background-color: #f1f1f1; 
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #696969;
+  background-color: #696969; 
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #414141;
+  background-color: #414141; 
 }
 
 @media (max-width: 850px) {

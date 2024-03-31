@@ -1,3 +1,4 @@
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -8,6 +9,7 @@
     transform: translateY(0);
   }
 }
+
 
 @keyframes slideIn {
   from {
@@ -25,7 +27,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+ 
   padding: 2rem;
 }
 
@@ -48,9 +50,9 @@
   padding: 20px;
   background-color: #f4f4f4;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   margin-bottom: 20px;
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn 0.5s ease forwards; 
 }
 
 .faq-box {
@@ -58,8 +60,9 @@
   overflow-y: auto;
 }
 
+
 .button {
-  background-color: #ff6f61;
+  background-color: #ff6f61; 
   border: none;
   color: white;
   padding: 15px 32px;
@@ -71,22 +74,25 @@
   transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 10px;
-  animation: slideIn 0.5s ease forwards;
+  animation: slideIn 0.5s ease forwards; 
 }
 
+
 .button:hover {
-  background-color: #ff8f81;
+  background-color: #ff8f81; 
 }
+
 
 @media (max-width: 768px) {
   .middle-right-section {
     flex-direction: column;
   }
 }
-.ro {
+.ro{
   display: flex;
   flex-direction: column;
 }
+
 
 .radio-label {
   display: flex;
@@ -94,16 +100,16 @@
 }
 
 .radio-label label {
-  margin-right: 10px;
+  margin-right: 10px; 
 }
 
-.radio-label input[type='radio'] {
-  width: 20px;
-  height: 20px;
+.radio-label input[type="radio"] {
+  width: 20px; 
+  height: 20px; 
   margin-right: 5px;
 }
 
-.radio-label input[type='radio'] + span {
+.radio-label input[type="radio"] + span {
   color: rgb(0, 0, 0);
-  margin-bottom: 10px !important;
+  margin-bottom: 10px !important; 
 }

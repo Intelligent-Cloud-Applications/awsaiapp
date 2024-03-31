@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Navbar from "../components/Home/Navbar";
 import { Storage } from "aws-amplify";
 import Currency from "../components/Auth/Currency";
-import "./Full.css";
 import { useNavigate } from 'react-router-dom';
 import Context from "../context/Context";
-const Full = () => {
+const Edit = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const institutionNames = searchParams.get("institutionName");
+const [isDelivered, setIsDelivered] = useState(false); 
+const Ctx = useContext(Context);
+const institutionsNames = Ctx.userData.institutionName;
+// const cog
+const cognitoId = Ctx.userData.cognitoId;
+// console.log(cognitoId);
+
+console.log(isDelivered);
 
   const [templateDetails, setTemplateDetails] = useState(null);
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
@@ -25,7 +28,7 @@ const Full = () => {
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (institutionNames) {
+      if (institutionsNames) {
         try {
           if (!loaderInitialized) { // Check if loader is false and not initialized
             util.setLoader(true); 
@@ -34,19 +37,19 @@ const Full = () => {
   
           const templateResponse = await API.get(
             "clients",
-            `/user/development-form/get-user/${institutionNames}`
+            `/user/development-form/get-user/${institutionsNames}`
           );
           await setTemplateDetails(templateResponse);
   
           const productResponse = await API.get(
             "clients",
-            `/user/development-form/get-product/${institutionNames}`
+            `/user/development-form/get-product/${institutionsNames}`
           );
           await setSubscriptionDetails(productResponse);
   
           const instructorResponse = await API.get(
             "clients",
-            `/user/development-form/get-instructor/${institutionNames}`
+            `/user/development-form/get-instructor/${institutionsNames}`
           );
           await setInstructorDetails(instructorResponse);
         } catch (error) {
@@ -59,7 +62,7 @@ const Full = () => {
     };
   
     fetchData();
-  }, [institutionNames, loader, loaderInitialized, util]);
+  }, [institutionsNames, loader, loaderInitialized, util]);
   
   
   
@@ -68,7 +71,7 @@ const Full = () => {
     const videoFile = event.target.files[0];
     try {
       const response = await Storage.put(
-        `${institutionNames}/videos/${videoFile.name}`,
+        `${institutionsNames}/videos/${videoFile.name}`,
         videoFile,
         {
           contentType: videoFile.type,
@@ -104,7 +107,7 @@ const Full = () => {
      
       try {
         const response = await Storage.put(
-          `${institutionNames}/images/${file.name}`,
+          `${institutionsNames}/images/${file.name}`,
           file,
           {
             contentType: file.type,
@@ -135,7 +138,7 @@ const Full = () => {
     reader.onloadend = async () => {
       try {
         const response = await Storage.put(
-          `institution-utils/${institutionNames}/images/Testimonial/${file.name}`,
+          `institution-utils/${institutionsNames}/images/Testimonial/${file.name}`,
           file,
           {
             contentType: file.type,
@@ -160,7 +163,7 @@ const Full = () => {
     const file = event.target.files[0]; 
     try {
       const uploadedFile = await Storage.put(
-        `institution-utils/${institutionNames}/images/Instructor/${file.name}`, 
+        `institution-utils/${institutionsNames}/images/Instructor/${file.name}`, 
         file, 
         {
           contentType: file.type 
@@ -255,6 +258,15 @@ const Full = () => {
   
   const saveChanges = async () => {
     util.setLoader(true);
+    const response = await API.put("clients", "/admin/update-delivery", {
+        body: {
+          isDelivered: false, 
+          institution: "awsaiapp",
+            cognitoId: cognitoId,
+        },
+      });
+      setIsDelivered(false);
+      console.log(response);
     try {
       if (instructorDetails && instructorDetails.length > 0) {
         
@@ -266,7 +278,7 @@ const Full = () => {
             instructorPromises.push(API.put("clients", `/user/development-form/update-instructor`, {
               body: {
                 instructorId: instructor.instructorId,
-                institution: institutionNames,
+                institution: institutionsNames,
                 name: instructor.name,
                 emailId: instructor.emailId,
                 image: instructor.image,
@@ -278,7 +290,7 @@ const Full = () => {
             const imageUrl = instructor.image; 
             instructorPromises.push(API.put("clients", `/user/development-form/instructor`, {
               body: {
-                institution: institutionNames,
+                institution: institutionsNames,
                 name: instructor.name,
                 emailId: instructor.emailId,
                 image: imageUrl,
@@ -300,7 +312,7 @@ const Full = () => {
             subscriptionPromises.push(API.put("clients", "/user/development-form/update-subscription", {
               body: {
                 productId: subscription.productId,
-                institution: institutionNames,
+                institution: institutionsNames,
                 amount: subscription.amount,
                 country: subscription.country,
                 currency: subscription.currency,
@@ -316,7 +328,7 @@ const Full = () => {
            
             subscriptionPromises.push(API.put("clients", "/user/development-form/subscriptions", {
               body: {
-                institution: institutionNames,
+                institution: institutionsNames,
                 amount: subscription.amount,
                 country: subscription.country,
                 currency: subscription.currency,
@@ -339,8 +351,8 @@ const Full = () => {
       await Promise.all([
         API.put("clients", "/user/development-form/company", {
           body: {
-            institutionid: institutionNames,
-            companyName: institutionNames,
+            institutionid: institutionsNames,
+            companyName: institutionsNames,
             PrimaryColor: templateDetails.PrimaryColor,
             SecondaryColor: templateDetails.SecondaryColor,
             logoUrl: templateDetails.logoUrl,
@@ -350,14 +362,14 @@ const Full = () => {
         }),
         API.put("clients", "/user/development-form/hero-page", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             TagLine: templateDetails.TagLine,
             videoUrl: templateDetails.videoUrl,
           },
         }),
         API.put("clients", "/user/development-form/why-choose", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             src_Components_Home_Why__h1:
               templateDetails.src_Components_Home_Why__h1,
             src_Components_Home_Header3__h1:
@@ -382,19 +394,19 @@ const Full = () => {
         
         API.put("clients", "/user/development-form/testimonial", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             Testimonial: templateDetails.Testimonial,
           },
         }),
         API.put("clients", "/user/development-form/faq", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             FAQ: templateDetails.FAQ,
           },
         }),
         API.put("clients", "/user/development-form/policy", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             Refund: templateDetails.Refund,
             TermsData: templateDetails.TermsData,
             AboutUs:templateDetails.AboutUs,
@@ -403,7 +415,7 @@ const Full = () => {
         }),
         API.put("clients", "/user/development-form/contact", {
           body: {
-            institutionid: institutionNames,
+            institutionid: institutionsNames,
             Query_Address: templateDetails.Query_Address,
             Query_PhoneNumber: templateDetails.Query_PhoneNumber,
             Query_EmailId: templateDetails.Query_EmailId,
@@ -458,7 +470,7 @@ const Full = () => {
     try {
       util.setLoader(true);
       // Make the API call to delete the instructor
-      await API.del("clients", `/user/development-form/delete-instructor/${institutionNames}`, {
+      await API.del("clients", `/user/development-form/delete-instructor/${institutionsNames}`, {
         body: {
           instructorId: instructorId
         }
@@ -484,7 +496,7 @@ const Full = () => {
     try {
       util.setLoader(true);
       // Make the API call to delete the subscription
-      await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
+      await API.del("clients", `/user/development-form/delete-subscription/${institutionsNames}`, {
         body: {
           productId: productId
         }
@@ -702,7 +714,7 @@ const Full = () => {
           ) : (
             
             <>
-              <div className="container  ">
+              <div className="container lg:ml-[90px]">
                 <h1 className="text-[20px]">Template Details</h1>
                  <div className="middle-right-section mt-5">
                 
@@ -1551,7 +1563,7 @@ const Full = () => {
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} className="px-[50px]">
   <button onClick={goBack}  className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg">Back</button>
-  <button onClick={saveChanges} className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg">Save</button>
+  <button onClick={saveChanges} className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg">Send Requist</button>
 </div>
 <div className="h-4"></div>
 
@@ -1560,4 +1572,4 @@ const Full = () => {
   );
 };
 
-export default Full;
+export default Edit;

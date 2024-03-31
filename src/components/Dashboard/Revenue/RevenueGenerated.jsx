@@ -1,10 +1,13 @@
 import React from 'react'
 
 const RevenueGenerated = () => {
-  return <div>RevenueGenerated</div>
+  return (
+    <div>RevenueGenerated</div>
+  )
 }
 
 export default RevenueGenerated
+
 
 // import React, { useState, useEffect, useRef } from "react";
 // import Chart from "chart.js/auto";
@@ -154,7 +157,7 @@ export default RevenueGenerated
 //       "Jan-23", "Feb-23", "Mar-23", "Apr-23", "May-23", "Jun-23", "Jul-23", "Aug-23", "Sep-23", "Oct-23", "Nov-23", "Dec-23",
 //       "Jan24", "Feb24", "Mar24", "Apr24", "May24", "Jun24", "Jul24", "Aug24", "Sep24", "Oct24", "Nov24", "Dec24"
 //     ],
-
+  
 //     datasets: [
 //       {
 //         label: "Revenue",
@@ -165,7 +168,7 @@ export default RevenueGenerated
 //       // Add more datasets or adjust the data points to match the number of labels
 //     ],
 //   };
-
+  
 //   const pieChartData = {
 //     labels: [
 //       "Jan",
@@ -186,7 +189,7 @@ export default RevenueGenerated
 //           "#5ACB6C",
 //         ],
 //         shadow: true,
-//         shadowColor:"#3A5EDE",
+//         shadowColor:"#3A5EDE", 
 //         shadowBlur: 50,
 
 //       },
@@ -237,10 +240,11 @@ export default RevenueGenerated
 //           >
 //             <BarChart data={barChartData} />
 //           </div>
-
+          
 //           <div className="flex justify-center items-center w-[10rem] min800:hidden mt-[1rem] ml-[3rem]">
 //             {windowWidth <= 768 && <PieChart data={pieChartData} />}
 //           </div>
+
 
 //           <div className="flex flex-col items-center max1300:flex-row flex-col-sm">
 //             <div className="flex flex-col justify-center items-center border-2 border-[#545454] rounded-[0.4rem] w-[25rem] h-[9rem] mt-[2rem] ml-6 max500:w-[80vw]"

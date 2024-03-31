@@ -1,29 +1,29 @@
 /* eslint-disable jsx-a11y/alt-text */
-import Navbar from '../components/Home/Navbar'
-import Footer from '../components/Home/Footer'
-import Serv_img from '../utils/Assets/Services_Login.png'
-import './Services.css'
-import { React, useState, useEffect } from 'react'
-import plus from '../utils/Assets/p2.png'
-import cross from '../utils/Assets/cross.png'
-import Common from './Common'
-import { Link } from 'react-router-dom'
+import Navbar from "../components/Home/Navbar";
+import Footer from "../components/Home/Footer";
+import Serv_img from "../utils/Assets/Services_Login.png";
+import "./Services.css";
+import { React, useState, useEffect } from "react";
+import plus from "../utils/Assets/p2.png";
+import cross from "../utils/Assets/cross.png";
+import Common from "./Common";
+import { Link } from "react-router-dom";
 
 const Login_IdentityManagment = () => {
-  const [screensize, setScreensize] = useState({ width: window.innerWidth })
+  const [screensize, setScreensize] = useState({ width: window.innerWidth });
 
   useEffect(() => {
     const handleResize = () => {
-      setScreensize({ width: window.innerWidth })
-    }
+      setScreensize({ width: window.innerWidth });
+    };
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-  const shouldDisplayContainer = screensize.width <= 600
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const shouldDisplayContainer = screensize.width <= 600;
   return (
     <div className="h-full">
       <Navbar />
@@ -92,7 +92,7 @@ const Login_IdentityManagment = () => {
               <li>
                 <h1>Secure Authentication:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Implement strong authentication mechanisms, such as two-factor
                   authentication to safeguard user accounts.
                 </p>
@@ -100,7 +100,7 @@ const Login_IdentityManagment = () => {
               <li>
                 <h1>Single Sign-On (SSO):</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Streamline user access with SSO, allowing users to log in once
                   and access multiple services seamlessly.
                 </p>
@@ -108,7 +108,7 @@ const Login_IdentityManagment = () => {
               <li>
                 <h1>Identity Verification:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Verify user identities through various methods, ensuring a
                   trustworthy user base and reducing fraudulent activities.
                 </p>
@@ -116,7 +116,7 @@ const Login_IdentityManagment = () => {
               <li>
                 <h1>Password Management:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Offer password reset and recovery options to enhance user
                   account security and convenience.
                 </p>
@@ -124,7 +124,7 @@ const Login_IdentityManagment = () => {
               <li>
                 <h1>User Access Control:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Define user roles and permissions to control access to
                   specific features and information within the web app.
                 </p>
@@ -135,6 +135,6 @@ const Login_IdentityManagment = () => {
       </div>
       <Footer />
     </div>
-  )
-}
-export default Login_IdentityManagment
+  );
+};
+export default Login_IdentityManagment;

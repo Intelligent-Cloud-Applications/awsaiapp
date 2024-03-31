@@ -1,74 +1,74 @@
-import React from 'react'
-import Service from '../../utils/ServicesPic.png'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import s1 from '../../utils/Assets/service1.png'
-import s2 from '../../utils/Assets/service2.png'
-import s3 from '../../utils/Assets/service3.png'
-import s4 from '../../utils/Assets/service4.png'
-import s5 from '../../utils/Assets/service5.png'
-import s6 from '../../utils/Assets/service6.png'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+import React from "react";
+import Service from "../../utils/ServicesPic.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import s1 from "../../utils/Assets/service1.png";
+import s2 from "../../utils/Assets/service2.png";
+import s3 from "../../utils/Assets/service3.png";
+import s4 from "../../utils/Assets/service4.png";
+import s5 from "../../utils/Assets/service5.png";
+import s6 from "../../utils/Assets/service6.png";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const Services = () => {
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
-  const [isHovered1, setIsHovered1] = useState(false)
-  const [isHovered2, setIsHovered2] = useState(false)
-  const [isHovered3, setIsHovered3] = useState(false)
-  const [isHovered4, setIsHovered4] = useState(false)
-  const [isHovered5, setIsHovered5] = useState(false)
-  const [isHovered6, setIsHovered6] = useState(false)
+  const [isHovered1, setIsHovered1] = useState(false);
+  const [isHovered2, setIsHovered2] = useState(false);
+  const [isHovered3, setIsHovered3] = useState(false);
+  const [isHovered4, setIsHovered4] = useState(false);
+  const [isHovered5, setIsHovered5] = useState(false);
+  const [isHovered6, setIsHovered6] = useState(false);
 
   const handleHover1 = () => {
-    setIsHovered1(true)
-  }
+    setIsHovered1(true);
+  };
 
   const handleUnhover1 = () => {
-    setIsHovered1(false)
-  }
+    setIsHovered1(false);
+  };
 
   const handleHover2 = () => {
-    setIsHovered2(true)
-  }
+    setIsHovered2(true);
+  };
 
   const handleUnhover2 = () => {
-    setIsHovered2(false)
-  }
+    setIsHovered2(false);
+  };
 
   const handleHover3 = () => {
-    setIsHovered3(true)
-  }
+    setIsHovered3(true);
+  };
 
   const handleUnhover3 = () => {
-    setIsHovered3(false)
-  }
+    setIsHovered3(false);
+  };
 
   const handleHover4 = () => {
-    setIsHovered4(true)
-  }
+    setIsHovered4(true);
+  };
 
   const handleUnhover4 = () => {
-    setIsHovered4(false)
-  }
+    setIsHovered4(false);
+  };
 
   const handleHover5 = () => {
-    setIsHovered5(true)
-  }
+    setIsHovered5(true);
+  };
 
   const handleUnhover5 = () => {
-    setIsHovered5(false)
-  }
+    setIsHovered5(false);
+  };
   const handleHover6 = () => {
-    setIsHovered6(true)
-  }
+    setIsHovered6(true);
+  };
 
   const handleUnhover6 = () => {
-    setIsHovered6(false)
-  }
+    setIsHovered6(false);
+  };
 
-  const [ref, inView] = useInView()
+  const [ref, inView] = useInView();
 
   const cardleft = {
     hidden: {
@@ -79,10 +79,10 @@ const Services = () => {
       opacity: 1,
       x: 0,
       transition: {
-        duration: 0.5, // You can adjust the duration
+        duration: .5, // You can adjust the duration
       },
     },
-  }
+  };
 
   const cardright = {
     hidden: {
@@ -96,7 +96,7 @@ const Services = () => {
         duration: 1, // You can adjust the duration
       },
     },
-  }
+  };
 
   return (
     <div>
@@ -116,13 +116,14 @@ const Services = () => {
               className={`relative w-80 h-48 max1008:w-64 max1008:h-20vh shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20`}
               onMouseEnter={handleHover1}
               onMouseLeave={handleUnhover1}
+
               variants={cardleft}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6 text-base max1008:text-sm">
-                  User interface & User experience{' '}
+                  User interface & User experience{" "}
                 </div>
 
                 <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
@@ -138,8 +139,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 transition-all duration-500 ease rounded overflow-hidden${
                   isHovered1
-                    ? 'transform translate-x-0 translate-y-0 text-white'
-                    : 'transform translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform translate-x-0 translate-y-0 text-white"
+                    : "transform translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm">
@@ -153,7 +154,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/User_interface')
+                    Navigate("/User_interface");
                   }}
                   className="text-xs ml-5 mt-4 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -167,13 +168,14 @@ const Services = () => {
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]"
               onMouseEnter={handleHover2}
               onMouseLeave={handleUnhover2}
+
               variants={cardleft}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 rounded h-full">
                 <div className="font-['Inter'] font-semibold ml-6">
-                  Personalization{' '}
+                  Personalization{" "}
                 </div>
 
                 <div className="self-stretch relative flex flex-col ml-6 pb-8 items-start">
@@ -188,8 +190,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 overflow-hidden transition-all duration-500 ease rounded${
                   isHovered2
-                    ? 'transform -translate-x-0 translate-y-0 text-white'
-                    : 'transform translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform -translate-x-0 translate-y-0 text-white"
+                    : "transform translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm ">
@@ -204,7 +206,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/Personalization')
+                    Navigate("/Personalization");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -218,8 +220,9 @@ const Services = () => {
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -mr-[5rem] z-20"
               onMouseEnter={handleHover3}
               onMouseLeave={handleUnhover3}
+
               variants={cardleft}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
@@ -239,8 +242,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 overflow-hidden transition-all duration-500 ease rounded${
                   isHovered3
-                    ? 'transform -translate-x-0 translate-y-0 text-white'
-                    : 'transform translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform -translate-x-0 translate-y-0 text-white"
+                    : "transform translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm ">
@@ -255,7 +258,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/identity')
+                    Navigate("/identity");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -276,7 +279,7 @@ const Services = () => {
               onMouseEnter={handleHover4}
               onMouseLeave={handleUnhover4}
               variants={cardright}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
@@ -296,8 +299,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 overflow-hidden transition-all duration-500 ease rounded${
                   isHovered4
-                    ? 'transform translate-x-0 translate-y-0 text-white'
-                    : 'transform -translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform translate-x-0 translate-y-0 text-white"
+                    : "transform -translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm ">
@@ -312,7 +315,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/trade')
+                    Navigate("/trade");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -326,8 +329,9 @@ const Services = () => {
               className="relative h-48 w-80 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px]"
               onMouseEnter={handleHover5}
               onMouseLeave={handleUnhover5}
+
               variants={cardright}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
@@ -347,8 +351,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 overflow-hidden transition-all duration-500 ease rounded${
                   isHovered5
-                    ? 'transform -translate-x-0 translate-y-0 text-white'
-                    : 'transform -translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform -translate-x-0 translate-y-0 text-white"
+                    : "transform -translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm ">
@@ -363,7 +367,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/customer')
+                    Navigate("/customer");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -377,8 +381,9 @@ const Services = () => {
               className="relative w-80 h-48 max1008:w-64 shadow-[5px_5px_20px_0px_rgba(0,_0,_0,_0.25)] overflow-hidden flex flex-col items-start rounded-[23px] -ml-[5rem] z-20"
               onMouseEnter={handleHover6}
               onMouseLeave={handleUnhover6}
+
               variants={cardright}
-              animate={inView ? 'visible' : 'hidden'}
+              animate={inView ? "visible" : "hidden"}
               ref={ref}
             >
               <div className="bg-white flex flex-col justify-start pt-6 gap-3 items-start rounded h-full">
@@ -398,8 +403,8 @@ const Services = () => {
               <div
                 className={`absolute h-full w-full flex flex-col justify-center items-start bg-[#30AFBC] pl-5 overflow-hidden transition-all duration-500 ease rounded${
                   isHovered6
-                    ? 'transform -translate-x-0 translate-y-0 text-white'
-                    : 'transform -translate-x-[30rem] translate-y-[30rem]'
+                    ? "transform -translate-x-0 translate-y-0 text-white"
+                    : "transform -translate-x-[30rem] translate-y-[30rem]"
                 }`}
               >
                 <div className="font-['Inter'] font-semibold pb-2 pl-1 text-base max1008:text-sm ">
@@ -414,7 +419,7 @@ const Services = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    Navigate('/payment')
+                    Navigate("/payment");
                   }}
                   className="text-xs ml-5 mt-2 px-2 py-1 rounded text-white border-white hover:bg-white border-[1px] hover:text-[#30AFBC] duration-300"
                 >
@@ -439,7 +444,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[15vh] max500:h-[11vh] " src={s1} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">
-            User interface & User experience{' '}
+            User interface & User experience{" "}
           </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">
             UI: Elegant design, intuitive interactions.UX: Purposeful journeys,
@@ -448,7 +453,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/User_interface')
+              Navigate("/User_interface");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -459,7 +464,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[15vh] max500:h-[11vh]" src={s2} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">
-            Personalization{' '}
+            Personalization{" "}
           </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">
             With personalization, we craft unique journeys for every customer,
@@ -468,7 +473,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/Personalization')
+              Navigate("/Personalization");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -479,7 +484,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[15vh] max500:h-[11vh]" src={s3} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">
-            Login & identity managment{' '}
+            Login & identity managment{" "}
           </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">
             Advanced Identity Solutions: Optimize user authentication,
@@ -488,7 +493,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/identity')
+              Navigate("/identity");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -499,7 +504,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[15vh] max500:h-[11vh]" src={s4} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">
-            Trade Specific features{' '}
+            Trade Specific features{" "}
           </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">
             Our services offer industry-specific features, empowering businesses
@@ -508,7 +513,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/trade')
+              Navigate("/trade");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -519,7 +524,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-5 text-center font-inter my-16 p-2">
           <img className="h-[15vh] max500:h-[11vh]" src={s5} alt="" />
           <h1 className=" max500:text-xl text-7xl font-semibold">
-            Leads & customer tracking{' '}
+            Leads & customer tracking{" "}
           </h1>
           <p className="w-[65%] max500:w-[82%] max500:text-base text-xl">
             Gain valuable leads and track customer interactions. Leverage
@@ -528,7 +533,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/customer')
+              Navigate("/customer");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -546,7 +551,7 @@ const Services = () => {
           </p>
           <button
             onClick={() => {
-              Navigate('/payment')
+              Navigate("/payment");
             }}
             className="bg-[#30AFBC] text-white px-4 py-2 text-xl max500:text-base rounded"
           >
@@ -555,6 +560,6 @@ const Services = () => {
         </div>
       </div>
     </div>
-  )
-}
-export default Services
+  );
+};
+export default Services;

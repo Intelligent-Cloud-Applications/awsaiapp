@@ -1,29 +1,29 @@
 /* eslint-disable jsx-a11y/alt-text */
-import Navbar from '../components/Home/Navbar'
-import Footer from '../components/Home/Footer'
-import Serv_img from '../utils/Assets/Services_Coustmer.png'
-import './Services.css'
-import { React, useState, useEffect } from 'react'
-import plus from '../utils/Assets/p2.png'
-import cross from '../utils/Assets/cross.png'
-import Common from './Common'
-import { Link } from 'react-router-dom'
+import Navbar from "../components/Home/Navbar";
+import Footer from "../components/Home/Footer";
+import Serv_img from "../utils/Assets/Services_Coustmer.png";
+import "./Services.css";
+import { React, useState, useEffect } from "react";
+import plus from "../utils/Assets/p2.png";
+import cross from "../utils/Assets/cross.png";
+import Common from "./Common";
+import { Link } from "react-router-dom";
 
 const Coustmer = () => {
-  const [screensize, setScreensize] = useState({ width: window.innerWidth })
+  const [screensize, setScreensize] = useState({ width: window.innerWidth });
 
   useEffect(() => {
     const handleResize = () => {
-      setScreensize({ width: window.innerWidth })
-    }
+      setScreensize({ width: window.innerWidth });
+    };
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-  const shouldDisplayContainer = screensize.width <= 600
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const shouldDisplayContainer = screensize.width <= 600;
   return (
     <div className="h-full">
       <Navbar />
@@ -93,7 +93,7 @@ const Coustmer = () => {
               <li>
                 <h1>Customer Activity Tracking:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Monitor customer interactions and behavior within your web app
                   to identify trends and areas for improvement.
                 </p>
@@ -101,7 +101,7 @@ const Coustmer = () => {
               <li>
                 <h1>Lead Scoring:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Assign scores to leads based on their engagement levels and
                   potential, allowing you to prioritize follow-ups effectively.
                 </p>
@@ -109,7 +109,7 @@ const Coustmer = () => {
               <li>
                 <h1>Performance Analytics:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Gain insights into lead conversion rates, customer acquisition
                   costs, and customer lifetime value to optimize marketing
                   strategies.
@@ -118,7 +118,7 @@ const Coustmer = () => {
               <li>
                 <h1>SEO-Analytics Integration:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   We align lead and customer tracking data with SEO analytics to
                   identify high-performing keywords and optimize your content
                   strategy.
@@ -127,7 +127,7 @@ const Coustmer = () => {
               <li>
                 <h1>Lead Capture Forms:</h1>
                 <p>
-                  {' '}
+                  {" "}
                   Implement lead capture forms on your web app to gather
                   valuable customer information and generate potential leads.
                 </p>
@@ -138,6 +138,6 @@ const Coustmer = () => {
       </div>
       <Footer />
     </div>
-  )
-}
-export default Coustmer
+  );
+};
+export default Coustmer;

@@ -1,14 +1,14 @@
 .Slide {
-  margin-left: 5rem;
-  animation: slide 2s ease-in-out;
+    margin-left: 5rem;
+    animation: slide 2s ease-in-out;
 }
 
 @keyframes slide {
-  0% {
-    margin-left: -2rem;
-  }
+    0% {
+        margin-left: -2rem;
+    }
 
-  100% {
-    margin-left: 5rem;
-  }
+    100% {
+        margin-left: 5rem;
+    }
 }

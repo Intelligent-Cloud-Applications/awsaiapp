@@ -1,3 +1,4 @@
+
 .value {
   font-size: 2.5rem;
 }
@@ -11,10 +12,13 @@
   .who {
     margin-top: 300px;
   }
+   
+.arrow
+{
+  display: none;
+}
 
-  .arrow {
-    display: none;
-  }
+
 }
 @media (max-width: 800px) {
   .left {
@@ -25,12 +29,13 @@
   }
 }
 
-@media (max-width: 800px) {
-  .Container1 .wrapper {
+
+@media (max-width: 800px){
+ .Container1 .wrapper {
     display: flex;
     flex-direction: row;
     white-space: nowrap;
-    animation: scrollAnimation 15s linear infinite;
+    animation: scrollAnimation 15s linear infinite; 
     animation-play-state: running;
   }
 
@@ -47,13 +52,14 @@
     0% {
       transform: translateX(0);
     }
-
+    
     100% {
-      transform: translateX(-200%);
+      transform: translateX(-200%); 
     }
   }
+
 }
-/* .Container1 .wrapper {
+  /* .Container1 .wrapper {
     display: flex;
     flex-direction: row;
     white-space: nowrap;
@@ -81,7 +87,7 @@
       transform: translateX(-100%); 
     }
   } */
-/* @media (min-width: 900px) and (max-width: 1300px) {
+  /* @media (min-width: 900px) and (max-width: 1300px) {
     .Container1 .wrapper {
       display: flex;
       flex-direction: row;
@@ -118,8 +124,8 @@
       }
     }
   } */
-
-/* @media (max-width: 1300px) {
+  
+  /* @media (max-width: 1300px) {
     .Container1 .wrapper {
       display: flex;
       flex-direction: row;
@@ -158,36 +164,37 @@
       }
     }
   } */
-@media (max-width: 1300px) {
-  .Container1 .wrapper {
-    display: flex;
-    flex-direction: row;
-    white-space: nowrap;
-    animation: scrollAnimation 15s linear infinite;
-    animation-play-state: running;
-    opacity: 1;
-  }
-
-  @keyframes scrollAnimation {
-    0% {
-      transform: translateX(0);
+  @media (max-width: 1300px) {
+    .Container1 .wrapper {
+      display: flex;
+      flex-direction: row;
+      white-space: nowrap;
+      animation: scrollAnimation 15s linear infinite;
+      animation-play-state: running;
       opacity: 1;
     }
-
-    99.99% {
-      transform: translateX(-100%);
-      opacity: 0.5;
-    }
-
-    100% {
-      transform: translateX(-200%);
-      opacity: 0;
+  
+    @keyframes scrollAnimation {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+  
+      99.99% {
+        transform: translateX(-100%);
+        opacity: 0.5;
+      }
+  
+      100% {
+        transform: translateX(-200%);
+        opacity: 0;
+      }
     }
   }
-}
+  
 
-@media (max-width: 1050px) {
-  .self-end {
-    display: none;
+  @media (max-width: 1050px){
+    .self-end{
+      display: none;
+    }
   }
-}
