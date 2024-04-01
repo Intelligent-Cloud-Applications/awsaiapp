@@ -1,3 +1,5 @@
-DATE = 31/03/2024
+DATE = 1/04/2024
 
-Changes Made = (Navbar.jsx)
+Changes Made = (signup.jsx)
+
+message change from email to phonenumber

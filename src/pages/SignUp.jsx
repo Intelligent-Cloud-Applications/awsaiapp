@@ -26,7 +26,7 @@ const SignUp = () => {
   // const [passwordVisible, setPasswordVisible] = useState(false);
   const [isNewUser, setIsNewUser] = useState(true);
   const data = {
-    Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
+    Otp_Msg: `An OTP has been sent to ${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   };
   // const data = {
   //   Otp_Msg: `An OTP has been sent to +${countryCode}${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
