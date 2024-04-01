@@ -74,116 +74,110 @@ const Login = () => {
       const user = await Auth.sendCustomChallengeAnswer(signinResponse, otp)
       console.log(await Auth.currentSession())
       if (user) {
-        const userdata = await API.get('clients', '/self/read-self/awsaiapp')
-        if (
-          userdata.userType === 'admin' &&
-          userdata.institution === 'awsaiapp' &&
-          userdata.institutionName === 'awsaiapp' &&
-          userdata.web === true &&
-          userdata.isVerified === true &&
-          userdata.isDelivered === true
-        ) {
-          localStorage.setItem('institution', userdata.institutionName)
-          UserCtx.setUserData(userdata)
-          UserCtx.setIsAuth(true)
-          UtilCtx.setLoader(false)
-          await UserCtx.clients.onReload()
+        console.log(user)
+        const userdata = await API.get("clients", '/self/read-self/awsaiapp');
+        console.log("User data:", userdata);
+        if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp" && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === true) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
           Swal.fire({
-            icon: 'success',
-            title: 'Welcome Back',
-          })
-          Navigate('/dashboard')
-        } else if (
-          userdata.userType === 'admin' &&
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate("/dashboard");
+        } else if (userdata.userType === "admin" &&
           userdata.institution === 'awsaiapp' &&
           userdata.institutionName &&
           userdata.web === true &&
           userdata.isVerified === false &&
-          userdata.isDelivered === false
-        ) {
-          localStorage.setItem('institution', userdata.institutionName)
-          UserCtx.setUserData(userdata)
-          UserCtx.setIsAuth(true)
-          UtilCtx.setLoader(false)
-          await UserCtx.clients.onReload()
+          userdata.isDelivered === false) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
           Swal.fire({
-            icon: 'success',
-            title: 'Welcome Back',
-          })
-          Navigate(`/pay`)
-        } else if (
-          userdata.userType === 'admin' &&
-          userdata.institution === 'awsaiapp' &&
-          userdata.institutionName &&
-          userdata.web === true &&
-          userdata.isVerified === true &&
-          userdata.isDelivered === true
-        ) {
-          localStorage.setItem('institution', userdata.institutionName)
-          UserCtx.setUserData(userdata)
-          UserCtx.setIsAuth(true)
-          UtilCtx.setLoader(false)
-          await UserCtx.clients.onReload()
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/pay`);
+        } else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === false) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
           Swal.fire({
-            icon: 'success',
-            title: 'Welcome Back',
-          })
-          Navigate(`/Dashboard`)
-        } else if (
-          userdata.userType === 'admin' &&
-          userdata.institution === 'awsaiapp' &&
-          userdata.institutionName &&
-          userdata.web === false
-        ) {
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/complete`);
+        }
+        else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === true) {
+          localStorage.setItem('institution', userdata.institutionName);
+          UserCtx.setUserData(userdata);
+          UserCtx.setIsAuth(true);
+          UtilCtx.setLoader(false);
+          await UserCtx.clients.onReload();
+          Swal.fire({
+            icon: "success",
+            title: "Welcome Back",
+          });
+          Navigate(`/Dashboard`);
+        }
+        else if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName && userdata.web === false) {
           const continueResult = await Swal.fire({
             title: 'Continue?',
             text: 'Do you want to continue where you left off?',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Continue',
-            cancelButtonText: 'Not Now',
-          })
+            cancelButtonText: 'Not Now'
+          });
           if (continueResult.isConfirmed) {
-            localStorage.setItem('institution', userdata.institutionName)
-            UserCtx.setUserData(userdata)
-            UserCtx.setIsAuth(true)
-            UtilCtx.setLoader(false)
-            Navigate('/template')
+            localStorage.setItem('institution', userdata.institutionName);
+            UserCtx.setUserData(userdata);
+            UserCtx.setIsAuth(true);
+            UtilCtx.setLoader(false);
+            Navigate("/template");
           } else if (!continueResult.isConfirmed) {
-            localStorage.setItem('institution', userdata.institutionName)
-            UserCtx.setUserData(userdata)
-            UserCtx.setIsAuth(true)
-            UtilCtx.setLoader(false)
-            Navigate('/')
+            localStorage.setItem('institution', userdata.institutionName);
+            UserCtx.setUserData(userdata);
+            UserCtx.setIsAuth(true);
+            UtilCtx.setLoader(false);
+            Navigate("/");
           }
         } else {
-          console.log('Invalid user:', userdata)
-          Navigate('/')
+          console.log("Invalid user:", userdata);
+          Navigate("/");
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Please enter a valid Id',
-          })
-          UtilCtx.setLoader(false)
+            icon: "error",
+            title: "Error",
+            text: "Please enter a valid Id",
+          });
+          UtilCtx.setLoader(false);
         }
       } else {
-        setError(`Incorrect`)
-        UtilCtx.setLoader(false)
+        setError(`Incorrect`);
+        UtilCtx.setLoader(false);
       }
     } catch (e) {
-      console.error('Error during login:', e)
-      console.log('Error code:', e.code) // Log the error code
-      if (e.toString().split(' code ')[1]?.trim() === '404') {
-        console.log('User Not Found')
-        alert('Contact us for login')
-        // Navigate('/Query?newuser=false')
-        setError('')
+      console.error("Error during login:", e);
+      console.log("Error code:", e.code); // Log the error code
+      if (e.toString().split(" code ")[1]?.trim() === "404") {
+        console.log("User Not Found");
+        alert("Contact us for login");
+        Navigate("/Query?newuser=false");
+        setError("");
       } else {
-        setError(e.message)
+        setError(e.message);
       }
-      UtilCtx.setLoader(false)
+      UtilCtx.setLoader(false);
     }
-  }
+  };
 
   return (
     <>
@@ -292,7 +286,7 @@ const Login = () => {
                   //   opacity:otp ? 1 : 0.5,
                   // }}
                   onClick={handelSubmit}
-                  // disabled={!otp}
+                // disabled={!otp}
                 >
                   Submit
                 </button>
