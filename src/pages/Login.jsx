@@ -253,6 +253,7 @@ const Login = () => {
                   onChange={(e) => setOtp(e.target.value)}
                   className="Inter pl-10 w-[20rem] p-2 border rounded-[0.5rem]"
                   placeholder="otp"
+                  maxLength={6}
                 />
                 {/* <button
                   onClick={togglePasswordVisibility}
