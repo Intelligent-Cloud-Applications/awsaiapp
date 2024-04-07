@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import vvideo from "../../../utils/Template/backgroundvideo.mp4";
 
-const Home1 = ({ TagLine, setTagLine, video, setVideo }) => {
+const Home1 = ({ TagLine, video}) => {
   useEffect(() => {
     const videoUrl = video && video.url;
     console.log("video.url", videoUrl); // Log the video URL to check if it's correct
