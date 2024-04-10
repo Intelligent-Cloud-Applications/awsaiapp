@@ -253,6 +253,8 @@ const Template = () => {
           //   {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
           // ]);
 
+          setServices(templateResponse.Services);
+
           if (templateResponse.ClassTypes)
             setDanceTypes(templateResponse.ClassTypes);
 
@@ -441,7 +443,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
-          Services:services,
+          Services: services,
           // dance_type: services[0].dance_type,
           ClassTypes: nonEmptyDanceTypes,
         },
