@@ -62,7 +62,28 @@ const Full = () => {
   }, [institutionNames, loader, loaderInitialized, util]);
   
   
+  const handleServiceTitleChange = (event, index) => {
+    const updatedServices = [...templateDetails.Services];
+    updatedServices[index].title = event.target.value;
+    setTemplateDetails({ ...templateDetails, Services: updatedServices });
+  };
+
+  // Define handleItemChange function
+  const handleItemChange = (event, serviceIndex, itemIndex) => {
+    const updatedServices = [...templateDetails.Services];
+    updatedServices[serviceIndex].items[itemIndex] = event.target.value;
+    setTemplateDetails({ ...templateDetails, Services: updatedServices });
+  };
+
+  // Define addItem function
+  const addItem = (index) => {
+    const updatedServices = [...templateDetails.Services];
+    updatedServices[index].items.push('');
+    setTemplateDetails({ ...templateDetails, Services: updatedServices });
+  };
+
   
+ 
   // util.setLoader(false);
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
@@ -358,24 +379,7 @@ const Full = () => {
         API.put("clients", "/user/development-form/why-choose", {
           body: {
             institutionid: institutionNames,
-            src_Components_Home_Why__h1:
-              templateDetails.src_Components_Home_Why__h1,
-            src_Components_Home_Header3__h1:
-              templateDetails.src_Components_Home_Header3__h1,
-            src_Components_Home_Header3__h2:
-              templateDetails.src_Components_Home_Header3__h2,
-            src_Components_Home_Header3__h5_1:
-              templateDetails.src_Components_Home_Header3__h5_1,
-            src_Components_Home_Header3__p_1:
-              templateDetails.src_Components_Home_Header3__p_1,
-            src_Components_Home_Header3__h5_2:
-              templateDetails.src_Components_Home_Header3__h5_2,
-            src_Components_Home_Header3__p_2:
-              templateDetails.src_Components_Home_Header3__p_2,
-            src_Components_Home_Header3__h5_3:
-              templateDetails.src_Components_Home_Header3__h5_3,
-            src_Components_Home_Header3__p_3:
-              templateDetails.src_Components_Home_Header3__p_3,
+            Services:templateDetails.Services,
             ClassTypes: templateDetails.ClassTypes,
           },
         }),
@@ -684,11 +688,14 @@ const Full = () => {
     });
   };
   
+  const removeItem = (serviceIndex, itemIndex) => {
+    const updatedServices = [...templateDetails.Services];
+    updatedServices[serviceIndex].items.splice(itemIndex, 1);
+    setTemplateDetails({ ...templateDetails, Services: updatedServices });
+  };  
+  
   
 
-  
-
- 
   
   return (
     <>
@@ -761,147 +768,63 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold "> Services Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Why__h1}
-                        onChange={(event) =>
-                          handleChange(event, "src_Components_Home_Why__h1")
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Heading"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Services Sub Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Header3__h1}
-                        onChange={(event) =>
-                          handleChange(event, "src_Components_Home_Header3__h1")
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Sub Heading "
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Services Small Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Header3__h2}
-                        onChange={(event) =>
-                          handleChange(event, "src_Components_Home_Header3__h2")
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Services Small Heading "
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service1 Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={
-                          templateDetails.src_Components_Home_Header3__h5_1
-                        }
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__h5_1"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Service1 Heading"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service1 Description:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Header3__p_1}
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__p_1"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Service1 Description"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service2 Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={
-                          templateDetails.src_Components_Home_Header3__h5_2
-                        }
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__h5_2"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Service2 Heading"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service2 Description:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Header3__p_2}
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__p_2"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Service2 Description"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service3 Heading:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={
-                          templateDetails.src_Components_Home_Header3__h5_3
-                        }
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__h5_3"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Service3 Heading"
-                        autoFocus
-                      />
-                    </div>
-                    <h1 className="text-[20px] font-bold "> Service3 Description:</h1>
-                    <div className="rectangular-box">
-                      <input
-                        type="text"
-                        value={templateDetails.src_Components_Home_Header3__p_3}
-                        onChange={(event) =>
-                          handleChange(
-                            event,
-                            "src_Components_Home_Header3__p_3"
-                          )
-                        }
-                        className="w-full text-black border-none outline-none bg-transparent "
-                        placeholder="Enter Service3 Description"
-                        autoFocus
-                      />
-                    </div>
+                   
+
+<>
+  {templateDetails.Services && templateDetails.Services.length > 0 && (
+    <>
+      {templateDetails.Services.map((service, index) => (
+        <div key={index}>
+           <h1 className="text-[20px] font-bold">Service {index + 1}</h1>
+           <div className="rectangular-box">
+          <input
+            type="text"
+            value={service.title}
+            onChange={(e) => handleServiceTitleChange(e, index)}
+            className="w-full text-black border-none outline-none bg-transparent"
+            placeholder="Service Title"
+          /></div>
+          {service.items && service.items.length > 0 && (
+          
+<div>
+              {service.items.map((item, itemIndex) => (
+                 
+                <div key={itemIndex}>
+                  <div className="flex justify-end items-center">
+                  <button
+                    onClick={() => removeItem(index, itemIndex)}
+                    className="rounded-full bg-red-500 text-white px-2"
+                  >
+                    X
+                  </button>
+                </div>
+                    <div className="rectangular-box ">
+                   
+                  
+                  <input
+                    type="text"
+                    value={item}
+                    onChange={(e) => handleItemChange(e, index, itemIndex)}
+                    className="w-full text-black border-none outline-none bg-transparent"
+                    placeholder="Service Item"
+                  />
+                </div> </div>
+              ))}
+          </div>
+          )}
+             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <button onClick={() => addItem(index)} className="bg-[#ffffff] text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg mb-4">
+            Add Item
+          </button>  </div>
+        </div>
+      ))}
+    </>
+  )}
+ 
+</>
+
+
+
                     <h1 className="text-[20px] font-bold">Class Types:</h1>
                    
       {templateDetails.ClassTypes &&
