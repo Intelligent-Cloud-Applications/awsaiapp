@@ -33,9 +33,7 @@ const Template = () => {
   const[Footer_Link_1]=useState("https://bworkzlive.com/");
   const[Footer_Link_2]=useState("https://Zumba.com/");
   // const [logo, setLogo] = useState(null);
-  const [src_Components_Home_Why__h1, setsrc_Components_Home_Why__h1] = useState(null);
-  const [src_Components_Home_Header3__h1, setsrc_Components_Home_Header3__h1] = useState(null);
-  const [src_Components_Home_Header3__h2, setsrc_Components_Home_Header3__h2] = useState(null);
+ 
 
   const [companyName, setCompanyName] = useState(null);
 
@@ -54,11 +52,12 @@ const Template = () => {
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [services, setServices] = useState([
-    { title: '', description: '' },
-    { title: '', description: '' },
-    { title: '', description: '' },
-    ]);
-
+    { title: '', items: [''] },
+    { title: '', items: [''] },
+    { title: '', items: [''] },
+    { title: '', items: [''] },
+  ]);
+  
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -180,8 +179,8 @@ const Template = () => {
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
-      if (!loaderInitialized) { 
-        util.setLoader(true); 
+      if (!loaderInitialized) {
+        util.setLoader(true);
         setLoaderInitialized(true);
       }
       try {
@@ -244,15 +243,18 @@ const Template = () => {
           }
 
           // SERVICES
-          setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1 || '');
-          setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2 || '');
-          setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1 || '');
+          // setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1 || '');
+          // setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2 || '');
+          // setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1 || '');
 
-          setServices([
-            {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
-            {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
-            {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
-          ]);
+          // setServices([
+          //   {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
+          //   {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
+          //   {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
+          // ]);
+
+          if (templateResponse.Services)
+            setServices(templateResponse.Services);
 
           if (templateResponse.ClassTypes)
             setDanceTypes(templateResponse.ClassTypes);
@@ -442,15 +444,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
-          src_Components_Home_Why__h1,
-          src_Components_Home_Header3__h1,
-          src_Components_Home_Header3__h2,
-          src_Components_Home_Header3__h5_1: services[0].title,
-          src_Components_Home_Header3__p_1: services[0].description,
-          src_Components_Home_Header3__h5_2: services[1].title,
-          src_Components_Home_Header3__p_2: services[1].description,
-          src_Components_Home_Header3__h5_3: services[2].title,
-          src_Components_Home_Header3__p_3: services[2].description,
+          Services: services,
           // dance_type: services[0].dance_type,
           ClassTypes: nonEmptyDanceTypes,
         },
@@ -760,6 +754,11 @@ const Template = () => {
           handleHomeUpload();
             break;
             case 2:
+              const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
+              if (!areServicesFilled) {
+                alert("Please fill all service fields before proceeding.");
+                return prevSection;
+              }
               handleServicesUpload();
               break;
               case 3:
@@ -885,12 +884,7 @@ const Template = () => {
 
           {currentSection === 2 &&
             <Services
-              src_Components_Home_Why__h1={src_Components_Home_Why__h1}
-              setsrc_Components_Home_Why__h1={setsrc_Components_Home_Why__h1}
-              src_Components_Home_Header3__h1={src_Components_Home_Header3__h1}
-              setsrc_Components_Home_Header3__h1={setsrc_Components_Home_Header3__h1}
-              src_Components_Home_Header3__h2={src_Components_Home_Header3__h2}
-              setsrc_Components_Home_Header3__h2={setsrc_Components_Home_Header3__h2}
+              
               services={services}
               setServices={setServices}
               danceTypes={danceTypes}
