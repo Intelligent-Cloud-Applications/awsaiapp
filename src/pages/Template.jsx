@@ -754,6 +754,11 @@ const Template = () => {
           handleHomeUpload();
             break;
             case 2:
+              const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
+              if (!areServicesFilled) {
+                alert("Please fill all service fields before proceeding.");
+                return prevSection;
+              }
               handleServicesUpload();
               break;
               case 3:
