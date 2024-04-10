@@ -179,8 +179,8 @@ const Template = () => {
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
-      if (!loaderInitialized) { 
-        util.setLoader(true); 
+      if (!loaderInitialized) {
+        util.setLoader(true);
         setLoaderInitialized(true);
       }
       try {
@@ -253,7 +253,8 @@ const Template = () => {
           //   {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
           // ]);
 
-          setServices(templateResponse.Services);
+          if (templateResponse.Services)
+            setServices(templateResponse.Services);
 
           if (templateResponse.ClassTypes)
             setDanceTypes(templateResponse.ClassTypes);
