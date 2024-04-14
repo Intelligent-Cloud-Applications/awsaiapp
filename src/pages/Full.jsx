@@ -220,6 +220,9 @@ const Full = () => {
       case 'week':
         durationInMillis = 7 * 24 * 60 * 60 * 1000; 
         break;
+        case 'quarter':
+          durationInMillis = 3 * 30 * 24 * 60 * 60 * 1000; 
+          break;
       default:
         break;
     }
@@ -263,10 +266,11 @@ const Full = () => {
  
   const handleCountryChange = (e, index) => {
     const newValue = e.target.value;
-    const countryCode = e.target.options[e.target.selectedIndex].getAttribute("data-countryCode");
+    // const countryCode = e.target.options[e.target.selectedIndex].getAttribute("data-countryCode");
+    const countryName = e.target.options[e.target.selectedIndex].textContent.split(' ')[0];
     setSubscriptionDetails(prevDetails => {
         const updatedDetails = [...prevDetails];
-        updatedDetails[index].country = countryCode; 
+        updatedDetails[index].country = countryName;
         updatedDetails[index].currency = newValue; 
         return updatedDetails;
     });
@@ -1404,9 +1408,10 @@ const Full = () => {
   onChange={(e) => handleSubscriptionTypeChange(e, index)}
   className="w-full text-black border-none outline-none bg-transparent"
 >
-  <option value="year:Yearly">Year</option>
-  <option value="month:Monthly">Month</option>
-  <option value="week:Weekly">Week</option>
+  <option value="year:yearly">Year</option>
+  <option value="month:monthly">Month</option>
+  <option value="week:weekly">Week</option>
+  <option value="quarter:quarterly">Quater</option>
 </select>
 
   </div>
