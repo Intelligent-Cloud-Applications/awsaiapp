@@ -104,7 +104,7 @@ const Template = () => {
     {
       heading: '',
       amount: '',
-      currency: '',
+      currency: 'INR',
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
