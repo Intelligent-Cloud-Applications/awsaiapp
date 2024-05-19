@@ -64,6 +64,9 @@ function Services({ services, setServices, danceTypes, setDanceTypes }) {
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
+      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+      ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
+      </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
       </h5>
