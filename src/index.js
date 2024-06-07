@@ -39,6 +39,7 @@ Amplify.configure({
       process.env.STAGE === "PROD"
         ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
         : "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
+    additionalIdentityPoolId: "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d"
   },
   API: {
     endpoints: [
@@ -50,13 +51,13 @@ Amplify.configure({
             : "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
         region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
       },
-      // {
-      //   name: "clients",
-      //   endpoint: "https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev",
-      //   region: "us-east-2",
-      // },
+      {
+        name: "user",
+        endpoint:process.env.STAGE === "PROD"? "https://7sh8wrjmm2.execute-api.us-east-1.amazonaws.com/dev": "https://r5dp21mb28.execute-api.us-east-2.amazonaws.com/dev",
+        region: "us-east-2",
+      },
     ],
-  },
+  },  
 });
 
 // ReactDOM.render(<App />, document.getElementById('root'));

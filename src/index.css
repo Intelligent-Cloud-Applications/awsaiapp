@@ -56,6 +56,9 @@ body {
   box-shadow: 20px 10px 20px  #FFC73B;
 }
 
+.inter {
+  font-family: "Inter", sans-serif;
+}
 
 .loader  {
   animation: rotate 1s infinite;  

@@ -29,6 +29,8 @@ import Pay from "./pages/Pay";
 import Context from "./context/Context";
 import Full from "./pages/Full";
 import Edit from "./pages/Edit";
+import HomePayment from "./Common/HomePayment";
+
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
   const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
@@ -71,6 +73,8 @@ const RoutesContainer = () => {
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
       <Route path="/full" element={<Full />} />
       <Route path="/edit" element={<Edit />} />
+      <Route path="/allpayment/:institution/:cognitoId" element={<HomePayment />} />
+      <Route path="/allpayment/:institution" element={<HomePayment/>} />
     </Routes>
   );
 };

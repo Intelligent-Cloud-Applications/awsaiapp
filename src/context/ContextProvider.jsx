@@ -33,7 +33,8 @@ const ContextProvider = (props) => {
   const fetchProducts = async () => {
     try {
       setLoader(true);
-      const response = await API.get("clients", "/any/list-products");
+      const response = await API.get("clients", "/any/list-products",
+      );
       setProducts(response);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -108,7 +109,7 @@ const ContextProvider = (props) => {
       console.error("Error fetching instructor details:", error);
     }
   };
-
+  
   const setLoaderFn = (data) => {
     setLoader(data);
   };
