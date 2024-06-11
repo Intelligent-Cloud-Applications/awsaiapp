@@ -64,7 +64,7 @@ const Cart = ({ institution }) => {
   
   
   const handleCheckout = async () => {
-    const { subtotal, productItems } = cartState;
+    const {productItems } = cartState;
     const institutionId = institution;
     const productId = productItems.map(item => item.productId);
 
@@ -107,12 +107,11 @@ const Cart = ({ institution }) => {
         description: 'Total Subscription Payment',
         handler: async function (paymentResponse) {
           try {
-            const payload = {
-              razorpay_order_id: paymentResponse.razorpay_order_id,
-              razorpay_payment_id: paymentResponse.razorpay_payment_id,
-              razorpay_signature: paymentResponse.razorpay_signature,
-            };
-
+            // const payload = {
+            //   razorpay_order_id: paymentResponse.razorpay_order_id,
+            //   razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            //   razorpay_signature: paymentResponse.razorpay_signature,
+            // };
             // Verify the payment for all subscriptions
             const verifyResponse = await API.put('clients', `/payment/webhook`, {
               body: {
@@ -161,7 +160,6 @@ const Cart = ({ institution }) => {
             } else {
               throw new Error('Payment verification failed!');
             }
-
           } catch (error) {
             console.error('Error verifying payment:', error);
             toast.error('Payment verification failed!', {

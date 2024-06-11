@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import tick from '../utils/tick.png';
-import cartIcon from '../utils/cart.png';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';

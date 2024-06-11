@@ -7,8 +7,6 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './FrontpageComponents/Allpayments.css';
-import colors from '../color.json';
-
 
 function Arrow(props) {
   const { className, style, onClick } = props;
@@ -25,8 +23,6 @@ function AllPayment({ setActiveComponent }) {
   const { institution } = useParams();
   const [products, setProducts] = useState([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  console.log(products)
-  const color = colors[institution];
 
   useEffect(() => {
     const fetchData = async () => {
