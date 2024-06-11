@@ -13,7 +13,7 @@ function HomePayment() {
       <Nav institution={institution} setActiveComponent={setActiveComponent} activeComponent={activeComponent} />
       
       <div style={{ display: activeComponent === 'AllPayment' ? 'block' : 'none' }}>
-        <AllPayment institution={institution} />
+        <AllPayment institution={institution} setActiveComponent={setActiveComponent}/>
       </div>
       
       <div style={{ display: activeComponent === 'Cart' ? 'block' : 'none' }}>

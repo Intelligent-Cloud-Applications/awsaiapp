@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import tick from '../utils/tick.png';
 import cartIcon from '../utils/cart.png';
-import { API } from 'aws-amplify';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import Context from '../../context/Context';
+import colors from '../../color.json';
 
-
-function Card(product) {
-  const products = product.product
-  console.log(product)
+function Card({ product, setActiveComponent }) {
   const [isLoading, setIsLoading] = useState(true);
-  const { institution, cognitoId } = useParams()
+  const { institution, cognitoId } = useParams();
+  const { getCartItems, isProductInCart, addCartItem } = useContext(Context);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const color = colors[institution];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -21,25 +22,30 @@ function Card(product) {
     return () => clearTimeout(timer);
   }, []);
 
-  const addToCart = async () => {
+  const handleAddToCart = async () => {
     try {
-      const response = await API.post('clients', '/any/addtocart',{
-        body: {
-          institution: institution,
-          cognitoId: cognitoId,
-          cart: [product],
-        },
-      });
-      console.log('Add to Cart Response:', response);
+      setIsAnimating(true);
+      await addCartItem(product, institution, cognitoId);
+      await getCartItems(institution, cognitoId);
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000);
     } catch (error) {
       console.error('Error adding to cart:', error);
+      setIsAnimating(false);
     }
   };
 
+  const isInCart = isProductInCart(product.planId);
+
   return (
     <div className='bg-white w-80 min-h-[30rem] flex flex-col' style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
-      <h2 className='text-xl font-bold text-center bg-[#005B50] text-white py-2 px-1 capitalize'>
-        {isLoading ? <Skeleton width={150} /> : products.heading}
+      <h2 className='text-xl font-bold text-center text-white py-2 px-1 capitalize'
+        style={{
+          backgroundColor: color.primary
+        }}
+      >
+        {isLoading ? <Skeleton width={150} /> : product.heading}
       </h2>
       <div className="flex flex-col flex-grow mt-9 h-full">
         <ul className='space-y-3 px-4'>
@@ -51,11 +57,11 @@ function Card(product) {
               </li>
             ))
           ) : (
-            products.provides ? (
-              products.provides.map((item, index) => (
+            product.provides ? (
+              product.provides.map((item, index) => (
                 <li key={index} className='flex items-start'>
                   <img className='mt-[8px]' src={tick} alt="" />
-                  <span className='ml-2 text-[#202020]'>{item}</span>
+                  <span className='ml-2 text-[#202020] text-[1.2rem] font-[600]'>{item}</span>
                 </li>
               ))
             ) : null
@@ -67,16 +73,21 @@ function Card(product) {
           {isLoading ? (
             <Skeleton width={100} height={30} />
           ) : (
-            <span className='text-[2rem] font-bold'>{products.currency === 'INR' ? '₹' : '$'}{(products.amount / 100).toFixed(2)}</span>
+            <span className='text-[2rem] font-bold'>{product.currency === 'INR' ? '₹' : '$'}{(product.amount / 100).toFixed(2)}</span>
           )}
         </div>
         <button
-          className='bg-[#005B50] w-[90%] text-white p-2 text-center gap-4 flex items-center justify-center'
-          onClick={addToCart}
+          className={`w-[90%] text-white p-2 text-center gap-4 flex items-center justify-center ${isAnimating ? 'animate-loader' : ''}`}
+          onClick={isInCart ? () => setActiveComponent('Cart') : handleAddToCart}
           disabled={isLoading}
+          style={{
+            backgroundColor: color.primary
+          }}
         >
-          {isLoading ? <Skeleton width={100} height={30} /> : 'ADD TO CART'}
-          {!isLoading && (
+          {isLoading ? <Skeleton width={100} height={30} /> : isAnimating ? (
+            <div className="loader2"></div>
+          ) : isInCart ? 'GO TO CART' : 'ADD TO CART'}
+          {!isLoading && !isAnimating && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

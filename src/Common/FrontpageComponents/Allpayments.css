@@ -1,4 +1,3 @@
-/* Allpayments.css */
 .slick-slide {
   width: calc(100% / 3);
   height: 35rem !important;
@@ -7,7 +6,7 @@
 .slick-prev:before,
 .slick-next:before {
   font-size: 50px;
-  display: none; /* Hide default arrows */
+  display: none;
 }
 
 .slick-prev,
@@ -61,7 +60,7 @@
   width: 100%;
   display: flex !important;
   justify-content: center;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .slick-dots li button:before {
