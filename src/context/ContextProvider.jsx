@@ -187,7 +187,6 @@ const ContextProvider = (props) => {
       onReload: fetchClients,
     },
     products: products,
-    fetchProducts: () => { },
     pending: {
       data: pending,
       fetchPending: fetchPending,
