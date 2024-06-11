@@ -38,7 +38,6 @@ const Context = createContext({
   getCartItems: () => { },
   removeCartItem: () => { },
   addCartItem: () => { },
-  fetchProducts: () => { },
 });
 
 export default Context;
