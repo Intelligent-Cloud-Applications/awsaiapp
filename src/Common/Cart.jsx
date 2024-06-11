@@ -194,7 +194,7 @@ const Cart = ({ institution }) => {
 
     } catch (error) {
       console.error('Error during checkout:', error);
-      toast.error('Error during checkout!', {
+      toast.error('You have already subscribed to this Plan!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,

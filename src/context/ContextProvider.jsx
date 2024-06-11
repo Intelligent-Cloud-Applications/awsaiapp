@@ -209,8 +209,6 @@ const ContextProvider = (props) => {
     setCartState: setCartState,
     removeCartItem: removeCartItem,
     addCartItem: addCartItem,
-    // eslint-disable-next-line
-    fetchProducts: fetchProducts,
     cartItems,
     itemCount,
     isProductInCart // Add the new function to context data
