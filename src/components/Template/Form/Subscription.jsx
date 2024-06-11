@@ -33,8 +33,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         return newCountryCodes;
       });
 
-      const countries = e.target.options;
-      const selectedCountry = countries[countries.selectedIndex].text;
+      const selectedCountry = e.target.selectedOptions[0].textContent.split(' ')[0];
 
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
@@ -87,6 +86,9 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       return 7 * 24 * 60 * 60 * 1000; 
     } else if (subscriptionType === 'yearly') {
       return 365 * 24 * 60 * 60 * 1000; 
+    }
+    else if (subscriptionType === 'quarterly') {
+      return 3 * daysInMonth * 24 * 60 * 60 * 1000; 
     }
 
     return 0;
@@ -207,6 +209,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         <option value="monthly">Monthly</option>
         <option value="weekly">Weekly</option>
         <option value="yearly">Yearly</option>
+        <option value="quarterly">Quarterly</option>
       </select>
     </div>
             <div className="relative">
