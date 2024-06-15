@@ -8,10 +8,10 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
 
   const handleBackClick = () => {
     // if (window.confirm("Are you sure you want to close this tab?")) {
-      window.close();
+    window.close();
     // }
   };
-  
+
 
   const handleCartClick = () => {
     setActiveComponent('Cart');
@@ -20,6 +20,9 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
   const handleAllPaymentsClick = () => {
     setActiveComponent('AllPayment');
   };
+  const handleContactClick = () => {
+    setActiveComponent('contact')
+  }
 
   return (
     <div>
@@ -30,13 +33,22 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
           </svg>
           <span className='text-[#e2e2e2] inter font-[300] max600:hidden'>back to {institution}</span>
         </div>
-        <div className='flex items-center cursor-pointer gap-8'>
+        <div className='flex items-center cursor-pointer gap-8 max600:gap-4'>
           <div
-            className={`flex rounded-full cursor-pointer max600:-mb-2 max600:-mr-4`}
+            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[6rem]`}
             style={activeComponent === 'AllPayment' ? { backgroundColor: color.primary, hover: color.primary } : {}}
             onClick={handleAllPaymentsClick}
           >
-            <div className='text-[#cacaca] font-[500] py-2 px-4 inter cursor-pointer w-[8rem] text-center max600:text-[0.8rem]'>PLANS</div>
+            PLANS
+          </div>
+          <div
+            onClick={
+              handleContactClick
+            }
+            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[8rem]`}
+            style={activeComponent === 'contact' ? { backgroundColor: color.primary, hover: color.primary } : {}}
+          >
+            CONTACT US
           </div>
           <div className='flex items-end cursor-pointer relative' onClick={handleCartClick}>
             <svg
@@ -49,12 +61,10 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
               <path d="M20 36.6667C21.1046 36.6667 22 35.9205 22 35C22 34.0795 21.1046 33.3333 20 33.3333C18.8954 33.3333 18 34.0795 18 35C18 35.9205 18.8954 36.6667 20 36.6667Z" fill={activeComponent === 'Cart' ? color.primary : "white"} />
               <path d="M32 36.6667C33.1046 36.6667 34 35.9205 34 35C34 34.0795 33.1046 33.3333 32 33.3333C30.8954 33.3333 30 34.0795 30 35C30 35.9205 30.8954 36.6667 32 36.6667Z" fill={activeComponent === 'Cart' ? color.primary : "white"} />
             </svg>
-            {/* {activeComponent === 'Cart' && ( */}
-              <div className='text-[#b6b6b6] inter font-[500]'>CART</div>
-            {/* )} */}
+
             {itemCount > 0 && (
               <span
-                className={`absolute top-0 text-white rounded-[100%] right-[53px] p-[2px] px-[5px] text-[9px] font-bold bounce ${activeComponent === 'Cart' ? 'right-[53px]' : 'right-[13px]'}`}
+                className={`absolute top-0 text-white rounded-[100%] right-[14px] p-[2px] px-[5px] text-[9px] font-bold bounce ${activeComponent === 'Cart' ? 'right-[53px]' : 'right-[13px]'}`}
                 style={{ backgroundColor: color.primary }}
               >
                 {itemCount}

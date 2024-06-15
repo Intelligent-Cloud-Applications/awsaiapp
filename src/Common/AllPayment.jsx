@@ -54,7 +54,6 @@ function AllPayment({ setActiveComponent }) {
 
   const settings = {
     dots: true,
-    infinite: true,
     speed: 1000,
     slidesToShow: products.length === 1 ? 1 : 4,
     slidesToScroll: 1,
@@ -96,7 +95,7 @@ function AllPayment({ setActiveComponent }) {
             ))}
           </Slider>
         ) : (
-          <div className={`flex ${products.length === 1 ? 'justify-center' : 'justify-start'} flex-wrap w-full max1250:h-[95vh] max1250:mt-[7rem] overflow-y-auto scrollbar-hide`}>
+          <div className={`flex justify-center flex-wrap w-full max1250:h-[95vh] max1250:mt-[7rem] overflow-y-auto scrollbar-hide`}>
             {products.map((product, index) => (
               <div key={index} className={`px-4 py-2 ${products.length === 1 ? 'w-full flex justify-center' : 'sm:w-1/2 md:w-1/3'}`}>
                 <Card product={product} setActiveComponent={setActiveComponent}/>

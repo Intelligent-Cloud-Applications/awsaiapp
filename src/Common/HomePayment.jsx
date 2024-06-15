@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import AllPayment from './AllPayment';
 import Cart from './Cart';
 import Nav from './FrontpageComponents/Nav';
+import Query from '../pages/Query';
 
 function HomePayment() {
   const { institution } = useParams();
@@ -18,6 +19,10 @@ function HomePayment() {
       
       <div style={{ display: activeComponent === 'Cart' ? 'block' : 'none' }}>
         <Cart institution={institution} />
+      </div>
+            
+      <div style={{ display: activeComponent === 'contact' ? 'block' : 'none' }}>
+        <Query activeComponent={activeComponent}/>
       </div>
     </div>
   );
