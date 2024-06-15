@@ -209,6 +209,7 @@ const ContextProvider = (props) => {
     setCartState: setCartState,
     removeCartItem: removeCartItem,
     addCartItem: addCartItem,
+    setCartItems:setCartItems,
     cartItems,
     itemCount,
     isProductInCart // Add the new function to context data

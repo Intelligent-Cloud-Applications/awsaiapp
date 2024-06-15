@@ -14,6 +14,10 @@
     "lissome": {
       "primary": "#a51b53",
       "secondary": "#fb5b9c"
+    },
+    "testing": {
+      "primary": "#005B50",
+      "secondary": "#2CB9A8"
     }
   }
   

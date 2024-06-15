@@ -7,9 +7,9 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
   const color = colors[institution];
 
   const handleBackClick = () => {
-    if (window.confirm("Are you sure you want to close this tab?")) {
+    // if (window.confirm("Are you sure you want to close this tab?")) {
       window.close();
-    }
+    // }
   };
   
 
@@ -49,12 +49,12 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
               <path d="M20 36.6667C21.1046 36.6667 22 35.9205 22 35C22 34.0795 21.1046 33.3333 20 33.3333C18.8954 33.3333 18 34.0795 18 35C18 35.9205 18.8954 36.6667 20 36.6667Z" fill={activeComponent === 'Cart' ? color.primary : "white"} />
               <path d="M32 36.6667C33.1046 36.6667 34 35.9205 34 35C34 34.0795 33.1046 33.3333 32 33.3333C30.8954 33.3333 30 34.0795 30 35C30 35.9205 30.8954 36.6667 32 36.6667Z" fill={activeComponent === 'Cart' ? color.primary : "white"} />
             </svg>
-            {activeComponent === 'Cart' && (
+            {/* {activeComponent === 'Cart' && ( */}
               <div className='text-[#b6b6b6] inter font-[500]'>CART</div>
-            )}
+            {/* )} */}
             {itemCount > 0 && (
               <span
-                className={`absolute top-0 text-white rounded-[100%] p-[2px] px-[5px] text-[9px] font-bold bounce ${activeComponent === 'Cart' ? 'right-[53px]' : 'right-[13px]'}`}
+                className={`absolute top-0 text-white rounded-[100%] right-[53px] p-[2px] px-[5px] text-[9px] font-bold bounce ${activeComponent === 'Cart' ? 'right-[53px]' : 'right-[13px]'}`}
                 style={{ backgroundColor: color.primary }}
               >
                 {itemCount}

@@ -60,7 +60,7 @@ function Card({ product, setActiveComponent }) {
               product.provides.map((item, index) => (
                 <li key={index} className='flex items-start'>
                   <img className='mt-[8px]' src={tick} alt="" />
-                  <span className='ml-2 text-[#202020] text-[1.2rem] font-[600]'>{item}</span>
+                  <span className={`ml-2 text-[#202020] text-[1.2rem] font-[600]${institution === "lissome" ? " text-[0.80rem]" : ""}`}>{item}</span>
                 </li>
               ))
             ) : null
