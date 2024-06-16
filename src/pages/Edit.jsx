@@ -230,7 +230,42 @@ console.log(isDelivered);
     });
   };
   
-  
+  const handleFileChange5 = async (event, key) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      setTemplateDetails((prevState) => ({
+        ...prevState,
+        [key]: reader.result,
+      }));
+
+     
+      try {
+        const response = await Storage.put(
+          `${institutionsNames}/images/${file.name}`,
+          file,
+          {
+            contentType: file.type,
+          }
+        );
+
+      
+        let imageUrl = await Storage.get(response.key);
+        imageUrl = imageUrl.split("?")[0];
+
+       
+        setTemplateDetails((prevState) => ({
+          ...prevState,
+          [key]: imageUrl,
+        }));
+
+        console.log("Uploaded file URL: ", imageUrl);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    };
+  }; 
   
   const addSubscription = () => {
     setSubscriptionDetails(prevDetails => [...prevDetails, {
@@ -368,6 +403,7 @@ console.log(isDelivered);
           body: {
             institutionid: institutionsNames,
             TagLine: templateDetails.TagLine,
+            TagLine1: templateDetails.TagLine1,
             videoUrl: templateDetails.videoUrl,
           },
         }),
@@ -375,6 +411,8 @@ console.log(isDelivered);
           body: {
             institutionid: institutionsNames,
             Services:templateDetails.Services,
+            ServicesBg:  templateDetails.ServicesBg,
+            ServicesPortrait:  templateDetails.ServicesPortrait,
             ClassTypes: templateDetails.ClassTypes,
           },
         }),
@@ -383,6 +421,7 @@ console.log(isDelivered);
           body: {
             institutionid: institutionsNames,
             Testimonial: templateDetails.Testimonial,
+            TestimonialBg: templateDetails.TestimonialBg,
           },
         }),
         API.put("clients", "/user/development-form/faq", {
@@ -395,6 +434,7 @@ console.log(isDelivered);
           body: {
             institutionid: institutionsNames,
             Refund: templateDetails.Refund,
+            AboutUsBg:templateDetails.AboutUsBg,
             TermsData: templateDetails.TermsData,
             AboutUs:templateDetails.AboutUs,
             PrivacyPolicy:templateDetails.PrivacyPolicy,
@@ -411,7 +451,9 @@ console.log(isDelivered);
             YTLink: templateDetails.YTLink,
             UpiId: templateDetails.UpiId,
             Footer_Link_1: templateDetails.Footer_Link_1,
-            Footer_Link_2: templateDetails.Footer_Link_2
+            Footer_Link_2: templateDetails.Footer_Link_2,
+            InstructorBg: templateDetails.InstructorBg,
+            SubscriptionBg: templateDetails.SubscriptionBg,
           }
         }),
       ]);
@@ -565,6 +607,52 @@ console.log(isDelivered);
       const updatedRefund = [...prevState.Refund];
       updatedRefund.splice(index, 1);
       return { ...prevState, Refund: updatedRefund };
+    });
+  };
+  const handleAboutUsChange = (event, index, field) => {
+    const { value } = event.target;
+    setTemplateDetails((prevState) => {
+      const updatedAboutUs = [...prevState.AboutUs];
+      updatedAboutUs[index][field] = value;
+      return { ...prevState, AboutUs: updatedAboutUs };
+    });
+  };
+  
+  const addAboutUsItem = () => {
+    setTemplateDetails((prevState) => ({
+      ...prevState,
+      AboutUs: [...prevState.AboutUs, { heading: '', content: '' }],
+    }));
+  };
+  
+  const removeAboutUsItem = (index) => {
+    setTemplateDetails((prevState) => {
+      const updatedAboutUs = [...prevState.AboutUs];
+      updatedAboutUs.splice(index, 1);
+      return { ...prevState, AboutUs: updatedAboutUs };
+    });
+  };
+  const handlePrivacyPolicyChange = (event, index, field) => {
+    const { value } = event.target;
+    setTemplateDetails((prevState) => {
+      const updatedPrivacyPolicy = [...prevState.PrivacyPolicy];
+      updatedPrivacyPolicy[index][field] = value;
+      return { ...prevState, PrivacyPolicy: updatedPrivacyPolicy };
+    });
+  };
+  
+  const addPrivacyPolicyItem = () => {
+    setTemplateDetails((prevState) => ({
+      ...prevState,
+      PrivacyPolicy: [...prevState.PrivacyPolicy, { heading: '', content: '' }],
+    }));
+  };
+  
+  const removePrivacyPolicyItem = (index) => {
+    setTemplateDetails((prevState) => {
+      const updatedPrivacyPolicy = [...prevState.PrivacyPolicy];
+      updatedPrivacyPolicy.splice(index, 1);
+      return { ...prevState, PrivacyPolicy: updatedPrivacyPolicy };
     });
   };
   const handleTermsDataChange = (event, index, field) => {
@@ -723,7 +811,7 @@ console.log(isDelivered);
           ) : (
             
             <>
-              <div className="container lg:ml-[90px]">
+              <div className="container ">
                 <h1 className="text-[20px]">Template Details</h1>
                  <div className="middle-right-section mt-5">
                 
@@ -782,7 +870,17 @@ console.log(isDelivered);
                         autoFocus
                       />
                     </div>
-                 
+                    <h1 className="text-[20px] font-bold ">Tagline1:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="text"
+                        value={templateDetails.TagLine1}
+                        onChange={(event) => handleChange(event, "TagLine1")}
+                        className="w-full text-black border-none outline-none bg-transparent "
+                        placeholder="Enter Short Description TagLine1 "
+                        autoFocus
+                      />
+                    </div>
 <>
   {templateDetails.Services && templateDetails.Services.length > 0 && (
     <>
@@ -1031,7 +1129,7 @@ console.log(isDelivered);
       </button></div>
     </div>
     <div className="h-4"></div>
-    <h1 className="text-[20px] font-bold">Privacy Policy:</h1>
+    {/* <h1 className="text-[20px] font-bold">Privacy Policy:</h1>
   
                     <div className="rectangular-box">
                       <textarea
@@ -1055,8 +1153,70 @@ console.log(isDelivered);
                         placeholder="Enter About Us"
                         autoFocus
                       />
-                    </div>
+                    </div> */}
 
+
+{templateDetails.AboutUs.map((item, index) => (
+    <div key={index}>
+        <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold mt-4">AboutUs{index + 1}</h2>
+                <button
+                  onClick={() => removeAboutUsItem(index)}
+                  className="rounded-full bg-red-500 text-white px-2"
+                >
+                  X
+                </button>
+              </div>
+       <div className="rectangular-box">
+      <input
+        value={item.heading}
+        onChange={(event) => handleAboutUsChange(event, index, 'heading')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter AboutUs Policy Heading"
+      /></div>
+       <div className="rectangular-box">
+      <textarea
+        value={item.content}
+        onChange={(event) => handleAboutUsChange(event, index, 'content')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter AboutUs Content"
+      /></div>
+       
+    </div>
+  ))}
+ <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+       <button onClick={addAboutUsItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add AboutUs Item</button></div>
+
+       {templateDetails.PrivacyPolicy.map((item, index) => (
+    <div key={index}>
+        <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold mt-4">PrivacyPolicy{index + 1}</h2>
+                <button
+                  onClick={() => removePrivacyPolicyItem(index)}
+                  className="rounded-full bg-red-500 text-white px-2"
+                >
+                  X
+                </button>
+              </div>
+       <div className="rectangular-box">
+      <input
+        value={item.heading}
+        onChange={(event) => handlePrivacyPolicyChange(event, index, 'heading')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter PrivacyPolicy Heading"
+      /></div>
+       <div className="rectangular-box">
+      <textarea
+        value={item.content}
+        onChange={(event) => handlePrivacyPolicyChange(event, index, 'content')}
+        className="w-full text-black border-none outline-none bg-transparent"
+        placeholder="Enter PrivacyPolicy Content"
+      /></div>
+       
+    </div>
+  ))}
+ <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+       <button onClick={addPrivacyPolicyItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add PrivacyPolicy Item</button></div>   
 
 
                     
@@ -1268,6 +1428,91 @@ console.log(isDelivered);
                       />
                       <button
                         onClick={() => downloadImage(templateDetails.videoUrl)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <h1 className="text-[20px] font-bold">ServicesBg:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "ServicesBg")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.ServicesBg)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <h1 className="text-[20px] font-bold">ServicesPortrait:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "ServicesPortrait")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.ServicesPortrait)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+
+                    <h1 className="text-[20px] font-bold">TestimonialBg:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "TestimonialBg")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.TestimonialBg)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <h1 className="text-[20px] font-bold">AboutUsBg:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "AboutUsBg")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.AboutUsBg)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <h1 className="text-[20px] font-bold">InstructorBg:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "InstructorBg")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.InstructorBg)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <h1 className="text-[20px] font-bold">SubscriptionBg:</h1>
+                    <div className="rectangular-box">
+                      <input
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "SubscriptionBg")} 
+                        className="w-full text-black border-none outline-none bg-transparent"
+                      />
+                      <button
+                        onClick={() => downloadImage(templateDetails.SubscriptionBg)}
                         className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
                       >
                         View
