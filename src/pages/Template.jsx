@@ -33,7 +33,8 @@ const Template = () => {
   const[Footer_Link_1]=useState("https://bworkzlive.com/");
   const[Footer_Link_2]=useState("https://Zumba.com/");
   // const [logo, setLogo] = useState(null);
- 
+  const [servicesBg, setServicesBg] = useState(null);
+  const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const [companyName, setCompanyName] = useState(null);
 
@@ -47,7 +48,12 @@ const Template = () => {
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
+  const [TagLine1, setTagLine1] = useState("");
   const [video, setVideo] = useState(null);
+  const [TestimonialBg, setTestimonialBg] = useState(null);
+  const [AboutUsBg, setAboutUsBg] = useState(null);
+  const [SubscriptionBg, setSubscriptionBg] = useState(null);
+  const [InstructorBg, setInstructorBg] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -154,8 +160,8 @@ const Template = () => {
 //    ]);
 
   const [policies, setPolicies] = useState({
-    'Privacy Policy': '',
-    'About Us': '',
+    'Privacy Policy': [{ heading: '', content: '' }],
+    'About Us': [{ heading: '', content: '' }],
     'Refund Policy': [{ heading: '', content: '' }],
     'Terms and Conditions': [{ heading: '', content: '' }]
   });
@@ -223,9 +229,57 @@ const Template = () => {
           let file = new File([data], url.split('/').pop(), metadata);
           setLogo(file);
 
+          let url1 = templateResponse.ServicesBg
+          let response1 = await fetch(url1);
+          let data1 = await response1.blob();
+          let metadata1 = {
+            type: data1.type
+          };
+          let file1 = new File([data1], url1.split('/').pop(), metadata1);
+          setServicesBg(file1);
+          let url2 = templateResponse.ServicesPortrait
+          let response2 = await fetch(url2);
+          let data2 = await response2.blob();
+          let metadata2 = {
+            type: data2.type
+          };
+          let file2 = new File([data2], url2.split('/').pop(), metadata2);
+          setServicesPortrait(file2);
+          let url3 = templateResponse.TestimonialBg
+          let response3 = await fetch(url3);
+          let data3 = await response3.blob();
+          let metadata3 = {
+            type: data3.type
+          };
+          let file3 = new File([data3], url3.split('/').pop(), metadata3);
+          setTestimonialBg(file3);
+          let url4 = templateResponse.SubscriptionBg
+          let response4 = await fetch(url4);
+          let data4 = await response4.blob();
+          let metadata4 = {
+            type: data4.type
+          };
+          let file4 = new File([data4], url4.split('/').pop(), metadata4);
+          setSubscriptionBg(file4);
+          let url6 = templateResponse.InstructorBg
+          let response6 = await fetch(url6);
+          let data6 = await response6.blob();
+          let metadata6 = {
+            type: data6.type
+          };
+          let file6 = new File([data6], url6.split('/').pop(), metadata6);
+          setInstructorBg(file6);
+          let url5 = templateResponse.AboutUsBg
+          let response5 = await fetch(url5);
+          let data5 = await response5.blob();
+          let metadata5 = {
+            type: data5.type
+          };
+          let file5 = new File([data5], url5.split('/').pop(), metadata5);
+          setAboutUsBg(file5);
           // HOME
           setTagLine(templateResponse.TagLine);
-
+          setTagLine1(templateResponse.TagLine1);
           url = templateResponse.videoUrl;
           response = await fetch(url);
           data = await response.blob();
@@ -413,7 +467,7 @@ const Template = () => {
       const response = await Storage.put(`${institutionId}/${video.name}`, video, {
         contentType: video.type,
       });
-
+      const tagline1 = TagLine1 || '';
       // Get the URL of the uploaded file
       let videoUrl = await Storage.get(response.key);
       videoUrl = videoUrl.split("?")[0];
@@ -422,6 +476,7 @@ const Template = () => {
         body: {
           institutionid: institutionId,
           TagLine,
+          TagLine1:tagline1,
           videoUrl,
         },
       });
@@ -434,6 +489,34 @@ const Template = () => {
 
   const handleServicesUpload = async () => {
     try {
+
+      let servicesBgUrl = null;
+      if (servicesBg) {
+        const response = await Storage.put(`${institutionId}/${servicesBg.name}`, servicesBg, {
+          contentType: servicesBg.type,
+        });
+        
+        if (response && response.key) {
+          servicesBgUrl = await Storage.get(response.key);
+          servicesBgUrl = servicesBgUrl.split("?")[0];
+        }
+      }
+      setServicesBg(servicesBgUrl);
+    
+      // Upload servicesPortrait image
+      let servicesPortraitUrl = null;
+      if (servicesPortrait) {
+        const response1 = await Storage.put(`${institutionId}/${servicesPortrait.name}`, servicesPortrait, {
+          contentType: servicesPortrait.type,
+        });
+    
+        if (response1 && response1.key) {
+          servicesPortraitUrl = await Storage.get(response1.key);
+          servicesPortraitUrl = servicesPortraitUrl.split("?")[0];
+        }
+      }
+      setServicesPortrait(servicesPortraitUrl);
+
       const filledDanceTypes = danceTypes.filter(type => type.trim() !== '').slice(0, 5);
 
       // Pad the array with empty strings to ensure it has a length of 5
@@ -447,6 +530,8 @@ const Template = () => {
           Services: services,
           // dance_type: services[0].dance_type,
           ClassTypes: nonEmptyDanceTypes,
+          ServicesPortrait: servicesPortraitUrl,
+          ServicesBg: servicesBgUrl,
         },
       });
     } catch (error) {
@@ -458,6 +543,19 @@ const Template = () => {
     // console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
 
     try {
+      let TestimonialBgUrl = null;
+      if (TestimonialBg) {
+        const response = await Storage.put(`${institutionId}/${TestimonialBg.name}`, TestimonialBg, {
+          contentType: TestimonialBg.type,
+        });
+    
+        // Get the URL of the uploaded file
+        if (response && response.key) {
+          TestimonialBgUrl = await Storage.get(response.key);
+          TestimonialBgUrl = TestimonialBgUrl.split("?")[0];
+        }
+      }
+      setTestimonialBg(TestimonialBgUrl);
 
       const response1 = await Storage.put(`institution-utils/${institutionId}/images/Testimonial/${testimonials[0].uploadedFile}`, testimonials[0].actualFile, {
         contentType: testimonials[0].actualFile.type,
@@ -487,6 +585,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
           institutionid: institutionId,
+          TestimonialBg:TestimonialBgUrl,
           Testimonial: [
             {
               name: testimonials[0].name,
@@ -514,6 +613,7 @@ const Template = () => {
   const handleSubscriptionUpload = async () => {
 //    console.log(subscriptions);
     try {
+    
       // Loop through each subscription
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i];
@@ -662,9 +762,23 @@ const Template = () => {
 
   const handlePolicyUpload = async () => {
     try {
+      let AboutUsBgUrl = null;
+      if (AboutUsBg) {
+        const response = await Storage.put(`${institutionId}/${AboutUsBg.name}`, AboutUsBg, {
+          contentType: AboutUsBg.type,
+        });
+    
+        // Get the URL of the uploaded file
+        if (response && response.key) {
+          AboutUsBgUrl = await Storage.get(response.key);
+          AboutUsBgUrl = AboutUsBgUrl.split("?")[0];
+        }
+      }
+      setAboutUsBg(AboutUsBgUrl);
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institutionid: institutionId,
+          AboutUsBg:AboutUsBgUrl,
           PrivacyPolicy: policies['Privacy Policy'],
           TermsData: policies['Terms and Conditions'].map(obj => {
             const obj2 = {...obj};
@@ -684,7 +798,30 @@ const Template = () => {
   const handleContactUpload = async () => {
     try {
 //      console.log("LOG +++++ " + contactInfo.address);
-
+let SubscriptionBgUrl = null;
+if (SubscriptionBg) {
+  const response = await Storage.put(`${institutionId}/${SubscriptionBg.name}`, SubscriptionBg, {
+    contentType: SubscriptionBg.type,
+  });
+  
+  if (response && response.key) {
+    SubscriptionBgUrl = await Storage.get(response.key);
+    SubscriptionBgUrl = SubscriptionBgUrl.split("?")[0];
+  }
+}
+setSubscriptionBg(SubscriptionBgUrl);
+let InstructorBgUrl = null;
+if (InstructorBg) {
+  const response = await Storage.put(`${institutionId}/${InstructorBg.name}`, InstructorBg, {
+    contentType: InstructorBg.type,
+  });
+  
+  if (response && response.key) {
+    InstructorBgUrl = await Storage.get(response.key);
+    InstructorBgUrl = InstructorBgUrl.split("?")[0];
+  }
+}
+setInstructorBg(InstructorBgUrl);
       await API.put("clients", "/user/development-form/contact", {
         body: {
           institutionid: institutionId,
@@ -697,6 +834,8 @@ const Template = () => {
           UpiId: contactInfo.upiId,
           Footer_Link_1,
           Footer_Link_2,
+          SubscriptionBg:SubscriptionBgUrl,
+          InstructorBg:InstructorBgUrl,
 
         },
       });
@@ -849,7 +988,7 @@ const Template = () => {
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
+          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
         </div>
         <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
           {currentSection === 0 &&
@@ -874,6 +1013,8 @@ const Template = () => {
             <Home
               TagLine={TagLine}
               setTagLine={setTagLine}
+              TagLine1={TagLine1}
+              setTagLine1={setTagLine1}
               video={video}
               setVideo={setVideo}
               selectedMedia={selectedMedia}
@@ -884,8 +1025,11 @@ const Template = () => {
 
           {currentSection === 2 &&
             <Services
-              
-              services={services}
+            setServicesPortrait={setServicesPortrait}
+            servicesPortrait={servicesPortrait}
+            setServicesBg={setServicesBg}   
+            servicesBg={servicesBg}
+             services={services}
               setServices={setServices}
               danceTypes={danceTypes}
               setDanceTypes= {setDanceTypes}
@@ -895,6 +1039,8 @@ const Template = () => {
             <Testimonials
               testimonials={testimonials}
               setTestimonials={setTestimonials}
+              TestimonialBg={TestimonialBg}
+              setTestimonialBg={setTestimonialBg}
             />}
 
           {currentSection === 4 &&
@@ -923,12 +1069,18 @@ const Template = () => {
             <Policy
               policies={policies}
               setPolicies={setPolicies}
+              AboutUsBg={AboutUsBg}
+              setAboutUsBg={setAboutUsBg}
             />}
 
           {currentSection === 8 &&
             <Contact
               contactInfo={contactInfo}
               setContactInfo={setContactInfo}
+              SubscriptionBg={SubscriptionBg}
+              setSubscriptionBg={setSubscriptionBg}
+              InstructorBg={InstructorBg}
+              setInstructorBg={setInstructorBg}
             />}
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>

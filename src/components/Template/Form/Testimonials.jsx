@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-function Testimonials({ testimonials, setTestimonials }) {
+function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimonialBg }) {
   // const [testimonials, setTestimonials] = useState([
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
@@ -65,7 +65,22 @@ function Testimonials({ testimonials, setTestimonials }) {
     updatedTestimonials.splice(index, 1);
     setTestimonials(updatedTestimonials);
   };
+  const handleBgImageChange3 = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setTestimonialBg(file);
+    }
+  };
 
+  const shortenFileName1 = (file) => {
+    if (!file || !file.name) return '';
+    const maxLength = 15;
+    const fileName = file.name;
+    if (fileName.length > maxLength) {
+      return `${fileName.substring(0, maxLength)}...`;
+    }
+    return fileName;
+  };
 
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
@@ -76,6 +91,51 @@ function Testimonials({ testimonials, setTestimonials }) {
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.
       </h5>
+      <div className="relative flex items-center mt-4">
+      <h2 className='font-bold'>TestimonialBg</h2>
+      <div className='mr-10'></div>
+        <input
+          type="file"
+          accept="image/*"
+          // onChange={(e) => handleImageChange(setTestimonialBg, e)}
+          onChange={handleBgImageChange3}
+          className="hidden"
+          id="TestimonialBgInput"
+        />
+        <label
+          htmlFor="TestimonialBgInput"
+          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          style={{
+            borderColor: 'cement',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            backgroundColor: '#D9D9D9',
+          }}
+        >
+          <span
+            className={`block text-[#000000] font-inter text-[14px] ${
+              TestimonialBg ? 'hidden' : 'block'
+            }`}
+          >
+            Choose File
+          </span>
+          <div
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
+              TestimonialBg ? 'block' : 'hidden'
+            }`}
+          >
+            <span className="text-[#636262]">
+              {shortenFileName1(TestimonialBg)}
+            </span>
+            <span
+              onClick={() => setTestimonialBg(null)}
+              className="text-[#3b9d33] cursor-pointer"
+            >
+              Change
+            </span>
+          </div>
+        </label>
+      </div>
       <div className="max-h-[480px] overflow-y-auto">
         <div ref={testimonialsContainerRef} className="pb-6">
           {testimonials.map((testimonial, index) => (
