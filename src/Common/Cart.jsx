@@ -75,6 +75,8 @@ const Cart = ({ institution }) => {
   };
 
   const handleCheckout = async () => {
+    setIsLoading1(true)
+
     const { productItems } = cartState;
     const institutionId = institution;
     const productId = productItems.map(item => item.productId);
@@ -96,9 +98,9 @@ const Cart = ({ institution }) => {
         },
       });
       setIsLoading(false);
+      setIsLoading1(true)
       return;
     }
-    setIsLoading1(true)
   
     try {
       const response = await API.put('clients', `/payment/checkout`, {
@@ -113,7 +115,7 @@ const Cart = ({ institution }) => {
       const subscriptionIds = response.map(subscription => subscription.paymentId);
   
       const options = {
-        key: "rzp_live_KBQhEinczOWwzs",
+        key: "rzp_test_J0ORuERIxXwYEH",
         amount: totalAmount,
         currency: response[0].currency,
         name: institution.toUpperCase(),
@@ -136,7 +138,8 @@ const Cart = ({ institution }) => {
               body: {
                 institutionId,
                 cognitoId,
-                subscriptionIds
+                subscriptionIds,
+                products: productItems.map(item => item.heading),
               },
             });
   

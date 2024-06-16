@@ -16,6 +16,7 @@ const ContextProvider = (props) => {
   const [userData, setUserData] = useState({});
   const [itemCount, setItemCount] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState([]);
   const [cartState, setCartState] = useState({
     subtotal: 0,
     productItems: [],
@@ -122,6 +123,7 @@ const ContextProvider = (props) => {
       const response = await API.get('clients', `/any/getcartitems/${institution}/${cognitoId}`);
       setCartItems(response);
       setItemCount(response.length);
+      getPaymentHistory(institution, cognitoId)
       if (Array.isArray(response) && response.length > 0) {
         const quantities = response.map(() => 1);
         const subtotal = response.reduce((total, item, index) => total + (item.amount / 100) * quantities[index], 0);
@@ -154,6 +156,15 @@ const ContextProvider = (props) => {
       console.error('Error adding to cart:', error);
     }
   };
+
+  const getPaymentHistory = async (institution, cognitoId) => {
+    try {
+      const paymentHistory = await API.get('clients', `/getReciept/${institution}/${cognitoId}`)
+      setPaymentHistory(paymentHistory)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // New function to check if a product is in the cart
   const isProductInCart = useCallback((productId) => {
@@ -209,7 +220,8 @@ const ContextProvider = (props) => {
     setCartState: setCartState,
     removeCartItem: removeCartItem,
     addCartItem: addCartItem,
-    setCartItems:setCartItems,
+    setCartItems: setCartItems,
+    paymentHistory:paymentHistory,
     cartItems,
     itemCount,
     isProductInCart // Add the new function to context data

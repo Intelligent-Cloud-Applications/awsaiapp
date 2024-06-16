@@ -20,9 +20,15 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
   const handleAllPaymentsClick = () => {
     setActiveComponent('AllPayment');
   };
+
   const handleContactClick = () => {
     setActiveComponent('contact')
   }
+
+  const handleHistoryClick = () => {
+    setActiveComponent('history')
+  }
+
 
   return (
     <div>
@@ -33,9 +39,9 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
           </svg>
           <span className='text-[#e2e2e2] inter font-[300] max600:hidden'>back to {institution}</span>
         </div>
-        <div className='flex items-center cursor-pointer gap-8 max600:gap-4'>
+        <div className='flex items-center cursor-pointer gap-4 max600:gap-2'>
           <div
-            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[6rem]`}
+            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[5rem]`}
             style={activeComponent === 'AllPayment' ? { backgroundColor: color.primary, hover: color.primary } : {}}
             onClick={handleAllPaymentsClick}
           >
@@ -50,8 +56,18 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
           >
             CONTACT US
           </div>
+          <div
+            onClick={
+              handleHistoryClick
+            }
+            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:w-[5rem]`}
+            style={activeComponent === 'history' ? { backgroundColor: color.primary, hover: color.primary } : {}}
+          >
+            ORDERS
+          </div>
           <div className='flex items-end cursor-pointer relative' onClick={handleCartClick}>
             <svg
+              className='max600:w-8 max600:-mb-2'
               width="48"
               height="40"
               viewBox="0 0 48 40"
@@ -64,7 +80,7 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
 
             {itemCount > 0 && (
               <span
-                className={`absolute top-0 text-white rounded-[100%] right-[14px] p-[2px] px-[5px] text-[9px] font-bold bounce ${activeComponent === 'Cart' ? 'right-[53px]' : 'right-[13px]'}`}
+                className={`absolute top-0 text-white rounded-[100%] right-[14px] p-[2px] px-[5px] text-[9px] font-bold bounce`}
                 style={{ backgroundColor: color.primary }}
               >
                 {itemCount}
