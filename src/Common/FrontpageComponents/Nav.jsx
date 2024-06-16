@@ -80,7 +80,7 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
 
             {itemCount > 0 && (
               <span
-                className={`absolute top-0 text-white rounded-[100%] right-[14px] p-[2px] px-[5px] text-[9px] font-bold bounce`}
+                className={`absolute top-0 text-white rounded-[100%] right-[14px] p-[2px] px-[5px] text-[9px] font-bold bounce max600:right-[7px]`}
                 style={{ backgroundColor: color.primary }}
               >
                 {itemCount}

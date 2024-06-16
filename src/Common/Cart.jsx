@@ -115,7 +115,7 @@ const Cart = ({ institution }) => {
       const subscriptionIds = response.map(subscription => subscription.paymentId);
   
       const options = {
-        key: "rzp_test_J0ORuERIxXwYEH",
+        key: "rzp_live_KBQhEinczOWwzs",
         amount: totalAmount,
         currency: response[0].currency,
         name: institution.toUpperCase(),

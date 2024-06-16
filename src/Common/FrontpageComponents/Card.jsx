@@ -60,7 +60,7 @@ function Card({ product, setActiveComponent }) {
               product.provides.map((item, index) => (
                 <li key={index} className='flex items-start'>
                   <img className='mt-[8px]' src={tick} alt="" />
-                  <span className={`ml-2 text-[#202020] text-[1.2rem] font-[600]${institution === "lissome" ? " text-[0.80rem]" : ""}`}>{item}</span>
+                  <span className={`ml-2 text-[#202020] text-[1.2rem] font-[600]${institution === "lissome" ? " text-[13px]" : ""}`}>{item}</span>
                 </li>
               ))
             ) : null
@@ -76,11 +76,12 @@ function Card({ product, setActiveComponent }) {
           )}
         </div>
         <button
-          className={`w-[90%] text-white p-2 text-center gap-4 flex items-center justify-center ${isAnimating ? 'animate-loader' : ''}`}
+          className={`w-[90%] text-center gap-4 flex items-center justify-center ${isAnimating ? 'animate-loader' : ''} ${isInCart?'text-black font-[700] p-[5px]':"text-white p-2"}`}
           onClick={isInCart ? () => setActiveComponent('Cart') : handleAddToCart}
           disabled={isLoading}
           style={{
-            backgroundColor: color.primary
+            backgroundColor: isInCart ? 'transparent' : color.primary,
+            border: isInCart ? `3px solid ${color.primary}` : 'none'
           }}
         >
           {isLoading ? <Skeleton width={100} height={30} /> : isAnimating ? (
