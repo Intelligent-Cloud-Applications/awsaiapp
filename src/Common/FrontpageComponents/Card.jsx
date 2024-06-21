@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tick from '../utils/tick.png';
-import cartIcon from '../utils/cart.png';
+// import cartIcon from '../utils/cart.png';
 import { API } from 'aws-amplify';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
