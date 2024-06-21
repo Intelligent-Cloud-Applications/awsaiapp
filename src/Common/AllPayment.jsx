@@ -7,7 +7,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './FrontpageComponents/Allpayments.css';
-import Nav from './FrontpageComponents/Nav';
+// import Nav from './FrontpageComponents/Nav';
 
 function Arrow(props) {
   const { className, style, onClick } = props;

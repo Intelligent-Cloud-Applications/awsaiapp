@@ -12,15 +12,6 @@ const Cart = ({ institution }) => {
   const initialQuantities = productItems.map(() => 1);
   const [quantities, setQuantities] = useState(initialQuantities);
 
-  const updateQuantity = (index, newQuantity) => {
-    if (newQuantity <= 0) {
-      return;
-    }
-    setQuantities(
-      quantities.map((qty, i) => (i === index ? newQuantity : qty))
-    );
-  };
-
   const calculateSubtotal = (items) => {
     return items.reduce((total, item, index) => {
       return total + (item.product.amount / 100) * quantities[index];
@@ -37,6 +28,15 @@ const Cart = ({ institution }) => {
     setProductItems(newProductItems);
     setQuantities(newQuantities);
     setSubtotal(calculateSubtotal(newProductItems));
+  };
+
+  const updateQuantity = (index, newQuantity) => {
+    if (newQuantity <= 0) {
+      return;
+    }
+    const newQuantities = quantities.map((qty, i) => (i === index ? newQuantity : qty));
+    setQuantities(newQuantities);
+    setSubtotal(calculateSubtotal(productItems));
   };
 
   const getCartItems = async () => {
@@ -65,6 +65,7 @@ const Cart = ({ institution }) => {
 
   useEffect(() => {
     getCartItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -74,6 +75,7 @@ const Cart = ({ institution }) => {
           <CartTable
             product={productItems}
             removeItem={removeItem}
+            updateQuantity={updateQuantity}
           />
         </div>
         {/* Order summary */}
