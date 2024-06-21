@@ -1,7 +1,7 @@
 import React, {useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 
-function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, setMediaType }) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType,TagLine1, setTagLine1, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
   const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
@@ -9,7 +9,9 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
   const handleTagLineInputChange = (e) => {
     setTagLine(e.target.value);
   };
-
+  const handleTagLineInputChange1 = (e) => {
+    setTagLine1(e.target.value);
+  };
   const toggleTagLineInputVisibility = () => {
     setTagLineInputVisible(true);
     setTagLineLineColor("#000000"); // Change TagLine line color to black on click
@@ -72,6 +74,29 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
             />
           ) : (
             <span>{TagLine || "Short Description TagLine "}</span>
+          )}
+        </h5>
+        <div
+          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
+          style={{ backgroundColor: TagLineLineColor }}
+        ></div>
+      </div>
+      <div className="relative mt-10">
+        <h5
+          className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
+          onClick={toggleTagLineInputVisibility}
+        >
+          {isTagLineInputVisible ? (
+            <input
+              type="text"
+              value={TagLine1}
+              onChange={handleTagLineInputChange1}
+              className="w-[28rem] text-black border-none outline-none bg-transparent "
+              placeholder="Enter Short Description TagLine1"
+             
+            />
+          ) : (
+            <span>{TagLine1 || "Short Description TagLine1 "}</span>
           )}
         </h5>
         <div

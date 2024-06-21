@@ -1,16 +1,19 @@
 import React, { useState, useRef } from 'react';
 
-function Services({ services, setServices, danceTypes, setDanceTypes }) {
+function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,setServicesBg,servicesPortrait,setServicesPortrait }) {
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
   const danceTypesContainerRef = useRef(null);
+  const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
+
+  // States for the overall service images
+  // const [servicesBg, setServicesBg] = useState(null);
+  // const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const handleDanceTypeChange = (index, value) => {
     const updatedDanceTypes = [...danceTypes];
     updatedDanceTypes[index] = value;
     setDanceTypes(updatedDanceTypes);
   };
-
-  const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
 
   const toggleActiveDanceType = (index) => {
     setActiveDanceTypeIndex(index === activeDanceTypeIndex ? null : index);
@@ -61,15 +64,142 @@ function Services({ services, setServices, danceTypes, setDanceTypes }) {
     setServices(updatedServices);
   };
 
+  // const handleImageChange = (setImage, e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setImage(file);
+  //   }
+  // };
+
+  const handleBgImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setServicesBg(file);
+    }
+  };
+
+  const handlePortraitImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setServicesPortrait(file);
+    }
+  };
+
+  const shortenFileName = (file) => {
+    if (!file || !file.name) return '';
+    const maxLength = 15;
+    const fileName = file.name;
+    if (fileName.length > maxLength) {
+      return `${fileName.substring(0, maxLength)}...`;
+    }
+    return fileName;
+  };
+  
+
   return (
     <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
       <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-      ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
+        ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
       </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
       </h5>
+
+      {/* Service Background Image Upload */}
+      <div className="relative flex items-center mt-4">
+        <h2 className='font-bold'>ServicesBg</h2>
+        <div className='mr-20'></div>
+        <input
+          type="file"
+          accept="image/*"
+          // onChange={(e) => handleImageChange(setServicesBg, e)}
+          onChange={handleBgImageChange}
+          className="hidden"
+          id="servicesBgInput"
+        />
+        <label
+          htmlFor="servicesBgInput"
+          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          style={{
+            borderColor: 'cement',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            backgroundColor: '#D9D9D9',
+          }}
+        >
+          <span
+            className={`block text-[#000000] font-inter text-[14px] ${
+              servicesBg ? 'hidden' : 'block'
+            }`}
+          >
+            Choose File
+          </span>
+          <div
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
+              servicesBg ? 'block' : 'hidden'
+            }`}
+          >
+            <span className="text-[#636262]">
+              {shortenFileName(servicesBg)}
+            </span>
+            <span
+              onClick={() => setServicesBg(null)}
+              className="text-[#3b9d33] cursor-pointer"
+            >
+              Change
+            </span>
+          </div>
+        </label>
+      </div>
+
+      {/* Service Portrait Image Upload */}
+      <div className="relative flex items-center mt-4">
+      <h2 className='font-bold'>ServicesProtrait</h2>
+      <div className='mr-10'></div>
+        <input
+          type="file"
+          accept="image/*"
+          // onChange={(e) => handleImageChange(setServicesPortrait, e)}
+          onChange={handlePortraitImageChange}
+          className="hidden"
+          id="servicesPortraitInput"
+        />
+        <label
+          htmlFor="servicesPortraitInput"
+          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          style={{
+            borderColor: 'cement',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            backgroundColor: '#D9D9D9',
+          }}
+        >
+          <span
+            className={`block text-[#000000] font-inter text-[14px] ${
+              servicesPortrait ? 'hidden' : 'block'
+            }`}
+          >
+            Choose File
+          </span>
+          <div
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
+              servicesPortrait ? 'block' : 'hidden'
+            }`}
+          >
+            <span className="text-[#636262]">
+              {shortenFileName(servicesPortrait)}
+            </span>
+            <span
+              onClick={() => setServicesPortrait(null)}
+              className="text-[#3b9d33] cursor-pointer"
+            >
+              Change
+            </span>
+          </div>
+        </label>
+      </div>
+
       {services.map((service, serviceIndex) => (
         <div key={serviceIndex} className="mt-4">
           <h2 className="font-medium text-xl">Service {serviceIndex + 1}</h2>
@@ -103,8 +233,8 @@ function Services({ services, setServices, danceTypes, setDanceTypes }) {
               </div>
             ))}
             {service.items.length < 5 && (
-           <div className="mt-2 flex justify-center">
-                <button onClick={() => handleAddItem(serviceIndex)}className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+              <div className="mt-2 flex justify-center">
+                <button onClick={() => handleAddItem(serviceIndex)} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
                   Add Item
                 </button>
               </div>
