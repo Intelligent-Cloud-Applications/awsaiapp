@@ -288,6 +288,7 @@ const Cart = ({ institution }) => {
           quantities={cartState.quantities}
         />
       </div>
+      
       <div className={`max767:w-[98vw] ${isModalOpen ? "hidden" : ""}`}>
         <section className="mx-auto px-4 min-w-[35vw]">
           <div className="w-full flex justify-center">
@@ -339,6 +340,7 @@ const Cart = ({ institution }) => {
           />
         </animated.div>
       )}
+      d
     </div>
   );
 };
