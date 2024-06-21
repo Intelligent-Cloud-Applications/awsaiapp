@@ -340,7 +340,6 @@ const Cart = ({ institution }) => {
           />
         </animated.div>
       )}
-      d
     </div>
   );
 };
