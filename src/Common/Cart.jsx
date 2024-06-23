@@ -76,12 +76,12 @@ const Cart = ({ institution }) => {
 
   const handleCheckout = async () => {
     setIsLoading1(true);
-    
+
     const { productItems } = cartState;
     const institutionId = institution;
     const productId = productItems.map(item => item.productId);
     const planIds = productItems.map(item => item.planId);
-    
+
     const uniqueProductIds = new Set(productId);
     if (uniqueProductIds.size !== productId.length) {
       toast.error('You cannot buy the same item more than once.', {
@@ -101,7 +101,7 @@ const Cart = ({ institution }) => {
       setIsLoading1(false);
       return;
     }
-    
+
     try {
       const response = await API.put('clients', `/payment/checkout`, {
         body: {
@@ -110,10 +110,10 @@ const Cart = ({ institution }) => {
           productId
         },
       });
-  
+
       const totalAmount = response.reduce((acc, current) => acc + current.amount, 0);
       const subscriptionIds = response.map(subscription => subscription.paymentId);
-  
+
       const options = {
         key: "rzp_live_KBQhEinczOWwzs",
         amount: totalAmount,
@@ -124,16 +124,16 @@ const Cart = ({ institution }) => {
           setIsLoading(true);
           try {
             setStatusMessage('Payment successful');
-  
+
             // Schedule status message updates with delays
             setTimeout(() => {
               setStatusMessage('Generating receipt');
             }, 1000);
-  
+
             setTimeout(() => {
               setStatusMessage('Receipt generated');
             }, 5000);
-  
+
             const verifyResponse = await API.put('clients', `/payment/webhook`, {
               body: {
                 institutionId,
@@ -142,7 +142,7 @@ const Cart = ({ institution }) => {
                 products: productItems.map(item => item.heading),
               },
             });
-  
+
             if (verifyResponse.signatureIsValid) {
               const formattedDate = new Date().toLocaleString('en-IN', {
                 timeZone: 'Asia/Kolkata',
@@ -150,14 +150,14 @@ const Cart = ({ institution }) => {
                 month: 'long',
                 day: 'numeric',
               });
-  
+
               const renewalDates = verifyResponse.renewalDates.map(date => new Date(date).toLocaleString('en-IN', {
                 timeZone: 'Asia/Kolkata',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               }));
-  
+
               setReceiptDetails({
                 subscriptionId: subscriptionIds,
                 amount: totalAmount / 100,
@@ -167,13 +167,13 @@ const Cart = ({ institution }) => {
                 planDetails: productItems.map(item => `${item.heading}`).join(', '),
                 email: response[0].emailId,
               });
-  
+
               setTimeout(() => {
                 setIsModalOpen(true);
                 setIsLoading(false);
               }, 1500);
             } else {
-              throw new Error('Payment verification failed!');
+              throw new Error(verifyResponse.failureReason || 'Payment verification failed!');
             }
           } catch (error) {
             console.error('Error verifying payment:', error);
@@ -248,7 +248,7 @@ const Cart = ({ institution }) => {
           }
         }
       };
-  
+
       const rzp1 = new window.Razorpay(options);
       rzp1.open();
     } catch (error) {
@@ -269,7 +269,7 @@ const Cart = ({ institution }) => {
       setIsLoading(false);
       setIsLoading1(false);
     }
-  };  
+  };
 
   if (!cartState) {
     return <div>Loading...</div>;
@@ -288,7 +288,7 @@ const Cart = ({ institution }) => {
           quantities={cartState.quantities}
         />
       </div>
-      
+
       <div className={`max767:w-[98vw] ${isModalOpen ? "hidden" : ""}`}>
         <section className="mx-auto px-4 min-w-[35vw]">
           <div className="w-full flex justify-center">
