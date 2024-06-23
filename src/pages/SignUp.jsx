@@ -202,25 +202,47 @@ const SignUp = () => {
 
     try {
       if (form1Validator()) {
-        if (!isNewUser) {
-          await userExistPhoneNumberSignUp();
-          UtilCtx.setLoader(false);
-          return;
-        }
+//        if (!isNewUser) {
+//          await userExistPhoneNumberSignUp();
+//          UtilCtx.setLoader(false);
+//          return;
+//        }
         console.log(phoneNumber);
-        const newUserCheck = await Auth.signUp({
-          username: `+${countryCode}${phoneNumber}`,
-          password: "Avishek@123",
-          institutionName: institutionName,
-          attributes: {
-            phone_number: `+${countryCode}${phoneNumber}`,
-            name: `${firstName} ${lastName}`,
-            email: email,
-          },
-        });
-        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
-        setSigninResponse(response);
-        setNewUser(newUserCheck);
+        try {
+          const newUserCheck = await Auth.signUp({
+            username: `+${countryCode}${phoneNumber}`,
+            password: "Avishek@123",
+            institutionName: institutionName,
+            attributes: {
+              phone_number: `+${countryCode}${phoneNumber}`,
+              name: `${firstName} ${lastName}`,
+              email: email,
+            },
+          });
+        }
+        catch (e) {
+          console.error(e);
+        }
+        finally {
+          const phoneResponse = await API.post(
+            'clients',
+            'any/phone-exists',
+            {
+              body: {
+                phoneNumber: `+${countryCode}${phoneNumber}`
+              }
+            }
+          )
+
+          if (phoneResponse.exists === true) {
+            alert('An account with this phone number already exists. Please login or signup with a different number.')
+          }
+          else {
+            const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
+            setSigninResponse(response)
+            setNewUser(true)
+          }
+        }
       }
       UtilCtx.setLoader(false);
     } catch (e) {
