@@ -26,7 +26,7 @@ const SignUp = () => {
   // const [passwordVisible, setPasswordVisible] = useState(false);
   const [isNewUser, setIsNewUser] = useState(true);
   const data = {
-    Otp_Msg: `An OTP has been sent to ${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
+    Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
   };
   // const data = {
   //   Otp_Msg: `An OTP has been sent to +${countryCode}${phoneNumber}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
@@ -121,6 +121,7 @@ const SignUp = () => {
     }
   };
 
+
   const userExistPhoneNumberSignUp = async () => {
     try {
       console.log("Sign in");
@@ -169,7 +170,7 @@ const SignUp = () => {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
-          phoneNumber: `${countryCode}${phoneNumber}`,
+          phoneNumber: `+${countryCode}${phoneNumber}`,
           country: country,
           institutionName: institutionName
         },
@@ -194,7 +195,7 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
     }
   };
-
+  console.log(isNewUser,userExistPhoneNumberSignUp);
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -202,25 +203,48 @@ const SignUp = () => {
 
     try {
       if (form1Validator()) {
-        if (!isNewUser) {
-          await userExistPhoneNumberSignUp();
-          UtilCtx.setLoader(false);
-          return;
-        }
+//        if (!isNewUser) {
+//          await userExistPhoneNumberSignUp();
+//          UtilCtx.setLoader(false);
+//          return;
+//        }
         console.log(phoneNumber);
-        const newUserCheck = await Auth.signUp({
-          username: `+${countryCode}${phoneNumber}`,
-          password: "Avishek@123",
-          institutionName: institutionName,
-          attributes: {
-            phone_number: `+${countryCode}${phoneNumber}`,
-            name: `${firstName} ${lastName}`,
-            email: email,
-          },
-        });
-        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
-        setSigninResponse(response);
-        setNewUser(newUserCheck);
+        try {
+          const newUserCheck = await Auth.signUp({
+            username: `+${countryCode}${phoneNumber}`,
+            password: "Avishek@123",
+            institutionName: institutionName,
+            attributes: {
+              phone_number: `+${countryCode}${phoneNumber}`,
+              name: `${firstName} ${lastName}`,
+              email: email,
+            },
+          });
+          console.log(newUserCheck);
+        }
+        catch (e) {
+          console.error(e);
+        }
+        finally {
+          const phoneResponse = await API.post(
+            'clients',
+            '/any/phone-exists/awsaiapp',
+            {
+              body: {
+                phoneNumber: `+${countryCode}${phoneNumber}`
+              }
+            }
+          )
+
+          if (phoneResponse.exists === true) {
+            alert('An account with this phone number already exists. Please login or signup with a different number.')
+          }
+          else {
+            const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
+            setSigninResponse(response)
+            setNewUser(true)
+          }
+        }
       }
       UtilCtx.setLoader(false);
     } catch (e) {
