@@ -273,7 +273,7 @@ const SignUp = () => {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
-            phoneNumber: `${countryCode}${phoneNumber}`,
+            phoneNumber: `+${countryCode}${phoneNumber}`,
             country: country,
             institutionName: institutionName,
           },
