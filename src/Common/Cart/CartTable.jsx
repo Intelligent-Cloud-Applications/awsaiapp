@@ -1,15 +1,20 @@
-import { API } from 'aws-amplify';
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useParams } from 'react-router-dom';
+import Context from '../../context/Context';
+import colors from '../../color.json';
+import { API } from 'aws-amplify';
 
 const CartTable = ({ product, removeItem }) => {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [deletingIndex, setDeletingIndex] = useState(null);
+  const { getCartItems } = useContext(Context);
   const { institution, cognitoId } = useParams();
+  const color = colors[institution];
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1100);
@@ -19,75 +24,96 @@ const CartTable = ({ product, removeItem }) => {
 
   const removeProduct = async (index, productId) => {
     try {
+      setDeletingIndex(index);
       removeItem(index);
-      const response = await API.del('clients', `/any/deleteCartItem/${institution}/${cognitoId}`, {
+
+      // API call after updating UI
+      await API.del('clients', `/any/deleteCartItem/${institution}/${cognitoId}`, {
         body: {
-          productId: productId
-        }
+          productId: productId,
+        },
       });
-      console.log(response);
+
+      // Refresh cart items
+      getCartItems(institution, cognitoId);
     } catch (error) {
-      console.log(error);
+      console.error('Error removing product:', error);
+      // If there is an error, reset the deleting index
+      setDeletingIndex(null);
+    } finally {
+      // Always reset the deleting index after the operation
+      setDeletingIndex(null);
     }
   };
 
   return (
     <section className="w-[60vw] flex mt-10 gap-3 px-5 pb-10 items-center max767:w-full">
-      <table className="table-fixed w-full max767:w-[95vw] border">
-        <thead className="h-16 bg-[#005B50]">
-          <tr className='bg-[#005B50]'>
-            <th className='bg-[#005B50] text-white'>ITEM</th>
-            <th className='bg-[#005B50]'></th>
-            <th className='bg-[#005B50] text-white'>PRICE</th>
-            <th className='bg-[#005B50]'></th>
-            <th className='bg-[#005B50] text-white'></th>
-          </tr>
-        </thead>
-        <tbody>
-          {isLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <tr key={index}>
-                <td>
-                  <Skeleton width={150} height={30} />
-                </td>
-                <td></td>
-                <td>
-                  <Skeleton width={50} height={30} />
-                </td>
-                <td></td>
-                <td></td>
-              </tr>
-            ))
-          ) : (
-            product.map((item, index) => {
-              const { heading, amount, productId, currency } = item.product;
-              const currencySymbol = currency === 'INR' ? '₹' : '$'; // Add currency symbol logic
-              return (
+      {product.length === 0 ? (
+        <div className="w-full text-center py-10">
+          <p className="text-lg text-[black] border-t border-r border-l border-black font-semibold">YOUR CART IS EMPTY</p>
+          <div className="text-[black] text-[1.5rem] py-2 px-4 h-24 border border-black text-center font-[600] inter flex items-center">
+            Add Some Products
+          </div>
+        </div>
+      ) : (
+        <table className="table-fixed w-full max767:w-[95vw] border">
+          <thead className="h-16" style={{ backgroundColor: color.primary }}>
+            <tr>
+              <th className="text-white w-1/3 max767:w-1/2" style={{ backgroundColor: color.primary }}>ITEM</th>
+              <th className="text-white w-1/3 max767:hidden" style={{ backgroundColor: color.primary }}>DESCRIPTION</th>
+              <th  style={{ backgroundColor: color.primary }}></th>
+              <th className="text-white w-[20%]" style={{ backgroundColor: color.primary }}>PRICE</th>
+              <th className="text-white w-[20%]" style={{ backgroundColor: color.primary }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, index) => (
                 <tr key={index}>
                   <td>
-                    <div className="flex">
-                      <div className="flex flex-col justify-center">
-                        <p className="text-md font-bold max767:font-[300] max767:text-[0.8rem]">
-                          {heading}
-                        </p>
-                      </div>
-                    </div>
+                    <Skeleton width={150} height={30} />
                   </td>
                   <td></td>
-                  <td>{currencySymbol}{(amount / 100)}</td> {/* Display amount with currency symbol and adjust amount */}
-                  <td></td>
-                  <td className="align-middle">
-                    <FaTrashAlt
-                      onClick={() => removeProduct(index, productId)}
-                      className="m-0 h-5 w-5 cursor-pointer"
-                    />
+                  <td>
+                    <Skeleton width={50} height={30} />
                   </td>
+                  <td></td>
+                  <td></td>
                 </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+              ))
+            ) : (
+              product.map((item, index) => {
+                const { heading, amount, productId, currency, description } = item;
+                const currencySymbol = currency === 'INR' ? '₹' : '$';
+                return (
+                  <tr key={index} className={`${deletingIndex === index ? 'animate-fade-out' : ''}`}>
+                    <td className="w-1/2">
+                      <div className="flex">
+                        <div className="flex flex-col justify-center">
+                          <p className="text-md font-bold max767:font-[300] max767:text-[0.8rem]">
+                            {heading}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="w-1/3 max767:hidden">{description}</td>
+                    <td></td>
+                    <td className="w-[10%] font-bold">
+                      {currencySymbol}{(amount / 100)}
+                    </td>
+                    <td className="w-[5%] align-middle">
+                      <FaTrashAlt
+                        onClick={() => removeProduct(index, productId)}
+                        className="m-0 h-5 w-5 cursor-pointer"
+                      />
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      )}
     </section>
   );
 };

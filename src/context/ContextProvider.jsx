@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Context from "./Context";
 import { API } from "aws-amplify";
 
@@ -13,6 +13,15 @@ const ContextProvider = (props) => {
   const [subscriptionDetails, setSubscriptionDetails] = useState();
   const [instructordetails, setInstructordetails] = useState({})
   const [userData, setUserData] = useState({});
+  const [itemCount, setItemCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [cartState, setCartState] = useState({
+    subtotal: 0,
+    productItems: [],
+    quantities: [],
+    currencySymbol: '$',
+  });
   const institutionId = localStorage.getItem('institution');
 
   useEffect(() => {
@@ -109,7 +118,60 @@ const ContextProvider = (props) => {
       console.error("Error fetching instructor details:", error);
     }
   };
-  
+
+  const getCartItems = async (institution, cognitoId) => {
+    try {
+      const response = await API.get('clients', `/any/getcartitems/${institution}/${cognitoId}`);
+      setCartItems(response);
+      setItemCount(response.length);
+      getPaymentHistory(institution, cognitoId)
+      if (Array.isArray(response) && response.length > 0) {
+        const quantities = response.map(() => 1);
+        const subtotal = response.reduce((total, item, index) => total + (item.amount / 100) * quantities[index], 0);
+        const currencySymbol = response[0].currency === 'INR' ? '₹' : '$';
+        setCartState({ productItems: response, quantities, subtotal, currencySymbol });
+      }
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  };
+
+  const removeCartItem = async (productId, institution, cognitoId) => {
+    try {
+      await API.del('clients', `/any/deleteCartItem/${institution}/${cognitoId}`, {
+        body: { productId },
+      });
+      getCartItems(institution, cognitoId);
+    } catch (error) {
+      console.error('Error removing product:', error);
+    }
+  };
+
+  const addCartItem = async (item, institution, cognitoId) => {
+    try {
+      await API.post('clients', '/any/addtocart', {
+        body: { institution, cognitoId, cart: [item] },
+      });
+      getCartItems(institution, cognitoId);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  };
+
+  const getPaymentHistory = async (institution, cognitoId) => {
+    try {
+      const paymentHistory = await API.get('clients', `/getReciept/${institution}/${cognitoId}`)
+      setPaymentHistory(paymentHistory)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // New function to check if a product is in the cart
+  const isProductInCart = useCallback((productId) => {
+    return Array.isArray(cartItems) && cartItems.some(item => item.planId === productId);
+  }, [cartItems]);
+
   const setLoaderFn = (data) => {
     setLoader(data);
   };
@@ -155,6 +217,16 @@ const ContextProvider = (props) => {
     instructorDetails: instructordetails,
     fetchProductDetails: fetchProductDetails,
     fetchInstructorDetails: fetchInstructorDetails,
+    getCartItems: getCartItems,
+    cartState: cartState,
+    setCartState: setCartState,
+    removeCartItem: removeCartItem,
+    addCartItem: addCartItem,
+    setCartItems: setCartItems,
+    paymentHistory:paymentHistory,
+    cartItems,
+    itemCount,
+    isProductInCart 
   };
 
   return (
