@@ -19,6 +19,7 @@ const Cart = ({ institution }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [receiptDetails, setReceiptDetails] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
+  const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -107,7 +108,8 @@ const Cart = ({ institution }) => {
         body: {
           institutionId,
           cognitoId,
-          productId
+          productId,
+          referralCode, // Include the referral code in the request body
         },
       });
 
@@ -306,6 +308,13 @@ const Cart = ({ institution }) => {
                 <p>Total</p>
                 <p>{currencySymbol}{subtotal.toFixed(2)}</p>
               </div>
+              <input
+                type="text"
+                placeholder="Enter referral code"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value)}
+                className="w-full px-2 py-1 border mb-4"
+              />
               <button className="w-full px-5 py-2 text-white" onClick={handleCheckout} style={{ backgroundColor: color.primary }}>
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>

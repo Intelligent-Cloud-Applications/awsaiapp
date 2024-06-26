@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
 import { API } from "aws-amplify";
 
-const Query = () => {
+const Query = ({activeComponent}) => {
   // //Get the action url by inspecting the form
   // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
 
@@ -105,7 +105,7 @@ const Query = () => {
 
   return (
     <>
-      <Navbar />
+      {activeComponent !== 'contact' ? <Navbar />:""}
       {/* new contact us page */}
       <div
         className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
