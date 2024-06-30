@@ -1,0 +1,11 @@
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.editable-task-name{
+  width: 90%;
+  padding: 12px;
+  border-radius: 10px;
+}

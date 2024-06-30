@@ -1,0 +1,68 @@
+.outer-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    background-color: rgb(48,175,188);
+}
+.inner-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 70%;
+    max-width: 600px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    background-color: rgb(237,237,237);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;;
+}
+.inner-container p{
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+
+}
+.comp-logo {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    box-shadow: rgb(12, 139, 161) 2px 2px 50px;
+
+  }
+.btn-login-asana{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 48px;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 8px;
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+.btn-login-asana:hover{
+    outline: none;
+    background-color: rgb(240, 222, 196);
+}
+.btn-login-asana:active{
+    background-color: rgb(224, 204, 177);
+}
+
+.btn-login-asana img{
+    mix-blend-mode: multiply;
+    width: 37px;
+}
+.btn-login-asana span{
+    margin-left: 8px;
+}
+
+@media screen and (min-width: 700px){
+    .inner-container{
+        padding: 20px 40px;
+    }
+}

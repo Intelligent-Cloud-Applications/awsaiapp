@@ -1,0 +1,133 @@
+.detail-view {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #D5DCF9;
+  overflow-y: auto; /* Enable vertical scrolling */
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+  padding: 20px;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.detail-view.open {
+  transform: translateX(0);
+}
+
+.asana-sidebar-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+  padding: 2px;
+  height: 25px;
+  width: 25px;
+}
+
+.right-screen-task-name {
+  margin-top: 40px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.user-details {
+  margin-bottom: 20px;
+}
+
+.content {
+  margin-bottom: 20px;
+}
+
+.notes {
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  overflow-y: auto; /* Enable vertical scrolling for notes */
+  max-height: 200px; /* Example maximum height */
+}
+
+.add-comment {
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+  right: 10px;
+  padding: 10px;
+}
+
+.comment-textarea {
+  width: 100%;
+  min-height: 50px;
+  resize: vertical; /* Allow vertical resizing */
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.subtask-comments {
+  margin-top: 10px;
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.comment p {
+  margin: 0;
+}
+
+.comment p em {
+  color: #999999;
+  font-size: 12px;
+}
+
+.add-comment-btn{
+  border: none;
+  background-color: white;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+  transition: background-color 0.3s ease-in, color 0.3s ease-in;
+}
+.add-comment-btn:hover{
+  background-color: rgb(48,175,188);
+  color: white;
+
+}
+.add-comment-btn:active{
+  background-color: rgb(76, 190, 202);
+}
+
+.create-comment-asana{
+  position: relative; /* Changed from relative to fixed */
+  bottom: 0; /* Adjust as needed */
+  width: 95%;
+}
+.create-comment-asana textarea{
+  width: 100%;
+  min-height: 50px;
+}
+
+.completedClassName{
+  background-color: rgb(161,210,238);
+}
+.notCompletedClassName{
+  background-color: rgb(217,248,255);
+
+}
+
+
+@media (max-width: 768px) {
+  .detail-view {
+    width: 100%;
+  }
+}
+  

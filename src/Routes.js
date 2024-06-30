@@ -30,6 +30,16 @@ import Context from "./context/Context";
 import Full from "./pages/Full";
 import Edit from "./pages/Edit";
 import HomePayment from "./Common/HomePayment";
+import AsanaLayout from "./internal/components/AsanaLayout";
+import AsanaHome from "./internal/components/AsanaHome";
+import AsanaUsers from "./internal/components/AsanaUsers";
+import Callback from "./internal/components/Callback";
+import PendingTasks from "./internal/components/PendingTasks";
+import TestingAndDefectFixing from "./internal/components/TestingAndDefectFixing";
+import Projects from "./internal/components/Projects"
+import TaskDetails from "./internal/components/TaskDetails";
+import Tasks from "./internal/components/Tasks";
+
 
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
@@ -75,6 +85,18 @@ const RoutesContainer = () => {
       <Route path="/edit" element={<Edit />} />
       <Route path="/allpayment/:institution/:cognitoId" element={<HomePayment />} />
       <Route path="/allpayment/:institution" element={<HomePayment/>} />
+
+      {/* This is the routes for asana portal */}
+      <Route path="/asana-internal" element={<AsanaLayout />} >
+        <Route index element={<AsanaHome />} />
+        <Route path="projects" element={<Projects />} />
+        <Route path="tasks/:projectId" element={<Tasks />} /> 
+        <Route path="task/:taskId" element={<TaskDetails />} /> 
+        <Route path="users" element={<AsanaUsers />} />
+        <Route path="pending-tasks" element={<PendingTasks />} />
+        <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
+      </Route>  
+      <Route path="/callback" element={<Callback />} />
     </Routes>
   );
 };
