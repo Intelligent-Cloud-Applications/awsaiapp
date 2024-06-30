@@ -97,7 +97,7 @@ const CartTable = ({ product, removeItem }) => {
                     </td>
                     <td className="w-1/3 max767:hidden">{description}</td>
                     <td></td>
-                    <td className="w-[10%] font-bold">
+                    <td className="w-[10%] inter font-bold">
                       {currencySymbol}{(amount / 100)}
                     </td>
                     <td className="w-[5%] align-middle">

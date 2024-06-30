@@ -303,8 +303,8 @@ const Cart = ({ institution }) => {
                 <p>{currencySymbol}{subtotal.toFixed(2)}</p>
               </div>
               <div className="flex justify-between border-b py-5">
-                <p>Shipping Fee</p>
-                <p>Free</p>
+                <p>Discount</p>
+                <p>0%</p>
               </div>
               <div className="flex justify-between py-5 font-bold text-lg">
                 <p>Total</p>
