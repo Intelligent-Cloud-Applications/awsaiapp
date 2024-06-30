@@ -42,7 +42,7 @@ const Pay = () => {
     console.log("started");
     try {
       const options = {
-        key: "rzp_test_1nTmB013tmcWZS",
+        key: "rzp_live_KBQhEinczOWwzs",
         subscription_id: response.paymentId,
         name: "AWSAIAPP",
         description: response.subscriptionType,
