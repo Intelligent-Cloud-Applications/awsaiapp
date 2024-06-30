@@ -1,0 +1,259 @@
+a,
+h1 {
+    color: #2a9d8f
+}
+
+.comment .horizontal,
+.horizontal,
+h2 {
+    margin-bottom: 10px
+}
+
+.task-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #30afbc;
+    font-family: "Fira Sans", sans-serif;
+    font-display: swap
+}
+
+.comments-section,
+.task-details,
+.task-info {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px
+}
+
+.task-info h1 {
+    font-weight: 700
+}
+
+.task-info h2 {
+    font-weight: 600;
+    font-size: 26px
+}
+
+.task-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center
+}
+
+.comments-section .horizontal,
+.task-details .horizontal {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+h2 {
+    color: #333
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px
+}
+
+p {
+    margin: 5px 0;
+    color: #555
+}
+
+a {
+    text-decoration: none
+}
+
+a:hover {
+    text-decoration: underline
+}
+
+.info-about-completed-tasks {
+    background-color: #202020;
+    padding: 5px;
+    border-radius: 18px;
+    border: 1px solid #535050;
+    display: flex;
+    justify-content: space-around;
+    align-items: center
+}
+
+.circle-completed,
+.circle-in-progress {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%
+}
+
+.to-make-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px
+}
+
+.to-make-flex p {
+    color: #fff
+}
+
+.circle-completed {
+    background-color: #a1d2ee
+}
+
+.circle-in-progress {
+    background-color: #d9f8ff
+}
+
+.horizontal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.subtask {
+    padding: 10px;
+    border-bottom: 1px solid #ddd
+}
+
+.subtask:last-child {
+    border-bottom: none
+}
+
+.comment {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #ededed;
+    border-radius: 8px
+}
+
+.comment-text {
+    word-wrap: break-word;
+    margin-top: 10px
+}
+
+.comment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px
+}
+
+.edit-textarea {
+    width: 100%;
+    margin-top: 10px
+}
+
+.full-width-textarea {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    background-color: #b1bece;
+    border-radius: 20px;
+    outline: 0;
+    resize: vertical;
+    box-sizing: border-box
+}
+
+.btn-add-comment {
+    background-color: #111827;
+    border: 1px solid transparent;
+    border-radius: .75rem;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    flex: 0 0 auto;
+    font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    padding: .75rem 1.2rem;
+    text-align: center;
+    text-decoration: none #6B7280 solid;
+    text-decoration-thickness: auto;
+    transition-duration: .2s;
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: auto;
+    font-display: swap
+}
+
+.btn-add-comment:hover {
+    background-color: #374151
+}
+
+.btn-add-comment:focus {
+    box-shadow: none;
+    outline: transparent solid 2px;
+    outline-offset: 2px
+}
+
+.full-width-textarea {
+    font-size: large
+}
+
+.search-by-entering-name {
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.search-by-entering-name .search {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 10px;
+    border: none;
+    outline: 0;
+    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.search-by-entering-name input {
+    border: none;
+    outline: 0;
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 20px;
+    width: 100%
+}
+.description{
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    min-height: 200px;
+}
+
+@media (min-width:768px) {
+    .btn-add-comment {
+        padding: .75rem 1.5rem
+    }
+}
+
+@media (max-width:600px) {
+    .task-container {
+        padding: 15px
+    }
+
+    .horizontal {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .circle {
+        margin-bottom: 10px
+    }
+
+    h1,
+    h2 {
+        font-size: 22px
+    }
+}

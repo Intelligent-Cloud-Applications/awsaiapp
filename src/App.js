@@ -4,6 +4,7 @@ import { Auth, API } from "aws-amplify";
 import Context from "./context/Context";
 import RoutesContainer from "./Routes";
 import LoaderProvider from "./components/LoaderProvider";
+import PeendingTasksProvider from "../src/internal/context/PendingTasksProvider";
 
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
@@ -59,9 +60,11 @@ function App() {
 
 
   return (
+    <PeendingTasksProvider>
     <LoaderProvider>
       <RoutesContainer />
     </LoaderProvider>
+    </PeendingTasksProvider>
   );
 }
 

@@ -1,0 +1,32 @@
+.asana-layout ::-webkit-scrollbar {
+    width: 12px !important;
+}
+  
+.asana-layout ::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 10px !important;
+}
+
+.asana-layout ::-webkit-scrollbar-thumb {
+    background: #1e90ff !important;
+    border-radius: 10px !important;
+}
+
+.asana-layout ::-webkit-scrollbar-thumb:hover {
+    background: #104e8b !important;
+}
+
+/* Firefox */
+.asana-layout * {
+    scrollbar-width: thin !important;
+    scrollbar-color: #1e90ff #f1f1f1 !important;
+}
+
+.asana-layout body::-webkit-scrollbar-track {
+    border-radius: 10px !important;
+}
+
+.asana-layout body::-webkit-scrollbar-thumb {
+    border-radius: 10px !important;
+}
+  
