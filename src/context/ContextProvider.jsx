@@ -160,6 +160,7 @@ const ContextProvider = (props) => {
   const getPaymentHistory = async (institution, cognitoId) => {
     try {
       const paymentHistory = await API.get('clients', `/getReciept/${institution}/${cognitoId}`)
+      console.log(paymentHistory)
       setPaymentHistory(paymentHistory)
     } catch (error) {
       console.log(error)

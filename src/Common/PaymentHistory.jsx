@@ -7,6 +7,7 @@ import Context from '../context/Context';
 const PaymentHistory = ({ institution }) => {
   const { paymentHistory } = useContext(Context);
   const color = colors[institution];
+  console.log(paymentHistory)
 
   if (!color) {
     return <div>Error: Institution color not found</div>;
@@ -146,7 +147,7 @@ const PaymentHistory = ({ institution }) => {
 
         {payments.length > 0 ? (
           payments.map((payment, index) => (
-            <div key={index} className="border-t border-b md:border-none border-black grid grid-cols-1 md:grid-cols-7 py-6 items-center max600:border max600:border-black max600:mt-[1rem]">
+            <div key={index} className="border-t border-b p-3 md:border-none border-black grid grid-cols-1 md:grid-cols-7 py-6 items-center max600:border max600:border-black max600:mt-[1rem]">
               <div className="col-span-1 flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4">
                 <div className="font-bold md:hidden">Payment ID:</div>
                 <div>{payment.paymentId}</div>

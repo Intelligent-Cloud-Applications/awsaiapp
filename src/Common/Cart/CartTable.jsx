@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useParams } from 'react-router-dom';
@@ -56,7 +55,7 @@ const CartTable = ({ product, removeItem }) => {
           </div>
         </div>
       ) : (
-        <table className="table-fixed w-full max767:w-[95vw] border">
+        <table className="table-fixed w-full max767:w-[95vw] border text-[#555555] ">
           <thead className="h-16" style={{ backgroundColor: color.primary }}>
             <tr>
               <th className="text-white w-1/3 max767:w-1/2" style={{ backgroundColor: color.primary }}>ITEM</th>
@@ -102,10 +101,12 @@ const CartTable = ({ product, removeItem }) => {
                       {currencySymbol}{(amount / 100)}
                     </td>
                     <td className="w-[5%] align-middle">
-                      <FaTrashAlt
+                      <span
                         onClick={() => removeProduct(index, productId)}
-                        className="m-0 h-5 w-5 cursor-pointer"
-                      />
+                        className="m-0 text-[1.7rem] h-8 w-8 cursor-pointer"
+                      >
+                        ×
+                      </span>
                     </td>
                   </tr>
                 );
