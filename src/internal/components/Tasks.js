@@ -10,7 +10,7 @@ const Tasks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('projectId:', projectId);
+    // console.log('projectId:', projectId);
     const getTasks = async () => {
       try {
         setLoading(true);

@@ -41,7 +41,7 @@ function Box({
     } catch (e) {
       console.error(e);
     } finally {
-      console.log('Title clicked');
+      // console.log('Title clicked');
       setLoading(true);
     }
   };

@@ -10,13 +10,14 @@ function Callback() {
   const {loading,setLoading} = useContext(PendingTasksContext);
   useEffect(() => {
     const fetchToken = async () => {
+      // console.log('Fetching token...');
       const queryParams = new URLSearchParams(window.location.search);
       const code = queryParams.get('code');
       // console.log('Code:', code);
       if (code) {
         try {
           setLoading(true);
-          const response = await axios.get(`https://2rlj51hdi1.execute-api.us-east-1.amazonaws.com/dev/callback?code=${code}`);
+          const response = await axios.get(`http://localhost:4000/dev/callback?code=${code}`);
           const accessToken = response.data;
           localStorage.setItem('accessToken', accessToken);
           // console.log('Access token:', accessToken);
