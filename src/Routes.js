@@ -96,8 +96,8 @@ const RoutesContainer = () => {
         <Route path="users" element={<AsanaUsers />} />
         <Route path="pending-tasks" element={<PendingTasks />} />
         <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
-        <Route path="error" element={<UnauthorizedUser />}/>
       </Route>  
+      <Route path="/error" element={<UnauthorizedUser />}/>
       <Route path="/callback" element={<Callback />} />
     </Routes>
   );
