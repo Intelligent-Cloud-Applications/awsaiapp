@@ -83,9 +83,9 @@ const RoutesContainer = () => {
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
       <Route path="/full" element={<Full />} />
       <Route path="/edit" element={<Edit />} />
-      <Route path="/allpayment/:institution/:cognitoId" element={<HomePayment />} />
-      <Route path="/allpayment/:institution" element={<HomePayment/>} />
-
+      <Route path="/allpayment/:institution/:cognitoId/:emailId" element={<HomePayment />} />
+      <Route path="/allpayment/:institution" element={<HomePayment />} />
+      
       {/* This is the routes for asana portal */}
       <Route path="/asana-internal" element={<AsanaLayout />} >
         <Route index element={<AsanaHome />} />

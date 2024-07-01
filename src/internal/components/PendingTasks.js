@@ -146,10 +146,8 @@ const PendingTasks = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    // eslint-disable-next-line
   }, [editTaskId, editedNotes, pendingTasks]);
-
-
-
 
   const adjustTextareaHeight = (e) => {
     const textarea = e.target;

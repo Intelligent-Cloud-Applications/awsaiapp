@@ -117,7 +117,7 @@ const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate
   return (
     <div id="receipt" className="receipt-card relative" style={cardStyle}>
       <h2 className='font-bold text-xl text-center mb-4'>Payment Successful</h2>
-      <div className='font-bold mb-2'>-------------------------------------------------------</div>
+      <div className='font-bold mb-2'>------------------------------------------------</div>
       <div className='text-lg mb-2 flex'>
         <strong className='mr-2 '>Institution:</strong>
         <span>{institution}</span>
@@ -164,7 +164,7 @@ const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate
         <span>{renewalDate}</span>
       </div>
 
-      <div className='font-bold mt-2'>-------------------------------------------------------</div>
+      <div className='font-bold mt-2'>------------------------------------------------</div>
       <button id="nextButton" className='w-full p-2 text-white mt-8' onClick={handleBackClick} style={{ backgroundColor: color.primary }}>
         GO Back
       </button>

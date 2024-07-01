@@ -34,7 +34,12 @@ const Context = createContext({
   subscriptionDetails: {},
   instructorDetails: {},
   fetchProductDetails: () => {},
-  fetchInstructorDetails: () => {},
+  fetchInstructorDetails: () => { },
+  getCartItems: () => { },
+  getPaymentHistory:() => { },
+  removeCartItem: () => { },
+  addCartItem: () => { },
+  paymentHistory: [],
 });
 
 export default Context;
