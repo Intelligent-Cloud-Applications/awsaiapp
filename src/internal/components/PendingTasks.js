@@ -42,7 +42,7 @@ const PendingTasks = () => {
       const tasks = response;
       if (tasks) {
         const pendingTasks = tasks.filter(task => !task.pendingTasks.completed);
-        console.log('Pending tasks:', pendingTasks);
+        // console.log('Pending tasks:', pendingTasks);
         setPendingTasks(pendingTasks);
       } else {
         console.error('No tasks data available to filter');
@@ -58,14 +58,14 @@ const PendingTasks = () => {
   },[fetchPendingTasks])
 
 
-  const editTask = async (taskId, newNotes) => {
+  const editTask = useCallback(async (taskId, newNotes) => {
     try {
       await updateTask(taskId, { notes: newNotes });
       await fetchPendingTasks();
     } catch (error) {
       console.error('Error updating task notes:', error);
     }
-  };
+  }, [fetchPendingTasks]); // Add any other dependencies if needed
 
   const deleteTask = async (taskId) => {
     try {
@@ -82,10 +82,10 @@ const PendingTasks = () => {
   const handleEditClick = (subTask) => {
     setEditTaskId(subTask.gid);
     setEditedNotes(subTask.notes || '');
-    console.log(subTask.notes);
+    // console.log(subTask.notes);
   };
 
-  const handleSaveClick = async (subTask) => {
+  const handleSaveClick = useCallback(async (subTask) => {
     try {
       if (editedNotes === subTask.notes) {
         setEditTaskId(null);
@@ -100,7 +100,7 @@ const PendingTasks = () => {
     } finally {
       setTaskLoading({ ...taskLoading, [`save_${subTask.gid}`]: false });
     }
-  };
+  }, [editedNotes, taskLoading,editTask]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -146,8 +146,9 @@ const PendingTasks = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-    // eslint-disable-next-line
-  }, [editTaskId, editedNotes, pendingTasks]);
+
+  }, [editTaskId, editedNotes, pendingTasks,handleSaveClick]);
+
 
   const adjustTextareaHeight = (e) => {
     const textarea = e.target;

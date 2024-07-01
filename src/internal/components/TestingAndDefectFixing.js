@@ -43,9 +43,9 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     fetchTaskInfo();
   }, [fetchTaskInfo]);
 
-  useEffect(() => {
-    console.log('Selected Task:', selectedTask);
-  }, [selectedTask]);
+  // useEffect(() => {
+  //   console.log('Selected Task:', selectedTask);
+  // }, [selectedTask]);
 
   const handleEditClickComment = (comment) => {
     setEditableCommentId(comment.gid);
@@ -101,7 +101,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     e.preventDefault();
     try {
       const subTaskComments = await getAsanaTaskDetails(subTask.gid);
-      console.log(subTaskComments.data.data.subtasks)
+      // console.log(subTaskComments.data.data.subtasks)
       setSelectedTask({ subTask, comments: subTaskComments.stories.data, subTaskSubTask: subTaskComments.data.data.subtasks });
     } catch (error) {
       console.error('Error fetching subtask comments:', error);
@@ -117,8 +117,8 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
 
   const editTask = async (taskId, updatedFields) => {
     try {
-      const response = await updateTask(taskId, updatedFields);
-      console.log('Updated task notes:', response);
+      await updateTask(taskId, updatedFields);
+      // console.log('Updated task notes:', response);
       await fetchTaskInfo();
     } catch (error) {
       console.error('Error updating task notes:', error);

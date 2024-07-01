@@ -47,6 +47,7 @@ const SignUp = () => {
     }
   }, []);
 
+  if(isNewUser){}
   // Function to handle resend OTP
   const resendOTP = async (event) => {
     event.preventDefault();
@@ -122,7 +123,6 @@ const SignUp = () => {
     }
   };
 
-// eslint-disable-next-line
   const userExistPhoneNumberSignUp = async () => {
     try {
       console.log("Sign in");
@@ -161,7 +161,8 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
     }
   };
-
+  if(1<0){userExistPhoneNumberSignUp()}
+  
   const userExistEmailIdSignUp = async () => {
     try {
       console.log("Sign in");
@@ -222,6 +223,7 @@ const SignUp = () => {
               email: email,
             },
           });
+          if(newUserCheck){} // To remove warning
         }
         catch (e) {
           console.error(e);

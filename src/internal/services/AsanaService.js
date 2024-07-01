@@ -107,7 +107,7 @@ export const deleteAsanaTaskStory = async (storyGid) => {
   try {
     const response = await fetch(`${ASANA_BASE_URL}/stories/${storyGid}`, options);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.error('Error deleting Asana task story:', error);
@@ -162,7 +162,7 @@ export async function updateTask(taskGid, updateData) {
       // Handle HTTP errors
       throw new Error(data.errors ? data.errors[0].message : 'Error updating Asana task');
     }
-    console.log(data); // Log the updated task data
+    // console.log(data);
     return data; // Return the updated task data
   } catch (err) {
     console.error('Error updating Asana task:', err); // Log any errors
@@ -187,7 +187,7 @@ export async function deleteTaskAsana(taskGid) {
       // If the response is not 2xx, it will not have JSON body, but we still want to throw an error
       throw new Error('Error deleting Asana task');
     }
-    console.log(`Task ${taskGid} deleted successfully.`);
+    // console.log(`Task ${taskGid} deleted successfully.`);
     return { success: true }; // Return a success indicator
   } catch (err) {
     console.error('Error deleting Asana task:', err);
@@ -213,7 +213,7 @@ export async function getAllUsersAsana(workspaceGid = "1201921565573954") {
       throw new Error('Error fetching Asana users');
     }
     const data = await response.json(); // Parse the response as JSON
-    console.log(data); // Log the response data
+    // console.log(data); 
     return data; // Return the response data
   } catch (err) {
     console.error('Error fetching Asana users:', err);
@@ -253,7 +253,7 @@ export const fetchUsersWithPendingTasks = async () => {
     }));
 
     // Update UI with usersWithPendingTasks
-    console.log(usersWithPendingTasks);
+    // console.log(usersWithPendingTasks);
     return usersWithPendingTasks;
     // Here you would typically update the state of your component or context to re-render the UI with the fetched data
   } catch (error) {
@@ -274,8 +274,8 @@ export const fetchParticularTask = async (taskId) => {
   };
   try{
     const response = await fetch(`https://app.asana.com/api/1.0/tasks/${taskId}`, options)
-    const data = await response.json();
-    console.log('Task:', data);
+    await response.json();
+    // console.log('Task:', data);
     return response;
   }catch(error){
     console.error('Error fetching task:', error);
@@ -296,7 +296,7 @@ export const createAsanaSubtask = async (parentTaskId="1201921565573954", subtas
   try {
     const response = await fetch(`https://app.asana.com/api/1.0/tasks/${parentTaskId}/subtasks`, options);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Return the created subtask data
   } catch (error) {
     console.error('Error creating Asana subtask:', error);
@@ -354,5 +354,22 @@ export const fetchTasksForProject = async (projectId) => {
     return data.data; // Returns an array of tasks
   } catch (error) {
     console.error('Error fetching tasks for project:', error);
+  }
+};
+
+
+export const checkUserWorkspaceMembership = async (accessToken) => {
+  try {
+    const userResponse = await axios.get('https://app.asana.com/api/1.0/users/me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    const workspaces = userResponse.data.data.workspaces;
+    const isWorkspaceUser = workspaces.some(workspace => workspace.gid === "1201921565573954");
+    return isWorkspaceUser; // Returns true if user is a member of the workspace, false otherwise
+  } catch (error) {
+    console.error('Error checking workspace membership:', error);
+    throw error; // Rethrow the error to handle it in the calling function
   }
 };

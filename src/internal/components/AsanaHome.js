@@ -3,7 +3,8 @@ import "./AsanaHome.css";
 
 function Home() {
   const handleLogin = () => {
-    window.location.href = 'https://2rlj51hdi1.execute-api.us-east-1.amazonaws.com/dev/login'; // Your backend URL for login
+    // console.log('Login with Asana');
+    window.location.href = 'http://localhost:4000/login'; // Your backend URL for login
   };
 
   return (

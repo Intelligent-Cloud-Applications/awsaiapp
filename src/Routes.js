@@ -39,6 +39,7 @@ import TestingAndDefectFixing from "./internal/components/TestingAndDefectFixing
 import Projects from "./internal/components/Projects"
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
+import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 
 
 const RoutesContainer = () => {
@@ -95,6 +96,7 @@ const RoutesContainer = () => {
         <Route path="users" element={<AsanaUsers />} />
         <Route path="pending-tasks" element={<PendingTasks />} />
         <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
+        <Route path="error" element={<UnauthorizedUser />}/>
       </Route>  
       <Route path="/callback" element={<Callback />} />
     </Routes>
