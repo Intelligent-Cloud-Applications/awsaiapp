@@ -40,6 +40,7 @@ import Projects from "./internal/components/Projects"
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
+import ErrorPage from "./pages/Error";
 
 
 const RoutesContainer = () => {
@@ -88,17 +89,19 @@ const RoutesContainer = () => {
       <Route path="/allpayment/:institution" element={<HomePayment />} />
       
       {/* This is the routes for asana portal */}
-      <Route path="/asana-internal" element={<AsanaLayout />} >
+      <Route path="/task" element={<AsanaLayout />} >
         <Route index element={<AsanaHome />} />
-        <Route path="projects" element={<Projects />} />
+        <Route path="task/projects" element={<Projects />} />
         <Route path="tasks/:projectId" element={<Tasks />} /> 
         <Route path="task/:taskId" element={<TaskDetails />} /> 
-        <Route path="users" element={<AsanaUsers />} />
-        <Route path="pending-tasks" element={<PendingTasks />} />
-        <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
-        <Route path="error" element={<UnauthorizedUser />}/>
+        <Route path="task/users" element={<AsanaUsers />} />
+        <Route path="task/pending-tasks" element={<PendingTasks />} />
+        <Route path="task/defect-fixing" element={<TestingAndDefectFixing />} />
+        <Route path="task/error" element={<UnauthorizedUser />}/>
       </Route>  
       <Route path="/callback" element={<Callback />} />
+
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 };
