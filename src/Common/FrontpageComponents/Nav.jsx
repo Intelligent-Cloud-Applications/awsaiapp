@@ -51,7 +51,7 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
             onClick={
               handleContactClick
             }
-            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[8rem]`}
+            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[8rem]`}
             style={activeComponent === 'contact' ? { backgroundColor: color.primary, hover: color.primary } : {}}
           >
             CONTACT US
