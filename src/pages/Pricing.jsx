@@ -6,9 +6,10 @@ import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import Context from "../context/Context";
 import { API } from "aws-amplify";
+// import { toast, ToastContainer } from 'react-toastify';
 const Pricing = () => {
   const Navigate = useNavigate();
-  const UserCtx = useContext(Context);
+  const UserCtx = useContext(Context).userData
   const Ctx = useContext(Context);
   const UtilCtx = useContext(Context).util;
 
@@ -29,15 +30,17 @@ const Pricing = () => {
           return;
         }
       }
+      UtilCtx.setLoader(false);
       console.log(response);
     } catch (e) {
       UtilCtx.setLoader(false);
     }
     // console.log(response.paymentId);
-    console.log("started");
+
     try {
       const options = {
         key: "rzp_live_KBQhEinczOWwzs",
+        // amount: response.amount,
         subscription_id: response.paymentId,
         name: "AWSAIAPP",
         description: response.subscriptionType,
@@ -83,11 +86,33 @@ const Pricing = () => {
           name: UserCtx.userName,
           email: UserCtx.emailId,
           contact: UserCtx.phoneNumber,
+          // contact:"9999999999"
         },
         theme: {
           color: "#00b4bb",
-        },
+        },modal: {
+          ondismiss: async function () {
+            try {
+              // const subscriptionIds = response.map(subscription => subscription.paymentId);
+              console.log(UserCtx.cognitoId)
+              await API.del('clients', `/cancel/payment`, {
+                body: {
+                  cognitoId:UserCtx.cognitoId,
+                  
+                  subscriptionIds:[response.paymentId]
+                },
+              })  
+              alert('Payment process was cancelled.');
+            } catch (error) {
+              console.error('Error during payment cancellation:', error);
+           alert('Failed to cancel payment process.');
+            }
+            // setIsLoading(false);
+            // setIsLoading1(false);
+          }
+        }
       };
+
       console.log("started 2");
       const rzp1 = new window.Razorpay(options);
       console.log("started 3");

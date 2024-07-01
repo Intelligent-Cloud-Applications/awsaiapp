@@ -4,18 +4,19 @@ import { useNavigate } from "react-router-dom";
 import Context from "../context/Context";
 import PayItem from "../components/Pay/PayItem";
 import { API } from "aws-amplify";
+// import { toast, ToastContainer } from 'react-toastify';
 const Pay = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const Ctx = useContext(Context);
 
   const UtilCtx = useContext(Context).util;
-  const UserCtx = useContext(Context).user;
+  const UserCtx = useContext(Context).userData
   const Navigate = useNavigate();
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);
+    Navigate("/Pricing");
   };
  
-
   const handleSubscribe = async (productId) => {
     UtilCtx.setLoader(true);
     let response;
@@ -33,16 +34,17 @@ const Pay = () => {
           return;
         }
       }
+      UtilCtx.setLoader(false);
       console.log(response);
     } catch (e) {
-      console.log(e);
       UtilCtx.setLoader(false);
     }
-    console.log(response.paymentId);
-    console.log("started");
+    // console.log(response.paymentId);
+
     try {
       const options = {
         key: "rzp_live_KBQhEinczOWwzs",
+        // amount: response.amount,
         subscription_id: response.paymentId,
         name: "AWSAIAPP",
         description: response.subscriptionType,
@@ -88,11 +90,33 @@ const Pay = () => {
           name: UserCtx.userName,
           email: UserCtx.emailId,
           contact: UserCtx.phoneNumber,
+          // contact:"9999999999"
         },
         theme: {
           color: "#00b4bb",
-        },
+        },modal: {
+          ondismiss: async function () {
+            try {
+              // const subscriptionIds = response.map(subscription => subscription.paymentId);
+              console.log(UserCtx.cognitoId)
+              await API.del('clients', `/cancel/payment`, {
+                body: {
+                  cognitoId:UserCtx.cognitoId,
+                  
+                  subscriptionIds:[response.paymentId]
+                },
+              })  
+              alert('Payment process was cancelled.');
+            } catch (error) {
+              console.error('Error during payment cancellation:', error);
+           alert('Failed to cancel payment process.');
+            }
+            // setIsLoading(false);
+            // setIsLoading1(false);
+          }
+        }
       };
+
       console.log("started 2");
       const rzp1 = new window.Razorpay(options);
       console.log("started 3");
@@ -116,6 +140,7 @@ const Pay = () => {
       UtilCtx.setLoader(false);
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full">
