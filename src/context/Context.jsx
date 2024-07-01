@@ -36,6 +36,7 @@ const Context = createContext({
   fetchProductDetails: () => { },
   fetchInstructorDetails: () => { },
   getCartItems: () => { },
+  getPaymentHistory:() => { },
   removeCartItem: () => { },
   addCartItem: () => { },
   paymentHistory: [],

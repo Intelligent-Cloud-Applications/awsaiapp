@@ -12,7 +12,7 @@ import { BarLoader } from 'react-spinners';
 
 const Cart = ({ institution }) => {
   const { cognitoId } = useParams();
-  const { getCartItems, cartState, setCartState } = useContext(Context);
+  const { getCartItems, cartState, setCartState, getPaymentHistory } = useContext(Context);
   const [isInitialFetch, setIsInitialFetch] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading1, setIsLoading1] = useState(false);
@@ -175,6 +175,8 @@ const Cart = ({ institution }) => {
               setTimeout(() => {
                 setIsModalOpen(true);
                 setIsLoading(false);
+                getPaymentHistory(institutionId, cognitoId);
+                getCartItems(institutionId, cognitoId);
               }, 1500);
             } else {
               throw new Error(verifyResponse.failureReason || 'Payment verification failed!');
