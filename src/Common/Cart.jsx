@@ -12,7 +12,7 @@ import { BarLoader } from 'react-spinners';
 
 const Cart = ({ institution }) => {
   const { cognitoId } = useParams();
-  const { getCartItems, cartState, setCartState } = useContext(Context);
+  const { getCartItems, cartState, setCartState, getPaymentHistory} = useContext(Context);
   const [isInitialFetch, setIsInitialFetch] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading1, setIsLoading1] = useState(false);
@@ -115,9 +115,11 @@ const Cart = ({ institution }) => {
 
       const totalAmount = response.reduce((acc, current) => acc + current.amount, 0);
       const subscriptionIds = response.map(subscription => subscription.paymentId);
+      const discountedAmount = response.reduce((acc, current) => acc + current.discountedAmount, 0); // Assuming response contains discountedAmount for each item
+      console.log(totalAmount, discountedAmount)
 
       const options = {
-        key: "rzp_live_KBQhEinczOWwzs",
+        key: "rzp_test_blkHaVbIxIwCZK",
         amount: totalAmount,
         currency: response[0].currency,
         name: institution.toUpperCase(),
@@ -173,6 +175,8 @@ const Cart = ({ institution }) => {
               setTimeout(() => {
                 setIsModalOpen(true);
                 setIsLoading(false);
+                getPaymentHistory(institutionId, cognitoId);
+                getCartItems(institutionId, cognitoId);
               }, 1500);
             } else {
               throw new Error(verifyResponse.failureReason || 'Payment verification failed!');
@@ -280,7 +284,7 @@ const Cart = ({ institution }) => {
   const { productItems, subtotal, currencySymbol } = cartState;
 
   return (
-    <div className="mx-auto h-screen w-screen flex flex-col justify-around items-center border-b py-5 inter max767:h-full max767:flex-col max767:justify-center">
+    <div className="Poppins mx-auto h-screen w-screen flex flex-col justify-around items-center border-b py-5 inter max767:h-full max767:flex-col max767:justify-center">
       <ToastContainer />
       <div className={`w-full max767:mt-[3rem] flex justify-center ${isModalOpen ? "hidden" : ""}`}>
         <CartTable
@@ -291,11 +295,11 @@ const Cart = ({ institution }) => {
         />
       </div>
 
-      <div className={`max767:w-[98vw] ${isModalOpen ? "hidden" : ""}`}>
+      <div className={`w-full Poppins max767:w-[98vw] ${isModalOpen ? "hidden" : ""}`}>
         <section className="mx-auto px-4 min-w-[35vw]">
-          <div className="w-full flex justify-center">
-            <div className="w-full border py-5 px-4 shadow-md">
-              <p className="font-bold">ORDER SUMMARY</p>
+          <div className="w-full flex justify-evenly max767:flex-col-reverse">
+            <div className="w-[36vw] py-5 px-4 max767:w-full">
+              <p className="font-bold text-xl mb-5">Cart Total</p>
               <div className="flex justify-between border-b py-5">
                 <p>Subtotal</p>
                 <p>{currencySymbol}{subtotal.toFixed(2)}</p>
@@ -304,24 +308,37 @@ const Cart = ({ institution }) => {
                 <p>Discount</p>
                 <p>0%</p>
               </div>
-              <div className="flex justify-between py-5">
+              <div className="flex justify-between py-5 font-bold text-lg">
                 <p>Total</p>
                 <p>{currencySymbol}{subtotal.toFixed(2)}</p>
               </div>
-              <input
-                type="text"
-                placeholder="Enter referral code"
-                value={referralCode}
-                onChange={(e) => setReferralCode(e.target.value)}
-                className="w-full px-2 py-1 border mb-4"
-              />
-              <button className="w-full px-5 py-2 text-white" onClick={handleCheckout} style={{ backgroundColor: color.primary }}>
+              <button
+                className="w-full px-5 py-2 text-white font-bold bg-red-500 hover:bg-red-600"
+                onClick={handleCheckout}
+                style={{ backgroundColor: color.primary }}
+              >
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>
+            </div>
+            <div className="flex flex-col justify-center items-center py-5 px-4 ">
+              <p className="mb-2 w-full text-left text-[gray] text-[0.76rem]">If you have a Referral code, enter it here</p>
+              <div className='flex justify-center items-center'>
+                <input
+                  type="text"
+                  placeholder="Referral code"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value)}
+                  className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                />
+                <button className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto">
+                  Submit
+                </button>
+              </div>
             </div>
           </div>
         </section>
       </div>
+
       {isLoading && !isModalOpen && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white">
           <div className="text-center">
