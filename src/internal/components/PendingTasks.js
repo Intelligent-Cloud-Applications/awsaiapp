@@ -146,9 +146,8 @@ const PendingTasks = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+
   }, [editTaskId, editedNotes, pendingTasks,handleSaveClick]);
-
-
 
 
   const adjustTextareaHeight = (e) => {

@@ -24,6 +24,7 @@ const SignUp = () => {
   const [confirmationCode, setConfirmationCode] = useState(0);
   const [err, setErr] = useState("");
   // const [passwordVisible, setPasswordVisible] = useState(false);
+  // eslint-disable-next-line
   const [isNewUser, setIsNewUser] = useState(true);
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
@@ -121,6 +122,7 @@ const SignUp = () => {
       return true;
     }
   };
+
   const userExistPhoneNumberSignUp = async () => {
     try {
       console.log("Sign in");
@@ -210,6 +212,7 @@ const SignUp = () => {
 //        }
         console.log(phoneNumber);
         try {
+          // eslint-disable-next-line
           const newUserCheck = await Auth.signUp({
             username: `+${countryCode}${phoneNumber}`,
             password: "Avishek@123",

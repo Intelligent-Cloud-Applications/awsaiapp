@@ -218,6 +218,7 @@ const ContextProvider = (props) => {
     fetchProductDetails: fetchProductDetails,
     fetchInstructorDetails: fetchInstructorDetails,
     getCartItems: getCartItems,
+    getPaymentHistory:getPaymentHistory,
     cartState: cartState,
     setCartState: setCartState,
     removeCartItem: removeCartItem,
