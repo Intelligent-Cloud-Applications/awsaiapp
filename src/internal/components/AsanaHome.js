@@ -4,7 +4,7 @@ import "./AsanaHome.css";
 function Home() {
   const handleLogin = () => {
     // console.log('Login with Asana');
-    window.location.href = 'http://localhost:4000/dev/login'; // Your backend URL for login
+    window.location.href = 'http://localhost:4000/login'; // Your backend URL for login
   };
 
   return (

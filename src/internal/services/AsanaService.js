@@ -356,3 +356,20 @@ export const fetchTasksForProject = async (projectId) => {
     console.error('Error fetching tasks for project:', error);
   }
 };
+
+
+export const checkUserWorkspaceMembership = async (accessToken) => {
+  try {
+    const userResponse = await axios.get('https://app.asana.com/api/1.0/users/me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    const workspaces = userResponse.data.data.workspaces;
+    const isWorkspaceUser = workspaces.some(workspace => workspace.gid === "1201921565573954");
+    return isWorkspaceUser; // Returns true if user is a member of the workspace, false otherwise
+  } catch (error) {
+    console.error('Error checking workspace membership:', error);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
+};

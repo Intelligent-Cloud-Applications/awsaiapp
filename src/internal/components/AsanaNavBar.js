@@ -16,6 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { Link } from 'react-router-dom';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import Snackbar from '@mui/material/Snackbar'; // Import Snackbar
 import "./AsanaNavBar.css";
 
 const NavBar = () => {
@@ -25,6 +26,7 @@ const NavBar = () => {
     bottom: false,
     right: false,
   });
+  const [openSnackbar, setOpenSnackbar] = React.useState(false); // State for Snackbar visibility
   const navigate = useNavigate();
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -36,9 +38,19 @@ const NavBar = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('projectsCache');
-    
-    navigate('/asana-internal'); // Optionally, navigate the user to the login page or home page
+
+    navigate('/asana-internal'); // Navigate the user to the login page or home page
+    setOpenSnackbar(true); // Open the Snackbar on logout
   };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false); // Close the Snackbar
+  };
+
+
   const accessToken = localStorage.getItem('accessToken'); // Check for accessToken in localStorage
   const list = (anchor) => (
     <Box
@@ -112,17 +124,26 @@ const NavBar = () => {
   );
 
   return (
-    <div className='NavBar'>
-      <WidgetsIcon onClick={toggleDrawer('left', true)} style={{ color: "white", height: 30, width: 30, cursor: "pointer" }} />
-      <Drawer
-        anchor={'left'}
-        open={state['left']}
-        onClose={toggleDrawer('left', false)}
-      >
-        {list('left')}
-      </Drawer>
-      <Link to={`https://awsaiapp.com/`}><img className='complogo' src={"/complogo.png"} alt='company logo' /></Link>
-    </div>
+    <>
+      <div className='NavBar'>
+        <WidgetsIcon onClick={toggleDrawer('left', true)} style={{ color: "white", height: 30, width: 30, cursor: "pointer" }} />
+        <Drawer
+          anchor={'left'}
+          open={state['left']}
+          onClose={toggleDrawer('left', false)}
+        >
+          {list('left')}
+        </Drawer>
+        <Link to={`https://awsaiapp.com/`}><img className='complogo' src={"/complogo.png"} alt='company logo' /></Link>
+      </div>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="Thank you for visiting! We hope to see you again soon."
+      />
+    </>
   );
 }
 
