@@ -19,7 +19,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import Snackbar from '@mui/material/Snackbar'; // Import Snackbar
 import "./AsanaNavBar.css";
 
-const NavBar = () => {
+const AsanaNavBar = () => {
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -147,4 +147,4 @@ const NavBar = () => {
   );
 }
 
-export default NavBar
+export default AsanaNavBar;

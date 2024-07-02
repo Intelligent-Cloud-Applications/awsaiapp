@@ -180,10 +180,19 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
   };
 
   const handleNotesBlur = async () => {
-    if (isEditingNotes && taskDetails) {
-      await editTask(taskDetails.gid, editedNotes);
+    try{
+      if (isEditingNotes && taskDetails) {
+        setLoading(true);
+        await editTask(taskDetails.gid, editedNotes);
+      }
+
+    }catch(error){
+      console.error('Error updating task notes:', error);
+    }finally{
+      setLoading(false);
       setIsEditingNotes(false);
     }
+
   };
 
   // Filter subtasks based on assignee name or show all if no filter is applied

@@ -19,8 +19,8 @@ function Callback() {
       if (code) {
         try {
           setLoading(true);
-          const response = await axios.get(`http://localhost:4000/callback?code=${code}`);
-          const accessToken = response.data;
+          const response = await axios.get(`http://localhost:4000/dev/callback?code=${code}`);
+          const accessToken = response.data.accessToken;
           localStorage.setItem('accessToken', accessToken);
 
           const isWorkspaceUser = await checkUserWorkspaceMembership(accessToken);
