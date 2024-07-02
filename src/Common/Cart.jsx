@@ -9,6 +9,7 @@ import colors from '../color.json';
 import ReceiptCard from './FrontpageComponents/ReceiptCard';
 import { useSpring, animated } from '@react-spring/web';
 import { BarLoader } from 'react-spinners';
+import  displayError  from './Errors';
 
 const Cart = ({ institution }) => {
   const { cognitoId } = useParams();
@@ -85,19 +86,7 @@ const Cart = ({ institution }) => {
   
     const uniqueProductIds = new Set(productId);
     if (uniqueProductIds.size !== productId.length) {
-      toast.error('You cannot buy the same item more than once.', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        style: {
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-        },
-      });
+      displayError('Subscription already active for productId');
       setIsLoading(false);
       setIsLoading1(false);
       return;
@@ -119,7 +108,6 @@ const Cart = ({ institution }) => {
   
       const options = {
         key: "rzp_test_blkHaVbIxIwCZK",
-        subscription_id: response[0].subscriptionResult.paymentId,
         amount: totalAmount,
         currency: response[0].subscriptionResult.currency,
         name: institution.toUpperCase(),
@@ -186,23 +174,11 @@ const Cart = ({ institution }) => {
                     getCartItems(institutionId, cognitoId);
                   }, 1500);
                 } else {
-                  throw new Error(verifyResponse.failureReason || 'Payment verification failed!');
+                  throw new Error('Payment verification failed!');
                 }
               } catch (error) {
                 console.error('Payment verification error:', error);
-                toast.error('Payment verification failed!', {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  style: {
-                    backgroundColor: '#f8d7da',
-                    color: '#721c24',
-                  },
-                });
+                displayError(error.message);
                 setIsLoading(false);
                 setIsLoading1(false);
               }
@@ -210,6 +186,7 @@ const Cart = ({ institution }) => {
             verify();
           } catch (error) {
             console.error('Error during payment handler:', error);
+            displayError('Error during payment handler');
             setIsLoading(false);
             setIsLoading1(false);
           }
@@ -234,7 +211,7 @@ const Cart = ({ institution }) => {
                   subscriptionIds
                 },
               });
-              toast.info('Payment process was cancelled.', {
+              toast.info("Your payment has been cancelled successfully.", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -250,46 +227,24 @@ const Cart = ({ institution }) => {
               setIsLoading(false);
               setIsLoading1(false);
             } catch (error) {
-              toast.error('Error occurred while cancelling payment process.', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                style: {
-                  backgroundColor: '#f8d7da',
-                  color: '#721c24',
-                },
-              });
+              displayError(error.response.data.error);
             }
           }
         }
       };
-  
+      if (subscriptionIds.length === 1) {
+        options.subscription_id = response[0].subscriptionResult.paymentId
+      }
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
     } catch (error) {
       console.error('Error in checkout:', error);
-      toast.error('An error occurred while processing your request.', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        style: {
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-        },
-      });
+      displayError(error.response.data.error);
       setIsLoading(false);
       setIsLoading1(false);
     }
-  };  
-
+  };
+  
   if (!cartState) {
     return <div>Loading...</div>;
   }
