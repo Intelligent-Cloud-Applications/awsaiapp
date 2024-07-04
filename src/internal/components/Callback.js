@@ -23,8 +23,8 @@ function Callback() {
           const accessToken = response.data.accessToken;
           localStorage.setItem('accessToken', accessToken);
 
-          const isWorkspaceUser = await checkUserWorkspaceMembership(accessToken);
-
+          const {isWorkspaceUser,userGid} = await checkUserWorkspaceMembership(accessToken);
+          localStorage.setItem('userGid', userGid);
           if (isWorkspaceUser) {
             navigate('/asana-internal/defect-fixing'); // Navigate to the defec-fixing page if user is a workspace member
           } else {

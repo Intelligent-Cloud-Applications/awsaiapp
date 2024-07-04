@@ -123,7 +123,7 @@ function Box({
             ) : (
               <div>
                 <div className="mimic-pre" onClick={() => handleEditClickWrapper(subTask)}>
-                  {subTask.notes ? (
+                  {subTask.notes.trim() ? (
                     expandedSubTasks[subTask.gid]
                       ? subTask.notes
                       : `${subTask.notes.substring(0, 100)}${subTask.notes.length > 100 ? '...' : ''}`

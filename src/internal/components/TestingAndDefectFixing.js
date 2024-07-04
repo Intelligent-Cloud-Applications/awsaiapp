@@ -100,6 +100,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     try {
       const subTaskComments = await getAsanaTaskDetails(subTask.gid);
       setSelectedTask({ subTask, comments: subTaskComments.stories.data, subTaskSubTask: subTaskComments.data.data.subtasks });
+      
     } catch (error) {
       console.error('Error fetching subtask comments:', error);
     } finally {
@@ -339,7 +340,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
               onChange={(e) => setNewCommentText(e.target.value)}
             ></textarea>
             <button className="btn-add-comment" onClick={handleCreateComment}>
-              Add Comment
+              Comment
             </button>
           </div>
         </>

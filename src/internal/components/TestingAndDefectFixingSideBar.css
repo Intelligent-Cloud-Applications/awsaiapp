@@ -107,8 +107,8 @@
 }
 
 .create-comment-asana{
-  position: relative; /* Changed from relative to fixed */
-  bottom: 0; /* Adjust as needed */
+  position: unset;
+  bottom: 0;
   width: 95%;
 }
 .create-comment-asana textarea{

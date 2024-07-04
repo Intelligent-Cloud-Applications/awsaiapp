@@ -158,6 +158,11 @@ a:hover {
     box-sizing: border-box
 }
 
+.full-width-textarea:focus {
+    box-shadow: 0 0 0 2px #2a9d8f;
+    outline: rgb(56, 150, 179) auto 5px;
+}
+
 .btn-add-comment {
     background-color: #111827;
     border: 1px solid transparent;
@@ -230,12 +235,13 @@ a:hover {
     padding: 20px;
     border-radius: 12px;
     min-height: 200px;
+    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px;
 }
 
 .italic-placeholder:focus{
     font-style: normal;
     color: #000;
-    outline: orange auto 5px;
+    outline: rgb(153, 185, 243) auto 5px;
 }
 .italic-placeholder::placeholder {
     font-style: italic;

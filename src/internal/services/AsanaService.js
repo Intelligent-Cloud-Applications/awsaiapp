@@ -348,9 +348,10 @@ export const checkUserWorkspaceMembership = async (accessToken) => {
       }
     });
     const workspaces = userResponse.data.data.workspaces;
-    console.log(userResponse.data.data.gid)
+    // console.log(userResponse.data.data.gid)
+    const userGid = userResponse.data.data.gid;
     const isWorkspaceUser = workspaces.some(workspace => workspace.gid === "1201921565573954");
-    return isWorkspaceUser; // Returns true if user is a member of the workspace, false otherwise
+    return {isWorkspaceUser,userGid}; // Returns true if user is a member of the workspace, false otherwise
   } catch (error) {
     console.error('Error checking workspace membership:', error);
     throw error; // Rethrow the error to handle it in the calling function

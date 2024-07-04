@@ -17,7 +17,7 @@ function TestingAndDefectFixingSideBar({
   const [comments, setComments] = useState([]);
   const [editableCommentId, setEditableCommentId] = useState(null);
   const [editedText, setEditedText] = useState("");
-  const { dateAndTimeConverter, linkify,setSelectedTask } = useContext(PendingTasksContext)
+  const { dateAndTimeConverter, linkify, setSelectedTask } = useContext(PendingTasksContext)
 
   useEffect(() => {
     const fetchSubtaskComments = async () => {
@@ -99,7 +99,14 @@ function TestingAndDefectFixingSideBar({
               {selectedTask.subTask && selectedTask.subTask.name ? selectedTask.subTask.name.toUpperCase() : 'N/A'}
             </h2>
             <div className='user-details'>
-              <p><strong>Name:</strong> {selectedTask.subTask?.assignee?.name ?? "N/A"}</p>
+              <div className='flex items-center justify-between'>
+                <p><strong>Name:</strong> {selectedTask.subTask?.assignee?.name ?? "N/A"}</p>
+                {
+                  selectedTask?.subTask?.assignee?.photo?.image_27x27 &&
+                  <img src={selectedTask?.subTask?.assignee?.photo?.image_27x27} alt='pic' />
+                }
+
+              </div>
               {selectedTask?.subTask?.assignee?.email && selectedTask.subTask.assignee.name !== selectedTask.subTask.assignee.email && (
                 <p><strong>Email:</strong> {selectedTask.subTask?.assignee?.email}</p>
               )}
@@ -121,7 +128,7 @@ function TestingAndDefectFixingSideBar({
                 <p style={{ fontWeight: 700 }}>SubTasks:</p>
                 {selectedTask.subTaskSubTask.map((each) =>
                   <div key={each.gid} style={{ padding: "3px" }}>
-                    <Link onClick={()=>setSelectedTask(null)} to={`/asana-internal/task/${each.gid}`} className={each.completed ? 'completedClassName' : 'notCompletedClassName'} style={{ padding: "5px", borderRadius: "10px", display: "block" }}>{each.name}</Link>
+                    <Link onClick={() => setSelectedTask(null)} to={`/asana-internal/task/${each.gid}`} className={each.completed ? 'completedClassName' : 'notCompletedClassName'} style={{ padding: "5px", borderRadius: "10px", display: "block" }}>{each.name}</Link>
                   </div>)}
               </div>
             }

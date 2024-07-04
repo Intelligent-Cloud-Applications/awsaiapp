@@ -38,7 +38,8 @@ const AsanaNavBar = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('projectsCache');
-
+    localStorage.removeItem('userGid');
+    
     navigate('/asana-internal'); // Navigate the user to the login page or home page
     setOpenSnackbar(true); // Open the Snackbar on logout
   };

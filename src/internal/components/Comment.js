@@ -1,9 +1,8 @@
-import React,{useContext,useMemo} from 'react';
+import React, { useContext, useMemo } from 'react';
 import { PendingTasksContext } from '../context/PendingTasksProvider';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Save from '@mui/icons-material/Save';
-
 
 const Comment = ({
   comment,
@@ -16,7 +15,8 @@ const Comment = ({
 }) => {
   const { linkify, dateAndTimeConverter } = useContext(PendingTasksContext);
 
-  const processedText = useMemo(() => linkify(comment.text), [comment.text,linkify]);
+  const processedText = useMemo(() => linkify(comment.text), [comment.text, linkify]);
+  const user = localStorage.getItem('userGid')
 
   return (
     <div className="comment">
@@ -36,14 +36,17 @@ const Comment = ({
           <p dangerouslySetInnerHTML={{ __html: processedText }}></p>
         </div>
       )}
-      <div className="comment-actions">
-        {editableCommentId === comment.gid ? (
-          <Save style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)}>Save</Save>
-        ) : (
-          <EditNoteIcon style={{ cursor: "pointer" }} onClick={() => handleEditClickComment(comment)}>Edit</EditNoteIcon>
-        )}
-        <DeleteIcon style={{ cursor: "pointer" }} onClick={() => handleDeleteComment(comment.gid)}>Delete</DeleteIcon>
-      </div>
+      {comment.created_by.gid === user &&
+        <div className="comment-actions">
+          {editableCommentId === comment.gid ? (
+            <Save style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)}>Save</Save>
+          ) : (
+            <EditNoteIcon style={{ cursor: "pointer" }} onClick={() => handleEditClickComment(comment)}>Edit</EditNoteIcon>
+          )}
+          <DeleteIcon style={{ cursor: "pointer" }} onClick={() => handleDeleteComment(comment.gid)}>Delete</DeleteIcon>
+        </div>
+
+      }
     </div>
   );
 };
