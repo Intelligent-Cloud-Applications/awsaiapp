@@ -227,9 +227,20 @@ a:hover {
 }
 .description{
     background-color: #fff;
-    padding: 10px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 12px;
     min-height: 200px;
+}
+
+.italic-placeholder:focus{
+    font-style: normal;
+    color: #000;
+    outline: orange auto 5px;
+}
+.italic-placeholder::placeholder {
+    font-style: italic;
+    color: #a1a1a1;
+    font-size: 14px
 }
 
 @media (min-width:768px) {

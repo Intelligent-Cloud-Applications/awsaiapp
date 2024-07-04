@@ -19,6 +19,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
   const { dateAndTimeConverter, loading, setLoading, selectedTask, setSelectedTask } = useContext(PendingTasksContext);
   const [editTaskId, setEditTaskId] = useState(null);
   const [editedNotes, setEditedNotes] = useState({});
+  const [editedNotesTextArea, setEditedNotesTextArea] = useState("");
   const [taskLoading, setTaskLoading] = useState({});
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const textareaRef = useRef(null);
@@ -32,6 +33,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
       setTaskInfo(taskData.data);
       setTaskDetails(taskDetails.data.data);
       setComments(taskDetails.stories.data);
+      setEditedNotesTextArea(taskDetails.data.data.notes || ""); // Initialize textarea state
     } catch (error) {
       console.error('Error fetching task info or subtasks:', error);
     } finally {
@@ -42,10 +44,6 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
   useEffect(() => {
     fetchTaskInfo();
   }, [fetchTaskInfo]);
-
-  // useEffect(() => {
-  //   console.log('Selected Task:', selectedTask);
-  // }, [selectedTask]);
 
   const handleEditClickComment = (comment) => {
     setEditableCommentId(comment.gid);
@@ -101,7 +99,6 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     e.preventDefault();
     try {
       const subTaskComments = await getAsanaTaskDetails(subTask.gid);
-      // console.log(subTaskComments.data.data.subtasks)
       setSelectedTask({ subTask, comments: subTaskComments.stories.data, subTaskSubTask: subTaskComments.data.data.subtasks });
     } catch (error) {
       console.error('Error fetching subtask comments:', error);
@@ -118,7 +115,6 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
   const editTask = async (taskId, updatedFields) => {
     try {
       await updateTask(taskId, updatedFields);
-      // console.log('Updated task notes:', response);
       await fetchTaskInfo();
     } catch (error) {
       console.error('Error updating task notes:', error);
@@ -157,10 +153,6 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     }
   };
 
-  const debouncedAdjustTextareaHeight = (e) => {
-    // Your debounced logic to adjust textarea height
-  };
-
   const adjustTextareaHeight = (e) => {
     const textarea = e.target;
     textarea.style.height = 'auto';
@@ -175,27 +167,28 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     setFilterInput(e.target.value);
   };
 
-  const handleNotesChange = (e) => {
-    setEditedNotes({ ...editedNotes, notes: e.target.value });
+  const handleNotesChange = (event) => {
+    setEditedNotesTextArea(event.target.value);
   };
 
   const handleNotesBlur = async () => {
-    try{
-      if (isEditingNotes && taskDetails) {
+    try {
+      if (isEditingNotes && taskDetails && editedNotesTextArea.trim() !== taskDetails.notes.trim()) {
         setLoading(true);
-        await editTask(taskDetails.gid, editedNotes);
+        await editTask(taskDetails.gid, { notes: editedNotesTextArea });
+        setTaskDetails((prevTaskDetails) => ({
+          ...prevTaskDetails,
+          notes: editedNotesTextArea,
+        }));
       }
-
-    }catch(error){
+    } catch (error) {
       console.error('Error updating task notes:', error);
-    }finally{
+    } finally {
       setLoading(false);
       setIsEditingNotes(false);
     }
-
   };
 
-  // Filter subtasks based on assignee name or show all if no filter is applied
   const filteredSubtasks = taskDetails
     ? taskDetails.subtasks.filter(
       (subTask) =>
@@ -215,33 +208,56 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
               {taskInfo.memberships?.[0]?.project?.name} ({taskInfo.memberships?.[0]?.section?.name})
             </h1>
           }
-          <h2>{taskInfo.name}</h2>
-          <p>
-            <strong>Assignee: </strong>
-            {taskInfo.assignee?.name}
-          </p>
-          <p>
-            <strong>Created at:</strong> {taskInfo.created_at && dateAndTimeConverter(taskInfo.created_at)}
-          </p>
-          <p>
-            <strong>Due on:</strong> {taskInfo.due_on}
-          </p>
-          <p>
-            <strong>Followers:</strong> {taskInfo.followers?.map((follower) => follower.name).join(', ')}
-          </p>
-          <p>
-            <strong>Asana page link:</strong>{' '}
-            {taskInfo.permalink_url && (
-              <a style={{ color: 'blue', textDecoration: 'underline' }} href={taskInfo.permalink_url}>
-                link
-              </a>
-            )}
-          </p>
-          <p>
-            <strong>Workspace:</strong> {taskInfo.workspace?.name}
-          </p>
+          {
+            taskInfo?.name &&
+            <h2>{taskInfo.name}</h2>
+          }
+          {
+            taskInfo?.assignee?.name &&
+            <p>
+              <strong>Assignee: </strong>
+              {taskInfo.assignee?.name}
+            </p>
+
+          }
+          {
+            taskInfo?.created_at &&
+            <p>
+              <strong>Created at:</strong> {taskInfo.created_at && dateAndTimeConverter(taskInfo.created_at)}
+            </p>
+          }
+          {
+            taskInfo?.due_on &&
+            <p>
+              <strong>Due on:</strong> {taskInfo.due_on}
+            </p>
+          }
+          {
+            taskInfo?.followers &&
+            <p>
+              <strong>Followers:</strong> {taskInfo.followers?.map((follower) => follower.name).join(', ')}
+            </p>
+          }
+          {
+            taskInfo?.permalink_url &&
+            <p>
+              <strong>Asana page link:</strong>{' '}
+              {taskInfo.permalink_url && (
+                <a style={{ color: 'blue', textDecoration: 'underline' }} href={taskInfo.permalink_url}>
+                  link
+                </a>
+              )}
+            </p>
+          }
+          {
+            taskInfo?.workspace?.name &&
+            <p>
+              <strong>Workspace:</strong> {taskInfo.workspace?.name}
+            </p>
+          }
         </div>
       )}
+
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
           <MoonLoader color="#ffffff" size={75} />
@@ -262,21 +278,20 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
               </div>
             </div>
           </section>
-          {taskDetails?.notes &&
-            <section className='description'>
-              <div className='w-full'>
-                <h2 style={{fontWeight:600,textDecoration:"underline"}}>Description</h2>
-                <textarea
-                  value={editedNotes.notes || taskDetails.notes}
-                  onChange={handleNotesChange}
-                  onBlur={handleNotesBlur}
-                  onFocus={() => setIsEditingNotes(true)}
-                  className='w-full p-4 border border-black'
-                  style={{height:"200px", backgroundColor:"#E1E1E1", borderRadius:"20px"}}
-                />
-              </div>
-            </section>
-          }
+          <section className='description'>
+            <div className='w-full'>
+              <h2 style={{ fontWeight: 600, textDecoration: "underline" }}>Description</h2>
+              <textarea
+                placeholder="What is the Task about?"
+                value={editedNotesTextArea}
+                onChange={handleNotesChange}
+                onBlur={handleNotesBlur}
+                onFocus={() => setIsEditingNotes(true)}
+                className='w-full p-4 border border-black italic-placeholder'
+                style={{ height: "200px", backgroundColor: "#E1E1E1", borderRadius: "20px" }}
+              />
+            </div>
+          </section>
           {
             filteredSubtasks.length > 0 &&
             <div className="task-details">
@@ -296,12 +311,10 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
                   handleSaveClick={handleSaveClick}
                   deleteTask={deleteTask}
                   setEditedNotes={setEditedNotes}
-                  debouncedAdjustTextareaHeight={debouncedAdjustTextareaHeight}
                   adjustTextareaHeight={adjustTextareaHeight}
                 />
               ))}
             </div>
-
           }
           <div className="comments-section">
             {comments.map(

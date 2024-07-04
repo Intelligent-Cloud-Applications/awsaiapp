@@ -321,24 +321,6 @@ export const fetchProjects = async (workSpaceId="1201921565573954") => {
   }
 };
 
-// export const fetchaSingleProject = async (projectId) => {
-//   const accessToken = localStorage.getItem('accessToken');
-//   const options = {
-//     method: 'GET',
-//     headers: {
-//       'Accept': 'application/json',
-//       'Authorization': `Bearer ${accessToken}`,
-//     },
-//   };
-//   try {
-//     const response = await fetch(`https://app.asana.com/api/1.0/projects/${projectId}`, options);
-//     const data = await response.json();
-//     return data.data;
-//   } catch (error) {
-//     console.error('Error fetching task count:', error);
-//   }
-// };
-
 export const fetchTasksForProject = async (projectId) => {
   const accessToken = localStorage.getItem('accessToken');
   const options = {
@@ -366,6 +348,7 @@ export const checkUserWorkspaceMembership = async (accessToken) => {
       }
     });
     const workspaces = userResponse.data.data.workspaces;
+    console.log(userResponse.data.data.gid)
     const isWorkspaceUser = workspaces.some(workspace => workspace.gid === "1201921565573954");
     return isWorkspaceUser; // Returns true if user is a member of the workspace, false otherwise
   } catch (error) {

@@ -52,7 +52,8 @@ function Callback() {
       <ToastContainer />
       <div className='loader-container'>
         <div className='loading'>
-          {loading ? <ClipLoader color="#ffffff" /> : null}
+          <h1>Authenticating...</h1>
+          <ClipLoader color="#ffffff" /> 
           {loading ? <div className='overlay'></div> : null}
         </div>
       </div>
