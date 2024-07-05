@@ -73,11 +73,14 @@ function TestingAndDefectFixingSideBar({
 
   const handleCreateComment = async () => {
     try {
-      setLoading(true);
       const storyData = { text: newCommentText };
-      const newComment = await createAsanaTaskStory(selectedTask.subTask.gid, storyData);
-      setComments([...comments, newComment]);
-      setNewCommentText("");
+      if((storyData.text).trim()=== "") return;
+      else{
+        setLoading(true);
+        const newComment = await createAsanaTaskStory(selectedTask.subTask.gid, storyData);
+        setComments([...comments, newComment]);
+        setNewCommentText("");
+      }
     } catch (error) {
       console.error('Error creating comment:', error);
     } finally {
@@ -154,12 +157,13 @@ function TestingAndDefectFixingSideBar({
               )}
               <div className='create-comment-asana'>
                 <textarea
+                  className='w-full'
                   value={newCommentText}
                   onChange={(e) => setNewCommentText(e.target.value)}
-                  placeholder="Add a comment"
-                  style={{ width: "95%", padding: "10px", borderRadius: "5px", outline: "none" }}
+                  placeholder="Add your comment here..."
+                  style={{  padding: "10px", borderRadius: "5px", outline: "none" }}
                 />
-                <button className="add-comment-btn" onClick={handleCreateComment}>Add Comment</button>
+                <button className="add-comment-btn" onClick={handleCreateComment}> Comment</button>
               </div>
             </div>
           </>

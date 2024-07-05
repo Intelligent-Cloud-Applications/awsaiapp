@@ -375,3 +375,22 @@ export const fetchUserDetails = async(userGid) => {
       console.error('Error fetching user details:', error); 
   }
 };
+
+export const fetchProjectTasks = async (projectID) => {
+  const accessToken = localStorage.getItem('accessToken');
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  };
+  try {
+    const response = await fetch(`https://app.asana.com/api/1.0/projects/${projectID}/tasks?opt_fields=name,memberships.section.name&opt_pretty`, options);
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching project tasks:', error);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
+};

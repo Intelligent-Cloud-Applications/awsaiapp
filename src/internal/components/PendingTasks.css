@@ -114,7 +114,7 @@ body.detail-view-open {
 .mimic-pre:hover{
   cursor: text;
   outline: 1px solid #000;
-  background: #e9f2f5;
+  background: #dcf7fd;
 }
 
 .editable-textarea {

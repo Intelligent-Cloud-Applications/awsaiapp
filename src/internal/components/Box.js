@@ -18,7 +18,6 @@ function Box({
   handleSaveClick,
   deleteTask,
   setEditedName,
-  debouncedAdjustTextareaHeight,
   adjustTextareaHeight,
   editedName,
 }) {
@@ -114,7 +113,6 @@ function Box({
                 value={localEditedNotes}
                 onChange={(e) => {
                   handleFieldChange('notes', e.target.value);
-                  debouncedAdjustTextareaHeight(e);
                 }}
                 onInput={adjustTextareaHeight}
                 style={{ overflow: 'hidden' }}

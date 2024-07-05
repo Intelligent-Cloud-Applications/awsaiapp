@@ -82,12 +82,16 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
   };
 
   const handleCreateComment = async () => {
+
     try {
-      setLoading(true);
       const storyData = { text: newCommentText };
-      const newComment = await createAsanaTaskStory(taskGid, storyData);
-      setComments([...comments, newComment]);
-      setNewCommentText("");
+      if((storyData.text).trim() === "") return;
+      else{
+        setLoading(true);
+        const newComment = await createAsanaTaskStory(taskGid, storyData);
+        setComments([...comments, newComment]);
+        setNewCommentText("");
+      }
     } catch (error) {
       console.error('Error creating comment:', error);
     } finally {
