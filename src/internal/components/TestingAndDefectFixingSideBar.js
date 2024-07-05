@@ -1,23 +1,62 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { getAsanaTaskDetails, updateAsanaTaskStory, deleteAsanaTaskStory, createAsanaTaskStory } from "../services/AsanaService";
+import { getAsanaTaskDetails, updateAsanaTaskStory, deleteAsanaTaskStory, createAsanaTaskStory, updateTask } from "../services/AsanaService";
 import { PendingTasksContext } from '../context/PendingTasksProvider';
 import Comment from './Comment';
 import { ClipLoader } from 'react-spinners';
 import { Link } from "react-router-dom";
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import "./AsanaNavBar.css";
 import "./TestingAndDefectFixingSideBar.css";
 
 function TestingAndDefectFixingSideBar({
   selectedTask,
   handleCloseDetailView,
+  deleteTask,
 }) {
   const [loading, setLoading] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [comments, setComments] = useState([]);
   const [editableCommentId, setEditableCommentId] = useState(null);
   const [editedText, setEditedText] = useState("");
-  const { dateAndTimeConverter, linkify, setSelectedTask } = useContext(PendingTasksContext)
+  const [editingSubtask, setEditingSubtask] = useState(null);
+  const [editedSubtaskName, setEditedSubtaskName] = useState("");
+  const { dateAndTimeConverter, linkify, setSelectedTask } = useContext(PendingTasksContext);
+
+  const handleDelete = useCallback(async (subTaskGid) => {
+    try {
+      setLoading(true);
+      await deleteTask(subTaskGid);
+      setSelectedTask(prevTask => ({
+        ...prevTask,
+        subTaskSubTask: prevTask.subTaskSubTask.filter(subTask => subTask.gid !== subTaskGid),
+      }));
+    } catch (error) {
+      console.error('Error deleting subtask:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [deleteTask, setSelectedTask]);
+
+  const handleUpdate = useCallback(async (subTaskGid, data) => {
+    try {
+      setLoading(true);
+      await updateTask(subTaskGid, data);
+      setSelectedTask(prevTask => ({
+        ...prevTask,
+        subTaskSubTask: prevTask.subTaskSubTask.map(subTask =>
+          subTask.gid === subTaskGid ? { ...subTask, ...data } : subTask
+        ),
+      }));
+      setEditingSubtask(null); // Reset the editing state after update
+    } catch (error) {
+      console.error('Error updating subtask:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [setSelectedTask]);
 
   useEffect(() => {
     const fetchSubtaskComments = async () => {
@@ -74,8 +113,8 @@ function TestingAndDefectFixingSideBar({
   const handleCreateComment = async () => {
     try {
       const storyData = { text: newCommentText };
-      if((storyData.text).trim()=== "") return;
-      else{
+      if ((storyData.text).trim() === "") return;
+      else {
         setLoading(true);
         const newComment = await createAsanaTaskStory(selectedTask.subTask.gid, storyData);
         setComments([...comments, newComment]);
@@ -86,6 +125,15 @@ function TestingAndDefectFixingSideBar({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditSubtaskClick = (subtask) => {
+    setEditingSubtask(subtask.gid);
+    setEditedSubtaskName(subtask.name);
+  };
+
+  const handleSaveSubtaskName = (subtaskGid) => {
+    handleUpdate(subtaskGid, { name: editedSubtaskName });
   };
 
   return (
@@ -130,8 +178,26 @@ function TestingAndDefectFixingSideBar({
               <div>
                 <p style={{ fontWeight: 700 }}>SubTasks:</p>
                 {selectedTask.subTaskSubTask.map((each) =>
-                  <div key={each.gid} style={{ padding: "3px" }}>
-                    <Link onClick={() => setSelectedTask(null)} to={`/asana-internal/task/${each.gid}`} className={each.completed ? 'completedClassName' : 'notCompletedClassName'} style={{ padding: "5px", borderRadius: "10px", display: "block" }}>{each.name}</Link>
+                  <div key={each.gid} style={{ padding: "3px" }} className={each.completed ? 'completedClassName flex justify-between items-center mb-1' : 'notCompletedClassName flex justify-between items-center mb-1'}>
+                    {editingSubtask === each.gid ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editedSubtaskName}
+                          onChange={(e) => setEditedSubtaskName(e.target.value)}
+                          style={{ padding: "5px", borderRadius: "5px", outline: "none" }}
+                        />
+                        <SaveIcon onClick={() => handleSaveSubtaskName(each.gid)} className='cursor-pointer' />
+                      </>
+                    ) : (
+                      <>
+                        <Link onClick={() => setSelectedTask(null)} to={`/asana-internal/task/${each.gid}`} style={{ padding: "5px", borderRadius: "10px" }}>{each.name}</Link>
+                        <div className='space-x-3'>
+                        <EditNoteIcon onClick={() => handleEditSubtaskClick(each)} className='cursor-pointer' />
+                        <DeleteIcon onClick={() => handleDelete(each.gid)} className='cursor-pointer' />
+                        </div>
+                      </>
+                    )}
                   </div>)}
               </div>
             }
@@ -161,7 +227,7 @@ function TestingAndDefectFixingSideBar({
                   value={newCommentText}
                   onChange={(e) => setNewCommentText(e.target.value)}
                   placeholder="Add your comment here..."
-                  style={{  padding: "10px", borderRadius: "5px", outline: "none" }}
+                  style={{ padding: "10px", borderRadius: "5px", outline: "none" }}
                 />
                 <button className="add-comment-btn" onClick={handleCreateComment}> Comment</button>
               </div>

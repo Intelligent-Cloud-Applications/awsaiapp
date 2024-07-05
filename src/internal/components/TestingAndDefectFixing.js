@@ -352,6 +352,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
       <TestingAndDefectFixingSideBar
         selectedTask={selectedTask}
         handleCloseDetailView={handleCloseDetailView}
+        deleteTask={deleteTask}
       />
     </div>
   );
