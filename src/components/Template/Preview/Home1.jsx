@@ -4,7 +4,7 @@ import vvideo from "../../../utils/Template/backgroundvideo.mp4";
 const Home1 = ({ TagLine, setTagLine, video, setVideo }) => {
   useEffect(() => {
     const videoUrl = video && video.url;
-    console.log("video.url", videoUrl); // Log the video URL to check if it's correct
+    // console.log("video.url", videoUrl); // Log the video URL to check if it's correct
     const videoElement = document.getElementById("mainVideo");
 
     if (videoElement) {

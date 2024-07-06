@@ -30,7 +30,7 @@ function AllPayment({ setActiveComponent }) {
         const data = await API.get('user', `/any/products/${institution}`);
         setProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        // console.error("Error fetching products:", error);
       }
     };
 

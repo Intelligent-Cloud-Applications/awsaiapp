@@ -29,8 +29,8 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  console.log(clientsData)
-  console.log(userData)
+  // console.log(clientsData)
+  // console.log(userData)
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -95,7 +95,7 @@ const Panel = () => {
       return matches;
     });
 
-    console.log("Filtered Clients:", filtered);
+    // console.log("Filtered Clients:", filtered);
     return filtered;
   };
 
@@ -103,7 +103,7 @@ const Panel = () => {
 
 
   const filteredClients = filterClients();
-  console.log("Type = ", typeof filteredClients);
+  // console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -124,7 +124,7 @@ const Panel = () => {
     return formattedDate;
   }
   const location = useLocation();
-  console.log("path", location.pathname)
+  // console.log("path", location.pathname)
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -164,7 +164,7 @@ const Panel = () => {
         title: 'User Added',
       });
       clients.onReload();
-      console.log("Client added successfully:", response);
+      // console.log("Client added successfully:", response);
       setName("");
       setEmail("");
       setPhoneNumber("");
@@ -202,14 +202,14 @@ const Panel = () => {
           status: status
         },
       };
-      console.log("my init", myInit);
+      // console.log("my init", myInit);
       const response = await API.put(apiName, path, myInit);
       Swal.fire({
         icon: 'success',
         title: 'User Updated',
       });
       clients.onReload();
-      console.log("Client updated successfully:", response);
+      // console.log("Client updated successfully:", response);
       setIsUpdateFormVisible(false);
       setSelectedUser(null);
       setName("");

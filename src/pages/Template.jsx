@@ -19,7 +19,7 @@ const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
 
- console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
+//  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   // const [loader, setLoader] = useState(false);
 //  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
@@ -205,9 +205,9 @@ const Template = () => {
           `/user/development-form/get-instructor/${institutionId}`
           );
 
-       console.log('hhhhssdsdsd',templateResponse);
-       console.log("😒😒😒😒",productResponse);
-       console.log("disidisdd",instructorResponse);
+      //  console.log('hhhhssdsdsd',templateResponse);
+      //  console.log("😒😒😒😒",productResponse);
+      //  console.log("disidisdd",instructorResponse);
 
         if (templateResponse) {
 //          console.log("HELLO1");
@@ -387,7 +387,7 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
-          console.log(productResponse);
+          // console.log(productResponse);
           setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {

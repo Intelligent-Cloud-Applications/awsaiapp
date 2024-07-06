@@ -97,7 +97,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   
   
   const addService = (index) => {
-    console.log(subscriptions);
+    // console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
     updatedSubscriptions[index].provides.push('');
     setSubscriptions(updatedSubscriptions);
@@ -145,7 +145,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
             }
           });
         } catch (e) {
-          console.log(e);
+          // console.log(e);
         } finally {
           util.setLoader(false);
         }

@@ -68,7 +68,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     );
   };
 
-  console.log(userData)
+  // console.log(userData)
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -77,11 +77,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const fetchLeads = async (institution) => {
     try {
       const response = await API.get("clients", `/user/get-leads/${institution}`);
-      console.log(response.Items);
+      // console.log(response.Items);
       setLeadsData(response.Items);
     } catch (error) {
-      console.error("Error fetching leads:", error);
-      console.error("Error details:", error.response);
+      // console.error("Error fetching leads:", error);
+      // console.error("Error details:", error.response);
     } finally {
       util.setLoader(false);
     }
@@ -129,7 +129,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
     try {
       const create = await API.post(apiName, path, myInit);
-      console.log(create);
+      // console.log(create);
       setLeadsData((prevLeadsData) => [...prevLeadsData, myInit.body]);
       Swal.fire({
         icon: "success",
@@ -141,7 +141,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       setPhoneNumber("");
       util.setLoader(false);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -203,14 +203,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
     try {
       const update = await API.put(apiName, path, myInit);
       await fetchLeads(institution);
-      console.log(update);
+      // console.log(update);
       Swal.fire({
         icon: "success",
         title: "User Updated",
       });
       util.setLoader(false);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -322,8 +322,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [location.pathname]);
 
-  console.log("additionalInfoTitle:", additionalInfoTitle);
-  console.log("additionalInfo:", additionalInfo);
+  // console.log("additionalInfoTitle:", additionalInfoTitle);
+  // console.log("additionalInfo:", additionalInfo);
   return (
     <div className="ml-[5rem] max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>

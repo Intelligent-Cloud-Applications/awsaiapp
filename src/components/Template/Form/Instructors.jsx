@@ -4,7 +4,7 @@ import {API} from "aws-amplify";
 
 function Instructors({ instructors, setInstructors }) {
   const { instructordetails, util } = useContext(Context)
-  console.log("instructordetails",instructordetails)
+  // console.log("instructordetails",instructordetails)
   // const [instructors, setInstructors] = useState([
   //   { imgSrc: '', name: '', uploadedFile: null },
   //   { imgSrc: '', name: '', uploadedFile: null },
@@ -63,7 +63,7 @@ const removeInstructor = async (indexToRemove) => {
         }
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     } finally {
       util.setLoader(false);
     }

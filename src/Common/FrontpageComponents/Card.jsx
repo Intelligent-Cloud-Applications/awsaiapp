@@ -30,7 +30,7 @@ function Card({ product, setActiveComponent }) {
         setIsAnimating(false);
       }, 1000);
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      // console.error('Error adding to cart:', error);
       setIsAnimating(false);
     }
   };

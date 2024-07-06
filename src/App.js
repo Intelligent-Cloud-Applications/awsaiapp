@@ -19,7 +19,7 @@ function App() {
   // const institutionFromParams = new URLSearchParams(location.search).get("institution");
   // const institutionFromLocalStorage = localStorage.getItem('institution');
   // const institution = institutionFromParams || institutionFromLocalStorage;
-  console.log(UserCtx)
+  // console.log(UserCtx)
 
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function App() {
         //   }
         // } else {
         const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
-        console.log(defaultUserdata)
+        // console.log(defaultUserdata)
         if (defaultUserdata.userType === "admin") {
           UserCtx.current.setUserData(defaultUserdata);
           UserCtx.current.setIsAuth(true);
@@ -48,7 +48,7 @@ function App() {
         }
         // }
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       } finally {
         UtilCtx.current.setLoader(false);
       }

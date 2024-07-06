@@ -106,7 +106,7 @@ const Full = () => {
         videoUrl: videoUrl,
       }));
 
-      console.log("Video uploaded successfully:", videoUrl);
+      // console.log("Video uploaded successfully:", videoUrl);
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -142,7 +142,7 @@ const Full = () => {
           [key]: imageUrl,
         }));
 
-        console.log("Uploaded file URL: ", imageUrl);
+        // console.log("Uploaded file URL: ", imageUrl);
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -178,7 +178,7 @@ const Full = () => {
           [key]: imageUrl,
         }));
 
-        console.log("Uploaded file URL: ", imageUrl);
+        // console.log("Uploaded file URL: ", imageUrl);
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -198,7 +198,7 @@ const Full = () => {
             contentType: file.type,
           }
         );
-        console.log("File uploaded successfully:", response);
+        // console.log("File uploaded successfully:", response);
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
 
@@ -224,7 +224,7 @@ const Full = () => {
         }
       );
   
-      console.log("File uploaded successfully:", uploadedFile);
+      // console.log("File uploaded successfully:", uploadedFile);
   
       
       let imageUrl = await Storage.get(uploadedFile.key);
@@ -237,7 +237,7 @@ const Full = () => {
         return updatedInstructors;
       });
   
-      console.log("File URL:", imageUrl);
+      // console.log("File URL:", imageUrl);
     } catch (error) {
       console.error("Error uploading file: ", error);
     }

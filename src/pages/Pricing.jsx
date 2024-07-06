@@ -17,7 +17,7 @@ const Pricing = () => {
     UtilCtx.setLoader(true);
     let response;
     try {
-      console.log("before");
+      // console.log("before");
       response = await API.put("clients", "/user/billing/subscription", {
         body: {
           productId: productId,
@@ -31,7 +31,7 @@ const Pricing = () => {
         }
       }
       UtilCtx.setLoader(false);
-      console.log(response);
+      // console.log(response);
     } catch (e) {
       UtilCtx.setLoader(false);
     }
@@ -45,9 +45,9 @@ const Pricing = () => {
         name: "AWSAIAPP",
         description: response.subscriptionType,
         handler: function (r) {
-          console.log(r);
+          // console.log(r);
           const verify = async () => {
-            console.log("EARLY");
+            // console.log("EARLY");
             UtilCtx.setLoader(true);
             try {
               const res = await API.put(
@@ -64,9 +64,9 @@ const Pricing = () => {
                 "/self/read-self/awsaiapp"
               );
               Ctx.setUserData(tempUserdata);
-              console.log(res);
+              // console.log(res);
               if (res.signatureIsValid) {
-                console.log(res.signatureIsValid);
+                // console.log(res.signatureIsValid);
                 Navigate("/dashboard", { state: { isReload: true } });
               } else {
                 alert(
@@ -76,7 +76,7 @@ const Pricing = () => {
               // alert(res);
               UtilCtx.setLoader(false);
             } catch (e) {
-              console.log(e);
+              // console.log(e);
               UtilCtx.setLoader(false);
             }
           };
@@ -94,7 +94,7 @@ const Pricing = () => {
           ondismiss: async function () {
             try {
               // const subscriptionIds = response.map(subscription => subscription.paymentId);
-              console.log(UserCtx.cognitoId)
+              // console.log(UserCtx.cognitoId)
               await API.del('clients', `/cancel/payment`, {
                 body: {
                   cognitoId:UserCtx.cognitoId,
@@ -113,9 +113,9 @@ const Pricing = () => {
         }
       };
 
-      console.log("started 2");
+      // console.log("started 2");
       const rzp1 = new window.Razorpay(options);
-      console.log("started 3");
+      // console.log("started 3");
       rzp1.on("payment.failed", function (response) {
         // alert(response.error.code);
         // alert(response.error.description);
@@ -124,15 +124,15 @@ const Pricing = () => {
         // alert(response.error.reason);
         // alert(response.error.metadata.order_id);
         // alert(response.error.metadata.payment_id);
-        console.log(response);
+        // console.log(response);
         UtilCtx.setLoader(false);
       });
       const fields = rzp1.open();
-      console.log(fields);
+      // console.log(fields);
       UtilCtx.setLoader(false);
     } catch (e) {
-      console.log(e.message);
-      console.log(e);
+      // console.log(e.message);
+      // console.log(e);
       UtilCtx.setLoader(false);
     }
   };

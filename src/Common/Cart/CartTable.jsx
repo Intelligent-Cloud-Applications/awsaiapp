@@ -36,7 +36,7 @@ const CartTable = ({ product, removeItem }) => {
       // Refresh cart items
       getCartItems(institution, cognitoId);
     } catch (error) {
-      console.error('Error removing product:', error);
+      // console.error('Error removing product:', error);
       // If there is an error, reset the deleting index
       setDeletingIndex(null);
     } finally {

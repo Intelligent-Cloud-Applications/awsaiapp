@@ -120,7 +120,7 @@ const Query = ({ activeComponent }) => {
         projectDetails: "",
       });
 
-      console.log(formData);
+      // console.log(formData);
       // console.log("reCAPTCHA Token:", token);
     } catch (error) {
       console.error("Error:", error);

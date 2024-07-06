@@ -34,7 +34,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
   const item = clients.data;
   const searchParams = new URLSearchParams(window.location.search);
   const institution = userData.institutionName || tempInstitution;
-  console.log("inst", institution)
+  // console.log("inst", institution)
   const selectedClient = Array.isArray(item) ? item.find(client => client.institution === institution) : null;
   const institutionData = Array.isArray(clients.data) ? clients.data.find(client => client.institution === institution) : null;
   const memberCountByMonth = institutionData ? institutionData.memberCountByMonth : null;
@@ -70,7 +70,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
         apiUrl += `&month=${selectedMonth}`;
       }
       const RevenueApi = await API.get("clients", apiUrl);
-      console.log(RevenueApi)
+      // console.log(RevenueApi)
       const last3YearsAttendance = RevenueApi.Attendance.last3YearsData;
       const last3YearsRevenue = RevenueApi.Revenue.last3YearsData;
       const last3YearsLeads = RevenueApi.Leads.last3YearsData;
@@ -80,10 +80,10 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       const last2YearsLeads = RevenueApi.Leads.last2YearsData;
       const last2YearsMembers = RevenueApi.MembersCount.last2YearsData;
 
-      console.log(last3YearsLeads)
-      console.log(last3YearsRevenue)
-      console.log(last3YearsAttendance)
-      console.log(last3YearsMembers)
+      // console.log(last3YearsLeads)
+      // console.log(last3YearsRevenue)
+      // console.log(last3YearsAttendance)
+      // console.log(last3YearsMembers)
 
       if (RevenueApi && RevenueApi.Revenue && selectedYear && selectedYear !== 'Last3YearsData' && selectedYear !== 'Last2YearsData') {
         setRevenueReport(RevenueApi.Revenue[selectedYear] || {});
@@ -303,11 +303,11 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
     }
   };
 
-  console.log(searchParams)
-  console.log(Country);
-  console.log(memberCountByMonth);
-  console.log("revenueReport", revenueReport)
-  console.log(monthDetails);
+  // console.log(searchParams)
+  // console.log(Country);
+  // console.log(memberCountByMonth);
+  // console.log("revenueReport", revenueReport)
+  // console.log(monthDetails);
 
   return (
     <>

@@ -85,7 +85,7 @@ const SignUp = () => {
   // };
 
   const form1Validator = () => {
-    console.log(phoneNumber.length);
+    // console.log(phoneNumber.length);
 
     if (firstName.length === 0) {
       setErr("Enter the Name");
@@ -124,9 +124,9 @@ const SignUp = () => {
 
   const userExistPhoneNumberSignUp = async () => {
     try {
-      console.log("Sign in");
+      // console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
-      console.log("post");
+      // console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
@@ -152,7 +152,7 @@ const SignUp = () => {
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
-        console.log("Phone Number User Doesn't Exist");
+        // console.log("Phone Number User Doesn't Exist");
         await userExistEmailIdSignUp();
       }
       throw error;
@@ -163,9 +163,9 @@ const SignUp = () => {
 
   const userExistEmailIdSignUp = async () => {
     try {
-      console.log("Sign in");
+      // console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
-      console.log("post");
+      // console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
@@ -189,13 +189,13 @@ const SignUp = () => {
       Navigate("/Pricing");
     } catch (error) {
       UtilCtx.setLoader(false);
-      console.log("Error:", error.message);
+      // console.log("Error:", error.message);
       throw error;
     } finally {
       UtilCtx.setLoader(false);
     }
   };
-  console.log(isNewUser,userExistPhoneNumberSignUp);
+  // console.log(isNewUser,userExistPhoneNumberSignUp);
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -208,7 +208,7 @@ const SignUp = () => {
 //          UtilCtx.setLoader(false);
 //          return;
 //        }
-        console.log(phoneNumber);
+        // console.log(phoneNumber);
         try {
           const newUserCheck = await Auth.signUp({
             username: `+${countryCode}${phoneNumber}`,
@@ -220,7 +220,7 @@ const SignUp = () => {
               email: email,
             },
           });
-          console.log(newUserCheck);
+          // console.log(newUserCheck);
         }
         catch (e) {
           console.error(e);

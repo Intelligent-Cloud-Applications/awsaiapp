@@ -34,7 +34,7 @@ import HomePayment from "./Common/HomePayment";
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
   const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
-  console.log("routes", Ctx.userData.institutionName)
+  // console.log("routes", Ctx.userData.institutionName)
 
   const redirectToDashboard = !web || !isVerified || !isDelivered;
 
