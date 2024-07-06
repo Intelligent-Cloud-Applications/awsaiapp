@@ -5,6 +5,7 @@ import invoice from '../utils/check.png';
 
 const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate, institution, planDetails, email, renewalDate, }) => {
   const color = colors[institution];
+  const plans = planDetails.split(', ');
 
   const handleBackClick = () => {
     window.close();
@@ -123,12 +124,10 @@ const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate
         <span>{institution}</span>
       </div>
 
-
       <div className='text-lg mb-2 flex'>
         <strong className='mr-2'>Email:</strong>
         <span>{email}</span>
       </div>
-
 
       <div className='text-lg mb-2 flex'>
         <strong className='mr-2'>Subscription ID:</strong>
@@ -146,21 +145,28 @@ const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate
       </div>
 
       <div className='text-lg mb-2 flex'>
-        <strong className='mr-2 w-[13rem]'>Plan Details:</strong>
-        <span dangerouslySetInnerHTML={{ __html: planDetails }}></span>
+        <strong className='mr-2'>Plan Details:</strong>
+        <div>
+          <ul>
+            {plans.map((detail, index) => (
+              <li key={index}>{detail}</li>
+            ))}
+          </ul>
+        </div>
       </div>
+
 
       <div className='text-lg mb-2 flex'>
         <strong className='mr-2 '>Amount:</strong>
         <span>{currencySymbol} {amount}</span>
       </div>
       <div className='text-lg mb-2 flex'>
-        <strong className='mr-2 w-[8rem] '>Payment Date:</strong>
+        <strong className='mr-2 w-[auto] '>Payment Date:</strong>
         <span>{paymentDate}</span>
       </div>
 
       <div className='text-lg mb-2 flex'>
-        <strong className='mr-2 w-[7rem]'>Renew Date:</strong>
+        <strong className='mr-2 w-[auto]'>Renew Date:</strong>
         <span>{renewalDate}</span>
       </div>
 
@@ -174,7 +180,7 @@ const ReceiptCard = ({ subscriptionIds = [], currencySymbol, amount, paymentDate
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
         </svg>
       </button>
-      <img className="absolute top-5 right-7 w-7 h-7" src={invoice} alt=''/>
+      <img className="absolute top-5 right-7 w-7 h-7" src={invoice} alt='' />
 
     </div>
   );
