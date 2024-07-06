@@ -1,22 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Swal from 'sweetalert2';
 import Navbar from "../components/Home/Navbar";
-import { useState, useRef } from "react";
 import Pic from "../utils/contactusPic.png";
 import { motion } from "framer-motion";
-import ReCAPTCHA from "react-google-recaptcha";
-import { API } from "aws-amplify";
+// import ReCAPTCHA from "react-google-recaptcha";
+import { API, Auth } from "aws-amplify";
 
-const Query = ({activeComponent}) => {
-  // //Get the action url by inspecting the form
-  // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
-
-  // //Get the rest from a prefilled link
-  // const FORMS_FULL_NAME = "entry.1659643296";
-  // const FORMS_COMPANY_NAME = "entry.1521075864";
-  // const FORMS_EMAIL = "entry.792093172";
-  // const FORMS_ADDRESS = "entry.727108387";
-  // const FORMS_PROJECT_DETAILS = "entry.218886769";
-
+const Query = ({ activeComponent }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
@@ -24,53 +14,84 @@ const Query = ({activeComponent}) => {
     address: "",
     projectDetails: "",
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // const [captchaValue] = useState(null);
+  // const recaptchaRef = useRef();
 
-  const recaptchaRef = useRef();
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        await Auth.currentAuthenticatedUser();
+        setIsAuthenticated(true);
+      } catch {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isAuthenticated) {
+      Swal.fire({
+        icon: "warning",
+        title: "You must Login first."
+      });
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please enter a valid email address."
+      });
+      return;
+    }
+
+    if (
+      formData.fullName === "" ||
+      formData.companyName === "" ||
+      formData.email === "" ||
+      formData.address === "" ||
+      formData.projectDetails === ""
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please fill out all form fields."
+      });
+      return;
+    }
+
+    const wordCount = formData.projectDetails.trim().split(/\s+/).length;
+    if (wordCount > 100) {
+      Swal.fire({
+        icon: "warning",
+        title: "Project details should not exceed 100 words."
+      });
+      return;
+    }
+
     try {
-      const token = await recaptchaRef.current.executeAsync();
+      // const token = await recaptchaRef.current.executeAsync();
 
-      if (!token) {
-        alert("Please fill out the CAPTCHA.");
-        return;
-      }
-
-      if (
-        formData.fullName === "" ||
-        formData.companyName === "" ||
-        formData.email === "" ||
-        formData.address === "" ||
-        formData.projectDetails === ""
-      ) {
-        alert("Please fill out all form fields.");
-        return;
-      }
-
-      // const bodyData = new FormData();
-      // bodyData.append(FORMS_FULL_NAME, formData.fullName);
-      // bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
-      // bodyData.append(FORMS_EMAIL, formData.email);
-      // bodyData.append(FORMS_ADDRESS, formData.address);
-      // bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
-
-      // await fetch(FORMS_ACTION_URL, {
-      //   mode: 'no-cors',
-      //   method: "POST",
-      //   body: bodyData,
-      //   headers: {
-      //     'Content-type': 'application/json; charset=UTF-8'
-      //   }
-      // });
+      // if (!token) {
+      //   Swal.fire({
+      //     icon: "warning",
+      //     title: "Please fill out the CAPTCHA."
+      //   });
+      //   return;
+      // }
 
       const apiName = "clients";
       const path = "/any/create-query";
@@ -86,7 +107,10 @@ const Query = ({activeComponent}) => {
 
       await API.post(apiName, path, myInit);
 
-      alert("Submitted Successfully");
+      Swal.fire({
+        icon: "success",
+        title: "Thanks for reaching out. We will respond to your inquiry shortly."
+      });
 
       setFormData({
         fullName: "",
@@ -97,21 +121,19 @@ const Query = ({activeComponent}) => {
       });
 
       console.log(formData);
-      console.log("reCAPTCHA Token:", token);
+      // console.log("reCAPTCHA Token:", token);
     } catch (error) {
-      console.error("reCAPTCHA error:", error);
+      console.error("Error:", error);
     }
   };
 
   return (
     <>
-      {activeComponent !== 'contact' ? <Navbar />:""}
-      {/* new contact us page */}
+      {activeComponent !== "contact" ? <Navbar /> : ""}
       <div
         className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
       max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
       >
-        {/* card */}
         <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
             <motion.div
@@ -138,7 +160,7 @@ const Query = ({activeComponent}) => {
             </motion.div>
           </div>
 
-          <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white">
+          <div className=" max-w-md w-full mx-auto px-10 py-4 border rounded-md bg-white">
             <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
               Send us a message
             </h2>
@@ -156,7 +178,7 @@ const Query = ({activeComponent}) => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder=""
+                  maxLength="15"
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                   required
                 />
@@ -174,6 +196,7 @@ const Query = ({activeComponent}) => {
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
+                  maxLength="15"
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                 />
               </div>
@@ -207,7 +230,8 @@ const Query = ({activeComponent}) => {
                   rows="2"
                   value={formData.address}
                   onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                  maxLength="100"
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full resize-y max-h-32 min-h-[4rem]" 
                 ></textarea>
               </div>
               <div>
@@ -223,21 +247,24 @@ const Query = ({activeComponent}) => {
                   rows="4"
                   value={formData.projectDetails}
                   onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                  maxLength="755"
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full resize-y max-h-40 min-h-[4rem]"
                 ></textarea>
+                <p>
+                  Word count: {formData.projectDetails.trim().split(/\s+/).length} / 100
+                </p>
               </div>
-              <div>
+              {/* <div>
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
                   size="invisible"
                 />
-              </div>
+              </div> */}
               <div>
                 <button
                   type="submit"
                   className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
-                  onClick={handleSubmit}
                 >
                   Send Message
                 </button>

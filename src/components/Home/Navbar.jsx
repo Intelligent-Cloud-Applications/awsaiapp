@@ -92,21 +92,21 @@ const Navbar = () => {
                     UserCtx.userData.isDelivered === false) {
                     Navigate(`/pay`);
                   } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === false) {
-                    console.log("Navigating to /template");
+                    // console.log("Navigating to /template");
                     Navigate("/complete");
                   } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName === "awsaiapp" && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
-                    console.log("Navigating to /dashboard");
+                    // console.log("Navigating to /dashboard");
                     Navigate("/dashboard");
                   }
                 }}
-                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-white max800:mb-5"
               >
                 {UserCtx.userData.institutionName}
               </button>
             ) : (
               <div className="flex flex-row">
                 <button
-                  className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                  className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-white max800:mb-5"
                   onClick={() => {
                     Navigate("/login");
                   }}
