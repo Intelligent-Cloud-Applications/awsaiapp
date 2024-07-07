@@ -89,7 +89,7 @@ const PendingClients = (props) => {
   const [showDetails] = useState(false);
 
 
-  // console.log("dfdfdfdfdfd", pending.isDelivered);
+  console.log("dfdfdfdfdfd", pending.isDelivered);
 
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);
@@ -112,12 +112,12 @@ const PendingClients = (props) => {
       return matches;
     });
 
-    // console.log("Filtered Clients:", filtered);
+    console.log("Filtered Clients:", filtered);
     return filtered;
   };
 
   const filteredClients = filterClients();
-  // console.log("Type = ", typeof filteredClients);
+  console.log("Type = ", typeof filteredClients);
 
   // async function updateDelivery(paymentId, isDelivered, cognitoId) {
   //   return await API.put("clients", "/admin/update-delivery", {

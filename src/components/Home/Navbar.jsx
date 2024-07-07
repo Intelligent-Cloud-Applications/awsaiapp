@@ -92,10 +92,10 @@ const Navbar = () => {
                     UserCtx.userData.isDelivered === false) {
                     Navigate(`/pay`);
                   } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === false) {
-                    // console.log("Navigating to /template");
+                    console.log("Navigating to /template");
                     Navigate("/complete");
                   } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName === "awsaiapp" && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
-                    // console.log("Navigating to /dashboard");
+                    console.log("Navigating to /dashboard");
                     Navigate("/dashboard");
                   }
                 }}

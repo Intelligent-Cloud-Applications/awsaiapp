@@ -12,9 +12,9 @@ const Ctx = useContext(Context);
 const institutionsNames = Ctx.userData.institutionName;
 // const cog
 const cognitoId = Ctx.userData.cognitoId;
-// console.log(cognitoId);
+console.log(cognitoId);
 
-// console.log(isDelivered);
+console.log(isDelivered);
 
   const [templateDetails, setTemplateDetails] = useState(null);
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
@@ -88,7 +88,7 @@ const cognitoId = Ctx.userData.cognitoId;
         videoUrl: videoUrl,
       }));
 
-      // console.log("Video uploaded successfully:", videoUrl);
+      console.log("Video uploaded successfully:", videoUrl);
     } catch (error) {
       console.error("Error uploading video:", error);
     }
@@ -124,7 +124,7 @@ const cognitoId = Ctx.userData.cognitoId;
           [key]: imageUrl,
         }));
 
-        // console.log("Uploaded file URL: ", imageUrl);
+        console.log("Uploaded file URL: ", imageUrl);
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -144,7 +144,7 @@ const cognitoId = Ctx.userData.cognitoId;
             contentType: file.type,
           }
         );
-        // console.log("File uploaded successfully:", response);
+        console.log("File uploaded successfully:", response);
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
 
@@ -170,8 +170,8 @@ const cognitoId = Ctx.userData.cognitoId;
         }
       );
   
-      // console.log("File uploaded successfully:", uploadedFile);
-  
+      console.log("File uploaded successfully:", uploadedFile);
+  // 
       
       let imageUrl = await Storage.get(uploadedFile.key);
       imageUrl = imageUrl.split("?")[0];
@@ -183,7 +183,7 @@ const cognitoId = Ctx.userData.cognitoId;
         return updatedInstructors;
       });
   
-      // console.log("File URL:", imageUrl);
+      console.log("File URL:", imageUrl);
     } catch (error) {
       console.error("Error uploading file: ", error);
     }

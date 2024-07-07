@@ -14,7 +14,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const Ctx = useContext(context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
-  // console.log(Ctx.userData.institutionName)
+  console.log(Ctx.userData.institutionName)
 
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");

@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
-  // console.log(Ctx)
+  console.log(Ctx)
   // useEffect(() => {
   //   const selectedPage = localStorage.getItem("selectedPage");
   //   if (selectedPage !== null) {

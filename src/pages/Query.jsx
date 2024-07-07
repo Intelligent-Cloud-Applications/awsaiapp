@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from 'sweetalert2';
 import Navbar from "../components/Home/Navbar";
 import Pic from "../utils/contactusPic.png";
 import { motion } from "framer-motion";
-// import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 import { API, Auth } from "aws-amplify";
 
 const Query = ({ activeComponent }) => {
@@ -16,7 +16,7 @@ const Query = ({ activeComponent }) => {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // const recaptchaRef = useRef();
+  const recaptchaRef = useRef();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -83,15 +83,15 @@ const Query = ({ activeComponent }) => {
     }
 
     try {
-      // const token = await recaptchaRef.current.executeAsync();
+      const token = await recaptchaRef.current.executeAsync();
 
-      // if (!token) {
-      //   Swal.fire({
-      //     icon: "warning",
-      //     title: "Please fill out the CAPTCHA."
-      //   });
-      //   return;
-      // }
+      if (!token) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please fill out the CAPTCHA."
+        });
+        return;
+      }
 
       const apiName = "clients";
       const path = "/any/create-query";
@@ -120,8 +120,8 @@ const Query = ({ activeComponent }) => {
         projectDetails: "",
       });
 
-      // console.log(formData);
-      // console.log("reCAPTCHA Token:", token);
+      console.log(formData);
+      console.log("reCAPTCHA Token:", token);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -254,13 +254,13 @@ const Query = ({ activeComponent }) => {
                   Word count: {formData.projectDetails.trim().split(/\s+/).length} / 100
                 </p>
               </div>
-              {/* <div>
+              <div>
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
                   size="invisible"
                 />
-              </div> */}
+              </div>
               <div>
                 <button
                   type="submit"

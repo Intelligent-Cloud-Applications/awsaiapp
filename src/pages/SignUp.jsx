@@ -124,9 +124,9 @@ const SignUp = () => {
 
   const userExistPhoneNumberSignUp = async () => {
     try {
-      // console.log("Sign in");
+      console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
-      // console.log("post");
+      console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
@@ -189,13 +189,13 @@ const SignUp = () => {
       Navigate("/Pricing");
     } catch (error) {
       UtilCtx.setLoader(false);
-      // console.log("Error:", error.message);
+      console.log("Error:", error.message);
       throw error;
     } finally {
       UtilCtx.setLoader(false);
     }
   };
-  // console.log(isNewUser,userExistPhoneNumberSignUp);
+  console.log(isNewUser,userExistPhoneNumberSignUp);
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -220,7 +220,7 @@ const SignUp = () => {
               email: email,
             },
           });
-          // console.log(newUserCheck);
+          console.log(newUserCheck);
         }
         catch (e) {
           console.error(e);

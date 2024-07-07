@@ -8,7 +8,7 @@ const Logout = () => {
         await Auth.signOut();
         window.location.href = "/";
       } catch (e) {
-        // console.log(e);
+        console.log(e);
       }
     };
 

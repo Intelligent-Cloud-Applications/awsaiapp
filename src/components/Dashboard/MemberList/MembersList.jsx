@@ -52,8 +52,8 @@ const MemberList = ({ institution: tempInstitution }) => {
   } else {
     institution = userData.institutionName || tempInstitution;
   }
-  // console.log(userCheck);
-  // console.log(institution)
+  console.log(userCheck);
+  console.log(institution)
   useEffect(() => {
     if (location.pathname.includes('dashboard')) {
       setIsDashboard(true);
@@ -107,7 +107,7 @@ const MemberList = ({ institution: tempInstitution }) => {
         "clients",
         `/user/list-members/${institution}`
       );
-      // console.log(response)
+      console.log(response)
       const activeUsers = response.filter(
         (memberData) => memberData.status === "Active"
       );
@@ -221,7 +221,7 @@ const MemberList = ({ institution: tempInstitution }) => {
           joiningDate: JoiningDate,
         },
       ]);
-      // console.log("User created successfully:", create);
+      console.log("User created successfully:", create);
       Swal.fire({
         icon: "success",
         title: "User Added",
@@ -235,7 +235,7 @@ const MemberList = ({ institution: tempInstitution }) => {
       setbalance("");
       util.setLoader(false);
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -284,7 +284,7 @@ const MemberList = ({ institution: tempInstitution }) => {
     try {
       const update = await API.put(apiName, path, myInit);
       await fetchMembersForInstitution(institution);
-      // console.log(update);
+      console.log(update);
       Swal.fire({
         icon: "success",
         title: "User Updated",
@@ -293,7 +293,7 @@ const MemberList = ({ institution: tempInstitution }) => {
       setEditUser(null);
       util.setLoader(false);
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       Swal.fire({
         icon: "error",
         title: "Error",

@@ -72,11 +72,11 @@ const Login = () => {
     UtilCtx.setLoader(true)
     try {
       const user = await Auth.sendCustomChallengeAnswer(signinResponse, otp)
-      // console.log(await Auth.currentSession())
+      console.log(await Auth.currentSession())
       if (user) {
-        // console.log(user)
+        console.log(user)
         const userdata = await API.get("clients", '/self/read-self/awsaiapp');
-        // console.log("User data:", userdata);
+        console.log("User data:", userdata);
         if (userdata.userType === "admin" && userdata.institution === 'awsaiapp' && userdata.institutionName === "awsaiapp" && userdata.web === true && userdata.isVerified === true && userdata.isDelivered === true) {
           localStorage.setItem('institution', userdata.institutionName);
           UserCtx.setUserData(userdata);
@@ -151,7 +151,7 @@ const Login = () => {
             Navigate("/");
           }
         } else {
-          // console.log("Invalid user:", userdata);
+          console.log("Invalid user:", userdata);
           Navigate("/");
           Swal.fire({
             icon: "error",
@@ -166,9 +166,9 @@ const Login = () => {
       }
     } catch (e) {
       console.error("Error during login:", e);
-      // console.log("Error code:", e.code); // Log the error code
+      console.log("Error code:", e.code); // Log the error code
       if (e.toString().split(" code ")[1]?.trim() === "404") {
-        // console.log("User Not Found");
+        console.log("User Not Found");
         alert("Contact us for login");
         Navigate("/Query?newuser=false");
         setError("");

@@ -17,7 +17,6 @@ import "./Template.css";
 import Context from "../context/Context";
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
-  const [savedData, setsavedData] = useState();
 
 //  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
@@ -387,7 +386,7 @@ const Template = () => {
         }
         if (productResponse.length > 0) {
 //          console.log("HELLO2");
-          // console.log(productResponse);
+          console.log(productResponse);
           setSubscriptions(productResponse);
         }
         if (instructorResponse.length > 0) {
@@ -974,10 +973,7 @@ setInstructorBg(InstructorBgUrl);
     });
   };
 
-  const saveData = () => {
-    setsavedData({});
-//    console.log("Saved Trigger")
-  };
+ 
 
   const handlePrevSection = () => {
     setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
@@ -1085,7 +1081,6 @@ setInstructorBg(InstructorBgUrl);
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
           <Footer
-            saveData={saveData}
             currentSection={currentSection}
             nextSection={handleNextSection}
             prevSection={handlePrevSection}

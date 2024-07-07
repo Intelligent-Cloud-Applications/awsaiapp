@@ -21,7 +21,7 @@ const Pay = () => {
     UtilCtx.setLoader(true);
     let response;
     try {
-      // console.log("before");
+      console.log("before");
       response = await API.put("clients", "/user/billing/subscription", {
         body: {
           productId: productId,
@@ -35,11 +35,11 @@ const Pay = () => {
         }
       }
       UtilCtx.setLoader(false);
-      // console.log(response);
+      console.log(response);
     } catch (e) {
       UtilCtx.setLoader(false);
     }
-    // console.log(response.paymentId);
+    console.log(response.paymentId);
 
     try {
       const options = {
@@ -49,9 +49,9 @@ const Pay = () => {
         name: "AWSAIAPP",
         description: response.subscriptionType,
         handler: function (r) {
-          // console.log(r);
+          console.log(r);
           const verify = async () => {
-            // console.log("EARLY");
+            console.log("EARLY");
             UtilCtx.setLoader(true);
             try {
               const res = await API.put(
@@ -68,9 +68,9 @@ const Pay = () => {
                 "/self/read-self/awsaiapp"
               );
               Ctx.setUserData(tempUserdata);
-              // console.log(res);
+              console.log(res);
               if (res.signatureIsValid) {
-                // console.log(res.signatureIsValid);
+                console.log(res.signatureIsValid);
                 Navigate("/dashboard", { state: { isReload: true } });
               } else {
                 alert(
@@ -80,7 +80,7 @@ const Pay = () => {
               // alert(res);
               UtilCtx.setLoader(false);
             } catch (e) {
-              // console.log(e);
+              console.log(e);
               UtilCtx.setLoader(false);
             }
           };
@@ -128,15 +128,15 @@ const Pay = () => {
         // alert(response.error.reason);
         // alert(response.error.metadata.order_id);
         // alert(response.error.metadata.payment_id);
-        // console.log(response);
+        console.log(response);
         UtilCtx.setLoader(false);
       });
       const fields = rzp1.open();
-      // console.log(fields);
+      console.log(fields);
       UtilCtx.setLoader(false);
     } catch (e) {
-      // console.log(e.message);
-      // console.log(e);
+      console.log(e.message);
+      console.log(e);
       UtilCtx.setLoader(false);
     }
   };
