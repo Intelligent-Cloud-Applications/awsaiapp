@@ -52,7 +52,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
 
   const handleUpdateComment = async (storyGid) => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const storyData = { text: editedText };
       await updateAsanaTaskStory(storyGid, storyData);
       setComments(
@@ -65,7 +65,7 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
     } catch (error) {
       console.error('Error updating comment:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

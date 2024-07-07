@@ -56,17 +56,18 @@ export default function CircularIntegration({ onClick }) {
           color="primary"
           sx={buttonSx}
           onClick={handleButtonClick}
+          size='small'
         >
           {success ? <CheckIcon /> : <SaveIcon />}
         </Fab>
         {loading && (
           <CircularProgress
-            size={68}
+            size={48}
             sx={{
               color: green[500],
               position: 'absolute',
-              top: -6,
-              left: -6,
+              top: -4,
+              left: -4,
               zIndex: 1,
             }}
           />

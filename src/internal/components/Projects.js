@@ -23,7 +23,7 @@ const Projects = () => {
                 }
 
             } catch (error) {
-                console.log('Error fetching projects:', error)
+                console.error('Error fetching projects:', error)
             }
             finally {
                 setLoading(false);
