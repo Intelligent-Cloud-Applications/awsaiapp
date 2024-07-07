@@ -6,7 +6,8 @@ import Comment from './Comment';
 import { ClipLoader } from 'react-spinners';
 import { Link } from "react-router-dom";
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import SaveIcon from '@mui/icons-material/Save';
+// import SaveIcon from '@mui/icons-material/Save';
+import CircularIntegration from './CircularIntegration';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./AsanaNavBar.css";
 import "./TestingAndDefectFixingSideBar.css";
@@ -187,7 +188,7 @@ function TestingAndDefectFixingSideBar({
                           onChange={(e) => setEditedSubtaskName(e.target.value)}
                           style={{ padding: "5px", borderRadius: "5px", outline: "none" }}
                         />
-                        <SaveIcon onClick={() => handleSaveSubtaskName(each.gid)} className='cursor-pointer' />
+                        <CircularIntegration onClick={() => handleSaveSubtaskName(each.gid)} className='cursor-pointer' />
                       </>
                     ) : (
                       <>

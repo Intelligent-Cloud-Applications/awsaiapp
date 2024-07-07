@@ -2,9 +2,9 @@ import React, { useContext, useMemo } from 'react';
 import { PendingTasksContext } from '../context/PendingTasksProvider';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Save from '@mui/icons-material/Save';
+import CircularIntegration from './CircularIntegration';
 
-const Comment = ({
+const Comment = React.memo(({
   comment,
   editableCommentId,
   editedText,
@@ -37,9 +37,9 @@ const Comment = ({
         </div>
       )}
       {comment.created_by.gid === user &&
-        <div className="comment-actions">
+        <div className="comment-actions items-center">
           {editableCommentId === comment.gid ? (
-            <Save style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)}>Save</Save>
+            <CircularIntegration style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)}>Save</CircularIntegration>
           ) : (
             <EditNoteIcon style={{ cursor: "pointer" }} onClick={() => handleEditClickComment(comment)}>Edit</EditNoteIcon>
           )}
@@ -49,6 +49,6 @@ const Comment = ({
       }
     </div>
   );
-};
+});
 
 export default Comment;

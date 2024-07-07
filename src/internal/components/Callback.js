@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PendingTasksContext } from "../context/PendingTasksProvider";
 import axios from 'axios';
-import { ClipLoader } from 'react-spinners';
+import { SyncLoader } from 'react-spinners';
 import { checkUserWorkspaceMembership } from "../services/AsanaService";
 import "./Callback.css";
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
@@ -53,7 +53,7 @@ function Callback() {
       <div className='loader-container'>
         <div className='loading'>
           <h1>Authenticating...</h1>
-          <ClipLoader color="#ffffff" /> 
+          <SyncLoader color="#ffffff" /> 
           {loading ? <div className='overlay'></div> : null}
         </div>
       </div>

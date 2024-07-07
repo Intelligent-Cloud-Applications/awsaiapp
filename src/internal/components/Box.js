@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
+import CircularIntegration from './CircularIntegration';
 import Checkbox from '@mui/material/Checkbox';
 import { PendingTasksContext } from '../context/PendingTasksProvider';
 import './PendingTasks.css';
@@ -142,7 +142,7 @@ function Box({
               {taskLoading[`save_${subTask.gid}`] ? (
                 <ClipLoader size={20} />
               ) : editTaskId === subTask.gid ? (
-                <SaveIcon
+                <CircularIntegration
                   className="change"
                   onClick={() => handleSaveClick(subTask, { name: editedName || subTask.name, notes: localEditedNotes })}
                 />

@@ -269,6 +269,8 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
         </div>
       ) : (
         <>
+        {
+          filteredSubtasks.length > 0 ?
           <section>
             <div className='search-by-entering-name'>
               <div className='search'>
@@ -283,6 +285,8 @@ const TestingAndDefectFixing = ({ taskGidProp = '1207519116747438' }) => {
               </div>
             </div>
           </section>
+          :<p className='text-7xl text-center text-white '>No SubTasks present</p>
+        }
           <section className='description'>
             <div className='w-full'>
               <h2 style={{ fontWeight: 600, textDecoration: "underline" }}>Description</h2>
