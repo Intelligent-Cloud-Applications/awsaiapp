@@ -204,33 +204,6 @@ a:hover {
     font-size: large
 }
 
-.search-by-entering-name {
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.search-by-entering-name .search {
-    background-color: #fff;
-    border-radius: 20px;
-    padding: 10px;
-    border: none;
-    outline: 0;
-    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.search-by-entering-name input {
-    border: none;
-    outline: 0;
-    background-color: transparent;
-    padding: 10px;
-    border-radius: 20px;
-    width: 100%
-}
 .description{
     background-color: #fff;
     padding: 20px;

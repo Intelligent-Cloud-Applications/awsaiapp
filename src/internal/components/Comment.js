@@ -1,7 +1,5 @@
 import React, { useContext, useMemo } from 'react';
 import { PendingTasksContext } from '../context/PendingTasksProvider';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CircularIntegration from './CircularIntegration';
 
 const Comment = React.memo(({
@@ -39,11 +37,11 @@ const Comment = React.memo(({
       {comment.created_by.gid === user &&
         <div className="comment-actions items-center">
           {editableCommentId === comment.gid ? (
-            <CircularIntegration style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)}>Save</CircularIntegration>
+            <CircularIntegration style={{ cursor: "pointer" }} onClick={() => handleUpdateComment(comment.gid)} actionType={`save`}>Save</CircularIntegration>
           ) : (
-            <EditNoteIcon style={{ cursor: "pointer" }} onClick={() => handleEditClickComment(comment)}>Edit</EditNoteIcon>
+            <CircularIntegration style={{ cursor: "pointer" }} onClick={() => handleEditClickComment(comment)} actionType={`edit`}>Edit</CircularIntegration>
           )}
-          <DeleteIcon style={{ cursor: "pointer" }} onClick={() => handleDeleteComment(comment.gid)}>Delete</DeleteIcon>
+          <CircularIntegration style={{ cursor: "pointer" }} onClick={() => handleDeleteComment(comment.gid)} actionType={`delete`}>Delete</CircularIntegration>
         </div>
 
       }

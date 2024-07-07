@@ -143,6 +143,7 @@ function Box({
                 <ClipLoader size={20} />
               ) : editTaskId === subTask.gid ? (
                 <CircularIntegration
+                  actionType={`save`}
                   className="change"
                   onClick={() => handleSaveClick(subTask, { name: editedName || subTask.name, notes: localEditedNotes })}
                 />

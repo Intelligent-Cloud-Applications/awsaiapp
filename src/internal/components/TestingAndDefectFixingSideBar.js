@@ -101,13 +101,10 @@ function TestingAndDefectFixingSideBar({
 
   const handleDeleteComment = async (storyGid) => {
     try {
-      setLoading(true);
       await deleteAsanaTaskStory(storyGid);
       setComments(comments.filter(comment => comment.gid !== storyGid));
     } catch (error) {
       console.error('Error deleting comment:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -141,7 +138,7 @@ function TestingAndDefectFixingSideBar({
     <div className={`detail-view ${selectedTask ? 'open' : ''}`}>
       <CloseIcon onClick={handleCloseDetailView} className='asana-sidebar-close-btn' />
       {loading ? (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className='flex justify-center'>
           <ClipLoader />
         </div>
       ) : (
