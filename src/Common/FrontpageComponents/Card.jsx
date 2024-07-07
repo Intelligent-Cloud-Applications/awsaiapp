@@ -30,7 +30,7 @@ function Card({ product, setActiveComponent }) {
         setIsAnimating(false);
       }, 1000);
     } catch (error) {
-      // console.error('Error adding to cart:', error);
+      console.error('Error adding to cart:', error);
       setIsAnimating(false);
     }
   };
@@ -38,7 +38,10 @@ function Card({ product, setActiveComponent }) {
   const isInCart = isProductInCart(product.planId);
 
   return (
-    <div className='bg-white w-80 min-h-[30rem] flex flex-col' style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
+    <div className='bg-white w-80 min-h-[30rem] flex flex-col'
+    style={{
+      boxShadow: `0px 0px 20px rgba(0, 0, 0, 0.3)`,
+    }}    >
       <h2 className='text-xl font-bold text-center text-white py-2 px-1 capitalize'
         style={{
           backgroundColor: color.primary
