@@ -128,7 +128,7 @@ const Pricing = () => {
         UtilCtx.setLoader(false);
       });
       const fields = rzp1.open();
-      // console.log(fields);
+      console.log(fields);
       UtilCtx.setLoader(false);
     } catch (e) {
       // console.log(e.message);
