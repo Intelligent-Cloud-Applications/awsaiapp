@@ -30,7 +30,8 @@ h2 {
 }
 
 .task-info h1 {
-    font-weight: 700
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 .task-info h2 {
@@ -158,6 +159,11 @@ a:hover {
     box-sizing: border-box
 }
 
+.full-width-textarea:focus {
+    box-shadow: 0 0 0 2px #2a9d8f;
+    outline: rgb(56, 150, 179) auto 5px;
+}
+
 .btn-add-comment {
     background-color: #111827;
     border: 1px solid transparent;
@@ -198,38 +204,23 @@ a:hover {
     font-size: large
 }
 
-.search-by-entering-name {
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.search-by-entering-name .search {
-    background-color: #fff;
-    border-radius: 20px;
-    padding: 10px;
-    border: none;
-    outline: 0;
-    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.search-by-entering-name input {
-    border: none;
-    outline: 0;
-    background-color: transparent;
-    padding: 10px;
-    border-radius: 20px;
-    width: 100%
-}
 .description{
     background-color: #fff;
-    padding: 10px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 12px;
     min-height: 200px;
+    box-shadow: rgba(0, 0, 0, .2) 0 20px 30px;
+}
+
+.italic-placeholder:focus{
+    font-style: normal;
+    color: #000;
+    outline: rgb(153, 185, 243) auto 5px;
+}
+.italic-placeholder::placeholder {
+    font-style: italic;
+    color: #a1a1a1;
+    font-size: 14px
 }
 
 @media (min-width:768px) {

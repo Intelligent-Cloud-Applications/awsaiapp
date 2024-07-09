@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PendingTasksContext } from "../context/PendingTasksProvider";
 import axios from 'axios';
-import { ClipLoader } from 'react-spinners';
+import { SyncLoader } from 'react-spinners';
 import { checkUserWorkspaceMembership } from "../services/AsanaService";
 import "./Callback.css";
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
@@ -19,25 +19,26 @@ function Callback() {
       if (code) {
         try {
           setLoading(true);
-          const response = await axios.get(`http://localhost:4000/callback?code=${code}`);
-          const accessToken = response.data;
+          const response = await axios.get(`http://localhost:4000/dev/callback?code=${code}`);
+          const accessToken = response.data.accessToken;
           localStorage.setItem('accessToken', accessToken);
 
-          const isWorkspaceUser = await checkUserWorkspaceMembership(accessToken);
-
+          const {isWorkspaceUser,userGid} = await checkUserWorkspaceMembership(accessToken);
+          localStorage.setItem('userGid', userGid);
           if (isWorkspaceUser) {
-            navigate('/asana-internal/defect-fixing'); // Navigate to the tasks page if user is a workspace member
+            navigate('/asana-internal/defect-fixing'); // Navigate to the defec-fixing page if user is a workspace member
           } else {
+            localStorage.removeItem('accessToken');
             toast.error('User is not a member of the workspace'); // Show error as toast notification
-            navigate('/asana-internal/error');
+            navigate('/error');
           }
         } catch (error) {
-          toast.error('Error during authentication or fetching user details'); // Show error as toast notification
+          console.error('Error during authentication or fetching user details');
         } finally {
           setLoading(false);
         }
       } else {
-        toast.error('No authorization code found in query params'); // Show error as toast notification
+        console.error('No authorization code found in query params');
         setLoading(false);
       }
     };
@@ -51,7 +52,8 @@ function Callback() {
       <ToastContainer />
       <div className='loader-container'>
         <div className='loading'>
-          {loading ? <ClipLoader color="#ffffff" /> : null}
+          <h1>Authenticating...</h1>
+          <SyncLoader color="#ffffff" /> 
           {loading ? <div className='overlay'></div> : null}
         </div>
       </div>

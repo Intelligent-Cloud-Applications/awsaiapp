@@ -19,7 +19,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import Snackbar from '@mui/material/Snackbar'; // Import Snackbar
 import "./AsanaNavBar.css";
 
-const NavBar = () => {
+const AsanaNavBar = () => {
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -38,7 +38,8 @@ const NavBar = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('projectsCache');
-
+    localStorage.removeItem('userGid');
+    
     navigate('/asana-internal'); // Navigate the user to the login page or home page
     setOpenSnackbar(true); // Open the Snackbar on logout
   };
@@ -147,4 +148,4 @@ const NavBar = () => {
   );
 }
 
-export default NavBar
+export default AsanaNavBar;

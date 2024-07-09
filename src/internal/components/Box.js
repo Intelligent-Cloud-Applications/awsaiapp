@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
+import CircularIntegration from './CircularIntegration';
 import Checkbox from '@mui/material/Checkbox';
 import { PendingTasksContext } from '../context/PendingTasksProvider';
 import './PendingTasks.css';
@@ -11,21 +11,23 @@ import './Box.css';
 function Box({
   subTask,
   editTaskId,
-  editedNotes,
-  editedName,
   taskLoading,
   textareaRef,
   handleTitleClick,
   handleEditClick,
   handleSaveClick,
   deleteTask,
-  setEditedNotes,
   setEditedName,
-  debouncedAdjustTextareaHeight,
   adjustTextareaHeight,
+  editedName,
 }) {
   const [expandedSubTasks, setExpandedSubTasks] = useState({});
   const { getColorForLetter, loading, setLoading } = useContext(PendingTasksContext);
+  const [localEditedNotes, setLocalEditedNotes] = useState(subTask.notes);
+
+  useEffect(() => {
+    setLocalEditedNotes(subTask.notes);
+  }, [subTask.notes]);
 
   const toggleShowAll = (gid) => {
     setExpandedSubTasks((prevState) => ({
@@ -41,13 +43,12 @@ function Box({
     } catch (e) {
       console.error(e);
     } finally {
-      // console.log('Title clicked');
       setLoading(true);
     }
   };
 
   const handleFieldChange = (field, value) => {
-    setEditedNotes((prev) => ({ ...prev, [field]: value }));
+    setLocalEditedNotes(value);
   };
 
   const handleNameChange = (e) => {
@@ -109,10 +110,9 @@ function Box({
             {editTaskId === subTask.gid ? (
               <textarea
                 ref={textareaRef}
-                value={editedNotes.notes}
+                value={localEditedNotes}
                 onChange={(e) => {
                   handleFieldChange('notes', e.target.value);
-                  debouncedAdjustTextareaHeight(e);
                 }}
                 onInput={adjustTextareaHeight}
                 style={{ overflow: 'hidden' }}
@@ -121,7 +121,7 @@ function Box({
             ) : (
               <div>
                 <div className="mimic-pre" onClick={() => handleEditClickWrapper(subTask)}>
-                  {subTask.notes ? (
+                  {subTask.notes.trim() ? (
                     expandedSubTasks[subTask.gid]
                       ? subTask.notes
                       : `${subTask.notes.substring(0, 100)}${subTask.notes.length > 100 ? '...' : ''}`
@@ -142,7 +142,11 @@ function Box({
               {taskLoading[`save_${subTask.gid}`] ? (
                 <ClipLoader size={20} />
               ) : editTaskId === subTask.gid ? (
-                <SaveIcon className="change" onClick={() => handleSaveClick(subTask, { name: editedName || subTask.name, notes: editedNotes.notes || subTask.notes })} />
+                <CircularIntegration
+                  actionType={`save`}
+                  className="change"
+                  onClick={() => handleSaveClick(subTask, { name: editedName || subTask.name, notes: localEditedNotes })}
+                />
               ) : (
                 <EditNoteIcon className="change" onClick={() => handleEditClickWrapper(subTask)} />
               )}

@@ -107,15 +107,20 @@
 }
 
 .create-comment-asana{
-  position: relative; /* Changed from relative to fixed */
-  bottom: 0; /* Adjust as needed */
-  width: 95%;
+  width: -webkit-fill-available;
+  padding: 0;;
+  position: unset;
+  bottom: 0;
 }
 .create-comment-asana textarea{
-  width: 100%;
   min-height: 50px;
+  background-color: rgb(143, 181, 231);
 }
 
+.create-comment-asana textarea::placeholder{
+  color:white;
+  font-style: white;
+}
 .completedClassName{
   background-color: rgb(161,210,238);
 }

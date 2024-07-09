@@ -1,4 +1,3 @@
-// AsanaLayout.js
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AsanaNavBar from './AsanaNavBar';
@@ -7,7 +6,7 @@ import "./AsanaLayout.css";
 
 const AsanaLayout = () => {
   return (
-    <div className="asana-layout"> {/* Add this div with class */}
+    <div className="asana-layout">
     <PendingTasksProvider>
       <AsanaNavBar />
       <Outlet />
