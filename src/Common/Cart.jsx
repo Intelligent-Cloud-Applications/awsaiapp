@@ -9,10 +9,11 @@ import colors from '../color.json';
 import ReceiptCard from './FrontpageComponents/ReceiptCard';
 import { useSpring, animated } from '@react-spring/web';
 import { BarLoader } from 'react-spinners';
+import displayError from './Errors';
 
 const Cart = ({ institution }) => {
   const { cognitoId } = useParams();
-  const { getCartItems, cartState, setCartState, getPaymentHistory} = useContext(Context);
+  const { getCartItems, cartState, setCartState, getPaymentHistory } = useContext(Context);
   const [isInitialFetch, setIsInitialFetch] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading1, setIsLoading1] = useState(false);
@@ -20,6 +21,7 @@ const Cart = ({ institution }) => {
   const [receiptDetails, setReceiptDetails] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
   const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
+  const [referralSubmitted, setReferralSubmitted] = useState(false); // State to track if referral code is submitted
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -77,131 +79,122 @@ const Cart = ({ institution }) => {
 
   const handleCheckout = async () => {
     setIsLoading1(true);
-
+  
     const { productItems } = cartState;
     const institutionId = institution;
     const productId = productItems.map(item => item.productId);
     const planIds = productItems.map(item => item.planId);
-
+  
     const uniqueProductIds = new Set(productId);
     if (uniqueProductIds.size !== productId.length) {
-      toast.error('You cannot buy the same item more than once.', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        style: {
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-        },
-      });
+      displayError('Subscription already active for productId');
       setIsLoading(false);
       setIsLoading1(false);
       return;
     }
-
+  
     try {
       const response = await API.put('clients', `/payment/checkout`, {
         body: {
           institutionId,
           cognitoId,
           productId,
-          referralCode, // Include the referral code in the request body
+          referralCode,
         },
       });
-
-      const totalAmount = response.reduce((acc, current) => acc + current.amount, 0);
-      const subscriptionIds = response.map(subscription => subscription.paymentId);
-      const discountedAmount = response.reduce((acc, current) => acc + current.discountedAmount, 0); // Assuming response contains discountedAmount for each item
-      console.log(totalAmount, discountedAmount)
-
+  
+      const totalAmount = response.reduce((acc, current) => acc + current.subscriptionResult.amount, 0);
+      const subscriptionIds = response.map(subscription => subscription.subscriptionResult.paymentId);
+      const invoiceId = response[0].invoiceId; // Get the invoice ID
+  
       const options = {
         key: "rzp_test_blkHaVbIxIwCZK",
         amount: totalAmount,
-        currency: response[0].currency,
+        currency: response[0].subscriptionResult.currency,
         name: institution.toUpperCase(),
-        description: 'Total Subscription Payment',
+        description: response[0].subscriptionResult.subscriptionType,
         handler: async function (paymentResponse) {
           setIsLoading(true);
           try {
             setStatusMessage('Payment successful');
-
+  
             // Schedule status message updates with delays
             setTimeout(() => {
               setStatusMessage('Generating receipt');
             }, 1000);
-
+  
             setTimeout(() => {
               setStatusMessage('Receipt generated');
             }, 5000);
-
-            const verifyResponse = await API.put('clients', `/payment/webhook`, {
-              body: {
-                institutionId,
-                cognitoId,
-                subscriptionIds,
-                products: productItems.map(item => item.heading),
-              },
-            });
-
-            if (verifyResponse.signatureIsValid) {
-              const formattedDate = new Date().toLocaleString('en-IN', {
-                timeZone: 'Asia/Kolkata',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              });
-
-              const renewalDates = verifyResponse.renewalDates.map(date => new Date(date).toLocaleString('en-IN', {
-                timeZone: 'Asia/Kolkata',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              }));
-
-              setReceiptDetails({
-                subscriptionId: subscriptionIds,
-                amount: totalAmount / 100,
-                paymentDate: formattedDate,
-                renewalDate: renewalDates.join(', '),
-                institution: institution,
-                planDetails: productItems.map(item => `${item.heading}`).join(', '),
-                email: response[0].emailId,
-              });
-
-              setTimeout(() => {
-                setIsModalOpen(true);
+  
+            const verify = async () => {
+              try {
+                const verifyResponse = await API.put('clients', `/payment/webhook`, {
+                  body: {
+                    institutionId,
+                    cognitoId,
+                    subscriptionIds,
+                    products: productItems.map(item => item.heading),
+                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                    amount: totalAmount,
+                    referralCode,
+                    invoiceId 
+                  },
+                });
+  
+                console.log("Verification response:", verifyResponse);
+  
+                if (verifyResponse.signatureIsValid) {
+                  const formattedDate = new Date().toLocaleString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  });
+  
+                  const renewalDates = verifyResponse.renewalDates.map(date => new Date(date).toLocaleString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }));
+  
+                  setReceiptDetails({
+                    subscriptionId: subscriptionIds,
+                    amount: totalAmount / 100,
+                    paymentDate: formattedDate,
+                    renewalDate: renewalDates.join(', '),
+                    institution: institution,
+                    planDetails: productItems.map(item => `${item.heading}`).join(', '),
+                    email: response[0].subscriptionResult.emailId,
+                  });
+  
+                  setTimeout(() => {
+                    setIsModalOpen(true);
+                    setIsLoading(false);
+                    getPaymentHistory(institutionId, cognitoId);
+                    getCartItems(institutionId, cognitoId);
+                  }, 1500);
+                } else {
+                  throw new Error('Payment verification failed!');
+                }
+              } catch (error) {
+                console.error('Payment verification error:', error);
+                displayError(error.message);
                 setIsLoading(false);
-                getPaymentHistory(institutionId, cognitoId);
-                getCartItems(institutionId, cognitoId);
-              }, 1500);
-            } else {
-              throw new Error(verifyResponse.failureReason || 'Payment verification failed!');
+                setIsLoading1(false);
+              }
             }
+            verify();
           } catch (error) {
-            console.error('Error verifying payment:', error);
-            toast.error('Payment verification failed!', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              style: {
-                backgroundColor: '#f8d7da',
-                color: '#721c24',
-              },
-            });
+            console.error('Error during payment handler:', error);
+            displayError('Error during payment handler');
             setIsLoading(false);
             setIsLoading1(false);
           }
         },
         prefill: {
-          email: response[0].emailId,
+          email: response[0].subscriptionResult.emailId,
         },
         notes: {
           cognitoId: cognitoId,
@@ -220,22 +213,7 @@ const Cart = ({ institution }) => {
                   subscriptionIds
                 },
               });
-              toast.info('Payment process was cancelled.', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                style: {
-                  backgroundColor: '#fff3cd',
-                  color: '#856404',
-                },
-              });
-            } catch (error) {
-              console.error('Error during payment cancellation:', error);
-              toast.error('Failed to cancel payment process.', {
+              toast.info("Your payment has been cancelled successfully.", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -248,40 +226,37 @@ const Cart = ({ institution }) => {
                   color: '#721c24',
                 },
               });
+              setIsLoading(false);
+              setIsLoading1(false);
+            } catch (error) {
+              displayError(error.response.data.error);
             }
-            setIsLoading(false);
-            setIsLoading1(false);
           }
         }
       };
-
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
+      if (subscriptionIds.length === 1) {
+        options.subscription_id = response[0].subscriptionResult.paymentId
+      }
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
     } catch (error) {
-      console.error('Error during checkout:', error);
-      toast.error('You have already subscribed to this Plan!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        style: {
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-        },
-      });
+      console.error('Error in checkout:', error);
+      displayError(error.response.data.error);
       setIsLoading(false);
       setIsLoading1(false);
     }
   };
-
+  
   if (!cartState) {
     return <div>Loading...</div>;
   }
 
   const { productItems, subtotal, currencySymbol } = cartState;
+
+  const handleReferralSubmit = () => {
+    setReferralSubmitted(true);
+    // Optionally handle any additional logic on referral code submission
+  };
 
   return (
     <div className="Poppins mx-auto h-screen w-screen flex flex-col justify-around items-center border-b py-5 inter max767:h-full max767:flex-col max767:justify-center">
@@ -321,7 +296,9 @@ const Cart = ({ institution }) => {
               </button>
             </div>
             <div className="flex flex-col justify-center items-center py-5 px-4 ">
-              <p className="mb-2 w-full text-left text-[gray] text-[0.76rem]">If you have a Referral code, enter it here</p>
+              <p className="mb-2 w-full text-left text-[gray] text-[0.76rem]">
+                {referralSubmitted ? 'Referral code submitted' : 'If you have a Referral code, enter it here'}
+              </p>
               <div className='flex justify-center items-center'>
                 <input
                   type="text"
@@ -329,8 +306,13 @@ const Cart = ({ institution }) => {
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value)}
                   className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                  disabled={referralSubmitted} // Disable input if referral code is submitted
                 />
-                <button className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto">
+                <button
+                  className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                  onClick={handleReferralSubmit}
+                  disabled={referralSubmitted} // Disable button if referral code is submitted
+                >
                   Submit
                 </button>
               </div>
