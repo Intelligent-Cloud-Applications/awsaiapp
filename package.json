@@ -78,7 +78,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:4000",
   "devDependencies": {
     "@tailwindcss/container-queries": "^0.1.1"
   }
