@@ -31,3 +31,6 @@ jobs:
 
       - name: Deploy to S3
         run: aws s3 sync ./build s3://beta.awsaiapp.com --delete
+
+      - name: CloudFront Invalidation
+        run: aws cloudfront create-invalidation --distribution-id EFL8JU6AGX1ET --paths "/*"
