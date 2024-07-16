@@ -15,7 +15,7 @@ const process = {
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: "us-east-1",
+    region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1": "us-east-2",
     userPoolId:
       process.env.REACT_APP_STAGE === "PROD"
         ? "us-east-1_a3Fk5S3hh"

@@ -213,7 +213,7 @@ const SignUp = () => {
         console.log(phoneNumber);
         try {
           // eslint-disable-next-line
-          const newUserCheck = await Auth.signUp({
+          await Auth.signUp({
             username: `+${countryCode}${phoneNumber}`,
             password: "Avishek@123",
             institutionName: institutionName,
@@ -223,7 +223,6 @@ const SignUp = () => {
               email: email,
             },
           });
-          if(newUserCheck){} // To remove warning
         }
         catch (e) {
           console.error(e);
@@ -231,7 +230,7 @@ const SignUp = () => {
         finally {
           const phoneResponse = await API.post(
             'clients',
-            'any/phone-exists',
+            '/any/phone-exists',
             {
               body: {
                 phoneNumber: `+${countryCode}${phoneNumber}`
