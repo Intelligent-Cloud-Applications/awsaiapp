@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { API } from 'aws-amplify';
+import React from 'react';
 import Card from './FrontpageComponents/Card';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './FrontpageComponents/Allpayments.css';
 
 function AllPayment({ setActiveComponent,userType,setIsEditPopupOpen,products, handleSetSelectedProduct }) {
-  const { institution } = useParams();
-
   // const [products, setProducts] = useState([]);
 
   // useEffect(() => {
