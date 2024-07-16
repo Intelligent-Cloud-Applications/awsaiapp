@@ -6,25 +6,26 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './FrontpageComponents/Allpayments.css';
 
-function AllPayment({ setActiveComponent }) {
+function AllPayment({ setActiveComponent,userType,setIsEditPopupOpen,products, handleSetSelectedProduct }) {
   const { institution } = useParams();
-  const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await API.get('user', `/any/products/${institution}`);
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  // const [products, setProducts] = useState([]);
 
-    if (institution) {
-      fetchData();
-    }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await API.get('user', `/any/products/${institution}`);
+  //       setProducts(data);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     }
+  //   };
+
+  //   if (institution) {
+  //     fetchData();
+  //   }
     
-  }, [institution]);
+  // }, [institution]);
 
   if (!products || products.length === 0) {
     return <div>Loading products...</div>;
@@ -36,7 +37,8 @@ function AllPayment({ setActiveComponent }) {
         <div className="flex flex-wrap gap-[5rem] justify-center items-center relative top-[5rem] h-full">
           {products.map((product, index) => (
             <div key={index}>
-              <Card product={product} setActiveComponent={setActiveComponent} />
+              <Card product={product} setActiveComponent={setActiveComponent}  userType={userType} 
+         setIsEditPopupOpen={setIsEditPopupOpen}  handleSetSelectedProduct={handleSetSelectedProduct}/>
             </div>
           ))}
         </div>
