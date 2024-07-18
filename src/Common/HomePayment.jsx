@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState,useRef,useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import AllPayment from './AllPayment';
 import Cart from './Cart';
@@ -8,7 +8,7 @@ import PaymentHistory from './PaymentHistory';
 import { API } from "aws-amplify";
 import CreateSubscriptionPopup from './CreateSubscriptionPopup';
 import UpdateSubscriptionPopup from './UpdateSubscriptionPopup';
-
+import Context from "../context/Context";
 function HomePayment() {
   const { institution, cognitoId } = useParams();
   const [activeComponent, setActiveComponent] = useState('AllPayment');
@@ -19,6 +19,7 @@ function HomePayment() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const providesContainerRef = useRef(null);
+  const util = useContext(Context).util;
   console.log(error);
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -144,13 +145,15 @@ function HomePayment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-     
+      util.setLoader(true); 
       const { heading, amount, durationText, provides } = formData;
       if (!heading || !amount) {
         alert('Heading and Amount cannot be empty');
+        setIsPopupOpen(true); 
+        util.setLoader(false); 
         return;
       }
-      setIsPopupOpen(false);
+      // setIsPopupOpen(false);
     
     
     const amountInPaisa = parseInt(amount, 10) * 100;
@@ -180,7 +183,13 @@ function HomePayment() {
 
     const durationInMilliseconds = calculatedurationInMilliseconds(subscriptionType);
 
-
+    const confirmation = window.confirm('Do you want to proceed with this submission? Click "OK" to submit or "Cancel" to edit.');
+    if (!confirmation) {
+      setIsPopupOpen(true); 
+      util.setLoader(false);
+      return;
+    }
+    setIsPopupOpen(false);
       await API.put("clients", "/user/development-form/subscriptions",
         {
           body: {
@@ -211,17 +220,28 @@ function HomePayment() {
         provides: [''],
       });
       alert('Subscription created successfully');
+      util.setLoader(false); 
     } catch (error) {
       alert('Error creating subscription:', error);
+      util.setLoader(false); 
     }
+    util.setLoader(false); 
   };
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-     
+      util.setLoader(true); 
       const { heading, amount, durationText, provides } = formData;
       if (!heading || !amount) {
         alert('Heading and Amount cannot be empty');
+        setIsEditPopupOpen(true); 
+        util.setLoader(false); 
+        return;
+      }
+      const confirmation = window.confirm('Do you want to proceed with this submission? Click "OK" to submit or "Cancel" to edit.');
+      if (!confirmation) {
+        setIsEditPopupOpen(true); 
+        util.setLoader(false);
         return;
       }
       setIsEditPopupOpen(false);
@@ -286,13 +306,21 @@ function HomePayment() {
         provides: [''],
       });
       alert('Subscription created successfully');
+      util.setLoader(false); 
     } catch (error) {
       alert('Error creating subscription:', error);
+      util.setLoader(false); 
     }
   };
   const handleDeleteSubscription = async () => {
+    const confirmation = window.confirm('Do you want to proceed with this submission? Click "OK" to submit or "Cancel" to edit.');
+    if (!confirmation) {
+      setIsEditPopupOpen(true); 
+      util.setLoader(false);
+      return;
+    }
     setIsEditPopupOpen(false);
-  
+    util.setLoader(true); 
     try {
     console.log(selectedProduct.productId)
      
@@ -303,12 +331,15 @@ function HomePayment() {
           cognitoId,
           productId:selectedProduct.productId },
         } );
-      setIsEditPopupOpen(false);
+        handleCloseEditPopup();
       alert('Subscription deleted successfully');
       const data = await API.get('user', `/any/products/${institution}`);
       setProducts(data);
+      util.setLoader(false); 
     } catch (error) {
      alert('Error deleting subscription:', error);
+     util.setLoader(false); 
+     handleCloseEditPopup();
     }
   };
   return (

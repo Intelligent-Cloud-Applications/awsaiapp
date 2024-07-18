@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import colors from './../color.json';
 
@@ -16,8 +16,11 @@ isPopupOpen,
   handleMoveUp,
   handleMoveDown
 }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const color = colors[institution];
-
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <>
       {isPopupOpen && (
@@ -47,7 +50,6 @@ isPopupOpen,
                   <div className="popup-body p-8 md:w-[350px]">
                     <form onSubmit={(e) => {
                       handleSubmit(e);
-                      onClose();
                     }}>
                       <div className="mb-1">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -73,38 +75,36 @@ isPopupOpen,
                           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                       </div>
-                      <div className="mb-1">
-                          <label className="block text-gray-700 text-sm font-bold mb-2">
-                            Duration
-                          </label>
-                          <select
-                            name="durationText"
-                            value={formData.durationText}
-                            onChange={handleInputChange}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          >
-                            <option value="Weekly">Weekly</option>
-                            <option value="Monthly">Monthly</option>
-                            <option value="Quarterly">Quarterly</option>
-                            <option value="Yearly">Yearly</option>   <div className="mb-1">
-                          <label className="block text-gray-700 text-sm font-bold mb-2">
-                            Duration
-                          </label>
-                          <select
-                            name="durationText"
-                            value={formData.durationText}
-                            onChange={handleInputChange}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          >
-                            <option value="Weekly">Weekly</option>
-                            <option value="Monthly">Monthly</option>
-                            <option value="Quarterly">Quarterly</option>
-                            <option value="Yearly">Yearly</option>
-                          </select>
-                        </div>
-                      
-                          </select>
-                        </div>
+                      <div className="mb-1 relative">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Duration
+                      </label>
+                      <select
+                        name="durationText"
+                        value={formData.durationText}
+                        onChange={handleInputChange}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onClick={handleDropdownToggle} // Toggle dropdown state on click
+                      >
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Yearly">Yearly</option>
+                      </select>
+                      <span className="absolute inset-y-0 right-0 flex items-center pr-3 mt-8 pointer-events-none">
+                        <svg
+                          className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`} // Rotate SVG based on dropdown state
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.292 7.292a1 1 0 011.416 0L10 10.586l3.292-3.294a1 1 0 111.416 1.416l-4 4a1 1 0 01-1.416 0l-4-4a1 1 0 010-1.416z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                    </div>
                       <div className="mb-2">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                           Provides

@@ -93,7 +93,7 @@ function Nav({ institution, setActiveComponent, activeComponent, userType, setIs
           {userType === 'admin' && (
             <div
               onClick={handleAddProductClick}
-              className={`rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:w-[5rem]`}
+              className={`rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[10rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:w-[8rem]`}
               style={{ backgroundColor: color.primary }}
             >
               ADD PRODUCT
