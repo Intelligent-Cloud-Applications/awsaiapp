@@ -21,6 +21,7 @@ const Cart = ({ institution }) => {
   const [receiptDetails, setReceiptDetails] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
   const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
+  const [referralSubmitted, setReferralSubmitted] = useState(false); // State to track if referral code is submitted
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -47,6 +48,20 @@ const Cart = ({ institution }) => {
     }
   }, [getCartItems, institution, cognitoId, setCartState, isInitialFetch]);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await API.get("clients", `/any/userdetailget/${institution}/${cognitoId}`);
+        console.log(response)
+        setReferralCode(response.referred_code)
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [institution, cognitoId]);
+  
   const updateQuantity = (index, newQuantity) => {
     if (newQuantity <= 0) return;
 
@@ -136,7 +151,8 @@ const Cart = ({ institution }) => {
                     products: productItems.map(item => item.heading),
                     razorpay_payment_id: paymentResponse.razorpay_payment_id,
                     amount: totalAmount,
-                    invoiceId // Send the invoice ID to the webhook API
+                    referralCode,
+                    invoiceId
                   },
                 });
   
@@ -250,6 +266,10 @@ const Cart = ({ institution }) => {
   }
 
   const { productItems, subtotal, currencySymbol } = cartState;
+  const handleReferralSubmit = () => {
+    setReferralSubmitted(true);
+    // Optionally handle any additional logic on referral code submission
+  };
 
   return (
     <div className="Poppins mx-auto h-screen w-screen flex flex-col justify-around items-center border-b py-5 inter max767:h-full max767:flex-col max767:justify-center">
@@ -288,8 +308,10 @@ const Cart = ({ institution }) => {
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>
             </div>
-            <div className="flex flex-col justify-center items-center py-5 px-4 ">
-              <p className="mb-2 w-full text-left text-[gray] text-[0.76rem]">If you have a Referral code, enter it here</p>
+            <div className="flex flex-col justify-center items-center py-5 px-4">
+            <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : 'gray' }}>
+                {referralSubmitted ? 'Referral code submitted' : 'If you have a Referral code, enter it here'}
+              </p>
               <div className='flex justify-center items-center'>
                 <input
                   type="text"
@@ -297,8 +319,13 @@ const Cart = ({ institution }) => {
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value)}
                   className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                  disabled={referralSubmitted} // Disable input if referral code is submitted
                 />
-                <button className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto">
+                <button
+                  className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                  onClick={handleReferralSubmit}
+                  disabled={referralSubmitted} // Disable button if referral code is submitted
+                >
                   Submit
                 </button>
               </div>
