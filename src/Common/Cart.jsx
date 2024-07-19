@@ -48,6 +48,20 @@ const Cart = ({ institution }) => {
     }
   }, [getCartItems, institution, cognitoId, setCartState, isInitialFetch]);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await API.get("clients", `/any/userdetailget/${institution}/${cognitoId}`);
+        console.log(response)
+        setReferralCode(response.referred_code)
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [institution, cognitoId]);
+
   const updateQuantity = (index, newQuantity) => {
     if (newQuantity <= 0) return;
 
@@ -79,12 +93,12 @@ const Cart = ({ institution }) => {
 
   const handleCheckout = async () => {
     setIsLoading1(true);
-  
+
     const { productItems } = cartState;
     const institutionId = institution;
     const productId = productItems.map(item => item.productId);
     const planIds = productItems.map(item => item.planId);
-  
+
     const uniqueProductIds = new Set(productId);
     if (uniqueProductIds.size !== productId.length) {
       displayError('Subscription already active for productId');
@@ -92,7 +106,7 @@ const Cart = ({ institution }) => {
       setIsLoading1(false);
       return;
     }
-  
+
     try {
       const response = await API.put('clients', `/payment/checkout`, {
         body: {
@@ -102,11 +116,11 @@ const Cart = ({ institution }) => {
           referralCode,
         },
       });
-  
+
       const totalAmount = response.reduce((acc, current) => acc + current.subscriptionResult.amount, 0);
       const subscriptionIds = response.map(subscription => subscription.subscriptionResult.paymentId);
       const invoiceId = response[0].invoiceId; // Get the invoice ID
-  
+
       const options = {
         key: "rzp_test_blkHaVbIxIwCZK",
         amount: totalAmount,
@@ -117,16 +131,16 @@ const Cart = ({ institution }) => {
           setIsLoading(true);
           try {
             setStatusMessage('Payment successful');
-  
+
             // Schedule status message updates with delays
             setTimeout(() => {
               setStatusMessage('Generating receipt');
             }, 1000);
-  
+
             setTimeout(() => {
               setStatusMessage('Receipt generated');
             }, 5000);
-  
+
             const verify = async () => {
               try {
                 const verifyResponse = await API.put('clients', `/payment/webhook`, {
@@ -138,12 +152,12 @@ const Cart = ({ institution }) => {
                     razorpay_payment_id: paymentResponse.razorpay_payment_id,
                     amount: totalAmount,
                     referralCode,
-                    invoiceId 
+                    invoiceId
                   },
                 });
-  
+
                 console.log("Verification response:", verifyResponse);
-  
+
                 if (verifyResponse.signatureIsValid) {
                   const formattedDate = new Date().toLocaleString('en-IN', {
                     timeZone: 'Asia/Kolkata',
@@ -151,14 +165,14 @@ const Cart = ({ institution }) => {
                     month: 'long',
                     day: 'numeric',
                   });
-  
+
                   const renewalDates = verifyResponse.renewalDates.map(date => new Date(date).toLocaleString('en-IN', {
                     timeZone: 'Asia/Kolkata',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   }));
-  
+
                   setReceiptDetails({
                     subscriptionId: subscriptionIds,
                     amount: totalAmount / 100,
@@ -168,7 +182,7 @@ const Cart = ({ institution }) => {
                     planDetails: productItems.map(item => `${item.heading}`).join(', '),
                     email: response[0].subscriptionResult.emailId,
                   });
-  
+
                   setTimeout(() => {
                     setIsModalOpen(true);
                     setIsLoading(false);
@@ -246,7 +260,7 @@ const Cart = ({ institution }) => {
       setIsLoading1(false);
     }
   };
-  
+
   if (!cartState) {
     return <div>Loading...</div>;
   }
@@ -295,8 +309,8 @@ const Cart = ({ institution }) => {
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>
             </div>
-            <div className="flex flex-col justify-center items-center py-5 px-4 ">
-              <p className="mb-2 w-full text-left text-[gray] text-[0.76rem]">
+            <div className="flex flex-col justify-center items-center py-5 px-4">
+            <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : 'gray' }}>
                 {referralSubmitted ? 'Referral code submitted' : 'If you have a Referral code, enter it here'}
               </p>
               <div className='flex justify-center items-center'>
@@ -335,7 +349,7 @@ const Cart = ({ institution }) => {
         </div>
       )}
       {isModalOpen && (
-        <animated.div style={animation} className=' absolute m-auto top-[20%] z-[1000]'>
+        <animated.div style={animation} className='absolute m-auto top-[20%] z-[1000]'>
           <ReceiptCard
             subscriptionIds={receiptDetails.subscriptionId}
             amount={receiptDetails.amount}
