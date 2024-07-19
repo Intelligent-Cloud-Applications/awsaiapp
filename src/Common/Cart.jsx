@@ -22,6 +22,7 @@ const Cart = ({ institution }) => {
   const [statusMessage, setStatusMessage] = useState('');
   const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
   const [referralSubmitted, setReferralSubmitted] = useState(false); // State to track if referral code is submitted
+  const [referralError, setReferralError] = useState(false); // State to track if referral code is incorrect
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -52,8 +53,11 @@ const Cart = ({ institution }) => {
     const fetchUserDetails = async () => {
       try {
         const response = await API.get("clients", `/any/userdetailget/${institution}/${cognitoId}`);
-        console.log(response)
-        setReferralCode(response.referred_code)
+        console.log(response);
+        setReferralCode(response.referred_code);
+        if (response.referred_code) {
+          setReferralSubmitted(true)
+        }
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
@@ -152,7 +156,7 @@ const Cart = ({ institution }) => {
                     razorpay_payment_id: paymentResponse.razorpay_payment_id,
                     amount: totalAmount,
                     referralCode,
-                    invoiceId
+                    invoiceId,
                   },
                 });
 
@@ -198,7 +202,7 @@ const Cart = ({ institution }) => {
                 setIsLoading(false);
                 setIsLoading1(false);
               }
-            }
+            };
             verify();
           } catch (error) {
             console.error('Error during payment handler:', error);
@@ -213,7 +217,7 @@ const Cart = ({ institution }) => {
         notes: {
           cognitoId: cognitoId,
           productIds: productId.join(','),
-          planIds: planIds.join(",")
+          planIds: planIds.join(","),
         },
         theme: {
           color: '#205b8f',
@@ -224,7 +228,7 @@ const Cart = ({ institution }) => {
               await API.del('clients', `/cancel/payment`, {
                 body: {
                   cognitoId,
-                  subscriptionIds
+                  subscriptionIds,
                 },
               });
               toast.info("Your payment has been cancelled successfully.", {
@@ -245,11 +249,11 @@ const Cart = ({ institution }) => {
             } catch (error) {
               displayError(error.response.data.error);
             }
-          }
-        }
+          },
+        },
       };
       if (subscriptionIds.length === 1) {
-        options.subscription_id = response[0].subscriptionResult.paymentId
+        options.subscription_id = response[0].subscriptionResult.paymentId;
       }
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
@@ -268,8 +272,19 @@ const Cart = ({ institution }) => {
   const { productItems, subtotal, currencySymbol } = cartState;
 
   const handleReferralSubmit = () => {
+    if (referralCode.trim() === '') {
+      setReferralError(true);
+      return;
+    }
     setReferralSubmitted(true);
+    setReferralError(false);
     // Optionally handle any additional logic on referral code submission
+  };
+
+  const handleReferralReset = () => {
+    setReferralCode('');
+    setReferralSubmitted(false);
+    setReferralError(false);
   };
 
   return (
@@ -310,10 +325,10 @@ const Cart = ({ institution }) => {
               </button>
             </div>
             <div className="flex flex-col justify-center items-center py-5 px-4">
-            <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : 'gray' }}>
-                {referralSubmitted ? 'Referral code submitted' : 'If you have a Referral code, enter it here'}
+              <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
+                {referralSubmitted ? 'Referral code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral code, enter it here'}
               </p>
-              <div className='flex justify-center items-center'>
+              <div className="flex justify-center items-center">
                 <input
                   type="text"
                   placeholder="Referral code"
@@ -322,13 +337,24 @@ const Cart = ({ institution }) => {
                   className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
                   disabled={referralSubmitted} // Disable input if referral code is submitted
                 />
-                <button
-                  className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
-                  onClick={handleReferralSubmit}
-                  disabled={referralSubmitted} // Disable button if referral code is submitted
-                >
-                  Submit
-                </button>
+                {!referralSubmitted && (
+
+                  <button
+                    className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                    onClick={handleReferralSubmit}
+                    disabled={referralSubmitted} // Disable button if referral code is submitted
+                  >
+                    Submit
+                  </button>
+                )}
+                {referralSubmitted && (
+                  <button
+                    className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                    onClick={handleReferralReset}
+                  >
+                    Reset
+                  </button>
+                )}
               </div>
             </div>
           </div>
