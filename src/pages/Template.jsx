@@ -17,13 +17,13 @@ import "./Template.css";
 import Context from "../context/Context";
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
-
+  const [savedData, setsavedData] = useState();
 //  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   // const [loader, setLoader] = useState(false);
 //  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   // const [error, setError] = useState(null);
-  
+  console.log(savedData);
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
@@ -974,7 +974,10 @@ setInstructorBg(InstructorBgUrl);
   };
 
  
-
+  const saveData = () => {
+    setsavedData({});
+//    console.log("Saved Trigger")
+  };
   const handlePrevSection = () => {
     setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
   };
@@ -1081,6 +1084,7 @@ setInstructorBg(InstructorBgUrl);
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
           <Footer
+          saveData={saveData}
             currentSection={currentSection}
             nextSection={handleNextSection}
             prevSection={handlePrevSection}
