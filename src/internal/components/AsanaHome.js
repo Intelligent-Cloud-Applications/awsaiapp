@@ -4,7 +4,7 @@ import "./AsanaHome.css";
 function AsanaHome() {
   const handleLogin = () => {
     // console.log('Login with Asana');
-    window.location.href = 'https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev/login'; // Your backend URL for login
+    window.location.href = 'https://i8k00gfjyf.execute-api.us-east-2.amazonaws.com/dev/login'; // Your backend URL for login
   };
 
   return (

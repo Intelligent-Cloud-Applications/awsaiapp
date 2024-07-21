@@ -19,7 +19,7 @@ function Callback() {
       if (code) {
         try {
           setLoading(true);
-          const response = await axios.get(`https://lr9z4z29lk.execute-api.us-east-2.amazonaws.com/dev/callback?code=${code}`);
+          const response = await axios.get(`https://i8k00gfjyf.execute-api.us-east-2.amazonaws.com/dev/callback?code=${code}`);
           const accessToken = response.data.accessToken;
           localStorage.setItem('accessToken', accessToken);
 
