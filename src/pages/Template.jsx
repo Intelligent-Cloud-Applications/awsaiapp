@@ -385,10 +385,16 @@ const Template = () => {
             youtube: templateResponse.YTLink,
           })
         }
+        
         if (productResponse.length > 0) {
-//          console.log("HELLO2");
-          console.log(productResponse);
-          setSubscriptions(productResponse);
+         console.log("HELLO2",productResponse);
+const convertedProductResponse = productResponse.map(product => ({
+  ...product,
+  amount: product.amount / 100, // Convert amount to rupee
+}));
+
+          console.log(convertedProductResponse);
+          await setSubscriptions(convertedProductResponse);
         }
         if (instructorResponse.length > 0) {
 //          console.log("HELLO3");
@@ -611,38 +617,47 @@ const Template = () => {
   };
 
   const handleSubscriptionUpload = async () => {
-//    console.log(subscriptions);
     try {
-    
-      // Loop through each subscription
-      for (let i = 0; i < subscriptions.length; i++) {
-        const subscription = subscriptions[i];
-//        console.log("OWEIFIWEFIWEOFIWIEFIOWEFWIOEF",subscription);
-        // subscription.provides = subscription.provides.map((provide) => provide.description);
-
-        if (subscription.productId) {
-          await API.put("clients", "/user/development-form/update-subscription", {
-            body: subscription,
-          });
-        }
-        else {
-          // Make API call for each subscription
-          const response = await API.put("clients", "/user/development-form/subscriptions", {
-            body: {
-              institution: institutionId,
-              ...subscription
-            }
-          });
-          const sub = [...subscriptions];
-          sub[i].institution = response.Attributes.institution;
-          sub[i].productId = response.Attributes.productId;
-          setSubscriptions(sub);
-        }
-      }
+      // Create an array of promises, filtering out invalid subscriptions
+      const uploadPromises = subscriptions
+        .filter(subscription => subscription.amount && subscription.heading) // Filter subscriptions
+        .map(async (subscription, i) => {
+          // Multiply the amount by 100
+          const updatedSubscription = {
+            ...subscription,
+            amount: subscription.amount * 100,
+            
+          };
+  
+          if (updatedSubscription.productId) {
+            await API.put("clients", "/user/development-form/update-subscription", {
+              body: { ...updatedSubscription, cognitoId: Ctx.userData.cognitoId }
+            });
+          } else {
+            // Make API call for each subscription
+            const response = await API.put("clients", "/user/development-form/subscriptions", {
+              body: {
+                cognitoId: Ctx.userData.cognitoId,
+                institution: institutionId,
+                ...updatedSubscription
+              }
+            });
+            const sub = [...subscriptions];
+            sub[i].institution = response.Attributes.institution;
+            sub[i].productId = response.Attributes.productId;
+            setSubscriptions(sub);
+          }
+        });
+  
+      // Wait for all promises to complete
+      await Promise.all(uploadPromises);
+  
+      console.log("All subscriptions uploaded successfully");
     } catch (error) {
       console.error("Error uploading subscriptions:", error);
     }
   };
+  
 
 
 

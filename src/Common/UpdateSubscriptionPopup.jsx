@@ -86,10 +86,10 @@ const UpdateSubscriptionPopup = ({
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         onClick={handleDropdownToggle} // Toggle dropdown state on click
                       >
-                        <option value="Weekly">Weekly</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Quarterly">Quarterly</option>
-                        <option value="Yearly">Yearly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
                       </select>
                       <span className="absolute inset-y-0 right-0 flex items-center pr-3 mt-8 pointer-events-none">
                         <svg
