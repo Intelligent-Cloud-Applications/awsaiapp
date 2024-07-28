@@ -6,7 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import Context from '../../context/Context';
 import colors from '../../color.json';
 
-function Card({ product, setActiveComponent }) {
+function Card({ product, setActiveComponent, userType, setIsEditPopupOpen, handleSetSelectedProduct }) {
   const [isLoading, setIsLoading] = useState(true);
   const { institution, cognitoId } = useParams();
   const { getCartItems, isProductInCart, addCartItem } = useContext(Context);
@@ -36,7 +36,10 @@ function Card({ product, setActiveComponent }) {
   };
 
   const isInCart = isProductInCart(product.planId);
-
+  const handleEditProduct = () => {
+    handleSetSelectedProduct(product);
+    // setActiveComponent('EditPayment');
+  };
   return (
     <div className='bg-white w-80 min-h-[30rem] flex flex-col'
     style={{
@@ -78,6 +81,7 @@ function Card({ product, setActiveComponent }) {
             <span className='text-[2rem] font-bold'>{product.currency === 'INR' ? '₹' : '$'}{(product.amount / 100).toFixed(2)}</span>
           )}
         </div>
+        {userType !== 'admin' && (
         <button
           className={`w-[90%] text-center gap-4 flex items-center justify-center ${isAnimating ? 'animate-loader' : ''} ${isInCart?'text-black font-[700] p-[5px]':"text-white p-2"}`}
           onClick={isInCart ? () => setActiveComponent('Cart') : handleAddToCart}
@@ -107,6 +111,18 @@ function Card({ product, setActiveComponent }) {
             </svg>
           )}
         </button>
+      )}
+        {userType === 'admin' && (
+          <button
+            className="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  mt-4"
+            onClick={handleEditProduct}
+            style={{
+              backgroundColor:  color.primary
+            }}
+          >
+            Edit Product
+          </button>
+        )}
       </div>
     </div>
   );

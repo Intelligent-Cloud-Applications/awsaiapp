@@ -12,7 +12,7 @@ const Ctx = useContext(Context);
 const institutionsNames = Ctx.userData.institutionName;
 // const cog
 const cognitoId = Ctx.userData.cognitoId;
-console.log(cognitoId);
+// console.log(cognitoId);
 
 console.log(isDelivered);
 
@@ -171,7 +171,7 @@ console.log(isDelivered);
       );
   
       console.log("File uploaded successfully:", uploadedFile);
-  // 
+  
       
       let imageUrl = await Storage.get(uploadedFile.key);
       imageUrl = imageUrl.split("?")[0];
@@ -346,13 +346,15 @@ console.log(isDelivered);
         const subscriptionPromises = [];
       
         subscriptionDetails.forEach(subscription => {
+          const amountInPaisa = subscription.amount * 100;
           if (subscription.productId) {
            
             subscriptionPromises.push(API.put("clients", "/user/development-form/update-subscription", {
               body: {
+                cognitoId:Ctx.userData.cognitoId,
                 productId: subscription.productId,
                 institution: institutionsNames,
-                amount: subscription.amount,
+                amount: amountInPaisa,
                 country: subscription.country,
                 currency: subscription.currency,
                 duration: subscription.duration,
@@ -367,8 +369,9 @@ console.log(isDelivered);
            
             subscriptionPromises.push(API.put("clients", "/user/development-form/subscriptions", {
               body: {
+                cognitoId:Ctx.userData.cognitoId,
                 institution: institutionsNames,
-                amount: subscription.amount,
+                amount: amountInPaisa,
                 country: subscription.country,
                 currency: subscription.currency,
                 duration: subscription.duration,
@@ -527,6 +530,7 @@ console.log(isDelivered);
       // Make the API call to delete the subscription
       await API.del("clients", `/user/development-form/delete-subscription/${institutionsNames}`, {
         body: {
+          cognitoId:Ctx.userData.cognitoId,
           productId: productId
         }
       });
@@ -770,10 +774,11 @@ console.log(isDelivered);
     });
   };
 
-  const handleAmountChange = (e, index) => {
-    setSubscriptionDetails((prevDetails) => {
+  const handleAmountChange = (event, index) => {
+    const amountInRupee = event.target.value;
+    setSubscriptionDetails(prevDetails => {
       const updatedDetails = [...prevDetails];
-      updatedDetails[index].amount = e.target.value;
+      updatedDetails[index].amount = amountInRupee; 
       return updatedDetails;
     });
   };

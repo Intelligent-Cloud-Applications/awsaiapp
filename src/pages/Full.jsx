@@ -17,7 +17,7 @@ const Full = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [instructorDetails, setInstructorDetails] = useState(null);
   const [loader, setLoader] = useState(true);
-
+const Ctx = useContext(Context);
   const util = useContext(Context).util;
   const goBack = () => {
     navigate('/');
@@ -42,7 +42,14 @@ const Full = () => {
             "clients",
             `/user/development-form/get-product/${institutionNames}`
           );
-          await setSubscriptionDetails(productResponse);
+               // Convert the subscription amount to rupee
+               const convertedProductResponse = productResponse.map(product => ({
+                ...product,
+                amount: product.amount / 100, // Convert amount to rupee
+              }));
+      
+              await setSubscriptionDetails(convertedProductResponse);
+      
   
           const instructorResponse = await API.get(
             "clients",
@@ -237,7 +244,7 @@ const Full = () => {
         return updatedInstructors;
       });
   
-      // console.log("File URL:", imageUrl);
+      console.log("File URL:", imageUrl);
     } catch (error) {
       console.error("Error uploading file: ", error);
     }
@@ -355,13 +362,15 @@ const Full = () => {
         const subscriptionPromises = [];
       
         subscriptionDetails.forEach(subscription => {
+          const amountInPaisa = subscription.amount * 100;
           if (subscription.productId) {
            
             subscriptionPromises.push(API.put("clients", "/user/development-form/update-subscription", {
               body: {
+                cognitoId:Ctx.userData.cognitoId,
                 productId: subscription.productId,
                 institution: institutionNames,
-                amount: subscription.amount,
+                amount: amountInPaisa,
                 country: subscription.country,
                 currency: subscription.currency,
                 duration: subscription.duration,
@@ -376,8 +385,9 @@ const Full = () => {
            
             subscriptionPromises.push(API.put("clients", "/user/development-form/subscriptions", {
               body: {
+                cognitoId:Ctx.userData.cognitoId,
                 institution: institutionNames,
-                amount: subscription.amount,
+                amount: amountInPaisa,
                 country: subscription.country,
                 currency: subscription.currency,
                 duration: subscription.duration,
@@ -536,6 +546,7 @@ const Full = () => {
       // Make the API call to delete the subscription
       await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
         body: {
+          cognitoId:Ctx.userData.cognitoId,
           productId: productId
         }
       });
@@ -757,13 +768,15 @@ const Full = () => {
     });
   };
 
-  const handleAmountChange = (e, index) => {
-    setSubscriptionDetails((prevDetails) => {
+  const handleAmountChange = (event, index) => {
+    const amountInRupee = event.target.value;
+    setSubscriptionDetails(prevDetails => {
       const updatedDetails = [...prevDetails];
-      updatedDetails[index].amount = e.target.value;
+      updatedDetails[index].amount = amountInRupee; 
       return updatedDetails;
     });
   };
+  
   const handleProvideChange = (e, subscriptionIndex, provideIndex) => {
     setSubscriptionDetails((prevDetails) => {
       const updatedDetails = [...prevDetails];
@@ -802,11 +815,11 @@ const Full = () => {
             
             <>
               <div className="container  ">
-                <h1 className="text-[20px]">Template Details</h1>
+                <h2 className="text-[20px]">Template Details</h2>
                  <div className="middle-right-section mt-5">
                 
                   <div className="col gap-4">
-                  <h1 className="text-[20px] font-bold ">Institution ID:</h1>
+                  <h2 className="text-[20px] font-bold ">Institution ID:</h2>
                     <div className="rectangular-box">
                       
                       <p>{templateDetails.institutionid}</p>
@@ -849,7 +862,7 @@ const Full = () => {
                         />
                       </p>
                     </div>
-                    <h1 className="text-[20px] font-bold ">Tagline:</h1>
+                    <h2 className="text-[20px] font-bold ">Tagline:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -861,7 +874,7 @@ const Full = () => {
                       />
                     </div>
                    
-                    <h1 className="text-[20px] font-bold ">Tagline1:</h1>
+                    <h2 className="text-[20px] font-bold ">Tagline1:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -877,7 +890,7 @@ const Full = () => {
     <>
       {templateDetails.Services.map((service, index) => (
         <div key={index}>
-           <h1 className="text-[20px] font-bold">Service {index + 1}</h1>
+           <h2 className="text-[20px] font-bold">Service {index + 1}</h2>
            <div className="rectangular-box">
           <input
             type="text"
@@ -927,7 +940,7 @@ const Full = () => {
 
 
 
-                    <h1 className="text-[20px] font-bold">Class Types:</h1>
+                    <h2 className="text-[20px] font-bold">Class Types:</h2>
                    
       {templateDetails.ClassTypes &&
         templateDetails.ClassTypes.length > 0 && (
@@ -957,7 +970,7 @@ const Full = () => {
          <button onClick={addClassType} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Class Type</button>
 </div>
                     <div className="h-4"></div>
-                    <h1 className="text-[20px] font-bold">Testimonial Name 1:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Name 1:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -970,7 +983,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Image 1:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Image 1:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -984,7 +997,7 @@ const Full = () => {
           View
         </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Description 1:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Description 1:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -997,7 +1010,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Name 2:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Name 2:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1010,7 +1023,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Image 2:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Image 2:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1024,7 +1037,7 @@ const Full = () => {
           View
         </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Description 2:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Description 2:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1037,7 +1050,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Name 3:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Name 3:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1050,7 +1063,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Image 3:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Image 3:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1064,7 +1077,7 @@ const Full = () => {
           View
         </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">Testimonial Description 3:</h1>
+                    <h2 className="text-[20px] font-bold">Testimonial Description 3:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1080,7 +1093,7 @@ const Full = () => {
 
                    
                     <div>
-      {/* <h1 className="text-2xl font-bold">FAQ</h1> */}
+      {/* <h2 className="text-2xl font-bold">FAQ</h2> */}
       {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
         <>
           {templateDetails.FAQ.map((faq, index) => (
@@ -1123,7 +1136,7 @@ const Full = () => {
       </button></div>
     </div>
     <div className="h-4"></div>
-    {/* <h1 className="text-[20px] font-bold">Privacy Policy:</h1>
+    {/* <h2 className="text-[20px] font-bold">Privacy Policy:</h2>
   
                     <div className="rectangular-box">
                       <textarea
@@ -1137,7 +1150,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div> */}
-                    {/* <h1 className="text-[20px] font-bold">About Us:</h1>
+                    {/* <h2 className="text-[20px] font-bold">About Us:</h2>
                     <div className="rectangular-box">
                       <textarea
                         type="text"
@@ -1280,7 +1293,7 @@ const Full = () => {
 
 
 
-                    <h1 className="text-[20px] font-bold">Address:</h1>
+                    <h2 className="text-[20px] font-bold">Address:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1293,7 +1306,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Email Id:</h1>
+                    <h2 className="text-[20px] font-bold">Email Id:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1306,7 +1319,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Phone Number:</h1>
+                    <h2 className="text-[20px] font-bold">Phone Number:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1319,7 +1332,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Upi Id:</h1>
+                    <h2 className="text-[20px] font-bold">Upi Id:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1332,7 +1345,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Youtube:</h1>
+                    <h2 className="text-[20px] font-bold">Youtube:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1345,7 +1358,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Facebook:</h1>
+                    <h2 className="text-[20px] font-bold">Facebook:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1358,7 +1371,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Instagram:</h1>
+                    <h2 className="text-[20px] font-bold">Instagram:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1371,7 +1384,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Footer Link 1:</h1>
+                    <h2 className="text-[20px] font-bold">Footer Link 1:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1384,7 +1397,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Footer Link 2:</h1>
+                    <h2 className="text-[20px] font-bold">Footer Link 2:</h2>
                     <div className="rectangular-box">
                       <input
                         type="text"
@@ -1397,7 +1410,7 @@ const Full = () => {
                         autoFocus
                       />
                     </div>
-                    <h1 className="text-[20px] font-bold">Logo:</h1>
+                    <h2 className="text-[20px] font-bold">Logo:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1411,7 +1424,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">Video:</h1>
+                    <h2 className="text-[20px] font-bold">Video:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1425,7 +1438,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">ServicesBg:</h1>
+                    <h2 className="text-[20px] font-bold">ServicesBg:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1439,7 +1452,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">ServicesPortrait:</h1>
+                    <h2 className="text-[20px] font-bold">ServicesPortrait:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1454,7 +1467,7 @@ const Full = () => {
                       </button>
                     </div>
 
-                    <h1 className="text-[20px] font-bold">TestimonialBg:</h1>
+                    <h2 className="text-[20px] font-bold">TestimonialBg:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1468,7 +1481,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">AboutUsBg:</h1>
+                    <h2 className="text-[20px] font-bold">AboutUsBg:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1482,7 +1495,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">InstructorBg:</h1>
+                    <h2 className="text-[20px] font-bold">InstructorBg:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"
@@ -1496,7 +1509,7 @@ const Full = () => {
                         View
                       </button>
                     </div>
-                    <h1 className="text-[20px] font-bold">SubscriptionBg:</h1>
+                    <h2 className="text-[20px] font-bold">SubscriptionBg:</h2>
                     <div className="rectangular-box">
                       <input
                         type="file"

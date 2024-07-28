@@ -133,14 +133,14 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
 
     setSubscriptions([...subscriptions, newSubscription]);
   };
-
+  const Ctx = useContext(Context);
   const removeSubscription = async (indexToRemove) => {
       const subscription = subscriptions[indexToRemove]
       if (subscription.productId) {
         try {
           util.setLoader(true);
           await API.del("clients", `/user/development-form/delete-subscription/${subscription.institution}`, {
-            body: {
+            body: {cognitoId:Ctx.userData.cognitoId,
               productId: subscription.productId,
             }
           });
@@ -171,15 +171,16 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       <div className="mt-4">
         {subscriptions.map((subscription, index) => (
           <div key={index} className="mt-2">
+            <div className="mt-2 flex items-center justify-between">
             <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
             {index >= 3 && (
               <button
                 onClick={() => removeSubscription(index)}
-                className="bg-[#ff0000] text-white px-4 py-2 mt-4 rounded-md"
-                >
-                Delete Subscription
+               className="bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
+    >
+      <span>✕</span>
               </button>
-              )}
+              )}</div>
             <div className="relative">
               <input
                 type="text"

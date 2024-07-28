@@ -2,16 +2,13 @@ import React, { useContext } from 'react';
 import Context from '../../context/Context';
 import colors from '../../color.json';
 
-function Nav({ institution, setActiveComponent, activeComponent }) {
+function Nav({ institution, setActiveComponent, activeComponent, userType, setIsPopupOpen }) {
   const { itemCount } = useContext(Context);
   const color = colors[institution];
 
   const handleBackClick = () => {
-    // if (window.confirm("Are you sure you want to close this tab?")) {
     window.close();
-    // }
   };
-
 
   const handleCartClick = () => {
     setActiveComponent('Cart');
@@ -22,13 +19,16 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
   };
 
   const handleContactClick = () => {
-    setActiveComponent('contact')
-  }
+    setActiveComponent('contact');
+  };
 
   const handleHistoryClick = () => {
-    setActiveComponent('history')
-  }
+    setActiveComponent('history');
+  };
 
+  const handleAddProductClick = () => {
+    setIsPopupOpen(true);
+  };
 
   return (
     <div>
@@ -40,7 +40,7 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
           <span className='text-[#e2e2e2] inter font-[300] max600:hidden'>back to {institution}</span>
         </div>
         <div className='flex items-center cursor-pointer gap-4 max600:gap-2'>
-          <div
+        <div
             className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[8rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[5rem]`}
             style={activeComponent === 'AllPayment' ? { backgroundColor: color.primary, hover: color.primary } : {}}
             onClick={handleAllPaymentsClick}
@@ -56,7 +56,9 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
           >
             CONTACT US
           </div>
-          <div
+          {userType !== 'admin' && (
+            <>
+               <div
             onClick={
               handleHistoryClick
             }
@@ -87,6 +89,18 @@ function Nav({ institution, setActiveComponent, activeComponent }) {
               </span>
             )}
           </div>
+
+            </>
+          )}
+          {userType === 'admin' && (
+            <div
+              onClick={handleAddProductClick}
+              className={`rounded cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter w-[10rem] text-center max600:text-[0.8rem] max600:-mb-2 max600:w-[8rem]`}
+              style={{ backgroundColor: color.primary }}
+            >
+              ADD PRODUCT
+            </div>
+          )}
         </div>
       </div>
     </div>
