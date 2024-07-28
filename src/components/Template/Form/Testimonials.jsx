@@ -24,6 +24,12 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
   const handleImageChange = (index, event) => {
     const file = event.target.files[0];
     if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
+    if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -67,6 +73,12 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
   };
   const handleBgImageChange3 = (e) => {
     const file = e.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     if (file) {
       setTestimonialBg(file);
     }

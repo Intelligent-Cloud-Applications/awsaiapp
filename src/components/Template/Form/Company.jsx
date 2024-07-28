@@ -49,7 +49,14 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
+  
     const file = event.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
       setLogo(file);
       setSelectedFile(URL.createObjectURL(file));

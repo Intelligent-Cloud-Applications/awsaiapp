@@ -74,12 +74,24 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
   const handleBgImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
+    if (file) {
       setServicesBg(file);
     }
   };
 
   const handlePortraitImageChange = (e) => {
     const file = e.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     if (file) {
       setServicesPortrait(file);
     }

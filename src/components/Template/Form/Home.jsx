@@ -4,7 +4,7 @@ import vupload from "../../../utils/png/vupload.png";
 function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType,TagLine1, setTagLine1, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
-  const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
+  // const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
 
   const handleTagLineInputChange = (e) => {
     setTagLine(e.target.value);
@@ -14,7 +14,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
   };
   const toggleTagLineInputVisibility = () => {
     setTagLineInputVisible(true);
-    setTagLineLineColor("#000000"); // Change TagLine line color to black on click
+    // setTagLineLineColor("#000000"); // Change TagLine line color to black on click
   };
 
 //  const [selectedMedia, setSelectedMedia] = useState(null);
@@ -23,6 +23,12 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     setVideo(file);
     setSelectedMedia(URL.createObjectURL(file));
 
@@ -77,8 +83,8 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
           )}
         </h5>
         <div
-          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-          style={{ backgroundColor: TagLineLineColor }}
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
+          
         ></div>
       </div>
       <div className="relative mt-10">
@@ -100,8 +106,8 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
           )}
         </h5>
         <div
-          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-          style={{ backgroundColor: TagLineLineColor }}
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
+          
         ></div>
       </div>
       <div className="border border-black w-[16rem] h-[14rem] mt-[5rem] relative">

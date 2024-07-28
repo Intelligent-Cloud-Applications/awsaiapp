@@ -24,11 +24,23 @@ function Contact({ contactInfo, setContactInfo ,SubscriptionBg,setSubscriptionBg
   const handleBgImageChange3 = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
+    if (file) {
       setSubscriptionBg(file);
     }
   };
   const handleBgImageChange4 = (e) => {
     const file = e.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     if (file) {
       setInstructorBg(file);
     }
