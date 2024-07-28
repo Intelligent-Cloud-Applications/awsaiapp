@@ -117,7 +117,7 @@ const Cart = ({ institution }) => {
           institutionId,
           cognitoId,
           productId,
-          referralCode,
+          discountCode:referralCode,
         },
       });
 
@@ -326,7 +326,7 @@ const Cart = ({ institution }) => {
             </div>
             <div className="flex flex-col justify-center items-center py-5 px-4">
               <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
-                {referralSubmitted ? 'Referral code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral code, enter it here'}
+                {referralSubmitted ? 'code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral or discount code, enter it here'}
               </p>
               <div className="flex justify-center items-center">
                 <input
@@ -338,7 +338,6 @@ const Cart = ({ institution }) => {
                   disabled={referralSubmitted} // Disable input if referral code is submitted
                 />
                 {!referralSubmitted && (
-
                   <button
                     className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
                     onClick={handleReferralSubmit}
