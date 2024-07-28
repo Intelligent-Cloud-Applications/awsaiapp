@@ -86,6 +86,15 @@ const SignUp = () => {
   //   setPasswordVisible((prevState) => !prevState);
   // };
 
+  const checkInstitutionName = async (institutionName) => {
+    const instituteArray = (UserCtx?.clients?.data).map((e)=> e.institution)
+    if(instituteArray.includes(institutionName)){
+      setErr("Institution Name already exists")
+    }else{
+      setErr("")
+    }
+  }
+
   const form1Validator = () => {
     console.log(phoneNumber.length);
 
@@ -345,6 +354,9 @@ const SignUp = () => {
                   value={institutionName}
                   onChange={(e) => {
                     setInstitutionName(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    checkInstitutionName(e.target.value)
                   }}
                 />
               </li>
