@@ -30,11 +30,22 @@ import Context from "./context/Context";
 import Full from "./pages/Full";
 import Edit from "./pages/Edit";
 import HomePayment from "./Common/HomePayment";
+import AsanaLayout from "./internal/components/AsanaLayout";
+import AsanaHome from "./internal/components/AsanaHome";
+import AsanaUsers from "./internal/components/AsanaUsers";
+import Callback from "./internal/components/Callback";
+import PendingTasks from "./internal/components/PendingTasks";
+import TestingAndDefectFixing from "./internal/components/TestingAndDefectFixing";
+import Projects from "./internal/components/Projects"
+import TaskDetails from "./internal/components/TaskDetails";
+import Tasks from "./internal/components/Tasks";
+import UnauthorizedUser from "./internal/components/UnauthorizedUser";
+
 
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
   const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
-  // console.log("routes", Ctx.userData.institutionName)
+  console.log("routes", Ctx.userData.institutionName)
 
   const redirectToDashboard = !web || !isVerified || !isDelivered;
 
@@ -74,7 +85,20 @@ const RoutesContainer = () => {
       <Route path="/full" element={<Full />} />
       <Route path="/edit" element={<Edit />} />
       <Route path="/allpayment/:institution/:cognitoId/:emailId" element={<HomePayment />} />
-      <Route path="/allpayment/:institution" element={<HomePayment/>} />
+      <Route path="/allpayment/:institution" element={<HomePayment />} />
+      
+      {/* This is the routes for asana portal */}
+      <Route path="/asana-internal" element={<AsanaLayout />} >
+        <Route index element={<AsanaHome />} />
+        <Route path="projects" element={<Projects />} />
+        <Route path="tasks/:projectId" element={<Tasks />} /> 
+        <Route path="task/:taskId" element={<TaskDetails />} /> 
+        <Route path="users" element={<AsanaUsers />} />
+        <Route path="pending-tasks" element={<PendingTasks />} />
+        <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
+      </Route>  
+      <Route path="/error" element={<UnauthorizedUser />}/>
+      <Route path="/callback" element={<Callback />} />
     </Routes>
   );
 };
