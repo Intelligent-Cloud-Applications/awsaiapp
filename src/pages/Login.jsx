@@ -47,9 +47,9 @@ const Login = () => {
     UtilCtx.setLoader(true);
     
     try {
-      const checkResponse = await API.get("clients", `/user/check-phone?phoneNumber=${countryCode}${phoneNumber}`);
+      const checkResponse = await API.get("clients", `/user/check-phone?phoneNumber=${phoneNumber}`);
       console.log("Check response:", checkResponse);
-      if (!checkResponse.exists) {
+      if (checkResponse.exists) {
         Swal.fire({
           icon: "error",
           title: "Phone Number is Not Registered Please Sign Up",
