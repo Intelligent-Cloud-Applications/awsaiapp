@@ -55,7 +55,7 @@ const TemplateMail = () => {
         console.log('Sending request with payload:', payload);
 
         try {
-            const response = await API.post('user', `/user/send-emails-to-leads/${institution}`, {
+            const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
                 body: payload
             });
             console.log('Response:', response);
@@ -65,6 +65,9 @@ const TemplateMail = () => {
             alert('Error sending emails. Please try again later.');
         }
     };
+    
+    
+    
 
     useEffect(() => {
         if (institution) {
