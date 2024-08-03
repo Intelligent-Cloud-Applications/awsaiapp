@@ -23,6 +23,7 @@ const Cart = ({ institution }) => {
   const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
   const [referralSubmitted, setReferralSubmitted] = useState(false); // State to track if referral code is submitted
   const [referralError, setReferralError] = useState(false); // State to track if referral code is incorrect
+  const [referralUsed, setReferralUsed] = useState(false);
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -55,6 +56,9 @@ const Cart = ({ institution }) => {
         const response = await API.get("clients", `/any/userdetailget/${institution}/${cognitoId}`);
         console.log(response);
         setReferralCode(response.referred_code);
+        if (response.referralUsed === true) {
+          setReferralUsed(true)
+        }
         if (response.referred_code) {
           setReferralSubmitted(true)
         }
@@ -117,7 +121,7 @@ const Cart = ({ institution }) => {
           institutionId,
           cognitoId,
           productId,
-          discountCode:referralCode,
+          discountCode: referralCode,
         },
       });
 
@@ -324,15 +328,48 @@ const Cart = ({ institution }) => {
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>
             </div>
-            <div className="flex flex-col justify-center items-center py-5 px-4">
+            {!referralUsed ? (
+              <div className="flex flex-col justify-center items-center py-5 px-4">
+                <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
+                  {referralSubmitted ? 'code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral or discount code, enter it here'}
+                </p>
+                <div className="flex justify-center items-center">
+                  <input
+                    type="text"
+                    placeholder="Referral code"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                    disabled={referralSubmitted} // Disable input if referral code is submitted
+                  />
+                  {!referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralSubmit}
+                      disabled={referralSubmitted} // Disable button if referral code is submitted
+                    >
+                      Submit
+                    </button>
+                  )}
+                  {referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralReset}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center py-5 px-4">
               <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
-                {referralSubmitted ? 'code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral or discount code, enter it here'}
+                {referralSubmitted ? 'code submitted' : referralError ? 'Invalid discount code' : 'If you have a discount code, enter it here'}
               </p>
               <div className="flex justify-center items-center">
                 <input
                   type="text"
-                  placeholder="Referral code"
-                  value={referralCode}
+                  placeholder="Discount code"
                   onChange={(e) => setReferralCode(e.target.value)}
                   className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
                   disabled={referralSubmitted} // Disable input if referral code is submitted
@@ -356,6 +393,7 @@ const Cart = ({ institution }) => {
                 )}
               </div>
             </div>
+            )}
           </div>
         </section>
       </div>
