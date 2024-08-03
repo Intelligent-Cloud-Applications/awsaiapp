@@ -134,7 +134,7 @@ const TemplateMail = () => {
         };
 
         try {
-            const response = await API.post('user', `/user/create-ses-template/${institution}`, {
+            const response = await API.post('clients', `/user/create-ses-template/${institution}`, {
                 body: dataToCreate
             });
             console.log('Response:', response);
@@ -143,6 +143,7 @@ const TemplateMail = () => {
             console.error('Error sending emails:', error);
             alert('Error creating emails. Please try again later.');
         }
+        handleClosePopup();
     };
 
     console.log(selectedTemplate);
