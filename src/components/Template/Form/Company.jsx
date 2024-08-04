@@ -70,7 +70,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   };
 
   return (
-    <div className="px-8">
+    <div>
       <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
       <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
         Company profile, design preferences, and essential details for creating

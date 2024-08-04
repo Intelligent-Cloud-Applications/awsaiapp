@@ -51,7 +51,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
   };
 
   return (
-    <div className="px-8">
+    <div>
       <h1 className="font-medium text-7xl">HOME SECTION</h1>
       <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
         Craft a compelling brand introduction, captivating visitors with your
