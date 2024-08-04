@@ -125,12 +125,11 @@ const TemplateMail = () => {
     };
 
     const handleDoneClick = async () => {
-        setSelectedTemplate(newName);
         const dataToCreate = {
             'TemplateName': newName,
             'SubjectPart': templateSubject,
             'HtmlPart': templateContent,
-            'TextPart': "null"
+            'TextPart': ""
         };
 
         try {
@@ -138,7 +137,7 @@ const TemplateMail = () => {
                 body: dataToCreate
             });
             console.log('Response:', response);
-            alert('Email sent successfully!');
+            alert('Email added successfully!');
         } catch (error) {
             console.error('Error sending emails:', error);
             alert('Error creating emails. Please try again later.');
