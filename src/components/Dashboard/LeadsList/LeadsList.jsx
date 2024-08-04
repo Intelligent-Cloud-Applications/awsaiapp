@@ -10,7 +10,7 @@ import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LeadsList = ({ institution: tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
@@ -24,6 +24,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
   }
   const itemsPerPage = 9;
   const [leadsData, setLeadsData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -43,6 +45,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
+  const [isAllSelected, setisAllSelected] = useState(false);/*to check wheather all the leads data is selected or not*/
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
@@ -53,6 +56,36 @@ const LeadsList = ({ institution: tempInstitution }) => {
   });
   const [id, setId] = useState("");
   console.log(userCheck)
+
+  const handleCheckboxChange = (lead) => {
+    setSelectedRow((prevSelectedRows) => {
+      if (prevSelectedRows.some((selectedLead) => selectedLead.emailId === lead.emailId)) {
+        return prevSelectedRows.filter((selectedLead) => selectedLead.emailId !== lead.emailId);
+      } else {
+        return [...prevSelectedRows, lead];
+      }
+    });
+  };
+
+  const handleSelectAll = (leadsData) => {
+    if (isAllSelected) {
+      setSelectedRow([]);
+    } else {
+      setSelectedRow(leadsData);
+    }
+    setisAllSelected(!isAllSelected);
+  };
+
+  const sendMail = (dataToMail) => {
+    if (dataToMail.length !== 0) {
+      console.log(dataToMail);
+      navigate('/templatemail', { state: { dataToMail } });
+    } else {
+      return (
+        alert("Please select leads")
+      );
+    }
+  }
 
   useEffect(() => {
     setFilteredLeads(filterLeadsByNameEmailIdPhoneNumber(leadsData, searchInput));
@@ -324,6 +357,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   console.log("additionalInfoTitle:", additionalInfoTitle);
   console.log("additionalInfo:", additionalInfo);
+  console.log("selected data", selectedRow);
+  console.log("filtered data", filteredLeads);
   return (
     <div className="ml-[5rem] max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
@@ -354,11 +389,18 @@ const LeadsList = ({ institution: tempInstitution }) => {
               alt=""
             />
           </div>
-          <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:absolute max600:top-[-5%] max600:right-[-5%] max600:p-1 max600:rounded-[7px]"
-            onClick={() => setIsUserAdd(true)}
-          >
-            <span className="mr-2">+</span> Add Leads
-          </button>
+          <div className="flex flex-row max600:absolute max600:top-[-16%] max600:right-[-20%] max600:p-1 max600:flex">
+            <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:rounded-[7px] max600:h-[3rem]"
+              onClick={() => setIsUserAdd(true)}
+            >
+              <span className="mr-2">+</span> Add Leads
+            </button>
+            <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:rounded-[7px] max600:h-[3rem]"
+              onClick={() => { sendMail(selectedRow) }}
+            >
+              Send Mail
+            </button>
+          </div>
         </section>
         {isUserAdd && (
           <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
@@ -541,6 +583,21 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   <th className="w-1/6">Device</th>
                   <th className="w-1/6">Age</th>
                   <th className="w-1/6"></th>
+                  <th className="w-1/6">
+                    <input
+                      type="checkbox"
+                      className="h-[20px] w-[20px]"
+                      checked={isAllSelected}
+                      onChange={() => {
+                        if (filteredLeads === null) {
+                          handleSelectAll(leadsData);
+                        }
+                        else {
+                          handleSelectAll(filteredLeads);
+                        }
+                      }}
+                    />
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -554,6 +611,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <td className="w-1/6">{lead.age}</td>
                     <td className="w-1/6" onClick={() => handleEditUser(lead)}>
                       <img src={EditImage} alt="Edit" width="100px" />
+                    </td>
+                    <td className="w-1/6">
+                      <input
+                        type="checkbox"
+                        className="h-[20px] w-[20px]"
+                        checked={selectedRow.includes(lead)}
+                        onChange={() => handleCheckboxChange(lead)}
+                      />
                     </td>
                   </tr>
                 ))}

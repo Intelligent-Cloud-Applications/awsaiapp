@@ -40,6 +40,7 @@ import Projects from "./internal/components/Projects"
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
+import TemplateMail from "./components/Dashboard/LeadsList/TemplateMail";
 
 
 const RoutesContainer = () => {
@@ -63,6 +64,7 @@ const RoutesContainer = () => {
       ) : (
         <Route path="/Dashboard" element={<DashBoard />} />
       )}
+      <Route path="/templatemail" element={<TemplateMail />} />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
       <Route path="/MonthlyReport" element={<MonthlyReport institution={null} />} />
       <Route path="/Pricing" element={<Pricing />} />
