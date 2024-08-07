@@ -12,6 +12,22 @@ body {
   overflow-x: hidden;
 }
 
+.primary-color{
+  color: rgb(48,175,188);
+  border-color: rgb(48,175,188);
+}
+
+
+.primary-color {
+  color: rgb(48,175,188);
+}
+.secondary-color {
+  color: #000000;
+}
+
+
+
+
 @import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sansita&display=swap");
 

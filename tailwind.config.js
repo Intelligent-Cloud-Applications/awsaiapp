@@ -1,6 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+const flowbite = require("flowbite-react/tailwind");
+
 module.exports = {
-  content: ["./src/**/*.{jsx,js.tsx,ts}"],
+  content: [
+    "./src/**/*.{jsx,js.tsx,ts}",
+    flowbite.content(),
+
+  ],
   theme: {
     extend: {
       screens: {
@@ -120,5 +126,9 @@ module.exports = {
     },
     
   },
-  plugins: [require("@tailwindcss/container-queries")],
+  plugins: [
+    require("@tailwindcss/container-queries"),
+    flowbite.plugin(),
+
+  ],
 };
