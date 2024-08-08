@@ -51,11 +51,6 @@ Amplify.configure({
             : "https://i8k00gfjyf.execute-api.us-east-2.amazonaws.com/dev",
         region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
       },
-      {
-        name: "user",
-        endpoint:process.env.STAGE === "PROD"? "https://7sh8wrjmm2.execute-api.us-east-1.amazonaws.com/dev": "https://r5dp21mb28.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
-      },
     ],
   },  
 });

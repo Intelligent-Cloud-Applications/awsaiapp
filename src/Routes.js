@@ -29,7 +29,6 @@ import Pay from "./pages/Pay";
 import Context from "./context/Context";
 import Full from "./pages/Full";
 import Edit from "./pages/Edit";
-import HomePayment from "./Common/HomePayment";
 import AsanaLayout from "./internal/components/AsanaLayout";
 import AsanaHome from "./internal/components/AsanaHome";
 import AsanaUsers from "./internal/components/AsanaUsers";
@@ -40,6 +39,7 @@ import Projects from "./internal/components/Projects"
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
+import TemplateMail from "./components/Dashboard/LeadsList/TemplateMail";
 
 
 const RoutesContainer = () => {
@@ -63,6 +63,7 @@ const RoutesContainer = () => {
       ) : (
         <Route path="/Dashboard" element={<DashBoard />} />
       )}
+      <Route path="/templatemail" element={<TemplateMail />} />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
       <Route path="/MonthlyReport" element={<MonthlyReport institution={null} />} />
       <Route path="/Pricing" element={<Pricing />} />
@@ -84,19 +85,16 @@ const RoutesContainer = () => {
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
       <Route path="/full" element={<Full />} />
       <Route path="/edit" element={<Edit />} />
-      <Route path="/allpayment/:institution/:cognitoId/:emailId" element={<HomePayment />} />
-      <Route path="/allpayment/:institution" element={<HomePayment />} />
-      
       {/* This is the routes for asana portal */}
       <Route path="/asana-internal" element={<AsanaLayout />} >
         <Route index element={<AsanaHome />} />
         <Route path="projects" element={<Projects />} />
-        <Route path="tasks/:projectId" element={<Tasks />} /> 
-        <Route path="task/:taskId" element={<TaskDetails />} /> 
+        <Route path="tasks/:projectId" element={<Tasks />} />
+        <Route path="task/:taskId" element={<TaskDetails />} />
         <Route path="users" element={<AsanaUsers />} />
         <Route path="pending-tasks" element={<PendingTasks />} />
         <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
-      </Route>  
+      </Route>
       <Route path="/error" element={<UnauthorizedUser />}/>
       <Route path="/callback" element={<Callback />} />
     </Routes>

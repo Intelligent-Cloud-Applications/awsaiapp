@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import Country from "../components/Auth/Country";
 import signUpPng from "../utils/Signup.png";
+import Swal from "sweetalert2";
+
 import "./Login.css";
 
 const SignUp = () => {
@@ -213,56 +215,73 @@ const SignUp = () => {
     UtilCtx.setLoader(true);
 
     try {
-      if (form1Validator()) {
-//        if (!isNewUser) {
-//          await userExistPhoneNumberSignUp();
-//          UtilCtx.setLoader(false);
-//          return;
-//        }
-        console.log(phoneNumber);
-        try {
-          // eslint-disable-next-line
-          await Auth.signUp({
-            username: `+${countryCode}${phoneNumber}`,
-            password: "Avishek@123",
-            institutionName: institutionName,
-            attributes: {
-              phone_number: `+${countryCode}${phoneNumber}`,
-              name: `${firstName} ${lastName}`,
-              email: email,
-            },
-          });
-        }
-        catch (e) {
-          console.error(e);
-        }
-        finally {
-          const phoneResponse = await API.post(
-            'clients',
-            '/any/phone-exists',
-            {
-              body: {
-                phoneNumber: `+${countryCode}${phoneNumber}`
-              }
-            }
-          )
+        // Check if phone number exists
+        const checkResponse = await API.get("clients", `/user/check-phone?phoneNumber=${institutionName}`);
+        console.log("Check response:", checkResponse);
 
-          if (phoneResponse.exists === true) {
-            alert('An account with this phone number already exists. Please login or signup with a different number.')
-          }
-          else {
-            const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-            setSigninResponse(response)
-            setNewUser(true)
-          }
+        if (checkResponse.exists) {
+            Swal.fire({
+                icon: "error",
+                title: "This Company is Already Registered,Please use another Company Name",
+            });
+            UtilCtx.setLoader(false);
+            return;
         }
-      }
-      UtilCtx.setLoader(false);
+
+        // Validate form
+        if (form1Validator()) {
+            try {
+                // Sign up with Auth
+                await Auth.signUp({
+                    username: `+${countryCode}${phoneNumber}`,
+                    password: "Avishek@123",
+                    institutionName: institutionName,
+                    attributes: {
+                        phone_number: `+${countryCode}${phoneNumber}`,
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                    },
+                });
+
+                // Check if phone number already exists
+                const phoneResponse = await API.post(
+                    'clients',
+                    '/any/phone-exists',
+                    {
+                        body: {
+                            phoneNumber: `+${countryCode}${phoneNumber}`,
+                        },
+                    }
+                );
+
+                if (phoneResponse.exists) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "An account with this phone number already exists. Please login or sign up with a different number.",
+                });  
+                } else {
+                    const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+                    setSigninResponse(response);
+                    setNewUser(true);
+                }
+            } catch (signUpError) {
+                Swal.fire({
+                  icon: "error",
+                  title: "An account with this phone number already exists. Please login or sign up with a different number.",
+              });  
+            
+                console.error("Sign up error:", signUpError);
+                // Handle specific sign up errors here
+            }
+        }
+
     } catch (e) {
-      setErr(e.message);
-      UtilCtx.setLoader(false);
+        setErr(e.message);
+    } finally {
+        UtilCtx.setLoader(false);
     }
-  };
+};
+
 
   const onConfirmationSubmit = async (event) => {
     event.preventDefault();

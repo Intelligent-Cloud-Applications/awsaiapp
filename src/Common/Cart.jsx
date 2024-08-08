@@ -23,6 +23,10 @@ const Cart = ({ institution }) => {
   const [referralCode, setReferralCode] = useState(''); // State to hold the referral code
   const [referralSubmitted, setReferralSubmitted] = useState(false); // State to track if referral code is submitted
   const [referralError, setReferralError] = useState(false); // State to track if referral code is incorrect
+  const [referralUsed, setReferralUsed] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(0)
+  const [discountType, setDiscountType] = useState('%');
+  const [discountAmount, setDiscountAmount] = useState(0);
   const color = colors[institution];
   const animation = useSpring({
     opacity: isModalOpen ? 1 : 0,
@@ -55,6 +59,9 @@ const Cart = ({ institution }) => {
         const response = await API.get("clients", `/any/userdetailget/${institution}/${cognitoId}`);
         console.log(response);
         setReferralCode(response.referred_code);
+        if (response.referralUsed === true) {
+          setReferralUsed(true)
+        }
         if (response.referred_code) {
           setReferralSubmitted(true)
         }
@@ -117,7 +124,7 @@ const Cart = ({ institution }) => {
           institutionId,
           cognitoId,
           productId,
-          discountCode:referralCode,
+          discountCode: referralCode,
         },
       });
 
@@ -269,21 +276,48 @@ const Cart = ({ institution }) => {
     return <div>Loading...</div>;
   }
 
-  const { productItems, subtotal, currencySymbol } = cartState;
+  const { productItems,currencySymbol } = cartState;
 
-  const handleReferralSubmit = () => {
-    if (referralCode.trim() === '') {
-      setReferralError(true);
-      return;
+  const handleReferralSubmit = async () => {
+    try {
+      const response = await API.put('clients', `/discount/${institution}/${referralCode}`, {
+        body: {
+          referralCode,
+        },
+      });
+      if (response.referral.discountType === 'percent') {
+        setDiscountType('%');
+        setDiscountPercentage(response.referral.discountWorth);
+        setDiscountAmount((cartState.subtotal * response.referral.discountWorth) / 100);
+      } else {
+        setDiscountType('- ₹');
+        setDiscountPercentage(response.referral.discountWorth);
+        setDiscountAmount(response.referral.discountWorth);
+      }
+      setReferralSubmitted(true);
+    } catch (error) {
+      console.error('Error applying referral code:', error);
+      toast.error('Error applying referral code: ' + error.message, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: '#f8d7da',
+          color: '#721c24',
+        },
+      });
     }
-    setReferralSubmitted(true);
-    setReferralError(false);
-    // Optionally handle any additional logic on referral code submission
   };
 
   const handleReferralReset = () => {
     setReferralCode('');
     setReferralSubmitted(false);
+    setDiscountPercentage('');
+    setDiscountAmount('');
     setReferralError(false);
   };
 
@@ -306,15 +340,15 @@ const Cart = ({ institution }) => {
               <p className="font-bold text-xl mb-5">Cart Total</p>
               <div className="flex justify-between border-b py-5">
                 <p>Subtotal</p>
-                <p>{currencySymbol}{subtotal.toFixed(2)}</p>
+                <p>{cartState.currencySymbol}{cartState.subtotal.toFixed(2)}</p>
               </div>
               <div className="flex justify-between border-b py-5">
                 <p>Discount</p>
-                <p>0%</p>
+                <p>{discountType === '%' ? `${discountPercentage}${discountType}` : `${cartState.currencySymbol}${discountAmount? discountAmount.toFixed(2) : 0}`}</p>
               </div>
               <div className="flex justify-between py-5 font-bold text-lg">
                 <p>Total</p>
-                <p>{currencySymbol}{subtotal.toFixed(2)}</p>
+                <p>{cartState.currencySymbol}{(cartState.subtotal - discountAmount).toFixed(2)}</p>
               </div>
               <button
                 className="w-full px-5 py-2 text-white font-bold bg-red-500 hover:bg-red-600"
@@ -324,38 +358,73 @@ const Cart = ({ institution }) => {
                 {isLoading1 ? 'Loading...' : 'Proceed to checkout'}
               </button>
             </div>
-            <div className="flex flex-col justify-center items-center py-5 px-4">
-              <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
-                {referralSubmitted ? 'code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral or discount code, enter it here'}
-              </p>
-              <div className="flex justify-center items-center">
-                <input
-                  type="text"
-                  placeholder="Referral code"
-                  value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value)}
-                  className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
-                  disabled={referralSubmitted} // Disable input if referral code is submitted
-                />
-                {!referralSubmitted && (
-                  <button
-                    className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
-                    onClick={handleReferralSubmit}
-                    disabled={referralSubmitted} // Disable button if referral code is submitted
-                  >
-                    Submit
-                  </button>
-                )}
-                {referralSubmitted && (
-                  <button
-                    className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
-                    onClick={handleReferralReset}
-                  >
-                    Reset
-                  </button>
-                )}
+
+            {!referralUsed ? (
+              <div className="flex flex-col justify-center items-center py-5 px-4">
+                <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
+                  {referralSubmitted ? 'code submitted' : referralError ? 'Invalid referral code' : 'If you have a Referral or discount code, enter it here'}
+                </p>
+                <div className="flex justify-center items-center">
+                  <input
+                    type="text"
+                    placeholder="Referral code"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                    disabled={referralSubmitted} // Disable input if referral code is submitted
+                  />
+                  {!referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralSubmit}
+                      disabled={referralSubmitted} // Disable button if referral code is submitted
+                    >
+                      Submit
+                    </button>
+                  )}
+                  {referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralReset}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center py-5 px-4">
+                <p className="mb-2 w-full text-left text-[0.76rem]" style={{ color: referralSubmitted ? 'green' : referralError ? 'red' : 'gray' }}>
+                  {referralSubmitted ? 'code submitted' : referralError ? 'Invalid discount code' : 'If you have a discount code, enter it here'}
+                </p>
+                <div className="flex justify-center items-center">
+                  <input
+                    type="text"
+                    placeholder="Discount code"
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    className="w-[18vw] px-4 py-3 border outline-none focus:outline-none max767:w-auto"
+                    disabled={referralSubmitted} // Disable input if referral code is submitted
+                  />
+                  {!referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralSubmit}
+                      disabled={referralSubmitted} // Disable button if referral code is submitted
+                    >
+                      Submit
+                    </button>
+                  )}
+                  {referralSubmitted && (
+                    <button
+                      className="w-[8vw] px-5 py-3 text-white border border-black bg-black hover:bg-gray-800 max767:w-auto"
+                      onClick={handleReferralReset}
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>

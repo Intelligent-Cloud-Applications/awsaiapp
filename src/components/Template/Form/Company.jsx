@@ -49,7 +49,14 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
+  
     const file = event.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }}
     if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
       setLogo(file);
       setSelectedFile(URL.createObjectURL(file));
@@ -70,7 +77,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   };
 
   return (
-    <div className="px-8">
+    <div>
       <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
       <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
         Company profile, design preferences, and essential details for creating

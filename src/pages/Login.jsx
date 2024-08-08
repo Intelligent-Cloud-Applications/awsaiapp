@@ -45,16 +45,29 @@ const Login = () => {
   const sendOTP = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
+    
     try {
+      // const checkResponse = await API.get("clients", `/user/check-phone?phoneNumber=${phoneNumber}`);
+      // console.log("Check response:", checkResponse);
+      // if (checkResponse.exists) {
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Phone Number is Not Registered Please Sign Up",
+      //   });
+      //   Navigate("/signup");
+      //   return;
+      // }
+  
       const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
       setSigninResponse(response);
-      startResendTimer(); // Start the resend timer
+      startResendTimer(); 
     } catch (e) {
       setError(e.message);
     } finally {
       UtilCtx.setLoader(false);
     }
   };
+  
   const handelSubmit = async (event) => {
     event.preventDefault();
     UtilCtx.setLoader(true);
