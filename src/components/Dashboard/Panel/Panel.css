@@ -59,6 +59,10 @@
   .moveRight {
   animation: moveRight 1.5s ease-in-out;
   }
+
+  .clients-data-table{
+    background-color: #fff !important;
+  }
   
   @keyframes moveRight {
   0% {
@@ -121,5 +125,11 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@media (min-width: 1008px) {
+  .more {
+      display: none;
   }
 }

@@ -7,13 +7,14 @@ import Pagination from "@mui/material/Pagination";
 // import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
 import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 // import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
-import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
+// import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
 // import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
 import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
 import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
 // import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
+import { FaChevronRight } from "react-icons/fa";
 import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
@@ -48,6 +49,24 @@ const Panel = () => {
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [isMoreVisible, setIsMoreVisible] = useState(false);
+  const [showHiddenContent, setShowHiddenContent] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const max670Hidden = window.innerWidth <= 670;
+      const max600Hidden = window.innerWidth <= 600;
+      const max800Hidden = window.innerWidth <= 800;
+      const max1008Hidden = window.innerWidth <= 1008;
+
+      setIsMoreVisible(max670Hidden || max600Hidden || max800Hidden || max1008Hidden);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const showDetailForm = (institution) => {
     const userDetail = clientsData.find(
@@ -252,14 +271,19 @@ const Panel = () => {
     }
   };
 
+  const handleMoreClick = () => {
+    setShowHiddenContent(!showHiddenContent);
+  };
+
   return (
-    <div className="w-screen h-screen flex flex-col items-center mt-[-5rem] mx-[4rem]  max1300:mt-0 shadow-xl rounded-lg bg-[#e6e4e4] overflow-hidden">
-      <div className="flex flex-row justify-between w-[90%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
+    <div className="w-screen h-screen flex flex-col items-center mt-[-5rem] mx-[4rem]  max1300:mt-0 shadow-xl rounded-lg bg-[#e6e4e4]">
+      <div className="w-[90%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3">
+      <div className="flex flex-row justify-between w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
         {/* Search Bar */}
         <div className="">
-          <div className="flex w-full items-center border-2 border-solid border-gray-300 rounded-lg p-1 mb-8 mt-6 max850:mb-4 shadow-md bg-[#F9FAFB]">
+          <div className="flex w-full items-center border-2 border-solid border-gray-300 rounded- p-1 mb-8 mt-6 max850:mb-4 shadow-md bg-[#F9FAFB]">
             <img
-              className="w-8 h-8 opacity-60 ml-2"
+              className="w-6 h-8 opacity-60 ml-2"
               src={SearchIcon}
               alt="Search Icon"
             />
@@ -287,7 +311,7 @@ const Panel = () => {
         {/* WebDevelopment Form Link */}
         <div className="">
           <Link to="/template">
-            <button className="flex items-center gap-2 p-2 bg-[#2297a7] text-white font-semibold text-sm rounded-md hover:bg-[#1e8b99] focus:outline-none focus:ring-2 focus:ring-[#1e8b99]">
+            <button className="flex items-center gap-2 p-2 bg-[#48d6e0] text-white font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff]">
               <p>Web Development</p>
             </button>
           </Link>
@@ -397,39 +421,40 @@ const Panel = () => {
       )}
 
       {/* Headings */}
-      <div className="overflow-x-auto shadow-lg w-[90%]">
+      <div className="overflow-x-auto w-full mb-4">
         <Table className="w-full text-sm text-left text-gray-500">
-          <Table.Head className="text-xs text-gray-700 bg-[#F9FAFB]">
+          <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
             <Table.HeadCell></Table.HeadCell>
-            <Table.HeadCell className=" border-r-2  uppercase font-extrabold">
-              Company
+            <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              Company Name
             </Table.HeadCell>
-            <Table.HeadCell className="max600:hidden border-x-2 uppercase font-extrabold">
+            <Table.HeadCell className="max670:hidden uppercase font-semibold text-[14px]">
               Country
             </Table.HeadCell>
-            <Table.HeadCell className=" border-x-2 uppercase font-extrabold">
+            <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
               Status
             </Table.HeadCell>
-            <Table.HeadCell className="max600:hidden border-x-2 uppercase font-extrabold">
+            <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
               Revenue
             </Table.HeadCell>
-            <Table.HeadCell className=" border-x-2 uppercase font-extrabold">
+            <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
               Members
             </Table.HeadCell>
-            <Table.HeadCell className=" border-x-2 uppercase font-extrabold">
+            <Table.HeadCell className={`${showHiddenContent ? '' : 'max1008:hidden'} uppercase font-semibold text-[14px]`}>
               Attendance
             </Table.HeadCell>
-            <Table.HeadCell className="border-l-2 uppercase font-extrabold">
+            <Table.HeadCell className={`${showHiddenContent ? '' : 'max1008:hidden'} uppercase font-semibold text-[14px]`}>
               Leads
             </Table.HeadCell>
+            <Table.HeadCell className="more uppercase font-semibold text-[14px]">
+          More
+        </Table.HeadCell>
           </Table.Head>
           <Table.Body className="bg-white">
             {clientsToDisplay.map(([key, client], index) => (
               <Table.Row
                 key={client.institution}
-                className={`border-b ${
-                  isRowSelected(client.institution) ? "bg-gray-50" : ""
-                }`}
+                className="clients-data-table border-b"
                 onClick={() => setisMonthlyReport(client.institution)}
               >
                 {/* Checkbox */}
@@ -457,24 +482,18 @@ const Panel = () => {
                     to={`/Dashboard?institution=${client.institution}`}
                     onClick={() => handlePersonIconClick(client.institution)}
                   >
-                    <div className="email-hover uppercase font-semibold text-black">
+                    <div className="email-hover uppercase font-semibold text-[#11192B]">
                       {client.institution}
-                    </div>
-                    <div className="text-xs font-medium text-gray-500">
-                      {client.emailId}
-                    </div>
-                    <div className="text-xs font-medium text-gray-500">
-                      {client.phoneNumber}
                     </div>
                   </Link>
                 </Table.Cell>
 
-                <Table.Cell className="px-4 py-2 font-semibold text-gray-900 max600:hidden pl-12">
+                <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] max670:hidden pl-12">
                   {client.country}
                 </Table.Cell>
 
-                <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
-                  <Badge color={getColor(client.status)} size="sm">
+                <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
+                  <Badge color={getColor(client.status)} size="sm" className="flex justify-center items-center">
                     {client.status}
                   </Badge>
                 </Table.Cell>
@@ -485,15 +504,15 @@ const Panel = () => {
                     : `₹${client.recentMonthIncome}`}
                 </Table.Cell>
 
-                <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                <Table.Cell className="max1008:hidden px-4 py-2 font-semibold text-gray-900">
                   {client.recentMonthMembers}
                 </Table.Cell>
 
-                <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                <Table.Cell className={`${showHiddenContent ? '' : 'max1008:hidden'} px-4 py-2 font-semibold text-gray-900`}>
                   {client.recentMonthAttendance}
                 </Table.Cell>
-                <div className="h-full p-2 flex space-x-2 justify- items-center">
-                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900 max1300:hidden">
+                <div className={`${showHiddenContent ? '' : 'max1008:hidden'} h-full p-2 flex space-x-2 justify- items-center`}>
+                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900 ">
                     {client.recentMonthLeads}
                   </Table.Cell>
 
@@ -503,23 +522,24 @@ const Panel = () => {
                         src={
                           isRowSelected(client.institution)
                             ? Update
-                            : personIcon
+                             : ""//{personIcon}
                         }
                         alt=""
                         className={
                           isRowSelected(client.institution)
                             ? `scale-150 w-12 mix-blend-color-multiply bg-transparent`
-                            : `w-8 cursor-pointer opacity-90`
+                            : ""//`w-8 cursor-pointer opacity-90`
                         }
                         onClick={
                           isRowSelected(client.institution)
                             ? () => showUpdateForm(client.institution)
-                            : () => handlePersonIconClick(client.institution)
+                            : "" //() => handlePersonIconClick(client.institution)
                         }
                       />
                     </Link>
                   </Table.Cell>
                 </div>
+                  <Table.Cell className="more" onClick={handleMoreClick}>{isMoreVisible ? <FaChevronRight /> : ''}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
@@ -748,6 +768,7 @@ const Panel = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
