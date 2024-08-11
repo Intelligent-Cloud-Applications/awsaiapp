@@ -12,7 +12,7 @@ import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.sv
 import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
 import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
-import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
+// import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
@@ -254,9 +254,9 @@ const Panel = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col items-center mt-[-5rem] mx-[4rem]  max1300:mt-0 shadow-xl rounded-lg bg-[#e6e4e4] overflow-hidden">
-      <div className="flex flex-row justify-evenly ml-[2.5rem] mt-[1rem] max850:flex-col max850:justify-center max850:items-center">
+      <div className="flex flex-row justify-between w-[90%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
         {/* Search Bar */}
-        <div className="flex justify-center items-center w-full max-w-[28.25rem] max850:w-[80vw]">
+        <div className="">
           <div className="flex w-full items-center border-2 border-solid border-gray-300 rounded-lg p-1 mb-8 mt-6 max850:mb-4 shadow-md bg-[#F9FAFB]">
             <img
               className="w-8 h-8 opacity-60 ml-2"
@@ -274,24 +274,24 @@ const Panel = () => {
         </div>
 
         {/* Functionalities */}
-        <div className="relative min-w-[9rem] h-8 mt-[1.56rem] ml-16 bg-white border border-gray-400 rounded-2xl shadow-md max850:mt-4 max850:ml-0 sm:mb-6">
-          <div className="flex flex-row justify-evenly items-center gap-3 px-5 py-1">
+        <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
+          <div className="flex flex-row justify-center items-center gap-3 px-5 py-1 bg-white rounded-full h-14 ">
             <button onClick={() => setIsUserAdd(true)}>
-              <img className="w-4 h-4" src={Add} alt="Add" />
+              <img className="w-5 h-5" src={Add} alt="Add" />
             </button>
-            <button>
+            {/* <button>
               <img className="w-4 h-4" src={Selections} alt="Selections" />
-            </button>
+            </button> */}
           </div>
           <div className="absolute right-[4px] bottom-[-7px] border border-gray-300 w-[9rem] rounded-2xl h-8 mt-6 z-[-1]"></div>
-        </div>
         {/* WebDevelopment Form Link */}
-        <div className="flex w-full items-center p-1 mb-8 mt-6 max850:mb-4">
+        <div className="">
           <Link to="/template">
             <button className="flex items-center gap-2 p-2 bg-[#2297a7] text-white font-semibold text-sm rounded-md hover:bg-[#1e8b99] focus:outline-none focus:ring-2 focus:ring-[#1e8b99]">
               <p>Web Development</p>
             </button>
           </Link>
+        </div>
         </div>
       </div>
 
@@ -453,8 +453,13 @@ const Panel = () => {
                   </label>
                 </Table.Cell>
                 <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
-                  <Link to={`/Dashboard?institution=${client.institution}`} onClick={() => handlePersonIconClick(client.institution)} >
-                    <div className="email-hover uppercase font-semibold text-black">{client.institution}</div>
+                  <Link
+                    to={`/Dashboard?institution=${client.institution}`}
+                    onClick={() => handlePersonIconClick(client.institution)}
+                  >
+                    <div className="email-hover uppercase font-semibold text-black">
+                      {client.institution}
+                    </div>
                     <div className="text-xs font-medium text-gray-500">
                       {client.emailId}
                     </div>
