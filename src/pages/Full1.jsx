@@ -8,10 +8,17 @@ import "./Full.css";
 import { useNavigate } from "react-router-dom";
 import Context from "../context/Context";
 import { FloatingLabel } from "flowbite-react";
-// import { GrEdit } from "react-icons/gr";
-import { FileInput, Label, TextInput, Select,Radio,Textarea } from "flowbite-react";
+import {
+  FileInput,
+  Label,
+  TextInput,
+  Select,
+  Textarea,
+} from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
+import { IoCaretBack } from "react-icons/io5";
+
 const Full1 = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,10 +79,7 @@ const Full1 = () => {
 
     fetchData();
   }, [institutionNames, loader, loaderInitialized, util]);
-  
- 
- 
- 
+
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[index].title = event.target.value;
@@ -124,6 +128,21 @@ const Full1 = () => {
 
   const handleFileChange = async (event, key) => {
     const file = event.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
+      event.target.value = '';
+      return;
+    }
+  
+    // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size must be within 4 MB.");
+      event.target.value = '';
+      return;
+    }
+  
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
@@ -157,6 +176,20 @@ const Full1 = () => {
   };
   const handleFileChange5 = async (event, key) => {
     const file = event.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
+      event.target.value = '';
+      return;
+    }
+  
+    // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size must be within 4 MB.");
+      event.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
@@ -191,6 +224,20 @@ const Full1 = () => {
 
   const handleFileChange1 = async (event, testimonialIndex) => {
     const file = event.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
+      event.target.value = '';
+      return;
+    }
+  
+    // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size must be within 4 MB.");
+      event.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
@@ -218,6 +265,20 @@ const Full1 = () => {
   };
   const handleFileChange3 = async (event, index) => {
     const file = event.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
+      event.target.value = '';
+      return;
+    }
+  
+    // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size must be within 4 MB.");
+      event.target.value = '';
+      return;
+    }
     try {
       const uploadedFile = await Storage.put(
         `institution-utils/${institutionNames}/images/Instructor/${file.name}`,
@@ -297,7 +358,7 @@ const Full1 = () => {
         country: "India",
         currency: "INR",
         duration: 365 * 24 * 60 * 60 * 1000,
-        provides: [],
+        provides: [""],
       },
     ]);
   };
@@ -316,6 +377,315 @@ const Full1 = () => {
   };
 
   const saveChanges = async () => {
+    const requiredFields = [
+      { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
+      { value: templateDetails.SecondaryColor, name: "SecondaryColor" },
+      { value: templateDetails.LightPrimaryColor, name: "LightPrimaryColor" },
+      { value: templateDetails.LightestPrimaryColor, name: "LightestPrimaryColor" },
+      { value: templateDetails.logoUrl, name: "Logo" },
+      { value: templateDetails.videoUrl, name: "Intro Video" },
+      { value: templateDetails.TagLine, name: "TagLine" },
+      { value: templateDetails.Query_Address, name: "Query Address" },
+      { value: templateDetails.Query_PhoneNumber, name: "Query Phone Number" },
+      { value: templateDetails.Query_EmailId, name: "Query Email" },
+      { value: templateDetails.Facebook, name: "Facebook" },
+      { value: templateDetails.Instagram, name: "Instagram" },
+     
+    
+    ];
+   
+    
+    // Find any missing fields
+    const missingHeadings = [];
+    const emptyItems = [];
+    const emptyClassTypes = [];
+    const invalidTestimonials = [];
+    const invalidSubscriptions = [];
+    const invalidFaqs = [];
+    const invalidAboutUs = [];
+    const invalidPrivacyPolicy = [];
+    const invalidTermsData = [];
+    const invalidRefund = [];
+    const invalidInstructors = [];
+  
+    if (!templateDetails.Services || templateDetails.Services.length === 0) {
+      missingHeadings.push("Services");
+    } else {
+      templateDetails.Services.forEach((service, index) => {
+        if (!service.title || service.title.trim() === '') {
+          missingHeadings.push(`Service ${index + 1} Title`);
+        }
+
+        const hasNonEmptyItem = service.items.some(item => item.trim() !== '');
+        if (!hasNonEmptyItem) {
+          emptyItems.push(`Service ${index + 1} Items`);
+        }
+      });
+    }
+
+    // Check for at least one non-empty ClassType
+    if (!templateDetails.ClassTypes || templateDetails.ClassTypes.length === 0) {
+      emptyClassTypes.push("ClassTypes");
+    } else {
+      const hasNonEmptyClassType = templateDetails.ClassTypes.some(classType => classType.trim() !== '');
+      if (!hasNonEmptyClassType) {
+        emptyClassTypes.push("ClassTypes");
+      }
+    }
+
+    // Validate Testimonials
+    if (!templateDetails.Testimonial || templateDetails.Testimonial.length === 0) {
+      invalidTestimonials.push("Testimonials");
+    } else {
+      templateDetails.Testimonial.forEach((testimonial, index) => {
+        if (!testimonial.img || !testimonial.name || !testimonial.description ||
+            testimonial.img.trim() === '' || testimonial.name.trim() === '' || testimonial.description.trim() === '') {
+          invalidTestimonials.push(`Testimonial ${index + 1}`);
+        }
+      });
+    }
+    if (subscriptionDetails && subscriptionDetails.length > 0) {
+      const hasValidSubscription = subscriptionDetails.some(subscription =>
+        subscription.amount && subscription.heading && 
+        subscription.amount > 0 &&
+        subscription.heading.trim() !== '' &&
+       
+        (subscription.provides && subscription.provides.length > 0 && subscription.provides.some(provide => provide.trim() !== ''))
+      );
+      subscriptionDetails.forEach((subscription, index) => {
+        const hasValidHeading = subscription.heading && subscription.heading.trim() !== '';
+        const hasValidAmount = subscription.amount && subscription.amount > 0;
+        const hasValidProvides = subscription.provides && subscription.provides.length > 0 &&
+                                 subscription.provides.some(provide => provide.trim() !== '');
+        
+        if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
+          invalidSubscriptions.push(`Subscription ${index + 1} must have a non-empty heading, a positive amount, and at least one non-empty provide.`);
+        }
+      });
+  
+      if (!hasValidSubscription) {
+        invalidSubscriptions.push("At least one subscription must have non-empty currency, heading, duration, and at least one non-empty provide.");
+      }
+    } else {
+      invalidSubscriptions.push("At least one Subscriptions is needed");
+    }
+    if (!templateDetails.FAQ || templateDetails.FAQ.length === 0) {
+      invalidFaqs.push("At least one FAQ is required.");
+    } else {
+      templateDetails.FAQ.forEach((faq, index) => {
+        const hasValidTitle = faq.title && faq.title.trim() !== '';
+        const hasValidContent = faq.content && faq.content.trim() !== '';
+        
+        if (!hasValidTitle || !hasValidContent) {
+          if (!hasValidTitle) {
+            invalidFaqs.push(`FAQ ${index + 1} must have a non-empty title.`);
+          }
+          if (!hasValidContent) {
+            invalidFaqs.push(`FAQ ${index + 1} must have non-empty content.`);
+          }
+        }
+      });
+    }
+    if (instructorDetails && instructorDetails.length > 0) {
+      const hasValidInstructor = instructorDetails.some(instructor =>
+        instructor.image && instructor.name && 
+        instructor.position && instructor.emailId &&
+        instructor.emailId.trim() !== '' &&
+       
+        instructor.name.trim() !== '' &&
+        instructor.image.trim() !== '' &&
+        instructor.position.trim() !== '' 
+      );
+      instructorDetails.forEach((instructor, index) => {
+        const hasValidImage = instructor.image && instructor.image.trim() !== '';
+        const hasValidPosition = instructor.position && instructor.position.trim() !== '';;
+        const hasValidName = instructor.name && instructor.name.trim() !== '';
+        const hasValidemail =instructor.emailId && instructor.emailId.trim() !== '' ;
+        if (!hasValidemail || !hasValidName  || !hasValidImage || !hasValidPosition) {
+          invalidInstructors.push(`Instructor ${index + 1} must have a non-empty name,image,position and emailId.`);
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
+    
+          invalidInstructors.push(`Instructor ${index + 1} has an invalid email address`);
+      }
+  
+      });
+  
+      if (!hasValidInstructor) {
+        invalidInstructors.push("At least one Instructor must have non-empty name,image,position and emailId.");
+      }
+      
+      
+    } else {
+      invalidInstructors.push("At least one Instructor must have non-empty name,image,position and emailId.");
+    }
+    if (!templateDetails.AboutUs || templateDetails.AboutUs.length === 0) {
+      invalidAboutUs.push("AboutUs");
+    } else {
+      templateDetails.AboutUs.forEach((about, index) => {
+        if (!about.heading || !about.content || about.heading.trim() === '' || about.content.trim() === '') {
+          invalidAboutUs.push(`AboutUs ${index + 1}`);
+        }
+      });
+    }
+  
+    // Validate PrivacyPolicy
+    if (!templateDetails.PrivacyPolicy || templateDetails.PrivacyPolicy.length === 0) {
+      invalidPrivacyPolicy.push("PrivacyPolicy");
+    } else {
+      templateDetails.PrivacyPolicy.forEach((policy, index) => {
+        if (!policy.heading || !policy.content || policy.heading.trim() === '' || policy.content.trim() === '') {
+          invalidPrivacyPolicy.push(`PrivacyPolicy ${index + 1}`);
+        }
+      });
+    }
+  
+    // Validate TermsData
+    if (!templateDetails.TermsData || templateDetails.TermsData.length === 0) {
+      invalidTermsData.push("TermsData");
+    } else {
+      templateDetails.TermsData.forEach((term, index) => {
+        if (!term.title || !term.content || term.title.trim() === '' || term.content.trim() === '') {
+          invalidTermsData.push(`TermsData ${index + 1}`);
+        }
+      });
+    }
+  
+    // Validate Refund
+    if (!templateDetails.Refund || templateDetails.Refund.length === 0) {
+      invalidRefund.push("Refund");
+    } else {
+      templateDetails.Refund.forEach((refund, index) => {
+        if (!refund.heading || !refund.content || refund.heading.trim() === '' || refund.content.trim() === '') {
+          invalidRefund.push(`Refund ${index + 1}`);
+        }
+      });
+    }
+    const invalidFields = [];
+
+    // Validate YouTube Link
+    if (templateDetails.YTLink && !(() => {
+      try {
+        new URL(templateDetails.YTLink);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    })()) {
+      invalidFields.push("YouTube Link is not a valid URL.");
+    }
+  
+    // Validate Query Phone Number
+    if (templateDetails.Query_PhoneNumber && !/^[0-9]{10}$/.test(templateDetails.Query_PhoneNumber)) {
+      invalidFields.push("Query Phone Number is not a valid format.");
+    }
+  
+    // Validate Query Email ID
+    if (templateDetails.Query_EmailId && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(templateDetails.Query_EmailId)) {
+      invalidFields.push("Query Email ID is not a valid email.");
+    }
+  
+    // Validate Facebook URL
+    if (templateDetails.Facebook && !(() => {
+      try {
+        new URL(templateDetails.Facebook);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    })()) {
+      invalidFields.push("Facebook URL is not a valid URL.");
+    }
+  
+    // Validate Instagram URL
+    if (templateDetails.Instagram && !(() => {
+      try {
+        new URL(templateDetails.Instagram);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    })()) {
+      invalidFields.push("Instagram URL is not a valid URL.");
+    }
+    // Combine all validation errors
+    const missingFields = requiredFields
+      .filter(field => !field.value || field.value.trim() === '')
+      .map(field => field.name);
+
+
+    if (missingFields.length > 0 || missingHeadings.length > 0 || emptyItems.length > 0 || emptyClassTypes.length > 0 || invalidTestimonials.length > 0 || invalidSubscriptions.length > 0 || invalidFaqs.length > 0 || invalidAboutUs.length > 0 || invalidPrivacyPolicy.length > 0 || invalidTermsData.length > 0 || invalidRefund.length > 0 || invalidInstructors.length > 0 || invalidFields.length > 0) {
+      let alertMessage = '';
+
+      if (missingFields.length > 0) {
+        alertMessage += `The following fields are required and cannot be empty: ${missingFields.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidFields.length > 0) {
+        alertMessage += `The following fields have issues: ${invalidFields.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (missingHeadings.length > 0) {
+        alertMessage += `The following service titles are missing: ${missingHeadings.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (emptyItems.length > 0) {
+        alertMessage += `The following services have no non-empty items: ${emptyItems.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (emptyClassTypes.length > 0) {
+        alertMessage += `ClassTypes must contain at least one non-empty item.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidTestimonials.length > 0) {
+        alertMessage += `The following testimonials are invalid (missing img, name, or description): ${invalidTestimonials.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidSubscriptions.length > 0) {
+        alertMessage += `${invalidSubscriptions.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidFaqs.length > 0) {
+        alertMessage += `${invalidFaqs.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidAboutUs.length > 0) {
+        alertMessage += `The following AboutUs entries are invalid (missing title or content): ${invalidAboutUs.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidPrivacyPolicy.length > 0) {
+        alertMessage += `The following PrivacyPolicy entries are invalid (missing title or content): ${invalidPrivacyPolicy.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidTermsData.length > 0) {
+        alertMessage += `The following TermsData entries are invalid (missing title or content): ${invalidTermsData.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidRefund.length > 0) {
+        alertMessage += `The following Refund entries are invalid (missing title or content): ${invalidRefund.join(", ")}.\n`;
+        alert(alertMessage);
+        return;
+      }
+      if (invalidInstructors.length > 0) {
+        alertMessage += `The following instructors are invalid: ${invalidInstructors.join(", ")}.\n`;
+        alert(alertMessage);
+      return;
+      }
+      alert(alertMessage);
+      return;
+    }
+    
     util.setLoader(true);
     try {
       if (instructorDetails && instructorDetails.length > 0) {
@@ -539,6 +909,10 @@ const Full1 = () => {
       );
     });
   };
+  const removeInstructorByIndex = (index) => {
+    setInstructorDetails((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const removeSubscription = async (productId) => {
     if (productId) {
       const confirm = window.confirm(
@@ -788,18 +1162,21 @@ const Full1 = () => {
       return updatedDetails;
     });
   };
-  
- 
+
+  const removeSubscriptionByIndex = (index) => {
+    const updatedSubscriptions = subscriptionDetails.filter(
+      (_, i) => i !== index
+    );
+    setSubscriptionDetails(updatedSubscriptions);
+  };
   const removeItem = (serviceIndex, itemIndex) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[serviceIndex].items.splice(itemIndex, 1);
     setTemplateDetails({ ...templateDetails, Services: updatedServices });
   };
-  const [showInfo, setShowInfo] = useState(false);
 
-  const handleInfoClick = (index) => {
-    setShowInfo(index === showInfo ? null : index);
-  };
+
+
   // const [color, setColor] = useState("#000000");
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
   console.log(isColorPickerVisible);
@@ -815,9 +1192,6 @@ const Full1 = () => {
 
   const handleBlur = () => {
     setColorPickerVisible(false);
-  };
-  const handleOutsideClick = () => {
-    setShowInfo(false);
   };
   if (
     util.loader ||
@@ -838,747 +1212,996 @@ const Full1 = () => {
     <>
       <Navbar />
       <div className="">
-      <div
-        className="relative mt-20 p-4"
-        onClick={handleOutsideClick}
-      >
-        <div className="flex justify-center">
-          <h2 className="text-[25px] max850:text-[20px] text-black font-bold max375:text-[17px]">
-            User Information Management
-          </h2>
-        </div>{" "}
-        <div className="flex justify-center">
-          <p className="px-3 text-center text-[20px]  max850:text-[17px] max375:text-[14px]">
-            Here, you can update user information to ensure our records are
-            accurate and up-to-date. Please use the form below to modify user
-            details as needed.
-          </p>
-        </div>
-        <h1 className="font-bold text-black mt-8">Hero Section</h1>
-        <div className="lg:px-[180px] md:px-[150px] sm:px-4">
-          <div className="flex flex-col gap-4 ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
-              <div className="relative">
-                <div className="mb-2 block ">
-                  <Label
-                    htmlFor="institutionid"
-                    color="gray"
-                    value="InstitutionName"
-                  />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <TextInput
-                  id="institutionid"
-                  placeholder="institutionid"
-                  required
-                  value={templateDetails.institutionid}
-                  sizing="sm"
-                  // onChange={(event) => handleChange(event, "institutionid")}
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-                <i
-                  className="absolute top-0 right-0 mt-2 mr-2 cursor-pointer text-white px-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleInfoClick(1);
-                  }}
-                  style={{
-                    fontSize: "14px",
-                    background: "#000000",
-                    borderRadius: "50%",
-                  }}
-                >
-                  i
-                </i>
-                {showInfo === 1 && (
-                  <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                    The institution name is used as a unique identifier and
-                    cannot be changed once submitted
-                  </div>
-                )}
-              </div>
-
-              <div className="relative ">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="Head Tag Line"
-                    color="gray"
-                    value="Head Tag Line"
-                  />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <TextInput
-                  id="Head Tag Line"
-                  placeholder="Head Tag Line"
-                  required
-                  value={templateDetails.TagLine}
-                  sizing="sm"
-                  onChange={(event) => handleChange(event, "TagLine")}
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-                <i
-                  className="absolute top-0 right-0 mt-2 mr-2 cursor-pointer text-white px-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleInfoClick(2);
-                  }}
-                  style={{
-                    fontSize: "14px",
-                    background: "#000000",
-                    borderRadius: "50%",
-                  }}
-                >
-                  i
-                </i>
-                {showInfo === 2 && (
-                  <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                    It’s the Head Tag line of Home Page
-                  </div>
-                )}
-              </div>
-
-              <div className="relative ">
-                <div className="mb-2 block">
-                  <Label htmlFor="Tag Line 2" color="gray" value="Tag Line 2" />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <TextInput
-                  id="Tag Line 2"
-                  placeholder="Tag Line 2"
-                  required
-                  value={templateDetails.TagLine1}
-                  sizing="sm"
-                  onChange={(event) => handleChange(event, "TagLine1")}
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-                <i
-                  className="absolute top-0 right-0 mt-2 mr-2 cursor-pointer text-white px-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleInfoClick(3);
-                  }}
-                  style={{
-                    fontSize: "14px",
-                    background: "#000000",
-                    borderRadius: "50%",
-                  }}
-                >
-                  i
-                </i>
-                {showInfo === 3 && (
-                  <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                    2nd Tag Line of the Home Section
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2 lg:mt-10 mt-4">
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-10 lg:gap-10 sm:gap-4 text-black">
-              {/* First Input */}
-              <div className="max-w-md">
-                <div className="mb-2 block">
-                  <Label htmlFor="PrimaryColor" value="PrimaryColor" />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <div className="relative">
-                  <TextInput
-                    id="PrimaryColor"
-                    sizing="sm"
-                    placeholder="input text"
-                    required
-                    value={templateDetails.PrimaryColor}
-                    onChange={(event) => handleChange(event, "PrimaryColor")}
-                    onBlur={handleBlur}
-                    className="text-field"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  />
-
-                  <input
-                    type="color"
-                    value={templateDetails.PrimaryColor}
-                    onChange={(event) => handleChange(event, "PrimaryColor")}
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "3px",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      border: "none",
-                      padding: "0",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  />
-                  <i
-                    className="absolute mt-[-68px] right-0 mr-2 cursor-pointer text-white px-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleInfoClick(4);
-                    }}
-                    style={{
-                      fontSize: "14px",
-                      background: "#000000",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    i
-                  </i>
-                  {showInfo === 4 && (
-                    <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                      2nd Tag Line of the Home Section
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Second Input */}
-              <div className="max-w-md">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="LightPrimaryColor"
-                    value="LightPrimaryColor"
-                  />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <div className="relative">
-                  <TextInput
-                    id="LightPrimaryColor"
-                    sizing="sm"
-                    placeholder="input text"
-                    required
-                    value={templateDetails.LightPrimaryColor}
-                    onChange={(event) =>
-                      handleChange(event, "LightPrimaryColor")
-                    }
-                    onBlur={handleBlur}
-                    className="text-field"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  />
-
-                  <input
-                    type="color"
-                    value={templateDetails.LightPrimaryColor}
-                    onChange={(event) =>
-                      handleChange(event, "LightPrimaryColor")
-                    }
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "3px",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      border: "none",
-                      padding: "0",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  />
-                  <i
-                    className="absolute mt-[-68px] right-0 mr-2 cursor-pointer text-white px-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleInfoClick(5);
-                    }}
-                    style={{
-                      fontSize: "14px",
-                      background: "#000000",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    i
-                  </i>
-                  {showInfo === 5 && (
-                    <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                      2nd Tag Line of the Home Section
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="max-w-md">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="LightestPrimaryColor"
-                    value="LightestPrimaryColor"
-                  />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <div className="relative">
-                  <TextInput
-                    id="LightestPrimaryColor"
-                    sizing="sm"
-                    placeholder="input text"
-                    required
-                    value={templateDetails.LightestPrimaryColor}
-                    onChange={(event) =>
-                      handleChange(event, "LightestPrimaryColor")
-                    }
-                    onBlur={handleBlur}
-                    className="text-field"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  />
-
-                  <input
-                    type="color"
-                    value={templateDetails.LightestPrimaryColor}
-                    onChange={(event) =>
-                      handleChange(event, "LightestPrimaryColor")
-                    }
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "3px",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      border: "none",
-                      padding: "0",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  />
-                  <i
-                    className="absolute mt-[-68px] right-0 mr-2 cursor-pointer text-white px-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleInfoClick(6);
-                    }}
-                    style={{
-                      fontSize: "14px",
-                      background: "#000000",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    i
-                  </i>
-                  {showInfo === 6 && (
-                    <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                      2nd Tag Line of the Home Section
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="max-w-md">
-                <div className="mb-2 block">
-                  <Label htmlFor="SecondaryColor" value="SecondaryColor" />
-                  <span className="text-red-500 ml-1">*</span>
-                </div>
-                <div className="relative">
-                  <TextInput
-                    id="SecondaryColor"
-                    sizing="sm"
-                    placeholder="input text"
-                    required
-                    value={templateDetails.SecondaryColor}
-                    onChange={(event) => handleChange(event, "SecondaryColor")}
-                    onBlur={handleBlur}
-                    className="text-field"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  />
-
-                  <input
-                    type="color"
-                    value={templateDetails.SecondaryColor}
-                    onChange={(event) => handleChange(event, "SecondaryColor")}
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: "3px",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      border: "none",
-                      padding: "0",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  />
-                  <i
-                    className="absolute mt-[-68px] right-0 mr-2 cursor-pointer text-white px-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleInfoClick(7);
-                    }}
-                    style={{
-                      fontSize: "14px",
-                      background: "#000000",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    i
-                  </i>
-                  {showInfo === 7 && (
-                    <div className="absolute top-0 right-8 mt-2 p-2 border border-gray-400 bg-black bg-opacity-75 rounded shadow-lg w-96 text-white whitespace-normal max850:w-[278px] max375:w-[230px] max536:text-[12px]">
-                      2nd Tag Line of the Home Section
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
-          <div className="flex flex-col gap-4 ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-              <div id="fileUpload" className="max-w-md relative">
-                <div className="mb-2 block">
-                  <Label htmlFor="Logo Upload file" value="Logo Upload file" />
-                </div>
-                <FileInput
-                  type="file"
-                  onChange={(event) => handleFileChange(event, "logoUrl")}
-                  id="Logo Upload file"
-                  helperText="It’s The Logo of the Company"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-                <button
-                  onClick={() => downloadImage(templateDetails.logoUrl)}
-                  className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                  style={{
-                    borderRadius: "4px",
-                  }}
-                >
-                  View
-                </button>
-              </div>
-
-              <div id="fileUpload" className="max-w-md relative">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="Intro Video Upload file"
-                    value="Intro Video Upload file"
-                  />
-                </div>
-
-                <FileInput
-                  type="file"
-                  onChange={handleVideoChange}
-                  id="Intro Video Upload file"
-                  helperText="It’s The Intro video of home Page"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-
-                <button
-                  onClick={() => downloadImage(templateDetails.videoUrl)}
-                  className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                  style={{
-                    borderRadius: "4px",
-                  }}
-                >
-                  View
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-      
-      <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-           <h1 className="font-bold text-black mt-8">Services Section</h1>
-  <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
-          <div className="flex flex-col gap-4 ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-              <div id="fileUpload" className="max-w-md relative">
-                <div className="mb-2 block">
-                  <Label htmlFor="ServicesBg" value="ServicesBg" />
-                </div>
-                <FileInput
-                  type="file"
-                  onChange={(event) => handleFileChange5(event, "ServicesBg")} 
-                  id="ServicesBg"
-                  helperText="It’s The Services Background of the Company"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-                <button
-                  onClick={() => downloadImage(templateDetails.ServicesBg)}
-                  className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                  style={{
-                    borderRadius: "4px",
-                  }}
-                >
-                  View
-                </button>
-              </div>
-
-              <div id="fileUpload" className="max-w-md relative">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="ServicesPortrait"
-                    value="ServicesPortrait"
-                  />
-                </div>
-
-                <FileInput
-                  type="file"
-                  onChange={(event) => handleFileChange5(event, "ServicesPortrait")} 
-                  id="ServicesPortrait"
-                  helperText="It’s The Services Portrait "
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                />
-
-                <button
-                  onClick={() => downloadImage(templateDetails.ServicesPortrait)}
-                  className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                  style={{
-                    borderRadius: "4px",
-                  }}
-                >
-                  View
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {templateDetails.Services && templateDetails.Services.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.Services.map((service, index) => (
-      <div 
-        key={index} 
-        className=" px-2 lg:px-[170px] "
-      >
-        <h2 className="text-[18px] font-bold mb-2">Service {index + 1}</h2>
-        
-        <FloatingLabel 
-          variant="filled" 
-          label="Title" 
-          style={{
-            width: '100%', 
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }} 
-          value={service.title}
-          onChange={(e) => handleServiceTitleChange(e, index)}
-        />
-
-{service.items && service.items.length > 0 && (
-  <div className="mt-4">
-    {service.items.map((item, itemIndex) => (
-      <div key={itemIndex} className="relative mt-2">
-        <FloatingLabel 
-          variant="filled" 
-          label={`Item ${itemIndex + 1}`} // Show item number
-          style={{
-            width: '100%', 
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }} 
-          value={item}
-          onChange={(e) => handleItemChange(e, index, itemIndex)}
-        />
-        <button
-          onClick={() => removeItem(index, itemIndex)}
-          className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
-        >
-        <RxCross2 />
-        </button>
-      </div>
-    ))}
-  </div>
-)}
-
-        
-        <div className="flex justify-center mt-4">
-          <button 
-            onClick={() => addItem(index)} 
-            className="text-[30px] "
+        <div className="relative mt-20 p-4">
+          <div
+            onClick={goBack}
+            className="border border-black  rounded cursor-pointer w-[26px] h-[20px] text-[20px]"
           >
-          <MdOutlineAddCircle />
+            <IoCaretBack />
+          </div>
+          <div className="flex justify-center">
+            <h2 className="text-[25px] max850:text-[20px] text-black font-bold max375:text-[17px]">
+              User Information Management
+            </h2>
+          </div>{" "}
+          <div className="flex justify-center">
+            <p className="px-3 text-center text-[20px]  max850:text-[17px] max375:text-[14px]">
+              Here, you can update user information to ensure our records are
+              accurate and up-to-date. Please use the form below to modify user
+              details as needed.
+            </p>
+          </div>
+          <h1 className="font-bold text-black mt-8">Hero Section</h1>
+          <div className="lg:px-[180px] md:px-[150px] sm:px-4">
+            <div className="flex flex-col gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
+                <div className="relative">
+                  <div className="mb-2 block ">
+                    <Label
+                      htmlFor="institutionid"
+                      color="gray"
+                      value="InstitutionName"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="institutionid"
+                    placeholder="institutionid"
+                    required
+                    value={templateDetails.institutionid}
+                    sizing="sm"
+                    helperText="It's not changeble"
+                    // onChange={(event) => handleChange(event, "institutionid")}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
 
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 ">
-      {templateDetails.ClassTypes && templateDetails.ClassTypes.length > 0 && (
-          <>
-            {templateDetails.ClassTypes.map((ClassType, index) => (
-              <div key={index} className="relative px-2 lg:px-[80px]">
-                <div className="flex flex-col items-start">
-                  <Label htmlFor={`ClassType-${index}`} color="gray" value={`Class Type ${index + 1}`} />
-                  <div className="relative w-full">
+                <div className="relative ">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="Head Tag Line"
+                      color="gray"
+                      value="Head Tag Line"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="Head Tag Line"
+                    placeholder="Head Tag Line"
+                    required
+                    value={templateDetails.TagLine}
+                    helperText="It’s the Head Tag line of Home Page"
+                    sizing="sm"
+                    onChange={(event) => handleChange(event, "TagLine")}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative ">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="Tag Line 2"
+                      color="gray"
+                      value="Tag Line 2"
+                    />
+                  </div>
+                  <TextInput
+                    id="Tag Line 2"
+                    placeholder="Tag Line 2"
+                    helperText="2nd Tag Line of the Home Section"
+                    required
+                    value={templateDetails.TagLine1}
+                    sizing="sm"
+                    onChange={(event) => handleChange(event, "TagLine1")}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2 lg:mt-10 mt-4">
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-10 lg:gap-10 sm:gap-4 text-black">
+                {/* First Input */}
+                <div className="max-w-md">
+                  <div className="mb-2 block">
+                    <Label htmlFor="PrimaryColor" value="PrimaryColor" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <div className="relative">
                     <TextInput
-                      id={`ClassType-${index}`}
-                      type="text"
-                      placeholder="ClassType"
-                      required
-                      value={ClassType}
-                      onChange={(event) => handleChange1(event, index)}
+                      id="PrimaryColor"
                       sizing="sm"
-                      helperText={
-                        <>
-                          It’s the Dance Type of the Company Provides
-                        </>
+                      placeholder="input text"
+                      required
+                      value={templateDetails.PrimaryColor}
+                      onChange={(event) => handleChange(event, "PrimaryColor")}
+                      onBlur={handleBlur}
+                      className="text-field"
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    />
+
+                    <input
+                      type="color"
+                      value={templateDetails.PrimaryColor}
+                      onChange={(event) => handleChange(event, "PrimaryColor")}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "3px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        border: "none",
+                        padding: "0",
+                        width: "24px",
+                        height: "24px",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Second Input */}
+                <div className="max-w-md">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="LightPrimaryColor"
+                      value="LightPrimaryColor"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <div className="relative">
+                    <TextInput
+                      id="LightPrimaryColor"
+                      sizing="sm"
+                      placeholder="input text"
+                      required
+                      value={templateDetails.LightPrimaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "LightPrimaryColor")
                       }
+                      onBlur={handleBlur}
+                      className="text-field"
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    />
+
+                    <input
+                      type="color"
+                      value={templateDetails.LightPrimaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "LightPrimaryColor")
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "3px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        border: "none",
+                        padding: "0",
+                        width: "24px",
+                        height: "24px",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="max-w-md">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="LightestPrimaryColor"
+                      value="LightestPrimaryColor"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <div className="relative">
+                    <TextInput
+                      id="LightestPrimaryColor"
+                      sizing="sm"
+                      placeholder="input text"
+                      required
+                      value={templateDetails.LightestPrimaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "LightestPrimaryColor")
+                      }
+                      onBlur={handleBlur}
+                      className="text-field"
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    />
+
+                    <input
+                      type="color"
+                      value={templateDetails.LightestPrimaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "LightestPrimaryColor")
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "3px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        border: "none",
+                        padding: "0",
+                        width: "24px",
+                        height: "24px",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="max-w-md">
+                  <div className="mb-2 block">
+                    <Label htmlFor="SecondaryColor" value="SecondaryColor" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <div className="relative">
+                    <TextInput
+                      id="SecondaryColor"
+                      sizing="sm"
+                      placeholder="input text"
+                      required
+                      value={templateDetails.SecondaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "SecondaryColor")
+                      }
+                      onBlur={handleBlur}
+                      className="text-field"
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    />
+
+                    <input
+                      type="color"
+                      value={templateDetails.SecondaryColor}
+                      onChange={(event) =>
+                        handleChange(event, "SecondaryColor")
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "3px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        border: "none",
+                        padding: "0",
+                        width: "24px",
+                        height: "24px",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+            <div className="flex flex-col gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="Logo Upload file"
+                      value="Logo Upload file"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <FileInput
+                    type="file"
+                    onChange={(event) => handleFileChange(event, "logoUrl")}
+                    id="Logo Upload file"
+                    helperText="It’s The Logo of the Company"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+
+                  <button
+                    onClick={() => downloadImage(templateDetails.logoUrl)}
+                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                    style={{
+                      borderRadius: "4px",
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="Intro Video Upload file"
+                      value="Intro Video Upload file"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+
+                  <FileInput
+                    type="file"
+                    onChange={handleVideoChange}
+                    id="Intro Video Upload file"
+                    helperText="It’s The Intro video of home Page"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+
+                  <button
+                    onClick={() => downloadImage(templateDetails.videoUrl)}
+                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                    style={{
+                      borderRadius: "4px",
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Services Section</h1>
+          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+            <div className="flex flex-col gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="ServicesBg" value="ServicesBg" />
+                  </div>
+                  <FileInput
+                    type="file"
+                    onChange={(event) => handleFileChange5(event, "ServicesBg")}
+                    id="ServicesBg"
+                    helperText="It’s The Services Background of the Company"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <button
+                    onClick={() => downloadImage(templateDetails.ServicesBg)}
+                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                    style={{
+                      borderRadius: "4px",
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="ServicesPortrait"
+                      value="ServicesPortrait"
+                    />
+                  </div>
+
+                  <FileInput
+                    type="file"
+                    onChange={(event) =>
+                      handleFileChange5(event, "ServicesPortrait")
+                    }
+                    id="ServicesPortrait"
+                    helperText="It’s The Services Portrait "
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+
+                  <button
+                    onClick={() =>
+                      downloadImage(templateDetails.ServicesPortrait)
+                    }
+                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                    style={{
+                      borderRadius: "4px",
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {templateDetails.Services && templateDetails.Services.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              {templateDetails.Services.map((service, index) => (
+                <div key={index} className=" px-2 lg:px-[170px] ">
+                  <div className="flex items-center justify-start gap-1">
+                    <h2 className="text-[18px] font-bold">
+                      Service {index + 1}
+                    </h2>
+                    <span className="text-red-500 mb-4">*</span>
+                  </div>
+
+                  <FloatingLabel
+                    variant="filled"
+                    label="Title"
+                    style={{
+                      width: "100%",
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                    }}
+                    inputStyle={{ width: "100%" }}
+                    value={service.title}
+                    onChange={(e) => handleServiceTitleChange(e, index)}
+                  />
+
+                  {service.items && service.items.length > 0 && (
+                    <div className="mt-4">
+                      {service.items.map((item, itemIndex) => (
+                        <div key={itemIndex} className="relative mt-2">
+                          <FloatingLabel
+                            variant="filled"
+                            label={`Item ${itemIndex + 1}`}
+                            style={{
+                              width: "100%",
+                              borderColor: "#D1D5DB",
+                              backgroundColor: "#F9FAFB",
+                            }}
+                            inputStyle={{ width: "100%" }}
+                            value={item}
+                            onChange={(e) =>
+                              handleItemChange(e, index, itemIndex)
+                            }
+                          />
+                          {service.items.length > 1 && (
+                            <button
+                              onClick={() => removeItem(index, itemIndex)}
+                              className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                            >
+                              <RxCross2 />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {service.items && service.items.length < 4 && (
+                    <div className="flex justify-center mt-4">
+                      <button
+                        onClick={() => addItem(index)}
+                        className="text-[30px]"
+                      >
+                        <MdOutlineAddCircle />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 ">
+            {templateDetails.ClassTypes &&
+              templateDetails.ClassTypes.length > 0 && (
+                <>
+                  {templateDetails.ClassTypes.map((ClassType, index) => (
+                    <div key={index} className="relative px-2 lg:px-[80px]">
+                      <div className="flex flex-col items-start">
+                        <Label
+                          htmlFor={`ClassType-${index}`}
+                          color="gray"
+                          value={`Class Type ${index + 1}`}
+                        />
+                        <div className="relative w-full">
+                          <TextInput
+                            id={`ClassType-${index}`}
+                            type="text"
+                            placeholder="ClassType"
+                            required
+                            value={ClassType}
+                            onChange={(event) => handleChange1(event, index)}
+                            sizing="sm"
+                            helperText={
+                              <>It’s the Dance Type of the Company Provides</>
+                            }
+                            style={{
+                              borderColor: "#D1D5DB",
+                              backgroundColor: "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                            className="w-full"
+                          />
+                          {templateDetails.ClassTypes.length > 1 && (
+                            <button
+                              onClick={() => removeClassType(index)}
+                              className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                            >
+                              <RxCross2 />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+          </div>
+          <div className="col-span-1 flex items-center justify-center">
+            {templateDetails.ClassTypes.length < 6 && (
+              <button onClick={addClassType} className="text-[30px]">
+                <MdOutlineAddCircle />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Testimonial Section</h1>
+          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+            <div className="flex flex-col gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="TestimonialBg" value="TestimonialBg" />
+                  </div>
+                  <FileInput
+                    type="file"
+                    onChange={(event) =>
+                      handleFileChange5(event, "TestimonialBg")
+                    }
+                    id="TestimonialBg"
+                    helperText="It’s The Services Background of the Testimonial"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <button
+                    onClick={() => downloadImage(templateDetails.TestimonialBg)}
+                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                    style={{
+                      borderRadius: "4px",
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+              {templateDetails.Testimonial &&
+                templateDetails.Testimonial.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+                    {templateDetails.Testimonial.map((testimonial, index) => (
+                      <div
+                        key={index}
+                        className={`px-2 lg:px-[70px] `}
+                        //    ${
+                        //   index === 2
+                        //     ? "col-span-1 md:col-span-2  lg:px-[340px] max1320:px-[200px] max1078:px-[0px]"
+                        //     : ""
+                        // }
+                       
+                      >
+                        <div className="flex items-center justify-start gap-1">
+                          <h2 className="text-[18px] font-bold">
+                            Testimonial {index + 1}
+                          </h2>
+                          <span className="text-red-500 mb-4">*</span>
+                        </div>
+
+                        <FloatingLabel
+                          variant="filled"
+                          label="Name"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                          }}
+                          inputStyle={{ width: "100%" }}
+                          value={testimonial.name}
+                          onChange={(event) =>
+                            handleTestimonialChange(event, index, "name")
+                          }
+                        />
+
+                        <FloatingLabel
+                          variant="filled"
+                          label="Feedback"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                          }}
+                          inputStyle={{ width: "100%" }}
+                          value={testimonial.description}
+                          onChange={(event) =>
+                            handleTestimonialChange(event, index, "description")
+                          }
+                        />
+
+                        <div className="relative mt-4">
+                          <FileInput
+                            type="file"
+                            onChange={(event) =>
+                              handleFileChange1(event, index)
+                            }
+                            id={`TestimonialImg-${index}`}
+                            helperText="Upload the Testimonial Image"
+                            style={{
+                              borderColor: "#D1D5DB",
+                              backgroundColor: "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                          />
+                          {testimonial.img && (
+                            <button
+                              onClick={() => downloadImage(testimonial.img)}
+                              className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                              style={{
+                                borderRadius: "4px",
+                              }}
+                            >
+                              View
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </div>
+          </div>
+        </div>
+
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Subscription Section</h1>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+            <div id="fileUpload" className="max-w-md relative">
+              <div className="mb-2 block">
+                <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
+              </div>
+              <FileInput
+                type="file"
+                onChange={(event) => handleFileChange5(event, "SubscriptionBg")}
+                id="SubscriptionBg"
+                helperText="It’s The Services Background of the Subscription"
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+              />
+              <button
+                onClick={() => downloadImage(templateDetails.SubscriptionBg)}
+                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                style={{
+                  borderRadius: "4px",
+                }}
+              >
+                View
+              </button>
+            </div>
+          </div>
+
+          {subscriptionDetails && subscriptionDetails.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              {subscriptionDetails.map((subscription, index) => (
+                <div key={index} className="px-2 lg:px-[170px]">
+                  <div className="flex justify-between items-center ">
+                    <h2 className="text-[18px] font-bold mb-2">
+                      Subscription {index + 1}
+                    </h2>
+                    {subscriptionDetails.length > 1 && (
+                      <button
+                        onClick={() => {
+                          if (subscription.productId) {
+                            removeSubscription(subscription.productId);
+                          } else {
+                            removeSubscriptionByIndex(index);
+                          }
+                        }}
+                        className="rounded-full  font-bold text-black text-[18px] "
+                      >
+                        <RxCross2 />
+                      </button>
+                    )}
+                  </div>
+                  <FloatingLabel
+                    variant="filled"
+                    label="Heading"
+                    style={{
+                      width: "100%",
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                    }}
+                    inputStyle={{ width: "100%" }}
+                    value={subscription.heading}
+                    onChange={(e) => handleHeadingChange(e, index)}
+                  />
+
+                  {/* Duration */}
+                  <div className="max-w-md mt-4">
+                    <div className="mb-2 block">
+                      <Label
+                        htmlFor={`Duration-${index}`}
+                        value="Select your Duration"
+                      />
+                    </div>
+                    <Select
+                      id={`Duration-${index}`}
+                      required
+                      value={`${subscription.subscriptionType}:${subscription.durationText}`}
+                      onChange={(e) => handleSubscriptionTypeChange(e, index)}
                       style={{
                         borderColor: "#D1D5DB",
                         backgroundColor: "#F9FAFB",
                         borderRadius: "8px",
                       }}
-                      className="w-full"
+                    >
+                      <option value="year:yearly">Year</option>
+                      <option value="month:monthly">Month</option>
+                      <option value="week:weekly">Week</option>
+                      <option value="quarter:quarterly">Quarter</option>
+                    </Select>
+                  </div>
+
+                  {/* Currency */}
+                  <div className="max-w-md mt-4">
+                    <div className="mb-2 block">
+                      <Label
+                        htmlFor={`Currency-${index}`}
+                        value="Select your Currency"
+                      />
+                    </div>
+                    <Select
+                      id={`Currency-${index}`}
+                      required
+                      value={subscription.currency}
+                      onChange={(e) => handleCountryChange(e, index)}
+                      style={{
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <Currency />
+                    </Select>
+                  </div>
+                  <div className="mt-6">
+                    {/* Amount */}
+                    <FloatingLabel
+                      variant="filled"
+                      label="Amount"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                      }}
+                      type="Number"
+                      inputStyle={{ width: "100%" }}
+                      value={subscription.amount}
+                      onChange={(e) => handleAmountChange(e, index)}
                     />
-                    <button
-                      onClick={() => removeClassType(index)}
-                      className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                  </div>
+                  {/* Radio Buttons */}
+                  <fieldset className="flex max-w-md flex-col gap-4 mt-4">
+                    <legend className="mb-4">India</legend>
+                    <div className="flex items-center gap-2">
+                      <div className="radio-label mt-1 ">
+                        <label>
+                          <input
+                            type="radio"
+                            value="true"
+                            checked={subscription.india === true}
+                            onChange={(e) => handleIndiaChange(e, index)}
+                          />
+                        </label>
+                        <span className="mb-1">True</span>
+                        <label>
+                          <input
+                            type="radio"
+                            value="false"
+                            checked={subscription.india === false}
+                            onChange={(e) => handleIndiaChange(e, index)}
+                            className="ml-2"
+                          />
+                        </label>
+                        <span className="mb-1">False</span>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <h2 className="text-lg font-bold mt-4">Provides:</h2>
+                  {subscription.provides.map((provide, idx) => (
+                    <div key={idx} className="relative mt-2">
+                      <FloatingLabel
+                        variant="filled"
+                        label={`Provide ${idx + 1}`}
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                        }}
+                        inputStyle={{ width: "100%" }}
+                        value={provide}
+                        onChange={(e) => handleProvideChange(e, index, idx)}
+                      />
+                      {subscription.provides.length > 1 && (
+                        <button
+                          onClick={() => removeProvide(index, idx)}
+                          className="absolute right-2 top-3 rounded-full text-[#959595] px-1 py-0.5 text-[14px]"
+                        >
+                          <RxCross2 />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="flex flex-col items-center mt-4">
+                    {subscription.provides.length < 3 && (
+                      <button
+                        onClick={() => addProvides(index)}
+                        className="text-[30px] py-2 px-4 "
                       >
-                      <RxCross2 />
-                    </button>
+                        <MdOutlineAddCircle />
+                      </button>
+                    )}
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
+          <div className="flex justify-center mt-4">
+            {subscriptionDetails.length < 6 && (
+              <button
+                onClick={addSubscription}
+                className="text-[40px] py-2 px-4 "
+              >
+                <MdOutlineAddCircle />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Instructor Section</h1>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+            <div id="fileUpload" className="max-w-md relative">
+              <div className="mb-2 block">
+                <Label htmlFor="InstructorBg" value="InstructorBg" />
               </div>
-            ))}
-          </>
-        )}
-      </div>
-      <div className="col-span-1 flex items-center justify-center">
-                <button 
-                  onClick={addClassType} 
-                  className="text-[30px]"
-                >
-                  <MdOutlineAddCircle />
-                </button>
-              </div>
-            
-            
-      </div>
+              <FileInput
+                type="file"
+                onChange={(event) => handleFileChange5(event, "InstructorBg")}
+                id="InstructorBg"
+                helperText="It’s The Background of the Instructor"
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+              />
+              <button
+                onClick={() => downloadImage(templateDetails.InstructorBg)}
+                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                style={{
+                  borderRadius: "4px",
+                }}
+              >
+                View
+              </button>
+            </div>
+          </div>
 
-      <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-
-<h1 className="font-bold text-black mt-8">Testimonial Section</h1>
-<div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
-<div className="flex flex-col gap-4 ">
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-<div id="fileUpload" className="max-w-md relative">
-  <div className="mb-2 block">
-    <Label htmlFor="TestimonialBg" value="TestimonialBg" />
-  </div>
-  <FileInput
-    type="file"
-    onChange={(event) => handleFileChange5(event, "TestimonialBg")} 
-    id="TestimonialBg"
-    helperText="It’s The Services Background of the Testimonial"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-  <button
-    onClick={() => downloadImage(templateDetails.TestimonialBg)}
-    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-    style={{
-      borderRadius: "4px",
-    }}
-  >
-    View
-  </button>
-</div>
-
-</div>
-{templateDetails.Testimonial && templateDetails.Testimonial.length > 0 && (
+          {instructorDetails && instructorDetails.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-              {templateDetails.Testimonial.map((testimonial, index) => (
-                <div key={index} className="px-2 lg:px-[70px]">
-                  <h2 className="text-[18px] font-bold mb-2">Testimonial {index + 1}</h2>
-
+              {instructorDetails.map((instructor, index) => (
+                <div key={index} className="px-2 lg:px-[170px]">
+                  <div className="flex justify-between items-center ">
+                    <h2 className="text-[18px] font-bold mb-2">
+                      Instructor {index + 1}
+                    </h2>
+                    {instructorDetails.length > 1 && (
+                    <button
+                      onClick={() => {
+                        if (instructor.instructorId) {
+                          removeInstructor(instructor.instructorId);
+                        } else {
+                          removeInstructorByIndex(index);
+                        }
+                      }}
+                      className="rounded-full  font-bold text-black text-[18px] "
+                    >
+                      <RxCross2 />
+                    </button>
+                    )}
+                  </div>
                   <FloatingLabel
                     variant="filled"
                     label="Name"
                     style={{
-                      width: '100%',
+                      width: "100%",
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                     }}
-                    inputStyle={{ width: '100%' }}
-                    value={testimonial.name}
-                    onChange={(event) =>
-                      handleTestimonialChange(event, index, 'name')}
+                    inputStyle={{ width: "100%" }}
+                    value={instructor.name}
+                    onChange={(e) => handleInstructorChange(e, "name", index)}
                   />
 
                   <FloatingLabel
                     variant="filled"
-                    label="Feedback"
+                    label="Position"
                     style={{
-                      width: '100%',
+                      width: "100%",
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                     }}
-                    inputStyle={{ width: '100%' }}
-                    value={testimonial.description}
-                    onChange={(event) =>
-                      handleTestimonialChange(event, index, 'description')}
+                    inputStyle={{ width: "100%" }}
+                    value={instructor.position}
+                    onChange={(e) =>
+                      handleInstructorChange(e, "position", index)
+                    }
+                  />
+
+                  <FloatingLabel
+                    variant="filled"
+                    label="Email ID"
+                    style={{
+                      width: "100%",
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                    }}
+                    inputStyle={{ width: "100%" }}
+                    value={instructor.emailId}
+                    onChange={(e) =>
+                      handleInstructorChange(e, "emailId", index)
+                    }
                   />
 
                   <div className="relative mt-4">
                     <FileInput
                       type="file"
-                      onChange={(event) => handleFileChange1(event, index)}
-                      id={`TestimonialImg-${index}`}
-                      helperText="Upload the Testimonial Image"
+                      onChange={(e) => handleFileChange3(e, index)}
+                      id={`InstructorImg-${index}`}
+                      helperText="Upload the Instructor Image"
                       style={{
                         borderColor: "#D1D5DB",
                         backgroundColor: "#F9FAFB",
                         borderRadius: "8px",
                       }}
                     />
-                    {testimonial.img && (
+                    {instructor.image && (
                       <button
-                        onClick={() => downloadImage(testimonial.img)}
+                        onClick={() => downloadImage(instructor.image)}
                         className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
                         style={{
                           borderRadius: "4px",
@@ -1592,908 +2215,619 @@ const Full1 = () => {
               ))}
             </div>
           )}
-</div>
-</div>
-
-</div>
-
-<hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-        <h1 className="font-bold text-black mt-8">Subscription Section</h1>
-
-
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-<div id="fileUpload" className="max-w-md relative">
-  <div className="mb-2 block">
-    <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
-  </div>
-  <FileInput
-    type="file"
-    onChange={(event) => handleFileChange5(event, "SubscriptionBg")} 
-    id="SubscriptionBg"
-    helperText="It’s The Services Background of the Subscription"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-  <button
-    onClick={() => downloadImage(templateDetails.SubscriptionBg)}
-    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-    style={{
-      borderRadius: "4px",
-    }}
-  >
-    View
-  </button>
-</div>
-</div>
-
- {subscriptionDetails && subscriptionDetails.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {subscriptionDetails.map((subscription, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-        <div className="flex justify-between items-center ">
-        <h2 className="text-[18px] font-bold mb-2">Subscription {index + 1}</h2>
-        {/* <div className="flex justify-end"> */}
-        <button
-        onClick={() => removeSubscription(subscription.productId)}
-        className="rounded-full  font-bold text-black text-[18px] "
-      >
-    <RxCross2 />
-      </button></div>
-      {/* </div> */}
-        {/* Heading */}
-        <FloatingLabel 
-          variant="filled" 
-          label="Heading" 
-          style={{
-            width: '100%', 
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }} 
-          value={subscription.heading}
-          onChange={(e) => handleHeadingChange(e, index)}
-        />
-
-        {/* Duration */}
-        <div className="max-w-md mt-4">
-          <div className="mb-2 block">
-            <Label htmlFor={`Duration-${index}`} value="Select your Duration" />
-          </div>
-          <Select 
-            id={`Duration-${index}`} 
-            required 
-            value={`${subscription.subscriptionType}:${subscription.durationText}`}
-            onChange={(e) => handleSubscriptionTypeChange(e, index)}
-            style={{
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: "8px",
-            }}
-          >
-            <option value="year:yearly">Year</option>
-            <option value="month:monthly">Month</option>
-            <option value="week:weekly">Week</option>
-            <option value="quarter:quarterly">Quarter</option>
-          </Select>
-        </div>
-
-        {/* Currency */}
-        <div className="max-w-md mt-4">
-          <div className="mb-2 block">
-            <Label htmlFor={`Currency-${index}`} value="Select your Currency" />
-          </div>
-          <Select 
-            id={`Currency-${index}`} 
-            required 
-            value={subscription.currency}
-            onChange={(e) => handleCountryChange(e, index)}
-            style={{
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: "8px",
-            }}
-          >
-            <Currency />
-          </Select>
-        </div>
-<div className="mt-6">
-        {/* Amount */}
-        <FloatingLabel 
-          variant="filled" 
-          label="Amount" 
-          style={{
-            width: '100%', 
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-    
-          inputStyle={{ width: '100%' }} 
-          value={subscription.amount}
-          onChange={(e) => handleAmountChange(e, index)}
-        />
-</div>
-        {/* Radio Buttons */}
-        <fieldset className="flex max-w-md flex-col gap-4 mt-4">
-          <legend className="mb-4">India</legend>
-          <div className="flex items-center gap-2">
-            <Radio 
-              id={`True-${index}`} 
-              value="true"
-              checked={subscription.india === true}
-              onChange={(e) => handleIndiaChange(e, index)}
-              
-              style={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-                borderRadius: "8px",
-              }}
-            />
-            <Label htmlFor={`True-${index}`}>True</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Radio 
-              id={`False-${index}`} 
-              value="false"
-          checked={subscription.india === false}
-          onChange={(e) => handleIndiaChange(e, index)}
-              style={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-                borderRadius: "8px",
-              }}
-            />
-            <Label htmlFor={`False-${index}`}>False</Label>
-          </div>
-        </fieldset>
-
-        <h2 className="text-lg font-bold mt-4">Provides:</h2>
-        {subscription.provides.map((provide, idx) => (
-          <div key={idx} className="relative mt-2">
-            <FloatingLabel 
-              variant="filled" 
-              label={`Provide ${idx + 1}`} 
-              style={{
-                width: '100%', 
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-              }}
-              inputStyle={{ width: '100%' }} 
-              value={provide}
-              onChange={(e) => handleProvideChange(e, index, idx)}
-            />
-            <button
-              onClick={() => removeProvide(index, idx)}
-              className="absolute right-2 top-3 rounded-full text-[#959595] px-1 py-0.5 text-[14px]"
-            >
-              <RxCross2 />
+          <div className="flex justify-center mt-4">
+            <button onClick={addInstructor} className="text-[30px]">
+              <MdOutlineAddCircle />
             </button>
           </div>
-        ))}
-
-        <div className="flex flex-col items-center mt-4">
-          <button 
-            onClick={() => addProvides(index)} 
-            className="text-[30px] py-2 px-4 " 
-          >
-             <MdOutlineAddCircle />
-          </button>
         </div>
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">FAQ Section</h1>
+          {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              {templateDetails.FAQ.map((faq, index) => (
+                <div key={index} className="px-2 lg:px-[170px]">
+                  <div className="flex justify-between items-center ">
+                    <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
+                    {templateDetails.FAQ.length > 1 && (
+                      <button
+                        onClick={() => removeFAQ(index)}
+                        className="rounded-full font-bold text-black text-[18px]"
+                      >
+                        <RxCross2 />
+                      </button>
+                    )}
+                  </div>
 
-      </div>
-    ))}
+                  <div>
+                    <div className="mb-2 block">
+                      <Label htmlFor="Question" value="Question" />
+                    </div>
+                    <TextInput
+                      variant="filled"
+                      label="Question"
+                      sizing="sm"
+                      id="Question"
+                      type="text"
+                      placeholder="Question"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      inputStyle={{ width: "100%" }}
+                      value={faq.title}
+                      onChange={(e) =>
+                        FaqInputChange(index, "title", e.target.value)
+                      }
+                    />
+                  </div>
 
-    {/* Add Subscription Button */}
-    <div className="mt-4 flex justify-center lg:justify-start lg:ml-32">
-      <button 
-        onClick={addSubscription} 
-        className="text-[40px] py-2 px-4 " 
-      >
-        <MdOutlineAddCircle />
-      </button>
-    </div>
-  </div>
-)}
-
-</div>
-
-
-<hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-        <h1 className="font-bold text-black mt-8">Instructor Section</h1>
-
-
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-<div id="fileUpload" className="max-w-md relative">
-  <div className="mb-2 block">
-    <Label htmlFor="InstructorBg" value="InstructorBg" />
-  </div>
-  <FileInput
-    type="file"
-    onChange={(event) => handleFileChange5(event, "InstructorBg")} 
-    id="InstructorBg"
-    helperText="It’s The Background of the Instructor"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-  <button
-    onClick={() => downloadImage(templateDetails.InstructorBg)}
-    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-    style={{
-      borderRadius: "4px",
-    }}
-  >
-    View
-  </button>
-</div>
-</div>
-
-{instructorDetails && instructorDetails.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {instructorDetails.map((instructor, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-         <div className="flex justify-between items-center ">
-        <h2 className="text-[18px] font-bold mb-2">Instructor {index + 1}</h2>
-        <button
-        onClick={() => removeInstructor(instructor.instructorId)}
-        className="rounded-full  font-bold text-black text-[18px] "
-      >
-    <RxCross2 />
-      </button></div>
-        <FloatingLabel
-          variant="filled"
-          label="Name"
-          style={{
-            width: '100%',
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }}
-          value={instructor.name}
-             onChange={(e) => handleInstructorChange(e, 'name', index)}
-        />
-
-        <FloatingLabel
-          variant="filled"
-          label="Position"
-          style={{
-            width: '100%',
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }}
-          value={instructor.position}
-          onChange={(e) => handleInstructorChange(e, 'position', index)}
-        />
-
-        <FloatingLabel
-          variant="filled"
-          label="Email ID"
-          style={{
-            width: '100%',
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-          }}
-          inputStyle={{ width: '100%' }}
-          value={instructor.emailId}
-             onChange={(e) => handleInstructorChange(e, 'emailId', index)}
-        />
-
-        <div className="relative mt-4">
-          <FileInput
-            type="file"
-            onChange={(e) => handleFileChange3(e, index)}
-            id={`InstructorImg-${index}`}
-            helperText="Upload the Instructor Image"
-            style={{
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: "8px",
-            }}
-          />
-          {instructor.image && (
-            <button
-              onClick={() => downloadImage(instructor.image)}
-              className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-              style={{
-                borderRadius: "4px",
-              }}
-            >
-              View
-            </button>
+                  <div className="mt-4">
+                    <div className="mb-2 block">
+                      <Label htmlFor="Answer" value="Answer" />
+                    </div>
+                    <Textarea
+                      variant="filled"
+                      required
+                      rows={4}
+                      id="Answer"
+                      placeholder="Answer..."
+                      label="Answer"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      inputStyle={{ width: "100%" }}
+                      value={faq.content}
+                      onChange={(e) =>
+                        FaqInputChange(index, "content", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
+
+          <div className="flex justify-center mt-4">
+            {templateDetails.FAQ && templateDetails.FAQ.length < 4 && (
+              <button onClick={addFAQ} className="text-[30px]">
+                <MdOutlineAddCircle />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    ))}
-  </div>
-)}
-<div className="flex justify-center mt-4">
-  <button 
-     onClick={addInstructor}
-    className="text-[30px]"
-  >
-    <MdOutlineAddCircle />
-  </button>
-</div>
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Policy Section</h1>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+            <div id="fileUpload" className="max-w-md relative">
+              <div className="mb-2 block">
+                <Label htmlFor="AboutUsBg" value="AboutUsBg" />
+              </div>
+              <FileInput
+                type="file"
+                onChange={(event) => handleFileChange5(event, "AboutUsBg")}
+                id="AboutUsBg"
+                helperText="It’s The Background of the AboutUs"
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+              />
+              <button
+                onClick={() => downloadImage(templateDetails.InstructorBg)}
+                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                style={{
+                  borderRadius: "4px",
+                }}
+              >
+                View
+              </button>
+            </div>
+          </div>
+          {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              {templateDetails.AboutUs.map((item, index) => (
+                <div key={index} className="px-2 lg:px-[170px]">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-[18px] font-bold">
+                      AboutUs {index + 1}
+                    </h2>
+                    {templateDetails.AboutUs &&
+                      templateDetails.AboutUs.length > 1 && (
+                        <button
+                          onClick={() => removeAboutUsItem(index)}
+                          className="rounded-full font-bold text-black text-[18px]"
+                        >
+                          <RxCross2 />
+                        </button>
+                      )}
+                  </div>
 
-</div>
-<hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-        <h1 className="font-bold text-black mt-8">FAQ Section</h1>
-        {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.FAQ.map((faq, index) => (
-      <div 
-        key={index} 
-        className="px-2 lg:px-[170px]"
-      >
-         <div className="flex justify-between items-center ">
-  <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
-  <button 
-    onClick={() => removeFAQ(index)}
-    className="rounded-full font-bold text-black text-[18px]"
-  >
-    <RxCross2 />
-  </button>
-</div>
+                  <div className="mt-4">
+                    <Label
+                      htmlFor={`aboutUsHeading-${index}`}
+                      value="Heading"
+                    />
+                    <TextInput
+                      id={`aboutUsHeading-${index}`}
+                      variant="filled"
+                      label="Heading"
+                      placeholder="Enter AboutUs Policy Heading"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      value={item.heading}
+                      onChange={(e) => handleAboutUsChange(e, index, "heading")}
+                    />
+                  </div>
 
-        <div>
-        <div className="mb-2 block">
-          <Label htmlFor="Question" value="Question" />
-        </div>
-        <TextInput
-          variant="filled" 
-          label="Question" 
-           sizing="sm"
-          id="Question"
-          type="text"
-          placeholder="Question"
-          style={{
-            width: '100%', 
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius:'8px'
-          }}
-          inputStyle={{ width: '100%' }} 
-          value={faq.title}
-          onChange={(e) => FaqInputChange(index, 'title', e.target.value)}
-        />
-        </div>
+                  <div className="mt-4">
+                    <Label
+                      htmlFor={`aboutUsContent-${index}`}
+                      value="Content"
+                    />
+                    <Textarea
+                      id={`aboutUsContent-${index}`}
+                      variant="filled"
+                      label="Content"
+                      placeholder="Enter AboutUs Content"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      rows={4}
+                      value={item.content}
+                      onChange={(e) => handleAboutUsChange(e, index, "content")}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-        <div className="mt-4">
-        <div className="mb-2 block">
-        <Label htmlFor="Answer" value="Answer" />
-      </div>
-          <Textarea
-            variant="filled" 
-            required rows={4}
-            id="Answer"
-            placeholder="Answer..."
-            label="Answer" 
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius:'8px',
-            }}
-            inputStyle={{ width: '100%' }} 
-            value={faq.content}
-            onChange={(e) => FaqInputChange(index, 'content', e.target.value)}
-          />
-        </div>
+          <div className="flex justify-center mt-4">
+            {templateDetails.AboutUs && templateDetails.AboutUs.length < 6 && (
+              <button
+                onClick={addAboutUsItem}
+                className="flex items-center text-[30px] bg-black px-2 rounded"
+              >
+                <MdOutlineAddCircle className="text-white" />
+                <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                  About Us
+                </h2>
+              </button>
+            )}
+          </div>
+          {templateDetails.PrivacyPolicy &&
+            templateDetails.PrivacyPolicy.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+                {templateDetails.PrivacyPolicy.map((item, index) => (
+                  <div key={index} className="px-2 lg:px-[170px]">
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-[18px] font-bold">
+                        PrivacyPolicy {index + 1}
+                      </h2>
+                      {templateDetails.PrivacyPolicy &&
+                        templateDetails.PrivacyPolicy.length > 1 && (
+                          <button
+                            onClick={() => removePrivacyPolicyItem(index)}
+                            className="rounded-full font-bold text-black text-[18px]"
+                          >
+                            <RxCross2 />
+                          </button>
+                        )}
+                    </div>
 
-        
-      </div>
-    ))}
-  </div>
-)}
-
-<div className="flex justify-center mt-4">
-  <button 
-   onClick={addFAQ}
-    className="text-[30px]"
-  >
-    <MdOutlineAddCircle />
-  </button>
-</div>
-
-       </div>
-       <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-        <h1 className="font-bold text-black mt-8">Policy Section</h1>
-
-
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-<div id="fileUpload" className="max-w-md relative">
-  <div className="mb-2 block">
-    <Label htmlFor="AboutUsBg" value="AboutUsBg" />
-  </div>
-  <FileInput
-    type="file"
-    onChange={(event) => handleFileChange5(event, "AboutUsBg")} 
-    id="AboutUsBg"
-    helperText="It’s The Background of the AboutUs"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-  <button
-    onClick={() => downloadImage(templateDetails.InstructorBg)}
-    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-    style={{
-      borderRadius: "4px",
-    }}
-  >
-    View
-  </button>
-</div>
-</div>
-{templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.AboutUs.map((item, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-        <div className="flex justify-between items-center">
-          <h2 className="text-[18px] font-bold">AboutUs {index + 1}</h2>
-          <button
-            onClick={() => removeAboutUsItem(index)}
-            className="rounded-full font-bold text-black text-[18px]"
-          >
-            <RxCross2 />
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`aboutUsHeading-${index}`} value="Heading" />
-          <TextInput
-            id={`aboutUsHeading-${index}`}
-            variant="filled"
-            label="Heading"
-            placeholder="Enter AboutUs Policy Heading"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            value={item.heading}
-            onChange={(e) => handleAboutUsChange(e, index, 'heading')}
-          />
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`aboutUsContent-${index}`} value="Content" />
-          <Textarea
-            id={`aboutUsContent-${index}`}
-            variant="filled"
-            label="Content"
-            placeholder="Enter AboutUs Content"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            rows={4}
-            value={item.content}
-            onChange={(e) => handleAboutUsChange(e, index, 'content')}
-          />
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-<div className="flex justify-center mt-4">
-  <button onClick={addAboutUsItem} className="text-[30px]">
-    <MdOutlineAddCircle />
-  </button>
-</div>
-{templateDetails.PrivacyPolicy && templateDetails.PrivacyPolicy.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.PrivacyPolicy.map((item, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-        <div className="flex justify-between items-center">
-          <h2 className="text-[18px] font-bold">PrivacyPolicy {index + 1}</h2>
-          <button
-            onClick={() => removePrivacyPolicyItem(index)}
-            className="rounded-full font-bold text-black text-[18px]"
-          >
-            <RxCross2 />
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`privacyPolicyHeading-${index}`} value="Heading" />
-          <TextInput
-            id={`privacyPolicyHeading-${index}`}
-            variant="filled"
-            label="Heading"
-            placeholder="Enter PrivacyPolicy Heading"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            value={item.heading}
-            onChange={(e) => handlePrivacyPolicyChange(e, index, 'heading')}
-          />
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`privacyPolicyContent-${index}`} value="Content" />
-          <Textarea
-            id={`privacyPolicyContent-${index}`}
-            variant="filled"
-            label="Content"
-            placeholder="Enter PrivacyPolicy Content"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            rows={4}
-            value={item.content}
-            onChange={(e) => handlePrivacyPolicyChange(e, index, 'content')}
-          />
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-<div className="flex justify-center mt-4">
-  <button onClick={addPrivacyPolicyItem} className="text-[30px]">
-    <MdOutlineAddCircle />
-  </button>
-</div>
-{templateDetails.Refund && templateDetails.Refund.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.Refund.map((item, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-        <div className="flex justify-between items-center">
-          <h2 className="text-[18px] font-bold">Refund Policy {index + 1}</h2>
-          <button
-            onClick={() => removeRefundItem(index)}
-            className="rounded-full font-bold text-black text-[18px]"
-          >
-            <RxCross2 />
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`refundHeading-${index}`} value="Heading" />
-          <TextInput
-            id={`refundHeading-${index}`}
-            variant="filled"
-            label="Heading"
-            placeholder="Enter Refund Policy Heading"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            value={item.heading}
-            onChange={(e) => handleRefundChange(e, index, 'heading')}
-          />
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`refundContent-${index}`} value="Content" />
-          <Textarea
-            id={`refundContent-${index}`}
-            variant="filled"
-            label="Content"
-            placeholder="Enter Refund Policy Content"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            rows={4}
-            value={item.content}
-            onChange={(e) => handleRefundChange(e, index, 'content')}
-          />
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-<div className="flex justify-center mt-4">
-  <button onClick={addRefundItem} className="text-[30px]">
-    <MdOutlineAddCircle />
-  </button>
-</div>
-{templateDetails.TermsData && templateDetails.TermsData.length > 0 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-    {templateDetails.TermsData.map((item, index) => (
-      <div key={index} className="px-2 lg:px-[170px]">
-        <div className="flex justify-between items-center">
-          <h2 className="text-[18px] font-bold">Terms And Data {index + 1}</h2>
-          <button
-            onClick={() => removeTermsDataItem(index)}
-            className="rounded-full font-bold text-black text-[18px]"
-          >
-            <RxCross2 />
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`termsDataTitle-${index}`} value="Title" />
-          <TextInput
-            id={`termsDataTitle-${index}`}
-            variant="filled"
-            label="Title"
-            placeholder="Enter Terms Data Title"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            value={item.title}
-            onChange={(e) => handleTermsDataChange(e, index, 'title')}
-          />
-        </div>
-
-        <div className="mt-4">
-          <Label htmlFor={`termsDataContent-${index}`} value="Content" />
-          <Textarea
-            id={`termsDataContent-${index}`}
-            variant="filled"
-            label="Content"
-            placeholder="Enter Terms Data Content"
-            style={{
-              width: '100%', 
-              borderColor: "#D1D5DB",
-              backgroundColor: "#F9FAFB",
-              borderRadius: '8px'
-            }}
-            rows={4}
-            value={item.content}
-            onChange={(e) => handleTermsDataChange(e, index, 'content')}
-          />
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-<div className="flex justify-center mt-4">
-  <button onClick={addTermsDataItem} className="text-[30px]">
-    <MdOutlineAddCircle />
-  </button>
-</div>
-
-
-</div>
-
-<hr className="w-full border-t border-[#D1D5DB] mt-10" />
-      <div
-        className="relative p-4"
-        onClick={handleOutsideClick}
-      >
-        <h1 className="font-bold text-black mt-8">Contact Section</h1>
-        <div className="lg:px-[180px] md:px-[150px] sm:px-4">
-          <div className="flex flex-col gap-4 ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
-
-            <div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="address"
-      color="gray"
-      value="Address"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="address"
-    placeholder="Enter your address"
-    required
-    value={templateDetails.Query_Address}
-    onChange={(event) =>
-      handleChange(event, "Query_Address")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="email"
-      color="gray"
-      value="Email Id"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="email"
-    placeholder="Enter your email id"
-    required
-    value={templateDetails.Query_EmailId}
-    onChange={(event) =>
-      handleChange(event, "Query_EmailId")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="phone"
-      color="gray"
-      value="Phone Number"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="phone"
-    placeholder="Enter your phone number"
-    required
-    value={templateDetails.Query_PhoneNumber}
-    onChange={(event) =>
-      handleChange(event, "Query_PhoneNumber")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="upi"
-      color="gray"
-      value="Upi Id"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="upi"
-    placeholder="Enter your UPI id"
-    value={templateDetails.UpiId}
-    onChange={(event) =>
-      handleChange(event, "UpiId")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="youtube"
-      color="gray"
-      value="Youtube"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="youtube"
-    placeholder="Enter your Youtube channel"
-    required
-    value={templateDetails.YTLink}
-    onChange={(event) =>
-      handleChange(event, "YTLink")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="facebook"
-      color="gray"
-      value="Facebook"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="facebook"
-    placeholder="Enter your Facebook profile"
-    
-    value={templateDetails.Facebook}
-    onChange={(event) =>
-      handleChange(event, "Facebook")
-    }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
-
-<div className="relative">
-  <div className="mb-2 block">
-    <Label
-      htmlFor="instagram"
-      color="gray"
-      value="Instagram"
-    />
-    <span className="text-red-500 ml-1">*</span>
-  </div>
-  <TextInput
-    id="instagram"
-    placeholder="Enter your Instagram handle"
-   
-    value={templateDetails.Instagram}
-                        onChange={(event) =>
-                          handleChange(event, "Instagram")
+                    <div className="mt-4">
+                      <Label
+                        htmlFor={`privacyPolicyHeading-${index}`}
+                        value="Heading"
+                      />
+                      <TextInput
+                        id={`privacyPolicyHeading-${index}`}
+                        variant="filled"
+                        label="Heading"
+                        placeholder="Enter PrivacyPolicy Heading"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                        value={item.heading}
+                        onChange={(e) =>
+                          handlePrivacyPolicyChange(e, index, "heading")
                         }
-    sizing="sm"
-    style={{
-      borderColor: "#D1D5DB",
-      backgroundColor: "#F9FAFB",
-      borderRadius: "8px",
-    }}
-  />
-</div>
+                      />
+                    </div>
 
+                    <div className="mt-4">
+                      <Label
+                        htmlFor={`privacyPolicyContent-${index}`}
+                        value="Content"
+                      />
+                      <Textarea
+                        id={`privacyPolicyContent-${index}`}
+                        variant="filled"
+                        label="Content"
+                        placeholder="Enter PrivacyPolicy Content"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                        rows={4}
+                        value={item.content}
+                        onChange={(e) =>
+                          handlePrivacyPolicyChange(e, index, "content")
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          <div className="flex justify-center mt-4">
+            {templateDetails.PrivacyPolicy &&
+              templateDetails.PrivacyPolicy.length < 6 && (
+                <button
+                  onClick={addPrivacyPolicyItem}
+                  className="flex items-center text-[30px] bg-black px-2 rounded"
+                >
+                  <MdOutlineAddCircle className="text-white" />
+                  <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                    PrivacyPolicy
+                  </h2>
+                </button>
+              )}
+          </div>
+          {templateDetails.Refund && templateDetails.Refund.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              {templateDetails.Refund.map((item, index) => (
+                <div key={index} className="px-2 lg:px-[170px]">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-[18px] font-bold">
+                      Refund Policy {index + 1}
+                    </h2>
+                    {templateDetails.Refund &&
+                      templateDetails.Refund.length > 1 && (
+                        <button
+                          onClick={() => removeRefundItem(index)}
+                          className="rounded-full font-bold text-black text-[18px]"
+                        >
+                          <RxCross2 />
+                        </button>
+                      )}
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor={`refundHeading-${index}`} value="Heading" />
+                    <TextInput
+                      id={`refundHeading-${index}`}
+                      variant="filled"
+                      label="Heading"
+                      placeholder="Enter Refund Policy Heading"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      value={item.heading}
+                      onChange={(e) => handleRefundChange(e, index, "heading")}
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor={`refundContent-${index}`} value="Content" />
+                    <Textarea
+                      id={`refundContent-${index}`}
+                      variant="filled"
+                      label="Content"
+                      placeholder="Enter Refund Policy Content"
+                      style={{
+                        width: "100%",
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      rows={4}
+                      value={item.content}
+                      onChange={(e) => handleRefundChange(e, index, "content")}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
+          )}
+
+          <div className="flex justify-center mt-4">
+            {templateDetails.Refund && templateDetails.Refund.length < 6 && (
+              <button
+                onClick={addRefundItem}
+                className="flex items-center text-[30px] bg-black px-2 rounded"
+              >
+                <MdOutlineAddCircle className="text-white" />
+                <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                  RefundPolicy
+                </h2>
+              </button>
+            )}
+          </div>
+          {templateDetails.TermsData &&
+            templateDetails.TermsData.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+                {templateDetails.TermsData.map((item, index) => (
+                  <div key={index} className="px-2 lg:px-[170px]">
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-[18px] font-bold">
+                        Terms And Data {index + 1}
+                      </h2>
+                      {templateDetails.TermsData &&
+                        templateDetails.TermsData.length > 1 && (
+                          <button
+                            onClick={() => removeTermsDataItem(index)}
+                            className="rounded-full font-bold text-black text-[18px]"
+                          >
+                            <RxCross2 />
+                          </button>
+                        )}
+                    </div>
+
+                    <div className="mt-4">
+                      <Label
+                        htmlFor={`termsDataTitle-${index}`}
+                        value="Title"
+                      />
+                      <TextInput
+                        id={`termsDataTitle-${index}`}
+                        variant="filled"
+                        label="Title"
+                        placeholder="Enter Terms Data Title"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                        value={item.title}
+                        onChange={(e) =>
+                          handleTermsDataChange(e, index, "title")
+                        }
+                      />
+                    </div>
+
+                    <div className="mt-4">
+                      <Label
+                        htmlFor={`termsDataContent-${index}`}
+                        value="Content"
+                      />
+                      <Textarea
+                        id={`termsDataContent-${index}`}
+                        variant="filled"
+                        label="Content"
+                        placeholder="Enter Terms Data Content"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                        rows={4}
+                        value={item.content}
+                        onChange={(e) =>
+                          handleTermsDataChange(e, index, "content")
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          <div className="flex justify-center mt-4">
+            {templateDetails.TermsData &&
+              templateDetails.TermsData.length < 6 && (
+                <button
+                  onClick={addTermsDataItem}
+                  className="flex items-center text-[30px] bg-black px-2 rounded"
+                >
+                  <MdOutlineAddCircle className="text-white" />
+                  <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                    Terms&Data
+                  </h2>
+                </button>
+              )}
+          </div>
+        </div>
+
+        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+        <div className="relative p-4">
+          <h1 className="font-bold text-black mt-8">Contact Section</h1>
+          <div className="lg:px-[180px] md:px-[150px] sm:px-4">
+            <div className="flex flex-col gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="address" color="gray" value="Address" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="address"
+                    placeholder="Enter your address"
+                    required
+                    value={templateDetails.Query_Address}
+                    onChange={(event) => handleChange(event, "Query_Address")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="email" color="gray" value="Email Id" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="email"
+                    placeholder="Enter your email id"
+                    required
+                    value={templateDetails.Query_EmailId}
+                    onChange={(event) => handleChange(event, "Query_EmailId")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="phone" color="gray" value="Phone Number" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="phone"
+                    placeholder="Enter your phone number"
+                    required
+                    value={templateDetails.Query_PhoneNumber}
+                    onChange={(event) =>
+                      handleChange(event, "Query_PhoneNumber")
+                    }
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="upi" color="gray" value="Upi Id" />
+                   
+                  </div>
+                  <TextInput
+                    id="upi"
+                    placeholder="Enter your UPI id"
+                    value={templateDetails.UpiId}
+                    onChange={(event) => handleChange(event, "UpiId")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="youtube" color="gray" value="Youtube" />
+                   
+                  </div>
+                  <TextInput
+                    id="youtube"
+                    placeholder="Enter your Youtube channel"
+                    required
+                    value={templateDetails.YTLink}
+                    onChange={(event) => handleChange(event, "YTLink")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="facebook" color="gray" value="Facebook" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="facebook"
+                    placeholder="Enter your Facebook profile"
+                    value={templateDetails.Facebook}
+                    onChange={(event) => handleChange(event, "Facebook")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="instagram" color="gray" value="Instagram" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="instagram"
+                    placeholder="Enter your Instagram handle"
+                    value={templateDetails.Instagram}
+                    onChange={(event) => handleChange(event, "Instagram")}
+                    sizing="sm"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-            </div>            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} className="px-[50px] mb-10">
-  <button onClick={goBack}  className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg">Back</button>
-  <button onClick={saveChanges} className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg">Save</button>  </div>
-       </div>
+          </div>{" "}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          className="px-[50px] mb-10"
+        >
+          <button
+            onClick={goBack}
+            className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg"
+          >
+            Back
+          </button>
+          <button
+            onClick={saveChanges}
+            className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg"
+          >
+            Save
+          </button>{" "}
+        </div>
+      </div>
     </>
   );
 };
