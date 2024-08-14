@@ -27,7 +27,7 @@ import Template from "./pages/Template";
 import Complete from "./pages/Complete";
 import Pay from "./pages/Pay";
 import Context from "./context/Context";
-import Full from "./pages/Full1";
+import Full from "./pages/New_Full";
 import Edit from "./pages/Edit";
 import AsanaLayout from "./internal/components/AsanaLayout";
 import AsanaHome from "./internal/components/AsanaHome";

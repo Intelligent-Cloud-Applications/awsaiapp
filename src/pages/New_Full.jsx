@@ -8,18 +8,12 @@ import "./Full.css";
 import { useNavigate } from "react-router-dom";
 import Context from "../context/Context";
 import { FloatingLabel } from "flowbite-react";
-import {
-  FileInput,
-  Label,
-  TextInput,
-  Select,
-  Textarea,
-} from "flowbite-react";
+import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
 
-const Full1 = () => {
+const New_Full = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -37,7 +31,7 @@ const Full1 = () => {
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (institutionNames) {
+      if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
         try {
           if (!loaderInitialized) {
             // Check if loader is false and not initialized
@@ -78,7 +72,7 @@ const Full1 = () => {
     };
 
     fetchData();
-  }, [institutionNames, loader, loaderInitialized, util]);
+  }, [institutionNames, loader, loaderInitialized, util,Ctx.userData.institutionName]);
 
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
@@ -128,21 +122,26 @@ const Full1 = () => {
 
   const handleFileChange = async (event, key) => {
     const file = event.target.files[0];
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+    ];
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-  
+
     // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
     const maxSize = 4 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("File size must be within 4 MB.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-  
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
@@ -176,18 +175,23 @@ const Full1 = () => {
   };
   const handleFileChange5 = async (event, key) => {
     const file = event.target.files[0];
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+    ];
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-  
+
     // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
     const maxSize = 4 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("File size must be within 4 MB.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
     const reader = new FileReader();
@@ -224,18 +228,23 @@ const Full1 = () => {
 
   const handleFileChange1 = async (event, testimonialIndex) => {
     const file = event.target.files[0];
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+    ];
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-  
+
     // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
     const maxSize = 4 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("File size must be within 4 MB.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
     const reader = new FileReader();
@@ -265,18 +274,23 @@ const Full1 = () => {
   };
   const handleFileChange3 = async (event, index) => {
     const file = event.target.files[0];
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+    ];
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-  
+
     // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
     const maxSize = 4 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("File size must be within 4 MB.");
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
     try {
@@ -381,7 +395,10 @@ const Full1 = () => {
       { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
       { value: templateDetails.SecondaryColor, name: "SecondaryColor" },
       { value: templateDetails.LightPrimaryColor, name: "LightPrimaryColor" },
-      { value: templateDetails.LightestPrimaryColor, name: "LightestPrimaryColor" },
+      {
+        value: templateDetails.LightestPrimaryColor,
+        name: "LightestPrimaryColor",
+      },
       { value: templateDetails.logoUrl, name: "Logo" },
       { value: templateDetails.videoUrl, name: "Intro Video" },
       { value: templateDetails.TagLine, name: "TagLine" },
@@ -390,11 +407,8 @@ const Full1 = () => {
       { value: templateDetails.Query_EmailId, name: "Query Email" },
       { value: templateDetails.Facebook, name: "Facebook" },
       { value: templateDetails.Instagram, name: "Instagram" },
-     
-    
     ];
-   
-    
+
     // Find any missing fields
     const missingHeadings = [];
     const emptyItems = [];
@@ -407,16 +421,18 @@ const Full1 = () => {
     const invalidTermsData = [];
     const invalidRefund = [];
     const invalidInstructors = [];
-  
+
     if (!templateDetails.Services || templateDetails.Services.length === 0) {
       missingHeadings.push("Services");
     } else {
       templateDetails.Services.forEach((service, index) => {
-        if (!service.title || service.title.trim() === '') {
+        if (!service.title || service.title.trim() === "") {
           missingHeadings.push(`Service ${index + 1} Title`);
         }
 
-        const hasNonEmptyItem = service.items.some(item => item.trim() !== '');
+        const hasNonEmptyItem = service.items.some(
+          (item) => item.trim() !== ""
+        );
         if (!hasNonEmptyItem) {
           emptyItems.push(`Service ${index + 1} Items`);
         }
@@ -424,47 +440,73 @@ const Full1 = () => {
     }
 
     // Check for at least one non-empty ClassType
-    if (!templateDetails.ClassTypes || templateDetails.ClassTypes.length === 0) {
+    if (
+      !templateDetails.ClassTypes ||
+      templateDetails.ClassTypes.length === 0
+    ) {
       emptyClassTypes.push("ClassTypes");
     } else {
-      const hasNonEmptyClassType = templateDetails.ClassTypes.some(classType => classType.trim() !== '');
+      const hasNonEmptyClassType = templateDetails.ClassTypes.some(
+        (classType) => classType.trim() !== ""
+      );
       if (!hasNonEmptyClassType) {
         emptyClassTypes.push("ClassTypes");
       }
     }
 
     // Validate Testimonials
-    if (!templateDetails.Testimonial || templateDetails.Testimonial.length === 0) {
+    if (
+      !templateDetails.Testimonial ||
+      templateDetails.Testimonial.length === 0
+    ) {
       invalidTestimonials.push("Testimonials");
     } else {
       templateDetails.Testimonial.forEach((testimonial, index) => {
-        if (!testimonial.img || !testimonial.name || !testimonial.description ||
-            testimonial.img.trim() === '' || testimonial.name.trim() === '' || testimonial.description.trim() === '') {
+        if (
+          !testimonial.img ||
+          !testimonial.name ||
+          !testimonial.description ||
+          testimonial.img.trim() === "" ||
+          testimonial.name.trim() === "" ||
+          testimonial.description.trim() === ""
+        ) {
           invalidTestimonials.push(`Testimonial ${index + 1}`);
         }
       });
     }
     if (subscriptionDetails && subscriptionDetails.length > 0) {
-      const hasValidSubscription = subscriptionDetails.some(subscription =>
-        subscription.amount && subscription.heading && 
-        subscription.amount > 0 &&
-        subscription.heading.trim() !== '' &&
-       
-        (subscription.provides && subscription.provides.length > 0 && subscription.provides.some(provide => provide.trim() !== ''))
+      const hasValidSubscription = subscriptionDetails.some(
+        (subscription) =>
+          subscription.amount &&
+          subscription.heading &&
+          subscription.amount > 0 &&
+          subscription.heading.trim() !== "" &&
+          subscription.provides &&
+          subscription.provides.length > 0 &&
+          subscription.provides.some((provide) => provide.trim() !== "")
       );
       subscriptionDetails.forEach((subscription, index) => {
-        const hasValidHeading = subscription.heading && subscription.heading.trim() !== '';
+        const hasValidHeading =
+          subscription.heading && subscription.heading.trim() !== "";
         const hasValidAmount = subscription.amount && subscription.amount > 0;
-        const hasValidProvides = subscription.provides && subscription.provides.length > 0 &&
-                                 subscription.provides.some(provide => provide.trim() !== '');
-        
+        const hasValidProvides =
+          subscription.provides &&
+          subscription.provides.length > 0 &&
+          subscription.provides.some((provide) => provide.trim() !== "");
+
         if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
-          invalidSubscriptions.push(`Subscription ${index + 1} must have a non-empty heading, a positive amount, and at least one non-empty provide.`);
+          invalidSubscriptions.push(
+            `Subscription ${
+              index + 1
+            } must have a non-empty heading, a positive amount, and at least one non-empty provide.`
+          );
         }
       });
-  
+
       if (!hasValidSubscription) {
-        invalidSubscriptions.push("At least one subscription must have non-empty currency, heading, duration, and at least one non-empty provide.");
+        invalidSubscriptions.push(
+          "At least one subscription must have non-empty currency, heading, duration, and at least one non-empty provide."
+        );
       }
     } else {
       invalidSubscriptions.push("At least one Subscriptions is needed");
@@ -473,9 +515,9 @@ const Full1 = () => {
       invalidFaqs.push("At least one FAQ is required.");
     } else {
       templateDetails.FAQ.forEach((faq, index) => {
-        const hasValidTitle = faq.title && faq.title.trim() !== '';
-        const hasValidContent = faq.content && faq.content.trim() !== '';
-        
+        const hasValidTitle = faq.title && faq.title.trim() !== "";
+        const hasValidContent = faq.content && faq.content.trim() !== "";
+
         if (!hasValidTitle || !hasValidContent) {
           if (!hasValidTitle) {
             invalidFaqs.push(`FAQ ${index + 1} must have a non-empty title.`);
@@ -487,76 +529,115 @@ const Full1 = () => {
       });
     }
     if (instructorDetails && instructorDetails.length > 0) {
-      const hasValidInstructor = instructorDetails.some(instructor =>
-        instructor.image && instructor.name && 
-        instructor.position && instructor.emailId &&
-        instructor.emailId.trim() !== '' &&
-       
-        instructor.name.trim() !== '' &&
-        instructor.image.trim() !== '' &&
-        instructor.position.trim() !== '' 
+      const hasValidInstructor = instructorDetails.some(
+        (instructor) =>
+          instructor.image &&
+          instructor.name &&
+          instructor.position &&
+          instructor.emailId &&
+          instructor.emailId.trim() !== "" &&
+          instructor.name.trim() !== "" &&
+          instructor.image.trim() !== "" &&
+          instructor.position.trim() !== ""
       );
       instructorDetails.forEach((instructor, index) => {
-        const hasValidImage = instructor.image && instructor.image.trim() !== '';
-        const hasValidPosition = instructor.position && instructor.position.trim() !== '';;
-        const hasValidName = instructor.name && instructor.name.trim() !== '';
-        const hasValidemail =instructor.emailId && instructor.emailId.trim() !== '' ;
-        if (!hasValidemail || !hasValidName  || !hasValidImage || !hasValidPosition) {
-          invalidInstructors.push(`Instructor ${index + 1} must have a non-empty name,image,position and emailId.`);
+        const hasValidImage =
+          instructor.image && instructor.image.trim() !== "";
+        const hasValidPosition =
+          instructor.position && instructor.position.trim() !== "";
+        const hasValidName = instructor.name && instructor.name.trim() !== "";
+        const hasValidemail =
+          instructor.emailId && instructor.emailId.trim() !== "";
+        if (
+          !hasValidemail ||
+          !hasValidName ||
+          !hasValidImage ||
+          !hasValidPosition
+        ) {
+          invalidInstructors.push(
+            `Instructor ${
+              index + 1
+            } must have a non-empty name,image,position and emailId.`
+          );
         }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
-    
-          invalidInstructors.push(`Instructor ${index + 1} has an invalid email address`);
-      }
-  
+          invalidInstructors.push(
+            `Instructor ${index + 1} has an invalid email address`
+          );
+        }
       });
-  
+
       if (!hasValidInstructor) {
-        invalidInstructors.push("At least one Instructor must have non-empty name,image,position and emailId.");
+        invalidInstructors.push(
+          "At least one Instructor must have non-empty name,image,position and emailId."
+        );
       }
-      
-      
     } else {
-      invalidInstructors.push("At least one Instructor must have non-empty name,image,position and emailId.");
+      invalidInstructors.push(
+        "At least one Instructor must have non-empty name,image,position and emailId."
+      );
     }
     if (!templateDetails.AboutUs || templateDetails.AboutUs.length === 0) {
       invalidAboutUs.push("AboutUs");
     } else {
       templateDetails.AboutUs.forEach((about, index) => {
-        if (!about.heading || !about.content || about.heading.trim() === '' || about.content.trim() === '') {
+        if (
+          !about.heading ||
+          !about.content ||
+          about.heading.trim() === "" ||
+          about.content.trim() === ""
+        ) {
           invalidAboutUs.push(`AboutUs ${index + 1}`);
         }
       });
     }
-  
+
     // Validate PrivacyPolicy
-    if (!templateDetails.PrivacyPolicy || templateDetails.PrivacyPolicy.length === 0) {
+    if (
+      !templateDetails.PrivacyPolicy ||
+      templateDetails.PrivacyPolicy.length === 0
+    ) {
       invalidPrivacyPolicy.push("PrivacyPolicy");
     } else {
       templateDetails.PrivacyPolicy.forEach((policy, index) => {
-        if (!policy.heading || !policy.content || policy.heading.trim() === '' || policy.content.trim() === '') {
+        if (
+          !policy.heading ||
+          !policy.content ||
+          policy.heading.trim() === "" ||
+          policy.content.trim() === ""
+        ) {
           invalidPrivacyPolicy.push(`PrivacyPolicy ${index + 1}`);
         }
       });
     }
-  
+
     // Validate TermsData
     if (!templateDetails.TermsData || templateDetails.TermsData.length === 0) {
       invalidTermsData.push("TermsData");
     } else {
       templateDetails.TermsData.forEach((term, index) => {
-        if (!term.title || !term.content || term.title.trim() === '' || term.content.trim() === '') {
+        if (
+          !term.title ||
+          !term.content ||
+          term.title.trim() === "" ||
+          term.content.trim() === ""
+        ) {
           invalidTermsData.push(`TermsData ${index + 1}`);
         }
       });
     }
-  
+
     // Validate Refund
     if (!templateDetails.Refund || templateDetails.Refund.length === 0) {
       invalidRefund.push("Refund");
     } else {
       templateDetails.Refund.forEach((refund, index) => {
-        if (!refund.heading || !refund.content || refund.heading.trim() === '' || refund.content.trim() === '') {
+        if (
+          !refund.heading ||
+          !refund.content ||
+          refund.heading.trim() === "" ||
+          refund.content.trim() === ""
+        ) {
           invalidRefund.push(`Refund ${index + 1}`);
         }
       });
@@ -564,76 +645,112 @@ const Full1 = () => {
     const invalidFields = [];
 
     // Validate YouTube Link
-    if (templateDetails.YTLink && !(() => {
-      try {
-        new URL(templateDetails.YTLink);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    })()) {
+    if (
+      templateDetails.YTLink &&
+      !(() => {
+        try {
+          new URL(templateDetails.YTLink);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      })()
+    ) {
       invalidFields.push("YouTube Link is not a valid URL.");
     }
-  
+
     // Validate Query Phone Number
-    if (templateDetails.Query_PhoneNumber && !/^[0-9]{10}$/.test(templateDetails.Query_PhoneNumber)) {
+    if (
+      templateDetails.Query_PhoneNumber &&
+      !/^[0-9]{10}$/.test(templateDetails.Query_PhoneNumber)
+    ) {
       invalidFields.push("Query Phone Number is not a valid format.");
     }
-  
+
     // Validate Query Email ID
-    if (templateDetails.Query_EmailId && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(templateDetails.Query_EmailId)) {
+    if (
+      templateDetails.Query_EmailId &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(templateDetails.Query_EmailId)
+    ) {
       invalidFields.push("Query Email ID is not a valid email.");
     }
-  
+
     // Validate Facebook URL
-    if (templateDetails.Facebook && !(() => {
-      try {
-        new URL(templateDetails.Facebook);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    })()) {
+    if (
+      templateDetails.Facebook &&
+      !(() => {
+        try {
+          new URL(templateDetails.Facebook);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      })()
+    ) {
       invalidFields.push("Facebook URL is not a valid URL.");
     }
-  
+
     // Validate Instagram URL
-    if (templateDetails.Instagram && !(() => {
-      try {
-        new URL(templateDetails.Instagram);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    })()) {
+    if (
+      templateDetails.Instagram &&
+      !(() => {
+        try {
+          new URL(templateDetails.Instagram);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      })()
+    ) {
       invalidFields.push("Instagram URL is not a valid URL.");
     }
     // Combine all validation errors
     const missingFields = requiredFields
-      .filter(field => !field.value || field.value.trim() === '')
-      .map(field => field.name);
+      .filter((field) => !field.value || field.value.trim() === "")
+      .map((field) => field.name);
 
-
-    if (missingFields.length > 0 || missingHeadings.length > 0 || emptyItems.length > 0 || emptyClassTypes.length > 0 || invalidTestimonials.length > 0 || invalidSubscriptions.length > 0 || invalidFaqs.length > 0 || invalidAboutUs.length > 0 || invalidPrivacyPolicy.length > 0 || invalidTermsData.length > 0 || invalidRefund.length > 0 || invalidInstructors.length > 0 || invalidFields.length > 0) {
-      let alertMessage = '';
+    if (
+      missingFields.length > 0 ||
+      missingHeadings.length > 0 ||
+      emptyItems.length > 0 ||
+      emptyClassTypes.length > 0 ||
+      invalidTestimonials.length > 0 ||
+      invalidSubscriptions.length > 0 ||
+      invalidFaqs.length > 0 ||
+      invalidAboutUs.length > 0 ||
+      invalidPrivacyPolicy.length > 0 ||
+      invalidTermsData.length > 0 ||
+      invalidRefund.length > 0 ||
+      invalidInstructors.length > 0 ||
+      invalidFields.length > 0
+    ) {
+      let alertMessage = "";
 
       if (missingFields.length > 0) {
-        alertMessage += `The following fields are required and cannot be empty: ${missingFields.join(", ")}.\n`;
+        alertMessage += `The following fields are required and cannot be empty: ${missingFields.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (invalidFields.length > 0) {
-        alertMessage += `The following fields have issues: ${invalidFields.join(", ")}.\n`;
+        alertMessage += `The following fields have issues: ${invalidFields.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (missingHeadings.length > 0) {
-        alertMessage += `The following service titles are missing: ${missingHeadings.join(", ")}.\n`;
+        alertMessage += `The following service titles are missing: ${missingHeadings.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (emptyItems.length > 0) {
-        alertMessage += `The following services have no non-empty items: ${emptyItems.join(", ")}.\n`;
+        alertMessage += `The following services have no non-empty items: ${emptyItems.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
@@ -643,7 +760,9 @@ const Full1 = () => {
         return;
       }
       if (invalidTestimonials.length > 0) {
-        alertMessage += `The following testimonials are invalid (missing img, name, or description): ${invalidTestimonials.join(", ")}.\n`;
+        alertMessage += `The following testimonials are invalid (missing img, name, or description): ${invalidTestimonials.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
@@ -658,34 +777,44 @@ const Full1 = () => {
         return;
       }
       if (invalidAboutUs.length > 0) {
-        alertMessage += `The following AboutUs entries are invalid (missing title or content): ${invalidAboutUs.join(", ")}.\n`;
+        alertMessage += `The following AboutUs entries are invalid (missing title or content): ${invalidAboutUs.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (invalidPrivacyPolicy.length > 0) {
-        alertMessage += `The following PrivacyPolicy entries are invalid (missing title or content): ${invalidPrivacyPolicy.join(", ")}.\n`;
+        alertMessage += `The following PrivacyPolicy entries are invalid (missing title or content): ${invalidPrivacyPolicy.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (invalidTermsData.length > 0) {
-        alertMessage += `The following TermsData entries are invalid (missing title or content): ${invalidTermsData.join(", ")}.\n`;
+        alertMessage += `The following TermsData entries are invalid (missing title or content): ${invalidTermsData.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (invalidRefund.length > 0) {
-        alertMessage += `The following Refund entries are invalid (missing title or content): ${invalidRefund.join(", ")}.\n`;
+        alertMessage += `The following Refund entries are invalid (missing title or content): ${invalidRefund.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
         return;
       }
       if (invalidInstructors.length > 0) {
-        alertMessage += `The following instructors are invalid: ${invalidInstructors.join(", ")}.\n`;
+        alertMessage += `The following instructors are invalid: ${invalidInstructors.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
-      return;
+        return;
       }
       alert(alertMessage);
       return;
     }
-    
+
     util.setLoader(true);
     try {
       if (instructorDetails && instructorDetails.length > 0) {
@@ -843,13 +972,15 @@ const Full1 = () => {
       ]);
 
       alert("Changes saved successfully!");
-      util.setLoader(false);
+      setTimeout(() => {
+        util.setLoader(false);
+      }, 0); 
       navigate("/");
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
     }
-    util.setLoader(false);
+    // util.setLoader(false);
   };
 
   const handleChange = (event, key) => {
@@ -1174,8 +1305,6 @@ const Full1 = () => {
     updatedServices[serviceIndex].items.splice(itemIndex, 1);
     setTemplateDetails({ ...templateDetails, Services: updatedServices });
   };
-
-
 
   // const [color, setColor] = useState("#000000");
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
@@ -1804,7 +1933,6 @@ const Full1 = () => {
                         //     ? "col-span-1 md:col-span-2  lg:px-[340px] max1320:px-[200px] max1078:px-[0px]"
                         //     : ""
                         // }
-                       
                       >
                         <div className="flex items-center justify-start gap-1">
                           <h2 className="text-[18px] font-bold">
@@ -1917,20 +2045,23 @@ const Full1 = () => {
                     <h2 className="text-[18px] font-bold mb-2">
                       Subscription {index + 1}
                     </h2>
-                    {subscriptionDetails.length > 1 && (
-                      <button
-                        onClick={() => {
-                          if (subscription.productId) {
-                            removeSubscription(subscription.productId);
-                          } else {
-                            removeSubscriptionByIndex(index);
-                          }
-                        }}
-                        className="rounded-full  font-bold text-black text-[18px] "
-                      >
-                        <RxCross2 />
-                      </button>
-                    )}
+                    {subscriptionDetails.length > 1 &&
+                      (!subscription.productId ||
+                        subscriptionDetails.filter((sub) => sub.productId)
+                          .length > 1) && (
+                        <button
+                          onClick={() => {
+                            if (subscription.productId) {
+                              removeSubscription(subscription.productId);
+                            } else {
+                              removeSubscriptionByIndex(index);
+                            }
+                          }}
+                          className="rounded-full  font-bold text-black text-[18px] "
+                        >
+                          <RxCross2 />
+                        </button>
+                      )}
                   </div>
                   <FloatingLabel
                     variant="filled"
@@ -2129,19 +2260,22 @@ const Full1 = () => {
                     <h2 className="text-[18px] font-bold mb-2">
                       Instructor {index + 1}
                     </h2>
-                    {instructorDetails.length > 1 && (
-                    <button
-                      onClick={() => {
-                        if (instructor.instructorId) {
-                          removeInstructor(instructor.instructorId);
-                        } else {
-                          removeInstructorByIndex(index);
-                        }
-                      }}
-                      className="rounded-full  font-bold text-black text-[18px] "
-                    >
-                      <RxCross2 />
-                    </button>
+                    {instructorDetails.length > 1&&
+                      (!instructor.instructorId ||
+                        instructorDetails.filter((inst) => inst.instructorId)
+                          .length > 1) && (
+                      <button
+                        onClick={() => {
+                          if (instructor.instructorId) {
+                            removeInstructor(instructor.instructorId);
+                          } else {
+                            removeInstructorByIndex(index);
+                          }
+                        }}
+                        className="rounded-full  font-bold text-black text-[18px] "
+                      >
+                        <RxCross2 />
+                      </button>
                     )}
                   </div>
                   <FloatingLabel
@@ -2728,7 +2862,6 @@ const Full1 = () => {
                 <div className="relative">
                   <div className="mb-2 block">
                     <Label htmlFor="upi" color="gray" value="Upi Id" />
-                   
                   </div>
                   <TextInput
                     id="upi"
@@ -2747,7 +2880,6 @@ const Full1 = () => {
                 <div className="relative">
                   <div className="mb-2 block">
                     <Label htmlFor="youtube" color="gray" value="Youtube" />
-                   
                   </div>
                   <TextInput
                     id="youtube"
@@ -2832,4 +2964,4 @@ const Full1 = () => {
   );
 };
 
-export default Full1;
+export default New_Full;
