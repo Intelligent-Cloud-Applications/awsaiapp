@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Navbar from "../components/Home/Navbar";
@@ -12,7 +12,6 @@ import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
-
 
 const New_Full = () => {
   const navigate = useNavigate();
@@ -73,7 +72,13 @@ const New_Full = () => {
     };
 
     fetchData();
-  }, [institutionNames, loader, loaderInitialized, util,Ctx.userData.institutionName]);
+  }, [
+    institutionNames,
+    loader,
+    loaderInitialized,
+    util,
+    Ctx.userData.institutionName,
+  ]);
 
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
@@ -120,7 +125,6 @@ const New_Full = () => {
       console.error("Error uploading video:", error);
     }
   };
- 
 
   const handleFileChange = async (event, key) => {
     const file = event.target.files[0];
@@ -418,121 +422,127 @@ const New_Full = () => {
   const [errors, setErrors] = useState({});
 
   const scrollToError = (fieldName) => {
-    if (fieldName === 'Testimonial') {
+    if (fieldName === "Testimonial") {
       // Scroll to the testimonial section
       const element = refs.Testimonial.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-    
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } 
-    else if (fieldName === 'Subscriptions') {
+    } else if (fieldName === "Subscriptions") {
       // Scroll to the subscriptions section
       const element = refs.Subscriptions.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    }
-    else if (fieldName === 'FAQ') {
+    } else if (fieldName === "FAQ") {
       const element = refs.FAQ.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === 'AboutUs') {
+    } else if (fieldName === "AboutUs") {
       const element = refs.AboutUs.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === 'PrivacyPolicy') {
+    } else if (fieldName === "PrivacyPolicy") {
       const element = refs.PrivacyPolicy.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === 'TermsData') {
+    } else if (fieldName === "TermsData") {
       const element = refs.TermsData.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === 'Refund') {
+    } else if (fieldName === "Refund") {
       const element = refs.Refund.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === 'Instructors') {
+    } else if (fieldName === "Instructors") {
       const element = refs.Instructors.current;
       if (element) {
         const elementRect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const offset = 100;
-  
+
         window.scrollTo({
           top: scrollTop + elementRect.top - offset,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    }
-    else if (refs[fieldName] && refs[fieldName].current) {
+    } else if (refs[fieldName] && refs[fieldName].current) {
       const element = refs[fieldName].current;
       const elementRect = element.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const offset = 100; 
-  
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const offset = 100;
+
       window.scrollTo({
         top: scrollTop + elementRect.top - offset,
         behavior: "smooth",
@@ -540,24 +550,33 @@ const New_Full = () => {
       setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
     }
   };
-  const scrollToErrorServices = (fieldName, section = '') => {
+  const scrollToErrorServices = (fieldName, section = "") => {
     let element;
-    
-    if (section === 'services' && templateDetails.Services && templateDetails.Services.length > 0) {
-      const serviceIndex = parseInt(fieldName.split('-')[1], 10);
-      const itemIndex = parseInt(fieldName.split('-')[2], 10);
+
+    if (
+      section === "services" &&
+      templateDetails.Services &&
+      templateDetails.Services.length > 0
+    ) {
+      const serviceIndex = parseInt(fieldName.split("-")[1], 10);
+      const itemIndex = parseInt(fieldName.split("-")[2], 10);
       if (serviceIndex >= 0 && serviceIndex < templateDetails.Services.length) {
-        element = document.querySelector(`#service-${serviceIndex}${itemIndex >= 0 ? `-item-${itemIndex}` : ''}`);
+        element = document.querySelector(
+          `#service-${serviceIndex}${
+            itemIndex >= 0 ? `-item-${itemIndex}` : ""
+          }`
+        );
       }
     } else if (refs[fieldName] && refs[fieldName].current) {
       element = refs[fieldName].current;
     }
-    
+
     if (element) {
       const elementRect = element.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const offset = 100; 
-  
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const offset = 100;
+
       window.scrollTo({
         top: scrollTop + elementRect.top - offset,
         behavior: "smooth",
@@ -565,7 +584,7 @@ const New_Full = () => {
       setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
     }
   };
-  
+
   const saveChanges = async () => {
     const requiredFields = [
       { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
@@ -622,8 +641,10 @@ const New_Full = () => {
         if (!service.title || service.title.trim() === "") {
           serviceErrors.push(`service-${index}`);
         }
-  
-        const hasNonEmptyItem = service.items.some(item => item.trim() !== "");
+
+        const hasNonEmptyItem = service.items.some(
+          (item) => item.trim() !== ""
+        );
         if (!hasNonEmptyItem) {
           serviceErrors.push(`service-${index}-items`);
         }
@@ -912,7 +933,8 @@ const New_Full = () => {
       invalidTermsData.length > 0 ||
       invalidRefund.length > 0 ||
       invalidInstructors.length > 0 ||
-      invalidFields.length > 0 || serviceErrors.length > 0
+      invalidFields.length > 0 ||
+      serviceErrors.length > 0
     ) {
       let alertMessage = "";
 
@@ -941,12 +963,14 @@ const New_Full = () => {
         return;
       }
       if (serviceErrors.length > 0) {
-        alertMessage += `The following services have issues: ${serviceErrors.join(", ")}.\n`;
+        alertMessage += `The following services have issues: ${serviceErrors.join(
+          ", "
+        )}.\n`;
         alert(alertMessage);
-        scrollToErrorServices(serviceErrors[0], 'services');
+        scrollToErrorServices(serviceErrors[0], "services");
         return;
       }
-  
+
       if (emptyItems.length > 0) {
         alertMessage += `The following services have no non-empty items: ${emptyItems.join(
           ", "
@@ -966,19 +990,19 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError('Testimonial');
+        scrollToError("Testimonial");
         return;
       }
       if (invalidSubscriptions.length > 0) {
         alertMessage += `${invalidSubscriptions.join(", ")}.\n`;
         alert(alertMessage);
-        scrollToError('Subscriptions');
+        scrollToError("Subscriptions");
         return;
       }
       if (invalidFaqs.length > 0) {
         alertMessage += `${invalidFaqs.join(", ")}.\n`;
         alert(alertMessage);
-        scrollToError('FAQ');
+        scrollToError("FAQ");
         return;
       }
       if (invalidAboutUs.length > 0) {
@@ -986,7 +1010,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError('AboutUs');
+        scrollToError("AboutUs");
         return;
       }
       if (invalidPrivacyPolicy.length > 0) {
@@ -994,7 +1018,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError('PrivacyPolicy');
+        scrollToError("PrivacyPolicy");
         return;
       }
       if (invalidTermsData.length > 0) {
@@ -1002,7 +1026,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError('TermsData');
+        scrollToError("TermsData");
         return;
       }
       if (invalidRefund.length > 0) {
@@ -1010,7 +1034,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError('Refund');
+        scrollToError("Refund");
         return;
       }
       if (invalidInstructors.length > 0) {
@@ -1022,7 +1046,7 @@ const New_Full = () => {
         return;
       }
       alert(alertMessage);
-      scrollToError('Instructors');
+      scrollToError("Instructors");
       return;
     }
 
@@ -1185,7 +1209,7 @@ const New_Full = () => {
       alert("Changes saved successfully!");
       setTimeout(() => {
         util.setLoader(false);
-      }, 0); 
+      }, 0);
       navigate("/");
     } catch (error) {
       console.error("Error saving changes:", error);
@@ -1618,9 +1642,11 @@ const New_Full = () => {
                     sizing="sm"
                     onChange={(event) => handleChange(event, "TagLine")}
                     ref={refs.TagLine}
-                      color={errors.TagLine ? "failure" : "gray"}
-                      style={{
-                        border: errors.TagLine ? "1px solid red" : "1px solid #ccc",
+                    color={errors.TagLine ? "failure" : "gray"}
+                    style={{
+                      border: errors.TagLine
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -1674,7 +1700,9 @@ const New_Full = () => {
                       ref={refs.PrimaryColor}
                       color={errors.PrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: errors.PrimaryColor ? "1px solid red" : "1px solid #ccc",
+                        border: errors.PrimaryColor
+                          ? "1px solid red"
+                          : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1722,7 +1750,9 @@ const New_Full = () => {
                       ref={refs.LightPrimaryColor}
                       color={errors.LightPrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: errors.LightPrimaryColor ? "1px solid red" : "1px solid #ccc",
+                        border: errors.LightPrimaryColor
+                          ? "1px solid red"
+                          : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1771,7 +1801,9 @@ const New_Full = () => {
                       ref={refs.LightestPrimaryColor}
                       color={errors.LightestPrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: errors.LightestPrimaryColor ? "1px solid red" : "1px solid #ccc",
+                        border: errors.LightestPrimaryColor
+                          ? "1px solid red"
+                          : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1816,7 +1848,9 @@ const New_Full = () => {
                       ref={refs.SecondaryColor}
                       color={errors.SecondaryColor ? "failure" : "gray"}
                       style={{
-                        border: errors.SecondaryColor ? "1px solid red" : "1px solid #ccc",
+                        border: errors.SecondaryColor
+                          ? "1px solid red"
+                          : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1860,12 +1894,10 @@ const New_Full = () => {
                     onChange={(event) => handleFileChange(event, "logoUrl")}
                     id="Logo Upload file"
                     helperText="It’s The Logo of the Company"
-                 
-                   ref={refs.logoUrl}
-                 
+                    ref={refs.logoUrl}
                     style={{
-                      borderColor: errors.logoUrl ? "1px solid red":"#D1D5DB",
-                      backgroundColor:errors.logoUrl ?"#ee3232": "#F9FAFB",
+                      borderColor: errors.logoUrl ? "1px solid red" : "#D1D5DB",
+                      backgroundColor: errors.logoUrl ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -1896,10 +1928,11 @@ const New_Full = () => {
                     id="Intro Video Upload file"
                     helperText="It’s The Intro video of home Page"
                     ref={refs.videoUrl}
-                 
                     style={{
-                      borderColor: errors.videoUrl ? "1px solid red":"#D1D5DB",
-                      backgroundColor:errors.videoUrl ?"#ee3232": "#F9FAFB",
+                      borderColor: errors.videoUrl
+                        ? "1px solid red"
+                        : "#D1D5DB",
+                      backgroundColor: errors.videoUrl ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -1991,21 +2024,24 @@ const New_Full = () => {
           {templateDetails.Services && templateDetails.Services.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
               {templateDetails.Services.map((service, index) => (
-                <div key={index} className=" px-2 lg:px-[170px] "id={`service-${index}`}>
+                <div
+                  key={index}
+                  className=" px-2 lg:px-[170px] "
+                  id={`service-${index}`}
+                >
                   <div className="flex items-center justify-start gap-1">
-                    <h2 className="text-[18px] font-bold" >
+                    <h2 className="text-[18px] font-bold">
                       Service {index + 1}
                     </h2>
                     <span className="text-red-500 mb-4">*</span>
                   </div>
-{/* {console.log(errors[`serviceTitle${index}`])} */}
+
                   <FloatingLabel
                     variant="filled"
                     label="Title"
-                      color={errors[`serviceTitle${index}`] ? "error" : 'default'}
                     style={{
-                      borderColor: errors[`serviceTitle${index}`] ? 'red' : '#D1D5DB',
-    backgroundColor: errors[`serviceTitle${index}`] ? '#FEE2E2' : '#F9FAFB',
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
                       width: "100%",
                     }}
                     inputStyle={{ width: "100%" }}
@@ -2058,7 +2094,10 @@ const New_Full = () => {
               ))}
             </div>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 " ref={refs.ClassTypes}>
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 "
+            ref={refs.ClassTypes}
+          >
             {templateDetails.ClassTypes &&
               templateDetails.ClassTypes.length > 0 && (
                 <>
@@ -2149,7 +2188,10 @@ const New_Full = () => {
               </div>
               {templateDetails.Testimonial &&
                 templateDetails.Testimonial.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Testimonial}>
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                    ref={refs.Testimonial}
+                  >
                     {templateDetails.Testimonial.map((testimonial, index) => (
                       <div
                         key={index}
@@ -2264,7 +2306,10 @@ const New_Full = () => {
           </div>
 
           {subscriptionDetails && subscriptionDetails.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"  ref={refs.Subscriptions}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+              ref={refs.Subscriptions}
+            >
               {subscriptionDetails.map((subscription, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
@@ -2479,30 +2524,33 @@ const New_Full = () => {
           </div>
 
           {instructorDetails && instructorDetails.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Instructors}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+              ref={refs.Instructors}
+            >
               {instructorDetails.map((instructor, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
                     <h2 className="text-[18px] font-bold mb-2">
                       Instructor {index + 1}
                     </h2>
-                    {instructorDetails.length > 1&&
+                    {instructorDetails.length > 1 &&
                       (!instructor.instructorId ||
                         instructorDetails.filter((inst) => inst.instructorId)
                           .length > 1) && (
-                      <button
-                        onClick={() => {
-                          if (instructor.instructorId) {
-                            removeInstructor(instructor.instructorId);
-                          } else {
-                            removeInstructorByIndex(index);
-                          }
-                        }}
-                        className="rounded-full  font-bold text-black text-[18px] "
-                      >
-                        <RxCross2 />
-                      </button>
-                    )}
+                        <button
+                          onClick={() => {
+                            if (instructor.instructorId) {
+                              removeInstructor(instructor.instructorId);
+                            } else {
+                              removeInstructorByIndex(index);
+                            }
+                          }}
+                          className="rounded-full  font-bold text-black text-[18px] "
+                        >
+                          <RxCross2 />
+                        </button>
+                      )}
                   </div>
                   <FloatingLabel
                     variant="filled"
@@ -2585,7 +2633,10 @@ const New_Full = () => {
         <div className="relative p-4">
           <h1 className="font-bold text-black mt-8">FAQ Section</h1>
           {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.FAQ}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+              ref={refs.FAQ}
+            >
               {templateDetails.FAQ.map((faq, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
@@ -2694,7 +2745,10 @@ const New_Full = () => {
             </div>
           </div>
           {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.AboutUs}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+              ref={refs.AboutUs}
+            >
               {templateDetails.AboutUs.map((item, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center">
@@ -2774,7 +2828,10 @@ const New_Full = () => {
           </div>
           {templateDetails.PrivacyPolicy &&
             templateDetails.PrivacyPolicy.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.PrivacyPolicy}>
+              <div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                ref={refs.PrivacyPolicy}
+              >
                 {templateDetails.PrivacyPolicy.map((item, index) => (
                   <div key={index} className="px-2 lg:px-[170px]">
                     <div className="flex justify-between items-center">
@@ -2858,7 +2915,10 @@ const New_Full = () => {
               )}
           </div>
           {templateDetails.Refund && templateDetails.Refund.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Refund}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+              ref={refs.Refund}
+            >
               {templateDetails.Refund.map((item, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center">
@@ -2932,7 +2992,10 @@ const New_Full = () => {
           </div>
           {templateDetails.TermsData &&
             templateDetails.TermsData.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.TermsData}>
+              <div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                ref={refs.TermsData}
+              >
                 {templateDetails.TermsData.map((item, index) => (
                   <div key={index} className="px-2 lg:px-[170px]">
                     <div className="flex justify-between items-center">
