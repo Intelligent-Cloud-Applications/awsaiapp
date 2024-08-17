@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimonialBg }) {
+function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimonialBg }) {
   // const [testimonials, setTestimonials] = useState([
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
@@ -28,7 +28,8 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
       if (fileSizeMB > 4) {
         alert("File size exceeds 4MB. Please choose a smaller file.");
         return;
-      }}
+      }
+    }
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -78,7 +79,8 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
       if (fileSizeMB > 4) {
         alert("File size exceeds 4MB. Please choose a smaller file.");
         return;
-      }}
+      }
+    }
     if (file) {
       setTestimonialBg(file);
     }
@@ -95,17 +97,17 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
   };
 
   return (
-    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
+    <div className="mx-auto max-w-[900px]" style={{ overflowY: 'auto', maxHeight: '725px' }}>
       <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-      ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
+        ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
       </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
-        Display genuine customer feedback, fostering trust and credibility through firsthand positive experiences.
+        Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
       <div className="relative flex items-center mt-4">
-      <h2 className='font-bold'>TestimonialBg</h2>
-      <div className='mr-10'></div>
+        <h2 className='font-bold'>TestimonialBg</h2>
+        <div className='mr-10'></div>
         <input
           type="file"
           accept="image/*"
@@ -125,16 +127,14 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[14px] ${
-              TestimonialBg ? 'hidden' : 'block'
-            }`}
+            className={`block text-[#000000] font-inter text-[14px] ${TestimonialBg ? 'hidden' : 'block'
+              }`}
           >
             Choose File
           </span>
           <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
-              TestimonialBg ? 'block' : 'hidden'
-            }`}
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${TestimonialBg ? 'block' : 'hidden'
+              }`}
           >
             <span className="text-[#636262]">
               {shortenFileName1(TestimonialBg)}
@@ -148,7 +148,7 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
           </div>
         </label>
       </div>
-      <div className="max-h-[480px] overflow-y-auto">
+      <div className="max-h-[480px]">
         <div ref={testimonialsContainerRef} className="pb-6">
           {testimonials.map((testimonial, index) => (
             <div key={index} className="mt-2">
@@ -182,10 +182,10 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
                   <button
                     onClick={() => removeTestimonial(index)}
                     className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
-                    >
+                  >
                     <span>✕</span>
                   </button>
-                  )}
+                )}
               </div>
               <div className="relative">
                 {/* Name input */}
@@ -202,8 +202,8 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
                 {/* Name line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                }`}
-                  ></div>
+                    }`}
+                ></div>
               </div>
               <div className="relative">
                 {/* Feedback input */}
@@ -217,17 +217,17 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
                   onBlur={() => toggleActiveTestimonial(null)}
                   rows={1}
                   style={{
-                  height: activeTestimonialIndex === index ? '2rem' : 'auto',
+                    height: activeTestimonialIndex === index ? '2rem' : 'auto',
                   }}
                 />
                 {/* Feedback line container */}
                 <div
                   className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${activeTestimonialIndex === index ? 'bg-black' : 'bg-[#939393]'
-                }`}
-                  ></div>
+                    }`}
+                ></div>
               </div>
             </div>
-            ))}
+          ))}
         </div>
         {/* Add button after the third testimonial */}
         {testimonials.length < 5 && (
@@ -236,10 +236,10 @@ function Testimonials({ testimonials, setTestimonials,TestimonialBg,setTestimoni
               Add Testimonial
             </button> */}
           </div>
-          )}
+        )}
       </div>
     </div>
-    );
+  );
 }
 
 export default Testimonials;
