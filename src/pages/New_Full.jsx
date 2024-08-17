@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext,useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Navbar from "../components/Home/Navbar";
@@ -12,6 +12,7 @@ import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
+
 
 const New_Full = () => {
   const navigate = useNavigate();
@@ -119,6 +120,7 @@ const New_Full = () => {
       console.error("Error uploading video:", error);
     }
   };
+ 
 
   const handleFileChange = async (event, key) => {
     const file = event.target.files[0];
@@ -389,7 +391,181 @@ const New_Full = () => {
       return updatedDetails;
     });
   };
+  const refs = {
+    PrimaryColor: useRef(null),
+    SecondaryColor: useRef(null),
+    LightPrimaryColor: useRef(null),
+    LightestPrimaryColor: useRef(null),
+    logoUrl: useRef(null),
+    videoUrl: useRef(null),
+    TagLine: useRef(null),
+    Query_Address: useRef(null),
+    Query_PhoneNumber: useRef(null),
+    Query_EmailId: useRef(null),
+    Facebook: useRef(null),
+    Instagram: useRef(null),
+    Services: useRef(null),
+    ClassTypes: useRef(null),
+    Testimonial: useRef(null),
+    Subscriptions: useRef(null),
+    FAQ: useRef(null),
+    AboutUs: useRef(null),
+    PrivacyPolicy: useRef(null),
+    TermsData: useRef(null),
+    Refund: useRef(null),
+    Instructors: useRef(null),
+  };
+  const [errors, setErrors] = useState({});
 
+  const scrollToError = (fieldName) => {
+    if (fieldName === 'Testimonial') {
+      // Scroll to the testimonial section
+      const element = refs.Testimonial.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+    
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } 
+    else if (fieldName === 'Subscriptions') {
+      // Scroll to the subscriptions section
+      const element = refs.Subscriptions.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    }
+    else if (fieldName === 'FAQ') {
+      const element = refs.FAQ.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } else if (fieldName === 'AboutUs') {
+      const element = refs.AboutUs.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } else if (fieldName === 'PrivacyPolicy') {
+      const element = refs.PrivacyPolicy.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } else if (fieldName === 'TermsData') {
+      const element = refs.TermsData.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } else if (fieldName === 'Refund') {
+      const element = refs.Refund.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    } else if (fieldName === 'Instructors') {
+      const element = refs.Instructors.current;
+      if (element) {
+        const elementRect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const offset = 100;
+  
+        window.scrollTo({
+          top: scrollTop + elementRect.top - offset,
+          behavior: 'smooth',
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+      }
+    }
+    else if (refs[fieldName] && refs[fieldName].current) {
+      const element = refs[fieldName].current;
+      const elementRect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const offset = 100; 
+  
+      window.scrollTo({
+        top: scrollTop + elementRect.top - offset,
+        behavior: "smooth",
+      });
+      setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+    }
+  };
+  const scrollToErrorServices = (fieldName, section = '') => {
+    let element;
+    
+    if (section === 'services' && templateDetails.Services && templateDetails.Services.length > 0) {
+      const serviceIndex = parseInt(fieldName.split('-')[1], 10);
+      const itemIndex = parseInt(fieldName.split('-')[2], 10);
+      if (serviceIndex >= 0 && serviceIndex < templateDetails.Services.length) {
+        element = document.querySelector(`#service-${serviceIndex}${itemIndex >= 0 ? `-item-${itemIndex}` : ''}`);
+      }
+    } else if (refs[fieldName] && refs[fieldName].current) {
+      element = refs[fieldName].current;
+    }
+    
+    if (element) {
+      const elementRect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const offset = 100; 
+  
+      window.scrollTo({
+        top: scrollTop + elementRect.top - offset,
+        behavior: "smooth",
+      });
+      setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+    }
+  };
+  
   const saveChanges = async () => {
     const requiredFields = [
       { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
@@ -421,24 +597,38 @@ const New_Full = () => {
     const invalidTermsData = [];
     const invalidRefund = [];
     const invalidInstructors = [];
+    const serviceErrors = [];
 
+    // if (!templateDetails.Services || templateDetails.Services.length === 0) {
+    //   missingHeadings.push("Services");
+    // } else {
+    //   templateDetails.Services.forEach((service, index) => {
+    //     if (!service.title || service.title.trim() === "") {
+    //       missingHeadings.push(`Service ${index + 1} Title`);
+    //     }
+
+    //     const hasNonEmptyItem = service.items.some(
+    //       (item) => item.trim() !== ""
+    //     );
+    //     if (!hasNonEmptyItem) {
+    //       emptyItems.push(`Service ${index + 1} Items`);
+    //     }
+    //   });
+    // }
     if (!templateDetails.Services || templateDetails.Services.length === 0) {
-      missingHeadings.push("Services");
+      serviceErrors.push("Services");
     } else {
       templateDetails.Services.forEach((service, index) => {
         if (!service.title || service.title.trim() === "") {
-          missingHeadings.push(`Service ${index + 1} Title`);
+          serviceErrors.push(`service-${index}`);
         }
-
-        const hasNonEmptyItem = service.items.some(
-          (item) => item.trim() !== ""
-        );
+  
+        const hasNonEmptyItem = service.items.some(item => item.trim() !== "");
         if (!hasNonEmptyItem) {
-          emptyItems.push(`Service ${index + 1} Items`);
+          serviceErrors.push(`service-${index}-items`);
         }
       });
     }
-
     // Check for at least one non-empty ClassType
     if (
       !templateDetails.ClassTypes ||
@@ -722,7 +912,7 @@ const New_Full = () => {
       invalidTermsData.length > 0 ||
       invalidRefund.length > 0 ||
       invalidInstructors.length > 0 ||
-      invalidFields.length > 0
+      invalidFields.length > 0 || serviceErrors.length > 0
     ) {
       let alertMessage = "";
 
@@ -731,6 +921,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError(missingFields[0]);
         return;
       }
       if (invalidFields.length > 0) {
@@ -738,6 +929,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError(invalidFields[0]);
         return;
       }
       if (missingHeadings.length > 0) {
@@ -745,18 +937,28 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError(missingHeadings[0]);
         return;
       }
+      if (serviceErrors.length > 0) {
+        alertMessage += `The following services have issues: ${serviceErrors.join(", ")}.\n`;
+        alert(alertMessage);
+        scrollToErrorServices(serviceErrors[0], 'services');
+        return;
+      }
+  
       if (emptyItems.length > 0) {
         alertMessage += `The following services have no non-empty items: ${emptyItems.join(
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError(emptyItems[0]);
         return;
       }
       if (emptyClassTypes.length > 0) {
         alertMessage += `ClassTypes must contain at least one non-empty item.\n`;
         alert(alertMessage);
+        scrollToError(emptyClassTypes[0]);
         return;
       }
       if (invalidTestimonials.length > 0) {
@@ -764,16 +966,19 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError('Testimonial');
         return;
       }
       if (invalidSubscriptions.length > 0) {
         alertMessage += `${invalidSubscriptions.join(", ")}.\n`;
         alert(alertMessage);
+        scrollToError('Subscriptions');
         return;
       }
       if (invalidFaqs.length > 0) {
         alertMessage += `${invalidFaqs.join(", ")}.\n`;
         alert(alertMessage);
+        scrollToError('FAQ');
         return;
       }
       if (invalidAboutUs.length > 0) {
@@ -781,6 +986,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError('AboutUs');
         return;
       }
       if (invalidPrivacyPolicy.length > 0) {
@@ -788,6 +994,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError('PrivacyPolicy');
         return;
       }
       if (invalidTermsData.length > 0) {
@@ -795,6 +1002,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError('TermsData');
         return;
       }
       if (invalidRefund.length > 0) {
@@ -802,6 +1010,7 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError('Refund');
         return;
       }
       if (invalidInstructors.length > 0) {
@@ -809,9 +1018,11 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
+        scrollToError(invalidPrivacyPolicy);
         return;
       }
       alert(alertMessage);
+      scrollToError('Instructors');
       return;
     }
 
@@ -1406,9 +1617,10 @@ const New_Full = () => {
                     helperText="It’s the Head Tag line of Home Page"
                     sizing="sm"
                     onChange={(event) => handleChange(event, "TagLine")}
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                    ref={refs.TagLine}
+                      color={errors.TagLine ? "failure" : "gray"}
+                      style={{
+                        border: errors.TagLine ? "1px solid red" : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -1459,8 +1671,10 @@ const New_Full = () => {
                       onChange={(event) => handleChange(event, "PrimaryColor")}
                       onBlur={handleBlur}
                       className="text-field"
+                      ref={refs.PrimaryColor}
+                      color={errors.PrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: "1px solid #ccc",
+                        border: errors.PrimaryColor ? "1px solid red" : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1505,8 +1719,10 @@ const New_Full = () => {
                       }
                       onBlur={handleBlur}
                       className="text-field"
+                      ref={refs.LightPrimaryColor}
+                      color={errors.LightPrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: "1px solid #ccc",
+                        border: errors.LightPrimaryColor ? "1px solid red" : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1552,8 +1768,10 @@ const New_Full = () => {
                       }
                       onBlur={handleBlur}
                       className="text-field"
+                      ref={refs.LightestPrimaryColor}
+                      color={errors.LightestPrimaryColor ? "failure" : "gray"}
                       style={{
-                        border: "1px solid #ccc",
+                        border: errors.LightestPrimaryColor ? "1px solid red" : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1595,8 +1813,10 @@ const New_Full = () => {
                       }
                       onBlur={handleBlur}
                       className="text-field"
+                      ref={refs.SecondaryColor}
+                      color={errors.SecondaryColor ? "failure" : "gray"}
                       style={{
-                        border: "1px solid #ccc",
+                        border: errors.SecondaryColor ? "1px solid red" : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
                     />
@@ -1640,9 +1860,12 @@ const New_Full = () => {
                     onChange={(event) => handleFileChange(event, "logoUrl")}
                     id="Logo Upload file"
                     helperText="It’s The Logo of the Company"
+                 
+                   ref={refs.logoUrl}
+                 
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      borderColor: errors.logoUrl ? "1px solid red":"#D1D5DB",
+                      backgroundColor:errors.logoUrl ?"#ee3232": "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -1672,9 +1895,11 @@ const New_Full = () => {
                     onChange={handleVideoChange}
                     id="Intro Video Upload file"
                     helperText="It’s The Intro video of home Page"
+                    ref={refs.videoUrl}
+                 
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      borderColor: errors.videoUrl ? "1px solid red":"#D1D5DB",
+                      backgroundColor:errors.videoUrl ?"#ee3232": "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -1766,21 +1991,22 @@ const New_Full = () => {
           {templateDetails.Services && templateDetails.Services.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
               {templateDetails.Services.map((service, index) => (
-                <div key={index} className=" px-2 lg:px-[170px] ">
+                <div key={index} className=" px-2 lg:px-[170px] "id={`service-${index}`}>
                   <div className="flex items-center justify-start gap-1">
-                    <h2 className="text-[18px] font-bold">
+                    <h2 className="text-[18px] font-bold" >
                       Service {index + 1}
                     </h2>
                     <span className="text-red-500 mb-4">*</span>
                   </div>
-
+{/* {console.log(errors[`serviceTitle${index}`])} */}
                   <FloatingLabel
                     variant="filled"
                     label="Title"
+                      color={errors[`serviceTitle${index}`] ? "error" : 'default'}
                     style={{
+                      borderColor: errors[`serviceTitle${index}`] ? 'red' : '#D1D5DB',
+    backgroundColor: errors[`serviceTitle${index}`] ? '#FEE2E2' : '#F9FAFB',
                       width: "100%",
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
                     }}
                     inputStyle={{ width: "100%" }}
                     value={service.title}
@@ -1832,7 +2058,7 @@ const New_Full = () => {
               ))}
             </div>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 " ref={refs.ClassTypes}>
             {templateDetails.ClassTypes &&
               templateDetails.ClassTypes.length > 0 && (
                 <>
@@ -1890,7 +2116,7 @@ const New_Full = () => {
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
           <h1 className="font-bold text-black mt-8">Testimonial Section</h1>
-          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                 <div id="fileUpload" className="max-w-md relative">
@@ -1923,7 +2149,7 @@ const New_Full = () => {
               </div>
               {templateDetails.Testimonial &&
                 templateDetails.Testimonial.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Testimonial}>
                     {templateDetails.Testimonial.map((testimonial, index) => (
                       <div
                         key={index}
@@ -2038,7 +2264,7 @@ const New_Full = () => {
           </div>
 
           {subscriptionDetails && subscriptionDetails.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"  ref={refs.Subscriptions}>
               {subscriptionDetails.map((subscription, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
@@ -2253,7 +2479,7 @@ const New_Full = () => {
           </div>
 
           {instructorDetails && instructorDetails.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Instructors}>
               {instructorDetails.map((instructor, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
@@ -2359,7 +2585,7 @@ const New_Full = () => {
         <div className="relative p-4">
           <h1 className="font-bold text-black mt-8">FAQ Section</h1>
           {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.FAQ}>
               {templateDetails.FAQ.map((faq, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center ">
@@ -2468,7 +2694,7 @@ const New_Full = () => {
             </div>
           </div>
           {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.AboutUs}>
               {templateDetails.AboutUs.map((item, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center">
@@ -2548,7 +2774,7 @@ const New_Full = () => {
           </div>
           {templateDetails.PrivacyPolicy &&
             templateDetails.PrivacyPolicy.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.PrivacyPolicy}>
                 {templateDetails.PrivacyPolicy.map((item, index) => (
                   <div key={index} className="px-2 lg:px-[170px]">
                     <div className="flex justify-between items-center">
@@ -2632,7 +2858,7 @@ const New_Full = () => {
               )}
           </div>
           {templateDetails.Refund && templateDetails.Refund.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.Refund}>
               {templateDetails.Refund.map((item, index) => (
                 <div key={index} className="px-2 lg:px-[170px]">
                   <div className="flex justify-between items-center">
@@ -2706,7 +2932,7 @@ const New_Full = () => {
           </div>
           {templateDetails.TermsData &&
             templateDetails.TermsData.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10" ref={refs.TermsData}>
                 {templateDetails.TermsData.map((item, index) => (
                   <div key={index} className="px-2 lg:px-[170px]">
                     <div className="flex justify-between items-center">
