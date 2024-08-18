@@ -3,30 +3,32 @@ import Context from "../../../context/Context";
 import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
-import Pagination from "@mui/material/Pagination";
+// import Pagination from "@mui/material/Pagination";
 // import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
-import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
+// import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
 // import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
 // import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
 // import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
-import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
-import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
+// import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
+// import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
 // import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
+import { IoSearch } from "react-icons/io5";
 import { FaChevronRight } from "react-icons/fa";
-import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
+// import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
+import { Pagination } from "flowbite-react";
 
 const Panel = () => {
-  const itemsPerPage = 6;
+  const itemsPerPage = 7;
   const [status, setStatus] = useState();
   const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRow, setSelectedRow] = useState([]);
+  // const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
@@ -89,17 +91,17 @@ const Panel = () => {
     setShowDetails(true);
   };
 
-  const handleCheckboxChange = (institution) => {
-    if (selectedRow.includes(institution)) {
-      setSelectedRow(selectedRow.filter((id) => id !== institution));
-    } else {
-      setSelectedRow([...selectedRow, institution]);
-    }
-  };
+  // const handleCheckboxChange = (institution) => {
+  //   if (selectedRow.includes(institution)) {
+  //     setSelectedRow(selectedRow.filter((id) => id !== institution));
+  //   } else {
+  //     setSelectedRow([...selectedRow, institution]);
+  //   }
+  // };
 
-  const isRowSelected = (institution) => {
-    return selectedRow.includes(institution);
-  };
+  // const isRowSelected = (institution) => {
+  //   return selectedRow.includes(institution);
+  // };
 
   const filterClients = () => {
     if (!searchQuery) {
@@ -129,9 +131,21 @@ const Panel = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
   const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-  // const createdBy =["Sai","Bikash","Lokanath","Swastik"];
 
-  const selectedRowCount = selectedRow.length;
+  // const selectedRowCount = selectedRow.length;
+  useEffect(() => {
+    if (currentPage < 1 && totalPages > 0) {
+      setCurrentPage(1);
+    } else if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const onPageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
@@ -279,21 +293,27 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center mt-[-5rem] mx-[4rem]  max1300:mt-0 shadow-xl rounded-lg bg-[#e6e4e4]">
-      <div className="w-[90%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3">
-        <div className="flex flex-row justify-between w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] ">
+      <div className="w-[80%] mt-4 rounded-md flex justify-end items-center bg-white py-3 pr-4 shadow-lg">
+        {/* WebDevelopment Form Link */}
+        <div>
+          <Link to="/template">
+            <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+              <p className="text-white">Create New Website</p>
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3">
+        <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
-          <div className="">
-            <div className="flex w-full items-center border-2 border-solid border-[#d6dadf] rounded- p-1 mb-8 mt-6 max850:mb-4 shadow-md bg-[#F9FAFB]">
-              <img
-                className="w-6 h-8 opacity-60 ml-2"
-                src={SearchIcon}
-                alt="Search Icon"
-              />
+          <div className="w-full min800:w-[30%] rounded-sm">
+            <div className="flex w-full items-center border-2 border-solid border-[#d6dadf] p-1 mb-8 mt-6 max850:mb-4 bg-[#F9FAFB]">
+              <IoSearch />
               <input
-                className="w-64 flex-1 outline-none rounded-md px-2 py-1 K2D text-gray-700 text-[0.9rem] tracking-wide font-semibold max600:text-[0.8rem] border-none bg-transparent"
+                className="w-64 flex-1 outline-none px-2 py-1 K2D text-gray-700 text-[0.9rem] tracking-wide font-semibold max600:text-[0.8rem] border-none bg-transparent"
                 type="text"
-                placeholder="Search “Name, Email, Number”"
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -301,25 +321,23 @@ const Panel = () => {
           </div>
 
           {/* Functionalities */}
-          <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
+          {/* <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
             <div className="flex flex-row justify-center items-center gap-3 px-5 py-1 bg-white rounded-full h-14 ">
               <button onClick={() => setIsUserAdd(true)}>
                 <img className="w-5 h-5" src={Add} alt="Add" />
               </button>
-              {/* <button>
-              <img className="w-4 h-4" src={Selections} alt="Selections" />
-            </button> */}
+
             </div>
-            <div className="absolute right-[4px] bottom-[-7px] border border-gray-300 w-[9rem] rounded-2xl h-8 mt-6 z-[-1]"></div>
-            {/* WebDevelopment Form Link */}
-            <div className="">
+            <div className="absolute right-[4px] bottom-[-7px] border border-gray-300 w-[9rem] rounded-2xl h-8 mt-6 z-[-1]"></div> */}
+          {/* WebDevelopment Form Link */}
+          {/* <div className="">
               <Link to="/template">
                 <button className="flex items-center gap-2 p-2 bg-[#48d6e0] text-white font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff]">
                   <p>Web Development</p>
                 </button>
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* form of creating new client */}
@@ -424,20 +442,20 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4">
+        <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-              <Table.HeadCell></Table.HeadCell>
+              {/* <Table.HeadCell></Table.HeadCell> */}
               <Table.HeadCell className=" uppercase font-semibold text-[14px]">
-                Company Name
+                Institution
               </Table.HeadCell>
               <Table.HeadCell className="max670:hidden uppercase font-semibold text-[14px]">
-                Country
+                Type
               </Table.HeadCell>
               <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
                 Status
               </Table.HeadCell>
-              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell>
               <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
@@ -473,11 +491,11 @@ const Panel = () => {
               {clientsToDisplay.map(([key, client], index) => (
                 <Table.Row
                   key={client.institution}
-                  className="clients-data-table border-b"
+                  className="clients-data-table border-b hover:bg-gray-100"
                   onClick={() => setisMonthlyReport(client.institution)}
                 >
                   {/* Checkbox */}
-                  <Table.Cell className="px-4 py-2">
+                  {/* <Table.Cell className="px-4 py-2">
                     <label className="relative">
                       <input
                         type="checkbox"
@@ -497,7 +515,8 @@ const Panel = () => {
                         )}
                       </div>
                     </label>
-                  </Table.Cell>
+                  </Table.Cell> */}
+
                   <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
                     <Link
                       to={`/Dashboard?institution=${client.institution}`}
@@ -509,8 +528,8 @@ const Panel = () => {
                     </Link>
                   </Table.Cell>
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] max670:hidden pl-12">
-                    {client.country}
+                  <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] max670:hidden">
+                    {/* {client.country} */} dance
                   </Table.Cell>
 
                   <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
@@ -523,20 +542,20 @@ const Panel = () => {
                     </Badge>
                   </Table.Cell>
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900 max600:hidden">
+                  <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
                     {client.country === "USA"
                       ? `$${client.recentMonthIncome}`
                       : `₹${client.recentMonthIncome}`}
                   </Table.Cell>
 
-                  <Table.Cell className="max1008:hidden px-4 py-2 font-semibold text-gray-900">
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
                     {client.recentMonthMembers}
                   </Table.Cell>
 
                   <Table.Cell
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
-                    } px-4 py-2 font-semibold text-gray-900`}
+                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
                   >
                     {client.recentMonthAttendance}
                   </Table.Cell>
@@ -544,7 +563,7 @@ const Panel = () => {
                   <Table.Cell
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
-                    } px-4 py-2 font-semibold text-gray-900`}
+                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
                   >
                     null
                   </Table.Cell>
@@ -552,34 +571,34 @@ const Panel = () => {
                   <div
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
-                    } h-full p-2 flex space-x-2 justify- items-center`}
+                    } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
-                    <Table.Cell className="px-4 py-2 font-semibold text-gray-900 ">
+                    <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
                     </Table.Cell>
-                    <Table.Cell className="px-4 py-2">
+                    {/* <Table.Cell className="px-4 py-2">
                       <Link to={`/Dashboard?institution=${client.institution}`}>
                         <img
                           src={
-                            isRowSelected(client.institution) ? Update : "" //{personIcon}
+                            Update //{personIcon}
                           }
                           alt=""
-                          className={
-                            isRowSelected(client.institution)
-                              ? `scale-150 w-12 mix-blend-color-multiply bg-transparent`
-                              : "" //`w-8 cursor-pointer opacity-90`
-                          }
-                          onClick={
-                            isRowSelected(client.institution)
-                              ? () => showUpdateForm(client.institution)
-                              : "" //() => handlePersonIconClick(client.institution)
-                          }
+                          className={`scale-150 w-12 mix-blend-color-multiply bg-transparent`}
+                          onClick={() => showUpdateForm(client.institution)}
                         />
                       </Link>
-                    </Table.Cell>
+                    </Table.Cell> */}
                   </div>
-                  <Table.Cell className="more" onClick={handleMoreClick}>
-                    {isMoreVisible ? <FaChevronRight /> : ""}
+                  <Table.Cell
+                    className="more"
+                    // onClick={handleMoreClick}
+                  >
+                    <Link
+                      to={`/Dashboard?institution=${client.institution}`}
+                      onClick={() => handlePersonIconClick(client.institution)}
+                    >
+                      {isMoreVisible ? <FaChevronRight /> : ""}
+                    </Link>
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -589,14 +608,16 @@ const Panel = () => {
 
         {clientsToDisplay.map(([key, client], index) => (
           <div key={client.institution}>
-            {isRowSelected(client.institution) && (
+            {/* {
+            // isRowSelected(client.institution) && 
+            (
               <p
                 className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[11rem] min600:hidden"
                 onClick={() => showDetailForm(client.institution)}
               >
                 -- See Details --
               </p>
-            )}
+            )} */}
           </div>
         ))}
 
@@ -790,25 +811,26 @@ const Panel = () => {
           </div>
         )}
 
-        <div className="flex flex-row gap-2">
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            layout="pagination"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+            previousLabel=""
+            nextLabel=""
+            showIcons
+          />
+        )}
+
+        {/* <div className="flex flex-row gap-2">
           {selectedRowCount > 0 && (
             <div className="text-[0.8rem] font-[600] K2D pt-5">
               {selectedRowCount} Item{selectedRowCount > 1 ? "s" : ""} selected
             </div>
           )}
-
-          {/* Pagination */}
-          {itemsPerPage > 7 && (
-            <div className="flex justify-start pt-4 ml-[2rem]">
-              <Pagination
-                count={totalPages}
-                page={currentPage}
-                onChange={(event, value) => setCurrentPage(value)}
-                className="custom-pagination"
-              />
-            </div>
-          )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
