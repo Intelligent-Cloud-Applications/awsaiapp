@@ -82,7 +82,7 @@ const AuthPage = () => {
               userName: user.attributes.name,
               phoneNumber: user.attributes.phone_number,
               country: country,
-              institutionName: "awasaiapp"
+              institutionName: "awsaiapp"
             }
           }
         );
@@ -96,7 +96,7 @@ const AuthPage = () => {
       setLoader(false);
 
       alert('Logged in');
-      navigate('/dashboard');
+      navigate('/team');
     } catch (error) {
       if (error === 'The user is not authenticated')
         alert('Incorrect OTP. Try again');
