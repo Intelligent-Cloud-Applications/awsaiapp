@@ -584,8 +584,74 @@ const New_Full = () => {
       setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
     }
   };
+  const [invalidTestimonialIndex, setInvalidTestimonialIndex] = useState([]);
+
+  const updateInvalidTestimonialIndex = (index, field) => {
+    setInvalidTestimonialIndex(prev => [...prev, { index, field }]);
+  };
+  const [invalidClassTypes, setInvalidClassTypes] = useState([]);
+
+const updateInvalidClassTypeIndex = (index, field) => {
+  setInvalidClassTypes(prev => [...prev, { index, field }]);
+};
+const [invalidSubscriptionIndex, setInvalidSubscriptionIndex] = useState([]);
+
+const updateInvalidSubscriptionIndex = (subscriptionIndex, field, itemIndex = null) => {
+  setInvalidSubscriptionIndex(prev => [...prev, { subscriptionIndex, field, itemIndex }]);
+};
+
+const [invalidFaqs, setInvalidFaqs] = useState([]);
+
+const updateInvalidFaqIndex = (index, field) => {
+  setInvalidFaqs(prev => [...prev, { index, field }]);
+};
+const [invalidAboutUs, setInvalidAboutUs] = useState([]);
+
+const updateInvalidAboutUsIndex = (index, field) => {
+  setInvalidAboutUs(prev => [...prev, { index, field }]);
+};
+const [invalidPrivacyPolicy, setInvalidPrivacyPolicy] = useState([]);
+
+const updateInvalidPrivacyPolicyIndex = (index, field) => {
+  setInvalidPrivacyPolicy(prev => [...prev, { index, field }]);
+};
+const [invalidTermsData, setInvalidTermsData] = useState([]);
+
+const updateInvalidTermsDataIndex = (index, field) => {
+  setInvalidTermsData(prev => [...prev, { index, field }]);
+};
+
+
+const [invalidRefund, setInvalidRefund] = useState([]);
+
+const updateInvalidRefundIndex = (index, field) => {
+  setInvalidRefund(prev => [...prev, { index, field }]);
+};
+
+
+const [invalidInstructors, setInvalidInstructors] = useState([]);
+
+const updateInvalidInstructorIndex = (index, field) => {
+  setInvalidInstructors(prev => [...prev, { index, field }]);
+};
+const [invalidServices, setInvalidServices] = useState([]);
+
+const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
+  setInvalidServices(prev => [...prev, { serviceIndex, itemIndex, field }]);
+};
 
   const saveChanges = async () => {
+    setErrors({});
+    setInvalidTestimonialIndex([]);
+    setInvalidClassTypes([]);
+    setInvalidSubscriptionIndex([]);
+    setInvalidFaqs([]);
+    setInvalidAboutUs([]);
+    setInvalidPrivacyPolicy([]);
+    setInvalidTermsData([]);
+    setInvalidRefund([]);
+    setInvalidInstructors([]);
+    setInvalidServices([]);
     const requiredFields = [
       { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
       { value: templateDetails.SecondaryColor, name: "SecondaryColor" },
@@ -638,14 +704,19 @@ const New_Full = () => {
       serviceErrors.push("Services");
     } else {
       templateDetails.Services.forEach((service, index) => {
-        if (!service.title || service.title.trim() === "") {
+        if (!service.title?.trim()) {
+          updateInvalidServiceIndex(index, null, "title");
           serviceErrors.push(`service-${index}`);
         }
-
-        const hasNonEmptyItem = service.items.some(
-          (item) => item.trim() !== ""
-        );
-        if (!hasNonEmptyItem) {
+        if (service.items && service.items.length > 0) {
+          service.items.forEach((item, itemIndex) => {
+            if (!item?.trim()) {
+              updateInvalidServiceIndex(index, itemIndex, "items");
+              serviceErrors.push(`service-${index}-items-${itemIndex}`);
+            }
+          });
+        } else {
+          updateInvalidServiceIndex(index, null, "items");
           serviceErrors.push(`service-${index}-items`);
         }
       });
@@ -663,6 +734,11 @@ const New_Full = () => {
       if (!hasNonEmptyClassType) {
         emptyClassTypes.push("ClassTypes");
       }
+      templateDetails.ClassTypes.forEach((classType, index) => {
+        if (!classType.trim()) {
+          updateInvalidClassTypeIndex(index, "ClassType");
+        }
+      });
     }
 
     // Validate Testimonials
@@ -673,6 +749,16 @@ const New_Full = () => {
       invalidTestimonials.push("Testimonials");
     } else {
       templateDetails.Testimonial.forEach((testimonial, index) => {
+        if (!testimonial.img || testimonial.img.trim() === "") {
+          updateInvalidTestimonialIndex(index, "img");
+        }
+        if (!testimonial.name || testimonial.name.trim() === "") {
+          updateInvalidTestimonialIndex(index, "name");
+        }
+        if (!testimonial.description || testimonial.description.trim() === "") {
+          updateInvalidTestimonialIndex(index, "description");
+        }        
+      
         if (
           !testimonial.img ||
           !testimonial.name ||
@@ -682,6 +768,7 @@ const New_Full = () => {
           testimonial.description.trim() === ""
         ) {
           invalidTestimonials.push(`Testimonial ${index + 1}`);
+         
         }
       });
     }
@@ -704,7 +791,23 @@ const New_Full = () => {
           subscription.provides &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "");
+          const provides = subscription.provides || [];
 
+          if (!hasValidHeading) {
+            updateInvalidSubscriptionIndex(index, "heading");
+          }
+          if (hasValidAmount === undefined || hasValidAmount <= 0) {
+            updateInvalidSubscriptionIndex(index, "amount");
+          }
+          if (hasValidProvides.length === 0) {
+            updateInvalidSubscriptionIndex(index, "provides");
+          } else {
+            provides.forEach(( hasValidProvides, itemIndex) => {
+              if (! hasValidProvides?.trim()) {
+                updateInvalidSubscriptionIndex(index, "provides", itemIndex);
+              }
+            });
+          }
         if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
           invalidSubscriptions.push(
             `Subscription ${
@@ -728,7 +831,12 @@ const New_Full = () => {
       templateDetails.FAQ.forEach((faq, index) => {
         const hasValidTitle = faq.title && faq.title.trim() !== "";
         const hasValidContent = faq.content && faq.content.trim() !== "";
-
+        if (!faq.title || faq.title.trim() === "") {
+          updateInvalidFaqIndex(index, "title");
+        }
+        if (!faq.content || faq.content.trim() === "") {
+          updateInvalidFaqIndex(index, "content");
+        }
         if (!hasValidTitle || !hasValidContent) {
           if (!hasValidTitle) {
             invalidFaqs.push(`FAQ ${index + 1} must have a non-empty title.`);
@@ -752,6 +860,18 @@ const New_Full = () => {
           instructor.position.trim() !== ""
       );
       instructorDetails.forEach((instructor, index) => {
+        if (!instructor.name || instructor.name.trim() === "") {
+          updateInvalidInstructorIndex(index, "name");
+        }
+        if (!instructor.emailId || instructor.emailId.trim() === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
+          updateInvalidInstructorIndex(index, "emailId");
+        }
+        if (!instructor.image || instructor.image.trim() === "") {
+          updateInvalidInstructorIndex(index, "image");
+        }
+        if (!instructor.position || instructor.position.trim() === "") {
+          updateInvalidInstructorIndex(index, "position");
+        }
         const hasValidImage =
           instructor.image && instructor.image.trim() !== "";
         const hasValidPosition =
@@ -792,6 +912,13 @@ const New_Full = () => {
       invalidAboutUs.push("AboutUs");
     } else {
       templateDetails.AboutUs.forEach((about, index) => {
+        if (!about.heading || about.heading.trim() === "") {
+          updateInvalidAboutUsIndex(index, "heading");
+        }
+        if (!about.content || about.content.trim() === "") {
+          updateInvalidAboutUsIndex(index, "content");
+        }
+  
         if (
           !about.heading ||
           !about.content ||
@@ -811,6 +938,12 @@ const New_Full = () => {
       invalidPrivacyPolicy.push("PrivacyPolicy");
     } else {
       templateDetails.PrivacyPolicy.forEach((policy, index) => {
+        if (!policy.heading || policy.heading.trim() === "") {
+          updateInvalidPrivacyPolicyIndex(index, "heading");
+        }
+        if (!policy.content || policy.content.trim() === "") {
+          updateInvalidPrivacyPolicyIndex(index, "content");
+        }
         if (
           !policy.heading ||
           !policy.content ||
@@ -827,6 +960,12 @@ const New_Full = () => {
       invalidTermsData.push("TermsData");
     } else {
       templateDetails.TermsData.forEach((term, index) => {
+        if (!term.title || term.title.trim() === "") {
+          updateInvalidTermsDataIndex(index, "title");
+        }
+        if (!term.content || term.content.trim() === "") {
+          updateInvalidTermsDataIndex(index, "content");
+        }
         if (
           !term.title ||
           !term.content ||
@@ -843,6 +982,12 @@ const New_Full = () => {
       invalidRefund.push("Refund");
     } else {
       templateDetails.Refund.forEach((refund, index) => {
+        if (!refund.heading || refund.heading.trim() === "") {
+          updateInvalidRefundIndex(index, "heading");
+        }
+        if (!refund.content || refund.content.trim() === "") {
+          updateInvalidRefundIndex(index, "content");
+        }
         if (
           !refund.heading ||
           !refund.content ||
@@ -1042,11 +1187,11 @@ const New_Full = () => {
           ", "
         )}.\n`;
         alert(alertMessage);
-        scrollToError(invalidPrivacyPolicy);
+        scrollToError("Instructors");
         return;
       }
       alert(alertMessage);
-      scrollToError("Instructors");
+      // scrollToError("Instructors");
       return;
     }
 
@@ -2041,7 +2186,7 @@ const New_Full = () => {
                     label="Title"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "title") ? "#FEE2E2" : "#F9FAFB",
                       width: "100%",
                     }}
                     inputStyle={{ width: "100%" }}
@@ -2059,7 +2204,8 @@ const New_Full = () => {
                             style={{
                               width: "100%",
                               borderColor: "#D1D5DB",
-                              backgroundColor: "#F9FAFB",
+                              backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "items" && t.itemIndex === itemIndex) ? "#FEE2E2" : "#F9FAFB",
+                                
                             }}
                             inputStyle={{ width: "100%" }}
                             value={item}
@@ -2123,7 +2269,11 @@ const New_Full = () => {
                             }
                             style={{
                               borderColor: "#D1D5DB",
-                              backgroundColor: "#F9FAFB",
+                              backgroundColor: invalidClassTypes.some(
+                                t => t.index === index && t.field === "ClassType"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
                               borderRadius: "8px",
                             }}
                             className="w-full"
@@ -2215,8 +2365,12 @@ const New_Full = () => {
                           style={{
                             width: "100%",
                             borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                          }}
+                            backgroundColor: invalidTestimonialIndex.some(
+                              t => t.index === index && t.field === "name"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+            }}
                           inputStyle={{ width: "100%" }}
                           value={testimonial.name}
                           onChange={(event) =>
@@ -2230,7 +2384,11 @@ const New_Full = () => {
                           style={{
                             width: "100%",
                             borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
+                            backgroundColor: invalidTestimonialIndex.some(
+                              t => t.index === index && t.field === "description"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
                           }}
                           inputStyle={{ width: "100%" }}
                           value={testimonial.description}
@@ -2249,7 +2407,11 @@ const New_Full = () => {
                             helperText="Upload the Testimonial Image"
                             style={{
                               borderColor: "#D1D5DB",
-                              backgroundColor: "#F9FAFB",
+                              backgroundColor: invalidTestimonialIndex.some(
+                                t => t.index === index && t.field === "img"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
                               borderRadius: "8px",
                             }}
                           />
@@ -2340,9 +2502,15 @@ const New_Full = () => {
                     style={{
                       width: "100%",
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: invalidSubscriptionIndex.some(
+                        t => t.subscriptionIndex === index && t.field === "heading"
+                      )
+                        ? "#FEE2E2"
+                        : "#F9FAFB",
+          
                     }}
                     inputStyle={{ width: "100%" }}
+                    
                     value={subscription.heading}
                     onChange={(e) => handleHeadingChange(e, index)}
                   />
@@ -2403,7 +2571,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidSubscriptionIndex.some(
+                          t => t.subscriptionIndex === index && t.field === "amount"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                       }}
                       type="Number"
                       inputStyle={{ width: "100%" }}
@@ -2448,7 +2620,11 @@ const New_Full = () => {
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          backgroundColor: invalidSubscriptionIndex.some(
+                            t => t.subscriptionIndex === index && t.field === "provides" && t.itemIndex === idx
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
                         }}
                         inputStyle={{ width: "100%" }}
                         value={provide}
@@ -2558,7 +2734,11 @@ const New_Full = () => {
                     style={{
                       width: "100%",
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: invalidInstructors.some(
+                        t => t.index === index && t.field === "name"
+                      )
+                        ? "#FEE2E2"
+                        : "#F9FAFB",
                     }}
                     inputStyle={{ width: "100%" }}
                     value={instructor.name}
@@ -2571,7 +2751,11 @@ const New_Full = () => {
                     style={{
                       width: "100%",
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: invalidInstructors.some(
+                        t => t.index === index && t.field === "position"
+                      )
+                        ? "#FEE2E2"
+                        : "#F9FAFB",
                     }}
                     inputStyle={{ width: "100%" }}
                     value={instructor.position}
@@ -2586,7 +2770,11 @@ const New_Full = () => {
                     style={{
                       width: "100%",
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: invalidInstructors.some(
+                        t => t.index === index && t.field === "emailId"
+                      )
+                        ? "#FEE2E2"
+                        : "#F9FAFB",
                     }}
                     inputStyle={{ width: "100%" }}
                     value={instructor.emailId}
@@ -2603,7 +2791,11 @@ const New_Full = () => {
                       helperText="Upload the Instructor Image"
                       style={{
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidInstructors.some(
+                          t => t.index === index && t.field === "image"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                     />
@@ -2665,7 +2857,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidFaqs.some(
+                          t => t.index === index && t.field === "title"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       inputStyle={{ width: "100%" }}
@@ -2690,7 +2886,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidFaqs.some(
+                          t => t.index === index && t.field === "content"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       inputStyle={{ width: "100%" }}
@@ -2779,7 +2979,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidAboutUs.some(
+                          t => t.index === index && t.field === "heading"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       value={item.heading}
@@ -2800,7 +3004,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidAboutUs.some(
+                          t => t.index === index && t.field === "content"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       rows={4}
@@ -2862,7 +3070,11 @@ const New_Full = () => {
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          backgroundColor: invalidPrivacyPolicy.some(
+                            t => t.index === index && t.field === "heading"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
                           borderRadius: "8px",
                         }}
                         value={item.heading}
@@ -2885,7 +3097,11 @@ const New_Full = () => {
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          backgroundColor: invalidPrivacyPolicy.some(
+                            t => t.index === index && t.field === "content"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
                           borderRadius: "8px",
                         }}
                         rows={4}
@@ -2946,7 +3162,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidRefund.some(
+                          t => t.index === index && t.field === "heading"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       value={item.heading}
@@ -2964,7 +3184,11 @@ const New_Full = () => {
                       style={{
                         width: "100%",
                         borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
+                        backgroundColor: invalidRefund.some(
+                          t => t.index === index && t.field === "content"
+                        )
+                          ? "#FEE2E2"
+                          : "#F9FAFB",
                         borderRadius: "8px",
                       }}
                       rows={4}
@@ -3026,7 +3250,11 @@ const New_Full = () => {
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          backgroundColor: invalidTermsData.some(
+                            t => t.index === index && t.field === "title"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
                           borderRadius: "8px",
                         }}
                         value={item.title}
@@ -3049,7 +3277,11 @@ const New_Full = () => {
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          backgroundColor: invalidTermsData.some(
+                            t => t.index === index && t.field === "content"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
                           borderRadius: "8px",
                         }}
                         rows={4}
@@ -3094,13 +3326,14 @@ const New_Full = () => {
                   <TextInput
                     id="address"
                     placeholder="Enter your address"
+                    ref={refs.Query_Address}
                     required
                     value={templateDetails.Query_Address}
                     onChange={(event) => handleChange(event, "Query_Address")}
                     sizing="sm"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: errors.Query_Address ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -3115,12 +3348,13 @@ const New_Full = () => {
                     id="email"
                     placeholder="Enter your email id"
                     required
+                    ref={refs.Query_EmailId}
                     value={templateDetails.Query_EmailId}
                     onChange={(event) => handleChange(event, "Query_EmailId")}
                     sizing="sm"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: errors.Query_EmailId ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -3135,6 +3369,7 @@ const New_Full = () => {
                     id="phone"
                     placeholder="Enter your phone number"
                     required
+                    ref={refs.Query_PhoneNumber}
                     value={templateDetails.Query_PhoneNumber}
                     onChange={(event) =>
                       handleChange(event, "Query_PhoneNumber")
@@ -3142,7 +3377,7 @@ const New_Full = () => {
                     sizing="sm"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: errors.Query_PhoneNumber ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -3193,12 +3428,13 @@ const New_Full = () => {
                   <TextInput
                     id="facebook"
                     placeholder="Enter your Facebook profile"
+                    ref={refs.Facebook}
                     value={templateDetails.Facebook}
                     onChange={(event) => handleChange(event, "Facebook")}
                     sizing="sm"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: errors.Facebook ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
@@ -3212,12 +3448,13 @@ const New_Full = () => {
                   <TextInput
                     id="instagram"
                     placeholder="Enter your Instagram handle"
+                    ref={refs.Instagram}
                     value={templateDetails.Instagram}
                     onChange={(event) => handleChange(event, "Instagram")}
                     sizing="sm"
                     style={{
                       borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
+                      backgroundColor: errors.Instagram ? "#ee3232" : "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
