@@ -14,13 +14,13 @@ import Swal from "sweetalert2";
 // import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
 // import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
 // import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
-import { IoSearch } from "react-icons/io5";
 import { FaChevronRight } from "react-icons/fa";
 // import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination } from "flowbite-react";
+import { Pagination,Dropdown } from "flowbite-react";
+
 
 const Panel = () => {
   const itemsPerPage = 7;
@@ -53,7 +53,10 @@ const Panel = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
+  const [instituteTypes, setInstituteTypes] = useState([]);
+  const [instituteType, setInstituteType] = useState("");
 
+  
   useEffect(() => {
     const handleResize = () => {
       const max670Hidden = window.innerWidth <= 670;
@@ -71,6 +74,19 @@ const Panel = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => { 
+    const filteredClients = filterClients();
+
+  
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+    clientsToDisplay.map(([key, client], index) => 
+      setInstituteTypes(prevTypes => Array.from(new Set([...prevTypes, userData.institutionType])))
+    );
+
+  },[ currentPage, itemsPerPage, userData.institutionType]);
 
   const showDetailForm = (institution) => {
     const userDetail = clientsData.find(
@@ -292,10 +308,46 @@ const Panel = () => {
     setShowHiddenContent(!showHiddenContent);
   };
 
+  const splitandjoin = (str) => {
+    // if capital letter is found then split the string and join it with space
+    if (str.match(/[A-Z]/) !== null) {
+      return str.split(/(?=[A-Z])/).join(" ");
+    } else {
+      return str;
+    }
+  };
+
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] ">
-      <div className="w-[80%] mt-4 rounded-md flex justify-end items-center bg-white py-3 pr-4 shadow-lg">
+    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] ">
+      <div className="w-[80%] mt-4 rounded-md flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-2 lg:space-y-0">
         {/* WebDevelopment Form Link */}
+      <Dropdown
+      label={instituteType ? instituteType:"Create Institute"}
+      dismissOnClick={false}
+      className="bg-white text-white font-semibold shadow-md  focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      {
+        instituteTypes.map((type) => (
+
+          <Link   
+          {
+            ...type === "danceStudio" ? {to:"/template"} : {to:"/template"}
+          }
+          
+          >
+          <Dropdown.Item
+            key={type}
+            onClick={() => setInstituteType(type)}
+            className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out px-4 py-2"
+          >
+            {splitandjoin(type)}
+          </Dropdown.Item>
+          </Link>
+        ))
+      }
+
+      
+    </Dropdown>
         <div>
           <Link to="/template">
             <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
@@ -307,18 +359,43 @@ const Panel = () => {
       <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
-          <div className="w-full min800:w-[30%] rounded-sm">
-            <div className="flex w-full items-center border-2 border-solid border-[#d6dadf] p-1 mb-8 mt-6 max850:mb-4 bg-[#F9FAFB]">
-              <IoSearch />
+
+          <form class="w-full min800:w-[30%] rounded-sm my-3">
+            <label
+              for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >
+              Search
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
               <input
-                className="w-64 flex-1 outline-none px-2 py-1 K2D text-gray-700 text-[0.9rem] tracking-wide font-semibold max600:text-[0.8rem] border-none bg-transparent"
-                type="text"
+                type="search"
+                id="default-search"
+                class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
                 placeholder="Search"
+                required
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-          </div>
+          </form>
 
           {/* Functionalities */}
           {/* <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
@@ -486,7 +563,7 @@ const Panel = () => {
                 More
               </Table.HeadCell>
             </Table.Head>
-            {console.log(clientsToDisplay)}
+
             <Table.Body className="bg-white">
               {clientsToDisplay.map(([key, client], index) => (
                 <Table.Row
@@ -529,7 +606,8 @@ const Panel = () => {
                   </Table.Cell>
 
                   <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] max670:hidden">
-                    {/* {client.country} */} dance
+                    {splitandjoin(userData.institutionType)}
+                    
                   </Table.Cell>
 
                   <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
