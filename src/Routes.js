@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Logout from "./pages/Logout";
+// import Login from "./pages/Login";
+import Logout from "./pages/Auth/Logout";
+import Auth from "./pages/Auth";
 import DashBoard from "./pages/DashBoard";
 import MemberList from "./components/Dashboard/MemberList/MembersList";
 import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
@@ -19,7 +20,7 @@ import Customer from "./services/Customer";
 import Payment from "./services/Payment";
 import Terms from "./pages/Terms";
 import Refund from "./pages/Refund";
-import SignUp from "./pages/SignUp";
+// import SignUp from "./pages/SignUp";
 import SubscriptionPopup from "./pages/Subscribe_POPUP";
 import SubscriptionPopup1 from "./pages/Subscribe_POPUP1";
 import SubscriptionPopup2 from "./pages/Subscribe_POPUP2";
@@ -52,8 +53,8 @@ const RoutesContainer = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+      {/* <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} /> */}
       <Route path="/subpopup" element={<SubscriptionPopup />} />
       <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
       <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
@@ -97,6 +98,7 @@ const RoutesContainer = () => {
       </Route>
       <Route path="/error" element={<UnauthorizedUser />}/>
       <Route path="/callback" element={<Callback />} />
+      <Route path='/auth' element={<Auth />} />
     </Routes>
   );
 };
