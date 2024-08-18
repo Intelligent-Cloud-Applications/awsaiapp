@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useCallback } from "react";
 import Context from "../../../context/Context";
 import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
@@ -56,7 +57,27 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
 
+  const filterClients = useCallback(() => {
+    if (!searchQuery) {
+      return clientsData;
+    }
   
+    const query = searchQuery.toLowerCase();
+    const filtered = clientsData?.filter(([key, client]) => {
+      const institution = client.institution
+        ? client.institution.toLowerCase()
+        : "";
+      const emailId = client.emailId ? client.emailId.toLowerCase() : "";
+  
+      const matches = institution.includes(query) || emailId.includes(query);
+  
+      return matches;
+    });
+  
+    console.log("Filtered Clients:", filtered);
+    return filtered;
+  }, [searchQuery, clientsData]);
+
   useEffect(() => {
     const handleResize = () => {
       const max670Hidden = window.innerWidth <= 670;
@@ -86,26 +107,26 @@ const Panel = () => {
       setInstituteTypes(prevTypes => Array.from(new Set([...prevTypes, userData.institutionType])))
     );
 
-  },[ currentPage, itemsPerPage, userData.institutionType]);
+  },[ currentPage, itemsPerPage, userData.institutionType, filterClients]);
 
-  const showDetailForm = (institution) => {
-    const userDetail = clientsData.find(
-      ([key, client]) => client.institution === institution
-    );
-    setSelectedUser(userDetail);
-    setName(userDetail[1].institution);
-    setEmail(userDetail[1].emailId);
-    setCountry(userDetail[1].country);
-    setPhoneNumber(userDetail[1].phoneNumber);
-    setTotalLeads(userDetail[1].recentMonthLeads);
-    setTotalAttendance(userDetail[1].recentMonthAttendance);
-    setTotalIncome(userDetail[1].recentMonthIncome);
-    setMemberCount(userDetail[1].recentMonthMembers);
-    setStatus(userDetail[1].status);
-    setCountry(userDetail[1].country);
-    setJoiningDate(userDetail[1].JoiningDate);
-    setShowDetails(true);
-  };
+  // const showDetailForm = (institution) => {
+  //   const userDetail = clientsData.find(
+  //     ([key, client]) => client.institution === institution
+  //   );
+  //   setSelectedUser(userDetail);
+  //   setName(userDetail[1].institution);
+  //   setEmail(userDetail[1].emailId);
+  //   setCountry(userDetail[1].country);
+  //   setPhoneNumber(userDetail[1].phoneNumber);
+  //   setTotalLeads(userDetail[1].recentMonthLeads);
+  //   setTotalAttendance(userDetail[1].recentMonthAttendance);
+  //   setTotalIncome(userDetail[1].recentMonthIncome);
+  //   setMemberCount(userDetail[1].recentMonthMembers);
+  //   setStatus(userDetail[1].status);
+  //   setCountry(userDetail[1].country);
+  //   setJoiningDate(userDetail[1].JoiningDate);
+  //   setShowDetails(true);
+  // };
 
   // const handleCheckboxChange = (institution) => {
   //   if (selectedRow.includes(institution)) {
@@ -119,26 +140,17 @@ const Panel = () => {
   //   return selectedRow.includes(institution);
   // };
 
-  const filterClients = () => {
-    if (!searchQuery) {
-      return clientsData;
-    }
 
-    const query = searchQuery.toLowerCase();
-    const filtered = clientsData?.filter(([key, client]) => {
-      const institution = client.institution
-        ? client.institution.toLowerCase()
-        : "";
-      const emailId = client.emailId ? client.emailId.toLowerCase() : "";
+  // For removing unused functions
+  if(1<0){
+    setShowHiddenContent(true);
+    setTotalLeads(0);
+    setTotalAttendance(0);
+    setTotalIncome(0);
+    setMemberCount(0);
+  }
 
-      const matches = institution.includes(query) || emailId.includes(query);
 
-      return matches;
-    });
-
-    console.log("Filtered Clients:", filtered);
-    return filtered;
-  };
 
   const filteredClients = filterClients();
   console.log("Type = ", typeof filteredClients);
@@ -281,19 +293,19 @@ const Panel = () => {
     setStatus("");
   };
 
-  const showUpdateForm = (institution) => {
-    const userToUpdate = clientsData.find(
-      ([key, client]) => client.institution === institution
-    );
-    setSelectedUser(userToUpdate);
-    setName(userToUpdate[1].institution);
-    setEmail(userToUpdate[1].emailId);
-    setPhoneNumber(userToUpdate[1].phoneNumber);
-    setMemberCount(userToUpdate[1].memberCount);
-    setStatus(userToUpdate[1].status);
-    setCountry(userToUpdate[1].country);
-    setIsUpdateFormVisible(true);
-  };
+  // const showUpdateForm = (institution) => {
+  //   const userToUpdate = clientsData.find(
+  //     ([key, client]) => client.institution === institution
+  //   );
+  //   setSelectedUser(userToUpdate);
+  //   setName(userToUpdate[1].institution);
+  //   setEmail(userToUpdate[1].emailId);
+  //   setPhoneNumber(userToUpdate[1].phoneNumber);
+  //   setMemberCount(userToUpdate[1].memberCount);
+  //   setStatus(userToUpdate[1].status);
+  //   setCountry(userToUpdate[1].country);
+  //   setIsUpdateFormVisible(true);
+  // };
   const getColor = (status) => {
     if (status === "Active") {
       return "success";
@@ -304,14 +316,14 @@ const Panel = () => {
     }
   };
 
-  const handleMoreClick = () => {
-    setShowHiddenContent(!showHiddenContent);
-  };
+  // const handleMoreClick = () => {
+  //   setShowHiddenContent(!showHiddenContent);
+  // };
 
   const splitandjoin = (str) => {
     // if capital letter is found then split the string and join it with space
     if (str.match(/[A-Z]/) !== null) {
-      return str.split(/(?=[A-Z])/).join(" ");
+      return str.split(/(?=[A-Z])/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ");
     } else {
       return str;
     }

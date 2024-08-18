@@ -39,7 +39,7 @@ function FAQs({ faqs, setFaqs }) {
   };
 
   return (
-    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
+    <div className="mx-auto max-w-[800px]" style={{ overflowY: 'auto', maxHeight: '745px' }}>
       <h1 className="font-medium text-7xl">FAQs SECTION</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
