@@ -47,7 +47,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
       setInstructorBg(file);
     }
   };
-  const handleCSVFlie = (e) =>{
+  const handleCSVFlie = (e) => {
     const file = e.target.files[0];
     if (file) {
       const fileSizeMB = file.size / (1024 * 1024);
@@ -187,7 +187,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           </div>
         </label>
       </div>
-      <div className="relative flex items-center mt-4">
+      <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
         <input
@@ -230,6 +230,9 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           </div>
         </label>
       </div>
+      <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
+        ( * It should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
+      </p>
     </div>
   );
 }
