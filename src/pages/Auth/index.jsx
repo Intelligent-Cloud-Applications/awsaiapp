@@ -12,7 +12,8 @@ import countries from "../../components/Auth/Inputs/countries.json";
 
 const AuthPage = () => {
   // const { InstitutionId } = useContext(institutionContext).institutionData;
-  const { util, setUserData, setIsAuth, onAuthLoad } = useContext(Context);
+
+  const { util, setUserData, setIsAuth } = useContext(Context);
   const { setLoader } = util;
 
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const AuthPage = () => {
   const [signInResponse, setSignInResponse] = useState();
   const [formState, setFormState] = useState('login')
 
-
+  console.log(referralCode);
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoader(true);
