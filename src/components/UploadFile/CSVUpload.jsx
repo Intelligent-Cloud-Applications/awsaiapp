@@ -2,7 +2,7 @@ import { Storage } from 'aws-amplify';
 
 // Valid file types (CSV, XLS, XLSX)
 const allowedFileTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-const maxFileSize = 10 * 1024 * 1024; // 10MB
+const maxFileSize = 4 * 1024 * 1024; 
 
 // Function to check if a file exists in S3 bucket
 const checkIfFileExists = async (fileName) => {
@@ -53,11 +53,12 @@ const CSVUpload = async (file,institutionId) => {
 
         const uniqueFileName = await generateUniqueFileName(file.name);
 
-        const result = await Storage.put(`${institutionId}/${uniqueFileName}`,file, {
+        const result = await Storage.put(`${institutionId}/memberlist/${uniqueFileName}`,file, {
             contentType: file.type,
         });
         
         console.log('File uploaded successfully:', result);
+        alert("file uploaded");
     } catch (error) {
         console.error('Error uploading file:', error);
         alert(error.message); // Display error message to the user
