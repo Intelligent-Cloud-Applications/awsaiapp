@@ -40,6 +40,7 @@ import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import TemplateMail from "./components/Dashboard/LeadsList/TemplateMail";
+import NewMemberList from "./components/Dashboard/MemberList/NewMemberList";
 
 
 const RoutesContainer = () => {
@@ -97,6 +98,7 @@ const RoutesContainer = () => {
       </Route>
       <Route path="/error" element={<UnauthorizedUser />}/>
       <Route path="/callback" element={<Callback />} />
+      <Route path="/members" element={<NewMemberList/>} />
     </Routes>
   );
 };
