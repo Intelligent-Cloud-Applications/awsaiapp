@@ -84,10 +84,11 @@
 
 }
 
-@media(max-width:1600px) {
+@media(max-width:1445px) {
     .feedback {
-        max-height: max-content;
+        height: max-content;
     }
+
 }
 
 @media(max-width:698px) {

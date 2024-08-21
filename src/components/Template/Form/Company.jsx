@@ -1,70 +1,70 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import upload from "../../../utils/png/upload.png";
+import "../../../pages/Template.css";
 
-function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimaryColor, SecondaryColor, setSecondaryColor, logo, setLogo,LightPrimaryColor,setLightPrimaryColor,LightestPrimaryColor,setLightestPrimaryColor,selectedFile,setSelectedFile }) {
-  // const [companyName, setCompanyName] = useState("");
-  // const [domainName, setDomainName] = useState("");
+function Company({
+  clients,
+  companyName,
+  setCompanyName,
+  PrimaryColor,
+  setPrimaryColor,
+  SecondaryColor,
+  setSecondaryColor,
+  logo,
+  setLogo,
+  LightPrimaryColor,
+  setLightPrimaryColor,
+  LightestPrimaryColor,
+  setLightestPrimaryColor,
+  selectedFile,
+  setSelectedFile,
+}) {
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
-  // const [isDomainInputVisible, setDomainInputVisible] = useState(false);
-  // const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  // const [domainLineColor, setDomainLineColor] = useState("#939393");
-  // const [logoUrl, setLogoUrl] = useState(null);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  // const [domainLineColor, setDomainLineColor] = useState("#939393");
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
   };
-
 
   const toggleCompanyInputVisibility = () => {
     setCompanyInputVisible(true);
     setCompanyLineColor("#000000"); // Change company line color to black on click
   };
 
-  // const toggleDomainInputVisibility = () => {
-  //   setDomainLineColor("#000000"); // Change domain line color to black on click
-  //   setCompanyInputVisible(false); // Hide company input when domain input is clicked
-  //   setCompanyLineColor("#939393"); // Reset company line color
-  // };
-
-  //color
-  // const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
-
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
   };
-  // const [SecondaryColor, setSecondaryColor] = useState("#000000");
-
+  
   const handleColorChange2 = (e) => {
     setSecondaryColor(e.target.value);
   };
+  
   const handleColorChange3 = (e) => {
     setLightPrimaryColor(e.target.value);
   };
+  
   const handleColorChange4 = (e) => {
     setLightestPrimaryColor(e.target.value);
   };
-  //file
-  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
-  
     const file = event.target.files[0];
     if (file) {
       const fileSizeMB = file.size / (1024 * 1024);
       if (fileSizeMB > 4) {
         alert("File size exceeds 4MB. Please choose a smaller file.");
         return;
-      }}
-    if (file instanceof File && (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/'))) {
+      }
+    }
+    if (file instanceof File && (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/"))) {
       setLogo(file);
       setSelectedFile(URL.createObjectURL(file));
     }
   };
 
   const handleUploadImageClick = () => {
-    const element = document.getElementById('yourElementId');
+    const element = document.getElementById("fileInput");
     element?.click();
   };
 
@@ -77,13 +77,10 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
   };
 
   return (
-    <div>
-      <h1 className="font-medium text-7xl">Tell Us About Your Company</h1>
-      <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
+    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '745px' }}>
+      <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
+      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
-        {/* {clients.map((client, index) => (
-          <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
-        ))} */}
       </h5>
 
       <div className="relative mt-6 hidden">
@@ -96,7 +93,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
               type="text"
               value={companyName}
               onChange={handleCompanyInputChange}
-              className="w-[28rem] text-black border-none outline-none bg-transparent "
+              className="w-[28rem] text-black border-none outline-none bg-transparent"
               placeholder="Enter Company Name"
               autoFocus
             />
@@ -109,46 +106,39 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
           style={{ backgroundColor: companyLineColor }}
         ></div>
       </div>
-      <div className="relative mt-6">
-
-        {/* <div
-          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-          style={{ backgroundColor: domainLineColor }}
-        ></div> */}
-      </div>
 
       <div className="mt-8">
-        <h4 className=" text-[#939393]">Choose Your Theme Color</h4>
+        <h4 className="text-[#939393]">Choose Your Theme Color</h4>
         <div className="flex gap-8">
           <input
             type="color"
             value={PrimaryColor}
             onChange={handleColorChange1}
-            class="rounded-full h-12 w-12 cursor-pointer border-none outline-none"
-            alt=""
+            className="rounded-full h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
 
           <input
             type="color"
             value={SecondaryColor}
             onChange={handleColorChange2}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
             value={LightPrimaryColor}
             onChange={handleColorChange3}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
             value={LightestPrimaryColor}
             onChange={handleColorChange4}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none"
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
         </div>
       </div>
-      <div className="border border-black w-[15rem] h-[12rem] mt-6 relative">
+
+      <div className="border border-black w-[15rem] h-[12rem] mt-6 relative boxtoselect">
         {!selectedFile ? (
           <label
             htmlFor="fileInput"
@@ -159,7 +149,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
             <img
               src={upload}
               alt="Upload"
-              className="ml-[3.5rem] mt-10 w-[7rem] "
+              className="ml-[3.5rem] mt-10 w-[7rem]"
               onClick={handleUploadImageClick}
             />
             {isFileOptionVisible && (
@@ -170,7 +160,7 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <h4 className="text-white ">Choose your file</h4>
+                <h4 className="text-white">Choose your file</h4>
               </div>
             )}
             <h4 className="text-[#939393] ml-[60px] text-[15px]">Upload your logo</h4>
