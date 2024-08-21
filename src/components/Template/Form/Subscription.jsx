@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
 import Context from "../../../context/Context";
-import "../../../pages/Template.css";
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
@@ -164,7 +163,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   }, [subscriptionTypes, countryCodes, provides]);
 
   return (
-    <div className="mx-auto max-w-[850px] subscription" style={{ overflow: 'auto', maxHeight: '705px' }}>
+    <div className="mx-auto max-w-[850px]" style={{ overflow: 'auto', maxHeight: '705px' }}>
       <h1 className="font-medium text-7xl">SUBSCRIPTION PLANS</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The subscription model shown is just an example of how your given data will look like for the subscription; it will not change on giving your input.**
