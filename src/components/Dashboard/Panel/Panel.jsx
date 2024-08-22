@@ -1,20 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useCallback } from "react";
+import { useMemo } from "react";
 import Context from "../../../context/Context";
 import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
-// import Pagination from "@mui/material/Pagination";
-// import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
-// import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
-// import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
-// import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
-// import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
-// import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
-// import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
-// import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
-// import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
-// import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import { FaChevronRight } from "react-icons/fa";
 // import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
@@ -34,8 +24,8 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  console.log(clientsData);
-  console.log(userData);
+  // console.log(clientsData);
+  // console.log(userData);
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -67,16 +57,18 @@ const Panel = () => {
       const institution = client.institution
         ? client.institution.toLowerCase()
         : "";
-      const emailId = client.emailId ? client.emailId.toLowerCase() : "";
-  
-      const matches = institution.includes(query) || emailId.includes(query);
+      // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
+      const institutionTypes = userData.institutionType
+      const matches = institution.includes(query) || institutionTypes.includes(query);
   
       return matches;
     });
   
     console.log("Filtered Clients:", filtered);
     return filtered;
-  }, [searchQuery, clientsData]);
+  }, [searchQuery, clientsData,userData.institutionType]);
+
+  const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -97,9 +89,6 @@ const Panel = () => {
   }, []);
 
   useEffect(() => { 
-    const filteredClients = filterClients();
-
-  
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
@@ -107,7 +96,7 @@ const Panel = () => {
       setInstituteTypes(prevTypes => Array.from(new Set([...prevTypes, userData.institutionType])))
     );
 
-  },[ currentPage, itemsPerPage, userData.institutionType, filterClients]);
+  },[ currentPage,userData.institutionType,itemsPerPage]);
 
   // const showDetailForm = (institution) => {
   //   const userDetail = clientsData.find(
@@ -152,8 +141,8 @@ const Panel = () => {
 
 
 
-  const filteredClients = filterClients();
-  console.log("Type = ", typeof filteredClients);
+  // const filteredClients = filterClients();
+  // console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -184,7 +173,7 @@ const Panel = () => {
     return formattedDate;
   }
   const location = useLocation();
-  console.log("path", location.pathname);
+  // console.log("path", location.pathname);
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -330,7 +319,7 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] ">
+    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] lg:ml-[7%]">
       <div className="w-[80%] mt-4 rounded-md flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-2 lg:space-y-0">
         {/* WebDevelopment Form Link */}
       <Dropdown

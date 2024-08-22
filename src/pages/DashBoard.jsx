@@ -109,7 +109,7 @@ const DashBoard = () => {
                 />
               </div>
               <div
-                class="w-[90vw] h-14 ml-2 relative rounded-2xl lg:mt-20"
+                class="w-[90vw] lg:w-[70vw] lg:ml-16 h-14 ml-2 relative rounded-2xl lg:mt-20"
                 style={{
                   boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
                 }}
@@ -129,7 +129,7 @@ const DashBoard = () => {
             </>
           )}
       </div>
-      <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse">
+      <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse lg:ml-28">
         <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 ">
           <LeftBanner
             displayAfterClick={(data) => {
