@@ -89,7 +89,7 @@ export const PrimaryButton = ({ children, ...props }) => {
   return (
     <button
       style={{
-        backgroundColor: "#000000",
+        backgroundColor: "#30AFBC",
         width: '100%',
         height: '40px',
         color: 'white',
@@ -122,7 +122,7 @@ export const Button2 = ({ data, fn, w = 'auto', h = 'auto', className = '' }) =>
     <button
       className={`sans-serif tracking-wider font-semibold rounded-lg py-2 px-2 text-white h-[${h}] w-[${w}] ${className}`}
       style={{
-        backgroundColor: "#00000000"
+        backgroundColor: "#30AFBC"
       }}
       onClick={fn}
     >
