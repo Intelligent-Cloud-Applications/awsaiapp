@@ -78,10 +78,9 @@ function Company({ clients, companyName, setCompanyName, PrimaryColor, setPrimar
 
   return (
     <div>
-      <h1 className="font-medium text-7xl">COMPANY PROFILE</h1>
+      <h1 className="font-medium text-7xl">Tell Us About Your Company</h1>
       <h5 class="w-[28rem] max950:w-[17rem]  text-[#939393]">
-        Company profile, design preferences, and essential details for creating
-        a tailored website experience.
+        Company profile, design preferences, and essential details for creating a tailored website experience.
         {/* {clients.map((client, index) => (
           <li key={index}>{client.amount}</li> // Adjust 'name' to the property you want to display
         ))} */}

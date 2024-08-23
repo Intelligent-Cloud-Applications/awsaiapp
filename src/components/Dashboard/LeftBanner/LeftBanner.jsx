@@ -24,9 +24,9 @@ const LeftBanner = ({ displayAfterClick }) => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center h-[100vh] bg-white max1300:h-0">
+    <div className="flex justify-center items-center h-screen bg-white max1300:h-0 ">
       <div className="flex justify-center items-center">
-        <div className="min-w-[4rem] p-3 bg-[#c4c4c4e1] rounded-[17px] overflow-auto max1300:w-screen max1300:fixed max1300:bottom-[0] max1300:left-0 max1300:items-center max1300:z-30">
+        <div className="min-w-[4rem] p-3 bg-[#30AFBC] rounded-[17px] overflow-auto max1300:w-screen max1300:fixed max1300:bottom-[0] max1300:left-0 max1300:items-center max1300:z-30">
           <div className="rounded-r-[7rem] rounded-b-none flex flex-col items-center justify-between">
             <ul className="gap-[3rem] text-center flex flex-col items-center max1300:flex-row">
               {isSuperAdmin && (
@@ -178,3 +178,111 @@ const LeftBanner = ({ displayAfterClick }) => {
 };
 
 export default LeftBanner;
+
+// import React, { useState, useEffect, useContext } from "react";
+// import { Sidebar } from "flowbite-react";
+// import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
+// import context from "../../../context/Context";
+// import "./LeftBanner.css"; // Add your custom CSS here
+
+// const LeftBanner = ({ displayAfterClick }) => {
+//   const [click, setClick] = useState(0);
+//   const Ctx = useContext(context);
+//   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
+//   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
+
+//   useEffect(() => {
+//     const selectedPage = localStorage.getItem("selectedPage");
+//     if (selectedPage) {
+//       setClick(parseInt(selectedPage));
+//     }
+//   }, []);
+
+//   return (
+//     <div className="flex justify-center items-center h-screen bg-white max1300:h-9 min1150::fixed min1150:top-0 min1150:left-0 ">
+//       <Sidebar aria-label="Sidebar with icons example" className="custom-sidebar z-20">
+//         <Sidebar.Items>
+//           <Sidebar.ItemGroup className="flex flex-col ">
+//             {isSuperAdmin && (
+//               <>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiChartPie}
+//                   onClick={() => {
+//                     setClick(0);
+//                     displayAfterClick(0);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 0 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Client Panel</span>
+//                 </Sidebar.Item>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiShoppingBag}
+//                   onClick={() => {
+//                     setClick(1);
+//                     displayAfterClick(1);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 1 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Graph</span>
+//                 </Sidebar.Item>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiInbox}
+//                   onClick={() => {
+//                     setClick(2);
+//                     displayAfterClick(2);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 2 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Bit</span>
+//                 </Sidebar.Item>
+//               </>
+//             )}
+//             {isNotSuperAdmin && (
+//               <>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiChartPie}
+//                   onClick={() => {
+//                     setClick(0);
+//                     displayAfterClick(0);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 0 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Graph</span>
+//                 </Sidebar.Item>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiShoppingBag}
+//                   onClick={() => {
+//                     setClick(1);
+//                     displayAfterClick(1);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 1 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Members</span>
+//                 </Sidebar.Item>
+//                 <Sidebar.Item
+//                   href="#"
+//                   icon={HiInbox}
+//                   onClick={() => {
+//                     setClick(2);
+//                     displayAfterClick(2);
+//                   }}
+//                   className={`custom-sidebar-item ${click === 2 ? "active" : ""}`}
+//                 >
+//                   <span className="hidden md:inline">Leads</span>
+//                 </Sidebar.Item>
+//               </>
+//             )}
+//           </Sidebar.ItemGroup>
+//         </Sidebar.Items>
+//       </Sidebar>
+//     </div>
+//   );
+// };
+
+// export default LeftBanner;
+
