@@ -23,7 +23,7 @@ const AuthPage = () => {
   const [signInResponse, setSignInResponse] = useState();
   const [formState, setFormState] = useState('login')
 
-  console.log(referralCode);
+  
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoader(true);
