@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
+import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
 import context from "../../../context/Context";
 import { Link } from "react-router-dom";
@@ -7,13 +8,15 @@ import "./LeftBanner.css";
 
 const customTheme = {
   sidebar: {
-    "root": {
-    "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5"
-  },
+    root: {
+      inner:
+        "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5",
+    },
   },
 };
 
 const LeftBanner = ({ displayAfterClick }) => {
+  const { userData } = useContext(Context);
   const [click, setClick] = useState(0);
   const Ctx = useContext(context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
@@ -29,12 +32,21 @@ const LeftBanner = ({ displayAfterClick }) => {
   return (
     <Flowbite theme={{ theme: customTheme }}>
       <div className="flex justify-center items-center lg:h-screen fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20">
-        <Sidebar aria-label="Sidebar" className="custom-sidebar lg:pt-16 lg:h-full w-full lg:w-auto lg:fixed lg:left-0 lg:top-0 z-20">
+        <Sidebar
+          aria-label="Sidebar"
+          className="custom-sidebar lg:pt-16 lg:h-full w-full lg:w-auto lg:fixed lg:left-0 lg:top-0 z-20"
+        >
           <div className="h-full w-full overflow-y-auto overflow-x-hidden rounded lg:px-6">
             <Sidebar.Items className="lg:pr-4">
               <Sidebar.ItemGroup className="flex flex-row justify-around items-center lg:items-start lg:flex-col lg:justify-start">
                 {isSuperAdmin && (
                   <>
+                  <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+
+                    <div className="  font-semibold">
+                    <p className="text-white text-xl">{`Hello, ${((userData.userName).split(" "))[0]}`}</p>
+                    </div>
+                  </Sidebar.ItemGroup>
                     <Sidebar.Item
                       href="#"
                       icon={HiChartPie}
@@ -42,9 +54,13 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      className={`custom-sidebar-item ${
+                        click === 0 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                     >
-                      <span className="hidden md:inline font-semibold">Client Panel</span>
+                      <span className="hidden md:inline font-semibold">
+                        Client Panel
+                      </span>
                     </Sidebar.Item>
                     <Sidebar.Item
                       href="#"
@@ -53,17 +69,25 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(1);
                         displayAfterClick(1);
                       }}
-                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      className={`custom-sidebar-item ${
+                        click === 1 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                     >
-                      <span className="hidden md:inline font-semibold">Revenue</span>
+                      <span className="hidden md:inline font-semibold">
+                        Revenue
+                      </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         href="#"
                         icon={HiInbox}
-                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                        className={`custom-sidebar-item ${
+                          click === 2 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                       >
-                        <span className="hidden md:inline font-semibold">Profile</span>
+                        <span className="hidden md:inline font-semibold">
+                          Profile
+                        </span>
                       </Sidebar.Item>
                     </Link>
                   </>
@@ -77,9 +101,13 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      className={`custom-sidebar-item ${
+                        click === 0 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                     >
-                      <span className="hidden md:inline font-semibold">Graph</span>
+                      <span className="hidden md:inline font-semibold">
+                        Graph
+                      </span>
                     </Sidebar.Item>
                     <Sidebar.Item
                       href="#"
@@ -88,9 +116,13 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(1);
                         displayAfterClick(1);
                       }}
-                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      className={`custom-sidebar-item ${
+                        click === 1 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                     >
-                      <span className="hidden md:inline font-semibold">Members</span>
+                      <span className="hidden md:inline font-semibold">
+                        Members
+                      </span>
                     </Sidebar.Item>
                     <Sidebar.Item
                       href="#"
@@ -99,9 +131,13 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(2);
                         displayAfterClick(2);
                       }}
-                      className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""} hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      className={`custom-sidebar-item ${
+                        click === 2 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
                     >
-                      <span className="hidden md:inline font-semibold">Leads</span>
+                      <span className="hidden md:inline font-semibold">
+                        Leads
+                      </span>
                     </Sidebar.Item>
                   </>
                 )}
