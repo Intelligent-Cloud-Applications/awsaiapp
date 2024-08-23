@@ -3,8 +3,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import Navbar from '../../Home/Navbar';
 import Context from "../../../context/Context";
 import { Button, Checkbox, Pagination, Table } from "flowbite-react";
-import { HiUserAdd, HiUserGroup } from "react-icons/hi";
-import { IoMdCash } from "react-icons/io";
 import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
@@ -296,23 +294,8 @@ function NewMemberList() {
       <div className="w-5/6 bg-[#e6e4e4] p-4">
         <Navbar />
         <div className="mt-20">
-          {/* Button Group for navigation */}
-          <div className="flex items-center gap-4">
-            <Button.Group className="flex-grow h-12">
-              <Button color="gray" className="rounded-l-md flex items-center px-6 h-full">
-                <IoMdCash className="mr-2 h-5 w-5 mt-0.5" />
-                <span className="text-base font-medium">Economy</span>
-              </Button>
-              <Button color="gray" className="rounded-none flex items-center px-6 h-full">
-                <HiUserGroup className="mr-2 h-5 w-5" />
-                <span className="text-base font-medium">Members List</span>
-              </Button>
-              <Button color="gray" className="rounded-r-md flex items-center px-6 h-full">
-                <HiUserAdd className="mr-2 h-5 w-5" />
-                <span className="text-base font-medium">Leads</span>
-              </Button>
-            </Button.Group>
-          </div>
+          {/* Navigation buttons */}
+          <ButtonGroup/>
           {/* Filtering Buttons */}
           <div className="mt-5">
             <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
