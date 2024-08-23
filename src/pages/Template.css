@@ -68,8 +68,26 @@
         width: 50px;
     }
 
-    .subscription{
+    .subscription {
         font-size: small;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .respo {
+        padding-top: 4.5rem;
+        position: relative;
+        height: max-content;
+    }
+
+    .home h1 {
+        padding: 0%;
+    }
+
+    .boxtoselect {
+        margin: 0%;
+        padding-bottom: 5%;
     }
 }
 
