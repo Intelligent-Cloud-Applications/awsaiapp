@@ -3,15 +3,13 @@ import {useContext, useState} from "react";
 import LoginForm from "./LoginForm";
 import OtpForm from "./OtpForm";
 import SignupForm from "./SignupForm";
-// import institutionContext from "../../Context/InstitutionContext";
 import Context from "./../../context/Context";
 import {API, Auth} from "aws-amplify";
-// import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import countries from "../../components/Auth/Inputs/countries.json";
 
 const AuthPage = () => {
-  // const { InstitutionId } = useContext(institutionContext).institutionData;
+
 
   const { util, setUserData, setIsAuth } = useContext(Context);
   const { setLoader } = util;
@@ -21,12 +19,11 @@ const AuthPage = () => {
   // const [userName, setUserName] = useState("");
   // const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [referralCode, setReferralCode] = useState("");
   const [country, setCountry] = useState("");
   const [signInResponse, setSignInResponse] = useState();
   const [formState, setFormState] = useState('login')
 
-  console.log(referralCode);
+  
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoader(true);
@@ -117,7 +114,6 @@ const AuthPage = () => {
     setLoader(true);
     const name = event.target.firstName.value + event.target.lastName.value;
     const email = event.target.email.value;
-    setReferralCode(event.target.referralCode.value);
 
     try {
       await Auth.signUp({
@@ -146,19 +142,7 @@ const AuthPage = () => {
   return (
     <div>
       <Header />
-      <div className='flex flex-col items-center mt-10'>
-        <div
-          className={
-            `flex flex-col items-center gap-4
-            shadow-xl px-20 py-12 w-[480px] rounded-xl`
-          }
-        >
-          <h2 className='font-bold text-2xl'>Login/Signup</h2>
-          <p className='text-center w-64'>{
-            formState === 'login' ? 'Please enter your Phone Number for verification.' :
-            formState === 'signup' ? 'Please enter your data to create your account' :
-            'Please enter the otp to finish your login process'
-          }</p>
+    
           {
             formState === 'login' ?
               <LoginForm handler={handleLogin} /> :
@@ -166,8 +150,7 @@ const AuthPage = () => {
               <SignupForm handler={handleSignUp} /> :
             <OtpForm handler={otpHandler} phoneNumber={phoneNumber} setSignInResponse={setSignInResponse} />
           }
-        </div>
-      </div>
+      
     </div>
   )
 }
