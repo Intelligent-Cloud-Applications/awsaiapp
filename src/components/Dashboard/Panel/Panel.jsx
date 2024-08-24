@@ -91,17 +91,30 @@ const Panel = () => {
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(
-      startIndex + itemsPerPage,
-      filteredClients.length
-    );
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+  
+    // Get the clients to be displayed on the current page
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-    clientsToDisplay.map(([key, client], index) =>
-      setInstituteTypes((prevTypes) =>
-        Array.from(new Set([...prevTypes, userData.institutionType]))
-      )
-    );
-  }, [currentPage, userData.institutionType, itemsPerPage]);
+  
+    // Extract unique institution types from the clients
+    const newInstituteTypes = Array.from(new Set(clientsToDisplay.map(() => userData.institutionType)));
+  
+    // Update the state only if there is a change
+    setInstituteTypes((prevTypes) => {
+      const combinedTypes = [...prevTypes, ...newInstituteTypes];
+      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
+  
+      // Only update state if there are new types to add
+      if (uniqueCombinedTypes.length !== prevTypes.length) {
+        return uniqueCombinedTypes;
+      } else {
+        return prevTypes;
+      }
+    });
+  
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
+  
+  
 
   // const showDetailForm = (institution) => {
   //   const userDetail = clientsData.find(
