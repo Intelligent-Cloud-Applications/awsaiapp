@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import Context from "../../../context/Context";
-import { Link, useLocation,useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
@@ -46,7 +46,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
       return clientsData;
@@ -134,6 +134,8 @@ const Panel = () => {
   //   return selectedRow.includes(institution);
   // };
 
+  // This is for the client panel demo data
+  let createdBy =["Madan","Bikash","Sai","Madan","Sai","Bikash"]
   // For removing unused functions
   if (1 < 0) {
     setShowHiddenContent(true);
@@ -326,10 +328,13 @@ const Panel = () => {
     }
   };
 
-  const handleRowClick = (institution) => {
-    setisMonthlyReport(institution);
-    navigate(`/Dashboard?institution=${institution}`);
-  };
+
+
+    const handleRowClick = (institution) => {
+      setisMonthlyReport(institution);
+      // navigate(`/Dashboard?institution=${institution}`);
+      document.querySelector(".change-page").click();
+    };
 
   return (
     <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] lg:ml-[7%]">
@@ -518,7 +523,7 @@ const Panel = () => {
             </form>
           </div>
         )}
-
+ 
         {/* Headings */}
         <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
@@ -631,7 +636,7 @@ const Panel = () => {
                       : `₹${client.recentMonthIncome}`}
                   </Table.Cell> */}
 
-                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.recentMonthMembers}
                   </Table.Cell>
 
@@ -646,11 +651,15 @@ const Panel = () => {
                   <Table.Cell
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
+                    } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
                   >
-                    null
+                    {createdBy[index]}
                   </Table.Cell>
-
+                  <Link
+                      to={`/Dashboard?institution=${client.institution}`}
+                      onClick={() => handlePersonIconClick(client.institution)}
+                      className="hidden change-page"
+                    ></Link>
                   <div
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
