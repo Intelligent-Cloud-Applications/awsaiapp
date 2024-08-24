@@ -90,7 +90,7 @@ const censorPhoneNumber = (phone) => {
         {/* You can add content for the left side here */}
       </div>
       {/* Main Content */}
-      <div className="w-5/6 bg-[#f0f0f0] p-6">
+      <div className="w-5/6 bg-[#f0f0f0] p-4">
         <Navbar />
         <div className="mt-20">
           <ButtonGroup />

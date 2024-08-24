@@ -22,7 +22,7 @@ function NewMemberList() {
   const membersPerPage = 7;
   const { util } = useContext(Context);
   const [memberData, setMemberData] = useState([]);
-  // const [isEditUser, setIsEditUser] = useState(false);
+  const [isEditUser, setIsEditUser] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMemberDetails, setSelectedMemberDetails] = useState(null);
 
@@ -39,6 +39,52 @@ function NewMemberList() {
       setMemberData(data);
     } catch (error) {
       console.error('Error fetching the members:', error);
+    }
+  };
+
+  const handleUpdateUser = async (formData) => {
+    util.setLoader(true);  // Show loader before API call
+    const apiName = "clients";
+    const path = `/user/update-member/awsaiapp`;
+    const myInit = {
+      body: {
+        cognitoId: formData.cognitoId,
+        institution: formData.institution,
+        userName: formData.userName,
+        emailId: formData.emailId,
+        phoneNumber: formData.phoneNumber,
+        country: formData.country,
+        zpoints: formData.zpoints,
+        status: formData.status,
+        balance: formData.balance,
+        product: formData.product,
+        joiningDate: new Date(formData.joiningDate).getTime(),
+      },
+    };
+
+    try {
+      const update = await API.put(apiName, path, myInit);
+      await fetchData();
+      console.log(update);
+
+      // Close the modal after successful update
+      setIsEditUser(false);
+      setSelectedMemberDetails(null);
+      setIsModalOpen(false);
+
+      Swal.fire({
+        icon: "success",
+        title: "User Updated",
+      });
+    } catch (e) {
+      console.error(e);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the user.",
+      });
+    } finally {
+      util.setLoader(false);  // Hide loader after operation
     }
   };
 
@@ -96,7 +142,7 @@ function NewMemberList() {
             (member) => member.cognitoId !== cognitoId
           );
           setMemberData(updatedMemberData);
-          setMembers(updatedMemberData); // Update members state
+          setMembers(updatedMemberData);
           Swal.fire({
             icon: "success",
             title: "User Deleted",
@@ -128,7 +174,7 @@ function NewMemberList() {
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        util.setLoader(true); // Show loader
+        util.setLoader(true);
 
         const apiName = "clients";
         const path = "/user/delete-members";
@@ -295,7 +341,7 @@ function NewMemberList() {
         <Navbar />
         <div className="mt-20">
           {/* Navigation buttons */}
-          <ButtonGroup/>
+          <ButtonGroup />
           {/* Filtering Buttons */}
           <div className="mt-5">
             <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
@@ -423,7 +469,9 @@ function NewMemberList() {
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {member.product}
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white" style={{ width: '24px' }}>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
+                        style={{ width: '24px' }}
+                        onClick={(e) => e.stopPropagation()}>
                         {showIcons(index)}
                       </Table.Cell>
                     </Table.Row>
@@ -450,6 +498,9 @@ function NewMemberList() {
         member={selectedMemberDetails}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        isEditUser={isEditUser}
+        onSave={handleUpdateUser}
+        onDelete={() => handleDeleteMember(selectedMemberDetails.cognitoId)}
       />
     </div>
   );
