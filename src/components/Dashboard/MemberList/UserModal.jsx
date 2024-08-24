@@ -1,6 +1,20 @@
 "use client";
 import { Modal } from "flowbite-react";
 
+// Utility function to censor email
+const censorEmail = (email) => {
+  const [name, domain] = email.split('@');
+  const censoredName = name.slice(0, 3) + 'xxxxxx';
+  return `${censoredName}@${domain}`;
+};
+
+// Utility function to censor phone number
+const censorPhoneNumber = (phone) => {
+  const visibleStart = phone.slice(0, 4);
+  const visibleEnd = phone.slice(-1);
+  return `${visibleStart}xxxxxx${visibleEnd}`;
+};
+
 const UserModal = ({ member, isOpen, onClose }) => {
   if (!member) return null;
 
@@ -14,10 +28,10 @@ const UserModal = ({ member, isOpen, onClose }) => {
           {/* Left Section */}
           <div className="w-1/2 pr-4">
             <p className="text-lg leading-relaxed text-gray-700">
-              <strong className="font-semibold">Email:</strong> {member.emailId}
+              <strong className="font-semibold">Email:</strong> {censorEmail(member.emailId)}
             </p>
             <p className="text-lg leading-relaxed text-gray-700 mt-2">
-              <strong className="font-semibold">Phone:</strong> {member.phoneNumber} 
+              <strong className="font-semibold">Phone:</strong> {censorPhoneNumber(member.phoneNumber)}
             </p>
             <p className="text-lg leading-relaxed text-gray-700 mt-2">
               <strong className="font-semibold">Country:</strong> {member.country}
