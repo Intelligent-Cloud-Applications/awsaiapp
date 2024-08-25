@@ -94,7 +94,7 @@ const AuthPage = () => {
       setLoader(false);
 
       alert('Logged in');
-      navigate('/team');
+      navigate('/dashboard');
     } catch (error) {
       if (error === 'The user is not authenticated')
         alert('Incorrect OTP. Try again');

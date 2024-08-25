@@ -331,6 +331,9 @@ const Panel = () => {
 
   const splitandjoin = (str) => {
     // if capital letter is found then split the string and join it with space
+    if (typeof str !== "string") {
+      return "";
+    }
     if (str.match(/[A-Z]/) !== null) {
       return str
         .split(/(?=[A-Z])/)

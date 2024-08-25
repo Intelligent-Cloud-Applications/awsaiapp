@@ -1751,7 +1751,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         <div className="relative mt-20 p-4">
           <div
             onClick={goBack}
-            className="border border-black  rounded cursor-pointer w-[26px] h-[20px] text-[20px]"
+            className="fixed border border-black bg-white rounded cursor-pointer w-[26px] h-[20px] text-[20px] z-50"
           >
             <IoCaretBack />
           </div>

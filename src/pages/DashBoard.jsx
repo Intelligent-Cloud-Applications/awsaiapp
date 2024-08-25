@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import Context from "../context/Context";
-import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
+// import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
 import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
 import NavBar from "../components/Home/Navbar";
 import Panel from "../components/Dashboard/Panel/Panel";
@@ -12,10 +12,11 @@ import MonthlyReport from "../components/Dashboard/MonthlyReport/MonthlyReport";
 import LeadsList from "../components/Dashboard/LeadsList/LeadsList";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
-
+import Profile from "../components/Dashboard/Profile/Profile";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
   const Ctx = useContext(Context);
   console.log(Ctx);
   // useEffect(() => {
@@ -27,7 +28,8 @@ const DashBoard = () => {
   //     setClick(0);
   //   }
   // }, []);
-
+  const queryParams = new URLSearchParams(location.search);
+  const institutionNames = queryParams.get("institution");
   useEffect(() => {
     localStorage.setItem("selectedPage", click.toString());
   }, [click]);
@@ -42,7 +44,7 @@ const DashBoard = () => {
           return <RevenueGenerated />;
 
         case 2:
-          return <ClientsPayments />;
+          return <Profile />;
 
         case 3:
           return <PendingClients />;
@@ -119,7 +121,10 @@ const DashBoard = () => {
                     Do you want to change your Website?
                   </p>
                   <Link
-                    to="/edit"
+                   to={{
+                    pathname: "/full",
+                    search: `?institutionName=${institutionNames}`,
+                  }}
                     className="text-white bg-[#30AFBC] px-4 py-0.5 rounded text-small mr-4"
                   >
                     Edit
