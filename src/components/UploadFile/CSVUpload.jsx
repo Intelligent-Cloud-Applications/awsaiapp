@@ -55,7 +55,7 @@ const CSVUpload = async (file, institutionId) => {
         const uniqueFileName = await generateUniqueFileName(file.name);
 
         // Use Storage.put to upload the file to S3
-        const result = await Storage.put(`${institutionId}/memberlist/${uniqueFileName}`, file, {
+        const result = await Storage.post(`${institutionId}/memberlist/${uniqueFileName}`, file, {
             contentType: file.type,
         });
         
