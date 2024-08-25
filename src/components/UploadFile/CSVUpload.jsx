@@ -47,24 +47,21 @@ const validateFile = (file) => {
 
 // Function to upload the file to the default S3 bucket
 const CSVUpload = async (file, institutionId) => {
+
+
+    validateFile(file);
+
+    // const uniqueFileName = await generateUniqueFileName(file.name);
     console.log('Uploading file:', file);
 
-    try {
-        validateFile(file);
+    // Use Storage.put to upload the file to S3
+    const result = await Storage.post(`${institutionId}/memberlist`, file, {
+        contentType: file.type,
+    });
 
-        const uniqueFileName = await generateUniqueFileName(file.name);
+    console.log('File uploaded successfully:', result);
+    alert("File uploaded successfully");
 
-        // Use Storage.put to upload the file to S3
-        const result = await Storage.post(`${institutionId}/memberlist/${uniqueFileName}`, file, {
-            contentType: file.type,
-        });
-        
-        console.log('File uploaded successfully:', result);
-        alert("File uploaded successfully");
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        alert(`Error uploading file: ${error.message}`); // Display error message to the user
-    }
 };
 
 export { CSVUpload };
