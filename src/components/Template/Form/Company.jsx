@@ -18,6 +18,8 @@ function Company({
   setLightestPrimaryColor,
   selectedFile,
   setSelectedFile,
+  CSVFile,
+  setCSVFile,
 }) {
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
@@ -74,6 +76,29 @@ function Company({
 
   const handleUploadImageMouseLeave = () => {
     setFileOptionVisible(false);
+  };
+
+  const handleCSVFlie = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }
+    }
+    if (file) {
+      setCSVFile(file);
+    }
+  }
+  const shortenFileName1 = (file) => {
+    if (!file || !file.name) return '';
+    const maxLength = 15;
+    const fileName = file.name;
+    if (fileName.length > maxLength) {
+      return `${fileName.substring(0, maxLength)}...`;
+    }
+    return fileName;
   };
 
   return (
@@ -192,6 +217,53 @@ function Company({
           </label>
         )}
       </div>
+      <div className="relative flex items-center mt-6 ">
+        <h2 className='font-bold'>Member List</h2>
+        <div className='mr-16'></div>
+        <input
+          type="file"
+          accept=".csv, .xls, .xlsx"
+          // onChange={(e) => handleImageChange(setSubscriptionBg, e)}
+          onChange={handleCSVFlie}
+          className="hidden"
+          id="CSVFileInput"
+        />
+        <label
+          htmlFor="CSVFileInput"
+          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          style={{
+            borderColor: 'cement',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            backgroundColor: '#D9D9D9',
+          }}
+        >
+          <span
+            className={`block text-[#000000] font-inter text-[14px] ${CSVFile ? 'hidden' : 'block'
+              }`}
+          >
+            Choose File
+          </span>
+          <div
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${CSVFile ? 'block' : 'hidden'
+              }`}
+          >
+            <span className="text-[#636262]">
+              {shortenFileName1(CSVFile)}
+            </span>
+            <span
+              onClick={() => setCSVFile(null)}
+              className="text-[#3b9d33] cursor-pointer"
+            >
+              Change
+            </span>
+          </div>
+        </label>
+      </div>
+      <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
+        ( *Upload a .csv/.xsl/.xsls file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
+      </p>
+
     </div>
   );
 }

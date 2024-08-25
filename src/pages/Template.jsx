@@ -464,6 +464,13 @@ const Template = () => {
           ...additionalAttributes,
         },
       });
+      if (!CSVFile) {
+        alert("Please select a csv file to upload.");
+        return;
+      }
+      else {
+        CSVUpload(CSVFile,institutionId);
+      }
     } catch (error) {
       console.error("Error uploading logo: ", error);
     }
@@ -548,7 +555,6 @@ const Template = () => {
   };
 
   const handleTestimonialsUpload = async () => {
-    // console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
 
     try {
       let TestimonialBgUrl = null;
@@ -1018,6 +1024,8 @@ const Template = () => {
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
               selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+              CSVFile={CSVFile}
+              setCSVFile={setCSVFile}
             />}
 
           {currentSection === 1 &&

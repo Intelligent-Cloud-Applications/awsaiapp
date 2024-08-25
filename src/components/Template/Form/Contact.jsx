@@ -231,7 +231,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
         </label>
       </div>
       <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
-        ( * It should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
+        ( *Upload a .csv file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
       </p>
     </div>
   );
