@@ -36,17 +36,18 @@ import AsanaUsers from "./internal/components/AsanaUsers";
 import Callback from "./internal/components/Callback";
 import PendingTasks from "./internal/components/PendingTasks";
 import TestingAndDefectFixing from "./internal/components/TestingAndDefectFixing";
-import Projects from "./internal/components/Projects"
+import Projects from "./internal/components/Projects";
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import TemplateMail from "./components/Dashboard/LeadsList/TemplateMail";
-
+import NewMemberList from "./components/Dashboard/MemberList/NewMemberList";
+import ClientsProfile from "./components/Dashboard/ClientsHome/ClientsProfile";
 
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
-  const { institutionName,web, isVerified, isDelivered } = Ctx.userData;
-  console.log("routes", Ctx.userData.institutionName)
+  const { institutionName, web, isVerified, isDelivered } = Ctx.userData;
+  console.log("routes", Ctx.userData.institutionName);
 
   const redirectToDashboard = !web || !isVerified || !isDelivered;
 
@@ -59,14 +60,17 @@ const RoutesContainer = () => {
       <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
       <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
       <Route path="/logout" element={<Logout />} />
-      { institutionName !== 'awsaiapp' && redirectToDashboard ? (
+      {institutionName !== "awsaiapp" && redirectToDashboard ? (
         <Route path="/dashboard" element={<DashBoard />} />
       ) : (
         <Route path="/Dashboard" element={<DashBoard />} />
       )}
       <Route path="/templatemail" element={<TemplateMail />} />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
-      <Route path="/MonthlyReport" element={<MonthlyReport institution={null} />} />
+      <Route
+        path="/MonthlyReport"
+        element={<MonthlyReport institution={null} />}
+      />
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/team" element={<Team />} />
@@ -87,7 +91,7 @@ const RoutesContainer = () => {
       <Route path="/full" element={<Full />} />
       <Route path="/edit" element={<Edit />} />
       {/* This is the routes for asana portal */}
-      <Route path="/asana-internal" element={<AsanaLayout />} >
+      <Route path="/asana-internal" element={<AsanaLayout />}>
         <Route index element={<AsanaHome />} />
         <Route path="projects" element={<Projects />} />
         <Route path="tasks/:projectId" element={<Tasks />} />
@@ -96,9 +100,10 @@ const RoutesContainer = () => {
         <Route path="pending-tasks" element={<PendingTasks />} />
         <Route path="defect-fixing" element={<TestingAndDefectFixing />} />
       </Route>
-      <Route path="/error" element={<UnauthorizedUser />}/>
+      <Route path="/error" element={<UnauthorizedUser />} />
       <Route path="/callback" element={<Callback />} />
-      <Route path='/auth' element={<Auth />} />
+      <Route path="/members" element={<NewMemberList />} />
+      <Route path="/client" element={<ClientsProfile />} />
     </Routes>
   );
 };
