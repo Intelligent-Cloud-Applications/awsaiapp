@@ -103,6 +103,33 @@ const New_Full = () => {
   // util.setLoader(false);
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
+ 
+  const maxSize = 4 * 1024 * 1024;
+  if (videoFile.size > maxSize) {
+    alert("File size exceeds 4 MB. Please select a smaller file.");
+    event.target.value = ""; 
+    return;
+  }
+
+  const allowedTypes = [
+    "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/svg+xml",
+  "video/mp4",
+  "video/quicktime",
+  "video/webm",
+  "video/x-matroska",
+  "video/x-msvideo",
+  "video/mpeg",
+  "video/ogg",
+  ];
+  if (!allowedTypes.includes(videoFile.type)) {
+    alert("Only JPG, JPEG, PNG, SVG, MP4, and MOV files are allowed.");
+    event.target.value = ""; 
+    return;
+  }
+
     try {
       const response = await Storage.put(
         `${institutionNames}/videos/${videoFile.name}`,

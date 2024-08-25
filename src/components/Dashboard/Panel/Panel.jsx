@@ -1,27 +1,16 @@
 import React, { useState, useContext } from "react";
 import { useCallback } from "react";
+import { useMemo } from "react";
 import Context from "../../../context/Context";
 import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
-// import Pagination from "@mui/material/Pagination";
-// import Bworkz from "../../../utils/Assets/Dashboard/images/SVG/Bworkz.svg";
-// import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
-// import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
-// import personIcon from "../../../utils/Assets/Dashboard/images/SVG/ProfilEdit.svg";
-// import AdminPic from '../../../utils/Assets/Dashboard/images/PNG/Adminuser.png';
-// import Select from "../../../utils/Assets/Dashboard/images/SVG/Thunder.svg";
-// import Add from "../../../utils/Assets/Dashboard/images/SVG/Add-Client.svg";
-// import CSV from '../../../utils/Assets/Dashboard/images/SVG/CSV.svg';
-// import Selections from "../../../utils/Assets/Dashboard/images/SVG/Selections.svg";
-// import Filter from '../../../utils/Assets/Dashboard/images/SVG/Filter.svg';
 import { FaChevronRight } from "react-icons/fa";
 // import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination,Dropdown } from "flowbite-react";
-
+import { Pagination, Dropdown } from "flowbite-react";
 
 const Panel = () => {
   const itemsPerPage = 7;
@@ -34,8 +23,8 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  console.log(clientsData);
-  console.log(userData);
+  // console.log(clientsData);
+  // console.log(userData);
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -57,26 +46,30 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
 
+  // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
       return clientsData;
     }
-  
+
     const query = searchQuery.toLowerCase();
     const filtered = clientsData?.filter(([key, client]) => {
       const institution = client.institution
         ? client.institution.toLowerCase()
         : "";
-      const emailId = client.emailId ? client.emailId.toLowerCase() : "";
-  
-      const matches = institution.includes(query) || emailId.includes(query);
-  
+      // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
+      const institutionTypes = userData.institutionType;
+      const matches =
+        institution.includes(query) || institutionTypes.includes(query);
+
       return matches;
     });
-  
+
     console.log("Filtered Clients:", filtered);
     return filtered;
-  }, [searchQuery, clientsData]);
+  }, [searchQuery, clientsData, userData.institutionType]);
+
+  const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -96,18 +89,32 @@ const Panel = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => { 
-    const filteredClients = filterClients();
-
-  
+  useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+  
+    // Get the clients to be displayed on the current page
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-    clientsToDisplay.map(([key, client], index) => 
-      setInstituteTypes(prevTypes => Array.from(new Set([...prevTypes, userData.institutionType])))
-    );
-
-  },[ currentPage, itemsPerPage, userData.institutionType, filterClients]);
+  
+    // Extract unique institution types from the clients
+    const newInstituteTypes = Array.from(new Set(clientsToDisplay.map(() => userData.institutionType)));
+  
+    // Update the state only if there is a change
+    setInstituteTypes((prevTypes) => {
+      const combinedTypes = [...prevTypes, ...newInstituteTypes];
+      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
+  
+      // Only update state if there are new types to add
+      if (uniqueCombinedTypes.length !== prevTypes.length) {
+        return uniqueCombinedTypes;
+      } else {
+        return prevTypes;
+      }
+    });
+  
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
+  
+  
 
   // const showDetailForm = (institution) => {
   //   const userDetail = clientsData.find(
@@ -140,20 +147,22 @@ const Panel = () => {
   //   return selectedRow.includes(institution);
   // };
 
-
+  // This is for the client panel demo data
+  let createdBy =["Madan","Bikash","Sai","Madan","Sai","Bikash"]
   // For removing unused functions
-  if(1<0){
+  if (1 < 0) {
     setShowHiddenContent(true);
     setTotalLeads(0);
     setTotalAttendance(0);
     setTotalIncome(0);
     setMemberCount(0);
+    isMonthlyReport.toUpperCase();
+    Revenue.toUpperCase();
+    userCheck===0 && setUserCheck(1);
   }
 
-
-
-  const filteredClients = filterClients();
-  console.log("Type = ", typeof filteredClients);
+  // const filteredClients = filterClients();
+  // console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -184,7 +193,7 @@ const Panel = () => {
     return formattedDate;
   }
   const location = useLocation();
-  console.log("path", location.pathname);
+  // console.log("path", location.pathname);
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -323,47 +332,45 @@ const Panel = () => {
   const splitandjoin = (str) => {
     // if capital letter is found then split the string and join it with space
     if (str.match(/[A-Z]/) !== null) {
-      return str.split(/(?=[A-Z])/).map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ");
+      return str
+        .split(/(?=[A-Z])/)
+        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+        .join(" ");
     } else {
       return str;
     }
   };
 
+
+
+    const handleRowClick = (institution) => {
+      setisMonthlyReport(institution);
+      // navigate(`/Dashboard?institution=${institution}`);
+      document.querySelector(".change-page").click();
+    };
+
   return (
-    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] ">
+    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] lg:ml-[7%]">
       <div className="w-[80%] mt-4 rounded-md flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-2 lg:space-y-0">
         {/* WebDevelopment Form Link */}
-      <Dropdown
-      label={instituteType ? instituteType:"Create Institute"}
-      dismissOnClick={false}
-      className="bg-white text-white font-semibold shadow-md  focus:outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      {
-        instituteTypes.map((type) => (
-
-          <Link   
-          {
-            ...type === "danceStudio" ? {to:"/template"} : {to:"/template"}
-          }
-          
-          >
-          <Dropdown.Item
-            key={type}
-            onClick={() => setInstituteType(type)}
-            className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out px-4 py-2"
-          >
-            {splitandjoin(type)}
-          </Dropdown.Item>
-          </Link>
-        ))
-      }
-
-      
-    </Dropdown>
+        <Dropdown
+          label={instituteType ? instituteType : "Type"}
+          className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          {instituteTypes.map((type) => (
+            <Dropdown.Item
+              key={type}
+              onClick={() => setInstituteType(type)}
+              className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out"
+            >
+              {splitandjoin(type)}
+            </Dropdown.Item>
+          ))}
+        </Dropdown>
         <div>
-          <Link to="/template">
+         <Link to={instituteType && (instituteType==="danceStudio" && "/template")}>
             <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
-              <p className="text-white">Create New Website</p>
+              <p className="text-white">Create New Institution</p>
             </button>
           </Link>
         </div>
@@ -529,7 +536,7 @@ const Panel = () => {
             </form>
           </div>
         )}
-
+ 
         {/* Headings */}
         <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
@@ -538,25 +545,25 @@ const Panel = () => {
               <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Institution
               </Table.HeadCell>
-              <Table.HeadCell className="max670:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Type
               </Table.HeadCell>
               <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
                 Status
               </Table.HeadCell>
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
-              </Table.HeadCell>
+              </Table.HeadCell> */}
               <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
                 Members
               </Table.HeadCell>
-              <Table.HeadCell
+              {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
                 } uppercase font-semibold text-[14px]`}
               >
                 Attendance
-              </Table.HeadCell>
+              </Table.HeadCell> */}
               <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -578,10 +585,15 @@ const Panel = () => {
 
             <Table.Body className="bg-white">
               {clientsToDisplay.map(([key, client], index) => (
+                
                 <Table.Row
                   key={client.institution}
-                  className="clients-data-table border-b hover:bg-gray-100"
-                  onClick={() => setisMonthlyReport(client.institution)}
+                  className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                  onClick={() =>
+                    // setisMonthlyReport(client.institution);
+                    handleRowClick(client.institution)
+                    
+                  }
                 >
                   {/* Checkbox */}
                   {/* <Table.Cell className="px-4 py-2">
@@ -617,9 +629,8 @@ const Panel = () => {
                     </Link>
                   </Table.Cell>
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] max670:hidden">
+                  <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] ">
                     {splitandjoin(userData.institutionType)}
-                    
                   </Table.Cell>
 
                   <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
@@ -632,32 +643,36 @@ const Panel = () => {
                     </Badge>
                   </Table.Cell>
 
-                  <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
+                  {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
                     {client.country === "USA"
                       ? `$${client.recentMonthIncome}`
                       : `₹${client.recentMonthIncome}`}
-                  </Table.Cell>
+                  </Table.Cell> */}
 
-                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.recentMonthMembers}
                   </Table.Cell>
 
-                  <Table.Cell
+                  {/* <Table.Cell
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
                     } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
                   >
                     {client.recentMonthAttendance}
-                  </Table.Cell>
+                  </Table.Cell> */}
 
                   <Table.Cell
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
+                    } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
                   >
-                    null
+                    {createdBy[index]}
                   </Table.Cell>
-
+                  <Link
+                      to={`/Dashboard?institution=${client.institution}`}
+                      onClick={() => handlePersonIconClick(client.institution)}
+                      className="hidden change-page"
+                    ></Link>
                   <div
                     className={`${
                       showHiddenContent ? "" : "max1008:hidden"
