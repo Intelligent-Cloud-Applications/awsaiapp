@@ -81,6 +81,10 @@ const LeftBanner = ({ displayAfterClick }) => {
                       <Sidebar.Item
                         href="#"
                         icon={HiInbox}
+                        onClick={() => {
+                          setClick(2);
+                          displayAfterClick(2);
+                        }}
                         className={`custom-sidebar-item ${
                           click === 2 ? "active bg-white" : ""
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline`}

@@ -330,16 +330,17 @@ const Panel = () => {
   // };
 
   const splitandjoin = (str) => {
-    if (typeof str === 'string' && str.length > 0) {
-      // if a capital letter is found, then split the string and join it with a space
-      if (str.match(/[A-Z]/) !== null) {
-        return str
-          .split(/(?=[A-Z])/)
-          .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-          .join(" ");
-      } else {
-        return str;
-      }
+
+    // if capital letter is found then split the string and join it with space
+    if (typeof str !== "string") {
+      return "";
+    }
+    if (str.match(/[A-Z]/) !== null) {
+      return str
+        .split(/(?=[A-Z])/)
+        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+        .join(" ");
+
     } else {
       // Handle cases where str is not a valid string
       console.error("Invalid input: The input is not a string or is empty.");
