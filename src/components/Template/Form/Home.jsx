@@ -133,6 +133,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                 id="fileInput"
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
               />
               <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
                 <img
