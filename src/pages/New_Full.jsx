@@ -690,9 +690,9 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
       { value: templateDetails.logoUrl, name: "Logo" },
       { value: templateDetails.videoUrl, name: "Intro Video" },
       { value: templateDetails.TagLine, name: "TagLine" },
-      { value: templateDetails.Query_Address, name: "Query Address" },
-      { value: templateDetails.Query_PhoneNumber, name: "Query Phone Number" },
-      { value: templateDetails.Query_EmailId, name: "Query Email" },
+      { value: templateDetails.Query_Address, name: "Query_Address" },
+      { value: templateDetails.Query_PhoneNumber, name: "Query_PhoneNumber" },
+      { value: templateDetails.Query_EmailId, name: "Query_EmailId" },
       { value: templateDetails.Facebook, name: "Facebook" },
       { value: templateDetails.Instagram, name: "Instagram" },
     ];
@@ -2050,7 +2050,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               </div>
             </div>
           </div>
-          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+          <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                 <div id="fileUpload" className="max-w-md relative">
@@ -2073,7 +2073,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       borderRadius: "8px",
                     }}
                   />
-
+{templateDetails.logoUrl && templateDetails.logoUrl.trim() !== "" && (
                   <button
                     onClick={() => downloadImage(templateDetails.logoUrl)}
                     className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2083,6 +2083,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   >
                     View
                   </button>
+)}
                 </div>
 
                 <div id="fileUpload" className="max-w-md relative">
@@ -2108,7 +2109,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       borderRadius: "8px",
                     }}
                   />
-
+{templateDetails.videoUrl && templateDetails.videoUrl.trim() !== "" && (
                   <button
                     onClick={() => downloadImage(templateDetails.videoUrl)}
                     className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2118,6 +2119,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   >
                     View
                   </button>
+)}
                 </div>
               </div>
             </div>
@@ -2127,7 +2129,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
           <h1 className="font-bold text-black mt-8">Services Section</h1>
-          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ju">
+          <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                 <div id="fileUpload" className="max-w-md relative">
@@ -2145,6 +2147,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       borderRadius: "8px",
                     }}
                   />
+                  {templateDetails.ServicesBg && templateDetails.ServicesBg.trim() !== "" && (
                   <button
                     onClick={() => downloadImage(templateDetails.ServicesBg)}
                     className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2154,6 +2157,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   >
                     View
                   </button>
+                  )}
                 </div>
 
                 <div id="fileUpload" className="max-w-md relative">
@@ -2177,7 +2181,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       borderRadius: "8px",
                     }}
                   />
-
+{templateDetails.ServicesPortrait && templateDetails.ServicesPortrait.trim() !== "" && (
                   <button
                     onClick={() =>
                       downloadImage(templateDetails.ServicesPortrait)
@@ -2189,6 +2193,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   >
                     View
                   </button>
+)}
                 </div>
               </div>
             </div>
@@ -2352,6 +2357,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       borderRadius: "8px",
                     }}
                   />
+                  {templateDetails.TestimonialBg && templateDetails.TestimonialBg.trim() !== "" && (
                   <button
                     onClick={() => downloadImage(templateDetails.TestimonialBg)}
                     className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2361,6 +2367,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   >
                     View
                   </button>
+                  )}
                 </div>
               </div>
               {templateDetails.Testimonial &&
@@ -2441,7 +2448,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                                 : "#F9FAFB",
                               borderRadius: "8px",
                             }}
-                          />
+                          /> 
                           {testimonial.img && (
                             <button
                               onClick={() => downloadImage(testimonial.img)}
@@ -2482,6 +2489,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   borderRadius: "8px",
                 }}
               />
+              {templateDetails.SubscriptionBg && templateDetails.SubscriptionBg.trim() !== "" && (
               <button
                 onClick={() => downloadImage(templateDetails.SubscriptionBg)}
                 className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2491,6 +2499,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               >
                 View
               </button>
+              )}
             </div>
           </div>
 
@@ -2714,6 +2723,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   borderRadius: "8px",
                 }}
               />
+              {templateDetails.InstructorBg && templateDetails.InstructorBg.trim() !== "" && (
               <button
                 onClick={() => downloadImage(templateDetails.InstructorBg)}
                 className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
@@ -2723,6 +2733,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               >
                 View
               </button>
+              )}
             </div>
           </div>
 
@@ -2960,8 +2971,9 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                   borderRadius: "8px",
                 }}
               />
+              {templateDetails.AboutUsBg && templateDetails.AboutUsBg.trim() !== "" && (
               <button
-                onClick={() => downloadImage(templateDetails.InstructorBg)}
+                onClick={() => downloadImage(templateDetails.AboutUsBg)}
                 className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
                 style={{
                   borderRadius: "4px",
@@ -2969,6 +2981,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               >
                 View
               </button>
+              )}
             </div>
           </div>
           {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
@@ -3358,9 +3371,11 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     value={templateDetails.Query_Address}
                     onChange={(event) => handleChange(event, "Query_Address")}
                     sizing="sm"
+                    color={errors.Query_Address ? "failure" : "gray"}
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: errors.Query_Address ? "#ee3232" : "#F9FAFB",
+                      border: errors.Query_Address
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -3379,9 +3394,11 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     value={templateDetails.Query_EmailId}
                     onChange={(event) => handleChange(event, "Query_EmailId")}
                     sizing="sm"
+                    color={errors.Query_EmailId ? "failure" : "gray"}
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: errors.Query_EmailId ? "#ee3232" : "#F9FAFB",
+                      border: errors.Query_EmailId
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -3402,9 +3419,11 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                       handleChange(event, "Query_PhoneNumber")
                     }
                     sizing="sm"
+                    color={errors.Query_PhoneNumber ? "failure" : "gray"}
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: errors.Query_PhoneNumber ? "#ee3232" : "#F9FAFB",
+                      border: errors.Query_PhoneNumber
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -3459,9 +3478,11 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     value={templateDetails.Facebook}
                     onChange={(event) => handleChange(event, "Facebook")}
                     sizing="sm"
+                    color={errors.Facebook ? "failure" : "gray"}
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: errors.Facebook ? "#ee3232" : "#F9FAFB",
+                      border: errors.Facebook
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
@@ -3479,9 +3500,11 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     value={templateDetails.Instagram}
                     onChange={(event) => handleChange(event, "Instagram")}
                     sizing="sm"
+                    color={errors.Instagram ? "failure" : "gray"}
                     style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: errors.Instagram ? "#ee3232" : "#F9FAFB",
+                      border: errors.Instagram
+                        ? "1px solid red"
+                        : "1px solid #ccc",
                       borderRadius: "8px",
                     }}
                   />
