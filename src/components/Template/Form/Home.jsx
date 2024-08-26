@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
+import "../../../pages/Template.css";
 
 function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
@@ -64,9 +65,9 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div>
-      <h1 className="font-medium text-7xl">HOME SECTION</h1>
-      <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
+    <div className="home">
+      <h1 className="font-medium text-7xl pb-[2rem]">HOME SECTION</h1>
+      <h5 class="w-[28rem] max950:w-[15rem] text-[#939393]">
         <strong>Introduce Your Brand:</strong><br />
         Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
       </h5>
@@ -118,7 +119,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
         ></div>
         <p>{charTag2}/60</p>
       </div>
-      <div className="border border-black w-[16rem] h-[10rem] mt-[2rem] relative">
+      <div className="border border-black w-[16rem] h-[10rem] mt-[2rem] relative boxtoselect">
         <label
           htmlFor="fileInput"
           className="cursor-pointer"
@@ -132,6 +133,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                 id="fileInput"
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
               />
               <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
                 <img

@@ -92,18 +92,18 @@ const Panel = () => {
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  
+
     // Get the clients to be displayed on the current page
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-  
+
     // Extract unique institution types from the clients
     const newInstituteTypes = Array.from(new Set(clientsToDisplay.map(() => userData.institutionType)));
-  
+
     // Update the state only if there is a change
     setInstituteTypes((prevTypes) => {
       const combinedTypes = [...prevTypes, ...newInstituteTypes];
       const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
-  
+
       // Only update state if there are new types to add
       if (uniqueCombinedTypes.length !== prevTypes.length) {
         return uniqueCombinedTypes;
@@ -111,10 +111,10 @@ const Panel = () => {
         return prevTypes;
       }
     });
-  
+
   }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
-  
-  
+
+
 
   // const showDetailForm = (institution) => {
   //   const userDetail = clientsData.find(
@@ -148,7 +148,7 @@ const Panel = () => {
   // };
 
   // This is for the client panel demo data
-  let createdBy =["Madan","Bikash","Sai","Madan","Sai","Bikash"]
+  let createdBy = ["Madan", "Bikash", "Sai", "Madan", "Sai", "Bikash"]
   // For removing unused functions
   if (1 < 0) {
     setShowHiddenContent(true);
@@ -158,7 +158,7 @@ const Panel = () => {
     setMemberCount(0);
     isMonthlyReport.toUpperCase();
     Revenue.toUpperCase();
-    userCheck===0 && setUserCheck(1);
+    userCheck === 0 && setUserCheck(1);
   }
 
   // const filteredClients = filterClients();
@@ -330,6 +330,7 @@ const Panel = () => {
   // };
 
   const splitandjoin = (str) => {
+
     // if capital letter is found then split the string and join it with space
     if (typeof str !== "string") {
       return "";
@@ -339,18 +340,20 @@ const Panel = () => {
         .split(/(?=[A-Z])/)
         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
         .join(" ");
+
     } else {
-      return str;
+      // Handle cases where str is not a valid string
+      console.error("Invalid input: The input is not a string or is empty.");
+      return ""; // or return str if you want to return the original input
     }
   };
 
 
-
-    const handleRowClick = (institution) => {
-      setisMonthlyReport(institution);
-      // navigate(`/Dashboard?institution=${institution}`);
-      document.querySelector(".change-page").click();
-    };
+  const handleRowClick = (institution) => {
+    setisMonthlyReport(institution);
+    // navigate(`/Dashboard?institution=${institution}`);
+    document.querySelector(".change-page").click();
+  };
 
   return (
     <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] lg:ml-[7%]">
@@ -371,7 +374,7 @@ const Panel = () => {
           ))}
         </Dropdown>
         <div>
-         <Link to={instituteType && (instituteType==="danceStudio" && "/template")}>
+          <Link to={instituteType && (instituteType === "danceStudio" && "/template")}>
             <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
               <p className="text-white">Create New Institution</p>
             </button>
@@ -539,7 +542,7 @@ const Panel = () => {
             </form>
           </div>
         )}
- 
+
         {/* Headings */}
         <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
@@ -568,16 +571,14 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
               <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[14px]`}
               >
                 Created By
               </Table.HeadCell>
               <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[14px]`}
               >
                 Leads
               </Table.HeadCell>
@@ -588,14 +589,14 @@ const Panel = () => {
 
             <Table.Body className="bg-white">
               {clientsToDisplay.map(([key, client], index) => (
-                
+
                 <Table.Row
                   key={client.institution}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
                   onClick={() =>
                     // setisMonthlyReport(client.institution);
                     handleRowClick(client.institution)
-                    
+
                   }
                 >
                   {/* Checkbox */}
@@ -665,21 +666,19 @@ const Panel = () => {
                   </Table.Cell> */}
 
                   <Table.Cell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
                   >
                     {createdBy[index]}
                   </Table.Cell>
                   <Link
-                      to={`/Dashboard?institution=${client.institution}`}
-                      onClick={() => handlePersonIconClick(client.institution)}
-                      className="hidden change-page"
-                    ></Link>
+                    to={`/Dashboard?institution=${client.institution}`}
+                    onClick={() => handlePersonIconClick(client.institution)}
+                    className="hidden change-page"
+                  ></Link>
                   <div
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
                     <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
@@ -699,7 +698,7 @@ const Panel = () => {
                   </div>
                   <Table.Cell
                     className="more"
-                    // onClick={handleMoreClick}
+                  // onClick={handleMoreClick}
                   >
                     <Link
                       to={`/Dashboard?institution=${client.institution}`}
