@@ -7,11 +7,11 @@ import PendingClients from "../components/Dashboard/PendingClients/PendingClient
 import NavBar from "../components/Home/Navbar";
 import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
-import MemberList from "../components/Dashboard/MemberList/MembersList";
+import MemberList from "../components/Dashboard/MemberList/Index"
 import MonthlyReport from "../components/Dashboard/MonthlyReport/MonthlyReport";
 import LeadsList from "../components/Dashboard/LeadsList/LeadsList";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Profile from "../components/Dashboard/Profile/Profile";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
@@ -29,6 +29,7 @@ const DashBoard = () => {
   //   }
   // }, []);
   const queryParams = new URLSearchParams(location.search);
+  //eslint-disable-next-line
   const institutionNames = queryParams.get("institution");
   useEffect(() => {
     localStorage.setItem("selectedPage", click.toString());
@@ -68,7 +69,7 @@ const DashBoard = () => {
 
         case 1:
           return (
-            <div className="mr-[5rem] max850:mr-7">
+            <div className="ml-[8.5rem]">
               <MemberList
                 institution={localStorage.getItem("institutionName")}
               />
@@ -110,7 +111,7 @@ const DashBoard = () => {
                   className="text-5xl"
                 />
               </div>
-              <div
+              {/* <div
                 class="w-[90vw] lg:w-[70vw] lg:ml-16 h-14 ml-2 relative rounded-2xl lg:mt-20"
                 style={{
                   boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
@@ -130,7 +131,7 @@ const DashBoard = () => {
                     Edit
                   </Link>
                 </div>
-              </div>
+              </div> */}
             </>
           )}
       </div>
@@ -143,7 +144,8 @@ const DashBoard = () => {
           />
         </div>
 
-        <div className="flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]">
+        <div className={` ${click === 1 ? "mt-0" : "flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]"
+          }`}>
           <div className="">{displayAfterClick()}</div>
         </div>
       </div>

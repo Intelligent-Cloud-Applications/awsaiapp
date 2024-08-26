@@ -1,21 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'flowbite-react';
 import { IoMdCash, IoMdPerson } from 'react-icons/io';
 import { HiUserGroup, HiUserAdd } from 'react-icons/hi';
-import { useNavigate, useLocation } from 'react-router-dom';
 
-const ButtonGroup = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const path = location.pathname;
-  const activeTab = path.includes('members') ? 'members' : 
-                    path.includes('economy') ? 'economy' : 
-                    path.includes('leads') ? 'leads' : 
-                    path.includes('client') ? 'client' : '';
+const ButtonGroup = ({ onTabChange }) => {
+  const [activeTab, setActiveTab] = useState('members');
 
   const handleTabChange = (tab) => {
-    navigate(`/${tab}`);
+    setActiveTab(tab);
+    onTabChange(tab);
   };
 
   return (
@@ -26,7 +19,7 @@ const ButtonGroup = () => {
           color: activeTab === 'economy' ? '#fff' : '#000',
           borderColor: activeTab === 'economy' ? '#30afbc' : '#ccc', 
         }}
-        // onClick={() => handleTabChange('economy')}
+        onClick={() => handleTabChange('economy')}
         className={`rounded-l-md items-center hover:bg-[#30afbc] hover:text-white border`}
       >
         <IoMdCash className="mr-3 h-4 w-4 mt-0.5" />
@@ -50,7 +43,7 @@ const ButtonGroup = () => {
           color: activeTab === 'leads' ? '#fff' : '#000',
           borderColor: activeTab === 'leads' ? '#30afbc' : '#ccc', 
         }}
-        // onClick={() => handleTabChange('leads')}
+        onClick={() => handleTabChange('leads')}
         className={`items-center hover:bg-[#30afbc] hover:text-white border`}
       >
         <HiUserAdd className="mr-3 h-4 w-4" />
