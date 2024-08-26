@@ -43,7 +43,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                   <>
                   <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
 
-                    <div className="  font-semibold">
+                    <div className="  font-bold">
                     <p className="text-white text-xl">{`Hello, ${((userData.userName).split(" "))[0]}`}</p>
                     </div>
                   </Sidebar.ItemGroup>
@@ -56,14 +56,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                       }}
                       className={`custom-sidebar-item ${
                         click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline font-semibold">
+                      <span className="hidden md:inline font-[Poppins] text-base">
                         Client Panel
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                      href="#"
+                
                       icon={HiShoppingBag}
                       onClick={() => {
                         setClick(1);
@@ -71,15 +71,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                       }}
                       className={`custom-sidebar-item ${
                         click === 1 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline font-semibold">
+                      <span className="hidden md:inline font-[Poppins] text-base">
                         Revenue
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
-                        href="#"
                         icon={HiInbox}
                         onClick={() => {
                           setClick(2);
@@ -87,9 +86,9 @@ const LeftBanner = ({ displayAfterClick }) => {
                         }}
                         className={`custom-sidebar-item ${
                           click === 2 ? "active bg-white" : ""
-                        } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                       >
-                        <span className="hidden md:inline font-semibold">
+                        <span className="hidden md:inline text-base font-[Poppins]">
                           Profile
                         </span>
                       </Sidebar.Item>
@@ -99,7 +98,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 {isNotSuperAdmin && (
                   <>
                     <Sidebar.Item
-                      href="#"
+
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
@@ -107,14 +106,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                       }}
                       className={`custom-sidebar-item ${
                         click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline font-semibold">
+                      <span className="hidden md:inline text-base font-[Poppins]">
                         Graph
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                      href="#"
+                    
                       icon={HiShoppingBag}
                       onClick={() => {
                         setClick(1);
@@ -122,14 +121,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                       }}
                       className={`custom-sidebar-item ${
                         click === 1 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline font-semibold">
+                      <span className="hidden md:inline text-base font-[Poppins]">
                         Members
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                      href="#"
+                  
                       icon={HiInbox}
                       onClick={() => {
                         setClick(2);
@@ -137,9 +136,9 @@ const LeftBanner = ({ displayAfterClick }) => {
                       }}
                       className={`custom-sidebar-item ${
                         click === 2 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline`}
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline font-semibold">
+                      <span className="hidden md:inline font-[Poppins] text-base">
                         Leads
                       </span>
                     </Sidebar.Item>

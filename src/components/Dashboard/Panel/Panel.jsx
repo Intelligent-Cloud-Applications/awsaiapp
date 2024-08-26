@@ -6,12 +6,24 @@ import { Link, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination, Dropdown } from "flowbite-react";
+import { Pagination, Dropdown, Flowbite } from "flowbite-react";
 
+const customTheme = {
+  dropdown: {
+    floating: {
+      base: "z-10 w-fit divide-y divide-gray-100 rounded-[0] shadow focus:outline-none", // Rounded-[0] applied here
+    },
+    item: {
+      base: "hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]", // Ensure items have rounded-[0] as well
+    },
+  },
+};
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -59,18 +71,28 @@ const Panel = () => {
         : "";
       // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
       const institutionTypes = userData.institutionType;
+      const crreatedBy = userData.userName;
       const matches =
-        institution.includes(query) || institutionTypes.includes(query);
+      institution.includes(query) ||
+      institutionTypes.includes(query) ||
+      crreatedBy.includes(query);
 
       return matches;
     });
 
     console.log("Filtered Clients:", filtered);
     return filtered;
-  }, [searchQuery, clientsData, userData.institutionType]);
+  }, [searchQuery, clientsData, userData.institutionType, userData.userName]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
+  useEffect(() => {
+    const newInstituteType = userData.institutionType;
+
+    if (!instituteTypes.includes(newInstituteType)) {
+      setInstituteTypes((prev) => [...prev, newInstituteType]);
+    }
+  }, [userData, instituteTypes]);
   useEffect(() => {
     const handleResize = () => {
       const max670Hidden = window.innerWidth <= 670;
@@ -88,31 +110,6 @@ const Panel = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-
-    // Get the clients to be displayed on the current page
-    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-
-    // Extract unique institution types from the clients
-    const newInstituteTypes = Array.from(new Set(clientsToDisplay.map(() => userData.institutionType)));
-
-    // Update the state only if there is a change
-    setInstituteTypes((prevTypes) => {
-      const combinedTypes = [...prevTypes, ...newInstituteTypes];
-      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
-
-      // Only update state if there are new types to add
-      if (uniqueCombinedTypes.length !== prevTypes.length) {
-        return uniqueCombinedTypes;
-      } else {
-        return prevTypes;
-      }
-    });
-
-  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
 
 
 
@@ -349,39 +346,71 @@ const Panel = () => {
   };
 
 
-  const handleRowClick = (institution) => {
+  const handleRowClick = (institution, event) => {
     setisMonthlyReport(institution);
-    // navigate(`/Dashboard?institution=${institution}`);
-    document.querySelector(".change-page").click();
+    // Find the link within the clicked row and trigger a click on it
+    const link = event.currentTarget.querySelector(".change-page");
+    if (link) {
+      link.click();
+    }
   };
 
   return (
-    <div className="w-screen  h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem]  max1300:mt-[-16px] shadow-xl rounded-lg bg-[#e6e4e4] lg:ml-[7%]">
-      <div className="w-[80%] mt-4 rounded-md flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-2 lg:space-y-0">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
+    <ToastContainer />
+    <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
-        <Dropdown
-          label={instituteType ? instituteType : "Type"}
-          className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          {instituteTypes.map((type) => (
-            <Dropdown.Item
-              key={type}
-              onClick={() => setInstituteType(type)}
-              className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out"
-            >
-              {splitandjoin(type)}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
+        <Flowbite theme={{ theme: customTheme }}>
+          <Dropdown
+            label={instituteType ? splitandjoin(instituteType) : "Type"}
+            className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
+          >
+            {instituteTypes.map((type) => (
+              <Dropdown.Item
+                key={type}
+                onClick={() => setInstituteType(type)}
+                className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]" // Apply rounded-[0] here
+              >
+                {splitandjoin(type)}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </Flowbite>
         <div>
-          <Link to={instituteType && (instituteType === "danceStudio" && "/template")}>
+        <Link
+            to={
+              instituteType !== "" && instituteType === "danceStudio"
+                ? "/template"
+                : "#"
+            }
+            onClick={(e) => {
+              if (instituteType === "") {
+               e.stopPropagation()
+                console.log('Showing toast message'); // Debug line
+                toast.error("Please Select a type of Institution.", {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  style: {
+                    backgroundColor: '#f8d7da',
+                    color: '#721c24',
+                  },
+                });
+              } 
+            }}
+            className="hover:no-underline"
+          >
             <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
               <p className="text-white">Create New Institution</p>
             </button>
           </Link>
         </div>
       </div>
-      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3">
+      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
 
@@ -593,11 +622,7 @@ const Panel = () => {
                 <Table.Row
                   key={client.institution}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                  onClick={() =>
-                    // setisMonthlyReport(client.institution);
-                    handleRowClick(client.institution)
-
-                  }
+                  onClick={(e) => handleRowClick(client.institution, e)}
                 >
                   {/* Checkbox */}
                   {/* <Table.Cell className="px-4 py-2">
@@ -625,7 +650,10 @@ const Panel = () => {
                   <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
                     <Link
                       to={`/Dashboard?institution=${client.institution}`}
-                      onClick={() => handlePersonIconClick(client.institution)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePersonIconClick(client.institution);
+                      }}
                     >
                       <div className="email-hover uppercase font-semibold text-[#11192B]">
                         {client.institution}
@@ -673,7 +701,10 @@ const Panel = () => {
                   </Table.Cell>
                   <Link
                     to={`/Dashboard?institution=${client.institution}`}
-                    onClick={() => handlePersonIconClick(client.institution)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePersonIconClick(client.institution);
+                    }}
                     className="hidden change-page"
                   ></Link>
                   <div
@@ -683,18 +714,7 @@ const Panel = () => {
                     <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
                     </Table.Cell>
-                    {/* <Table.Cell className="px-4 py-2">
-                      <Link to={`/Dashboard?institution=${client.institution}`}>
-                        <img
-                          src={
-                            Update //{personIcon}
-                          }
-                          alt=""
-                          className={`scale-150 w-12 mix-blend-color-multiply bg-transparent`}
-                          onClick={() => showUpdateForm(client.institution)}
-                        />
-                      </Link>
-                    </Table.Cell> */}
+                  
                   </div>
                   <Table.Cell
                     className="more"
@@ -919,17 +939,15 @@ const Panel = () => {
         )}
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <Pagination
-            layout="pagination"
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-            previousLabel=""
-            nextLabel=""
-            showIcons
-          />
-        )}
+        <Pagination
+          layout="pagination"
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          previousLabel=""
+          nextLabel=""
+          showIcons
+        />
 
         {/* <div className="flex flex-row gap-2">
           {selectedRowCount > 0 && (

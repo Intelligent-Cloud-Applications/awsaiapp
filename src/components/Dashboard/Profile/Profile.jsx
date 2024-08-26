@@ -93,6 +93,7 @@ const Profile = () => {
   }
 
   const handleFileUpload = async (base64File) => {
+    
     UtilCtx.setLoader(true)
     try {
       // Validate file size (less than 5MB)
@@ -121,7 +122,17 @@ const Profile = () => {
       // Get the URL of the uploaded file
       let imageUrl = await Storage.get(response.key)
       imageUrl = imageUrl.split('?')[0]
-
+      if (name.trim() === '') {
+        alert('Name cannot be empty.');
+        UtilCtx.setLoader(false);
+        return;
+      }
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(currentEmail)) {
+    alert('Please enter a valid email address');
+    return;
+  }
+    
       await API.put(
         "clients",
         `/user/update-self`,
@@ -153,7 +164,16 @@ const Profile = () => {
   
   const onProfileUpdate = async (e) => {
     e.preventDefault()
-
+    if (name.trim() === '') {
+      alert('Name cannot be empty.');
+      UtilCtx.setLoader(false);
+      return;
+    }
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(currentEmail)) {
+   alert('Please enter a valid email address');
+    return;
+  }
     UtilCtx.setLoader(true)
     if (ifDataChanged()) {
       if (phoneNumber.length >= 10) {
