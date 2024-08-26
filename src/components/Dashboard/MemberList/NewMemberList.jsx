@@ -55,6 +55,7 @@ function NewMemberList() {
         phoneNumber: formData.phoneNumber,
         country: formData.country,
         zpoints: formData.zpoints,
+        zPoints: formData.zPoints,
         status: formData.status,
         balance: formData.balance,
         product: formData.product,
@@ -125,8 +126,8 @@ function NewMemberList() {
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsModalOpen(false);
         util.setLoader(true);
-
         const apiName = "clients";
         const path = "/user/delete-member";
         const myInit = {
@@ -135,7 +136,7 @@ function NewMemberList() {
             cognitoId: cognitoId,
           },
         };
-
+        
         try {
           await API.del(apiName, path, myInit);
           const updatedMemberData = memberData.filter(
@@ -157,6 +158,7 @@ function NewMemberList() {
         } finally {
           setSelectedIndices([])
           setSelectedMember([])
+          setIsModalOpen(false);
           fetchData();
           util.setLoader(false);
         }
@@ -174,11 +176,10 @@ function NewMemberList() {
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsModalOpen(false);
         util.setLoader(true);
-
         const apiName = "clients";
         const path = "/user/delete-members";
-
         try {
           // Delete each selected member
           for (const cognitoId of selectedMember) {
@@ -454,7 +455,7 @@ function NewMemberList() {
                         {member.country}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.zpoints || 0}
+                        {member.zpoints || member.zPoints || 0}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <span
@@ -500,7 +501,7 @@ function NewMemberList() {
         onClose={() => setIsModalOpen(false)}
         isEditUser={isEditUser}
         onSave={handleUpdateUser}
-        onDelete={() => handleDeleteMember(selectedMemberDetails.cognitoId)}
+        handleDeleteMember={()=> handleDeleteMember(selectedMemberDetails.cognitoId)}
       />
     </div>
   );

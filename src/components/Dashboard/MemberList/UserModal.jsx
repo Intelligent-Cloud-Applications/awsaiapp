@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button } from "flowbite-react";
 import Swal from "sweetalert2";
 
-const UserModal = ({ member, isOpen, onClose, onSave, onDelete }) => {
+const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
   const [formData, setFormData] = useState({});
   const [isEditingName, setIsEditingName] = useState(false);
 
@@ -34,30 +34,30 @@ const UserModal = ({ member, isOpen, onClose, onSave, onDelete }) => {
     setIsEditingName(false);
   };
 
-  const handleDelete = () => {
-    if (!member || !member.cognitoId) {
-      Swal.fire("Error", "No user ID available.", "error");
-      return;
-    }
+  // const handleDelete = () => {
+  //   if (!member || !member.cognitoId) {
+  //     Swal.fire("Error", "No user ID available.", "error");
+  //     return;
+  //   }
   
-    Swal.fire({
-      title: "Delete User",
-      text: "Are you sure you want to delete the selected user?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        onDelete(member.cognitoId);
-        Swal.fire("Deleted!", "User has been deleted.", "success");
-        onClose();
-      } else {
-        Swal.fire("Cancelled", "User is safe.", "info");
-      }
-    });
-  };  
+  //   Swal.fire({
+  //     title: "Delete User",
+  //     text: "Are you sure you want to delete the selected user?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Delete",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       handleDeleteMember(member.cognitoId);
+  //       Swal.fire("Deleted!", "User has been deleted.", "success");
+  //       onClose();
+  //     } else {
+  //       Swal.fire("Cancelled", "User is safe.", "info");
+  //     }
+  //   });
+  // };  
 
   if (!member) return null;
 
@@ -138,7 +138,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, onDelete }) => {
               <input
                 type="text"
                 name="zpoints"
-                value={formData.zpoints || ""}
+                value={formData.zpoints || formData.zPoints ||""}
                 onChange={handleChange}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
               />
@@ -177,7 +177,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, onDelete }) => {
         </div>
         <div className="flex justify-end mt-4 space-x-2">
           <Button
-            onClick={handleDelete}
+            onClick={()=>handleDeleteMember(member.cognitoId)}
             className="bg-red-600 text-white"
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#c53030')}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f56565')}
