@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "flowbite-react";
-import Swal from "sweetalert2";
 
 const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
   const [formData, setFormData] = useState({});
@@ -34,6 +33,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
     setIsEditingName(false);
   };
 
+<<<<<<< HEAD
   // const handleDelete = () => {
   //   if (!member || !member.cognitoId) {
   //     Swal.fire("Error", "No user ID available.", "error");
@@ -59,6 +59,8 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
   //   });
   // };  
 
+=======
+>>>>>>> beta
   if (!member) return null;
 
   return (
@@ -177,7 +179,11 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
         </div>
         <div className="flex justify-end mt-4 space-x-2">
           <Button
+<<<<<<< HEAD
             onClick={()=>handleDeleteMember(member.cognitoId)}
+=======
+            onClick={() => handleDeleteMember(member.cognitoId)}
+>>>>>>> beta
             className="bg-red-600 text-white"
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#c53030')}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f56565')}

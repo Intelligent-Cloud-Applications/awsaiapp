@@ -360,7 +360,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   console.log("selected data", selectedRow);
   console.log("filtered data", filteredLeads);
   return (
-    <div className="ml-[5rem] max1300:ml-0">
+    <div className="ml-[5rem] lg:mx-7 max1300:ml-0">
       <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
       <main
         className="w-[82vw] max-h-[auto] min-h-[43rem] bg-[#fff5] max600:w-[90vw] max600:relative"

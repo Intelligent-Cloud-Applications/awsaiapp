@@ -1,5 +1,5 @@
 // Template.js
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 import Preview from '../components/Template/Preview';
@@ -15,23 +15,24 @@ import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
 import "./Template.css";
 import Context from "../context/Context";
+import {CSVUpload} from '../components/UploadFile/CSVUpload';
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
 
- console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
+  console.log("🚀 ~ file: Template.jsx:21 ~ Template ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   // const [loader, setLoader] = useState(false);
-//  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
+  //  console.log("🚀 ~ file: Template.jsx:24 ~ Template ~ loader:", loader)
   // const [error, setError] = useState(null);
-  
+
   const [logo, setLogo] = useState(null);
   const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
   //
-  const [LightPrimaryColor,setLightPrimaryColor] = useState("#225c59");
-  const [LightestPrimaryColor,setLightestPrimaryColor] = useState("#c3f3f1");
-  const[Footer_Link_1]=useState("https://bworkzlive.com/");
-  const[Footer_Link_2]=useState("https://Zumba.com/");
+  const [LightPrimaryColor, setLightPrimaryColor] = useState("#225c59");
+  const [LightestPrimaryColor, setLightestPrimaryColor] = useState("#c3f3f1");
+  const [Footer_Link_1] = useState("https://bworkzlive.com/");
+  const [Footer_Link_2] = useState("https://Zumba.com/");
   // const [logo, setLogo] = useState(null);
   const [servicesBg, setServicesBg] = useState(null);
   const [servicesPortrait, setServicesPortrait] = useState(null);
@@ -41,10 +42,10 @@ const Template = () => {
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
-//  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
-//  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
-//  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
-//  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
+  //  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ setError:", setError)
+  //  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
+  //  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
+  //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
   const [TagLine, setTagLine] = useState("");
@@ -54,6 +55,7 @@ const Template = () => {
   const [AboutUsBg, setAboutUsBg] = useState(null);
   const [SubscriptionBg, setSubscriptionBg] = useState(null);
   const [InstructorBg, setInstructorBg] = useState(null);
+  const [CSVFile, setCSVFile] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -63,12 +65,12 @@ const Template = () => {
     { title: '', items: [''] },
     { title: '', items: [''] },
   ]);
-  
+
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-    ]);
+  ]);
 
   const calculateDuration = (subscriptionType) => {
     const daysInMonth = 30; // assuming 30 days in a month
@@ -118,7 +120,7 @@ const Template = () => {
       durationText: 'Monthly',
       india: true,
     },
-    ]);
+  ]);
 
 
   const [faqs, setFaqs] = useState([
@@ -142,22 +144,22 @@ const Template = () => {
       question: '',
       answer: '',
     },
-    ]);
+  ]);
 
   const [instructors, setInstructors] = useState([
-    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
-    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
-    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
-    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
-    { imgSrc: '', name: '', emailId:'', position:'', uploadedFile: null },
-    ]);
+    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  ]);
 
-//  const [policies, setPolicies] = useState([
-//    { title: 'Privacy Policy', content: '' },
-//    { title: 'Terms and Conditions', content: '' },
-//    { title: 'Cancellation/Refund Policy', content: '' },
-//    { title: 'About Us', content: '' },
-//    ]);
+  //  const [policies, setPolicies] = useState([
+  //    { title: 'Privacy Policy', content: '' },
+  //    { title: 'Terms and Conditions', content: '' },
+  //    { title: 'Cancellation/Refund Policy', content: '' },
+  //    { title: 'About Us', content: '' },
+  //    ]);
 
   const [policies, setPolicies] = useState({
     'Privacy Policy': [{ heading: '', content: '' }],
@@ -180,8 +182,8 @@ const Template = () => {
   const util = useContext(Context).util;
   useEffect(() => {
     console.log(policies);
-    }, [policies]);
-    const [loaderInitialized, setLoaderInitialized] = useState(false);
+  }, [policies]);
+  const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     async function fetchData() {
       const institutionId = Ctx.userData.institutionName;
@@ -193,24 +195,24 @@ const Template = () => {
         const templateResponse = await API.get(
           "clients",
           `/user/development-form/get-user/${institutionId}`
-          );
+        );
 
         const productResponse = await API.get(
           "clients",
           `/user/development-form/get-product/${institutionId}`
-          );
+        );
 
         const instructorResponse = await API.get(
           "clients",
           `/user/development-form/get-instructor/${institutionId}`
-          );
+        );
 
-       console.log('hhhhssdsdsd',templateResponse);
-       console.log("😒😒😒😒",productResponse);
-       console.log("disidisdd",instructorResponse);
+        console.log('hhhhssdsdsd', templateResponse);
+        console.log("😒😒😒😒", productResponse);
+        console.log("disidisdd", instructorResponse);
 
         if (templateResponse) {
-//          console.log("HELLO1");
+          //          console.log("HELLO1");
 
           // COMPANY
           setCompanyName(institutionId);
@@ -367,7 +369,7 @@ const Template = () => {
             'About Us': templateResponse.AboutUs,
             'Refund Policy': templateResponse.Refund,
             'Terms and Conditions': templateResponse.TermsData.map(obj => {
-              const obj2 = {...obj}
+              const obj2 = { ...obj }
               obj2.heading = obj2.title;
               obj2.title = undefined;
               return obj2;
@@ -385,19 +387,19 @@ const Template = () => {
             youtube: templateResponse.YTLink,
           })
         }
-        
+
         if (productResponse.length > 0) {
-         console.log("HELLO2",productResponse);
-const convertedProductResponse = productResponse.map(product => ({
-  ...product,
-  amount: product.amount / 100, // Convert amount to rupee
-}));
+          console.log("HELLO2", productResponse);
+          const convertedProductResponse = productResponse.map(product => ({
+            ...product,
+            amount: product.amount / 100, // Convert amount to rupee
+          }));
 
           console.log(convertedProductResponse);
           await setSubscriptions(convertedProductResponse);
         }
         if (instructorResponse.length > 0) {
-//          console.log("HELLO3");
+          //          console.log("HELLO3");
 
           const inst = [];
           for (let i = 0; i < instructorResponse.length; i++) {
@@ -423,10 +425,10 @@ const convertedProductResponse = productResponse.map(product => ({
           setInstructors(inst);
         }
 
-//        setLoader(false);
+        //        setLoader(false);
       } catch (error) {
         console.error("Error fetching details:", error);
-//        setLoader(false);
+        //        setLoader(false);
       } finally {
         util.setLoader(false);
       }
@@ -447,21 +449,28 @@ const convertedProductResponse = productResponse.map(product => ({
       let imageUrl = await Storage.get(response.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-//      console.log("logo: ", imageUrl);
+      //      console.log("logo: ", imageUrl);
       const additionalAttributes = {
         LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
         LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
       };
       await API.put("clients", "/user/development-form/company", {
         body: {
-          institutionid: institutionId ,
-          companyName:institutionId ,
+          institutionid: institutionId,
+          companyName: institutionId,
           PrimaryColor,
           SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
         },
       });
+      if (!CSVFile) {
+        alert("Please select a csv file to upload.");
+        return;
+      }
+      else {
+        CSVUpload(CSVFile,institutionId);
+      }
     } catch (error) {
       console.error("Error uploading logo: ", error);
     }
@@ -482,14 +491,14 @@ const convertedProductResponse = productResponse.map(product => ({
         body: {
           institutionid: institutionId,
           TagLine,
-          TagLine1:tagline1,
+          TagLine1: tagline1,
           videoUrl,
         },
       });
 
-//      console.log("video: ", videoUrl);
+      //      console.log("video: ", videoUrl);
     } catch (error) {
-//      console.error("Error uploading video: ", error);
+      //      console.error("Error uploading video: ", error);
     }
   }
 
@@ -501,21 +510,21 @@ const convertedProductResponse = productResponse.map(product => ({
         const response = await Storage.put(`${institutionId}/${servicesBg.name}`, servicesBg, {
           contentType: servicesBg.type,
         });
-        
+
         if (response && response.key) {
           servicesBgUrl = await Storage.get(response.key);
           servicesBgUrl = servicesBgUrl.split("?")[0];
         }
       }
       setServicesBg(servicesBgUrl);
-    
+
       // Upload servicesPortrait image
       let servicesPortraitUrl = null;
       if (servicesPortrait) {
         const response1 = await Storage.put(`${institutionId}/${servicesPortrait.name}`, servicesPortrait, {
           contentType: servicesPortrait.type,
         });
-    
+
         if (response1 && response1.key) {
           servicesPortraitUrl = await Storage.get(response1.key);
           servicesPortraitUrl = servicesPortraitUrl.split("?")[0];
@@ -546,7 +555,6 @@ const convertedProductResponse = productResponse.map(product => ({
   };
 
   const handleTestimonialsUpload = async () => {
-    // console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
 
     try {
       let TestimonialBgUrl = null;
@@ -554,7 +562,7 @@ const convertedProductResponse = productResponse.map(product => ({
         const response = await Storage.put(`${institutionId}/${TestimonialBg.name}`, TestimonialBg, {
           contentType: TestimonialBg.type,
         });
-    
+
         // Get the URL of the uploaded file
         if (response && response.key) {
           TestimonialBgUrl = await Storage.get(response.key);
@@ -591,7 +599,7 @@ const convertedProductResponse = productResponse.map(product => ({
       await API.put("clients", "/user/development-form/testimonial", {
         body: {
           institutionid: institutionId,
-          TestimonialBg:TestimonialBgUrl,
+          TestimonialBg: TestimonialBgUrl,
           Testimonial: [
             {
               name: testimonials[0].name,
@@ -608,7 +616,7 @@ const convertedProductResponse = productResponse.map(product => ({
               description: testimonials[2].feedback,
               img: imageUrl3,
             },
-            ]
+          ]
         },
       });
     } catch (error) {
@@ -626,9 +634,9 @@ const convertedProductResponse = productResponse.map(product => ({
           const updatedSubscription = {
             ...subscription,
             amount: subscription.amount * 100,
-            
+
           };
-  
+
           if (updatedSubscription.productId) {
             await API.put("clients", "/user/development-form/update-subscription", {
               body: { ...updatedSubscription, cognitoId: Ctx.userData.cognitoId }
@@ -648,20 +656,15 @@ const convertedProductResponse = productResponse.map(product => ({
             setSubscriptions(sub);
           }
         });
-  
+
       // Wait for all promises to complete
       await Promise.all(uploadPromises);
-  
+
       console.log("All subscriptions uploaded successfully");
     } catch (error) {
       console.error("Error uploading subscriptions:", error);
     }
   };
-  
-
-
-
-
 
   const handleFAQsUpload = async () => {
     try {
@@ -723,7 +726,6 @@ const convertedProductResponse = productResponse.map(product => ({
         }
       }
 
-
       for (let i = 0; i < instructors.length; i++) {
         const instructor = instructors[i];
         if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
@@ -758,22 +760,19 @@ const convertedProductResponse = productResponse.map(product => ({
               console.log(inst);
               setInstructors(inst)
             }
-//            console.log("API Response:", response);
+            //            console.log("API Response:", response);
           } catch (error) {
             console.error("Error uploading instructor:", instructor.name, error);
           }
         } else {
-//          console.log("Skipping instructor due to missing data:", instructor.name);
+          //          console.log("Skipping instructor due to missing data:", instructor.name);
         }
       }
-
-
 
     } catch (error) {
       console.error("Error uploading instructors: ", error);
     }
   }
-
 
   const handlePolicyUpload = async () => {
     try {
@@ -782,7 +781,7 @@ const convertedProductResponse = productResponse.map(product => ({
         const response = await Storage.put(`${institutionId}/${AboutUsBg.name}`, AboutUsBg, {
           contentType: AboutUsBg.type,
         });
-    
+
         // Get the URL of the uploaded file
         if (response && response.key) {
           AboutUsBgUrl = await Storage.get(response.key);
@@ -793,10 +792,10 @@ const convertedProductResponse = productResponse.map(product => ({
       await API.put("clients", "/user/development-form/policy", {
         body: {
           institutionid: institutionId,
-          AboutUsBg:AboutUsBgUrl,
+          AboutUsBg: AboutUsBgUrl,
           PrivacyPolicy: policies['Privacy Policy'],
           TermsData: policies['Terms and Conditions'].map(obj => {
-            const obj2 = {...obj};
+            const obj2 = { ...obj };
             obj2.title = obj2.heading;
             obj2.heading = undefined;
             return obj2;
@@ -812,31 +811,31 @@ const convertedProductResponse = productResponse.map(product => ({
 
   const handleContactUpload = async () => {
     try {
-//      console.log("LOG +++++ " + contactInfo.address);
-let SubscriptionBgUrl = null;
-if (SubscriptionBg) {
-  const response = await Storage.put(`${institutionId}/${SubscriptionBg.name}`, SubscriptionBg, {
-    contentType: SubscriptionBg.type,
-  });
-  
-  if (response && response.key) {
-    SubscriptionBgUrl = await Storage.get(response.key);
-    SubscriptionBgUrl = SubscriptionBgUrl.split("?")[0];
-  }
-}
-setSubscriptionBg(SubscriptionBgUrl);
-let InstructorBgUrl = null;
-if (InstructorBg) {
-  const response = await Storage.put(`${institutionId}/${InstructorBg.name}`, InstructorBg, {
-    contentType: InstructorBg.type,
-  });
-  
-  if (response && response.key) {
-    InstructorBgUrl = await Storage.get(response.key);
-    InstructorBgUrl = InstructorBgUrl.split("?")[0];
-  }
-}
-setInstructorBg(InstructorBgUrl);
+      //      console.log("LOG +++++ " + contactInfo.address);
+      let SubscriptionBgUrl = null;
+      if (SubscriptionBg) {
+        const response = await Storage.put(`${institutionId}/${SubscriptionBg.name}`, SubscriptionBg, {
+          contentType: SubscriptionBg.type,
+        });
+
+        if (response && response.key) {
+          SubscriptionBgUrl = await Storage.get(response.key);
+          SubscriptionBgUrl = SubscriptionBgUrl.split("?")[0];
+        }
+      }
+      setSubscriptionBg(SubscriptionBgUrl);
+      let InstructorBgUrl = null;
+      if (InstructorBg) {
+        const response = await Storage.put(`${institutionId}/${InstructorBg.name}`, InstructorBg, {
+          contentType: InstructorBg.type,
+        });
+
+        if (response && response.key) {
+          InstructorBgUrl = await Storage.get(response.key);
+          InstructorBgUrl = InstructorBgUrl.split("?")[0];
+        }
+      }
+      setInstructorBg(InstructorBgUrl);
       await API.put("clients", "/user/development-form/contact", {
         body: {
           institutionid: institutionId,
@@ -849,42 +848,45 @@ setInstructorBg(InstructorBgUrl);
           UpiId: contactInfo.upiId,
           Footer_Link_1,
           Footer_Link_2,
-          SubscriptionBg:SubscriptionBgUrl,
-          InstructorBg:InstructorBgUrl,
-
+          SubscriptionBg: SubscriptionBgUrl,
+          InstructorBg: InstructorBgUrl,
         },
       });
+      if (!CSVFile) {
+        alert("Please select a csv file to upload.");
+        return;
+      }
+      else {
+        CSVUpload(CSVFile,institutionId);
+      }
     } catch (error) {
       console.error("Error uploading contact: ", error);
     }
   }
 
-
-
-
   const fetchClients = async (institution) => {
     try {
-//      setLoader(true);
+      //      setLoader(true);
       const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
-//      console.log(response)
+      //      console.log(response)
       setCompanydata(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
-//      setLoader(false);
+      //      setLoader(false);
     }
   };
 
   useEffect(() => {
     fetchClients();
-//    console.log("The daTa are fetching!");
-    }, []);
+    //    console.log("The daTa are fetching!");
+  }, []);
 
 
   const handleNextSection = () => {
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
-//      console.log(currentSection);
+      //      console.log(currentSection);
 
       switch (currentSection) {
         case 0:
@@ -892,35 +894,35 @@ setInstructorBg(InstructorBgUrl);
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-       
+
           handleCompanyUpload();
           break;
-          case 1:
-            if (!video || !TagLine) {
-              if (!video) {
-                alert("Please upload a video before proceeding.");
-              }
-              if (!TagLine) {
-                alert("Please provide a tagline before proceeding.");
-              }
-              return prevSection;
+        case 1:
+          if (!video || !TagLine) {
+            if (!video) {
+              alert("Please upload a video before proceeding.");
             }
+            if (!TagLine) {
+              alert("Please provide a tagline before proceeding.");
+            }
+            return prevSection;
+          }
           handleHomeUpload();
-            break;
-            case 2:
-              const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
-              if (!areServicesFilled) {
-                alert("Please fill all service fields before proceeding.");
-                return prevSection;
-              }
-              handleServicesUpload();
-              break;
-              case 3:
-                const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
-                if (!isTestimonialsFilled) {
-                  alert("Please fill three testimonials before proceeding.");
-                  return prevSection;
-                }
+          break;
+        case 2:
+          const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
+          if (!areServicesFilled) {
+            alert("Please fill all service fields before proceeding.");
+            return prevSection;
+          }
+          handleServicesUpload();
+          break;
+        case 3:
+          const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
+          if (!isTestimonialsFilled) {
+            alert("Please fill three testimonials before proceeding.");
+            return prevSection;
+          }
           if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
             alert("Please fill up all fields for testimonial 3 before proceeding.1");
             return prevSection;
@@ -930,25 +932,25 @@ setInstructorBg(InstructorBgUrl);
             return prevSection;
           }
           if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
-//            console.log("HELLO: ");
-//            console.log(testimonials);
+            //            console.log("HELLO: ");
+            //            console.log(testimonials);
             alert("Please fill up all fields for testimonial 3 before proceeding.");
             return prevSection;
           }
           handleTestimonialsUpload();
           break;
-          case 4:
-            const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-            if (invalidPriceIndex !== -1) {
-              alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
-              return prevSection;
-            }
+        case 4:
+          const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
+          if (invalidPriceIndex !== -1) {
+            alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+            return prevSection;
+          }
           handleSubscriptionUpload();
-            break;
-            case 5:
-              const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
+          break;
+        case 5:
+          const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
-              // Check if both title and answer are filled for each FAQ
+          // Check if both title and answer are filled for each FAQ
           const allFAQsFilled = filledFAQs.length === faqs.length;
 
           if (!allFAQsFilled) {
@@ -957,12 +959,12 @@ setInstructorBg(InstructorBgUrl);
           }
           handleFAQsUpload();
           break;
-          case 6:
-            const incompleteIndex = instructors.findIndex(instructor => {
-              return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-            });
+        case 6:
+          const incompleteIndex = instructors.findIndex(instructor => {
+            return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
+          });
 
-            // If incompleteIndex is not -1, it means there's at least one incomplete instructor
+          // If incompleteIndex is not -1, it means there's at least one incomplete instructor
           if (incompleteIndex !== -1) {
             // Check if all fields for the incomplete instructor are filled
             const incompleteInstructor = instructors[incompleteIndex];
@@ -973,39 +975,39 @@ setInstructorBg(InstructorBgUrl);
           }
           handleInstructorsUpload();
           break;
-          case 7:
-            handlePolicyUpload();
-            break;
-            case 8:
+        case 7:
+          handlePolicyUpload();
+          break;
+        case 8:
 
-              handleContactUpload();
-              break;
-              default:
-                break;
+          handleContactUpload();
+          break;
+        default:
+          break;
       }
 
-//      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
+      //      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
       return nextSection;
     });
   };
 
   const saveData = () => {
     setsavedData({});
-//    console.log("Saved Trigger")
+    //    console.log("Saved Trigger")
   };
 
   const handlePrevSection = () => {
     setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
   };
-//  console.log("Logo in Template:", logo);
+  //  console.log("Logo in Template:", logo);
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors}  setInstructors={setInstructors}/>
+          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
         </div>
-        <div className=" w-4/7 pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-20 fixed respo">
+        <div className=" w-[33%] pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}
@@ -1022,6 +1024,8 @@ setInstructorBg(InstructorBgUrl);
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
               selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+              CSVFile={CSVFile}
+              setCSVFile={setCSVFile}
             />}
 
           {currentSection === 1 &&
@@ -1040,14 +1044,14 @@ setInstructorBg(InstructorBgUrl);
 
           {currentSection === 2 &&
             <Services
-            setServicesPortrait={setServicesPortrait}
-            servicesPortrait={servicesPortrait}
-            setServicesBg={setServicesBg}   
-            servicesBg={servicesBg}
-             services={services}
+              setServicesPortrait={setServicesPortrait}
+              servicesPortrait={servicesPortrait}
+              setServicesBg={setServicesBg}
+              servicesBg={servicesBg}
+              services={services}
               setServices={setServices}
               danceTypes={danceTypes}
-              setDanceTypes= {setDanceTypes}
+              setDanceTypes={setDanceTypes}
             />}
 
           {currentSection === 3 &&
@@ -1096,6 +1100,8 @@ setInstructorBg(InstructorBgUrl);
               setSubscriptionBg={setSubscriptionBg}
               InstructorBg={InstructorBg}
               setInstructorBg={setInstructorBg}
+              CSVFile={CSVFile}
+              setCSVFile={setCSVFile}
             />}
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
@@ -1108,7 +1114,7 @@ setInstructorBg(InstructorBgUrl);
         </div>
       </div>
     </div>
-    );
+  );
 };
 
 export default Template;

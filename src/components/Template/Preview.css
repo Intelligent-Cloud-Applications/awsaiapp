@@ -16,3 +16,38 @@
 .scroll-container::-webkit-scrollbar-track {
     background-color: transparent;
 }*/
+@media (max-width: 1445px) {
+    .New{
+        height: 45rem;
+    }
+    .Over{
+        height: 45rem;
+    }
+    .OverPass {
+        width: 11rem;
+    }
+}
+
+@media (max-width: 1157px) {
+    .home2 {
+        padding: 0%;
+    }
+
+    .New {
+        display: inline-block;
+        height: auto;
+        padding: 0%;
+    }
+
+    .Over {
+        border: none;
+        width: 100%;
+        justify-content: space-around;
+        height: fit-content;
+    }
+
+    .OverPass {
+        width: 95%;
+        margin: 2%;
+    }
+}
