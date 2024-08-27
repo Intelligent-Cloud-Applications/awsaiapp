@@ -39,15 +39,22 @@ function NewMemberList({ institution: tempInstitution }) {
   const fetchData = async (institution) => {
     try {
       const data = await API.get("clients", `/user/list-members/${institution}`);
-      console.log(data);
-      setMembers(data);
-      setMemberData(data);
+      const filteredData = data.filter(member => member.userType === 'member');
+      console.log(filteredData);
+      setMembers(filteredData);
+      setMemberData(filteredData);
     } catch (error) {
       console.error('Error fetching the members:', error);
     }
-  };
+};
 
   const handleUpdateUser = async (formData) => {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
     util.setLoader(true);
     const apiName = "clients";
     const path = `/user/update-member/awsaiapp`;
@@ -93,7 +100,7 @@ function NewMemberList({ institution: tempInstitution }) {
         text: "An error occurred while updating the user.",
       });
     } finally {
-      fetchData(); // Refresh the member list after updating
+      fetchData(institution); // Refresh the member list after updating
       util.setLoader(false);
     }
   };
@@ -112,7 +119,7 @@ function NewMemberList({ institution: tempInstitution }) {
   const startIndex = (currentPage - 1) * membersPerPage;
   const filteredMembers = members.filter(member => {
     const matchesSearchQuery = (
-      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.userName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -125,7 +132,13 @@ function NewMemberList({ institution: tempInstitution }) {
   const selectedMembers = filteredMembers.slice(startIndex, startIndex + membersPerPage);
   const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
 
-  const handleDeleteMember = async (cognitoId, institution) => {
+  const handleDeleteMember = async (cognitoId) => {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
     Swal.fire({
       title: "Delete User",
       text: "Are you sure you want to delete this user?",
@@ -168,7 +181,7 @@ function NewMemberList({ institution: tempInstitution }) {
         } finally {
           setSelectedIndices([]);
           setSelectedMember([]);
-          fetchData(); // This will refresh the state again with the latest data
+          fetchData(institution); // This will refresh the state again with the latest data
           setIsModalOpen(false);
           util.setLoader(false);
         }
@@ -176,7 +189,13 @@ function NewMemberList({ institution: tempInstitution }) {
     });
   };
 
-  const handleDeleteSelected = async (institution) => {
+  const handleDeleteSelected = async () => {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
     Swal.fire({
       title: "Delete Users",
       text: "Are you sure you want to delete the selected users?",
@@ -222,7 +241,7 @@ function NewMemberList({ institution: tempInstitution }) {
             text: "An error occurred while deleting the members.",
           });
         } finally {
-          fetchData();
+          fetchData(institution);
           util.setLoader(false);
         }
       }

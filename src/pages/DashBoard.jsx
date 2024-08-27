@@ -69,7 +69,7 @@ const DashBoard = () => {
 
         case 1:
           return (
-            <div className="ml-[8.5rem]">
+            <div className="ml-[8.5rem] ">
               <MemberList
                 institution={localStorage.getItem("institutionName")}
               />
@@ -93,7 +93,7 @@ const DashBoard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen">
+    <div className="flex flex-col items-center w-full h-screen">
       <div className="w-[100vw]">
         <NavBar />
       </div>
