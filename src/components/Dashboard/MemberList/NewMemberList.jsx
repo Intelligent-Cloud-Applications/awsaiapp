@@ -179,17 +179,10 @@ function NewMemberList({ institution: tempInstitution }) {
             text: "An error occurred while deleting the member.",
           });
         } finally {
-<<<<<<< HEAD
-          setSelectedIndices([])
-          setSelectedMember([])
-          setIsModalOpen(false);
-          fetchData();
-=======
           setSelectedIndices([]);
           setSelectedMember([]);
           fetchData(institution); // This will refresh the state again with the latest data
           setIsModalOpen(false);
->>>>>>> beta
           util.setLoader(false);
         }
       }
@@ -423,90 +416,11 @@ function NewMemberList({ institution: tempInstitution }) {
               Inactive ({members.filter(m => m.status !== 'Active').length})
             </Button>
           </div>
-<<<<<<< HEAD
-
-          {/* Table */}
-          <div className="bg-white max-w-full mx-auto rounded-b-md">
-            <div className="overflow-x-auto">
-              <Table hoverable className="min-w-full">
-                <Table.Head>
-                  <Table.HeadCell className="p-2">
-                    {/* <Checkbox /> */}
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name / Phone No / E-Mail</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Joining Date</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Country</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Attendance</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Due</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Product</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase">
-                  </Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {selectedMembers.map((member, index) => (
-                    <Table.Row
-                      key={member.id}
-                      className="hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleNameClick(member)}
-                    >
-                      <Table.Cell
-                        className="p-2 bg-white"
-                        onClick={(e) => e.stopPropagation()} // Prevent row click when checkbox is clicked
-                      >
-                        <Checkbox
-                          className='bg-gray-300 border border-gray-700'
-                          id={`checkbox-${index}`}
-                          checked={selectedIndices.includes(index)}
-                          onChange={() => handleCheckboxChange(index)}
-                        />
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
-                        {member.userName}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.joiningDate ? formatEpochToReadableDate(member.joiningDate) : ''}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.country}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.zpoints || member.zPoints || 0}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} `}
-                        >
-                          {member.status}
-                        </span>
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.balance}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.product}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
-                        style={{ width: '24px' }}
-                        onClick={(e) => e.stopPropagation()}>
-                        {showIcons(index)}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-            <div className="py-2 flex justify-between items-center px-4">
-              {/* Dynamic "Showing X-Y of Z" */}
-              <div className="text-sm text-gray-600">
-                Showing {startIndex + 1}-{startIndex + selectedMembers.length} of {filteredMembers.length}
-=======
           {/* Center: Search Bar */}
           <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
->>>>>>> beta
               </div>
               <input
                 type="search"

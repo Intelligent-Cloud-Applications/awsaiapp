@@ -33,34 +33,6 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
     setIsEditingName(false);
   };
 
-<<<<<<< HEAD
-  // const handleDelete = () => {
-  //   if (!member || !member.cognitoId) {
-  //     Swal.fire("Error", "No user ID available.", "error");
-  //     return;
-  //   }
-  
-  //   Swal.fire({
-  //     title: "Delete User",
-  //     text: "Are you sure you want to delete the selected user?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Delete",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       handleDeleteMember(member.cognitoId);
-  //       Swal.fire("Deleted!", "User has been deleted.", "success");
-  //       onClose();
-  //     } else {
-  //       Swal.fire("Cancelled", "User is safe.", "info");
-  //     }
-  //   });
-  // };  
-
-=======
->>>>>>> beta
   if (!member) return null;
 
   return (
@@ -179,11 +151,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
         </div>
         <div className="flex justify-end mt-4 space-x-2">
           <Button
-<<<<<<< HEAD
-            onClick={()=>handleDeleteMember(member.cognitoId)}
-=======
             onClick={() => handleDeleteMember(member.cognitoId)}
->>>>>>> beta
             className="bg-red-600 text-white"
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#c53030')}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f56565')}
