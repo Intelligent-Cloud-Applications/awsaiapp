@@ -387,7 +387,6 @@ function NewMemberList({ institution: tempInstitution }) {
     return `${countryCode}${visibleStart}${censoredMiddle}${visibleEnd}`;
   }
 
-
   return (
     <>
       <div className="mt-5">

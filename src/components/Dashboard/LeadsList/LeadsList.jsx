@@ -3,8 +3,9 @@ import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Context from "../../../context/Context";
 import EditImage from '../../../utils/Assets/Dashboard/images/PNG/Edit.png';
-import SearchIcon from "../../../utils/Assets/Dashboard/images/SVG/Search.svg";
-import Arrow from "../../../utils/Assets/Dashboard/images/SVG/EnterArrow.svg";
+import { FiSearch } from 'react-icons/fi';
+import { FaFileExport, FaFileImport } from 'react-icons/fa';
+import { Button, Checkbox, Table } from "flowbite-react";
 import PhoneImg from '../../../utils/Assets/Dashboard/images/PNG/smartphone.png'
 import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
@@ -27,6 +28,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [selectedRow, setSelectedRow] = useState([]);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const membersPerPage = 7;
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
   const [emailId2, setEmailId2] = useState("");
@@ -299,6 +301,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
   const paginate = (event, pageNumber) => setCurrentPage(pageNumber);
+  const startIndex = (currentPage - 1) * membersPerPage;
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -343,6 +347,79 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
+  const ExportCSV = () => {
+    const escapeQuotes = (value) => {
+      if (typeof value !== 'string') {
+        // Convert non-string values to string
+        value = value != null ? String(value) : "";
+      }
+      return `"${value.replace(/"/g, '""')}"`;
+    };
+
+    const csvData = leadsData.map((lead, index) => {
+      // If `Device` is an array, join it into a single string separated by commas
+      const deviceString = Array.isArray(lead.device) ? lead.device.join(", ") : lead.device || "undefined";
+
+      return {
+        serialno: index + 1,
+        Date: escapeQuotes(lead.date),
+        campaign_name: escapeQuotes(lead.campaignName),
+        adset_name: escapeQuotes(lead.adsetName),
+        ad_name: escapeQuotes(lead.adName),
+        form_name: escapeQuotes(lead.formName),
+        platform: escapeQuotes(lead.platform),
+        Age: escapeQuotes(lead.age),
+        "which_device_can_you_use_for_online_fitness_classes?": escapeQuotes(deviceString),
+        Name: escapeQuotes(lead.name),
+        EmailId: escapeQuotes(lead.emailId),
+        PhoneNumber: escapeQuotes(lead.phoneNumber),
+        City: escapeQuotes(lead.city),
+        Gender: escapeQuotes(lead.gender)
+      };
+    });
+
+    const csvContent = [
+      ["Serial No", "Created_Date", "campaign_name", "adset_name", "ad_name", "form_name", "platform", "Age", "which_device_can_you_use_for_online_fitness_classes?", "Name", "EmailId", "PhoneNumber", "City", "Gender"],
+      ...csvData.map(lead => [
+        lead.serialno,
+        lead.Date,
+        lead.campaign_name,
+        lead.adset_name,
+        lead.ad_name,
+        lead.form_name,
+        lead.platform,
+        lead.Age,
+        lead["which_device_can_you_use_for_online_fitness_classes?"],
+        lead.Name,
+        lead.EmailId,
+        lead.PhoneNumber,
+        lead.City,
+        lead.Gender
+      ])
+    ];
+
+    // Converting the CSV content to a string
+    const csvString = csvContent
+      .map(e => e.join(","))
+      .join("\n");
+
+    // Creating a Blob from the CSV string
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+    // Constructing the file name
+    const fileName = `${institution} Lead List - ${csvData.length}.csv`;
+
+    // Creating a link element to trigger the download
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -360,50 +437,65 @@ const LeadsList = ({ institution: tempInstitution }) => {
   console.log("selected data", selectedRow);
   console.log("filtered data", filteredLeads);
   return (
-    <div className="ml-[5rem] lg:mx-7 max1300:ml-0">
-      <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2>
-      <main
-        className="w-[82vw] max-h-[auto] min-h-[43rem] bg-[#fff5] max600:w-[90vw] max600:relative"
-        style={{
-          boxShadow: "0px 0px 10px 10px rgba(0, 0, 0, 0.1)",
-          borderRadius: "0.8rem",
-        }}
-      >
-        <section className="w-full h-[7%] bg-[#2c2c2c] rounded-t-[0.8rem] flex items-center justify-end">
-          <div className="flex bg-white mr-[4rem] w-[28.25rem] rounded-[0.1875rem] p-[0.1rem] max600:mr-[1.2rem] max600:my-[0.3rem] max600:w-[80vw]">
-            <img
-              className="w-[1.9rem] h-[1.9rem] opacity-60 ml-2"
-              src={SearchIcon}
-              alt=""
-            />
-            <input
-              className="flex-1 outline-none rounded-md K2D text-[#000] text-[0.9rem] tracking-[1px] font-[600] max600:text-[0.8rem] "
-              type="text"
-              placeholder={"Search “Name, Email, Number”"}
-              value={searchInput}
-              onChange={handleSearchInputChange}
-            />
-            <img
-              className="w-[1rem] h-[1.5rem] mt-1 mr-[0.8rem] opacity-50"
-              src={Arrow}
-              alt=""
-            />
+    <div>
+      {/* <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2> */}
+      <main className=" ml-3">
+        <div className="mt-5">
+          <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
+            {/* Center: Search Bar */}
+            <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+                </div>
+                <input
+                  type="search"
+                  id="default-search"
+                  value={searchInput}
+                  onChange={handleSearchInputChange}
+                  className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Quick search for anything"
+                  required
+                />
+              </div>
+            </form>
+            {/* Right: Import and Export Buttons */}
+            <div className="flex items-center gap-4">
+              <Button
+                // onClick={handleImportCSV}
+                className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: '70px' }}
+              >
+                <FaFileImport className="mr-2 mt-[0.20rem]" />
+                Import CSV
+              </Button>
+              <Button
+                onClick={ExportCSV}
+                className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: '70px' }}
+              >
+                <FaFileExport className="mr-2 mt-[0.20rem]" />
+                Export CSV
+              </Button>
+              <Button
+                onClick={() => setIsUserAdd(true)}
+                className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: '70px' }}
+              >
+                <span className="mr-1">+</span>Add Leads
+              </Button>
+              <Button
+                onClick={() => { sendMail(selectedRow) }}
+                className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: '70px' }}
+              >
+                Send Mail
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-row max600:absolute max600:top-[-16%] max600:right-[-20%] max600:p-1 max600:flex">
-            <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:rounded-[7px] max600:h-[3rem]"
-              onClick={() => setIsUserAdd(true)}
-            >
-              <span className="mr-2">+</span> Add Leads
-            </button>
-            <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center mr-8 max600:rounded-[7px] max600:h-[3rem]"
-              onClick={() => { sendMail(selectedRow) }}
-            >
-              Send Mail
-            </button>
-          </div>
-        </section>
+        </div>
         {isUserAdd && (
-          <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
+          <div className=" absolute top-[12%] flex justify-center items-center w-[85vw] h-[85vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
             <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]" >
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
                 <input
@@ -569,24 +661,67 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </form>
           </div>
         )}
-        <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[0.8rem] mx-auto custom-scrollbar">
-          {filteredLeads.length === 0 ? (
-            <p>Loading...</p>
-          ) : (
-            <table className="w-[100%]">
-              <thead className="border-b text-[1.1rem] font-[600] border-[#2e2e2e]">
-                <tr>
-                  <th className="w-1/6 ">Name</th>
-                  <th className="w-1/6 ">EmailId</th>
-                  <th className="w-1/6">PhoneNumber</th>
-                  <th className="w-1/6">Date</th>
-                  <th className="w-1/6">Device</th>
-                  <th className="w-1/6">Age</th>
-                  <th className="w-1/6"></th>
-                  <th className="w-1/6">
-                    <input
-                      type="checkbox"
-                      className="h-[20px] w-[20px]"
+        {filteredLeads.length === 0 ? (
+          <p>Loading...</p>
+        ) : (
+          // <table className="w-[100%]">
+          //   <thead className="border-b text-[1.1rem] font-[600] border-[#2e2e2e]">
+          //     <tr>
+          //       <th className="w-1/6 ">Name</th>
+          //       <th className="w-1/6 ">EmailId</th>
+          //       <th className="w-1/6">PhoneNumber</th>
+          //       <th className="w-1/6">Date</th>
+          //       <th className="w-1/6">Device</th>
+          //       <th className="w-1/6">Age</th>
+          //       <th className="w-1/6"></th>
+          //       <th className="w-1/6">
+          //         <input
+          //           type="checkbox"
+          //           className="h-[20px] w-[20px]"
+          //           checked={isAllSelected}
+          //           onChange={() => {
+          //             if (filteredLeads === null) {
+          //               handleSelectAll(leadsData);
+          //             }
+          //             else {
+          //               handleSelectAll(filteredLeads);
+          //             }
+          //           }}
+          //         />
+          //       </th>
+          //     </tr>
+          //   </thead>
+          //   <tbody>
+          //     {currentLeads.map((lead, index) => (
+          //       <tr key={index} className="font-[500]">
+          //         <td className="w-1/6">{lead.name}</td>
+          //         <td className="w-1/6">{lead.emailId}</td>
+          //         <td className="w-1/6">{lead.phoneNumber}</td>
+          //         <td className="w-1/6">{lead.date}</td>
+          //         <td className="w-1/6">{lead.device ? lead.device.join(', ') : lead.device}</td>
+          //         <td className="w-1/6">{lead.age}</td>
+          //         <td className="w-1/6" onClick={() => handleEditUser(lead)}>
+          //           <img src={EditImage} alt="Edit" width="100px" />
+          //         </td>
+          //         <td className="w-1/6">
+          //           <input
+          //             type="checkbox"
+          //             className="h-[20px] w-[20px]"
+          //             checked={selectedRow.includes(lead)}
+          //             onChange={() => handleCheckboxChange(lead)}
+          //           />
+          //         </td>
+          //       </tr>
+          //     ))}
+          //   </tbody>
+          // </table>
+          <div className="bg-white max-w-full mx-auto rounded-b-md">
+            <div className="overflow-x-auto">
+              <Table hoverable className="min-w-full">
+                <Table.Head>
+                  <Table.HeadCell className="p-2">
+                    <Checkbox
+                      className='bg-gray-300 border border-gray-700 ml-2'
                       checked={isAllSelected}
                       onChange={() => {
                         if (filteredLeads === null) {
@@ -597,249 +732,284 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         }
                       }}
                     />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentLeads.map((lead, index) => (
-                  <tr key={index} className="font-[500]">
-                    <td className="w-1/6">{lead.name}</td>
-                    <td className="w-1/6">{lead.emailId}</td>
-                    <td className="w-1/6">{lead.phoneNumber}</td>
-                    <td className="w-1/6">{lead.date}</td>
-                    <td className="w-1/6">{lead.device ? lead.device.join(', ') : lead.device}</td>
-                    <td className="w-1/6">{lead.age}</td>
-                    <td className="w-1/6" onClick={() => handleEditUser(lead)}>
-                      <img src={EditImage} alt="Edit" width="100px" />
-                    </td>
-                    <td className="w-1/6">
-                      <input
-                        type="checkbox"
-                        className="h-[20px] w-[20px]"
-                        checked={selectedRow.includes(lead)}
-                        onChange={() => handleCheckboxChange(lead)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-          {isEditUser && (
-            <div className=" absolute top-[18%] flex justify-center items-center w-[85vw] h-[auto] bg-[#ffffff60] backdrop-blur-sm z-[1] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
-              <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50] max600:mr-[1rem]" >
-                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
+                  </Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Date</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Device</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Age</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                  </Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {currentLeads.map((lead, index) => (
+                    <Table.Row
+                      key={index}
+                      className="hover:bg-gray-200 cursor-pointer"
+                    >
+                      <Table.Cell
+                        className="p-2 bg-white"
+                        onClick={(e) => e.stopPropagation()} // Prevent row click when checkbox is clicked
+                      >
+                        <Checkbox
+                          className='bg-gray-300 border border-gray-700 ml-2'
+                          id={`checkbox-${lead}`}
+                          checked={selectedRow.includes(lead)}
+                          onChange={() => handleCheckboxChange(lead)}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
+                        {lead.name}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {lead.emailId}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {lead.phoneNumber}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {lead.date}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {lead.device ? lead.device.join(', ') : lead.device}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {lead.age}
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
+                        style={{ width: '24px' }}
+                        onClick={() => handleEditUser(lead)}>
+                        <img src={EditImage} alt="Edit" width="100px" />
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </div>
+            <div className="py-2 flex justify-between items-center px-4">
+              <div className="text-sm text-gray-600">
+                Showing <strong>{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredLeads.length)}</strong> of <strong>{filteredLeads.length}</strong>
+              </div>
+              <Pagination
+                count={Math.ceil(filteredLeads.length / itemsPerPage)}
+                page={currentPage}
+                onChange={paginate}
+                className="custom-pagination"
+              />
+            </div>
+
+          </div>
+        )}
+        {isEditUser && (
+          <div className=" absolute top-[12%] flex justify-center items-center w-[85vw] h-[auto] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
+            <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50] max600:mr-[1rem]" >
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <input
+                  required
+                  placeholder="Name"
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <div className="flex">
+                  <div className="text-[1.05rem] text-[#2b2b2b] font-bold mt-2">Age:</div>
                   <input
                     required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={name}
+                    placeholder="age"
+                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[full] focus:border-opacity-20 border border-[#acacac]  "
+                    type="number"
+                    value={age}
                     onChange={(e) => {
-                      setName(e.target.value);
+                      setAge(e.target.value);
                     }}
                   />
+                </div>
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
+                  {emailId}
+                </div>
+
+                <input
+                  required
+                  placeholder="Alternarte Email "
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="email"
+                  value={emailId2}
+                  onChange={(e) => {
+                    setEmailId2(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <input
+                  required
+                  placeholder="Phone Number"
+                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                  type="number"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                  }}
+                />
+                <input
+                  required
+                  placeholder="Alternate Phone Number"
+                  className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
+                  type="number"
+                  value={phoneNumber2}
+                  onChange={(e) => {
+                    setPhoneNumber2(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
+                <div className="flex gap-2">
                   <div className="flex">
-                    <div className="text-[1.05rem] text-[#2b2b2b] font-bold mt-2">Age:</div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill={getCategoryColor()} // Fill color based on category color
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-star"
+                    >
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <select
+                      className="bg-[#f0f0f0] h-10 text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="Gold">Gold</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Bronze">Bronze</option>
+                    </select>
+                  </div>
+                  <div className="bg-[#f7f7f7] text-[#000] flex justify-center items-center text-center h-[2.5rem] K2D rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
+                    {date}
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div>
+                    <img className="w-[3rem]" src={PhoneImg} alt="" />
                     <input
-                      required
-                      placeholder="age"
-                      className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-[full] focus:border-opacity-20 border border-[#acacac]  "
-                      type="number"
-                      value={age}
-                      onChange={(e) => {
-                        setAge(e.target.value);
-                      }}
+                      className="ml-4"
+                      type="checkbox"
+                      checked={selectedDevices.SmartPhone}
+                      onChange={() => handleDeviceSelect('SmartPhone')}
+                    />
+                  </div>
+                  <div>
+                    <img className="w-[3rem]" src={TabletImg} alt="" />
+                    <input
+                      className="ml-4"
+                      type="checkbox"
+                      checked={selectedDevices.Tablet}
+                      onChange={() => handleDeviceSelect('Tablet')}
+                    />
+                  </div>
+                  <div>
+                    <img className="w-[3rem]" src={LaptopImg} alt="" />
+                    <input
+                      className="ml-4"
+                      type="checkbox"
+                      checked={selectedDevices.Laptop}
+                      onChange={() => handleDeviceSelect('Laptop')}
                     />
                   </div>
                 </div>
-                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
-                    {emailId}
-                  </div>
-
-                  <input
-                    required
-                    placeholder="Alternarte Email "
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="email"
-                    value={emailId2}
-                    onChange={(e) => {
-                      setEmailId2(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <input
-                    required
-                    placeholder="Phone Number"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="number"
-                    value={phoneNumber}
-                    onChange={(e) => {
-                      setPhoneNumber(e.target.value);
-                    }}
-                  />
-                  <input
-                    required
-                    placeholder="Alternate Phone Number"
-                    className="bg-[#f7f7f7] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20 border border-[#acacac]  "
-                    type="number"
-                    value={phoneNumber2}
-                    onChange={(e) => {
-                      setPhoneNumber2(e.target.value);
-                    }}
-                  />
-                </div>
-                <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-around w-full' : 'flex flex-col gap-4 w-full'}`}>
-                  <div className="flex gap-2">
-                    <div className="flex">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="30"
-                        height="40"
-                        viewBox="0 0 24 24"
-                        fill={getCategoryColor()} // Fill color based on category color
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="feather feather-star"
-                      >
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                      <select
-                        className="bg-[#f0f0f0] h-10 text-[#000] K2D px-4 py-2 rounded-[6px] focus:border-opacity-20"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                      >
-                        <option value="Gold">Gold</option>
-                        <option value="Silver">Silver</option>
-                        <option value="Bronze">Bronze</option>
-                      </select>
-                    </div>
-                    <div className="bg-[#f7f7f7] text-[#000] flex justify-center items-center text-center h-[2.5rem] K2D rounded-[6px] w-[12rem] focus:border-opacity-20 border border-[#acacac]">
-                      {date}
-                    </div>
-                  </div>
-                  <div className="flex gap-6">
-                    <div>
-                      <img className="w-[3rem]" src={PhoneImg} alt="" />
-                      <input
-                        className="ml-4"
-                        type="checkbox"
-                        checked={selectedDevices.SmartPhone}
-                        onChange={() => handleDeviceSelect('SmartPhone')}
-                      />
-                    </div>
-                    <div>
-                      <img className="w-[3rem]" src={TabletImg} alt="" />
-                      <input
-                        className="ml-4"
-                        type="checkbox"
-                        checked={selectedDevices.Tablet}
-                        onChange={() => handleDeviceSelect('Tablet')}
-                      />
-                    </div>
-                    <div>
-                      <img className="w-[3rem]" src={LaptopImg} alt="" />
-                      <input
-                        className="ml-4"
-                        type="checkbox"
-                        checked={selectedDevices.Laptop}
-                        onChange={() => handleDeviceSelect('Laptop')}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2 flex-col w-full justify-start K2D text-[1.2rem] font-[600] mt-[-1rem]">
+              </div>
+              <div className="flex gap-2 flex-col w-full justify-start K2D text-[1.2rem] font-[600] mt-[-1rem]">
+                <div className="flex gap-2 items-center">
                   <div className="flex gap-2 items-center">
-                    <div className="flex gap-2 items-center">
-                      {isEditUser && (
-                        <div className="font-[500]">
-                          {leadsData.map((lead) => {
-                            if (lead.emailId === id) {
-                              return (
-                                <div key={lead.id}>
-                                  {lead.other &&
-                                    Object.entries(lead.other).map(([key, value]) => (
-                                      <div key={key}>
-                                        <span className="text-[#257d8d] font-bold">{key}:</span>
-                                        <span className="text-[#2b2b2b]">{value}</span>
-                                      </div>
-                                    ))}
-                                </div>
-                              );
-                            } else {
-                              return null;
-                            }
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[1.1rem] K2D font-[600] mb-5">
-                  <span className="text-[#257d8d]">{name}</span>
-                  {device ? <span> uses <span>{device.join(', ')}</span></span> : ' has no device information'}
-                </p>
-                {isAddingMoreInfo && (
-                  <div className="flex flex-col gap-3 w-full justify-center items-center">
-                    {additionalInfoArray.map((info, index) => (
-                      <div key={index} className="flex flex-col gap-3 w-full">
-                        <input
-                          placeholder="Title"
-                          className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
-                          type="text"
-                          value={info.title}
-                          onChange={(e) => handleInfoTitleChange(e, index)}
-                        />
-                        <textarea
-                          placeholder="Info"
-                          className="flex w-[65%] h-[6rem] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2 resize-none"
-                          value={info.info}
-                          onChange={(e) => handleInfoChange(e, index)}
-                        />
-                        <button
-                          className="flex text-[white] w-[8rem] p-2 rounded-[10px] justify-center bg-[#a72222]"
-                          onClick={() => handleRemoveMoreInfo(index)}
-                        >
-                          Remove Info
-                        </button>
+                    {isEditUser && (
+                      <div className="font-[500]">
+                        {leadsData.map((lead) => {
+                          if (lead.emailId === id) {
+                            return (
+                              <div key={lead.id}>
+                                {lead.other &&
+                                  Object.entries(lead.other).map(([key, value]) => (
+                                    <div key={key}>
+                                      <span className="text-[#257d8d] font-bold">{key}:</span>
+                                      <span className="text-[#2b2b2b]">{value}</span>
+                                    </div>
+                                  ))}
+                              </div>
+                            );
+                          } else {
+                            return null;
+                          }
+                        })}
                       </div>
-                    ))}
-                  </div>
-                )}
-                <div className="flex justify-end w-full">
-                  <div
-                    className="flex text-[white] w-[8rem] h-[2.5rem] p-2 rounded-[10px] justify-center bg-[#1d1d1d] mt-[-3rem]"
-                    onClick={handleAddMoreInfo}
-                  >
-                    Add More Info
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-col  gap-3 w-full justify-center items-center">
-                  <button
-                    className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                    onClick={handleEdit}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
-                    onClick={handleCancelEdit}
-                  >
-                    Cancel
-                  </button>
+              </div>
+              <p className="text-[1.1rem] K2D font-[600] mb-5">
+                <span className="text-[#257d8d]">{name}</span>
+                {device ? <span> uses <span>{device.join(', ')}</span></span> : ' has no device information'}
+              </p>
+              {isAddingMoreInfo && (
+                <div className="flex flex-col gap-3 w-full justify-center items-center">
+                  {additionalInfoArray.map((info, index) => (
+                    <div key={index} className="flex flex-col gap-3 w-full">
+                      <input
+                        placeholder="Title"
+                        className="flex w-[65%] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2"
+                        type="text"
+                        value={info.title}
+                        onChange={(e) => handleInfoTitleChange(e, index)}
+                      />
+                      <textarea
+                        placeholder="Info"
+                        className="flex w-[65%] h-[6rem] text-[1.1rem] text-[#257d8d] border border-[#5a5a5a] rounded-[6px] p-2 resize-none"
+                        value={info.info}
+                        onChange={(e) => handleInfoChange(e, index)}
+                      />
+                      <button
+                        className="flex text-[white] w-[8rem] p-2 rounded-[10px] justify-center bg-[#a72222]"
+                        onClick={() => handleRemoveMoreInfo(index)}
+                      >
+                        Remove Info
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </form>
-            </div>
-          )}
-        </section>
-        <Pagination
-          count={Math.ceil(filteredLeads.length / itemsPerPage)}
-          page={currentPage}
-          onChange={paginate}
-          className="custom-pagination"
-        />
+              )}
+              <div className="flex justify-end w-full">
+                <div
+                  className="flex text-[white] w-[8rem] h-[2.5rem] p-2 rounded-[10px] justify-center bg-[#1d1d1d] mt-[-3rem]"
+                  onClick={handleAddMoreInfo}
+                >
+                  Add More Info
+                </div>
+              </div>
+              <div className="flex flex-col  gap-3 w-full justify-center items-center">
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-[7px] border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                  onClick={handleEdit}
+                >
+                  Update
+                </button>
+                <button
+                  className="K2D font-[600] tracking-[1.2px] w-full rounded-[4px] py-2 border-[2px] border-[#222222] bg-[#ffffff] text-[#222222]"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </main>
     </div>
   );
