@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Sidebar, Flowbite } from "flowbite-react";
+import { Sidebar, Flowbite, Button } from "flowbite-react";
 import Context from "../../../context/Context";
-import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
+import { HiChartPie, HiShoppingBag, HiInbox, HiPencil } from "react-icons/hi";
 import context from "../../../context/Context";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./LeftBanner.css";
 
 const customTheme = {
   sidebar: {
     root: {
-      inner:
-        "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5",
+      inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5",
     },
   },
 };
@@ -21,6 +20,10 @@ const LeftBanner = ({ displayAfterClick }) => {
   const Ctx = useContext(context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const institutionNames = queryParams.get("institution");
 
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
@@ -41,12 +44,11 @@ const LeftBanner = ({ displayAfterClick }) => {
               <Sidebar.ItemGroup className="flex flex-row justify-around items-center lg:items-start lg:flex-col lg:justify-start">
                 {isSuperAdmin && (
                   <>
-                  <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
-
-                    <div className="  font-bold">
-                    <p className="text-white text-xl">{`Hello, ${((userData.userName).split(" "))[0]}`}</p>
-                    </div>
-                  </Sidebar.ItemGroup>
+                    <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                      <div className="font-bold">
+                        <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
+                      </div>
+                    </Sidebar.ItemGroup>
                     <Sidebar.Item
                       href="#"
                       icon={HiChartPie}
@@ -63,7 +65,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                
                       icon={HiShoppingBag}
                       onClick={() => {
                         setClick(1);
@@ -98,7 +99,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                 {isNotSuperAdmin && (
                   <>
                     <Sidebar.Item
-
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
@@ -113,7 +113,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                    
                       icon={HiShoppingBag}
                       onClick={() => {
                         setClick(1);
@@ -123,12 +122,11 @@ const LeftBanner = ({ displayAfterClick }) => {
                         click === 1 ? "active bg-white" : ""
                       } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline text-base font-[Poppins]">
+                      <span className="hidden md:inline font-[Poppins] text-base">
                         Members
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                  
                       icon={HiInbox}
                       onClick={() => {
                         setClick(2);
@@ -142,6 +140,27 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Leads
                       </span>
                     </Sidebar.Item>
+                    {/* Divider for large screens */}
+                    <div className="hidden lg:block w-full border-t-2 border-gray-500 my-4"></div>
+                    {/* Customise Website Button */}
+                    <button
+                      onClick={() => {
+                        navigate({
+                          pathname: '/full',
+                          search: `?institutionName=${institutionNames}`,
+                        });
+                      }}
+                      className={`custom-sidebar-item bg-blue-600 text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-all duration-150 ease-in-out `}
+                    >
+                      {/* Show pencil icon on smaller screens */}
+                      <span className="lg:hidden">
+                        <HiPencil />
+                      </span>
+                      {/* Show full text on larger screens */}
+                      <span className="hidden lg:inline font-[Poppins] text-base">
+                        Edit Website
+                      </span>
+                    </button>
                   </>
                 )}
               </Sidebar.ItemGroup>

@@ -31,7 +31,7 @@ const New_Full = () => {
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
+      // if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
         try {
           if (!loaderInitialized) {
             // Check if loader is false and not initialized
@@ -69,7 +69,7 @@ const New_Full = () => {
           util.setLoader(false);
         }
       }
-    };
+    // };
 
     fetchData();
   }, [

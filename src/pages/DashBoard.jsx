@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import Context from "../context/Context";
 // import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
@@ -16,7 +16,7 @@ import Profile from "../components/Dashboard/Profile/Profile";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const Ctx = useContext(Context);
   console.log(Ctx);
   // useEffect(() => {
@@ -28,9 +28,9 @@ const DashBoard = () => {
   //     setClick(0);
   //   }
   // }, []);
-  const queryParams = new URLSearchParams(location.search);
+  // const queryParams = new URLSearchParams(location.search);
   //eslint-disable-next-line
-  const institutionNames = queryParams.get("institution");
+  // const institutionNames = queryParams.get("institution");
   useEffect(() => {
     localStorage.setItem("selectedPage", click.toString());
   }, [click]);
@@ -111,7 +111,7 @@ const DashBoard = () => {
                   className="text-5xl"
                 />
               </div>
-              {/* <div
+              <div
                 class="w-[90vw] lg:w-[70vw] lg:ml-16 h-14 ml-2 relative rounded-2xl lg:mt-20"
                 style={{
                   boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
@@ -131,8 +131,8 @@ const DashBoard = () => {
                     Edit
                   </Link>
                 </div>
-              </div> */}
-            </>
+              </div>
+             </>
           )}
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse lg:ml-28">
@@ -150,6 +150,7 @@ const DashBoard = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
