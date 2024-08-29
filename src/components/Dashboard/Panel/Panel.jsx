@@ -87,7 +87,6 @@ const Panel = () => {
   }, [searchQuery, clientsData, userData.institutionType, userData.userName]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
-
   useEffect(() => {
     const newInstituteType = userData.institutionType;
 
@@ -382,10 +381,10 @@ const Panel = () => {
             }
             onClick={(e) => {
               if (instituteType === "") {
-               e.stopPropagation()
-                console.log('Showing toast message'); // Debug line
+                e.stopPropagation();
+                console.log("Showing toast message"); // Debug line
                 toast.error("Please Select a type of Institution.", {
-                  position: 'top-right',
+                  position: "top-right",
                   autoClose: 5000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -393,11 +392,11 @@ const Panel = () => {
                   draggable: true,
                   progress: undefined,
                   style: {
-                    backgroundColor: '#f8d7da',
-                    color: '#721c24',
+                    backgroundColor: "#f8d7da",
+                    color: "#721c24",
                   },
                 });
-              } 
+              }
             }}
             className="hover:no-underline"
           >
