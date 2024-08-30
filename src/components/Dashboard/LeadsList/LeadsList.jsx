@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { API } from "aws-amplify";
 import Pagination from "@mui/material/Pagination";
 import Context from "../../../context/Context";
@@ -12,6 +12,7 @@ import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import { CSVUpload } from '../../UploadFile/CSVUpload';
 
 const LeadsList = ({ institution: tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
@@ -347,6 +348,25 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
+  const fileInputRef = useRef(null);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    } else {
+      console.error("File input ref is not attached.");
+    }
+  };
+
+  const handleCSVFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileNameForBucket = "leadList";
+      CSVUpload(file, institution, fileNameForBucket);
+    } else {
+      console.error("No file selected.");
+    }
+  };
+
   const ExportCSV = () => {
     const escapeQuotes = (value) => {
       if (typeof value !== 'string') {
@@ -462,12 +482,20 @@ const LeadsList = ({ institution: tempInstitution }) => {
             {/* Right: Import and Export Buttons */}
             <div className="flex items-center gap-4">
               <Button
-                // onClick={handleImportCSV}
+                onClick={handleButtonClick}
                 className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
                 style={{ minWidth: '70px' }}
               >
                 <FaFileImport className="mr-2 mt-[0.20rem]" />
-                Import CSV
+                Upload CSV
+                <input
+                  type="file"
+                  accept=".csv, .xls, .xlsx"
+                  onChange={handleCSVFile}
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="CSVFileInput"
+                />
               </Button>
               <Button
                 onClick={ExportCSV}

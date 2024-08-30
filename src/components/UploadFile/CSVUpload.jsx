@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify';
 
 // Valid file types (CSV, XLS, XLSX)
-const allowedFileTypes = ['.csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+const allowedFileTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 const maxFileSize = 4 * 1024 * 1024; // 4MB
 
 // Function to check if a file exists in S3 bucket
@@ -46,7 +46,7 @@ const validateFile = (file) => {
 };
 
 // Function to upload the file to the default S3 bucket
-const CSVUpload = async (file, institutionId) => {
+const CSVUpload = async (file, institutionId, fileNameForBucket) => {
     try {
         validateFile(file);
 
@@ -54,7 +54,7 @@ const CSVUpload = async (file, institutionId) => {
         console.log('Uploading file:', file);
 
         // Use Storage.put to upload the file to S3
-        const result = await Storage.put(`${institutionId}/memberlist/${file.name}`, file, {
+        const result = await Storage.put(`${institutionId}/${fileNameForBucket}/${file.name}`, file, {
             contentType: file.type,
             level: 'private',
         });
