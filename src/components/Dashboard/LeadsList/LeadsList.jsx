@@ -768,8 +768,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Device</Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Age</Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase">
-                  </Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
                   {currentLeads.map((lead, index) => (
