@@ -1,7 +1,5 @@
 "use client";
 import React, { useContext, useState, useEffect, useRef } from 'react';
-
-// import Navbar from '../../Home/Navbar';
 import Context from "../../../context/Context";
 import { Button, Checkbox, Pagination, Table } from "flowbite-react";
 import { FiSearch } from 'react-icons/fi';
@@ -12,6 +10,7 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
 import { CSVUpload } from '../../UploadFile/CSVUpload';
+import * as XLSX from "xlsx";
 
 
 function NewMemberList({ institution: tempInstitution }) {
@@ -286,18 +285,24 @@ function NewMemberList({ institution: tempInstitution }) {
     );
   };
 
-  function handleExportCSV() {
-    const instituteName = "happyprancer";
+  function handleExportExcel() {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
+    const instituteName = institution;
     const filteredData = members.filter((member) => {
       if (filter === 'All') return true;
       if (filter === 'Active') return member.status === 'Active';
       if (filter === 'Inactive') return member.status !== 'Active';
       return true;
     });
-
-    const csvData = filteredData.map((member) => {
+  
+    const excelData = filteredData.map((member) => {
       const phoneNumber = member.phoneNumber ? parsePhoneNumberFromString(member.phoneNumber)?.formatInternational() : '';
-
+  
       return {
         Name: member.userName,
         Email: member.emailId,
@@ -310,49 +315,41 @@ function NewMemberList({ institution: tempInstitution }) {
         Product: member.product,
       };
     });
-
-    const csvContent = [
-      [
-        "Name",
-        "Email",
-        "Phone",
-        "Joining Date",
-        "Country",
-        "Attendance",
-        "Status",
-        "Due",
-        "Product"
-      ],
-      ...csvData.map(member => [
-        member.Name,
-        member.Email,
-        member.Phone,
-        member.JoiningDate,
-        member.Country,
-        member.Attendance,
-        member.Status,
-        member.Due,
-        member.Product
-      ])
+  
+    const ws = XLSX.utils.json_to_sheet(excelData, { header: [
+      "Name",
+      "Email",
+      "Phone",
+      "JoiningDate",
+      "Country",
+      "Attendance",
+      "Status",
+      "Due",
+      "Product"
+    ]});
+  
+    // Auto adjust column width
+    const wscols = [
+      { wpx: 120 }, // Name
+      { wpx: 170 }, // Email
+      { wpx: 100 }, // Phone
+      { wpx: 120 }, // Joining Date
+      { wpx: 100 }, // Country
+      { wpx: 100 }, // Attendance
+      { wpx: 100 }, // Status
+      { wpx: 100 }, // Due
+      { wpx: 120 }, // Product
     ];
-
-    const csvString = csvContent
-      .map(e => e.join(","))
-      .join("\n");
-
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-
+  
+    ws['!cols'] = wscols;
+  
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Members List");
+  
     // Constructing the file name
-    const fileName = `${instituteName} Members List - ${filter} - ${filteredData.length}.csv`;
-
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", fileName);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const fileName = `${instituteName} Members List - ${filter} - ${filteredData.length}.xlsx`;
+  
+    XLSX.writeFile(wb, fileName);
   }
 
   const handleNameClick = (member) => {
@@ -360,6 +357,8 @@ function NewMemberList({ institution: tempInstitution }) {
     setIsModalOpen(true);
   };
 
+
+//upload csv
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -480,7 +479,7 @@ function NewMemberList({ institution: tempInstitution }) {
               />
             </Button>
             <Button
-              onClick={handleExportCSV}
+              onClick={handleExportExcel}
               className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
               style={{ minWidth: '70px' }}
             >

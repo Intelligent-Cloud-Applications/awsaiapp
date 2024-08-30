@@ -4,37 +4,6 @@ import { Storage } from 'aws-amplify';
 const allowedFileTypes = ['.csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 const maxFileSize = 4 * 1024 * 1024; // 4MB
 
-// Function to check if a file exists in S3 bucket
-// const checkIfFileExists = async (fileName) => {
-//     try {
-//         await Storage.get(fileName);
-//         return true; // File exists
-//     } catch (error) {
-//         if (error.response && error.response.status === 404) {
-//             return false; // File does not exist
-//         }
-//         throw error; // Some other error occurred
-//     }
-// };
-
-// Function to generate a unique filename
-// const generateUniqueFileName = async (fileName) => {
-//     let uniqueFileName = fileName;
-//     let fileExists = await checkIfFileExists(uniqueFileName);
-//     let counter = 1;
-
-//     // Keep appending a number until a unique filename is found
-//     while (fileExists) {
-//         const fileExtension = uniqueFileName.substring(uniqueFileName.lastIndexOf('.'));
-//         const fileNameWithoutExtension = uniqueFileName.substring(0, uniqueFileName.lastIndexOf('.'));
-//         uniqueFileName = `${fileNameWithoutExtension}-${counter}${fileExtension}`;
-//         fileExists = await checkIfFileExists(uniqueFileName);
-//         counter++;
-//     }
-
-//     return uniqueFileName;
-// };
-
 // Function to validate file type and size
 const validateFile = (file) => {
     if (!allowedFileTypes.includes(file.type)) {
