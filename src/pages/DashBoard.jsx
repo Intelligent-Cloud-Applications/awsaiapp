@@ -111,7 +111,7 @@ const DashBoard = () => {
                   className="text-5xl"
                 />
               </div>
-              <div
+              {/* <div
                 class="w-[90vw] lg:w-[70vw] lg:ml-16 h-14 ml-2 relative rounded-2xl lg:mt-20"
                 style={{
                   boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
@@ -131,7 +131,7 @@ const DashBoard = () => {
                     Edit
                   </Link>
                 </div>
-              </div>
+              </div> */}
              </>
           )}
       </div>

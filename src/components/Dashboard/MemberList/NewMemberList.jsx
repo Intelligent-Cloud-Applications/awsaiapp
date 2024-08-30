@@ -1,5 +1,6 @@
 "use client";
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+
 // import Navbar from '../../Home/Navbar';
 import Context from "../../../context/Context";
 import { Button, Checkbox, Pagination, Table } from "flowbite-react";
@@ -10,6 +11,7 @@ import { API } from 'aws-amplify';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
+import { CSVUpload } from '../../UploadFile/CSVUpload';
 
 
 function NewMemberList({ institution: tempInstitution }) {
@@ -46,7 +48,7 @@ function NewMemberList({ institution: tempInstitution }) {
     } catch (error) {
       console.error('Error fetching the members:', error);
     }
-};
+  };
 
   const handleUpdateUser = async (formData) => {
     let institution;
@@ -158,7 +160,7 @@ function NewMemberList({ institution: tempInstitution }) {
             cognitoId: cognitoId,
           },
         };
-        
+
         try {
           await API.del(apiName, path, myInit);
           // Immediately update state before calling fetchData
@@ -358,6 +360,32 @@ function NewMemberList({ institution: tempInstitution }) {
     setIsModalOpen(true);
   };
 
+  const fileInputRef = useRef(null);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    } else {
+      console.error("File input ref is not attached.");
+    }
+  };
+
+  const handleCSVFile = (e) => {
+    const file = e.target.files[0];
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
+    fetchData(institution); // Pass institution to fetchData
+    if (file) {
+      const fileNameForBucket = "leadList";
+      CSVUpload(file, institution, fileNameForBucket);
+    } else {
+      console.error("No file selected.");
+    }
+  };
+
   // Utility function to censor email
   const censorEmail = (email) => {
     const [name, domain] = email.split('@');
@@ -436,12 +464,20 @@ function NewMemberList({ institution: tempInstitution }) {
           {/* Right: Import and Export Buttons */}
           <div className="flex items-center gap-4">
             <Button
-              // onClick={handleImportCSV}
+              onClick={handleButtonClick}
               className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
               style={{ minWidth: '70px' }}
             >
               <FaFileImport className="mr-2 mt-[0.20rem]" />
-              Import CSV
+              Upload CSV
+              <input
+                type="file"
+                accept=".csv, .xls, .xlsx"
+                onChange={handleCSVFile}
+                className="hidden"
+                ref={fileInputRef}
+                id="CSVFileInput"
+              />
             </Button>
             <Button
               onClick={handleExportCSV}
@@ -545,7 +581,7 @@ function NewMemberList({ institution: tempInstitution }) {
         onClose={() => setIsModalOpen(false)}
         isEditUser={isEditUser}
         onSave={handleUpdateUser}
-        handleDeleteMember={()=> handleDeleteMember(selectedMemberDetails.cognitoId)}
+        handleDeleteMember={() => handleDeleteMember(selectedMemberDetails.cognitoId)}
       />
     </>
   );
