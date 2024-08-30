@@ -11,7 +11,7 @@ import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { CSVUpload } from '../../UploadFile/CSVUpload';
 
 const LeadsList = ({ institution: tempInstitution }) => {
@@ -24,10 +24,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
   } else {
     institution = userData.institutionName || tempInstitution;
   }
-  const itemsPerPage = 9;
+  const itemsPerPage = 7;
   const [leadsData, setLeadsData] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const membersPerPage = 7;
   const [name, setName] = useState("");
@@ -42,23 +41,40 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [editUser, setEditUser] = useState(null);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [isUserAdd, setIsUserAdd] = useState(false);
-  const [userCheck, setUserCheck] = useState(0);
+  // const [isUserAdd, setIsUserAdd] = useState(false);
+  // const [userCheck, setUserCheck] = useState(0);
+  const [templateSubject, setTemplateSubject] = useState('');
+  const [templateContent, setTemplateContent] = useState('');
+  const [sendmail, setSendmail] = useState(false);
+  const [filteredEmails, setFilteredEmails] = useState([]);
+  const [templateData, setTemplateData] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [templateName, setTemplateName] = useState('');
+  const newName = `${institution}_${templateName}`;
+  const [addNewValue, setAddNewValue] = useState(false);
+  const [viewTemplate, setViewTemplate] = useState(null);
   const [category, setCategory] = useState('Gold');
   const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
   const [isAllSelected, setisAllSelected] = useState(false);/*to check wheather all the leads data is selected or not*/
+  const { dataToMail } = location.state || {};
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
+  const filteredTemplates = templateData.filter(templateData =>
+    templateData && templateData.toLowerCase().includes(searchInput.toLowerCase())
+  );
+  const indexOfLastLeadmail = currentPage * itemsPerPage;
+  const indexOfFirstLeadmail = indexOfLastLeadmail - itemsPerPage;
+  const currentTemplates = filteredTemplates.slice(indexOfFirstLeadmail, indexOfLastLeadmail);
   const [selectedDevices, setSelectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
     Laptop: false,
   });
   const [id, setId] = useState("");
-  console.log(userCheck)
+  // console.log(userCheck)
 
   const handleCheckboxChange = (lead) => {
     setSelectedRow((prevSelectedRows) => {
@@ -82,7 +98,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const sendMail = (dataToMail) => {
     if (dataToMail.length !== 0) {
       console.log(dataToMail);
-      navigate('/templatemail', { state: { dataToMail } });
+      setSendmail(true);
+      // navigate('/templatemail', { state: { dataToMail } });
     } else {
       return (
         alert("Please select leads")
@@ -123,75 +140,177 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
+  const handleNameOfTemplate = (event) => {
+    setTemplateName(event.target.value);
+  };
+
+  const handleSubjectOfTemplate = (event) => {
+    setTemplateSubject(event.target.value);
+  };
+
+  const handleRadioChange = (data) => {
+    setSelectedTemplate(data);
+  };
+
+  const handleClosePopup = () => {
+    setAddNewValue(false);
+    setViewTemplate(null);
+  };
+
+  const handleCloseMember = () => {
+    setSendmail(false);
+  };
+  const addTemplate = () => {
+    setAddNewValue(true);
+  };
+
+  const handleTemplateOnChange = (event) => {
+    setTemplateContent(event.target.value);
+  };
+
+  const fetchTemplates = async (institution) => {
+    util.setLoader(true);
+    try {
+      const response = await API.get('clients', `/user/get-ses-templates/${institution}?action=list`);
+      setTemplateData(response || []);
+      console.log("template", response);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      // Handle error appropriately
+    } finally {
+      util.setLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    if (institution) {
+      fetchTemplates(institution);
+    }
+    // eslint-disable-next-line
+  }, [institution]);
+
+  useEffect(() => {
+    if (dataToMail) {
+      const emails = dataToMail
+        .filter(item => item.institution === institution)
+        .map(item => item.emailId) || [];
+      setFilteredEmails(emails);
+    }
+  }, [dataToMail, institution]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchInput]);
+
+  const handleSendMail = async () => {
+    const payload = {
+      emailIds: filteredEmails,
+      templateName: selectedTemplate
+    };
+
+    console.log('Sending request with payload:', payload);
+
+    try {
+      const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
+        body: payload
+      });
+      console.log('Response:', response);
+      alert('Email sent successfully!');
+    } catch (error) {
+      console.error('Error sending emails:', error);
+      alert('Error sending emails. Please try again later.');
+    }
+  };
+  const handleDoneClick = async () => {
+    const dataToCreate = {
+      'TemplateName': newName,
+      'SubjectPart': templateSubject,
+      'HtmlPart': templateContent,
+      'TextPart': ""
+    };
+
+    try {
+      const response = await API.post('clients', `/user/create-ses-template/${institution}`, {
+        body: dataToCreate
+      });
+      console.log('Response:', response);
+      alert('Email added successfully!');
+    } catch (error) {
+      console.error('Error sending emails:', error);
+      alert('Error creating emails. Please try again later.');
+    }
+    handleClosePopup();
+  };
+
   useEffect(() => {
     fetchLeads(institution);
     // eslint-disable-next-line
   }, [institution]);
 
-  const handleAddLeads = async (e) => {
-    e.preventDefault();
-    if (!name || !emailId || !phoneNumber || !date) {
-      Swal.fire({
-        icon: "error",
-        title: "Validation Error",
-        text: "Name, Email, Date, Phone Number are mandatory fields.",
-      });
-      return;
-    }
-    const apiName = "clients";
-    const path = "/user/create-Leads";
-    const myInit = {
-      body: {
-        institution: institution,
-        name: name,
-        emailId: emailId,
-        emailId2: emailId2,
-        phoneNumber: phoneNumber,
-        phoneNumber2: phoneNumber2,
-        age: age,
-        device: device,
-        date: new Date(date).getTime(),
-        other: {},
-        type: "lead",
-      },
-    };
-    // Include additionalInfoTitle and additionalInfo if available
-    if (additionalInfoArray.length > 0) {
-      additionalInfoArray.forEach((info) => {
-        if (info.title && info.info) {
-          myInit.body.other[info.title] = info.info;
-        }
-      });
-    }
-    try {
-      const create = await API.post(apiName, path, myInit);
-      console.log(create);
-      setLeadsData((prevLeadsData) => [...prevLeadsData, myInit.body]);
-      Swal.fire({
-        icon: "success",
-        title: "User Added",
-      });
-      setIsUserAdd(false);
-      setName("");
-      setEmailId("");
-      setPhoneNumber("");
-      util.setLoader(false);
-    } catch (e) {
-      console.log(e);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while creating the user.",
-      });
-      util.setLoader(false);
-    } finally {
-      setSelectedDevices({
-        SmartPhone: false,
-        Tablet: false,
-        Laptop: false,
-      });
-    }
-  };
+  // const handleAddLeads = async (e) => {
+  //   e.preventDefault();
+  //   if (!name || !emailId || !phoneNumber || !date) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Validation Error",
+  //       text: "Name, Email, Date, Phone Number are mandatory fields.",
+  //     });
+  //     return;
+  //   }
+  //   const apiName = "clients";
+  //   const path = "/user/create-Leads";
+  //   const myInit = {
+  //     body: {
+  //       institution: institution,
+  //       name: name,
+  //       emailId: emailId,
+  //       emailId2: emailId2,
+  //       phoneNumber: phoneNumber,
+  //       phoneNumber2: phoneNumber2,
+  //       age: age,
+  //       device: device,
+  //       date: new Date(date).getTime(),
+  //       other: {},
+  //       type: "lead",
+  //     },
+  //   };
+  //   // Include additionalInfoTitle and additionalInfo if available
+  //   if (additionalInfoArray.length > 0) {
+  //     additionalInfoArray.forEach((info) => {
+  //       if (info.title && info.info) {
+  //         myInit.body.other[info.title] = info.info;
+  //       }
+  //     });
+  //   }
+  //   try {
+  //     const create = await API.post(apiName, path, myInit);
+  //     console.log(create);
+  //     setLeadsData((prevLeadsData) => [...prevLeadsData, myInit.body]);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "User Added",
+  //     });
+  //     setIsUserAdd(false);
+  //     setName("");
+  //     setEmailId("");
+  //     setPhoneNumber("");
+  //     util.setLoader(false);
+  //   } catch (e) {
+  //     console.log(e);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "An error occurred while creating the user.",
+  //     });
+  //     util.setLoader(false);
+  //   } finally {
+  //     setSelectedDevices({
+  //       SmartPhone: false,
+  //       Tablet: false,
+  //       Laptop: false,
+  //     });
+  //   }
+  // };
 
   const handleEditUser = (user) => {
     setId(user.emailId);
@@ -295,7 +414,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setDevice(updatedDevices);
   }, [selectedDevices]);
 
-  const selectedDeviceNames = device.join(", ");
+  // const selectedDeviceNames = device.join(", ");
 
   const indexOfLastLead = currentPage * itemsPerPage;
   const indexOfFirstLead = indexOfLastLead - itemsPerPage;
@@ -461,12 +580,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
       {/* <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2> */}
       <main className=" ml-3">
         <div className="mt-5">
-          <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
+          <div className="flex items-center justify-between bg-white h-11 px-5 rounded-t-md">
             {/* Center: Search Bar */}
             <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
               <div className="relative w-full">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+                  <FiSearch className="w-5 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
                 </div>
                 <input
                   type="search"
@@ -505,13 +624,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 <FaFileExport className="mr-2 mt-[0.20rem]" />
                 Export CSV
               </Button>
-              <Button
+              {/* <Button
                 onClick={() => setIsUserAdd(true)}
                 className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
                 style={{ minWidth: '70px' }}
               >
                 <span className="mr-1">+</span>Add Leads
-              </Button>
+              </Button> */}
               <Button
                 onClick={() => { sendMail(selectedRow) }}
                 className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
@@ -522,7 +641,116 @@ const LeadsList = ({ institution: tempInstitution }) => {
             </div>
           </div>
         </div>
-        {isUserAdd && (
+        {sendmail && (
+          <div className="popup-overlay">
+            <div className="popup-content">
+              <button className="close-button" onClick={handleCloseMember}>×</button>
+              <h2 className="text-[2.2rem] K2D font-[400]">Mail Templates List</h2>
+              <main>
+                <div className="flex justify-between">
+                  <Button
+                    className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                    style={{ minWidth: '70px' }}
+                    onClick={addTemplate}
+                  >
+                    <span className="mr-1">+</span> Add New
+                  </Button>
+                  <Button
+                    className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                    style={{ minWidth: '70px' }}
+                    onClick={handleSendMail}
+                  >
+                    Send
+                  </Button>
+                </div>
+                <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[1rem] mb-[1rem] mx-auto custom-scrollbar">
+                  <Table hoverable className="min-w-full">
+                    <Table.Head>
+                        <Table.HeadCell className="w-1/4 text-lg">Template Name</Table.HeadCell>
+                        <Table.HeadCell className="w-1/4 text-lg text-center">Select</Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y divide-gray-200">
+                      {currentTemplates.length > 0 ? (
+                        currentTemplates.map((templateData, index) => (
+                          <Table.Row
+                            key={index}
+                            className="hover:bg-gray-200 cursor-pointer"
+                          >
+                            <Table.Cell className="p-4 text-sm text-gray-900">{templateData}</Table.Cell>
+                            <Table.Cell className="text-center text-sm text-gray-900">
+                              <input
+                                type="radio"
+                                className="h-[20px] w-[20px] cursor-pointer"
+                                name="selectedTemplate"
+                                onChange={() => handleRadioChange(templateData)}
+                              />
+                            </Table.Cell>
+                          </Table.Row>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="2" className="p-4 text-center text-sm text-gray-500">No templates found</td>
+                        </tr>
+                      )}
+                    </Table.Body>
+                  </Table>
+
+                </section>
+                {addNewValue && (
+                  <div className="popup-overlay">
+                    <div className="popup-content">
+                      <button className="close-button" onClick={handleClosePopup}>×</button>
+                      <h2 className='text-[2.3125rem] K2D font-[600]'>Write a Template</h2>
+                      <div className='m-[2%] flex flex-col gap-5'>
+                        <input
+                          type="text"
+                          placeholder='Name of your template'
+                          className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
+                          value={templateName}
+                          onChange={handleNameOfTemplate}
+                        />
+                        <input
+                          type="text"
+                          placeholder='Subject of your template'
+                          className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
+                          value={templateSubject}
+                          onChange={handleSubjectOfTemplate}
+                        />
+                        <textarea
+                          placeholder='Type the body of your mail here in HTML format'
+                          className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
+                          value={templateContent}
+                          onChange={handleTemplateOnChange}
+                        />
+                      </div>
+                      <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleDoneClick() }}>
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {viewTemplate && (
+                  <div className="popup-overlay">
+                    <div className="popup-content">
+                      <button className="close-button" onClick={handleClosePopup}>×</button>
+                      <h2 className='text-[2.3125rem] K2D font-[600]'>{viewTemplate.name}</h2>
+                      <div className='m-[2%]'>
+                        <p>{viewTemplate.body}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <Pagination
+                  count={Math.ceil(filteredTemplates.length / itemsPerPage)}
+                  page={currentPage}
+                  onChange={paginate}
+                  className="custom-pagination"
+                />
+              </main>
+            </div>
+          </div>
+        )}
+        {/* {isUserAdd && (
           <div className=" absolute top-[12%] flex justify-center items-center w-[85vw] h-[85vh] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
             <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50]" >
               <div className={` ${window.innerWidth > 850 ? 'flex gap-8 justify-center w-full' : 'flex flex-col gap-4 w-full'}`}>
@@ -688,61 +916,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
               </div>
             </form>
           </div>
-        )}
+        )} */}
         {filteredLeads.length === 0 ? (
           <p>Loading...</p>
         ) : (
-          // <table className="w-[100%]">
-          //   <thead className="border-b text-[1.1rem] font-[600] border-[#2e2e2e]">
-          //     <tr>
-          //       <th className="w-1/6 ">Name</th>
-          //       <th className="w-1/6 ">EmailId</th>
-          //       <th className="w-1/6">PhoneNumber</th>
-          //       <th className="w-1/6">Date</th>
-          //       <th className="w-1/6">Device</th>
-          //       <th className="w-1/6">Age</th>
-          //       <th className="w-1/6"></th>
-          //       <th className="w-1/6">
-          //         <input
-          //           type="checkbox"
-          //           className="h-[20px] w-[20px]"
-          //           checked={isAllSelected}
-          //           onChange={() => {
-          //             if (filteredLeads === null) {
-          //               handleSelectAll(leadsData);
-          //             }
-          //             else {
-          //               handleSelectAll(filteredLeads);
-          //             }
-          //           }}
-          //         />
-          //       </th>
-          //     </tr>
-          //   </thead>
-          //   <tbody>
-          //     {currentLeads.map((lead, index) => (
-          //       <tr key={index} className="font-[500]">
-          //         <td className="w-1/6">{lead.name}</td>
-          //         <td className="w-1/6">{lead.emailId}</td>
-          //         <td className="w-1/6">{lead.phoneNumber}</td>
-          //         <td className="w-1/6">{lead.date}</td>
-          //         <td className="w-1/6">{lead.device ? lead.device.join(', ') : lead.device}</td>
-          //         <td className="w-1/6">{lead.age}</td>
-          //         <td className="w-1/6" onClick={() => handleEditUser(lead)}>
-          //           <img src={EditImage} alt="Edit" width="100px" />
-          //         </td>
-          //         <td className="w-1/6">
-          //           <input
-          //             type="checkbox"
-          //             className="h-[20px] w-[20px]"
-          //             checked={selectedRow.includes(lead)}
-          //             onChange={() => handleCheckboxChange(lead)}
-          //           />
-          //         </td>
-          //       </tr>
-          //     ))}
-          //   </tbody>
-          // </table>
           <div className="bg-white max-w-full mx-auto rounded-b-md">
             <div className="overflow-x-auto">
               <Table hoverable className="min-w-full">
