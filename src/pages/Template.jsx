@@ -15,6 +15,7 @@ import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
 import "./Template.css";
 import Context from "../context/Context";
+import {CSVUpload} from '../components/UploadFile/CSVUpload';
 const Template = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
@@ -463,6 +464,13 @@ const Template = () => {
           ...additionalAttributes,
         },
       });
+      if (!CSVFile) {
+        alert("Please select a csv file to upload.");
+        return;
+      }
+      else {
+        CSVUpload(CSVFile,institutionId);
+      }
     } catch (error) {
       console.error("Error uploading logo: ", error);
     }
@@ -547,7 +555,6 @@ const Template = () => {
   };
 
   const handleTestimonialsUpload = async () => {
-    // console.log("AAAAAAAAAAAAAAAAAAAAAA", testimonials);
 
     try {
       let TestimonialBgUrl = null;
@@ -659,11 +666,6 @@ const Template = () => {
     }
   };
 
-
-
-
-
-
   const handleFAQsUpload = async () => {
     try {
       const filledFAQs = faqs.filter(faq => faq.question && faq.answer);
@@ -724,7 +726,6 @@ const Template = () => {
         }
       }
 
-
       for (let i = 0; i < instructors.length; i++) {
         const instructor = instructors[i];
         if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
@@ -768,13 +769,10 @@ const Template = () => {
         }
       }
 
-
-
     } catch (error) {
       console.error("Error uploading instructors: ", error);
     }
   }
-
 
   const handlePolicyUpload = async () => {
     try {
@@ -852,16 +850,19 @@ const Template = () => {
           Footer_Link_2,
           SubscriptionBg: SubscriptionBgUrl,
           InstructorBg: InstructorBgUrl,
-
         },
       });
+      if (!CSVFile) {
+        alert("Please select a csv file to upload.");
+        return;
+      }
+      else {
+        CSVUpload(CSVFile,institutionId);
+      }
     } catch (error) {
       console.error("Error uploading contact: ", error);
     }
   }
-
-
-
 
   const fetchClients = async (institution) => {
     try {
@@ -1023,6 +1024,8 @@ const Template = () => {
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
               selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+              CSVFile={CSVFile}
+              setCSVFile={setCSVFile}
             />}
 
           {currentSection === 1 &&
@@ -1097,7 +1100,7 @@ const Template = () => {
               setSubscriptionBg={setSubscriptionBg}
               InstructorBg={InstructorBg}
               setInstructorBg={setInstructorBg}
-              CSVFile={CSVFile} 
+              CSVFile={CSVFile}
               setCSVFile={setCSVFile}
             />}
         </div>

@@ -8,7 +8,6 @@ import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
@@ -16,15 +15,39 @@ import { Pagination, Dropdown, Flowbite } from "flowbite-react";
 
 const customTheme = {
   dropdown: {
-    floating: {
-      base: "z-10 w-fit divide-y divide-gray-100 rounded-[0] shadow focus:outline-none", // Rounded-[0] applied here
+    "arrowIcon": "ml-2 h-4 w-4",
+    "content": "py-1 focus:outline-none",
+    "floating": {
+      "animation": "transition-opacity",
+      "arrow": {
+        "base": "absolute z-10 h-2 w-2 rotate-45",
+        "style": {
+          "dark": "bg-gray-900 dark:bg-gray-700",
+          "light": "bg-white",
+          "auto": "bg-white dark:bg-gray-700"
+        },
+        "placement": "-4px"
+      },
+      "base": "z-10 w-fit divide-y divide-gray-100 rounded shadow focus:outline-none",
+      "content": "py-1 text-sm text-gray-700 dark:text-gray-200",
+      "divider": "my-1 h-px bg-gray-100 dark:bg-gray-600",
+      "header": "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200",
+      "hidden": "invisible opacity-0",
+      "item": {
+        "container": "",
+        "base": "flex w-full cursor-pointer items-center justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:bg-gray-600 dark:focus:text-white",
+        "icon": "mr-2 h-4 w-4"
+      },
+      "style": {
+        "dark": "bg-gray-900 text-white dark:bg-gray-700",
+        "light": "border border-gray-200 bg-white text-gray-900",
+        "auto": "border border-gray-200 bg-white text-gray-900 dark:border-none dark:bg-gray-700 dark:text-white"
+      },
+      "target": "w-fit"
     },
-    item: {
-      base: "hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]", // Ensure items have rounded-[0] as well
-    },
-  },
+    "inlineWrapper": "flex items-center"
+  }
 };
-
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -77,6 +100,7 @@ const Panel = () => {
       const matches =
         institution.includes(query) ||
         institutionTypes.includes(query) ||
+        crreatedBy.includes(query) ||
         crreatedBy.includes(query);
 
       return matches;
@@ -88,13 +112,41 @@ const Panel = () => {
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
   useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(
+      startIndex + itemsPerPage,
+      filteredClients.length
+    );
+
+    // Get the clients to be displayed on the current page
+    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+
+    // Extract unique institution types from the clients
+    const newInstituteTypes = Array.from(
+      new Set(clientsToDisplay.map(() => userData.institutionType))
+    );
+
+    // Update the state only if there is a change
+    setInstituteTypes((prevTypes) => {
+      const combinedTypes = [...prevTypes, ...newInstituteTypes];
+      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
+
+      // Only update state if there are new types to add
+      if (uniqueCombinedTypes.length !== prevTypes.length) {
+        return uniqueCombinedTypes;
+      } else {
+        return prevTypes;
+      }
+    });
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
+
+  useEffect(() => {
     const newInstituteType = userData.institutionType;
 
     if (!instituteTypes.includes(newInstituteType)) {
       setInstituteTypes((prev) => [...prev, newInstituteType]);
     }
   }, [userData, instituteTypes]);
-
   useEffect(() => {
     const handleResize = () => {
       const max670Hidden = window.innerWidth <= 670;
@@ -331,19 +383,23 @@ const Panel = () => {
       return "";
     }
     // if capital letter is found then split the string and join it with space
+    if (typeof str !== "string") {
+      return "";
+    }
     if (str.match(/[A-Z]/) !== null) {
       return str
         .split(/(?=[A-Z])/)
         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
         .join(" ");
     } else {
-      return str;
+      // Handle cases where str is not a valid string
+      console.error("Invalid input: The input is not a string or is empty.");
+      return ""; // or return str if you want to return the original input
     }
   };
 
   const handleRowClick = (institution, event) => {
     setisMonthlyReport(institution);
-
     // Find the link within the clicked row and trigger a click on it
     const link = event.currentTarget.querySelector(".change-page");
     if (link) {
@@ -947,14 +1003,6 @@ const Panel = () => {
           nextLabel=""
           showIcons
         />
-
-        {/* <div className="flex flex-row gap-2">
-          {selectedRowCount > 0 && (
-            <div className="text-[0.8rem] font-[600] K2D pt-5">
-              {selectedRowCount} Item{selectedRowCount > 1 ? "s" : ""} selected
-            </div>
-          )}
-        </div> */}
       </div>
     </div>
   );

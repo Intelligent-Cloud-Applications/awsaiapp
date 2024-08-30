@@ -163,7 +163,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   }, [subscriptionTypes, countryCodes, provides]);
 
   return (
-    <div className="mx-auto max-w-[850px]" style={{ overflowY: 'auto', maxHeight: '745px' }}>
+    <div className="mx-auto max-w-[850px]" style={{ overflow: 'auto', maxHeight: '705px' }}>
       <h1 className="font-medium text-7xl">SUBSCRIPTION PLANS</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The subscription model shown is just an example of how your given data will look like for the subscription; it will not change on giving your input.**

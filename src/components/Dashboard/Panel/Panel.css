@@ -147,3 +147,8 @@
     width: 70% !important;
   }
 }
+@media screen and (max-width: 1230px) and (min-width: 1008px) {
+  .flowbite-table,.upper-section {
+    width: 70% !important;
+  }
+}

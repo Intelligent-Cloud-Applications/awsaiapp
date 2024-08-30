@@ -198,6 +198,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
                   className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
                   onFocus={() => toggleActiveTestimonial(index)}
                   onBlur={() => toggleActiveTestimonial(null)}
+                  maxLength="20"
                 />
                 {/* Name line container */}
                 <div
