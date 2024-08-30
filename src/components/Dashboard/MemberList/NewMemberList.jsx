@@ -6,12 +6,10 @@ import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { API } from 'aws-amplify';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
 import { CSVUpload } from '../../UploadFile/CSVUpload';
-import * as XLSX from "xlsx";
-
+import { handleExportExcel } from '../../UploadFile/DownloadCsvButton';
 
 function NewMemberList({ institution: tempInstitution }) {
   const [members, setMembers] = useState([]);
@@ -285,80 +283,13 @@ function NewMemberList({ institution: tempInstitution }) {
     );
   };
 
-  function handleExportExcel() {
-    let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
-    } else {
-      institution = userData.institutionName || tempInstitution;
-    }
-    const instituteName = institution;
-    const filteredData = members.filter((member) => {
-      if (filter === 'All') return true;
-      if (filter === 'Active') return member.status === 'Active';
-      if (filter === 'Inactive') return member.status !== 'Active';
-      return true;
-    });
-  
-    const excelData = filteredData.map((member) => {
-      const phoneNumber = member.phoneNumber ? parsePhoneNumberFromString(member.phoneNumber)?.formatInternational() : '';
-  
-      return {
-        Name: member.userName,
-        Email: member.emailId,
-        Phone: phoneNumber,
-        JoiningDate: formatEpochToReadableDate(member.joiningDate),
-        Country: member.country,
-        Attendance: member.zpoints || 0,
-        Status: member.status,
-        Due: member.balance,
-        Product: member.product,
-      };
-    });
-  
-    const ws = XLSX.utils.json_to_sheet(excelData, { header: [
-      "Name",
-      "Email",
-      "Phone",
-      "JoiningDate",
-      "Country",
-      "Attendance",
-      "Status",
-      "Due",
-      "Product"
-    ]});
-  
-    // Auto adjust column width
-    const wscols = [
-      { wpx: 120 }, // Name
-      { wpx: 170 }, // Email
-      { wpx: 100 }, // Phone
-      { wpx: 120 }, // Joining Date
-      { wpx: 100 }, // Country
-      { wpx: 100 }, // Attendance
-      { wpx: 100 }, // Status
-      { wpx: 100 }, // Due
-      { wpx: 120 }, // Product
-    ];
-  
-    ws['!cols'] = wscols;
-  
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Members List");
-  
-    // Constructing the file name
-    const fileName = `${instituteName} Members List - ${filter} - ${filteredData.length}.xlsx`;
-  
-    XLSX.writeFile(wb, fileName);
-  }
 
   const handleNameClick = (member) => {
     setSelectedMemberDetails(member);
     setIsModalOpen(true);
   };
 
-
-//upload csv
+  //upload csv
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -479,7 +410,7 @@ function NewMemberList({ institution: tempInstitution }) {
               />
             </Button>
             <Button
-              onClick={handleExportExcel}
+              onClick={() => handleExportExcel(user, userData, tempInstitution, members, filter)}
               className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
               style={{ minWidth: '70px' }}
             >
