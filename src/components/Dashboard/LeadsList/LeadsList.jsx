@@ -596,7 +596,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   return (
     <div>
       {/* <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2> */}
-      <main className=" ml-3">
+      <main>
         <div className="mt-5">
           <div className="flex items-center justify-between bg-white px-5 rounded-t-md">
             {/* Center: Search Bar */}
