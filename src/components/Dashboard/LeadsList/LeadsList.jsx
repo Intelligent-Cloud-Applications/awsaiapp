@@ -712,7 +712,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       )}
                     </Table.Body>
                   </Table>
-
                 </section>
                 {addNewValue && (
                   <div className="popup-overlay">
@@ -956,13 +955,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       }}
                     />
                   </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Date</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Device</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Age</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Name</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Email</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Phone Number</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Date</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Device</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Age</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">View</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
                   {currentLeads.map((lead, index) => (
@@ -981,7 +980,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={() => handleCheckboxChange(lead)}
                         />
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-700 hover:underline text-center bg-white">
                         {lead.name}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
