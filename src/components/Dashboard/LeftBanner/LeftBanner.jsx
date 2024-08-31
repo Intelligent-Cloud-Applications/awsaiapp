@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Sidebar, Flowbite, Button } from "flowbite-react";
+import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
-import { HiChartPie, HiShoppingBag, HiInbox, HiPencil } from "react-icons/hi";
+import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
 import context from "../../../context/Context";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./LeftBanner.css";
 
 const customTheme = {
@@ -20,10 +20,6 @@ const LeftBanner = ({ displayAfterClick }) => {
   const Ctx = useContext(context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const institutionNames = queryParams.get("institution");
 
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
@@ -140,27 +136,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Leads
                       </span>
                     </Sidebar.Item>
-                    {/* Divider for large screens */}
-                    <div className="hidden lg:block w-full border-t-2 border-gray-500 my-4"></div>
-                    {/* Customise Website Button */}
-                    <button
-                      onClick={() => {
-                        navigate({
-                          pathname: '/full',
-                          search: `?institutionName=${institutionNames}`,
-                        });
-                      }}
-                      className={`custom-sidebar-item bg-blue-600 text-white px-4 py-2 mt-2 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-all duration-150 ease-in-out `}
-                    >
-                      {/* Show pencil icon on smaller screens */}
-                      <span className="lg:hidden">
-                        <HiPencil />
-                      </span>
-                      {/* Show full text on larger screens */}
-                      <span className="hidden lg:inline font-[Poppins] text-base">
-                        Edit Website
-                      </span>
-                    </button>
                   </>
                 )}
               </Sidebar.ItemGroup>

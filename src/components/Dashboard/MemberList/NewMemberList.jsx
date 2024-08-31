@@ -110,12 +110,16 @@ function NewMemberList({ institution: tempInstitution }) {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
-      return `${year}-${month}-${day}`;
+      return `${day}-${month}-${year}`;
     }
     return '';
   }
 
   const startIndex = (currentPage - 1) * membersPerPage;
+  useEffect(() => {
+    setCurrentPage(1);  // Reset to the first page when search query or filter changes
+  }, [searchQuery, filter]);
+
   const filteredMembers = members.filter(member => {
     const matchesSearchQuery = (
       member.userName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,6 +131,7 @@ function NewMemberList({ institution: tempInstitution }) {
     if (filter === 'Active') return member.status === 'Active' && matchesSearchQuery;
     return member.status !== 'Active' && matchesSearchQuery;
   });
+
 
   const selectedMembers = filteredMembers.slice(startIndex, startIndex + membersPerPage);
   const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
@@ -299,7 +304,7 @@ function NewMemberList({ institution: tempInstitution }) {
     }
   };
 
-  const handleCSVFile = (e) => {
+  const handleCSVFile = async (e) => {
     const file = e.target.files[0];
     let institution;
     if (user.profile.institutionName === "awsaiapp") {
@@ -307,14 +312,23 @@ function NewMemberList({ institution: tempInstitution }) {
     } else {
       institution = userData.institutionName || tempInstitution;
     }
+
     fetchData(institution); // Pass institution to fetchData
     if (file) {
-      const fileNameForBucket = "leadList";
-      CSVUpload(file, institution, fileNameForBucket);
+      try {
+        util.setLoader(true); // Set loader to true before uploading
+        const fileNameForBucket = "memberlist";
+        await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      } finally {
+        util.setLoader(false); // Set loader to false after uploading, whether success or failure
+      }
     } else {
       console.error("No file selected.");
     }
   };
+
 
   // Utility function to censor email
   const censorEmail = (email) => {
@@ -344,6 +358,26 @@ function NewMemberList({ institution: tempInstitution }) {
 
     return `${countryCode}${visibleStart}${censoredMiddle}${visibleEnd}`;
   }
+  //custom theme for pagination
+  const customTheme = {
+    pages: {
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
+  };
 
 
   return (
@@ -386,7 +420,7 @@ function NewMemberList({ institution: tempInstitution }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Quick search for anything"
+                placeholder="Quick search Members"
                 required
               />
             </div>
@@ -502,6 +536,8 @@ function NewMemberList({ institution: tempInstitution }) {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
             className="flex justify-end"
+            showIcons
+            theme={customTheme}
           />
         </div>
       </div>
