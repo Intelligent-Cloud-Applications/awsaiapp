@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from "react";
 import NewMemberList from './NewMemberList';
 import ButtonGroup from '../../../Common/DashboardNav/ButtonGroup';
 import Navbar from '../../Home/Navbar';
 import ClientsProfile from '../ClientsHome/ClientsProfile';
+import Context from "../../../context/Context";
 
-const Index = () => {
+const Index = ({ institution: tempInstitution }) => {
+  const {  user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
-
+  let institution
+  if (user.profile.institutionName === "awsaiapp") {
+    institution = userData.institutionName;
+  } else {
+    institution = userData.institutionName || tempInstitution;
+  }
   const renderContent = () => {
     switch (activeTab) {
       // case 'economy':
@@ -16,7 +23,7 @@ const Index = () => {
       // case 'leads':
       //   return <LeadsComponent />;
       case 'client':
-        return <ClientsProfile />;
+        return <ClientsProfile institution={institution}/>;
       default:
         return null;
     }
@@ -27,10 +34,10 @@ const Index = () => {
       <div className="p-4">
         <Navbar />
         <div className="flex flex-col items-center w-full">
-        <div className="fixed mt-20 ml-[19.7rem] z-10 w-full ">
+        <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
           <ButtonGroup onTabChange={setActiveTab} />
         </div>
-        <div className="mt-[8rem] w-full">
+        <div className="mt-[8rem] w-full ">
           {renderContent()}
         </div>
       </div>
