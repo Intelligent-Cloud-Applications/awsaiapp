@@ -598,12 +598,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
       {/* <h2 className="text-[2.3125rem] K2D font-[600]">Leadslist</h2> */}
       <main className=" ml-3">
         <div className="mt-5">
-          <div className="flex items-center justify-between bg-white h-11 px-5 rounded-t-md">
+          <div className="flex items-center justify-between bg-white px-5 rounded-t-md">
             {/* Center: Search Bar */}
-            <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
+            <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md m-1">
               <div className="relative w-full">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <FiSearch className="w-5 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+                  <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
                 </div>
                 <input
                   type="search"
@@ -999,16 +999,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         {lead.age}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
-                        style={{ width: '24px' }}
+                        style={{ width: '18px' }}
                         onClick={() => handleEditUser(lead)}>
-                        <img src={EditImage} alt="Edit" width="100px" />
+                        <img src={EditImage} alt="Edit" height={'30px'} />
                       </Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>
               </Table>
             </div>
-            <div className="py-2 flex justify-between items-center px-4">
+            <div className="flex justify-between items-center px-4">
               <div className="text-sm text-gray-600">
                 Showing <strong>{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredLeads.length)}</strong> of <strong>{filteredLeads.length}</strong>
               </div>
