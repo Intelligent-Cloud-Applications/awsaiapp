@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import NewMemberList from './NewMemberList';
 import ButtonGroup from '../../../Common/DashboardNav/ButtonGroup';
 import Navbar from '../../Home/Navbar';
