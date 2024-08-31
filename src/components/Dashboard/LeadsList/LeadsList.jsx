@@ -312,6 +312,34 @@ const LeadsList = ({ institution: tempInstitution }) => {
   //   }
   // };
 
+  const censorEmail = (email) => {
+    const [name, domain] = email.split('@');
+    const censoredName = name.slice(0, 3) + 'xxxxxx';
+    return `${censoredName}@${domain}`;
+  };
+
+  // Utility function to censor phone number
+  const censorPhoneNumber = (phone) => {
+    if (!phone) return 'Phone Number Not Available';
+
+    // Identify the length of the country code (usually 1-3 digits)
+    const countryCodeMatch = phone.match(/^\d{1,3}/);
+    if (!countryCodeMatch) return 'Invalid Phone Number';
+
+    const countryCode = countryCodeMatch[0];
+    const numberWithoutCountryCode = phone.slice(countryCode.length);
+
+    if (numberWithoutCountryCode.length < 3) {
+      return 'Invalid Phone Number';
+    }
+
+    const visibleStart = numberWithoutCountryCode.slice(0, 2);
+    const visibleEnd = numberWithoutCountryCode.slice(-1);
+    const censoredMiddle = 'x'.repeat(numberWithoutCountryCode.length - 3);
+
+    return `${countryCode}${visibleStart}${censoredMiddle}${visibleEnd}`;
+  }
+
   const handleEditUser = (user) => {
     setId(user.emailId);
     setEditUser(user);
@@ -501,11 +529,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
       return {
         serialno: index + 1,
-        Date: escapeQuotes(lead.date),
-        campaign_name: escapeQuotes(lead.campaignName),
-        adset_name: escapeQuotes(lead.adsetName),
-        ad_name: escapeQuotes(lead.adName),
-        form_name: escapeQuotes(lead.formName),
         platform: escapeQuotes(lead.platform),
         Age: escapeQuotes(lead.age),
         "which_device_can_you_use_for_online_fitness_classes?": escapeQuotes(deviceString),
@@ -518,14 +541,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
     });
 
     const csvContent = [
-      ["Serial No", "Created_Date", "campaign_name", "adset_name", "ad_name", "form_name", "platform", "Age", "which_device_can_you_use_for_online_fitness_classes?", "Name", "EmailId", "PhoneNumber", "City", "Gender"],
+      ["Serial No", "platform", "Age", "which_device_can_you_use_for_online_fitness_classes?", "Name", "EmailId", "PhoneNumber", "City", "Gender"],
       ...csvData.map(lead => [
         lead.serialno,
-        lead.Date,
-        lead.campaign_name,
-        lead.adset_name,
-        lead.ad_name,
-        lead.form_name,
         lead.platform,
         lead.Age,
         lead["which_device_can_you_use_for_online_fitness_classes?"],
@@ -666,8 +684,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[1rem] mb-[1rem] mx-auto custom-scrollbar">
                   <Table hoverable className="min-w-full">
                     <Table.Head>
-                        <Table.HeadCell className="w-1/4 text-lg">Template Name</Table.HeadCell>
-                        <Table.HeadCell className="w-1/4 text-lg text-center">Select</Table.HeadCell>
+                      <Table.HeadCell className="w-1/4 text-lg">Template Name</Table.HeadCell>
+                      <Table.HeadCell className="w-1/4 text-lg text-center">Select</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y divide-gray-200">
                       {currentTemplates.length > 0 ? (
@@ -967,10 +985,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         {lead.name}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.emailId}
+                        {censorEmail(lead.emailId)}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.phoneNumber}
+                        {censorPhoneNumber(lead.phoneNumber)}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {lead.date}
