@@ -5,7 +5,8 @@
 
 .custom-pagination {
     margin-left: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     justify-content: start !important;
     padding-bottom: 0.7rem;
 }
