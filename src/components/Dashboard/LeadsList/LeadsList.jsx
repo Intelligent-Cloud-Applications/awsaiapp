@@ -62,9 +62,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
-  const filteredTemplates = templateData.filter(templateData =>
-    templateData && templateData.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  const filteredTemplates = Array.isArray(templateData) ? templateData.filter(template => {
+    // Ensure `template` is not null and has a property you want to search
+    return template && template.propertyName && template.propertyName.toLowerCase().includes(searchInput.toLowerCase());
+  }) : [];
   const indexOfLastLeadmail = currentPage * itemsPerPage;
   const indexOfFirstLeadmail = indexOfLastLeadmail - itemsPerPage;
   const currentTemplates = filteredTemplates.slice(indexOfFirstLeadmail, indexOfLastLeadmail);

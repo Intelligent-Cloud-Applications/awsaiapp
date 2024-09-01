@@ -368,6 +368,8 @@ const Panel = () => {
       return "success";
     } else if (status === "InActive") {
       return "failure";
+    }else if (status === "Pending") {
+      return "warning";
     } else {
       return "indigo";
     }
@@ -407,7 +409,7 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-10rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
       <ToastContainer />
       <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
@@ -628,19 +630,19 @@ const Panel = () => {
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
               {/* <Table.HeadCell></Table.HeadCell> */}
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[20px]">
                 Institution
               </Table.HeadCell>
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[20px]">
                 Type
               </Table.HeadCell>
-              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
                 Status
               </Table.HeadCell>
               {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-              <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[20px]">
                 Members
               </Table.HeadCell>
               {/* <Table.HeadCell
@@ -653,18 +655,18 @@ const Panel = () => {
               <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                } uppercase font-semibold text-[20px]`}
               >
                 Created By
               </Table.HeadCell>
               <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                } uppercase font-semibold text-[20px]`}
               >
                 Leads
               </Table.HeadCell>
-              <Table.HeadCell className="more uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="more uppercase font-semibold text-[20px]">
                 More
               </Table.HeadCell>
             </Table.Head>
