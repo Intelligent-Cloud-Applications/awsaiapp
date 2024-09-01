@@ -469,7 +469,8 @@ const Template = () => {
         return;
       }
       else {
-        CSVUpload(CSVFile,institutionId);
+        const fileNameForBucket = "memberList";
+        CSVUpload(CSVFile,institutionId,fileNameForBucket);
       }
     } catch (error) {
       console.error("Error uploading logo: ", error);
@@ -852,13 +853,6 @@ const Template = () => {
           InstructorBg: InstructorBgUrl,
         },
       });
-      if (!CSVFile) {
-        alert("Please select a csv file to upload.");
-        return;
-      }
-      else {
-        CSVUpload(CSVFile,institutionId);
-      }
     } catch (error) {
       console.error("Error uploading contact: ", error);
     }
@@ -1100,8 +1094,6 @@ const Template = () => {
               setSubscriptionBg={setSubscriptionBg}
               InstructorBg={InstructorBg}
               setInstructorBg={setInstructorBg}
-              CSVFile={CSVFile}
-              setCSVFile={setCSVFile}
             />}
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
