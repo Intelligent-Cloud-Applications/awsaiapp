@@ -81,7 +81,7 @@ const ClientsProfile = ({ institution }) => {
   }
 
   return (
-    <div className="mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] transform transition duration-500 hover:scale-105 hover:shadow-xl w-[70vw]">
+    <div className="mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw]">
       <div className="sm:w-1/3 bg-gradient-to-br from-[#30afbc] to-[#64d5db] p-10 flex flex-col items-center justify-center">
         <div className="h-40 w-40 rounded-full border-4 border-white bg-white flex items-center justify-center shadow-lg">
           <img
