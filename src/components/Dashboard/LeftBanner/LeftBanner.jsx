@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
-import context from "../../../context/Context";
+// import context from "../../../context/Context";
 import { Link } from "react-router-dom";
 import "./LeftBanner.css";
 
