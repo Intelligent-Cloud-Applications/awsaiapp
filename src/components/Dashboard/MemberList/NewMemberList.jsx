@@ -379,7 +379,6 @@ function NewMemberList({ institution: tempInstitution }) {
     }
   };
 
-
   return (
     <>
       <div className="mt-5">
