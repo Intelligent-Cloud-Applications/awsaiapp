@@ -1,9 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import NewMemberList from './NewMemberList';
 import ButtonGroup from '../../../Common/DashboardNav/ButtonGroup';
 import Navbar from '../../Home/Navbar';
 import ClientsProfile from '../ClientsHome/ClientsProfile';
 import Context from "../../../context/Context";
+import LeadsList from "../LeadsList/LeadsList";
 
 const Index = ({ institution: tempInstitution }) => {
   const {  user, userData } = useContext(Context);
@@ -20,8 +21,8 @@ const Index = ({ institution: tempInstitution }) => {
       //   return <EconomyComponent />;
       case 'members':
         return <NewMemberList />;
-      // case 'leads':
-      //   return <LeadsComponent />;
+      case 'leads':
+        return <LeadsList />;
       case 'client':
         return <ClientsProfile institution={institution}/>;
       default:
