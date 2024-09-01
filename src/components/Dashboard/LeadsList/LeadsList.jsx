@@ -962,6 +962,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Device</Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Age</Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">View</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-700 uppercase"></Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
                   {currentLeads.map((lead, index) => (
@@ -980,7 +981,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={() => handleCheckboxChange(lead)}
                         />
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-700 hover:underline text-center bg-white">
+                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
                         {lead.name}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -1019,7 +1020,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 className="custom-pagination"
               />
             </div>
-
           </div>
         )}
         {isEditUser && (
