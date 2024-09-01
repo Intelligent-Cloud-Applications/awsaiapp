@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
-import context from "../../../context/Context";
 import { Link } from "react-router-dom";
 import "./LeftBanner.css";
 
@@ -17,7 +17,7 @@ const customTheme = {
 const LeftBanner = ({ displayAfterClick }) => {
   const { userData } = useContext(Context);
   const [click, setClick] = useState(0);
-  const Ctx = useContext(context);
+  const Ctx = useContext(Context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
 
