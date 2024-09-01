@@ -37,15 +37,15 @@ function Company({
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
   };
-  
+
   const handleColorChange2 = (e) => {
     setSecondaryColor(e.target.value);
   };
-  
+
   const handleColorChange3 = (e) => {
     setLightPrimaryColor(e.target.value);
   };
-  
+
   const handleColorChange4 = (e) => {
     setLightestPrimaryColor(e.target.value);
   };
@@ -80,16 +80,7 @@ function Company({
 
   const handleCSVFlie = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setCSVFile(file);
-    }
+    setCSVFile(file);
   }
   const shortenFileName1 = (file) => {
     if (!file || !file.name) return '';

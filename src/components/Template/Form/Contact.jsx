@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg, CSVFile, setCSVFile }) {
+function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg }) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
   //   phoneNumber: '',
@@ -47,19 +47,19 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
       setInstructorBg(file);
     }
   };
-  const handleCSVFlie = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setCSVFile(file);
-    }
-  }
+  // const handleCSVFlie = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const fileSizeMB = file.size / (1024 * 1024);
+  //     if (fileSizeMB > 4) {
+  //       alert("File size exceeds 4MB. Please choose a smaller file.");
+  //       return;
+  //     }
+  //   }
+  //   if (file) {
+  //     setCSVFile(file);
+  //   }
+  // }
   const shortenFileName1 = (file) => {
     if (!file || !file.name) return '';
     const maxLength = 15;
@@ -187,7 +187,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           </div>
         </label>
       </div>
-      <div className="relative flex items-center mt-4 ">
+      {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
         <input
@@ -232,7 +232,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
       </div>
       <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
         ( *Upload a .csv file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
-      </p>
+      </p> */}
     </div>
   );
 }

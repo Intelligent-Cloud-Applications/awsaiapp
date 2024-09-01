@@ -31,7 +31,7 @@ const New_Full = () => {
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
+      // if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
         try {
           if (!loaderInitialized) {
             // Check if loader is false and not initialized
@@ -69,7 +69,7 @@ const New_Full = () => {
           util.setLoader(false);
         }
       }
-    };
+    // };
 
     fetchData();
   }, [
@@ -1767,7 +1767,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               details as needed.
             </p>
           </div>
-          <h1 className="font-bold text-black mt-8">Hero Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Hero Section</h1>
           <div className="lg:px-[180px] md:px-[150px] sm:px-4">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
@@ -2128,7 +2128,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
 
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Services Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Services Section</h1>
           <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
@@ -2336,7 +2336,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
 
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Testimonial Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Testimonial Section</h1>
           <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
@@ -2471,9 +2471,9 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
 
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Subscription Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Subscription Section</h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
             <div id="fileUpload" className="max-w-md relative">
               <div className="mb-2 block">
                 <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
@@ -2705,9 +2705,9 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
 
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Instructor Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Instructor Section</h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
             <div id="fileUpload" className="max-w-md relative">
               <div className="mb-2 block">
                 <Label htmlFor="InstructorBg" value="InstructorBg" />
@@ -2861,7 +2861,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         </div>
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">FAQ Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">FAQ Section</h1>
           {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
             <div
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
@@ -2953,9 +2953,9 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         </div>
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Policy Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Policy Section</h1>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
             <div id="fileUpload" className="max-w-md relative">
               <div className="mb-2 block">
                 <Label htmlFor="AboutUsBg" value="AboutUsBg" />
@@ -3354,7 +3354,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
 
         <hr className="w-full border-t border-[#D1D5DB] mt-10" />
         <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8">Contact Section</h1>
+          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Contact Section</h1>
           <div className="lg:px-[180px] md:px-[150px] sm:px-4">
             <div className="flex flex-col gap-4 ">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
@@ -3530,7 +3530,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           </button>
           <button
             onClick={saveChanges}
-            className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg"
+            className="bg-[#3c919b] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg"
           >
             Save
           </button>{" "}
