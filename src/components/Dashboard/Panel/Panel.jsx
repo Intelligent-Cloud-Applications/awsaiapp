@@ -100,7 +100,6 @@ const Panel = () => {
       const matches =
         institution.includes(query) ||
         institutionTypes.includes(query) ||
-        crreatedBy.includes(query) ||
         crreatedBy.includes(query);
 
       return matches;

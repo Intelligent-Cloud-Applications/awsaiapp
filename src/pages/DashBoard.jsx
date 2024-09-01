@@ -102,7 +102,7 @@ const DashBoard = () => {
         {Ctx.userData.userType === "admin" &&
           Ctx.userData.institutionName !== "awsaiapp" && (
             <>
-              <div className="mt-20 mb-4 lg:hidden">
+              <div className="fixed left-10 mt-20 mb-4 lg:hidden">
                 <IoMdArrowRoundBack
                   onClick={() => {
                     navigate(-2);
