@@ -417,6 +417,10 @@ const Panel = () => {
     }
   };
 
+  const handleDropdownChange = (clientId, status) => {
+
+  };
+
   return (
     <div className="w-screen flex flex-col justify-center items-center mt-[-10rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
       <ToastContainer />
@@ -659,6 +663,9 @@ const Panel = () => {
               <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
                 Status
               </Table.HeadCell>
+              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
+                Is Delivered
+              </Table.HeadCell>
               {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
@@ -694,7 +701,6 @@ const Panel = () => {
                 <Table.Row
                   key={client.institution}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                  onClick={(e) => handleRowClick(client.institution, e)}
                 >
                   {/* Checkbox */}
                   {/* <Table.Cell className="px-4 py-2">
@@ -719,7 +725,9 @@ const Panel = () => {
                     </label>
                   </Table.Cell> */}
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900"
+                    onClick={(e) => handleRowClick(client.institution, e)}
+                  >
                     <Link
                       to={`/Dashboard?institution=${client.institutionid}`}
                       onClick={(e) => {
@@ -756,6 +764,18 @@ const Panel = () => {
                       ? `$${client.recentMonthIncome}`
                       : `₹${client.recentMonthIncome}`}
                   </Table.Cell> */}
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
+                    <div className="flex items-center justify-center">
+                      <select
+                        value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                        onChange={(e) => handleDropdownChange(client.id, e.target.value)}
+                        className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                      >
+                        <option value="Not Delivered">Not Delivered</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </div>
+                  </Table.Cell>
 
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.recentMonthMembers}
