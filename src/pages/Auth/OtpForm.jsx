@@ -44,7 +44,7 @@ const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
             <h2 className='font-bold text-2xl'>Login/Signup</h2>
            
           <p className='text-center w-64'>{
-            'Please enter the otp to finish your login process'
+            'Please enter the otp to finish your login process Otp is send to number'
           }</p>
     <form
       onSubmit={handler}
