@@ -59,8 +59,6 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  // console.log(clientsData);
-  // console.log(userData);
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -81,6 +79,7 @@ const Panel = () => {
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
+  const Ctx = useContext(Context);
 
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
@@ -194,10 +193,19 @@ const Panel = () => {
   // const isRowSelected = (institution) => {
   //   return selectedRow.includes(institution);
   // };
+  const useDataForSales = Ctx.saleData || [];
 
-  // This is for the client panel demo data
-  let createdBy = ["Madan", "Bikash", "Sai", "Madan", "Sai", "Bikash"];
-  // For removing unused functions
+  const getUsernameByCognitoId = (cognitoId) => {
+    console.log("useDataForSales array:", useDataForSales); // Check the data structure
+    console.log("Looking for Cognito ID:", cognitoId);
+  
+    // Use trim() to handle any leading or trailing whitespace
+    const user = useDataForSales.find(user => user.cognitoId.trim() === String(cognitoId).trim());
+  
+    console.log("Found user:", user); // Log the found user or undefined
+    return user ? user.userName : 'Unknown';
+  };
+  
   if (1 < 0) {
     setShowHiddenContent(true);
     setTotalLeads(0);
@@ -209,8 +217,6 @@ const Panel = () => {
     userCheck === 0 && setUserCheck(1);
   }
 
-  // const filteredClients = filterClients();
-  // console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -241,7 +247,6 @@ const Panel = () => {
     return formattedDate;
   }
   const location = useLocation();
-  // console.log("path", location.pathname);
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -666,6 +671,9 @@ const Panel = () => {
               <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
                 Is Delivered
               </Table.HeadCell>
+              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
+                Payment
+              </Table.HeadCell>
               {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
@@ -702,29 +710,6 @@ const Panel = () => {
                   key={client.institution}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
                 >
-                  {/* Checkbox */}
-                  {/* <Table.Cell className="px-4 py-2">
-                    <label className="relative">
-                      <input
-                        type="checkbox"
-                        className="hidden"
-                        onChange={() =>
-                          handleCheckboxChange(client.institution)
-                        }
-                        checked={isRowSelected(client.institution)}
-                      />
-                      <div className="absolute w-4 h-4 border-2 border-gray-400 cursor-pointer">
-                        {isRowSelected(client.institution) && (
-                          <img
-                            src={Select}
-                            alt="Selected"
-                            className="w-full h-full"
-                          />
-                        )}
-                      </div>
-                    </label>
-                  </Table.Cell> */}
-
                   <Table.Cell className="px-4 py-2 font-semibold text-gray-900"
                     onClick={(e) => handleRowClick(client.institution, e)}
                   >
@@ -759,11 +744,6 @@ const Panel = () => {
                       );
                     })()}
                   </Table.Cell>
-                  {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
-                    {client.country === "USA"
-                      ? `$${client.recentMonthIncome}`
-                      : `₹${client.recentMonthIncome}`}
-                  </Table.Cell> */}
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
                     <div className="flex items-center justify-center">
                       <select
@@ -778,22 +758,18 @@ const Panel = () => {
                   </Table.Cell>
 
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
+                    {client.payment ? "Paid" : "Not Paid"}
+                  </Table.Cell>
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.recentMonthMembers}
                   </Table.Cell>
-
-                  {/* <Table.Cell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
-                  >
-                    {client.recentMonthAttendance}
-                  </Table.Cell> */}
-
                   <Table.Cell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"} px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
                   >
-                    {createdBy[index]}
+                    {/* {client.createdBy} */}
+                    {client.createdBy
+                      ? getUsernameByCognitoId(client.createdBy)
+                      : 'Unknown'} {/* Fallback for undefined createdBy */}
                   </Table.Cell>
                   <Link
                     to={`/Dashboard?institution=${client.institution}`}
