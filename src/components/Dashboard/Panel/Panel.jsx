@@ -363,15 +363,26 @@ const Panel = () => {
   //   setCountry(userToUpdate[1].country);
   //   setIsUpdateFormVisible(true);
   // };
-  const getColor = (status) => {
-    if (status === "Active") {
-      return "success";
-    } else if (status === "InActive") {
-      return "failure";
+  const getBadgeProps = (web, payment, delivered) => {
+    let text, color;
+
+    if (web) {
+      if (payment && delivered) {
+        text = "Active";
+        color = "success"; // Yellow color for Pending status  
+      } else {
+        text = "Pending";
+        color = "warning"; // Green color for Active status
+      }
     } else {
-      return "indigo";
+      text = "InActive";
+      color = "failure"; // Red color for InActive status
     }
+
+    return { text, color };
   };
+
+  // Inside your component
 
   // const handleMoreClick = () => {
   //   setShowHiddenContent(!showHiddenContent);
@@ -406,8 +417,12 @@ const Panel = () => {
     }
   };
 
+  const handleDropdownChange = (clientId, status) => {
+
+  };
+
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
+    <div className="w-screen flex flex-col justify-center items-center mt-[-10rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
       <ToastContainer />
       <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
@@ -594,6 +609,17 @@ const Panel = () => {
                   <input
                     type="radio"
                     name="memberStatus"
+                    value="Pending"
+                    className="ml-3"
+                    checked={status === "Pending"}
+                    onChange={() => setStatus("Pending")}
+                  />
+                  <p className="text-[#ff1010d9]">Pending</p>
+                </div>
+                <div className="flex justify-center items-center space-x-1">
+                  <input
+                    type="radio"
+                    name="memberStatus"
                     value="comingSoon"
                     className="ml-3"
                     checked={status === "comingSoon"}
@@ -624,23 +650,26 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto w-full mb-4 max-h-[400px] md:max-h-[400px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
               {/* <Table.HeadCell></Table.HeadCell> */}
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[20px]">
                 Institution
               </Table.HeadCell>
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className=" uppercase font-semibold text-[20px]">
                 Type
               </Table.HeadCell>
-              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
                 Status
+              </Table.HeadCell>
+              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[20px]">
+                Is Delivered
               </Table.HeadCell>
               {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-              <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[20px]">
                 Members
               </Table.HeadCell>
               {/* <Table.HeadCell
@@ -651,20 +680,18 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
               <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[20px]`}
               >
                 Created By
               </Table.HeadCell>
               <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[20px]`}
               >
                 Leads
               </Table.HeadCell>
-              <Table.HeadCell className="more uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="more uppercase font-semibold text-[20px]">
                 More
               </Table.HeadCell>
             </Table.Head>
@@ -674,7 +701,6 @@ const Panel = () => {
                 <Table.Row
                   key={client.institution}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                  onClick={(e) => handleRowClick(client.institution, e)}
                 >
                   {/* Checkbox */}
                   {/* <Table.Cell className="px-4 py-2">
@@ -699,16 +725,18 @@ const Panel = () => {
                     </label>
                   </Table.Cell> */}
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900"
+                    onClick={(e) => handleRowClick(client.institution, e)}
+                  >
                     <Link
-                      to={`/Dashboard?institution=${client.institution}`}
+                      to={`/Dashboard?institution=${client.institutionid}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handlePersonIconClick(client.institution);
+                        handlePersonIconClick(client.institutionid);
                       }}
                     >
                       <div className="email-hover uppercase font-semibold text-[#11192B]">
-                        {client.institution}
+                        {client.institutionid}
                       </div>
                     </Link>
                   </Table.Cell>
@@ -718,20 +746,36 @@ const Panel = () => {
                   </Table.Cell>
 
                   <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
-                    <Badge
-                      color={getColor(client.status)}
-                      size="sm"
-                      className="flex justify-center items-center"
-                    >
-                      {client.status}
-                    </Badge>
+                    {(() => {
+                      const { text, color } = getBadgeProps(client.isFormFilled, client.payment, client.isDelivered);
+                      return (
+                        <Badge
+                          color={color}
+                          size="sm"
+                          className="flex justify-center items-center"
+                        >
+                          {text}
+                        </Badge>
+                      );
+                    })()}
                   </Table.Cell>
-
                   {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
                     {client.country === "USA"
                       ? `$${client.recentMonthIncome}`
                       : `₹${client.recentMonthIncome}`}
                   </Table.Cell> */}
+                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
+                    <div className="flex items-center justify-center">
+                      <select
+                        value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                        onChange={(e) => handleDropdownChange(client.id, e.target.value)}
+                        className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                      >
+                        <option value="Not Delivered">Not Delivered</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </div>
+                  </Table.Cell>
 
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.recentMonthMembers}
@@ -746,9 +790,8 @@ const Panel = () => {
                   </Table.Cell> */}
 
                   <Table.Cell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
                   >
                     {createdBy[index]}
                   </Table.Cell>
@@ -761,9 +804,8 @@ const Panel = () => {
                     className="hidden change-page"
                   ></Link>
                   <div
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
                     <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
@@ -771,7 +813,7 @@ const Panel = () => {
                   </div>
                   <Table.Cell
                     className="more"
-                    // onClick={handleMoreClick}
+                  // onClick={handleMoreClick}
                   >
                     <Link
                       to={`/Dashboard?institution=${client.institution}`}

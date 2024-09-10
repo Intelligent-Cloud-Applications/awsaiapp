@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
@@ -20,6 +19,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const Ctx = useContext(Context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
+  const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
 
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
@@ -63,15 +63,20 @@ const LeftBanner = ({ displayAfterClick }) => {
                     <Sidebar.Item
                       icon={HiShoppingBag}
                       onClick={() => {
-                        setClick(1);
-                        displayAfterClick(1);
+                        if (isSalesUser) {
+                          setClick(3); // Set click to 3 for "Institute Draft"
+                          displayAfterClick(3); // Redirect to Institute Draft
+                        } else {
+                          setClick(1); // Default case for Revenue
+                          displayAfterClick(1);
+                        }
                       }}
                       className={`custom-sidebar-item ${
-                        click === 1 ? "active bg-white" : ""
+                        click === 1 || click === 3 ? "active bg-white" : ""
                       } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Revenue
+                        {isSalesUser ? "Institute Draft" : "Revenue"}
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">

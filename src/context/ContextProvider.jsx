@@ -58,7 +58,14 @@ const ContextProvider = (props) => {
   const fetchClients = async () => {
     try {
       setLoader(true);
-      const response = await API.get("clients", "/admin/list-institution");
+      let response;
+      if (userData.role === "sales") {
+        // Call the API specific to the sales role
+        response = await API.get("clients", "/admin/list-institutionForSales");
+      } else {
+        // Call the API specific to other roles, e.g., admin
+        response = await API.get("clients", "/admin/list-institution");
+      }
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
