@@ -61,17 +61,17 @@ const AuthPage = () => {
       const user = await Auth.currentAuthenticatedUser();
       console.log(user);
 
-      // const exist = await API.post(
-      //   'clients',
-      //   '/any/phone-exists',
-      //   {
-      //     body: {
-      //       phoneNumber,
-      //     }
-      //   }
-      // );
+      const exist = await API.post(
+        'clients',
+        '/any/phone-exists',
+        {
+          body: {
+            phoneNumber,
+          }
+        }
+      );
 
-      // if (exist.exists === false) {
+      if (exist.exists === false) {
         await API.post(
           "clients", "/user/signup-members/awsaiapp",
           {
@@ -84,7 +84,7 @@ const AuthPage = () => {
             }
           }
         );
-      // }
+      }
 
       const userdata = await API.get(
 "clients", '/self/read-self/awsaiapp'

@@ -41,12 +41,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                 {isSuperAdmin && (
                   <>
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
-                      <div className="font-bold">
+                    <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                        }
                         <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
                       </div>
                     </Sidebar.ItemGroup>
                     <Sidebar.Item
-                      href="#"
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
