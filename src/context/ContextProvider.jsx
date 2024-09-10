@@ -13,6 +13,7 @@ const ContextProvider = (props) => {
   const [subscriptionDetails, setSubscriptionDetails] = useState();
   const [instructordetails, setInstructordetails] = useState({})
   const [userData, setUserData] = useState({});
+  const [saleData, setSaleData] = useState([]);
   const institutionId = localStorage.getItem('institution');
 
   useEffect(() => {
@@ -20,7 +21,8 @@ const ContextProvider = (props) => {
     fetchUserProfile();
     fetchProducts();
     fetchTemplateDetails();
-    fetchInstructorDetails()
+    fetchInstructorDetails();
+    fetchUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,6 +88,17 @@ const ContextProvider = (props) => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/admin/list-clients");
+      setSaleData(response);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
   const fetchTemplateDetails = async () => {
     try {
       const response = await API.get("clients", `/user/development-form/get-user/${institutionId}`);
@@ -162,6 +175,8 @@ const ContextProvider = (props) => {
     instructorDetails: instructordetails,
     fetchProductDetails: fetchProductDetails,
     fetchInstructorDetails: fetchInstructorDetails,
+    saleData: saleData,
+    setSaleData: setSaleData
   };
 
   return (
