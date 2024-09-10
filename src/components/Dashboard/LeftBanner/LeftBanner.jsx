@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
@@ -20,6 +19,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const Ctx = useContext(Context);
   const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
+  const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
 
   useEffect(() => {
     const selectedPage = localStorage.getItem("selectedPage");
@@ -41,12 +41,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                 {isSuperAdmin && (
                   <>
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
-                      <div className="font-bold">
+                    <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                        }
                         <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
                       </div>
                     </Sidebar.ItemGroup>
                     <Sidebar.Item
-                      href="#"
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
@@ -63,15 +65,20 @@ const LeftBanner = ({ displayAfterClick }) => {
                     <Sidebar.Item
                       icon={HiShoppingBag}
                       onClick={() => {
-                        setClick(1);
-                        displayAfterClick(1);
+                        if (isSalesUser) {
+                          setClick(3); // Set click to 3 for "Institute Draft"
+                          displayAfterClick(3); // Redirect to Institute Draft
+                        } else {
+                          setClick(1); // Default case for Revenue
+                          displayAfterClick(1);
+                        }
                       }}
                       className={`custom-sidebar-item ${
-                        click === 1 ? "active bg-white" : ""
+                        click === 1 || click === 3 ? "active bg-white" : ""
                       } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Revenue
+                        {isSalesUser ? "Institute Draft" : "Revenue"}
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">

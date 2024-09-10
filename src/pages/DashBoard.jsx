@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import Context from "../context/Context";
 // import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
-import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
+// import PendingClients from "../components/Dashboard/PendingClients/PendingClients";
 import NavBar from "../components/Home/Navbar";
 import Panel from "../components/Dashboard/Panel/Panel";
 import RevenueGenerated from "../components/Dashboard/Revenue/RevenueGenerated";
@@ -13,6 +13,7 @@ import LeadsList from "../components/Dashboard/LeadsList/LeadsList";
 import { IoMdArrowRoundBack } from "react-icons/io";
 // import { Link } from "react-router-dom";
 import Profile from "../components/Dashboard/Profile/Profile";
+import InstitutionDraft from "./InstitutionDraft";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const DashBoard = () => {
           return <Profile />;
 
         case 3:
-          return <PendingClients />;
+          return <InstitutionDraft />;
 
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;

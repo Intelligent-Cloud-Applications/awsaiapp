@@ -78,19 +78,19 @@ function Company({
     setFileOptionVisible(false);
   };
 
-  const handleCSVFlie = (e) => {
-    const file = e.target.files[0];
-    setCSVFile(file);
-  }
-  const shortenFileName1 = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
-  };
+  // const handleCSVFlie = (e) => {
+  //   const file = e.target.files[0];
+  //   setCSVFile(file);
+  // }
+  // const shortenFileName1 = (file) => {
+  //   if (!file || !file.name) return '';
+  //   const maxLength = 15;
+  //   const fileName = file.name;
+  //   if (fileName.length > maxLength) {
+  //     return `${fileName.substring(0, maxLength)}...`;
+  //   }
+  //   return fileName;
+  // };
 
   return (
     <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '745px' }}>
@@ -99,7 +99,7 @@ function Company({
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
 
-      <div className="relative mt-6 hidden">
+      <div className="relative mt-6">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={toggleCompanyInputVisibility}
@@ -110,11 +110,11 @@ function Company({
               value={companyName}
               onChange={handleCompanyInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent"
-              placeholder="Enter Company Name"
+              placeholder="Enter Institution Name"
               autoFocus
             />
           ) : (
-            <span>{companyName || "Company Name"}</span>
+            <span>{companyName || "Enter Institution Name"}</span>
           )}
         </h5>
         <div
@@ -123,7 +123,7 @@ function Company({
         ></div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-2">
         <h4 className="text-[#939393]">Choose Your Theme Color</h4>
         <div className="flex gap-8">
           <input
@@ -154,7 +154,7 @@ function Company({
         </div>
       </div>
 
-      <div className="border border-black w-[15rem] h-[12rem] mt-6 relative boxtoselect">
+      <div className="border border-black w-[15rem] h-[12rem] mt-2 relative boxtoselect">
         {!selectedFile ? (
           <label
             htmlFor="fileInput"
@@ -208,7 +208,7 @@ function Company({
           </label>
         )}
       </div>
-      <div className="relative flex items-center mt-6 ">
+      {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
         <input
@@ -253,7 +253,7 @@ function Company({
       </div>
       <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
         ( *Upload a .csv/.xsl/.xsls file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
-      </p>
+      </p> */}
 
     </div>
   );

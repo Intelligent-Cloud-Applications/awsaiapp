@@ -12,8 +12,9 @@ import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
-
+import Country from "../components/Auth/Country";
 const New_Full = () => {
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -43,7 +44,45 @@ const New_Full = () => {
             "clients",
             `/user/development-form/get-user/${institutionNames}`
           );
-          await setTemplateDetails(templateResponse);
+          // await setTemplateDetails(templateResponse || null);
+          await setTemplateDetails(prev => {
+            let updatedCountry = templateResponse.country || "India";
+          
+            let updatedPhoneNumber = templateResponse.Query_PhoneNumber;
+            let updatedCountryCode = "91";
+          
+            if (updatedPhoneNumber) {
+              updatedPhoneNumber = updatedPhoneNumber.replace(/\D/g, '');
+          
+              if (updatedPhoneNumber.length > 10) {
+                let phoneNumberLength = updatedPhoneNumber.length;
+                updatedCountryCode = updatedPhoneNumber.slice(0, phoneNumberLength - 10);
+                updatedPhoneNumber = updatedPhoneNumber.slice(phoneNumberLength - 10);
+              } else if (updatedPhoneNumber.length < 10) {
+                updatedCountryCode = "91";
+              }
+            } else {
+              updatedPhoneNumber = "";
+              updatedCountryCode = "91";
+            }
+            setSelectedCountryCode(updatedCountryCode);
+            return {
+              ...prev,
+              ...templateResponse,
+              Testimonial: templateResponse.Testimonial && templateResponse.Testimonial.length > 0
+                ? templateResponse.Testimonial
+                : [
+                    { name: "", description: "", img: "" },
+                    { name: "", description: "", img: "" },
+                    { name: "", description: "", img: "" }
+                  ],
+              country: updatedCountry,
+              Query_PhoneNumber: updatedPhoneNumber,
+              countryCode: updatedCountryCode
+              
+            };
+           
+          });          
 
           const productResponse = await API.get(
             "clients",
@@ -55,13 +94,13 @@ const New_Full = () => {
             amount: product.amount / 100, // Convert amount to rupee
           }));
 
-          await setSubscriptionDetails(convertedProductResponse);
+          await setSubscriptionDetails(convertedProductResponse|| null);
 
           const instructorResponse = await API.get(
             "clients",
             `/user/development-form/get-instructor/${institutionNames}`
           );
-          await setInstructorDetails(instructorResponse);
+          await setInstructorDetails(instructorResponse|| null);
         } catch (error) {
           console.error("Error fetching details:", error);
         } finally {
@@ -79,7 +118,18 @@ const New_Full = () => {
     util,
     Ctx.userData.institutionName,
   ]);
-
+  
+ 
+const handleCountryChange1 = (e) => {
+    const selectedCountry = e.target.options[e.target.selectedIndex].text;
+    const selectedCountryCode = e.target.value;
+    setTemplateDetails(prevInfo => ({
+      ...prevInfo,
+      country: selectedCountry.split(' ')[0],
+      countryCode: selectedCountryCode
+    }));
+    setSelectedCountryCode(selectedCountryCode);
+  };
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[index].title = event.target.value;
@@ -435,6 +485,7 @@ const New_Full = () => {
     Query_EmailId: useRef(null),
     Facebook: useRef(null),
     Instagram: useRef(null),
+    userName: useRef(null),
     Services: useRef(null),
     ClassTypes: useRef(null),
     Testimonial: useRef(null),
@@ -695,6 +746,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
       { value: templateDetails.Query_EmailId, name: "Query_EmailId" },
       { value: templateDetails.Facebook, name: "Facebook" },
       { value: templateDetails.Instagram, name: "Instagram" },
+      { value: templateDetails.userName, name: "userName" },
     ];
 
     // Find any missing fields
@@ -1364,12 +1416,14 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           body: {
             institutionid: institutionNames,
             Query_Address: templateDetails.Query_Address,
-            Query_PhoneNumber: templateDetails.Query_PhoneNumber,
+            Query_PhoneNumber: '+' + templateDetails.countryCode + templateDetails.Query_PhoneNumber,
+            userName:templateDetails.userName,
             Query_EmailId: templateDetails.Query_EmailId,
             Facebook: templateDetails.Facebook,
             Instagram: templateDetails.Instagram,
             YTLink: templateDetails.YTLink,
             UpiId: templateDetails.UpiId,
+            country:templateDetails.country,
             Footer_Link_1: templateDetails.Footer_Link_1,
             Footer_Link_2: templateDetails.Footer_Link_2,
             InstructorBg: templateDetails.InstructorBg,
@@ -2326,7 +2380,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
               )}
           </div>
           <div className="col-span-1 flex items-center justify-center">
-            {templateDetails.ClassTypes.length < 6 && (
+          {templateDetails && templateDetails.ClassTypes && templateDetails.ClassTypes.length < 6 && (
               <button onClick={addClassType} className="text-[30px]">
                 <MdOutlineAddCircle />
               </button>
@@ -3409,6 +3463,15 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     <Label htmlFor="phone" color="gray" value="Phone Number" />
                     <span className="text-red-500 ml-1">*</span>
                   </div>
+                  
+                  <select
+          value={selectedCountryCode}
+          onChange={handleCountryChange1}
+          className="border w-[9rem] border-[#ccc] rounded-l px-2 py-1"
+        >
+          {/* Render country options */}
+          <Country />
+        </select>
                   <TextInput
                     id="phone"
                     placeholder="Enter your phone number"
@@ -3503,6 +3566,27 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
                     color={errors.Instagram ? "failure" : "gray"}
                     style={{
                       border: errors.Instagram
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+                <div className="relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="userName" color="gray" value="OwnerName" />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <TextInput
+                    id="instagram"
+                    placeholder="Enter your OwnerName handle"
+                    ref={refs.userName}
+                    value={templateDetails.userName}
+                    onChange={(event) => handleChange(event, "userName")}
+                    sizing="sm"
+                    color={errors.userName ? "failure" : "gray"}
+                    style={{
+                      border: errors.userName
                         ? "1px solid red"
                         : "1px solid #ccc",
                       borderRadius: "8px",

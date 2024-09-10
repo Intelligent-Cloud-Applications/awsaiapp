@@ -5,7 +5,7 @@ import { API } from "aws-amplify";
 const ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [pending, setPending] = useState({});
+  // const [pending, setPending] = useState({});
   const [products, setProducts] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
@@ -22,15 +22,17 @@ const ContextProvider = (props) => {
     fetchProducts();
     fetchTemplateDetails();
     fetchInstructorDetails();
+
     fetchUserData()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (isAuth) {
-      fetchPending();
-    }
-  }, [isAuth]);
+  // useEffect(() => {
+  //   if (isAuth) {
+  //     fetchPending();
+  //   }
+  // }, [isAuth]);
 
   const fetchProducts = async () => {
     try {
@@ -45,17 +47,17 @@ const ContextProvider = (props) => {
     }
   };
 
-  const fetchPending = async () => {
-    try {
-      setLoader(true);
-      const response = await API.get("clients", "/admin/list-pending_clients");
-      setPending(response);
-    } catch (error) {
-      console.error("Error fetching pending clients:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
+  // const fetchPending = async () => {
+  //   try {
+  //     setLoader(true);
+  //     const response = await API.get("clients", "/admin/list-pending_clients");
+  //     setPending(response);
+  //   } catch (error) {
+  //     console.error("Error fetching pending clients:", error);
+  //   } finally {
+  //     setLoader(false);
+  //   }
+  // };
 
   const fetchClients = async () => {
     try {
@@ -159,11 +161,11 @@ const ContextProvider = (props) => {
     },
     products: products,
     fetchProducts: () => { },
-    pending: {
-      data: pending,
-      fetchPending: fetchPending,
-      onReload: fetchPending,
-    },
+    // pending: {
+    //   data: pending,
+    //   fetchPending: fetchPending,
+    //   onReload: fetchPending,
+    // },
     user: {
       profile: userProfile,
       fetchUserProfile: fetchUserProfile,
