@@ -62,9 +62,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
-  const filteredTemplates = templateData.filter(templateData =>
-    templateData && templateData.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  const filteredTemplates = Array.isArray(templateData) ? templateData.filter(template => {
+    // Ensure `template` is not null and has a property you want to search
+    return template && template.propertyName && template.propertyName.toLowerCase().includes(searchInput.toLowerCase());
+  }) : [];
   const indexOfLastLeadmail = currentPage * itemsPerPage;
   const indexOfFirstLeadmail = indexOfLastLeadmail - itemsPerPage;
   const currentTemplates = filteredTemplates.slice(indexOfFirstLeadmail, indexOfLastLeadmail);
@@ -938,76 +939,75 @@ const LeadsList = ({ institution: tempInstitution }) => {
           <p>Loading...</p>
         ) : (
           <div className="bg-white max-w-full mx-auto rounded-b-md">
-            <div className="overflow-x-auto">
-              <Table hoverable className="min-w-full">
-                <Table.Head>
-                  <Table.HeadCell className="p-2">
-                    <Checkbox
-                      className='bg-gray-300 border border-gray-700 ml-2'
-                      checked={isAllSelected}
-                      onChange={() => {
-                        if (filteredLeads === null) {
-                          handleSelectAll(leadsData);
-                        }
-                        else {
-                          handleSelectAll(filteredLeads);
-                        }
-                      }}
-                    />
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Name</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Email</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Phone Number</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Date</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Device</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Age</Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">View</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {currentLeads.map((lead, index) => (
-                    <Table.Row
-                      key={index}
-                      className="hover:bg-gray-200 cursor-pointer"
+            <Table hoverable className="min-w-full">
+              <Table.Head>
+                <Table.HeadCell className="p-2">
+                  <Checkbox
+                    className='bg-gray-300 border border-gray-700 ml-2'
+                    checked={isAllSelected}
+                    onChange={() => {
+                      if (filteredLeads === null) {
+                        handleSelectAll(leadsData);
+                      }
+                      else {
+                        handleSelectAll(filteredLeads);
+                      }
+                    }}
+                  />
+                </Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Name</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Email</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Phone Number</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Date</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Device</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Age</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">View</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-700 uppercase"></Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {currentLeads.map((lead, index) => (
+                  <Table.Row
+                    key={index}
+                    className="hover:bg-gray-200 cursor-pointer"
+                  >
+                    <Table.Cell
+                      className="p-2 bg-white"
+                      onClick={(e) => e.stopPropagation()} // Prevent row click when checkbox is clicked
                     >
-                      <Table.Cell
-                        className="p-2 bg-white"
-                        onClick={(e) => e.stopPropagation()} // Prevent row click when checkbox is clicked
-                      >
-                        <Checkbox
-                          className='bg-gray-300 border border-gray-700 ml-2'
-                          id={`checkbox-${lead}`}
-                          checked={selectedRow.includes(lead)}
-                          onChange={() => handleCheckboxChange(lead)}
-                        />
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-700 hover:underline text-center bg-white">
-                        {lead.name}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {censorEmail(lead.emailId)}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {censorPhoneNumber(lead.phoneNumber)}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.date}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.device ? lead.device.join(', ') : lead.device}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.age}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
-                        style={{ width: '18px' }}
-                        onClick={() => handleEditUser(lead)}>
-                        <img src={EditImage} alt="Edit" height={'30px'} />
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+                      <Checkbox
+                        className='bg-gray-300 border border-gray-700 ml-2'
+                        id={`checkbox-${lead}`}
+                        checked={selectedRow.includes(lead)}
+                        onChange={() => handleCheckboxChange(lead)}
+                      />
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
+                      {lead.name}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {censorEmail(lead.emailId)}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {censorPhoneNumber(lead.phoneNumber)}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {lead.date}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {lead.device ? lead.device.join(', ') : lead.device}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {lead.age}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
+                      style={{ width: '18px' }}
+                      onClick={() => handleEditUser(lead)}>
+                      <img src={EditImage} alt="Edit" height={'30px'} />
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
             <div className="flex justify-between items-center px-4">
               <div className="text-sm text-gray-600">
                 Showing <strong>{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredLeads.length)}</strong> of <strong>{filteredLeads.length}</strong>
@@ -1019,7 +1019,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 className="custom-pagination"
               />
             </div>
-
           </div>
         )}
         {isEditUser && (

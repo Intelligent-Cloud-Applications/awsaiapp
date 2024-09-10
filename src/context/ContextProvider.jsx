@@ -22,7 +22,9 @@ const ContextProvider = (props) => {
     fetchProducts();
     fetchTemplateDetails();
     fetchInstructorDetails();
-    fetchUserData();
+
+    fetchUserData()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -99,6 +101,7 @@ const ContextProvider = (props) => {
       setLoader(false);
     }
   };
+
   const fetchTemplateDetails = async () => {
     try {
       const response = await API.get("clients", `/user/development-form/get-user/${institutionId}`);
