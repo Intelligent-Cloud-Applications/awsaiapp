@@ -13,41 +13,6 @@ import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination, Dropdown, Flowbite } from "flowbite-react";
 
-const customTheme = {
-  dropdown: {
-    "arrowIcon": "ml-2 h-4 w-4",
-    "content": "py-1 focus:outline-none",
-    "floating": {
-      "animation": "transition-opacity",
-      "arrow": {
-        "base": "absolute z-10 h-2 w-2 rotate-45",
-        "style": {
-          "dark": "bg-gray-900 dark:bg-gray-700",
-          "light": "bg-white",
-          "auto": "bg-white dark:bg-gray-700"
-        },
-        "placement": "-4px"
-      },
-      "base": "z-10 w-fit divide-y divide-gray-100 rounded shadow focus:outline-none",
-      "content": "py-1 text-sm text-gray-700 dark:text-gray-200",
-      "divider": "my-1 h-px bg-gray-100 dark:bg-gray-600",
-      "header": "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200",
-      "hidden": "invisible opacity-0",
-      "item": {
-        "container": "",
-        "base": "flex w-full cursor-pointer items-center justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:bg-gray-600 dark:focus:text-white",
-        "icon": "mr-2 h-4 w-4"
-      },
-      "style": {
-        "dark": "bg-gray-900 text-white dark:bg-gray-700",
-        "light": "border border-gray-200 bg-white text-gray-900",
-        "auto": "border border-gray-200 bg-white text-gray-900 dark:border-none dark:bg-gray-700 dark:text-white"
-      },
-      "target": "w-fit"
-    },
-    "inlineWrapper": "flex items-center"
-  }
-};
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -80,6 +45,26 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
+
+  const customTheme = {
+    pages: {
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
+  };
 
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
@@ -196,16 +181,21 @@ const Panel = () => {
   const useDataForSales = Ctx.saleData || [];
 
   const getUsernameByCognitoId = (cognitoId) => {
-    console.log("useDataForSales array:", useDataForSales); // Check the data structure
-    console.log("Looking for Cognito ID:", cognitoId);
+    if (!cognitoId) {
+      return 'Unknown'; // Return 'Unknown' if cognitoId is not provided
+    }
   
-    // Use trim() to handle any leading or trailing whitespace
-    const user = useDataForSales.find(user => user.cognitoId.trim() === String(cognitoId).trim());
+    // Normalize the input ID
+    const trimmedInputId = String(cognitoId).trim();
   
-    console.log("Found user:", user); // Log the found user or undefined
-    return user ? user.userName : 'Unknown';
+    // Find the user with matching Cognito ID
+    const user = useDataForSales.find(user => {
+      return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
+    });
+  
+    return user ? user.userName : 'Unknown'; // Return userName if found, otherwise 'Unknown'
   };
-  
+
   if (1 < 0) {
     setShowHiddenContent(true);
     setTotalLeads(0);
@@ -1019,6 +1009,7 @@ const Panel = () => {
           previousLabel=""
           nextLabel=""
           showIcons
+          theme={customTheme}
         />
       </div>
     </div>

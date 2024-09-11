@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { API } from "aws-amplify";
-import Pagination from "@mui/material/Pagination";
 import Context from "../../../context/Context";
 import EditImage from '../../../utils/Assets/Dashboard/images/PNG/Edit.png';
 import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
-import { Button, Checkbox, Table } from "flowbite-react";
+import { Button, Checkbox, Pagination, Table } from "flowbite-react";
 import PhoneImg from '../../../utils/Assets/Dashboard/images/PNG/smartphone.png'
 import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
@@ -28,7 +27,8 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [leadsData, setLeadsData] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const membersPerPage = 7;
+  const [currentPageTemplate, setCurrentPageTemplate] = useState(1);
+  // const membersPerPage = 7;
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
   const [emailId2, setEmailId2] = useState("");
@@ -46,6 +46,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [templateSubject, setTemplateSubject] = useState('');
   const [templateContent, setTemplateContent] = useState('');
   const [sendmail, setSendmail] = useState(false);
+  const [editTemplate, setEditTemplate] = useState(false);
   const [filteredEmails, setFilteredEmails] = useState([]);
   const [templateData, setTemplateData] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState('');
@@ -59,14 +60,15 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
   const [isAllSelected, setisAllSelected] = useState(false);/*to check wheather all the leads data is selected or not*/
   const { dataToMail } = location.state || {};
+  const [templateNameInUpdate, settemplateNameInUpdate] = useState("");
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
   const filteredTemplates = Array.isArray(templateData) ? templateData.filter(template => {
     // Ensure `template` is not null and has a property you want to search
-    return template && template.propertyName && template.propertyName.toLowerCase().includes(searchInput.toLowerCase());
+    return template && template.toLowerCase().includes(searchInput.toLowerCase());
   }) : [];
-  const indexOfLastLeadmail = currentPage * itemsPerPage;
+  const indexOfLastLeadmail = currentPageTemplate * itemsPerPage;
   const indexOfFirstLeadmail = indexOfLastLeadmail - itemsPerPage;
   const currentTemplates = filteredTemplates.slice(indexOfFirstLeadmail, indexOfLastLeadmail);
   const [selectedDevices, setSelectedDevices] = useState({
@@ -76,6 +78,26 @@ const LeadsList = ({ institution: tempInstitution }) => {
   });
   const [id, setId] = useState("");
   // console.log(userCheck)
+
+  const customTheme = {
+    pages: {
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
+  };
 
   const handleCheckboxChange = (lead) => {
     setSelectedRow((prevSelectedRows) => {
@@ -141,6 +163,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
+  const handleEditTemplate = (data) => {
+    setEditTemplate(true);
+    settemplateNameInUpdate(data);
+  }
+
   const handleNameOfTemplate = (event) => {
     setTemplateName(event.target.value);
   };
@@ -157,6 +184,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setAddNewValue(false);
     setViewTemplate(null);
   };
+
+  const handleCloseTemplateUpdate = () => {
+    setEditTemplate(false);
+  }
 
   const handleCloseMember = () => {
     setSendmail(false);
@@ -200,7 +231,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   }, [dataToMail, institution]);
 
   useEffect(() => {
-    setCurrentPage(1);
+    setCurrentPageTemplate(1);
   }, [searchInput]);
 
   const handleSendMail = async () => {
@@ -222,6 +253,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       alert('Error sending emails. Please try again later.');
     }
   };
+
   const handleDoneClick = async () => {
     const dataToCreate = {
       'TemplateName': newName,
@@ -247,6 +279,27 @@ const LeadsList = ({ institution: tempInstitution }) => {
     fetchLeads(institution);
     // eslint-disable-next-line
   }, [institution]);
+
+  const handleUpdateClick = async () => {
+    const dataToUpdate = {
+      'TemplateName': newName,
+      'SubjectPart': templateSubject,
+      'HtmlPart': templateContent,
+      'TextPart': ""
+    };
+
+    try {
+      const response = await API.post('clients', `/user/update-ses-template/${institution}`, {
+        body: dataToUpdate
+      });
+      console.log('Response:', response);
+      alert('Email added successfully!');
+    } catch (error) {
+      console.error('Error sending emails:', error);
+      alert('Error creating emails. Please try again later.');
+    }
+    handleCloseTemplateUpdate();
+  }
 
   // const handleAddLeads = async (e) => {
   //   e.preventDefault();
@@ -443,20 +496,19 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setDevice(updatedDevices);
   }, [selectedDevices]);
 
-  // const selectedDeviceNames = device.join(", ");
+  // const indexOfLastLead = currentPage * itemsPerPage;
+  // const indexOfFirstLead = indexOfLastLead - itemsPerPage;
+  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
-  const indexOfLastLead = currentPage * itemsPerPage;
-  const indexOfFirstLead = indexOfLastLead - itemsPerPage;
-  const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
-
-  const paginate = (event, pageNumber) => setCurrentPage(pageNumber);
-  const startIndex = (currentPage - 1) * membersPerPage;
-
-
+  // Ensure the page resets to 1 when filteredLeads change
   useEffect(() => {
     setCurrentPage(1);
-  }, [filteredLeads])
+  }, [filteredLeads]);
 
+  // Safely calculate total pages for Pagination component
+  const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentLeads = filteredLeads.slice(startIndex, startIndex + itemsPerPage);
   const handleAddMoreInfo = () => {
     setAdditionalInfoArray((prevArray) => [
       ...prevArray,
@@ -687,6 +739,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <Table.Head>
                       <Table.HeadCell className="w-1/4 text-lg">Template Name</Table.HeadCell>
                       <Table.HeadCell className="w-1/4 text-lg text-center">Select</Table.HeadCell>
+                      <Table.HeadCell className="w-1/4 text-lg text-center">View</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y divide-gray-200">
                       {currentTemplates.length > 0 ? (
@@ -704,6 +757,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
                                 onChange={() => handleRadioChange(templateData)}
                               />
                             </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap text-gray-500 text-right "
+                              style={{ width: '14px' }}
+                              onClick={() => handleEditTemplate(templateData)}
+                            >
+                              <img src={EditImage} alt="Edit" style={{ height: '40px' }} />
+                            </Table.Cell>
                           </Table.Row>
                         ))
                       ) : (
@@ -713,6 +772,38 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       )}
                     </Table.Body>
                   </Table>
+                  {editTemplate && (
+                    <div className="popup-overlay">
+                      <div className="popup-content">
+                        <button className="close-button" onClick={handleCloseTemplateUpdate}>×</button>
+                        <div className='m-[2%] flex flex-col gap-5'>
+                          <input
+                            type="text"
+                            placeholder='Name of your template'
+                            className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
+                            value={templateNameInUpdate}
+                            readOnly
+                          />
+                          <input
+                            type="text"
+                            // placeholder='Subject of your template'
+                            className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
+                            value={templateSubject}
+                            onChange={handleSubjectOfTemplate}
+                          />
+                          <textarea
+                            // placeholder='Type the body of your mail here in HTML format'
+                            className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
+                            value={templateContent}
+                            onChange={handleTemplateOnChange}
+                          />
+                        </div>
+                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick() }}>
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </section>
                 {addNewValue && (
                   <div className="popup-overlay">
@@ -758,12 +849,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
                 )}
-                <Pagination
+                {/* <Pagination
                   count={Math.ceil(filteredTemplates.length / itemsPerPage)}
                   page={currentPage}
                   onChange={paginate}
-                  className="custom-pagination"
-                />
+                  className="flex justify-end"
+                  showIcons
+                  theme={customTheme}
+                /> */}
               </main>
             </div>
           </div>
@@ -1008,15 +1101,17 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 ))}
               </Table.Body>
             </Table>
-            <div className="flex justify-between items-center px-4">
+            <div className="flex justify-between items-center px-4 my-[2rem]">
               <div className="text-sm text-gray-600">
                 Showing <strong>{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredLeads.length)}</strong> of <strong>{filteredLeads.length}</strong>
               </div>
               <Pagination
-                count={Math.ceil(filteredLeads.length / itemsPerPage)}
-                page={currentPage}
-                onChange={paginate}
-                className="custom-pagination"
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                className="flex justify-end"
+                showIcons
+                theme={customTheme}
               />
             </div>
           </div>
@@ -1053,7 +1148,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 <div className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  ">
                   {emailId}
                 </div>
-
                 <input
                   required
                   placeholder="Alternarte Email "
