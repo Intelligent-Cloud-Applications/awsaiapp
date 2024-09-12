@@ -59,25 +59,7 @@ const ContextProvider = (props) => {
   //   }
   // };
 
-  const fetchClients = async () => {
-    try {
-      setLoader(true);
-      let response;
-      if (userData.role === "sales") {
-        // Call the API specific to the sales role
-        response = await API.get("clients", "/admin/list-institutionForSales");
-      } else {
-        // Call the API specific to other roles, e.g., admin
-        response = await API.get("clients", "/admin/list-institution");
-      }
-      setClients(response);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
+  
   const fetchUserProfile = async () => {
     try {
       setLoader(true);
@@ -85,6 +67,27 @@ const ContextProvider = (props) => {
       setUserProfile(response);
     } catch (error) {
       console.error("Error fetching user profile:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const fetchClients = async () => {
+    try {
+      setLoader(true);
+      let response;
+      console.log("role", userProfile.role)
+      if (userProfile.role === "owner") {
+        console.log("entering the data for owner");
+        response = await API.get("clients", "/admin/list-institution");
+      } else {
+        console.log("entering the data for sales");
+        response = await API.get("clients", "/admin/list-institutionForSales");
+      }
+      console.log("data for clientPanels",response)
+      setClients(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
     } finally {
       setLoader(false);
     }

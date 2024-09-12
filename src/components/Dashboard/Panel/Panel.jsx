@@ -184,15 +184,15 @@ const Panel = () => {
     if (!cognitoId) {
       return 'Unknown'; // Return 'Unknown' if cognitoId is not provided
     }
-  
+
     // Normalize the input ID
     const trimmedInputId = String(cognitoId).trim();
-  
+
     // Find the user with matching Cognito ID
     const user = useDataForSales.find(user => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
-  
+
     return user ? user.userName : 'Unknown'; // Return userName if found, otherwise 'Unknown'
   };
 
@@ -412,8 +412,27 @@ const Panel = () => {
     }
   };
 
-  const handleDropdownChange = (clientId, status) => {
+  const handleDropdownChange = async (clientInstitution, status) => {
+    const isDelivered = status === "Delivered";
+    console.log("is delivered",isDelivered);
+    try {
+      const body = JSON.stringify({
+        institutionId: clientInstitution,
+        isDelivered: isDelivered
+      });
 
+      const response = await API.patch("clients", "/user/updateDelivary", {
+        body: body,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      console.log("API response:", response);
+      // Handle the response as needed
+    } catch (error) {
+      console.error("Error updating delivery status:", error);
+    }
   };
 
   return (
@@ -738,7 +757,7 @@ const Panel = () => {
                     <div className="flex items-center justify-center">
                       <select
                         value={client.isDelivered ? "Delivered" : "Not Delivered"}
-                        onChange={(e) => handleDropdownChange(client.id, e.target.value)}
+                        onChange={(e) => handleDropdownChange(client.institutionid, e.target.value)}
                         className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
                       >
                         <option value="Not Delivered">Not Delivered</option>
