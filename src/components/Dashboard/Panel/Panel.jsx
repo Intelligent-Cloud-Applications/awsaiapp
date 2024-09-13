@@ -414,7 +414,7 @@ const Panel = () => {
 
   const handleDropdownChange = async (clientInstitution, status) => {
     const isDelivered = status === "Delivered";
-    console.log("is delivered",isDelivered);
+    console.log("is delivered  ",isDelivered);
     try {
       const body = JSON.stringify({
         institutionId: clientInstitution,
@@ -436,7 +436,7 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-screen flex flex-col justify-center items-center mt-[-10rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[8%]">
       <ToastContainer />
       <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
@@ -664,7 +664,7 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[400px] md:max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
               {/* <Table.HeadCell></Table.HeadCell> */}
