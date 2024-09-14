@@ -181,10 +181,8 @@ const Panel = () => {
   const useDataForSales = Ctx.saleData || [];
 
   const getUsernameByCognitoId = (cognitoId) => {
-    if (!cognitoId) {
-      return 'Unknown'; // Return 'Unknown' if cognitoId is not provided
-    }
-
+    console.log("cognitoid:", cognitoId);
+    console.log("data:", useDataForSales.userName);
     // Normalize the input ID
     const trimmedInputId = String(cognitoId).trim();
 
@@ -192,7 +190,7 @@ const Panel = () => {
     const user = useDataForSales.find(user => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
-
+    console.log("user Name:", user);
     return user ? user.userName : 'Unknown'; // Return userName if found, otherwise 'Unknown'
   };
 
@@ -412,19 +410,22 @@ const Panel = () => {
     }
   };
 
-  const handleDropdownChange = async (clientInstitution, status) => {
+  const handleDropdownChange = async (clientInstitution, status, index) => {
     const isDelivered = status === "Delivered";
-    console.log("is delivered  ",isDelivered);
-    try {
-      const body = JSON.stringify({
-        institutionId: clientInstitution,
-        isDelivered: isDelivered
-      });
 
-      const response = await API.patch("clients", "/user/updateDelivary", {
-        body: body,
+    try {
+      // Define the body object
+      const body = {
+        institutionId: clientInstitution,
+        index: index,
+        isDelivered: isDelivered
+      };
+
+      // Make the PUT request
+      const response = await API.put("clients", "/user/updateDelivary", {
+        body: body, // Pass the body object directly
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json', // Ensure the content type is set
         }
       });
 
@@ -436,9 +437,9 @@ const Panel = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[8%]">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
-      <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+      <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
         <Flowbite theme={{ theme: customTheme }}>
           <Dropdown
@@ -490,7 +491,7 @@ const Panel = () => {
           </Link>
         </div>
       </div>
-      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
+      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
 
@@ -702,12 +703,12 @@ const Panel = () => {
               >
                 Created By
               </Table.HeadCell>
-              <Table.HeadCell
+              {/* <Table.HeadCell
                 className={`${showHiddenContent ? "" : "max1008:hidden"
                   } uppercase font-semibold text-[20px]`}
               >
                 Leads
-              </Table.HeadCell>
+              </Table.HeadCell> */}
               <Table.HeadCell className="more uppercase font-semibold text-[20px]">
                 More
               </Table.HeadCell>
@@ -754,18 +755,15 @@ const Panel = () => {
                     })()}
                   </Table.Cell>
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16">
-                    <div className="flex items-center justify-center">
-                      <select
-                        value={client.isDelivered ? "Delivered" : "Not Delivered"}
-                        onChange={(e) => handleDropdownChange(client.institutionid, e.target.value)}
-                        className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                      >
-                        <option value="Not Delivered">Not Delivered</option>
-                        <option value="Delivered">Delivered</option>
-                      </select>
-                    </div>
+                    <select
+                      value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                      onChange={(e) => handleDropdownChange(client.institutionid, e.target.value, client.index)}
+                      className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                    >
+                      <option value="Not Delivered">Not Delivered</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
                   </Table.Cell>
-
                   <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
                     {client.payment ? "Paid" : "Not Paid"}
                   </Table.Cell>
@@ -788,14 +786,14 @@ const Panel = () => {
                     }}
                     className="hidden change-page"
                   ></Link>
-                  <div
+                  {/* <div
                     className={`${showHiddenContent ? "" : "max1008:hidden"
                       } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
                     <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
                     </Table.Cell>
-                  </div>
+                  </div> */}
                   <Table.Cell
                     className="more"
                   // onClick={handleMoreClick}

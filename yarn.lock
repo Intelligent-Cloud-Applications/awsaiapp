@@ -5265,7 +5265,7 @@ aws-sdk@^2.1646.0:
     aws-cdk "^2.96.2"
     aws-cdk-lib "^2.96.2"
     aws-sdk "^2.1646.0"
-    awsaiapp "file:C:/Users/anant/AppData/Local/Yarn/Cache/v6/npm-awsaiapp-0.1.0-56fee5f8-cff3-4fbc-a6bd-6eff6fea9c24-1726238822089/node_modules/awsaiapp"
+    awsaiapp "file:C:/Users/anant/AppData/Local/Yarn/Cache/v6/npm-awsaiapp-0.1.0-1f410de6-ef20-440f-ab57-547a1218c33e-1726326083896/node_modules/awsaiapp"
     axios "^1.7.2"
     bootstrap "^5.3.2"
     buffer "^6.0.3"

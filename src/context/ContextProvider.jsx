@@ -69,6 +69,10 @@ const ContextProvider = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
   const fetchTemplateDetails = useCallback(async () => {
     try {
       const response = await API.get(
