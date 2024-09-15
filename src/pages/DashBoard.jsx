@@ -14,6 +14,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 // import { Link } from "react-router-dom";
 import Profile from "../components/Dashboard/Profile/Profile";
 import InstitutionDraft from "../components/Dashboard/InstittionDraft/InstitutionDraft";
+import AdminMemberlist from "../components/Dashboard/AdminMemberlist/AdminMemberlist";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
@@ -32,9 +33,9 @@ const DashBoard = () => {
   // const queryParams = new URLSearchParams(location.search);
   //eslint-disable-next-line
   // const institutionNames = queryParams.get("institution");
-  useEffect(() => {
-    localStorage.setItem("selectedPage", click.toString());
-  }, [click]);
+  // useEffect(() => {
+  //   localStorage.setItem("selectedPage", click.toString());
+  // }, [click]);
 
   const displayAfterClick = () => {
     if (Ctx.userData.institutionName === "awsaiapp") {
@@ -51,6 +52,9 @@ const DashBoard = () => {
         case 3:
           return <InstitutionDraft />;
 
+        case 4:
+          return <AdminMemberlist />
+          
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }

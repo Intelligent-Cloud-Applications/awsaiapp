@@ -23,12 +23,12 @@ const LeftBanner = ({ displayAfterClick }) => {
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
 
-  useEffect(() => {
-    const selectedPage = localStorage.getItem("selectedPage");
-    if (selectedPage) {
-      setClick(parseInt(selectedPage));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const selectedPage = localStorage.getItem("selectedPage");
+  //   if (selectedPage) {
+  //     setClick(parseInt(selectedPage));
+  //   }
+  // }, []);
 
   return (
     <Flowbite theme={{ theme: customTheme }}>
@@ -79,10 +79,10 @@ const LeftBanner = ({ displayAfterClick }) => {
                     <Sidebar.Item
                       icon={FaUser}
                       onClick={() => {
-                        setClick(3); // Set click to 3 for "Institute Draft"
-                        displayAfterClick(3); // Redirect to Institute Draft
+                        setClick(4); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(4); // Redirect to Institute Draft
                       }}
-                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                      className={`custom-sidebar-item ${click === 4 ? "active bg-white" : ""
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
