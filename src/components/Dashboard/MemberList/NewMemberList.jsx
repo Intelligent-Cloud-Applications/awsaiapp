@@ -37,6 +37,7 @@ function NewMemberList({ institution: tempInstitution }) {
 
   const fetchData = async (institution) => {
     try {
+      util.setLoader(true)
       const data = await API.get("clients", `/user/list-members/${institution}`);
       const filteredData = data.filter(member => member.userType === 'member');
       console.log(filteredData);
@@ -45,6 +46,7 @@ function NewMemberList({ institution: tempInstitution }) {
     } catch (error) {
       console.error('Error fetching the members:', error);
     }
+    util.setLoader(false)
   };
 
   const handleUpdateUser = async (formData) => {

@@ -2,17 +2,20 @@ import React, { useContext, useEffect, useState } from 'react';
 import Context from "../../../context/Context";
 import { Table, Pagination } from 'flowbite-react';
 import { API } from 'aws-amplify';
+import { FiSearch } from 'react-icons/fi';
 
 const AdminMemberlist = () => {
-  const { util, user, userData } = useContext(Context);
+  const { util } = useContext(Context);
   const [members, setMembers] = useState([]);
   const [memberData, setMemberData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7); // Items per page
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetching data function
   const fetchData = async (institution = 'awsaiapp') => {
     try {
+      util.setLoader(true)
       const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
       const filteredData = memberResponse.filter(
         (member) => member.userType === 'member' || member.userType === 'admin'
@@ -48,6 +51,7 @@ const AdminMemberlist = () => {
     } catch (error) {
       console.error('Error fetching the members or institution data:', error);
     }
+    util.setLoader(false)
   };
 
   const handlePageChange = (page) => {
@@ -62,8 +66,8 @@ const AdminMemberlist = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentMembers = memberData.slice(indexOfFirstItem, indexOfLastItem);
 
-   //custom theme for pagination
-   const customTheme = {
+  //custom theme for pagination
+  const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
       showIcon: "inline-flex",
@@ -82,6 +86,21 @@ const AdminMemberlist = () => {
       }
     }
   };
+
+  // Handle search across multiple attributes
+  const handleSearch = () => {
+    const filteredData = members.filter((member) =>
+      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setMemberData(filteredData);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
 
   // Utility function to censor email
   const censorEmail = (email) => {
@@ -115,11 +134,30 @@ const AdminMemberlist = () => {
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%]">
       <h2 className="text-2xl font-bold mb-4">Admin Member List</h2>
-      
+
       {/* Table container with reduced width */}
       <div className="w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white">
+        <div className="flex justify-end p-4">
+          {/* Search bar */}
+          <form className="flex items-center w-[30rem] border border-gray rounded-md">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+              </div>
+              <input
+                type="search"
+                id="default-search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Quick search Members"
+                required
+              />
+            </div>
+          </form>
+        </div>
         <Table striped>
-          <Table.Head>
+          <Table.Head className='border-t border-b border-gray'>
             <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
             <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email Address</Table.HeadCell>
             <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
@@ -142,13 +180,13 @@ const AdminMemberlist = () => {
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.status}</Table.Cell>
                 {member.role === 'sales' ? (
                   <>
-                    <Table.Cell>{member.delivered}</Table.Cell>
-                    <Table.Cell>{member.inprogress}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.inprogress}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.delivered}</Table.Cell>
                   </>
                 ) : (
                   <>
-                    <Table.Cell>--</Table.Cell>
-                    <Table.Cell>--</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
                   </>
                 )}
               </Table.Row>

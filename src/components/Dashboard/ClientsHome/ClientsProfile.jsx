@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { API, Storage } from 'aws-amplify'; // Make sure Storage is imported
 import { FaPencilAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import Context from "../../../context/Context";
 
 const ClientsProfile = ({ institution }) => {
   const [logo, setLogo] = useState(null); // Actual file selected by the user
   const [selectedFile, setSelectedFile] = useState(null); // URL for preview purposes
+  const { util } = useContext(Context);
   const [clientData, setClientData] = useState({
     institutionid: '',
     Query_Address: '',
@@ -24,6 +26,7 @@ const ClientsProfile = ({ institution }) => {
     if (!institution) return; // Ensure institution is defined
 
     try {
+      util.setLoader(true)
       const [templateResponse, response] = await Promise.all([
         API.get("clients", `/user/development-form/get-user/${institution}`),
         API.get("clients", `/user/list-members/${institution}`)
@@ -67,6 +70,7 @@ const ClientsProfile = ({ institution }) => {
     } catch (error) {
       console.error("Error fetching details:", error);
     }
+    util.setLoader(false)
   };
 
   useEffect(() => {
@@ -95,7 +99,7 @@ const ClientsProfile = ({ institution }) => {
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
-  
+
     try {
       // Upload the logo if a new one was selected
       let logoUrl = clientData.logoUrl;
@@ -104,11 +108,11 @@ const ClientsProfile = ({ institution }) => {
           contentType: logo.type,
         });
         logoUrl = await Storage.get(response.key);
-  
+
         // Split the URL to remove the query string (if any)
         logoUrl = logoUrl.split('?')[0];
       }
-  
+
       // If the logo URL exists, update the company information using the company API
       if (clientData.logoUrl || logoUrl) {
         const logoPayload = {
@@ -120,10 +124,10 @@ const ClientsProfile = ({ institution }) => {
           LightPrimaryColor: clientData.LightPrimaryColor,
           LightestPrimaryColor: clientData.LightestPrimaryColor,
         };
-  
+
         await API.put("clients", "/user/development-form/company", { body: logoPayload });
       }
-  
+
       // If email or address is present, update contact information using the contact API
       if (clientData.Query_EmailId || clientData.Query_Address) {
         const contactPayload = {
@@ -142,10 +146,10 @@ const ClientsProfile = ({ institution }) => {
           InstructorBg: clientData.InstructorBg,
           SubscriptionBg: clientData.SubscriptionBg,
         };
-  
+
         await API.put("clients", "/user/development-form/contact", { body: contactPayload });
       }
-  
+
       Swal.fire({ icon: "success", title: "Changes Saved" });
     } catch (error) {
       console.error("Error saving details:", error);
@@ -156,7 +160,7 @@ const ClientsProfile = ({ institution }) => {
       fetchClientAndOwnerDetails(); // Refresh the data after saving
     }
   };
-  
+
 
   return (
     <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw]">
