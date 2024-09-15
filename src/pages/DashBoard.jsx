@@ -13,7 +13,7 @@ import LeadsList from "../components/Dashboard/LeadsList/LeadsList";
 import { IoMdArrowRoundBack } from "react-icons/io";
 // import { Link } from "react-router-dom";
 import Profile from "../components/Dashboard/Profile/Profile";
-import InstitutionDraft from "./InstitutionDraft";
+import InstitutionDraft from "../components/Dashboard/InstittionDraft/InstitutionDraft";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
