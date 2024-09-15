@@ -1,5 +1,6 @@
 // Template.js
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 import Preview from '../components/Template/Preview';
@@ -13,10 +14,12 @@ import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
+import PrevSectionDraftHandler from '../components/Template/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
-import {CSVUpload} from '../components/UploadFile/CSVUpload';
+// import {CSVUpload} from '../components/UploadFile/CSVUpload';
 const Template = () => {
+  const Navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
 
@@ -99,7 +102,7 @@ const Template = () => {
       india: true,
     },
     {
-      heading: '',
+      heading:'',
       amount: '',
       currency: 'INR',
       country: 'INDIA',
@@ -170,6 +173,9 @@ const Template = () => {
 
   const [contactInfo, setContactInfo] = useState({
     address: '',
+    country: 'India',
+    countryCode: '91',
+    owner_name:'',
     phoneNumber: '',
     email: '',
     upiId: '',
@@ -183,260 +189,261 @@ const Template = () => {
   useEffect(() => {
     console.log(policies);
   }, [policies]);
-  const [loaderInitialized, setLoaderInitialized] = useState(false);
-  useEffect(() => {
-    async function fetchData() {
-      const institutionId = Ctx.userData.institutionName;
-      if (!loaderInitialized) {
-        util.setLoader(true);
-        setLoaderInitialized(true);
-      }
-      try {
-        const templateResponse = await API.get(
-          "clients",
-          `/user/development-form/get-user/${institutionId}`
-        );
+  // const [loaderInitialized, setLoaderInitialized] = useState(false);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // const institutionId = Ctx.userData.institutionName;
+  //     const institutionId = Ctx.userData.institutionName;
+  //     if (!loaderInitialized) {
+  //       util.setLoader(true);
+  //       setLoaderInitialized(true);
+  //     }
+  //     try {
+  //       const templateResponse = await API.get(
+  //         "clients",
+  //         `/user/development-form/get-user/${institutionId}`
+  //       );
 
-        const productResponse = await API.get(
-          "clients",
-          `/user/development-form/get-product/${institutionId}`
-        );
+  //       const productResponse = await API.get(
+  //         "clients",
+  //         `/user/development-form/get-product/${institutionId}`
+  //       );
 
-        const instructorResponse = await API.get(
-          "clients",
-          `/user/development-form/get-instructor/${institutionId}`
-        );
+  //       const instructorResponse = await API.get(
+  //         "clients",
+  //         `/user/development-form/get-instructor/${institutionId}`
+  //       );
 
-        console.log('hhhhssdsdsd', templateResponse);
-        console.log("😒😒😒😒", productResponse);
-        console.log("disidisdd", instructorResponse);
+  //       console.log('hhhhssdsdsd', templateResponse);
+  //       console.log("😒😒😒😒", productResponse);
+  //       console.log("disidisdd", instructorResponse);
 
-        if (templateResponse) {
-          //          console.log("HELLO1");
+  //       if (templateResponse) {
+  //         //          console.log("HELLO1");
 
-          // COMPANY
-          setCompanyName(institutionId);
-          setLightPrimaryColor(templateResponse.LightPrimaryColor);
-          setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
-          setPrimaryColor(templateResponse.PrimaryColor);
-          setSecondaryColor(templateResponse.SecondaryColor);
-          setSelectedFile(templateResponse.logoUrl);
+  //         // COMPANY
+  //         setCompanyName(institutionId);
+  //         setLightPrimaryColor(templateResponse.LightPrimaryColor);
+  //         setLightestPrimaryColor(templateResponse.LightestPrimaryColor);
+  //         setPrimaryColor(templateResponse.PrimaryColor);
+  //         setSecondaryColor(templateResponse.SecondaryColor);
+  //         setSelectedFile(templateResponse.logoUrl);
 
-          let url = templateResponse.logoUrl
-          let response = await fetch(url);
-          let data = await response.blob();
-          let metadata = {
-            type: data.type
-          };
-          let file = new File([data], url.split('/').pop(), metadata);
-          setLogo(file);
+  //         let url = templateResponse.logoUrl
+  //         let response = await fetch(url);
+  //         let data = await response.blob();
+  //         let metadata = {
+  //           type: data.type
+  //         };
+  //         let file = new File([data], url.split('/').pop(), metadata);
+  //         setLogo(file);
 
-          let url1 = templateResponse.ServicesBg
-          let response1 = await fetch(url1);
-          let data1 = await response1.blob();
-          let metadata1 = {
-            type: data1.type
-          };
-          let file1 = new File([data1], url1.split('/').pop(), metadata1);
-          setServicesBg(file1);
-          let url2 = templateResponse.ServicesPortrait
-          let response2 = await fetch(url2);
-          let data2 = await response2.blob();
-          let metadata2 = {
-            type: data2.type
-          };
-          let file2 = new File([data2], url2.split('/').pop(), metadata2);
-          setServicesPortrait(file2);
-          let url3 = templateResponse.TestimonialBg
-          let response3 = await fetch(url3);
-          let data3 = await response3.blob();
-          let metadata3 = {
-            type: data3.type
-          };
-          let file3 = new File([data3], url3.split('/').pop(), metadata3);
-          setTestimonialBg(file3);
-          let url4 = templateResponse.SubscriptionBg
-          let response4 = await fetch(url4);
-          let data4 = await response4.blob();
-          let metadata4 = {
-            type: data4.type
-          };
-          let file4 = new File([data4], url4.split('/').pop(), metadata4);
-          setSubscriptionBg(file4);
-          let url6 = templateResponse.InstructorBg
-          let response6 = await fetch(url6);
-          let data6 = await response6.blob();
-          let metadata6 = {
-            type: data6.type
-          };
-          let file6 = new File([data6], url6.split('/').pop(), metadata6);
-          setInstructorBg(file6);
-          let url5 = templateResponse.AboutUsBg
-          let response5 = await fetch(url5);
-          let data5 = await response5.blob();
-          let metadata5 = {
-            type: data5.type
-          };
-          let file5 = new File([data5], url5.split('/').pop(), metadata5);
-          setAboutUsBg(file5);
-          // HOME
-          setTagLine(templateResponse.TagLine);
-          setTagLine1(templateResponse.TagLine1);
-          url = templateResponse.videoUrl;
-          response = await fetch(url);
-          data = await response.blob();
-          metadata = {
-            type: data.type
-          };
-          file = new File([data], url.split('/').pop(), metadata);
-          setVideo(file);
-          setSelectedMedia(templateResponse.videoUrl);
+  //         let url1 = templateResponse.ServicesBg
+  //         let response1 = await fetch(url1);
+  //         let data1 = await response1.blob();
+  //         let metadata1 = {
+  //           type: data1.type
+  //         };
+  //         let file1 = new File([data1], url1.split('/').pop(), metadata1);
+  //         setServicesBg(file1);
+  //         let url2 = templateResponse.ServicesPortrait
+  //         let response2 = await fetch(url2);
+  //         let data2 = await response2.blob();
+  //         let metadata2 = {
+  //           type: data2.type
+  //         };
+  //         let file2 = new File([data2], url2.split('/').pop(), metadata2);
+  //         setServicesPortrait(file2);
+  //         let url3 = templateResponse.TestimonialBg
+  //         let response3 = await fetch(url3);
+  //         let data3 = await response3.blob();
+  //         let metadata3 = {
+  //           type: data3.type
+  //         };
+  //         let file3 = new File([data3], url3.split('/').pop(), metadata3);
+  //         setTestimonialBg(file3);
+  //         let url4 = templateResponse.SubscriptionBg
+  //         let response4 = await fetch(url4);
+  //         let data4 = await response4.blob();
+  //         let metadata4 = {
+  //           type: data4.type
+  //         };
+  //         let file4 = new File([data4], url4.split('/').pop(), metadata4);
+  //         setSubscriptionBg(file4);
+  //         let url6 = templateResponse.InstructorBg
+  //         let response6 = await fetch(url6);
+  //         let data6 = await response6.blob();
+  //         let metadata6 = {
+  //           type: data6.type
+  //         };
+  //         let file6 = new File([data6], url6.split('/').pop(), metadata6);
+  //         setInstructorBg(file6);
+  //         let url5 = templateResponse.AboutUsBg
+  //         let response5 = await fetch(url5);
+  //         let data5 = await response5.blob();
+  //         let metadata5 = {
+  //           type: data5.type
+  //         };
+  //         let file5 = new File([data5], url5.split('/').pop(), metadata5);
+  //         setAboutUsBg(file5);
+  //         // HOME
+  //         setTagLine(templateResponse.TagLine);
+  //         setTagLine1(templateResponse.TagLine1);
+  //         url = templateResponse.videoUrl;
+  //         response = await fetch(url);
+  //         data = await response.blob();
+  //         metadata = {
+  //           type: data.type
+  //         };
+  //         file = new File([data], url.split('/').pop(), metadata);
+  //         setVideo(file);
+  //         setSelectedMedia(templateResponse.videoUrl);
 
-          if (file.type.includes("video")) {
-            setMediaType("video");
-          } else if (file.type.includes("image")) {
-            setMediaType("image");
-          }
+  //         if (file.type.includes("video")) {
+  //           setMediaType("video");
+  //         } else if (file.type.includes("image")) {
+  //           setMediaType("image");
+  //         }
 
-          // SERVICES
-          // setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1 || '');
-          // setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2 || '');
-          // setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1 || '');
+  //         // SERVICES
+  //         // setsrc_Components_Home_Header3__h1(templateResponse.src_Components_Home_Header3__h1 || '');
+  //         // setsrc_Components_Home_Header3__h2(templateResponse.src_Components_Home_Header3__h2 || '');
+  //         // setsrc_Components_Home_Why__h1(templateResponse.src_Components_Home_Why__h1 || '');
 
-          // setServices([
-          //   {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
-          //   {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
-          //   {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
-          // ]);
+  //         // setServices([
+  //         //   {title: templateResponse.src_Components_Home_Header3__h5_1 || '', description: templateResponse.src_Components_Home_Header3__p_1 || ''},
+  //         //   {title: templateResponse.src_Components_Home_Header3__h5_2 || '', description: templateResponse.src_Components_Home_Header3__p_2 || ''},
+  //         //   {title: templateResponse.src_Components_Home_Header3__h5_3 || '', description: templateResponse.src_Components_Home_Header3__p_3 || ''}
+  //         // ]);
 
-          if (templateResponse.Services)
-            setServices(templateResponse.Services);
+  //         if (templateResponse.Services)
+  //           setServices(templateResponse.Services);
 
-          if (templateResponse.ClassTypes)
-            setDanceTypes(templateResponse.ClassTypes);
+  //         if (templateResponse.ClassTypes)
+  //           setDanceTypes(templateResponse.ClassTypes);
 
-          // TESTIMONIALS
-          url = templateResponse.Testimonial[0].img;
-          response = await fetch(url);
-          data = await response.blob();
-          metadata = {
-            type: data.type
-          };
-          file = new File([data], url.split('/').pop(), metadata);
-          templateResponse.Testimonial[0].uploadedFile = file;
+  //         // TESTIMONIALS
+  //         url = templateResponse.Testimonial[0].img;
+  //         response = await fetch(url);
+  //         data = await response.blob();
+  //         metadata = {
+  //           type: data.type
+  //         };
+  //         file = new File([data], url.split('/').pop(), metadata);
+  //         templateResponse.Testimonial[0].uploadedFile = file;
 
-          url = templateResponse.Testimonial[1].img;
-          response = await fetch(url);
-          data = await response.blob();
-          metadata = {
-            type: data.type
-          };
-          file = new File([data], url.split('/').pop(), metadata);
-          templateResponse.Testimonial[1].uploadedFile = file;
+  //         url = templateResponse.Testimonial[1].img;
+  //         response = await fetch(url);
+  //         data = await response.blob();
+  //         metadata = {
+  //           type: data.type
+  //         };
+  //         file = new File([data], url.split('/').pop(), metadata);
+  //         templateResponse.Testimonial[1].uploadedFile = file;
 
-          url = templateResponse.Testimonial[2].img;
-          response = await fetch(url);
-          data = await response.blob();
-          metadata = {
-            type: data.type
-          };
-          file = new File([data], url.split('/').pop(), metadata);
-          templateResponse.Testimonial[2].uploadedFile = file;
+  //         url = templateResponse.Testimonial[2].img;
+  //         response = await fetch(url);
+  //         data = await response.blob();
+  //         metadata = {
+  //           type: data.type
+  //         };
+  //         file = new File([data], url.split('/').pop(), metadata);
+  //         templateResponse.Testimonial[2].uploadedFile = file;
 
-          const test = [{}, {}, {}];
-          for (let i = 0; i < 3; i++) {
-            test[i].name = templateResponse.Testimonial[i].name;
-            test[i].feedback = templateResponse.Testimonial[i].description;
-            test[i].imgSrc = templateResponse.Testimonial[i].img;
-            test[i].uploadedFile = templateResponse.Testimonial[i].uploadedFile.name;
-            test[i].actualFile = templateResponse.Testimonial[i].uploadedFile;
-            test[i].type = templateResponse.Testimonial[i].uploadedFile.type;
-          }
+  //         const test = [{}, {}, {}];
+  //         for (let i = 0; i < 3; i++) {
+  //           test[i].name = templateResponse.Testimonial[i].name;
+  //           test[i].feedback = templateResponse.Testimonial[i].description;
+  //           test[i].imgSrc = templateResponse.Testimonial[i].img;
+  //           test[i].uploadedFile = templateResponse.Testimonial[i].uploadedFile.name;
+  //           test[i].actualFile = templateResponse.Testimonial[i].uploadedFile;
+  //           test[i].type = templateResponse.Testimonial[i].uploadedFile.type;
+  //         }
 
-          setTestimonials(test);
+  //         setTestimonials(test);
 
-          // FAQ
-          setFaqs(templateResponse.FAQ.map(obj => {
-            return {
-              question: obj.title,
-              answer: obj.content,
-            };
-          }));
+  //         // FAQ
+  //         setFaqs(templateResponse.FAQ.map(obj => {
+  //           return {
+  //             question: obj.title,
+  //             answer: obj.content,
+  //           };
+  //         }));
 
-          // POLICY
-          setPolicies({
-            'Privacy Policy': templateResponse.PrivacyPolicy,
-            'About Us': templateResponse.AboutUs,
-            'Refund Policy': templateResponse.Refund,
-            'Terms and Conditions': templateResponse.TermsData.map(obj => {
-              const obj2 = { ...obj }
-              obj2.heading = obj2.title;
-              obj2.title = undefined;
-              return obj2;
-            }),
-          })
+  //         // POLICY
+  //         setPolicies({
+  //           'Privacy Policy': templateResponse.PrivacyPolicy,
+  //           'About Us': templateResponse.AboutUs,
+  //           'Refund Policy': templateResponse.Refund,
+  //           'Terms and Conditions': templateResponse.TermsData.map(obj => {
+  //             const obj2 = { ...obj }
+  //             obj2.heading = obj2.title;
+  //             obj2.title = undefined;
+  //             return obj2;
+  //           }),
+  //         })
 
-          // CONTACT
-          setContactInfo({
-            address: templateResponse.Query_Address,
-            phoneNumber: templateResponse.Query_PhoneNumber,
-            email: templateResponse.Query_EmailId,
-            upidId: templateResponse.UpiId,
-            instagram: templateResponse.Instagram,
-            facebook: templateResponse.Facebook,
-            youtube: templateResponse.YTLink,
-          })
-        }
+  //         // CONTACT
+  //         setContactInfo({
+  //           address: templateResponse.Query_Address,
+  //           phoneNumber: templateResponse.Query_PhoneNumber,
+  //           email: templateResponse.Query_EmailId,
+  //           upidId: templateResponse.UpiId,
+  //           instagram: templateResponse.Instagram,
+  //           facebook: templateResponse.Facebook,
+  //           youtube: templateResponse.YTLink,
+  //         })
+  //       }
 
-        if (productResponse.length > 0) {
-          console.log("HELLO2", productResponse);
-          const convertedProductResponse = productResponse.map(product => ({
-            ...product,
-            amount: product.amount / 100, // Convert amount to rupee
-          }));
+  //       if (productResponse.length > 0) {
+  //         console.log("HELLO2", productResponse);
+  //         const convertedProductResponse = productResponse.map(product => ({
+  //           ...product,
+  //           amount: product.amount / 100, // Convert amount to rupee
+  //         }));
 
-          console.log(convertedProductResponse);
-          await setSubscriptions(convertedProductResponse);
-        }
-        if (instructorResponse.length > 0) {
-          //          console.log("HELLO3");
+  //         console.log(convertedProductResponse);
+  //         await setSubscriptions(convertedProductResponse);
+  //       }
+  //       if (instructorResponse.length > 0) {
+  //         //          console.log("HELLO3");
 
-          const inst = [];
-          for (let i = 0; i < instructorResponse.length; i++) {
-            inst.push({});
+  //         const inst = [];
+  //         for (let i = 0; i < instructorResponse.length; i++) {
+  //           inst.push({});
 
-            const url = instructorResponse[i].image;
-            const response = await fetch(url);
-            const data = await response.blob();
-            const metadata = {
-              type: data.type
-            }
-            const file = new File([data], url.split('/').pop(), metadata);
+  //           const url = instructorResponse[i].image;
+  //           const response = await fetch(url);
+  //           const data = await response.blob();
+  //           const metadata = {
+  //             type: data.type
+  //           }
+  //           const file = new File([data], url.split('/').pop(), metadata);
 
-            inst[i].imgSrc = instructorResponse[i].image;
-            inst[i].uploadedFile = file.name;
-            inst[i].actualFile = file;
-            inst[i].name = instructorResponse[i].name;
-            inst[i].emailId = instructorResponse[i].emailId;
-            inst[i].position = instructorResponse[i].position;
-            inst[i].instructorId = instructorResponse[i].instructorId;
-            inst[i].institution = instructorResponse[i].institution;
-          }
-          setInstructors(inst);
-        }
+  //           inst[i].imgSrc = instructorResponse[i].image;
+  //           inst[i].uploadedFile = file.name;
+  //           inst[i].actualFile = file;
+  //           inst[i].name = instructorResponse[i].name;
+  //           inst[i].emailId = instructorResponse[i].emailId;
+  //           inst[i].position = instructorResponse[i].position;
+  //           inst[i].instructorId = instructorResponse[i].instructorId;
+  //           inst[i].institution = instructorResponse[i].institution;
+  //         }
+  //         setInstructors(inst);
+  //       }
 
-        //        setLoader(false);
-      } catch (error) {
-        console.error("Error fetching details:", error);
-        //        setLoader(false);
-      } finally {
-        util.setLoader(false);
-      }
-    }
+  //       //        setLoader(false);
+  //     } catch (error) {
+  //       console.error("Error fetching details:", error);
+  //       //        setLoader(false);
+  //     } finally {
+  //       util.setLoader(false);
+  //     }
+  //   }
 
-    fetchData();
-  }, [Ctx.userData.institutionName, loaderInitialized, util]);
-  const institutionId = Ctx.userData.institutionName;
+  //   fetchData();
+  // }, [Ctx.userData.institutionName, loaderInitialized, util]);
+  const institutionId = companyName;
 
   const handleCompanyUpload = async () => {
     try {
@@ -454,6 +461,9 @@ const Template = () => {
         LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
         LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
       };
+
+        // const fileNameForBucket = "memberList";
+        // CSVUpload(CSVFile,institutionId,fileNameForBucket);
       await API.put("clients", "/user/development-form/company", {
         body: {
           institutionid: institutionId,
@@ -464,14 +474,7 @@ const Template = () => {
           ...additionalAttributes,
         },
       });
-      if (!CSVFile) {
-        alert("Please select a csv file to upload.");
-        return;
-      }
-      else {
-        const fileNameForBucket = "memberList";
-        CSVUpload(CSVFile,institutionId,fileNameForBucket);
-      }
+     
     } catch (error) {
       console.error("Error uploading logo: ", error);
     }
@@ -841,9 +844,11 @@ const Template = () => {
         body: {
           institutionid: institutionId,
           Query_Address: contactInfo.address,
-          Query_PhoneNumber: contactInfo.phoneNumber,
+          Query_PhoneNumber: '+' +contactInfo.countryCode + contactInfo.phoneNumber,
           Query_EmailId: contactInfo.email,
           Facebook: contactInfo.facebook,
+          userName:contactInfo.owner_name,
+          country: contactInfo.country,
           Instagram: contactInfo.instagram,
           YTLink: contactInfo.youtube,
           UpiId: contactInfo.upiId,
@@ -878,20 +883,81 @@ const Template = () => {
 
 
   const handleNextSection = () => {
+    let institutionCheckInProgress = false;
     setCurrentSection((prevSection) => {
       const nextSection = Math.min(prevSection + 1, 8);
       //      console.log(currentSection);
 
       switch (currentSection) {
         case 0:
+          if (!companyName) {
+            alert("Please enter the institution Name.");
+            
+           return prevSection;
+          }
           if (!logo) {
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-
-          handleCompanyUpload();
-          break;
+          // if (!CSVFile) {
+          //   alert("Please select a csv file to upload.");
+          //  return prevSection;
+          // }
+          if (!institutionCheckInProgress) {
+            institutionCheckInProgress = true;
+            API.get("clients", `/user/check-institution?institutionid=${companyName}`)
+              .then(response => {
+                institutionCheckInProgress = false;
+                if (response && response.exists) {
+                  alert("This institution already exists. Please use a different name.");
+                  setCurrentSection(prevSection); 
+                } else if (response) {
+                  handleCompanyUpload();
+                  setCurrentSection(nextSection);
+                } else {
+                  throw new Error("Error checking institution. Please try again.");
+                }
+              })
+              .catch(error => {
+                institutionCheckInProgress = false;
+                alert(error.message);
+                setCurrentSection(prevSection);
+              });
+  
+            // Exit early to prevent automatic section change
+            return prevSection; // Prevent automatic section change
+          }
+          return prevSection; 
+          // handleCompanyUpload();
+          // break;
         case 1:
+            if (!contactInfo.phoneNumber || !contactInfo.email) {
+              if (!contactInfo.phoneNumber) {
+                alert("Please enter a valid phone number before proceeding.");
+              }
+              if (!contactInfo.email) {
+                alert("Please enter a valid email address before proceeding.");
+              }
+              if (!contactInfo.owner_name) {
+                alert("Please enter a valid ownername before proceeding.");
+              }
+              return prevSection;
+            }
+            const phoneRegex = /^[0-9]+$/;
+            if (!phoneRegex.test(contactInfo.phoneNumber)) {
+              alert("Please enter a valid phone number.");
+              return prevSection;
+            }
+        
+            // Validate email address
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(contactInfo.email)) {
+              alert("Please enter a valid email address.");
+              return prevSection;
+            }
+            handleContactUpload();
+            break;
+        case 2:
           if (!video || !TagLine) {
             if (!video) {
               alert("Please upload a video before proceeding.");
@@ -903,7 +969,7 @@ const Template = () => {
           }
           handleHomeUpload();
           break;
-        case 2:
+        case 3:
           const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
           if (!areServicesFilled) {
             alert("Please fill all service fields before proceeding.");
@@ -911,7 +977,7 @@ const Template = () => {
           }
           handleServicesUpload();
           break;
-        case 3:
+        case 4:
           const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
           if (!isTestimonialsFilled) {
             alert("Please fill three testimonials before proceeding.");
@@ -933,7 +999,7 @@ const Template = () => {
           }
           handleTestimonialsUpload();
           break;
-        case 4:
+        case 5:
           const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
           if (invalidPriceIndex !== -1) {
             alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
@@ -941,7 +1007,7 @@ const Template = () => {
           }
           handleSubscriptionUpload();
           break;
-        case 5:
+        case 6:
           const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
           // Check if both title and answer are filled for each FAQ
@@ -953,7 +1019,7 @@ const Template = () => {
           }
           handleFAQsUpload();
           break;
-        case 6:
+        case 7:
           const incompleteIndex = instructors.findIndex(instructor => {
             return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
           });
@@ -969,13 +1035,10 @@ const Template = () => {
           }
           handleInstructorsUpload();
           break;
-        case 7:
+        case 8:
           handlePolicyUpload();
           break;
-        case 8:
-
-          handleContactUpload();
-          break;
+       
         default:
           break;
       }
@@ -990,8 +1053,33 @@ const Template = () => {
     //    console.log("Saved Trigger")
   };
 
-  const handlePrevSection = () => {
-    setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
+  // const handlePrevSection = () => {
+  //   setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
+  // };
+  const [showModal, setShowModal] = useState(false);
+  const handleSaveDraft = () => {
+    Navigate(`/full?institutionName=${institutionId}`)
+  };
+
+  const handleClearData = async () => {
+    try {
+      util.setLoader(true);
+        await API.del(
+         "clients", 
+          `/user/development-form/delete-all/${institutionId}`);
+        alert('All Data deleted successfully');
+        util.setLoader(false); 
+        Navigate('/dashboard');
+      } catch (error) {
+       alert('No matching data found', error);
+       util.setLoader(false); 
+      }
+  };
+  const handlePrevSectionDraft = () => {
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
   //  console.log("Logo in Template:", logo);
   return (
@@ -1021,8 +1109,16 @@ const Template = () => {
               CSVFile={CSVFile}
               setCSVFile={setCSVFile}
             />}
-
-          {currentSection === 1 &&
+  {currentSection === 1 &&
+            <Contact
+              contactInfo={contactInfo}
+              setContactInfo={setContactInfo}
+              SubscriptionBg={SubscriptionBg}
+              setSubscriptionBg={setSubscriptionBg}
+              InstructorBg={InstructorBg}
+              setInstructorBg={setInstructorBg}
+            />}
+          {currentSection === 2 &&
             <Home
               TagLine={TagLine}
               setTagLine={setTagLine}
@@ -1036,7 +1132,7 @@ const Template = () => {
               setMediaType={setMediaType}
             />}
 
-          {currentSection === 2 &&
+          {currentSection === 3 &&
             <Services
               setServicesPortrait={setServicesPortrait}
               servicesPortrait={servicesPortrait}
@@ -1048,7 +1144,7 @@ const Template = () => {
               setDanceTypes={setDanceTypes}
             />}
 
-          {currentSection === 3 &&
+          {currentSection === 4 &&
             <Testimonials
               testimonials={testimonials}
               setTestimonials={setTestimonials}
@@ -1056,7 +1152,7 @@ const Template = () => {
               setTestimonialBg={setTestimonialBg}
             />}
 
-          {currentSection === 4 &&
+          {currentSection === 5 &&
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
@@ -1066,19 +1162,19 @@ const Template = () => {
               setCountryCode={setCountryCode}
             />}
 
-          {currentSection === 5 &&
+          {currentSection === 6 &&
             <FAQs
               faqs={faqs}
               setFaqs={setFaqs}
             />}
 
-          {currentSection === 6 &&
+          {currentSection === 7 &&
             <Instructors
               instructors={instructors}
               setInstructors={setInstructors}
             />}
 
-          {currentSection === 7 &&
+          {currentSection === 8 &&
             <Policy
               policies={policies}
               setPolicies={setPolicies}
@@ -1086,25 +1182,25 @@ const Template = () => {
               setAboutUsBg={setAboutUsBg}
             />}
 
-          {currentSection === 8 &&
-            <Contact
-              contactInfo={contactInfo}
-              setContactInfo={setContactInfo}
-              SubscriptionBg={SubscriptionBg}
-              setSubscriptionBg={setSubscriptionBg}
-              InstructorBg={InstructorBg}
-              setInstructorBg={setInstructorBg}
-            />}
+        
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
           <Footer
             saveData={saveData}
             currentSection={currentSection}
             nextSection={handleNextSection}
-            prevSection={handlePrevSection}
+            prevSection={handlePrevSectionDraft}
+            showModal={() => setShowModal(true)}
           />
         </div>
+        
       </div>
+      <PrevSectionDraftHandler
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onClear={handleClearData}
+        onSaveDraft={handleSaveDraft}
+      />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
-function Footer({ currentSection, nextSection, prevSection, saveData }) {
+function Footer({ currentSection, nextSection, prevSection, saveData, showModal }) {
   // eslint-disable-next-line
   const { userData, setUserData } = useContext(Context)
   const Navigate = useNavigate();
@@ -29,10 +29,10 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
 
   // eslint-disable-next-line
   const handlePrevClick = () => {
-    saveData();
-    nextSection();
-
+    // Trigger the modal
+    showModal();
   };
+
 
   const submitSections = async () => {
     nextSection();
@@ -73,7 +73,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
 
         <div className='absolute right-4 bottom-4 flex gap-[19rem] max950:gap-[32rem] max767:gap-36 max406:gap-[2rem] '>
           {currentSection > 0 && (
-            <button onClick={prevSection} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+            <button onClick={handlePrevClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
               BACK
             </button>
           )}
