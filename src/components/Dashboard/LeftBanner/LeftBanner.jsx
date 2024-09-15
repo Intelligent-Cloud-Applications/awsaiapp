@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
+import { MdInsertPageBreak } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./LeftBanner.css";
 
@@ -17,7 +19,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const { userData } = useContext(Context);
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
-  const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
+  const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp" && Ctx.userData.userType === "admin";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
 
@@ -41,7 +43,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 {isSuperAdmin && (
                   <>
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
-                    <div className="font-bold flex space-x-2 pb-3 items-center">
+                      <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
                           (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
                         }
@@ -54,31 +56,51 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Client Panel
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                      icon={HiShoppingBag}
+                      icon={MdInsertPageBreak}
                       onClick={() => {
-                        if (isSalesUser) {
-                          setClick(3); // Set click to 3 for "Institute Draft"
-                          displayAfterClick(3); // Redirect to Institute Draft
-                        } else {
-                          setClick(1); // Default case for Revenue
-                          displayAfterClick(1);
-                        }
+                        setClick(3); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(3); // Redirect to Institute Draft
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 1 || click === 3 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        {isSalesUser ? "Institute Draft" : "Revenue"}
+                        Institute Draft
+                      </span>
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      icon={FaUser}
+                      onClick={() => {
+                        setClick(3); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(3); // Redirect to Institute Draft
+                      }}
+                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Members
+                      </span>
+                    </Sidebar.Item>
+                    {/* Revenue */}
+                    <Sidebar.Item
+                      icon={HiShoppingBag}
+                      onClick={() => {
+                        setClick(1); // Set click to 1 for "Revenue"
+                        displayAfterClick(1); // Redirect to Revenue
+                      }}
+                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Revenue
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
@@ -88,9 +110,61 @@ const LeftBanner = ({ displayAfterClick }) => {
                           setClick(2);
                           displayAfterClick(2);
                         }}
-                        className={`custom-sidebar-item ${
-                          click === 2 ? "active bg-white" : ""
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline text-base font-[Poppins]">
+                          Profile
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
+                  </>
+                )}
+                {isSalesUser && (
+                  <>
+                   <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                      <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                        }
+                        <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
+                      </div>
+                    </Sidebar.ItemGroup>
+                    <Sidebar.Item
+                      icon={HiChartPie}
+                      onClick={() => {
+                        setClick(0);
+                        displayAfterClick(0);
+                      }}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Client Panel
+                      </span>
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      icon={MdInsertPageBreak}
+                      onClick={() => {
+                        setClick(3); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(3); // Redirect to Institute Draft
+                      }}
+                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Institute Draft
+                      </span>
+                    </Sidebar.Item>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiInbox}
+                        onClick={() => {
+                          setClick(2);
+                          displayAfterClick(2);
+                        }}
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                       >
                         <span className="hidden md:inline text-base font-[Poppins]">
                           Profile
@@ -107,9 +181,8 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline text-base font-[Poppins]">
                         Graph
@@ -121,9 +194,8 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(1);
                         displayAfterClick(1);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 1 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Members
@@ -135,9 +207,8 @@ const LeftBanner = ({ displayAfterClick }) => {
                         setClick(2);
                         displayAfterClick(2);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 2 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Leads

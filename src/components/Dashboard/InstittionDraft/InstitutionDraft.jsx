@@ -70,7 +70,7 @@ const InstitutionDraft = () => {
   };
   const showCreatedBy = userData.userType === "admin" && userData.role === "owner";
   return (
-    <div className="w-screen flex flex-col justify-center items-center mt-[-12rem] px-10 max800:px-2 mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[8%] py-6">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%] px-2">
       <ToastContainer />
       <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
         {/* Search Bar */}
