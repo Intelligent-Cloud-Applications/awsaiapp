@@ -215,12 +215,6 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  const onPageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
