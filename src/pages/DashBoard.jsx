@@ -56,7 +56,7 @@ const DashBoard = () => {
       }
     } else if (
       Ctx.userData.institutionName !== "awsaiapp" 
-      // && Ctx.userData.userType === "admin"
+      && Ctx.userData.userType === "member"
     ) {
       switch (click) {
         case 0:

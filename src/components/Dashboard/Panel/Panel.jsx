@@ -410,32 +410,20 @@ const Panel = () => {
     }
   };
 
-  const handleDropdownChange = async (clientInstitution, status, index) => {
+  const handleDropdownChange = useCallback(async (clientInstitution, status, index) => {
     const isDelivered = status === "Delivered";
-
     try {
-      // Define the body object
-      const body = {
-        institutionId: clientInstitution,
-        index: index,
-        isDelivered: isDelivered
-      };
-
-      // Make the PUT request
+      const body = { institutionId: clientInstitution, index, isDelivered };
       const response = await API.put("clients", "/user/updateDelivary", {
-        body: body, // Pass the body object directly
-        headers: {
-          'Content-Type': 'application/json', // Ensure the content type is set
-        }
+        body,
+        headers: { 'Content-Type': 'application/json' },
       });
-
       console.log("API response:", response);
-      // Handle the response as needed
     } catch (error) {
       console.error("Error updating delivery status:", error);
     }
-  };
-
+  }, []);
+  
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
