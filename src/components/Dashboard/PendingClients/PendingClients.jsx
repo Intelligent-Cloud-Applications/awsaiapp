@@ -130,6 +130,9 @@ const PendingClients = (props) => {
   // }
   const selectedRowCount = selectedRow.length;
 
+ 
+
+
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
       <div className={`w-[90%] rounded-3xl p-3 `}>
