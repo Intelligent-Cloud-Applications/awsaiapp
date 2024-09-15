@@ -55,8 +55,8 @@ const DashBoard = () => {
           return <div>Sorry, the server is down. Please try again later.</div>;
       }
     } else if (
-      Ctx.userData.institutionName !== "awsaiapp" &&
-      Ctx.userData.userType === "admin"
+      Ctx.userData.institutionName !== "awsaiapp" 
+      // && Ctx.userData.userType === "admin"
     ) {
       switch (click) {
         case 0:
