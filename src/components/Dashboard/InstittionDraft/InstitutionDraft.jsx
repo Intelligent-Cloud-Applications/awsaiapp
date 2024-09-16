@@ -1,19 +1,44 @@
-import React, { useState, useContext, useCallback, useMemo} from "react";
+import React, { useState, useContext, useCallback, useMemo,useEffect} from "react";
 import Context from "../../../context/Context";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Table, Pagination } from "flowbite-react";
 import "../Panel/Panel.css";
-
+import { API } from "aws-amplify";
 const InstitutionDraft = () => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const { clients, userData } = useContext(Context);
-  const clientsData = Object.entries(clients.data);
+  const { userData,util } = useContext(Context);
   const navigate = useNavigate();
   const Ctx = useContext(Context);
+  const [clients, setClients] = useState([]);
+  const[LoaderInitialized,setLoaderInitialized]=useState(false);
+  const fetchClients = useCallback(async () => {
+    try {
+      if(!LoaderInitialized){
+          util.setLoader(true);
+          setLoaderInitialized(true);
+      }
+   
+      let response;
+      if (userData.role === "owner") {
+        response = await API.get("clients", "/admin/list-institution");
+      } else {
+        response = await API.get("clients", "/admin/list-institutionForSales");
+      }
+      setClients(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+     
+     util.setLoader(false);
+    }
+  }, [userData.role]);
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = { year: "numeric", month: "short", day: "numeric" };
@@ -23,15 +48,17 @@ const InstitutionDraft = () => {
   const getUsernameByCognitoId = (cognitoId) => {
     console.log("cognitoid:", cognitoId);
     console.log("data:", useDataForSales.userName);
-  
+    
     const trimmedInputId = String(cognitoId).trim();
-
+    
     const user = useDataForSales.find(user => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
     console.log("user Name:", user);
     return user ? user.userName : 'Unknown'; 
   };
+  
+  const clientsData = Object.entries(clients);
   const filterClients = useCallback(() => {
     const filtered = clientsData
       .filter(([key, client]) => !client.isFormFilled || client.isFormFilled === false) 

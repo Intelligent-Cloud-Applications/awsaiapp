@@ -1804,7 +1804,7 @@ const New_Full = () => {
   return (
     <>
       <Navbar />
-      {(Ctx.userData.userType === 'member' && Ctx.userData.role === 'sales') || templateDetails.createdBy === Ctx.userData.cognitoId ?
+      {(Ctx.userData.userType === 'admin' && Ctx.userData.role === 'owner') || templateDetails.createdBy === Ctx.userData.cognitoId ?
         (
           <div className="">
             <div className="relative mt-20 p-4">
