@@ -35,7 +35,7 @@ const InstitutionDraft = () => {
      
      util.setLoader(false);
     }
-  }, [userData.role]);
+  }, [userData.role,LoaderInitialized,util]);
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
