@@ -45,6 +45,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
+  const type = ["Dance Studio", "Dental"];
 
   const customTheme = {
     pages: {
@@ -423,7 +424,7 @@ const Panel = () => {
             label={instituteType ? splitandjoin(instituteType) : "Type"}
             className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
           >
-            {instituteTypes.map((type) => (
+            {type.map((type) => (
               <Dropdown.Item
                 key={type}
                 onClick={() => setInstituteType(type)}
