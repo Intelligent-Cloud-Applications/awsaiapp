@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Country from '../../Auth/Country';
 function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg }) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
@@ -10,12 +10,33 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
   //   youtube: '',
   //   facebook: '',
   // });
+  
+
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default country code
 
   const handleContactChange = (e) => {
     const { name, value } = e.target;
     setContactInfo({ ...contactInfo, [name]: value });
   };
 
+  const handleCountryChange = (e) => {
+    const selectedCountry = e.target.options[e.target.selectedIndex].text;
+    const selectedCountryCode = e.target.value;
+    setContactInfo(prevInfo => ({
+      ...prevInfo,
+      country: selectedCountry.split(' ')[0],
+      countryCode: selectedCountryCode
+    }));
+    setSelectedCountryCode(selectedCountryCode);
+  };
+
+  // Function to handle phone number changes
+  const handlePhoneNumberChange = (e) => {
+    setContactInfo(prevInfo => ({
+      ...prevInfo,
+      phoneNumber: e.target.value
+    }));
+  };
   const [activeContactIndex, setActiveContactIndex] = useState(null);
 
   const toggleActiveContact = (index) => {
@@ -79,20 +100,41 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
       <div className="mb-8">
-        {Object.keys(contactInfo).map((key, index) => (
+        {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
           <div key={index} className="mt-1">
-            <h2 className="font-medium text-xl">{key.charAt(0).toUpperCase() + key.slice(1)}</h2>
+            <h2 className="font-medium text-[20px]">{key.charAt(0).toUpperCase() + key.slice(1)}</h2>
             <div className="relative">
-              <input
-                type="text"
-                name={key}
-                value={contactInfo[key]}
-                onChange={handleContactChange}
-                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
-                onFocus={() => toggleActiveContact(index)}
-                onBlur={() => toggleActiveContact(null)}
-              />
+              {key === 'phoneNumber' ? (
+                <div className="flex items-center">
+                  <select
+                    value={selectedCountryCode}
+                    onChange={handleCountryChange}
+                    className="border w-[9rem] border-gray-300 rounded-l px-2 py-1"
+                  >
+                  
+              <Country />
+                  </select>
+                  <input
+                    type="text"
+                    name={key}
+                    value={contactInfo[key]}
+                    onChange={handlePhoneNumberChange}
+                    placeholder="Phone Number"
+                    className="w-full max-w-[28rem] text-black border border-gray-300 rounded-r outline-none bg-transparent mt-2"
+                  />
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  name={key}
+                  value={contactInfo[key]}
+                  onChange={handleContactChange}
+                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
+                  onFocus={() => toggleActiveContact(index)}
+                  onBlur={() => toggleActiveContact(null)}
+                />
+              )}
               <div
                 className={`absolute left-0 right-0 bottom-0 h-[1px] ${activeContactIndex === index ? 'bg-black' : 'bg-[#939393]'
                   }`}
@@ -233,6 +275,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
       <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
         ( *Upload a .csv file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
       </p> */}
+      <div className='h-[250px]'></div>
     </div>
   );
 }
