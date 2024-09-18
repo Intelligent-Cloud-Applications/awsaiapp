@@ -18,10 +18,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const location = useLocation()
   // const searchParams = new URLSearchParams(window.location.search);
   let institution;
-  if (user.profile.institutionName === "awsaiapp") {
-    institution = userData.institutionName;
+  if (user.profile.tempinstitutionName === "awsaiapp") {
+    institution = userData.tempinstitutionName;
   } else {
-    institution = userData.institutionName || tempInstitution;
+    institution = userData.tempinstitutionName || tempInstitution;
   }
   const itemsPerPage = 7;
   const [leadsData, setLeadsData] = useState([]);
@@ -630,17 +630,17 @@ const LeadsList = ({ institution: tempInstitution }) => {
     document.body.removeChild(link);
   };
 
-  useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      util.setLoader(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } else {
-      util.setLoader(false);
-    }
-    // eslint-disable-next-line
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname === "/dashboard") {
+  //     util.setLoader(true);
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 2000);
+  //   } else {
+  //     util.setLoader(false);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [location.pathname]);
 
   console.log("additionalInfoTitle:", additionalInfoTitle);
   console.log("additionalInfo:", additionalInfo);

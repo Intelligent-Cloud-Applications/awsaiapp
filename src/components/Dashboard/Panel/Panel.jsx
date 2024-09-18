@@ -12,7 +12,7 @@ import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination, Dropdown, Flowbite } from "flowbite-react";
-
+import Index from "../MemberList/Index";
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -232,11 +232,11 @@ const Panel = () => {
     }
   });
 
-  const handlePersonIconClick = (institution) => {
-    setisMonthlyReport(institution);
-    const updatedUserData = { ...userData, institutionName: institution };
-    setUserData(updatedUserData);
-  };
+  // const handlePersonIconClick = (institution) => {
+  //   setisMonthlyReport(institution);
+  //   const updatedUserData = { ...userData, institutionName: institution };
+  //   setUserData(updatedUserData);
+  // };
 
   const toggleAddUserForm = () => {
     setIsUserAdd(!isUserAdd);
@@ -413,9 +413,19 @@ const Panel = () => {
       console.error("Error updating delivery status:", error);
     }
   }, []);
-
+  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
+  const [showMemberList, setShowMemberList] = useState(false);
+  const handleInstitutionClick = (client) => {
+    // Set the institutionid as tempInstitution and show the MemberList
+    const updatedUserData = { ...userData, tempinstitutionName: client.institutionid };
+    setUserData(updatedUserData);
+    setTempInstitution(client.institutionid);
+    setShowMemberList(true); // Toggle view to MemberList
+  };
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+    <>
+    {!showMemberList ? (
+    <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
       <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
@@ -438,7 +448,7 @@ const Panel = () => {
         <div>
           <Link
             to={
-              instituteType !== "" && instituteType === "danceStudio"
+              instituteType !== "" && instituteType === "Dance Studio"
                 ? "/template"
                 : "#"
             }
@@ -702,11 +712,7 @@ const Panel = () => {
                     onClick={(e) => handleRowClick(client.institutionid, e)}
                   >
                     <Link
-                      to={`/Dashboard?institution=${client.institutionid}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePersonIconClick(client.institutionid);
-                      }}
+                onClick={() => handleInstitutionClick(client)}
                     >
                       <div className="email-hover uppercase font-semibold text-[#11192B]">
                         {client.institutionid}
@@ -757,11 +763,7 @@ const Panel = () => {
                       : 'Unknown'} {/* Fallback for undefined createdBy */}
                   </Table.Cell>
                   <Link
-                    to={`/Dashboard?institution=${client.institutionid}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePersonIconClick(client.institutionid);
-                    }}
+                   onClick={() => handleInstitutionClick(client)}
                     className="hidden change-page"
                   ></Link>
                   {/* <div
@@ -777,8 +779,7 @@ const Panel = () => {
                   // onClick={handleMoreClick}
                   >
                     <Link
-                      to={`/Dashboard?institution=${client.institutionid}`}
-                      onClick={() => handlePersonIconClick(client.institutionid)}
+                     onClick={() => handleInstitutionClick(client)}
                     >
                       {isMoreVisible ? <FaChevronRight /> : ""}
                     </Link>
@@ -1011,6 +1012,10 @@ const Panel = () => {
         </div>
       </div>
     </div>
+     ) : (
+      <Index tempInstitution={tempInstitution} />
+    )}
+    </>
   );
 };
 

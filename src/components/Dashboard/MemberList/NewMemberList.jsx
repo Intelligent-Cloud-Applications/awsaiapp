@@ -28,10 +28,10 @@ function NewMemberList({ institution: tempInstitution }) {
 
   useEffect(() => {
     let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
+    if (user.profile.tempinstitutionName === "awsaiapp") {
+      institution = userData.tempinstitutionName;
     } else {
-      institution = userData.institutionName || tempInstitution;
+      institution = userData.tempinstitutionName || tempInstitution;
     }
     const fetchData = async (institution) => {
       try {
@@ -54,7 +54,7 @@ function NewMemberList({ institution: tempInstitution }) {
     };
 
     fetchData(institution); // Pass institution to fetchData
-  }, [userData, tempInstitution, user.profile.institutionName, util, isLoader]);
+  }, [userData, tempInstitution, user.profile.tempinstitutionName, util, isLoader]);
 
   const fetchData = async (institution) => {
     try {

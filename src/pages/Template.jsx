@@ -1062,7 +1062,7 @@ const Template = () => {
   // };
   const [showModal, setShowModal] = useState(false);
   const handleSaveDraft = () => {
-    Navigate('/dashboard');
+    Navigate('/dashboard', { state: { section: 'institution-draft' } });
   };
   
   const handleClearData = async () => {
