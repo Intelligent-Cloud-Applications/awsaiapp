@@ -438,7 +438,7 @@ const Panel = () => {
         <div>
           <Link
             to={
-              instituteType !== "" && instituteType === "danceStudio"
+              instituteType !== "" && instituteType === "Dance Studio"
                 ? "/template"
                 : "#"
             }
