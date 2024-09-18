@@ -715,7 +715,7 @@ const Panel = () => {
                   </Table.Cell>
 
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {splitandjoin(userData.institutionType)}
+                    {splitandjoin(client.institutionType)}
                   </Table.Cell>
 
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
