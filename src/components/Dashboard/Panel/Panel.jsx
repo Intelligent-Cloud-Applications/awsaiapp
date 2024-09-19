@@ -45,7 +45,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental"];
+  const type = ["DanceStudio", "Dental"];
 
   const customTheme = {
     pages: {
@@ -438,7 +438,7 @@ const Panel = () => {
         <div>
           <Link
             to={
-              instituteType !== "" && instituteType === "Dance Studio"
+              instituteType !== "" && instituteType === "DanceStudio"
                 ? "/template"
                 : "#"
             }
