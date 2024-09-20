@@ -51,8 +51,6 @@ const Template = () => {
   //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
-  const [institutionType, setInstitutionType] = useState("DanceStudio");
-  const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
   const [video, setVideo] = useState(null);
@@ -471,8 +469,6 @@ const Template = () => {
           institutionid: institutionId,
           companyName: institutionId,
           PrimaryColor,
-          institutionFormat,
-          institutionType,
           SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
@@ -1062,9 +1058,9 @@ const Template = () => {
   // };
   const [showModal, setShowModal] = useState(false);
   const handleSaveDraft = () => {
-    Navigate('/dashboard', { state: { section: 'institution-draft' } });
+    Navigate(`/full?institutionName=${institutionId}`)
   };
-  
+
   const handleClearData = async () => {
     try {
       util.setLoader(true);
@@ -1104,10 +1100,6 @@ const Template = () => {
               SecondaryColor={SecondaryColor}
               setSecondaryColor={setSecondaryColor}
               logo={logo}
-              institutionType={institutionType}
-              setInstitutionType={setInstitutionType}
-              institutionFormat={institutionFormat}
-              setInstitutionFormat={setInstitutionFormat}
               setLogo={setLogo}
               LightestPrimaryColor={LightestPrimaryColor}
               setLightestPrimaryColor={setLightestPrimaryColor}
