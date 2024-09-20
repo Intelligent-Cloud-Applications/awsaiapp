@@ -20,11 +20,21 @@ function Company({
   setSelectedFile,
   CSVFile,
   setCSVFile,
+  setInstitutionFormat,
+  institutionFormat,
+  setInstitutionType,
+  institutionType
 }) {
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+  const handleInstitutionTypeChange = (e) => {
+    setInstitutionType(e.target.value);
+  };
 
+  const handleInstitutionFormatChange = (e) => {
+    setInstitutionFormat(e.target.value);
+  };
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
   };
@@ -37,15 +47,15 @@ function Company({
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
   };
-  
+
   const handleColorChange2 = (e) => {
     setSecondaryColor(e.target.value);
   };
-  
+
   const handleColorChange3 = (e) => {
     setLightPrimaryColor(e.target.value);
   };
-  
+
   const handleColorChange4 = (e) => {
     setLightestPrimaryColor(e.target.value);
   };
@@ -78,37 +88,28 @@ function Company({
     setFileOptionVisible(false);
   };
 
-  const handleCSVFlie = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setCSVFile(file);
-    }
-  }
-  const shortenFileName1 = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
-  };
+  // const handleCSVFlie = (e) => {
+  //   const file = e.target.files[0];
+  //   setCSVFile(file);
+  // }
+  // const shortenFileName1 = (file) => {
+  //   if (!file || !file.name) return '';
+  //   const maxLength = 15;
+  //   const fileName = file.name;
+  //   if (fileName.length > maxLength) {
+  //     return `${fileName.substring(0, maxLength)}...`;
+  //   }
+  //   return fileName;
+  // };
 
   return (
-    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '745px' }}>
+    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '450px' }}>
       <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
 
-      <div className="relative mt-6 hidden">
+      <div className="relative mt-6">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
           onClick={toggleCompanyInputVisibility}
@@ -119,11 +120,11 @@ function Company({
               value={companyName}
               onChange={handleCompanyInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent"
-              placeholder="Enter Company Name"
+              placeholder="Enter Institution Name"
               autoFocus
             />
           ) : (
-            <span>{companyName || "Company Name"}</span>
+            <span>{companyName || "Enter Institution Name"}</span>
           )}
         </h5>
         <div
@@ -132,7 +133,7 @@ function Company({
         ></div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-2">
         <h4 className="text-[#939393]">Choose Your Theme Color</h4>
         <div className="flex gap-8">
           <input
@@ -162,8 +163,32 @@ function Company({
           />
         </div>
       </div>
+      <div className="mt-4">
+        <label className="block text-[#939393] mb-2">Select Institution Type</label>
+        <select
+          value={institutionType}
+          onChange={handleInstitutionTypeChange}
+          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+        >
+          <option value="DanceStudio">Dance Studio</option>
+          <option value="Dentist">Dentist</option>
+        </select>
+      </div>
 
-      <div className="border border-black w-[15rem] h-[12rem] mt-6 relative boxtoselect">
+      {/* Dropdown for Institution Format */}
+      <div className="mt-4">
+        <label className="block text-[#939393] mb-2">Select Institution Format</label>
+        <select
+          value={institutionFormat}
+          onChange={handleInstitutionFormatChange}
+          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+        >
+          <option value="Online_Classes">Online_Classes</option>
+          <option value="Inperson_Classes">Inperson_Classes</option>
+          <option value="Hybrid_Classes">Hybrid_Classes</option>
+        </select>
+      </div>
+      <div className="border border-black w-[15rem] h-[12rem] mt-2 relative boxtoselect">
         {!selectedFile ? (
           <label
             htmlFor="fileInput"
@@ -217,7 +242,7 @@ function Company({
           </label>
         )}
       </div>
-      <div className="relative flex items-center mt-6 ">
+      {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
         <input
@@ -262,7 +287,7 @@ function Company({
       </div>
       <p className='text-[18px] text-[#ff0000] mb-[3rem]'>
         ( *Upload a .csv/.xsl/.xsls file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
-      </p>
+      </p> */}
 
     </div>
   );

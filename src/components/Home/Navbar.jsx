@@ -77,31 +77,12 @@ const Navbar = () => {
             {UserCtx.isAuth ? (
               <button
                 onClick={() => {
-                  console.log("User data:", UserCtx.userData);
-                  if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
-                    console.log("Navigating to /Dashboard");
-                    Navigate("/Dashboard");
-                  } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === false) {
-                    console.log("Navigating to /template");
-                    Navigate("/template");
-                  } else if (UserCtx.userData.userType === "admin" &&
-                    UserCtx.userData.institution === 'awsaiapp' &&
-                    UserCtx.userData.institutionName &&
-                    UserCtx.userData.web === true &&
-                    UserCtx.userData.isVerified === false &&
-                    UserCtx.userData.isDelivered === false) {
-                    Navigate(`/pay`);
-                  } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === false) {
-                    console.log("Navigating to /template");
-                    Navigate("/complete");
-                  } else if (UserCtx.userData.userType === "admin" && UserCtx.userData.institution === 'awsaiapp' && UserCtx.userData.institutionName === "awsaiapp" && UserCtx.userData.web === true && UserCtx.userData.isVerified === true && UserCtx.userData.isDelivered === true) {
-                    console.log("Navigating to /dashboard");
+                  UserCtx.userData.institutionName = "awsaiapp";
                     Navigate("/dashboard");
-                  }
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
               >
-                {UserCtx.userData.institutionName}
+                {UserCtx.userData.userName}
               </button>
             ) : (
               <div className="flex flex-row">

@@ -112,7 +112,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
               <input
                 type="text"
                 name="zpoints"
-                value={formData.zpoints || ""}
+                value={formData.zpoints || formData.zPoints ||""}
                 onChange={handleChange}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
               />

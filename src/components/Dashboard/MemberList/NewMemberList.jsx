@@ -1,16 +1,15 @@
 "use client";
-import React, { useContext, useState, useEffect } from 'react';
-// import Navbar from '../../Home/Navbar';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import Context from "../../../context/Context";
 import { Button, Checkbox, Pagination, Table } from "flowbite-react";
 import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { API } from 'aws-amplify';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
-
+import { CSVUpload } from '../../UploadFile/CSVUpload';
+import { handleExportExcel } from '../../UploadFile/DownloadCsvButton';
 
 function NewMemberList({ institution: tempInstitution }) {
   const [members, setMembers] = useState([]);
@@ -25,29 +24,59 @@ function NewMemberList({ institution: tempInstitution }) {
   const [isEditUser, setIsEditUser] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMemberDetails, setSelectedMemberDetails] = useState(null);
+  const [isLoader, setisLoader] = useState(false);
 
   useEffect(() => {
+    let institution;
+    if (user.profile.tempinstitutionName === "awsaiapp") {
+      institution = userData.tempinstitutionName;
+    } else {
+      institution = userData.tempinstitutionName || tempInstitution;
+    }
+    const fetchData = async (institution) => {
+      try {
+        if (isLoader === false) {
+          util.setLoader(true)
+          setisLoader(true);
+        }
+        const data = await API.get("clients", `/user/list-members/${institution}`);
+        const filteredData = data.filter(member => member.userType === 'member');
+        console.log(filteredData);
+        setMembers(filteredData);
+        setMemberData(filteredData);
+      } catch (error) {
+        console.error('Error fetching the members:', error);
+      }
+      if (isLoader === true) {
+        util.setLoader(false)
+        // setisLoader(false);
+      }
+    };
+
+    fetchData(institution); // Pass institution to fetchData
+  }, [userData, tempInstitution, user.profile.tempinstitutionName, util, isLoader]);
+
+  const fetchData = async (institution) => {
+    try {
+      util.setLoader(true)
+      const data = await API.get("clients", `/user/list-members/${institution}`);
+      const filteredData = data.filter(member => member.userType === 'member');
+      console.log(filteredData);
+      setMembers(filteredData);
+      setMemberData(filteredData);
+    } catch (error) {
+      console.error('Error fetching the members:', error);
+    }
+    util.setLoader(false)
+  };
+
+  const handleUpdateUser = async (formData) => {
     let institution;
     if (user.profile.institutionName === "awsaiapp") {
       institution = userData.institutionName;
     } else {
       institution = userData.institutionName || tempInstitution;
     }
-    fetchData(institution); // Pass institution to fetchData
-  }, [userData, tempInstitution, user.profile.institutionName]);
-
-  const fetchData = async (institution) => {
-    try {
-      const data = await API.get("clients", `/user/list-members/${institution}`);
-      console.log(data);
-      setMembers(data);
-      setMemberData(data);
-    } catch (error) {
-      console.error('Error fetching the members:', error);
-    }
-  };
-
-  const handleUpdateUser = async (formData) => {
     util.setLoader(true);
     const apiName = "clients";
     const path = `/user/update-member/awsaiapp`;
@@ -93,7 +122,7 @@ function NewMemberList({ institution: tempInstitution }) {
         text: "An error occurred while updating the user.",
       });
     } finally {
-      fetchData(); // Refresh the member list after updating
+      fetchData(institution); // Refresh the member list after updating
       util.setLoader(false);
     }
   };
@@ -104,15 +133,19 @@ function NewMemberList({ institution: tempInstitution }) {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
-      return `${year}-${month}-${day}`;
+      return `${day}-${month}-${year}`;
     }
     return '';
   }
 
   const startIndex = (currentPage - 1) * membersPerPage;
+  useEffect(() => {
+    setCurrentPage(1);  // Reset to the first page when search query or filter changes
+  }, [searchQuery, filter]);
+
   const filteredMembers = members.filter(member => {
     const matchesSearchQuery = (
-      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.userName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -122,10 +155,17 @@ function NewMemberList({ institution: tempInstitution }) {
     return member.status !== 'Active' && matchesSearchQuery;
   });
 
+
   const selectedMembers = filteredMembers.slice(startIndex, startIndex + membersPerPage);
   const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
 
-  const handleDeleteMember = async (cognitoId, institution) => {
+  const handleDeleteMember = async (cognitoId) => {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
     Swal.fire({
       title: "Delete User",
       text: "Are you sure you want to delete this user?",
@@ -168,7 +208,7 @@ function NewMemberList({ institution: tempInstitution }) {
         } finally {
           setSelectedIndices([]);
           setSelectedMember([]);
-          fetchData(); // This will refresh the state again with the latest data
+          fetchData(institution); // This will refresh the state again with the latest data
           setIsModalOpen(false);
           util.setLoader(false);
         }
@@ -176,7 +216,13 @@ function NewMemberList({ institution: tempInstitution }) {
     });
   };
 
-  const handleDeleteSelected = async (institution) => {
+  const handleDeleteSelected = async () => {
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
     Swal.fire({
       title: "Delete Users",
       text: "Are you sure you want to delete the selected users?",
@@ -188,10 +234,8 @@ function NewMemberList({ institution: tempInstitution }) {
       if (result.isConfirmed) {
         setIsModalOpen(false);
         util.setLoader(true);
-
         const apiName = "clients";
         const path = "/user/delete-members";
-
         try {
           // Delete each selected member
           for (const cognitoId of selectedMember) {
@@ -222,7 +266,7 @@ function NewMemberList({ institution: tempInstitution }) {
             text: "An error occurred while deleting the members.",
           });
         } finally {
-          fetchData();
+          fetchData(institution);
           util.setLoader(false);
         }
       }
@@ -267,79 +311,47 @@ function NewMemberList({ institution: tempInstitution }) {
     );
   };
 
-  function handleExportCSV() {
-    const instituteName = "happyprancer";
-    const filteredData = members.filter((member) => {
-      if (filter === 'All') return true;
-      if (filter === 'Active') return member.status === 'Active';
-      if (filter === 'Inactive') return member.status !== 'Active';
-      return true;
-    });
-
-    const csvData = filteredData.map((member) => {
-      const phoneNumber = member.phoneNumber ? parsePhoneNumberFromString(member.phoneNumber)?.formatInternational() : '';
-
-      return {
-        Name: member.userName,
-        Email: member.emailId,
-        Phone: phoneNumber,
-        JoiningDate: formatEpochToReadableDate(member.joiningDate),
-        Country: member.country,
-        Attendance: member.zpoints || 0,
-        Status: member.status,
-        Due: member.balance,
-        Product: member.product,
-      };
-    });
-
-    const csvContent = [
-      [
-        "Name",
-        "Email",
-        "Phone",
-        "Joining Date",
-        "Country",
-        "Attendance",
-        "Status",
-        "Due",
-        "Product"
-      ],
-      ...csvData.map(member => [
-        member.Name,
-        member.Email,
-        member.Phone,
-        member.JoiningDate,
-        member.Country,
-        member.Attendance,
-        member.Status,
-        member.Due,
-        member.Product
-      ])
-    ];
-
-    const csvString = csvContent
-      .map(e => e.join(","))
-      .join("\n");
-
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-
-    // Constructing the file name
-    const fileName = `${instituteName} Members List - ${filter} - ${filteredData.length}.csv`;
-
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", fileName);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
 
   const handleNameClick = (member) => {
     setSelectedMemberDetails(member);
     setIsModalOpen(true);
   };
+
+  //upload csv
+  const fileInputRef = useRef(null);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    } else {
+      console.error("File input ref is not attached.");
+    }
+  };
+
+  const handleCSVFile = async (e) => {
+    const file = e.target.files[0];
+    let institution;
+    if (user.profile.institutionName === "awsaiapp") {
+      institution = userData.institutionName;
+    } else {
+      institution = userData.institutionName || tempInstitution;
+    }
+
+    fetchData(institution); // Pass institution to fetchData
+    if (file) {
+      try {
+        util.setLoader(true); // Set loader to true before uploading
+        const fileNameForBucket = "memberlist";
+        await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      } finally {
+        util.setLoader(false); // Set loader to false after uploading, whether success or failure
+      }
+    } else {
+      console.error("No file selected.");
+    }
+  };
+
 
   // Utility function to censor email
   const censorEmail = (email) => {
@@ -369,7 +381,26 @@ function NewMemberList({ institution: tempInstitution }) {
 
     return `${countryCode}${visibleStart}${censoredMiddle}${visibleEnd}`;
   }
-
+  //custom theme for pagination
+  const customTheme = {
+    pages: {
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
+  };
 
   return (
     <>
@@ -411,7 +442,7 @@ function NewMemberList({ institution: tempInstitution }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Quick search for anything"
+                placeholder="Quick search Members"
                 required
               />
             </div>
@@ -419,15 +450,23 @@ function NewMemberList({ institution: tempInstitution }) {
           {/* Right: Import and Export Buttons */}
           <div className="flex items-center gap-4">
             <Button
-              // onClick={handleImportCSV}
+              onClick={handleButtonClick}
               className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
               style={{ minWidth: '70px' }}
             >
               <FaFileImport className="mr-2 mt-[0.20rem]" />
-              Import CSV
+              Upload CSV
+              <input
+                type="file"
+                accept=".csv, .xls, .xlsx"
+                onChange={handleCSVFile}
+                className="hidden"
+                ref={fileInputRef}
+                id="CSVFileInput"
+              />
             </Button>
             <Button
-              onClick={handleExportCSV}
+              onClick={() => handleExportExcel(user, userData, tempInstitution, members, filter)}
               className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
               style={{ minWidth: '70px' }}
             >
@@ -519,6 +558,8 @@ function NewMemberList({ institution: tempInstitution }) {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
             className="flex justify-end"
+            showIcons
+            theme={customTheme}
           />
         </div>
       </div>
@@ -528,7 +569,7 @@ function NewMemberList({ institution: tempInstitution }) {
         onClose={() => setIsModalOpen(false)}
         isEditUser={isEditUser}
         onSave={handleUpdateUser}
-        handleDeleteMember={()=> handleDeleteMember(selectedMemberDetails.cognitoId)}
+        handleDeleteMember={() => handleDeleteMember(selectedMemberDetails.cognitoId)}
       />
     </>
   );

@@ -2,36 +2,51 @@ import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
-import context from "../../../context/Context";
-import { Link } from "react-router-dom";
+import { MdInsertPageBreak } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { Link,useLocation,useNavigate } from "react-router-dom";
 import "./LeftBanner.css";
 
 const customTheme = {
   sidebar: {
     root: {
-      inner:
-        "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5",
+      inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-[#30AFBC] lg:pt-5",
     },
   },
 };
 
 const LeftBanner = ({ displayAfterClick }) => {
   const { userData } = useContext(Context);
+  const navigate = useNavigate();
   const [click, setClick] = useState(0);
-  const Ctx = useContext(context);
-  const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp";
+  const Ctx = useContext(Context);
+  const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
-
+  const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
+  const location = useLocation();
+  
   useEffect(() => {
-    const selectedPage = localStorage.getItem("selectedPage");
-    if (selectedPage) {
-      setClick(parseInt(selectedPage));
+    if (location.state && Object.keys(location.state).length > 0) {
+      if (location.state.section === 'institution-draft') {
+        setClick(3);  // "Institution Draft" is index 3
+        displayAfterClick(3); // Show "Institution Draft"
+      }
+      
+      // Clear the state to prevent repeated execution
+      navigate('/dashboard', { state: {} });
+   
     }
-  }, []);
+  }, [location.state, displayAfterClick, navigate]);
+  // useEffect(() => {
+  //   const selectedPage = localStorage.getItem("selectedPage");
+  //   if (selectedPage) {
+  //     setClick(parseInt(selectedPage));
+  //   }
+  // }, []);
 
   return (
     <Flowbite theme={{ theme: customTheme }}>
-      <div className="flex justify-center items-center lg:h-screen fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20">
+      <div className="flex justify-center items-center fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20">
         <Sidebar
           aria-label="Sidebar"
           className="custom-sidebar lg:pt-16 lg:h-full w-full lg:w-auto lg:fixed lg:left-0 lg:top-0 z-20"
@@ -41,37 +56,62 @@ const LeftBanner = ({ displayAfterClick }) => {
               <Sidebar.ItemGroup className="flex flex-row justify-around items-center lg:items-start lg:flex-col lg:justify-start">
                 {isSuperAdmin && (
                   <>
-                  <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
-
-                    <div className="  font-bold">
-                    <p className="text-white text-xl">{`Hello, ${((userData.userName).split(" "))[0]}`}</p>
-                    </div>
-                  </Sidebar.ItemGroup>
+                    <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                      <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                        }
+                        <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
+                      </div>
+                    </Sidebar.ItemGroup>
                     <Sidebar.Item
-                      href="#"
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Client Panel
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                
+                      icon={MdInsertPageBreak}
+                      onClick={() => {
+                        setClick(3); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(3); // Redirect to Institute Draft
+                      }}
+                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Institute Draft
+                      </span>
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      icon={FaUser}
+                      onClick={() => {
+                        setClick(4); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(4); // Redirect to Institute Draft
+                      }}
+                      className={`custom-sidebar-item ${click === 4 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Members
+                      </span>
+                    </Sidebar.Item>
+                    {/* Revenue */}
+                    <Sidebar.Item
                       icon={HiShoppingBag}
                       onClick={() => {
-                        setClick(1);
-                        displayAfterClick(1);
+                        setClick(1); // Set click to 1 for "Revenue"
+                        displayAfterClick(1); // Redirect to Revenue
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 1 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Revenue
@@ -84,9 +124,61 @@ const LeftBanner = ({ displayAfterClick }) => {
                           setClick(2);
                           displayAfterClick(2);
                         }}
-                        className={`custom-sidebar-item ${
-                          click === 2 ? "active bg-white" : ""
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline text-base font-[Poppins]">
+                          Profile
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
+                  </>
+                )}
+                {isSalesUser && (
+                  <>
+                   <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                      <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                        }
+                        <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
+                      </div>
+                    </Sidebar.ItemGroup>
+                    <Sidebar.Item
+                      icon={HiChartPie}
+                      onClick={() => {
+                        setClick(0);
+                        displayAfterClick(0);
+                      }}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Client Panel
+                      </span>
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      icon={MdInsertPageBreak}
+                      onClick={() => {
+                        setClick(3); // Set click to 3 for "Institute Draft"
+                        displayAfterClick(3); // Redirect to Institute Draft
+                      }}
+                      className={`custom-sidebar-item ${click === 3 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Institute Draft
+                      </span>
+                    </Sidebar.Item>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiInbox}
+                        onClick={() => {
+                          setClick(2);
+                          displayAfterClick(2);
+                        }}
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                       >
                         <span className="hidden md:inline text-base font-[Poppins]">
                           Profile
@@ -97,51 +189,45 @@ const LeftBanner = ({ displayAfterClick }) => {
                 )}
                 {isNotSuperAdmin && (
                   <>
-                    <Sidebar.Item
-
+                    {/* <Sidebar.Item
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
                         displayAfterClick(0);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 0 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline text-base font-[Poppins]">
                         Graph
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                    
                       icon={HiShoppingBag}
                       onClick={() => {
                         setClick(1);
                         displayAfterClick(1);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 1 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
-                      <span className="hidden md:inline text-base font-[Poppins]">
+                      <span className="hidden md:inline font-[Poppins] text-base">
                         Members
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                  
                       icon={HiInbox}
                       onClick={() => {
                         setClick(2);
                         displayAfterClick(2);
                       }}
-                      className={`custom-sidebar-item ${
-                        click === 2 ? "active bg-white" : ""
-                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Leads
                       </span>
-                    </Sidebar.Item>
+                    </Sidebar.Item> */}
                   </>
                 )}
               </Sidebar.ItemGroup>

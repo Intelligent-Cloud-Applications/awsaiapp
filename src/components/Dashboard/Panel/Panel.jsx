@@ -8,22 +8,11 @@ import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import Update from "../../../utils/Assets/Dashboard/images/SVG/Update.svg";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination, Dropdown, Flowbite } from "flowbite-react";
-
-const customTheme = {
-  dropdown: {
-    floating: {
-      base: "z-10 w-fit divide-y divide-gray-100 rounded-[0] shadow focus:outline-none", // Rounded-[0] applied here
-    },
-    item: {
-      base: "hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]", // Ensure items have rounded-[0] as well
-    },
-  },
-};
+import Index from "../MemberList/Index";
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -35,8 +24,6 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  // console.log(clientsData);
-  // console.log(userData);
   const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -57,34 +44,80 @@ const Panel = () => {
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
+  const Ctx = useContext(Context);
+  const type = ["Dance Studio", "Dental"];
+
+  const customTheme = {
+    pages: {
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
+  };
 
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData;
+      return clientsData || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = clientsData?.filter(([key, client]) => {
-      const institution = client.institution
-        ? client.institution.toLowerCase()
-        : "";
-      // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
-      const institutionTypes = userData.institutionType;
-      const crreatedBy = userData.userName;
-      const matches =
-      institution.includes(query) ||
-      institutionTypes.includes(query) ||
-      crreatedBy.includes(query);
 
-      return matches;
+    console.log("Search Query:", query);
+    console.log("Clients Data:", clientsData);
+
+    const filtered = clientsData?.filter(([key, client]) => {
+      const institution = typeof client.institutionid === 'string'
+        ? client.institutionid.toLowerCase()
+        : "";  // Default to an empty string if institution is not a valid string
+
+      return institution.includes(query);
     });
 
     console.log("Filtered Clients:", filtered);
-    return filtered;
-  }, [searchQuery, clientsData, userData.institutionType, userData.userName]);
+    return filtered || []; // Ensure that it always returns an array
+  }, [searchQuery, clientsData]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
+
+  useEffect(() => {
+    if (!Array.isArray(filteredClients)) {
+      console.error("filteredClients is not an array:", filteredClients);
+      return;
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+
+    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+
+    const newInstituteTypes = Array.from(
+      new Set(clientsToDisplay.map(() => userData.institutionType))
+    );
+
+    setInstituteTypes((prevTypes) => {
+      const combinedTypes = [...prevTypes, ...newInstituteTypes];
+      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
+
+      if (uniqueCombinedTypes.length !== prevTypes.length) {
+        return uniqueCombinedTypes;
+      } else {
+        return prevTypes;
+      }
+    });
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]);
 
   useEffect(() => {
     const newInstituteType = userData.institutionType;
@@ -110,8 +143,6 @@ const Panel = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-
 
   // const showDetailForm = (institution) => {
   //   const userDetail = clientsData.find(
@@ -143,10 +174,22 @@ const Panel = () => {
   // const isRowSelected = (institution) => {
   //   return selectedRow.includes(institution);
   // };
+  const useDataForSales = Ctx.saleData || [];
 
-  // This is for the client panel demo data
-  let createdBy = ["Madan", "Bikash", "Sai", "Madan", "Sai", "Bikash"]
-  // For removing unused functions
+  const getUsernameByCognitoId = (cognitoId) => {
+    console.log("cognitoid:", cognitoId);
+    console.log("data:", useDataForSales.userName);
+    // Normalize the input ID
+    const trimmedInputId = String(cognitoId).trim();
+
+    // Find the user with matching Cognito ID
+    const user = useDataForSales.find(user => {
+      return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
+    });
+    console.log("user Name:", user);
+    return user ? user.userName : 'Unknown'; // Return userName if found, otherwise 'Unknown'
+  };
+
   if (1 < 0) {
     setShowHiddenContent(true);
     setTotalLeads(0);
@@ -158,8 +201,6 @@ const Panel = () => {
     userCheck === 0 && setUserCheck(1);
   }
 
-  // const filteredClients = filterClients();
-  // console.log("Type = ", typeof filteredClients);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -175,12 +216,6 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  const onPageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
@@ -190,7 +225,6 @@ const Panel = () => {
     return formattedDate;
   }
   const location = useLocation();
-  // console.log("path", location.pathname);
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       util.setLoader(true);
@@ -198,11 +232,11 @@ const Panel = () => {
     }
   });
 
-  const handlePersonIconClick = (institution) => {
-    setisMonthlyReport(institution);
-    const updatedUserData = { ...userData, institutionName: institution };
-    setUserData(updatedUserData);
-  };
+  // const handlePersonIconClick = (institution) => {
+  //   setisMonthlyReport(institution);
+  //   const updatedUserData = { ...userData, institutionName: institution };
+  //   setUserData(updatedUserData);
+  // };
 
   const toggleAddUserForm = () => {
     setIsUserAdd(!isUserAdd);
@@ -312,22 +346,35 @@ const Panel = () => {
   //   setCountry(userToUpdate[1].country);
   //   setIsUpdateFormVisible(true);
   // };
-  const getColor = (status) => {
-    if (status === "Active") {
-      return "success";
-    } else if (status === "InActive") {
-      return "failure";
+  const getBadgeProps = (web, payment, delivered) => {
+    let text, color;
+
+    if (web) {
+      if (payment && delivered) {
+        text = "Active";
+        color = "success"; // Yellow color for Pending status  
+      } else {
+        text = "Pending";
+        color = "warning"; // Green color for Active status
+      }
     } else {
-      return "indigo";
+      text = "InActive";
+      color = "failure"; // Red color for InActive status
     }
+
+    return { text, color };
   };
+
+  // Inside your component
 
   // const handleMoreClick = () => {
   //   setShowHiddenContent(!showHiddenContent);
   // };
 
   const splitandjoin = (str) => {
-
+    if (typeof str !== "string") {
+      return "";
+    }
     // if capital letter is found then split the string and join it with space
     if (typeof str !== "string") {
       return "";
@@ -337,14 +384,12 @@ const Panel = () => {
         .split(/(?=[A-Z])/)
         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
         .join(" ");
-
     } else {
       // Handle cases where str is not a valid string
       console.error("Invalid input: The input is not a string or is empty.");
       return ""; // or return str if you want to return the original input
     }
   };
-
 
   const handleRowClick = (institution, event) => {
     setisMonthlyReport(institution);
@@ -355,17 +400,41 @@ const Panel = () => {
     }
   };
 
+  const handleDropdownChange = useCallback(async (clientInstitution, status, index) => {
+    const isDelivered = status === "Delivered";
+    try {
+      const body = { institutionId: clientInstitution, index, isDelivered };
+      const response = await API.put("clients", "/user/updateDelivary", {
+        body,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log("API response:", response);
+    } catch (error) {
+      console.error("Error updating delivery status:", error);
+    }
+  }, []);
+  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
+  const [showMemberList, setShowMemberList] = useState(false);
+  const handleInstitutionClick = (client) => {
+    // Set the institutionid as tempInstitution and show the MemberList
+    const updatedUserData = { ...userData, tempinstitutionName: client.institutionid };
+    setUserData(updatedUserData);
+    setTempInstitution(client.institutionid);
+    setShowMemberList(true); // Toggle view to MemberList
+  };
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[7%]">
-    <ToastContainer />
-    <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+    <>
+    {!showMemberList ? (
+    <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+      <ToastContainer />
+      <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         {/* WebDevelopment Form Link */}
         <Flowbite theme={{ theme: customTheme }}>
           <Dropdown
             label={instituteType ? splitandjoin(instituteType) : "Type"}
             className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
           >
-            {instituteTypes.map((type) => (
+            {type.map((type) => (
               <Dropdown.Item
                 key={type}
                 onClick={() => setInstituteType(type)}
@@ -377,18 +446,18 @@ const Panel = () => {
           </Dropdown>
         </Flowbite>
         <div>
-        <Link
+          <Link
             to={
-              instituteType !== "" && instituteType === "danceStudio"
+              instituteType !== "" && instituteType === "Dance Studio"
                 ? "/template"
                 : "#"
             }
             onClick={(e) => {
               if (instituteType === "") {
-               e.stopPropagation()
-                console.log('Showing toast message'); // Debug line
+                e.stopPropagation();
+                console.log("Showing toast message"); // Debug line
                 toast.error("Please Select a type of Institution.", {
-                  position: 'top-right',
+                  position: "top-right",
                   autoClose: 5000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -396,11 +465,11 @@ const Panel = () => {
                   draggable: true,
                   progress: undefined,
                   style: {
-                    backgroundColor: '#f8d7da',
-                    color: '#721c24',
+                    backgroundColor: "#f8d7da",
+                    color: "#721c24",
                   },
                 });
-              } 
+              }
             }}
             className="hover:no-underline"
           >
@@ -410,7 +479,7 @@ const Panel = () => {
           </Link>
         </div>
       </div>
-      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
+      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
 
@@ -543,6 +612,17 @@ const Panel = () => {
                   <input
                     type="radio"
                     name="memberStatus"
+                    value="Pending"
+                    className="ml-3"
+                    checked={status === "Pending"}
+                    onChange={() => setStatus("Pending")}
+                  />
+                  <p className="text-[#ff1010d9]">Pending</p>
+                </div>
+                <div className="flex justify-center items-center space-x-1">
+                  <input
+                    type="radio"
+                    name="memberStatus"
                     value="comingSoon"
                     className="ml-3"
                     checked={status === "comingSoon"}
@@ -573,23 +653,29 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
               {/* <Table.HeadCell></Table.HeadCell> */}
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 Institution
               </Table.HeadCell>
-              <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 Type
               </Table.HeadCell>
-              <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 Status
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Is Delivered
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Payment
               </Table.HeadCell>
               {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-              <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px]">
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 Members
               </Table.HeadCell>
               {/* <Table.HeadCell
@@ -601,128 +687,99 @@ const Panel = () => {
               </Table.HeadCell> */}
               <Table.HeadCell
                 className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[14px]`}
+                  } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
               >
                 Created By
               </Table.HeadCell>
-              <Table.HeadCell
+              {/* <Table.HeadCell
                 className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[14px]`}
+                  } uppercase font-semibold text-[20px]`}
               >
                 Leads
-              </Table.HeadCell>
-              <Table.HeadCell className="more uppercase font-semibold text-[14px]">
+              </Table.HeadCell> */}
+              {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 More
-              </Table.HeadCell>
+              </Table.HeadCell> */}
             </Table.Head>
 
             <Table.Body className="bg-white">
               {clientsToDisplay.map(([key, client], index) => (
-
                 <Table.Row
-                  key={client.institution}
+                  key={client.institutionid}
                   className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                  onClick={(e) => handleRowClick(client.institution, e)}
                 >
-                  {/* Checkbox */}
-                  {/* <Table.Cell className="px-4 py-2">
-                    <label className="relative">
-                      <input
-                        type="checkbox"
-                        className="hidden"
-                        onChange={() =>
-                          handleCheckboxChange(client.institution)
-                        }
-                        checked={isRowSelected(client.institution)}
-                      />
-                      <div className="absolute w-4 h-4 border-2 border-gray-400 cursor-pointer">
-                        {isRowSelected(client.institution) && (
-                          <img
-                            src={Select}
-                            alt="Selected"
-                            className="w-full h-full"
-                          />
-                        )}
-                      </div>
-                    </label>
-                  </Table.Cell> */}
-
-                  <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                  <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+                    onClick={(e) => handleRowClick(client.institutionid, e)}
+                  >
                     <Link
-                      to={`/Dashboard?institution=${client.institution}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePersonIconClick(client.institution);
-                      }}
+                onClick={() => handleInstitutionClick(client)}
                     >
                       <div className="email-hover uppercase font-semibold text-[#11192B]">
-                        {client.institution}
+                        {client.institutionid}
                       </div>
                     </Link>
                   </Table.Cell>
 
-                  <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] ">
-                    {splitandjoin(userData.institutionType)}
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {splitandjoin(client.institutionType)}
                   </Table.Cell>
 
-                  <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
-                    <Badge
-                      color={getColor(client.status)}
-                      size="sm"
-                      className="flex justify-center items-center"
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {(() => {
+                      const { text, color } = getBadgeProps(client.isFormFilled, client.payment, client.isDelivered);
+                      return (
+                        <Badge
+                          color={color}
+                          size="sm"
+                          className="flex justify-center items-center"
+                        >
+                          {text}
+                        </Badge>
+                      );
+                    })()}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    <select
+                      value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                      onChange={(e) => handleDropdownChange(client.institutionid, e.target.value, client.index)}
+                      className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
                     >
-                      {client.status}
-                    </Badge>
+                      <option value="Not Delivered">Not Delivered</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
                   </Table.Cell>
-
-                  {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
-                    {client.country === "USA"
-                      ? `$${client.recentMonthIncome}`
-                      : `₹${client.recentMonthIncome}`}
-                  </Table.Cell> */}
-
-                  <Table.Cell className="max1008:hidden px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16 ">
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {client.payment ? "Paid" : "Not Paid"}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                     {client.recentMonthMembers}
                   </Table.Cell>
-
-                  {/* <Table.Cell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
-                  >
-                    {client.recentMonthAttendance}
-                  </Table.Cell> */}
-
                   <Table.Cell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-2 py-2 font-semibold text-gray-900 text-left lg:pr-16`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"} whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                   >
-                    {createdBy[index]}
+                    {/* {client.createdBy} */}
+                    {client.createdBy
+                      ? getUsernameByCognitoId(client.createdBy)
+                      : 'Unknown'} {/* Fallback for undefined createdBy */}
                   </Table.Cell>
                   <Link
-                    to={`/Dashboard?institution=${client.institution}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePersonIconClick(client.institution);
-                    }}
+                   onClick={() => handleInstitutionClick(client)}
                     className="hidden change-page"
                   ></Link>
-                  <div
+                  {/* <div
                     className={`${showHiddenContent ? "" : "max1008:hidden"
                       } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
                     <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
                       {client.recentMonthLeads}
                     </Table.Cell>
-                  
-                  </div>
+                  </div> */}
                   <Table.Cell
-                    className="more"
+                    className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
                   // onClick={handleMoreClick}
                   >
                     <Link
-                      to={`/Dashboard?institution=${client.institution}`}
-                      onClick={() => handlePersonIconClick(client.institution)}
+                     onClick={() => handleInstitutionClick(client)}
                     >
                       {isMoreVisible ? <FaChevronRight /> : ""}
                     </Link>
@@ -734,7 +791,7 @@ const Panel = () => {
         </div>
 
         {clientsToDisplay.map(([key, client], index) => (
-          <div key={client.institution}>
+          <div key={client.institutionid}>
             {/* {
             // isRowSelected(client.institution) && 
             (
@@ -939,25 +996,26 @@ const Panel = () => {
         )}
 
         {/* Pagination */}
-        <Pagination
-          layout="pagination"
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          previousLabel=""
-          nextLabel=""
-          showIcons
-        />
-
-        {/* <div className="flex flex-row gap-2">
-          {selectedRowCount > 0 && (
-            <div className="text-[0.8rem] font-[600] K2D pt-5">
-              {selectedRowCount} Item{selectedRowCount > 1 ? "s" : ""} selected
-            </div>
-          )}
-        </div> */}
+        <div className="py-2 flex justify-between items-center px-4">
+          {/* Dynamic "Showing X-Y of Z" */}
+          <div className="text-sm text-gray-600">
+            Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            className="flex justify-end"
+            showIcons
+            theme={customTheme}
+          />
+        </div>
       </div>
     </div>
+     ) : (
+      <Index tempInstitution={tempInstitution} />
+    )}
+    </>
   );
 };
 

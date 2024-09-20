@@ -1,7 +1,7 @@
 import {OtpInput, PrimaryButton} from "../../components/Auth/Inputs";
 import {useState, useEffect} from "react";
 import {Auth} from "aws-amplify";
-import {toast} from "react-toastify";
+// import {toast} from "react-toastify";
 
 const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
   const [timer, setTimer] = useState(30);
@@ -26,10 +26,10 @@ const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
       );
 
 
-      toast.info('OTP sent');
+      alert('OTP sent');
     } catch (error) {
       console.log(error)
-      toast.error('Could not resend OTP');
+      alert('Could not resend OTP');
     }
   }
 
@@ -44,7 +44,7 @@ const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
             <h2 className='font-bold text-2xl'>Login/Signup</h2>
            
           <p className='text-center w-64'>{
-            'Please enter the otp to finish your login process'
+            'Please enter the otp to finish your login process Otp is send to number'
           }</p>
     <form
       onSubmit={handler}
