@@ -27,7 +27,7 @@ const New_Full = () => {
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
   const goBack = () => {
-    navigate("/dashboard");
+    navigate("/");
   };
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
@@ -50,10 +50,7 @@ const New_Full = () => {
 
           let updatedPhoneNumber = templateResponse.Query_PhoneNumber;
           let updatedCountryCode = "91";
-          const defaultInstitutionType = "DanceStudio";
-          const defaultInstitutionFormat = "Online_Classes";
-          const institutionType = templateResponse.institutionType || defaultInstitutionType;
-          const institutionFormat = templateResponse.institutionFormat || defaultInstitutionFormat;
+
           if (updatedPhoneNumber) {
             updatedPhoneNumber = updatedPhoneNumber.replace(/\D/g, '');
 
@@ -81,9 +78,8 @@ const New_Full = () => {
               ],
             country: updatedCountry,
             Query_PhoneNumber: updatedPhoneNumber,
-            countryCode: updatedCountryCode,
-    institutionType,  
-    institutionFormat  
+            countryCode: updatedCountryCode
+
           };
 
         });
@@ -1365,8 +1361,6 @@ const New_Full = () => {
           body: {
             institutionid: institutionNames,
             companyName: institutionNames,
-            institutionType:templateDetails.institutionType,
-            institutionFormat:templateDetails.institutionFormat,
             PrimaryColor: templateDetails.PrimaryColor,
             SecondaryColor: templateDetails.SecondaryColor,
             logoUrl: templateDetails.logoUrl,
@@ -1439,7 +1433,7 @@ const New_Full = () => {
       setTimeout(() => {
         util.setLoader(false);
       }, 0);
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -1909,7 +1903,7 @@ const New_Full = () => {
                   </div>
                 </div>
               </div>
-              <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2  lg:mt-10 mt-4">
+              <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2 lg:mt-10 mt-4">
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-10 lg:gap-10 sm:gap-4 text-black">
                     {/* First Input */}
@@ -2109,59 +2103,7 @@ const New_Full = () => {
                   </div>
                 </div>
               </div>
-
-
-              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4  lg:ml-20">
-                <div className="flex flex-col gap-4 ">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-                    
-                  <div className="mt-4">
-
-  <label className="block text-gray-700 mb-2">Select Institution Type</label>
-  <select
-    value={templateDetails.institutionType}
-    onChange={(event) =>
-      handleChange(event, "institutionType")
-    }
-    className="w-full max-w-md rounded-md p-2"
-     style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-  >
-    <option value="DanceStudio">Dance Studio</option>
-    <option value="Dentist">Dentist</option>
- 
-  </select>
-</div>
-
-<div className="mt-4">
-  <label className="block text-gray-700 mb-2">Select Institution Format</label>
-  <select
-    value={templateDetails.institutionFormat}
-    onChange={(event) =>
-      handleChange(event, "institutionFormat")
-    }
-    className="w-full max-w-md  border borounded-md p-2"
-     style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-  >
-    <option value="Online_Classes">Online Classes</option>
-    <option value="Inperson_Classes">In-person Classes</option>
-    <option value="Hybrid_Classes">Hybrid Classes</option>
-    {/* Add more options here as needed */}
-  </select>
-</div>
-
-                    
-                     </div>
-                </div>
-              </div>
-              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 lg:ml-20">
+              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
                 <div className="flex flex-col gap-4 ">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                     <div id="fileUpload" className="max-w-md relative">
@@ -2240,7 +2182,7 @@ const New_Full = () => {
             <hr className="w-full border-t border-[#D1D5DB] mt-10" />
             <div className="relative p-4">
               <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Services Section</h1>
-              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4  lg:ml-20">
+              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
                 <div className="flex flex-col gap-4 ">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                     <div id="fileUpload" className="max-w-md relative">
