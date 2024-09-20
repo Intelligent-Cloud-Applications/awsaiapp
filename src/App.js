@@ -52,7 +52,7 @@ function App() {
         // } else {
         const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
         console.log(defaultUserdata)
-        if (defaultUserdata.userType === "admin") {
+        if (defaultUserdata.userType === "admin" || defaultUserdata.userType === "member") {
           UserCtx.current.setUserData(defaultUserdata);
           UserCtx.current.setIsAuth(true);
         } else {

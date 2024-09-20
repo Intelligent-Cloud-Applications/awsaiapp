@@ -12,8 +12,9 @@ import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
-
+import Country from "../components/Auth/Country";
 const New_Full = () => {
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -26,49 +27,91 @@ const New_Full = () => {
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
   const goBack = () => {
-    navigate("/");
+    navigate("/dashboard");
   };
   const [loaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       // if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
-        try {
-          if (!loaderInitialized) {
-            // Check if loader is false and not initialized
-            util.setLoader(true);
-            setLoaderInitialized(true);
-          }
-
-          const templateResponse = await API.get(
-            "clients",
-            `/user/development-form/get-user/${institutionNames}`
-          );
-          await setTemplateDetails(templateResponse);
-
-          const productResponse = await API.get(
-            "clients",
-            `/user/development-form/get-product/${institutionNames}`
-          );
-          // Convert the subscription amount to rupee
-          const convertedProductResponse = productResponse.map((product) => ({
-            ...product,
-            amount: product.amount / 100, // Convert amount to rupee
-          }));
-
-          await setSubscriptionDetails(convertedProductResponse);
-
-          const instructorResponse = await API.get(
-            "clients",
-            `/user/development-form/get-instructor/${institutionNames}`
-          );
-          await setInstructorDetails(instructorResponse);
-        } catch (error) {
-          console.error("Error fetching details:", error);
-        } finally {
-          setLoader(false);
-          util.setLoader(false);
+      try {
+        if (!loaderInitialized) {
+          // Check if loader is false and not initialized
+          util.setLoader(true);
+          setLoaderInitialized(true);
         }
+
+        const templateResponse = await API.get(
+          "clients",
+          `/user/development-form/get-user/${institutionNames}`
+        );
+        // await setTemplateDetails(templateResponse || null);
+        await setTemplateDetails(prev => {
+          let updatedCountry = templateResponse.country || "India";
+
+          let updatedPhoneNumber = templateResponse.Query_PhoneNumber;
+          let updatedCountryCode = "91";
+          const defaultInstitutionType = "DanceStudio";
+          const defaultInstitutionFormat = "Online_Classes";
+          const institutionType = templateResponse.institutionType || defaultInstitutionType;
+          const institutionFormat = templateResponse.institutionFormat || defaultInstitutionFormat;
+          if (updatedPhoneNumber) {
+            updatedPhoneNumber = updatedPhoneNumber.replace(/\D/g, '');
+
+            if (updatedPhoneNumber.length > 10) {
+              let phoneNumberLength = updatedPhoneNumber.length;
+              updatedCountryCode = updatedPhoneNumber.slice(0, phoneNumberLength - 10);
+              updatedPhoneNumber = updatedPhoneNumber.slice(phoneNumberLength - 10);
+            } else if (updatedPhoneNumber.length < 10) {
+              updatedCountryCode = "91";
+            }
+          } else {
+            updatedPhoneNumber = "";
+            updatedCountryCode = "91";
+          }
+          setSelectedCountryCode(updatedCountryCode);
+          return {
+            ...prev,
+            ...templateResponse,
+            Testimonial: templateResponse.Testimonial && templateResponse.Testimonial.length > 0
+              ? templateResponse.Testimonial
+              : [
+                { name: "", description: "", img: "" },
+                { name: "", description: "", img: "" },
+                { name: "", description: "", img: "" }
+              ],
+            country: updatedCountry,
+            Query_PhoneNumber: updatedPhoneNumber,
+            countryCode: updatedCountryCode,
+    institutionType,  
+    institutionFormat  
+          };
+
+        });
+
+        const productResponse = await API.get(
+          "clients",
+          `/user/development-form/get-product/${institutionNames}`
+        );
+        // Convert the subscription amount to rupee
+        const convertedProductResponse = productResponse.map((product) => ({
+          ...product,
+          amount: product.amount / 100, // Convert amount to rupee
+        }));
+
+        await setSubscriptionDetails(convertedProductResponse || null);
+
+        const instructorResponse = await API.get(
+          "clients",
+          `/user/development-form/get-instructor/${institutionNames}`
+        );
+        await setInstructorDetails(instructorResponse || null);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      } finally {
+        setLoader(false);
+        util.setLoader(false);
       }
+    }
     // };
 
     fetchData();
@@ -80,6 +123,17 @@ const New_Full = () => {
     Ctx.userData.institutionName,
   ]);
 
+
+  const handleCountryChange1 = (e) => {
+    const selectedCountry = e.target.options[e.target.selectedIndex].text;
+    const selectedCountryCode = e.target.value;
+    setTemplateDetails(prevInfo => ({
+      ...prevInfo,
+      country: selectedCountry.split(' ')[0],
+      countryCode: selectedCountryCode
+    }));
+    setSelectedCountryCode(selectedCountryCode);
+  };
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[index].title = event.target.value;
@@ -103,32 +157,32 @@ const New_Full = () => {
   // util.setLoader(false);
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
- 
-  const maxSize = 4 * 1024 * 1024;
-  if (videoFile.size > maxSize) {
-    alert("File size exceeds 4 MB. Please select a smaller file.");
-    event.target.value = ""; 
-    return;
-  }
 
-  const allowedTypes = [
-    "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/svg+xml",
-  "video/mp4",
-  "video/quicktime",
-  "video/webm",
-  "video/x-matroska",
-  "video/x-msvideo",
-  "video/mpeg",
-  "video/ogg",
-  ];
-  if (!allowedTypes.includes(videoFile.type)) {
-    alert("Only JPG, JPEG, PNG, SVG, MP4, and MOV files are allowed.");
-    event.target.value = ""; 
-    return;
-  }
+    const maxSize = 4 * 1024 * 1024;
+    if (videoFile.size > maxSize) {
+      alert("File size exceeds 4 MB. Please select a smaller file.");
+      event.target.value = "";
+      return;
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+      "video/mp4",
+      "video/quicktime",
+      "video/webm",
+      "video/x-matroska",
+      "video/x-msvideo",
+      "video/mpeg",
+      "video/ogg",
+    ];
+    if (!allowedTypes.includes(videoFile.type)) {
+      alert("Only JPG, JPEG, PNG, SVG, MP4, and MOV files are allowed.");
+      event.target.value = "";
+      return;
+    }
 
     try {
       const response = await Storage.put(
@@ -435,6 +489,7 @@ const New_Full = () => {
     Query_EmailId: useRef(null),
     Facebook: useRef(null),
     Instagram: useRef(null),
+    userName: useRef(null),
     Services: useRef(null),
     ClassTypes: useRef(null),
     Testimonial: useRef(null),
@@ -589,8 +644,7 @@ const New_Full = () => {
       const itemIndex = parseInt(fieldName.split("-")[2], 10);
       if (serviceIndex >= 0 && serviceIndex < templateDetails.Services.length) {
         element = document.querySelector(
-          `#service-${serviceIndex}${
-            itemIndex >= 0 ? `-item-${itemIndex}` : ""
+          `#service-${serviceIndex}${itemIndex >= 0 ? `-item-${itemIndex}` : ""
           }`
         );
       }
@@ -618,54 +672,54 @@ const New_Full = () => {
   };
   const [invalidClassTypes, setInvalidClassTypes] = useState([]);
 
-const updateInvalidClassTypeIndex = (index, field) => {
-  setInvalidClassTypes(prev => [...prev, { index, field }]);
-};
-const [invalidSubscriptionIndex, setInvalidSubscriptionIndex] = useState([]);
+  const updateInvalidClassTypeIndex = (index, field) => {
+    setInvalidClassTypes(prev => [...prev, { index, field }]);
+  };
+  const [invalidSubscriptionIndex, setInvalidSubscriptionIndex] = useState([]);
 
-const updateInvalidSubscriptionIndex = (subscriptionIndex, field, itemIndex = null) => {
-  setInvalidSubscriptionIndex(prev => [...prev, { subscriptionIndex, field, itemIndex }]);
-};
+  const updateInvalidSubscriptionIndex = (subscriptionIndex, field, itemIndex = null) => {
+    setInvalidSubscriptionIndex(prev => [...prev, { subscriptionIndex, field, itemIndex }]);
+  };
 
-const [invalidFaqs, setInvalidFaqs] = useState([]);
+  const [invalidFaqs, setInvalidFaqs] = useState([]);
 
-const updateInvalidFaqIndex = (index, field) => {
-  setInvalidFaqs(prev => [...prev, { index, field }]);
-};
-const [invalidAboutUs, setInvalidAboutUs] = useState([]);
+  const updateInvalidFaqIndex = (index, field) => {
+    setInvalidFaqs(prev => [...prev, { index, field }]);
+  };
+  const [invalidAboutUs, setInvalidAboutUs] = useState([]);
 
-const updateInvalidAboutUsIndex = (index, field) => {
-  setInvalidAboutUs(prev => [...prev, { index, field }]);
-};
-const [invalidPrivacyPolicy, setInvalidPrivacyPolicy] = useState([]);
+  const updateInvalidAboutUsIndex = (index, field) => {
+    setInvalidAboutUs(prev => [...prev, { index, field }]);
+  };
+  const [invalidPrivacyPolicy, setInvalidPrivacyPolicy] = useState([]);
 
-const updateInvalidPrivacyPolicyIndex = (index, field) => {
-  setInvalidPrivacyPolicy(prev => [...prev, { index, field }]);
-};
-const [invalidTermsData, setInvalidTermsData] = useState([]);
+  const updateInvalidPrivacyPolicyIndex = (index, field) => {
+    setInvalidPrivacyPolicy(prev => [...prev, { index, field }]);
+  };
+  const [invalidTermsData, setInvalidTermsData] = useState([]);
 
-const updateInvalidTermsDataIndex = (index, field) => {
-  setInvalidTermsData(prev => [...prev, { index, field }]);
-};
-
-
-const [invalidRefund, setInvalidRefund] = useState([]);
-
-const updateInvalidRefundIndex = (index, field) => {
-  setInvalidRefund(prev => [...prev, { index, field }]);
-};
+  const updateInvalidTermsDataIndex = (index, field) => {
+    setInvalidTermsData(prev => [...prev, { index, field }]);
+  };
 
 
-const [invalidInstructors, setInvalidInstructors] = useState([]);
+  const [invalidRefund, setInvalidRefund] = useState([]);
 
-const updateInvalidInstructorIndex = (index, field) => {
-  setInvalidInstructors(prev => [...prev, { index, field }]);
-};
-const [invalidServices, setInvalidServices] = useState([]);
+  const updateInvalidRefundIndex = (index, field) => {
+    setInvalidRefund(prev => [...prev, { index, field }]);
+  };
 
-const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
-  setInvalidServices(prev => [...prev, { serviceIndex, itemIndex, field }]);
-};
+
+  const [invalidInstructors, setInvalidInstructors] = useState([]);
+
+  const updateInvalidInstructorIndex = (index, field) => {
+    setInvalidInstructors(prev => [...prev, { index, field }]);
+  };
+  const [invalidServices, setInvalidServices] = useState([]);
+
+  const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
+    setInvalidServices(prev => [...prev, { serviceIndex, itemIndex, field }]);
+  };
 
   const saveChanges = async () => {
     setErrors({});
@@ -695,6 +749,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
       { value: templateDetails.Query_EmailId, name: "Query_EmailId" },
       { value: templateDetails.Facebook, name: "Facebook" },
       { value: templateDetails.Instagram, name: "Instagram" },
+      { value: templateDetails.userName, name: "userName" },
     ];
 
     // Find any missing fields
@@ -784,8 +839,8 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         }
         if (!testimonial.description || testimonial.description.trim() === "") {
           updateInvalidTestimonialIndex(index, "description");
-        }        
-      
+        }
+
         if (
           !testimonial.img ||
           !testimonial.name ||
@@ -795,7 +850,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           testimonial.description.trim() === ""
         ) {
           invalidTestimonials.push(`Testimonial ${index + 1}`);
-         
+
         }
       });
     }
@@ -818,27 +873,26 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           subscription.provides &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "");
-          const provides = subscription.provides || [];
+        const provides = subscription.provides || [];
 
-          if (!hasValidHeading) {
-            updateInvalidSubscriptionIndex(index, "heading");
-          }
-          if (hasValidAmount === undefined || hasValidAmount <= 0) {
-            updateInvalidSubscriptionIndex(index, "amount");
-          }
-          if (hasValidProvides.length === 0) {
-            updateInvalidSubscriptionIndex(index, "provides");
-          } else {
-            provides.forEach(( hasValidProvides, itemIndex) => {
-              if (! hasValidProvides?.trim()) {
-                updateInvalidSubscriptionIndex(index, "provides", itemIndex);
-              }
-            });
-          }
+        if (!hasValidHeading) {
+          updateInvalidSubscriptionIndex(index, "heading");
+        }
+        if (hasValidAmount === undefined || hasValidAmount <= 0) {
+          updateInvalidSubscriptionIndex(index, "amount");
+        }
+        if (hasValidProvides.length === 0) {
+          updateInvalidSubscriptionIndex(index, "provides");
+        } else {
+          provides.forEach((hasValidProvides, itemIndex) => {
+            if (!hasValidProvides?.trim()) {
+              updateInvalidSubscriptionIndex(index, "provides", itemIndex);
+            }
+          });
+        }
         if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
           invalidSubscriptions.push(
-            `Subscription ${
-              index + 1
+            `Subscription ${index + 1
             } must have a non-empty heading, a positive amount, and at least one non-empty provide.`
           );
         }
@@ -913,8 +967,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           !hasValidPosition
         ) {
           invalidInstructors.push(
-            `Instructor ${
-              index + 1
+            `Instructor ${index + 1
             } must have a non-empty name,image,position and emailId.`
           );
         }
@@ -945,7 +998,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
         if (!about.content || about.content.trim() === "") {
           updateInvalidAboutUsIndex(index, "content");
         }
-  
+
         if (
           !about.heading ||
           !about.content ||
@@ -1312,6 +1365,8 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           body: {
             institutionid: institutionNames,
             companyName: institutionNames,
+            institutionType:templateDetails.institutionType,
+            institutionFormat:templateDetails.institutionFormat,
             PrimaryColor: templateDetails.PrimaryColor,
             SecondaryColor: templateDetails.SecondaryColor,
             logoUrl: templateDetails.logoUrl,
@@ -1364,12 +1419,14 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
           body: {
             institutionid: institutionNames,
             Query_Address: templateDetails.Query_Address,
-            Query_PhoneNumber: templateDetails.Query_PhoneNumber,
+            Query_PhoneNumber: '+' + templateDetails.countryCode + templateDetails.Query_PhoneNumber,
+            userName: templateDetails.userName,
             Query_EmailId: templateDetails.Query_EmailId,
             Facebook: templateDetails.Facebook,
             Instagram: templateDetails.Instagram,
             YTLink: templateDetails.YTLink,
             UpiId: templateDetails.UpiId,
+            country: templateDetails.country,
             Footer_Link_1: templateDetails.Footer_Link_1,
             Footer_Link_2: templateDetails.Footer_Link_2,
             InstructorBg: templateDetails.InstructorBg,
@@ -1382,7 +1439,7 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
       setTimeout(() => {
         util.setLoader(false);
       }, 0);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -1747,1795 +1804,1880 @@ const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
   return (
     <>
       <Navbar />
-      <div className="">
-        <div className="relative mt-20 p-4">
-          <div
-            onClick={goBack}
-            className="fixed border border-black bg-white rounded cursor-pointer w-[26px] h-[20px] text-[20px] z-50"
-          >
-            <IoCaretBack />
-          </div>
-          <div className="flex justify-center">
-            <h2 className="text-[25px] max850:text-[20px] text-black font-bold max375:text-[17px]">
-              User Information Management
-            </h2>
-          </div>{" "}
-          <div className="flex justify-center">
-            <p className="px-3 text-center text-[20px]  max850:text-[17px] max375:text-[14px]">
-              Here, you can update user information to ensure our records are
-              accurate and up-to-date. Please use the form below to modify user
-              details as needed.
-            </p>
-          </div>
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Hero Section</h1>
-          <div className="lg:px-[180px] md:px-[150px] sm:px-4">
-            <div className="flex flex-col gap-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
-                <div className="relative">
-                  <div className="mb-2 block ">
-                    <Label
-                      htmlFor="institutionid"
-                      color="gray"
-                      value="InstitutionName"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
+      {(Ctx.userData.userType === 'admin' && Ctx.userData.role === 'owner') || templateDetails.createdBy === Ctx.userData.cognitoId ?
+        (
+          <div className="">
+            <div className="relative mt-20 p-4">
+              <div
+                onClick={goBack}
+                className="fixed border border-black bg-white rounded cursor-pointer w-[26px] h-[20px] text-[20px] z-50"
+              >
+                <IoCaretBack />
+              </div>
+              <div className="flex justify-center">
+                <h2 className="text-[25px] max850:text-[20px] text-black font-bold max375:text-[17px]">
+                  User Information Management
+                </h2>
+              </div>{" "}
+              <div className="flex justify-center">
+                <p className="px-3 text-center text-[20px]  max850:text-[17px] max375:text-[14px]">
+                  Here, you can update user information to ensure our records are
+                  accurate and up-to-date. Please use the form below to modify user
+                  details as needed.
+                </p>
+              </div>
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Hero Section</h1>
+              <div className="lg:px-[180px] md:px-[150px] sm:px-4">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
+                    <div className="relative">
+                      <div className="mb-2 block ">
+                        <Label
+                          htmlFor="institutionid"
+                          color="gray"
+                          value="InstitutionName"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="institutionid"
+                        placeholder="institutionid"
+                        required
+                        value={templateDetails.institutionid}
+                        sizing="sm"
+                        helperText="It's not changeble"
+                        // onChange={(event) => handleChange(event, "institutionid")}
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative ">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="Head Tag Line"
+                          color="gray"
+                          value="Head Tag Line"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="Head Tag Line"
+                        placeholder="Head Tag Line"
+                        required
+                        value={templateDetails.TagLine}
+                        helperText="It’s the Head Tag line of Home Page"
+                        sizing="sm"
+                        onChange={(event) => handleChange(event, "TagLine")}
+                        ref={refs.TagLine}
+                        color={errors.TagLine ? "failure" : "gray"}
+                        style={{
+                          border: errors.TagLine
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative ">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="Tag Line 2"
+                          color="gray"
+                          value="Tag Line 2"
+                        />
+                      </div>
+                      <TextInput
+                        id="Tag Line 2"
+                        placeholder="Tag Line 2"
+                        helperText="2nd Tag Line of the Home Section"
+                        required
+                        value={templateDetails.TagLine1}
+                        sizing="sm"
+                        onChange={(event) => handleChange(event, "TagLine1")}
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
                   </div>
-                  <TextInput
-                    id="institutionid"
-                    placeholder="institutionid"
-                    required
-                    value={templateDetails.institutionid}
-                    sizing="sm"
-                    helperText="It's not changeble"
-                    // onChange={(event) => handleChange(event, "institutionid")}
+                </div>
+              </div>
+              <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2  lg:mt-10 mt-4">
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-10 lg:gap-10 sm:gap-4 text-black">
+                    {/* First Input */}
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label htmlFor="PrimaryColor" value="PrimaryColor" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <div className="relative">
+                        <TextInput
+                          id="PrimaryColor"
+                          sizing="sm"
+                          placeholder="input text"
+                          required
+                          value={templateDetails.PrimaryColor}
+                          onChange={(event) => handleChange(event, "PrimaryColor")}
+                          onBlur={handleBlur}
+                          className="text-field"
+                          ref={refs.PrimaryColor}
+                          color={errors.PrimaryColor ? "failure" : "gray"}
+                          style={{
+                            border: errors.PrimaryColor
+                              ? "1px solid red"
+                              : "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        />
+
+                        <input
+                          type="color"
+                          value={templateDetails.PrimaryColor}
+                          onChange={(event) => handleChange(event, "PrimaryColor")}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "3px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                            border: "none",
+                            padding: "0",
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Second Input */}
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="LightPrimaryColor"
+                          value="LightPrimaryColor"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <div className="relative">
+                        <TextInput
+                          id="LightPrimaryColor"
+                          sizing="sm"
+                          placeholder="input text"
+                          required
+                          value={templateDetails.LightPrimaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "LightPrimaryColor")
+                          }
+                          onBlur={handleBlur}
+                          className="text-field"
+                          ref={refs.LightPrimaryColor}
+                          color={errors.LightPrimaryColor ? "failure" : "gray"}
+                          style={{
+                            border: errors.LightPrimaryColor
+                              ? "1px solid red"
+                              : "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        />
+
+                        <input
+                          type="color"
+                          value={templateDetails.LightPrimaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "LightPrimaryColor")
+                          }
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "3px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                            border: "none",
+                            padding: "0",
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="LightestPrimaryColor"
+                          value="LightestPrimaryColor"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <div className="relative">
+                        <TextInput
+                          id="LightestPrimaryColor"
+                          sizing="sm"
+                          placeholder="input text"
+                          required
+                          value={templateDetails.LightestPrimaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "LightestPrimaryColor")
+                          }
+                          onBlur={handleBlur}
+                          className="text-field"
+                          ref={refs.LightestPrimaryColor}
+                          color={errors.LightestPrimaryColor ? "failure" : "gray"}
+                          style={{
+                            border: errors.LightestPrimaryColor
+                              ? "1px solid red"
+                              : "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        />
+
+                        <input
+                          type="color"
+                          value={templateDetails.LightestPrimaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "LightestPrimaryColor")
+                          }
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "3px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                            border: "none",
+                            padding: "0",
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="max-w-md">
+                      <div className="mb-2 block">
+                        <Label htmlFor="SecondaryColor" value="SecondaryColor" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <div className="relative">
+                        <TextInput
+                          id="SecondaryColor"
+                          sizing="sm"
+                          placeholder="input text"
+                          required
+                          value={templateDetails.SecondaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "SecondaryColor")
+                          }
+                          onBlur={handleBlur}
+                          className="text-field"
+                          ref={refs.SecondaryColor}
+                          color={errors.SecondaryColor ? "failure" : "gray"}
+                          style={{
+                            border: errors.SecondaryColor
+                              ? "1px solid red"
+                              : "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        />
+
+                        <input
+                          type="color"
+                          value={templateDetails.SecondaryColor}
+                          onChange={(event) =>
+                            handleChange(event, "SecondaryColor")
+                          }
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "3px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                            border: "none",
+                            padding: "0",
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4  lg:ml-20">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                    
+                  <div className="mt-4">
+
+  <label className="block text-gray-700 mb-2">Select Institution Type</label>
+  <select
+    value={templateDetails.institutionType}
+    onChange={(event) =>
+      handleChange(event, "institutionType")
+    }
+    className="w-full max-w-md rounded-md p-2"
+     style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+  >
+    <option value="DanceStudio">Dance Studio</option>
+    <option value="Dentist">Dentist</option>
+ 
+  </select>
+</div>
+
+<div className="mt-4">
+  <label className="block text-gray-700 mb-2">Select Institution Format</label>
+  <select
+    value={templateDetails.institutionFormat}
+    onChange={(event) =>
+      handleChange(event, "institutionFormat")
+    }
+    className="w-full max-w-md  border borounded-md p-2"
+     style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+  >
+    <option value="Online_Classes">Online Classes</option>
+    <option value="Inperson_Classes">In-person Classes</option>
+    <option value="Hybrid_Classes">Hybrid Classes</option>
+    {/* Add more options here as needed */}
+  </select>
+</div>
+
+                    
+                     </div>
+                </div>
+              </div>
+              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 lg:ml-20">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                    <div id="fileUpload" className="max-w-md relative">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="Logo Upload file"
+                          value="Logo Upload file"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <FileInput
+                        type="file"
+                        onChange={(event) => handleFileChange(event, "logoUrl")}
+                        id="Logo Upload file"
+                        helperText="It’s The Logo of the Company"
+                        ref={refs.logoUrl}
+                        style={{
+                          borderColor: errors.logoUrl ? "1px solid red" : "#D1D5DB",
+                          backgroundColor: errors.logoUrl ? "#ee3232" : "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      {templateDetails.logoUrl && templateDetails.logoUrl.trim() !== "" && (
+                        <button
+                          onClick={() => downloadImage(templateDetails.logoUrl)}
+                          className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                          style={{
+                            borderRadius: "4px",
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                    </div>
+
+                    <div id="fileUpload" className="max-w-md relative">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="Intro Video Upload file"
+                          value="Intro Video Upload file"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+
+                      <FileInput
+                        type="file"
+                        onChange={handleVideoChange}
+                        id="Intro Video Upload file"
+                        helperText="It’s The Intro video of home Page"
+                        ref={refs.videoUrl}
+                        style={{
+                          borderColor: errors.videoUrl
+                            ? "1px solid red"
+                            : "#D1D5DB",
+                          backgroundColor: errors.videoUrl ? "#ee3232" : "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      {templateDetails.videoUrl && templateDetails.videoUrl.trim() !== "" && (
+                        <button
+                          onClick={() => downloadImage(templateDetails.videoUrl)}
+                          className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                          style={{
+                            borderRadius: "4px",
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Services Section</h1>
+              <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4  lg:ml-20">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                    <div id="fileUpload" className="max-w-md relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="ServicesBg" value="ServicesBg" />
+                      </div>
+                      <FileInput
+                        type="file"
+                        onChange={(event) => handleFileChange5(event, "ServicesBg")}
+                        id="ServicesBg"
+                        helperText="It’s The Services Background of the Company"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      {templateDetails.ServicesBg && templateDetails.ServicesBg.trim() !== "" && (
+                        <button
+                          onClick={() => downloadImage(templateDetails.ServicesBg)}
+                          className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                          style={{
+                            borderRadius: "4px",
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                    </div>
+
+                    <div id="fileUpload" className="max-w-md relative">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="ServicesPortrait"
+                          value="ServicesPortrait"
+                        />
+                      </div>
+
+                      <FileInput
+                        type="file"
+                        onChange={(event) =>
+                          handleFileChange5(event, "ServicesPortrait")
+                        }
+                        id="ServicesPortrait"
+                        helperText="It’s The Services Portrait "
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      {templateDetails.ServicesPortrait && templateDetails.ServicesPortrait.trim() !== "" && (
+                        <button
+                          onClick={() =>
+                            downloadImage(templateDetails.ServicesPortrait)
+                          }
+                          className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                          style={{
+                            borderRadius: "4px",
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {templateDetails.Services && templateDetails.Services.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
+                  {templateDetails.Services.map((service, index) => (
+                    <div
+                      key={index}
+                      className=" px-2 lg:px-[170px] "
+                      id={`service-${index}`}
+                    >
+                      <div className="flex items-center justify-start gap-1">
+                        <h2 className="text-[18px] font-bold">
+                          Service {index + 1}
+                        </h2>
+                        <span className="text-red-500 mb-4">*</span>
+                      </div>
+
+                      <FloatingLabel
+                        variant="filled"
+                        label="Title"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "title") ? "#FEE2E2" : "#F9FAFB",
+                          width: "100%",
+                        }}
+                        inputStyle={{ width: "100%" }}
+                        value={service.title}
+                        onChange={(e) => handleServiceTitleChange(e, index)}
+                      />
+
+                      {service.items && service.items.length > 0 && (
+                        <div className="mt-4">
+                          {service.items.map((item, itemIndex) => (
+                            <div key={itemIndex} className="relative mt-2">
+                              <FloatingLabel
+                                variant="filled"
+                                label={`Item ${itemIndex + 1}`}
+                                style={{
+                                  width: "100%",
+                                  borderColor: "#D1D5DB",
+                                  backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "items" && t.itemIndex === itemIndex) ? "#FEE2E2" : "#F9FAFB",
+
+                                }}
+                                inputStyle={{ width: "100%" }}
+                                value={item}
+                                onChange={(e) =>
+                                  handleItemChange(e, index, itemIndex)
+                                }
+                              />
+                              {service.items.length > 1 && (
+                                <button
+                                  onClick={() => removeItem(index, itemIndex)}
+                                  className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                                >
+                                  <RxCross2 />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {service.items && service.items.length < 4 && (
+                        <div className="flex justify-center mt-4">
+                          <button
+                            onClick={() => addItem(index)}
+                            className="text-[30px]"
+                          >
+                            <MdOutlineAddCircle />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 "
+                ref={refs.ClassTypes}
+              >
+                {templateDetails.ClassTypes &&
+                  templateDetails.ClassTypes.length > 0 && (
+                    <>
+                      {templateDetails.ClassTypes.map((ClassType, index) => (
+                        <div key={index} className="relative px-2 lg:px-[80px]">
+                          <div className="flex flex-col items-start">
+                            <Label
+                              htmlFor={`ClassType-${index}`}
+                              color="gray"
+                              value={`Class Type ${index + 1}`}
+                            />
+                            <div className="relative w-full">
+                              <TextInput
+                                id={`ClassType-${index}`}
+                                type="text"
+                                placeholder="ClassType"
+                                required
+                                value={ClassType}
+                                onChange={(event) => handleChange1(event, index)}
+                                sizing="sm"
+                                helperText={
+                                  <>It’s the Dance Type of the Company Provides</>
+                                }
+                                style={{
+                                  borderColor: "#D1D5DB",
+                                  backgroundColor: invalidClassTypes.some(
+                                    t => t.index === index && t.field === "ClassType"
+                                  )
+                                    ? "#FEE2E2"
+                                    : "#F9FAFB",
+                                  borderRadius: "8px",
+                                }}
+                                className="w-full"
+                              />
+                              {templateDetails.ClassTypes.length > 1 && (
+                                <button
+                                  onClick={() => removeClassType(index)}
+                                  className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                                >
+                                  <RxCross2 />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
+              </div>
+              <div className="col-span-1 flex items-center justify-center">
+                {templateDetails && templateDetails.ClassTypes && templateDetails.ClassTypes.length < 6 && (
+                  <button onClick={addClassType} className="text-[30px]">
+                    <MdOutlineAddCircle />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Testimonial Section</h1>
+              <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+                    <div id="fileUpload" className="max-w-md relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="TestimonialBg" value="TestimonialBg" />
+                      </div>
+                      <FileInput
+                        type="file"
+                        onChange={(event) =>
+                          handleFileChange5(event, "TestimonialBg")
+                        }
+                        id="TestimonialBg"
+                        helperText="It’s The Services Background of the Testimonial"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      {templateDetails.TestimonialBg && templateDetails.TestimonialBg.trim() !== "" && (
+                        <button
+                          onClick={() => downloadImage(templateDetails.TestimonialBg)}
+                          className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                          style={{
+                            borderRadius: "4px",
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {templateDetails.Testimonial &&
+                    templateDetails.Testimonial.length > 0 && (
+                      <div
+                        className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                        ref={refs.Testimonial}
+                      >
+                        {templateDetails.Testimonial.map((testimonial, index) => (
+                          <div
+                            key={index}
+                            className={`px-2 lg:px-[70px] `}
+                          //    ${
+                          //   index === 2
+                          //     ? "col-span-1 md:col-span-2  lg:px-[340px] max1320:px-[200px] max1078:px-[0px]"
+                          //     : ""
+                          // }
+                          >
+                            <div className="flex items-center justify-start gap-1">
+                              <h2 className="text-[18px] font-bold">
+                                Testimonial {index + 1}
+                              </h2>
+                              <span className="text-red-500 mb-4">*</span>
+                            </div>
+
+                            <FloatingLabel
+                              variant="filled"
+                              label="Name"
+                              style={{
+                                width: "100%",
+                                borderColor: "#D1D5DB",
+                                backgroundColor: invalidTestimonialIndex.some(
+                                  t => t.index === index && t.field === "name"
+                                )
+                                  ? "#FEE2E2"
+                                  : "#F9FAFB",
+                              }}
+                              inputStyle={{ width: "100%" }}
+                              value={testimonial.name}
+                              onChange={(event) =>
+                                handleTestimonialChange(event, index, "name")
+                              }
+                            />
+
+                            <FloatingLabel
+                              variant="filled"
+                              label="Feedback"
+                              style={{
+                                width: "100%",
+                                borderColor: "#D1D5DB",
+                                backgroundColor: invalidTestimonialIndex.some(
+                                  t => t.index === index && t.field === "description"
+                                )
+                                  ? "#FEE2E2"
+                                  : "#F9FAFB",
+                              }}
+                              inputStyle={{ width: "100%" }}
+                              value={testimonial.description}
+                              onChange={(event) =>
+                                handleTestimonialChange(event, index, "description")
+                              }
+                            />
+
+                            <div className="relative mt-4">
+                              <FileInput
+                                type="file"
+                                onChange={(event) =>
+                                  handleFileChange1(event, index)
+                                }
+                                id={`TestimonialImg-${index}`}
+                                helperText="Upload the Testimonial Image"
+                                style={{
+                                  borderColor: "#D1D5DB",
+                                  backgroundColor: invalidTestimonialIndex.some(
+                                    t => t.index === index && t.field === "img"
+                                  )
+                                    ? "#FEE2E2"
+                                    : "#F9FAFB",
+                                  borderRadius: "8px",
+                                }}
+                              />
+                              {testimonial.img && (
+                                <button
+                                  onClick={() => downloadImage(testimonial.img)}
+                                  className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                                  style={{
+                                    borderRadius: "4px",
+                                  }}
+                                >
+                                  View
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Subscription Section</h1>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
+                <div id="fileUpload" className="max-w-md relative">
+                  <div className="mb-2 block">
+                    <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
+                  </div>
+                  <FileInput
+                    type="file"
+                    onChange={(event) => handleFileChange5(event, "SubscriptionBg")}
+                    id="SubscriptionBg"
+                    helperText="It’s The Services Background of the Subscription"
                     style={{
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
-                </div>
-
-                <div className="relative ">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="Head Tag Line"
-                      color="gray"
-                      value="Head Tag Line"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <TextInput
-                    id="Head Tag Line"
-                    placeholder="Head Tag Line"
-                    required
-                    value={templateDetails.TagLine}
-                    helperText="It’s the Head Tag line of Home Page"
-                    sizing="sm"
-                    onChange={(event) => handleChange(event, "TagLine")}
-                    ref={refs.TagLine}
-                    color={errors.TagLine ? "failure" : "gray"}
-                    style={{
-                      border: errors.TagLine
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative ">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="Tag Line 2"
-                      color="gray"
-                      value="Tag Line 2"
-                    />
-                  </div>
-                  <TextInput
-                    id="Tag Line 2"
-                    placeholder="Tag Line 2"
-                    helperText="2nd Tag Line of the Home Section"
-                    required
-                    value={templateDetails.TagLine1}
-                    sizing="sm"
-                    onChange={(event) => handleChange(event, "TagLine1")}
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="lg:px-[250px] max1250:px-[150px]  max800:px-2 lg:mt-10 mt-4">
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:gap-10 lg:gap-10 sm:gap-4 text-black">
-                {/* First Input */}
-                <div className="max-w-md">
-                  <div className="mb-2 block">
-                    <Label htmlFor="PrimaryColor" value="PrimaryColor" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    <TextInput
-                      id="PrimaryColor"
-                      sizing="sm"
-                      placeholder="input text"
-                      required
-                      value={templateDetails.PrimaryColor}
-                      onChange={(event) => handleChange(event, "PrimaryColor")}
-                      onBlur={handleBlur}
-                      className="text-field"
-                      ref={refs.PrimaryColor}
-                      color={errors.PrimaryColor ? "failure" : "gray"}
+                  {templateDetails.SubscriptionBg && templateDetails.SubscriptionBg.trim() !== "" && (
+                    <button
+                      onClick={() => downloadImage(templateDetails.SubscriptionBg)}
+                      className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
                       style={{
-                        border: errors.PrimaryColor
-                          ? "1px solid red"
-                          : "1px solid #ccc",
                         borderRadius: "4px",
                       }}
-                    />
-
-                    <input
-                      type="color"
-                      value={templateDetails.PrimaryColor}
-                      onChange={(event) => handleChange(event, "PrimaryColor")}
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "3px",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        border: "none",
-                        padding: "0",
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Second Input */}
-                <div className="max-w-md">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="LightPrimaryColor"
-                      value="LightPrimaryColor"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    <TextInput
-                      id="LightPrimaryColor"
-                      sizing="sm"
-                      placeholder="input text"
-                      required
-                      value={templateDetails.LightPrimaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "LightPrimaryColor")
-                      }
-                      onBlur={handleBlur}
-                      className="text-field"
-                      ref={refs.LightPrimaryColor}
-                      color={errors.LightPrimaryColor ? "failure" : "gray"}
-                      style={{
-                        border: errors.LightPrimaryColor
-                          ? "1px solid red"
-                          : "1px solid #ccc",
-                        borderRadius: "4px",
-                      }}
-                    />
-
-                    <input
-                      type="color"
-                      value={templateDetails.LightPrimaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "LightPrimaryColor")
-                      }
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "3px",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        border: "none",
-                        padding: "0",
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="max-w-md">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="LightestPrimaryColor"
-                      value="LightestPrimaryColor"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    <TextInput
-                      id="LightestPrimaryColor"
-                      sizing="sm"
-                      placeholder="input text"
-                      required
-                      value={templateDetails.LightestPrimaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "LightestPrimaryColor")
-                      }
-                      onBlur={handleBlur}
-                      className="text-field"
-                      ref={refs.LightestPrimaryColor}
-                      color={errors.LightestPrimaryColor ? "failure" : "gray"}
-                      style={{
-                        border: errors.LightestPrimaryColor
-                          ? "1px solid red"
-                          : "1px solid #ccc",
-                        borderRadius: "4px",
-                      }}
-                    />
-
-                    <input
-                      type="color"
-                      value={templateDetails.LightestPrimaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "LightestPrimaryColor")
-                      }
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "3px",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        border: "none",
-                        padding: "0",
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="max-w-md">
-                  <div className="mb-2 block">
-                    <Label htmlFor="SecondaryColor" value="SecondaryColor" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    <TextInput
-                      id="SecondaryColor"
-                      sizing="sm"
-                      placeholder="input text"
-                      required
-                      value={templateDetails.SecondaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "SecondaryColor")
-                      }
-                      onBlur={handleBlur}
-                      className="text-field"
-                      ref={refs.SecondaryColor}
-                      color={errors.SecondaryColor ? "failure" : "gray"}
-                      style={{
-                        border: errors.SecondaryColor
-                          ? "1px solid red"
-                          : "1px solid #ccc",
-                        borderRadius: "4px",
-                      }}
-                    />
-
-                    <input
-                      type="color"
-                      value={templateDetails.SecondaryColor}
-                      onChange={(event) =>
-                        handleChange(event, "SecondaryColor")
-                      }
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "3px",
-                        transform: "translateY(-50%)",
-                        cursor: "pointer",
-                        border: "none",
-                        padding: "0",
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
-            <div className="flex flex-col gap-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-                <div id="fileUpload" className="max-w-md relative">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="Logo Upload file"
-                      value="Logo Upload file"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <FileInput
-                    type="file"
-                    onChange={(event) => handleFileChange(event, "logoUrl")}
-                    id="Logo Upload file"
-                    helperText="It’s The Logo of the Company"
-                    ref={refs.logoUrl}
-                    style={{
-                      borderColor: errors.logoUrl ? "1px solid red" : "#D1D5DB",
-                      backgroundColor: errors.logoUrl ? "#ee3232" : "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-{templateDetails.logoUrl && templateDetails.logoUrl.trim() !== "" && (
-                  <button
-                    onClick={() => downloadImage(templateDetails.logoUrl)}
-                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                    style={{
-                      borderRadius: "4px",
-                    }}
-                  >
-                    View
-                  </button>
-)}
-                </div>
-
-                <div id="fileUpload" className="max-w-md relative">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="Intro Video Upload file"
-                      value="Intro Video Upload file"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-
-                  <FileInput
-                    type="file"
-                    onChange={handleVideoChange}
-                    id="Intro Video Upload file"
-                    helperText="It’s The Intro video of home Page"
-                    ref={refs.videoUrl}
-                    style={{
-                      borderColor: errors.videoUrl
-                        ? "1px solid red"
-                        : "#D1D5DB",
-                      backgroundColor: errors.videoUrl ? "#ee3232" : "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-{templateDetails.videoUrl && templateDetails.videoUrl.trim() !== "" && (
-                  <button
-                    onClick={() => downloadImage(templateDetails.videoUrl)}
-                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                    style={{
-                      borderRadius: "4px",
-                    }}
-                  >
-                    View
-                  </button>
-)}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Services Section</h1>
-          <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 ju">
-            <div className="flex flex-col gap-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-                <div id="fileUpload" className="max-w-md relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="ServicesBg" value="ServicesBg" />
-                  </div>
-                  <FileInput
-                    type="file"
-                    onChange={(event) => handleFileChange5(event, "ServicesBg")}
-                    id="ServicesBg"
-                    helperText="It’s The Services Background of the Company"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  {templateDetails.ServicesBg && templateDetails.ServicesBg.trim() !== "" && (
-                  <button
-                    onClick={() => downloadImage(templateDetails.ServicesBg)}
-                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                    style={{
-                      borderRadius: "4px",
-                    }}
-                  >
-                    View
-                  </button>
+                    >
+                      View
+                    </button>
                   )}
                 </div>
-
-                <div id="fileUpload" className="max-w-md relative">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="ServicesPortrait"
-                      value="ServicesPortrait"
-                    />
-                  </div>
-
-                  <FileInput
-                    type="file"
-                    onChange={(event) =>
-                      handleFileChange5(event, "ServicesPortrait")
-                    }
-                    id="ServicesPortrait"
-                    helperText="It’s The Services Portrait "
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-{templateDetails.ServicesPortrait && templateDetails.ServicesPortrait.trim() !== "" && (
-                  <button
-                    onClick={() =>
-                      downloadImage(templateDetails.ServicesPortrait)
-                    }
-                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                    style={{
-                      borderRadius: "4px",
-                    }}
-                  >
-                    View
-                  </button>
-)}
-                </div>
               </div>
-            </div>
-          </div>
-          {templateDetails.Services && templateDetails.Services.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10">
-              {templateDetails.Services.map((service, index) => (
+
+              {subscriptionDetails && subscriptionDetails.length > 0 && (
                 <div
-                  key={index}
-                  className=" px-2 lg:px-[170px] "
-                  id={`service-${index}`}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                  ref={refs.Subscriptions}
                 >
-                  <div className="flex items-center justify-start gap-1">
-                    <h2 className="text-[18px] font-bold">
-                      Service {index + 1}
-                    </h2>
-                    <span className="text-red-500 mb-4">*</span>
-                  </div>
+                  {subscriptionDetails.map((subscription, index) => (
+                    <div key={index} className="px-2 lg:px-[170px]">
+                      <div className="flex justify-between items-center ">
+                        <h2 className="text-[18px] font-bold mb-2">
+                          Subscription {index + 1}
+                        </h2>
+                        {subscriptionDetails.length > 1 &&
+                          (!subscription.productId ||
+                            subscriptionDetails.filter((sub) => sub.productId)
+                              .length > 1) && (
+                            <button
+                              onClick={() => {
+                                if (subscription.productId) {
+                                  removeSubscription(subscription.productId);
+                                } else {
+                                  removeSubscriptionByIndex(index);
+                                }
+                              }}
+                              className="rounded-full  font-bold text-black text-[18px] "
+                            >
+                              <RxCross2 />
+                            </button>
+                          )}
+                      </div>
+                      <FloatingLabel
+                        variant="filled"
+                        label="Heading"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: invalidSubscriptionIndex.some(
+                            t => t.subscriptionIndex === index && t.field === "heading"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
 
-                  <FloatingLabel
-                    variant="filled"
-                    label="Title"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "title") ? "#FEE2E2" : "#F9FAFB",
-                      width: "100%",
-                    }}
-                    inputStyle={{ width: "100%" }}
-                    value={service.title}
-                    onChange={(e) => handleServiceTitleChange(e, index)}
-                  />
+                        }}
+                        inputStyle={{ width: "100%" }}
 
-                  {service.items && service.items.length > 0 && (
-                    <div className="mt-4">
-                      {service.items.map((item, itemIndex) => (
-                        <div key={itemIndex} className="relative mt-2">
+                        value={subscription.heading}
+                        onChange={(e) => handleHeadingChange(e, index)}
+                      />
+
+                      {/* Duration */}
+                      <div className="max-w-md mt-4">
+                        <div className="mb-2 block">
+                          <Label
+                            htmlFor={`Duration-${index}`}
+                            value="Select your Duration"
+                          />
+                        </div>
+                        <Select
+                          id={`Duration-${index}`}
+                          required
+                          value={`${subscription.subscriptionType}:${subscription.durationText}`}
+                          onChange={(e) => handleSubscriptionTypeChange(e, index)}
+                          style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          <option value="year:yearly">Year</option>
+                          <option value="month:monthly">Month</option>
+                          <option value="week:weekly">Week</option>
+                          <option value="quarter:quarterly">Quarter</option>
+                        </Select>
+                      </div>
+
+                      {/* Currency */}
+                      <div className="max-w-md mt-4">
+                        <div className="mb-2 block">
+                          <Label
+                            htmlFor={`Currency-${index}`}
+                            value="Select your Currency"
+                          />
+                        </div>
+                        <Select
+                          id={`Currency-${index}`}
+                          required
+                          value={subscription.currency}
+                          onChange={(e) => handleCountryChange(e, index)}
+                          style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          <Currency />
+                        </Select>
+                      </div>
+                      <div className="mt-6">
+                        {/* Amount */}
+                        <FloatingLabel
+                          variant="filled"
+                          label="Amount"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidSubscriptionIndex.some(
+                              t => t.subscriptionIndex === index && t.field === "amount"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                          }}
+                          type="Number"
+                          inputStyle={{ width: "100%" }}
+                          value={subscription.amount}
+                          onChange={(e) => handleAmountChange(e, index)}
+                        />
+                      </div>
+                      {/* Radio Buttons */}
+                      <fieldset className="flex max-w-md flex-col gap-4 mt-4">
+                        <legend className="mb-4">India</legend>
+                        <div className="flex items-center gap-2">
+                          <div className="radio-label mt-1 ">
+                            <label>
+                              <input
+                                type="radio"
+                                value="true"
+                                checked={subscription.india === true}
+                                onChange={(e) => handleIndiaChange(e, index)}
+                              />
+                            </label>
+                            <span className="mb-1">True</span>
+                            <label>
+                              <input
+                                type="radio"
+                                value="false"
+                                checked={subscription.india === false}
+                                onChange={(e) => handleIndiaChange(e, index)}
+                                className="ml-2"
+                              />
+                            </label>
+                            <span className="mb-1">False</span>
+                          </div>
+                        </div>
+                      </fieldset>
+
+                      <h2 className="text-lg font-bold mt-4">Provides:</h2>
+                      {subscription.provides.map((provide, idx) => (
+                        <div key={idx} className="relative mt-2">
                           <FloatingLabel
                             variant="filled"
-                            label={`Item ${itemIndex + 1}`}
+                            label={`Provide ${idx + 1}`}
                             style={{
                               width: "100%",
                               borderColor: "#D1D5DB",
-                              backgroundColor: invalidServices.some(t => t.serviceIndex === index && t.field === "items" && t.itemIndex === itemIndex) ? "#FEE2E2" : "#F9FAFB",
-                                
+                              backgroundColor: invalidSubscriptionIndex.some(
+                                t => t.subscriptionIndex === index && t.field === "provides" && t.itemIndex === idx
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
                             }}
                             inputStyle={{ width: "100%" }}
-                            value={item}
-                            onChange={(e) =>
-                              handleItemChange(e, index, itemIndex)
-                            }
+                            value={provide}
+                            onChange={(e) => handleProvideChange(e, index, idx)}
                           />
-                          {service.items.length > 1 && (
+                          {subscription.provides.length > 1 && (
                             <button
-                              onClick={() => removeItem(index, itemIndex)}
-                              className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
+                              onClick={() => removeProvide(index, idx)}
+                              className="absolute right-2 top-3 rounded-full text-[#959595] px-1 py-0.5 text-[14px]"
                             >
                               <RxCross2 />
                             </button>
                           )}
                         </div>
                       ))}
-                    </div>
-                  )}
 
-                  {service.items && service.items.length < 4 && (
-                    <div className="flex justify-center mt-4">
-                      <button
-                        onClick={() => addItem(index)}
-                        className="text-[30px]"
-                      >
-                        <MdOutlineAddCircle />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 lg:mt-10 "
-            ref={refs.ClassTypes}
-          >
-            {templateDetails.ClassTypes &&
-              templateDetails.ClassTypes.length > 0 && (
-                <>
-                  {templateDetails.ClassTypes.map((ClassType, index) => (
-                    <div key={index} className="relative px-2 lg:px-[80px]">
-                      <div className="flex flex-col items-start">
-                        <Label
-                          htmlFor={`ClassType-${index}`}
-                          color="gray"
-                          value={`Class Type ${index + 1}`}
-                        />
-                        <div className="relative w-full">
-                          <TextInput
-                            id={`ClassType-${index}`}
-                            type="text"
-                            placeholder="ClassType"
-                            required
-                            value={ClassType}
-                            onChange={(event) => handleChange1(event, index)}
-                            sizing="sm"
-                            helperText={
-                              <>It’s the Dance Type of the Company Provides</>
-                            }
-                            style={{
-                              borderColor: "#D1D5DB",
-                              backgroundColor: invalidClassTypes.some(
-                                t => t.index === index && t.field === "ClassType"
-                              )
-                                ? "#FEE2E2"
-                                : "#F9FAFB",
-                              borderRadius: "8px",
-                            }}
-                            className="w-full"
-                          />
-                          {templateDetails.ClassTypes.length > 1 && (
-                            <button
-                              onClick={() => removeClassType(index)}
-                              className="absolute right-2 top-3 rounded-full  text-[#959595] px-1 py-0.5 text-[14px]"
-                            >
-                              <RxCross2 />
-                            </button>
-                          )}
-                        </div>
+                      <div className="flex flex-col items-center mt-4">
+                        {subscription.provides.length < 3 && (
+                          <button
+                            onClick={() => addProvides(index)}
+                            className="text-[30px] py-2 px-4 "
+                          >
+                            <MdOutlineAddCircle />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
-                </>
+                </div>
               )}
-          </div>
-          <div className="col-span-1 flex items-center justify-center">
-            {templateDetails.ClassTypes.length < 6 && (
-              <button onClick={addClassType} className="text-[30px]">
-                <MdOutlineAddCircle />
-              </button>
-            )}
-          </div>
-        </div>
+              <div className="flex justify-center mt-4">
+                {subscriptionDetails.length < 6 && (
+                  <button
+                    onClick={addSubscription}
+                    className="text-[40px] py-2 px-4 "
+                  >
+                    <MdOutlineAddCircle />
+                  </button>
+                )}
+              </div>
+            </div>
 
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Testimonial Section</h1>
-          <div className="lg:px-[170px] md:px-[110px] sm:px-6 lg:mt-10 mt-4 ">
-            <div className="flex flex-col gap-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Instructor Section</h1>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
                 <div id="fileUpload" className="max-w-md relative">
                   <div className="mb-2 block">
-                    <Label htmlFor="TestimonialBg" value="TestimonialBg" />
+                    <Label htmlFor="InstructorBg" value="InstructorBg" />
                   </div>
                   <FileInput
                     type="file"
-                    onChange={(event) =>
-                      handleFileChange5(event, "TestimonialBg")
-                    }
-                    id="TestimonialBg"
-                    helperText="It’s The Services Background of the Testimonial"
+                    onChange={(event) => handleFileChange5(event, "InstructorBg")}
+                    id="InstructorBg"
+                    helperText="It’s The Background of the Instructor"
                     style={{
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
-                  {templateDetails.TestimonialBg && templateDetails.TestimonialBg.trim() !== "" && (
-                  <button
-                    onClick={() => downloadImage(templateDetails.TestimonialBg)}
-                    className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                    style={{
-                      borderRadius: "4px",
-                    }}
-                  >
-                    View
-                  </button>
+                  {templateDetails.InstructorBg && templateDetails.InstructorBg.trim() !== "" && (
+                    <button
+                      onClick={() => downloadImage(templateDetails.InstructorBg)}
+                      className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                      style={{
+                        borderRadius: "4px",
+                      }}
+                    >
+                      View
+                    </button>
                   )}
                 </div>
               </div>
-              {templateDetails.Testimonial &&
-                templateDetails.Testimonial.length > 0 && (
-                  <div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-                    ref={refs.Testimonial}
-                  >
-                    {templateDetails.Testimonial.map((testimonial, index) => (
-                      <div
-                        key={index}
-                        className={`px-2 lg:px-[70px] `}
-                        //    ${
-                        //   index === 2
-                        //     ? "col-span-1 md:col-span-2  lg:px-[340px] max1320:px-[200px] max1078:px-[0px]"
-                        //     : ""
-                        // }
-                      >
-                        <div className="flex items-center justify-start gap-1">
-                          <h2 className="text-[18px] font-bold">
-                            Testimonial {index + 1}
-                          </h2>
-                          <span className="text-red-500 mb-4">*</span>
-                        </div>
 
-                        <FloatingLabel
-                          variant="filled"
-                          label="Name"
-                          style={{
-                            width: "100%",
-                            borderColor: "#D1D5DB",
-                            backgroundColor: invalidTestimonialIndex.some(
-                              t => t.index === index && t.field === "name"
-                            )
-                              ? "#FEE2E2"
-                              : "#F9FAFB",
-            }}
-                          inputStyle={{ width: "100%" }}
-                          value={testimonial.name}
-                          onChange={(event) =>
-                            handleTestimonialChange(event, index, "name")
-                          }
-                        />
-
-                        <FloatingLabel
-                          variant="filled"
-                          label="Feedback"
-                          style={{
-                            width: "100%",
-                            borderColor: "#D1D5DB",
-                            backgroundColor: invalidTestimonialIndex.some(
-                              t => t.index === index && t.field === "description"
-                            )
-                              ? "#FEE2E2"
-                              : "#F9FAFB",
-                          }}
-                          inputStyle={{ width: "100%" }}
-                          value={testimonial.description}
-                          onChange={(event) =>
-                            handleTestimonialChange(event, index, "description")
-                          }
-                        />
-
-                        <div className="relative mt-4">
-                          <FileInput
-                            type="file"
-                            onChange={(event) =>
-                              handleFileChange1(event, index)
-                            }
-                            id={`TestimonialImg-${index}`}
-                            helperText="Upload the Testimonial Image"
-                            style={{
-                              borderColor: "#D1D5DB",
-                              backgroundColor: invalidTestimonialIndex.some(
-                                t => t.index === index && t.field === "img"
-                              )
-                                ? "#FEE2E2"
-                                : "#F9FAFB",
-                              borderRadius: "8px",
-                            }}
-                          /> 
-                          {testimonial.img && (
+              {instructorDetails && instructorDetails.length > 0 && (
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                  ref={refs.Instructors}
+                >
+                  {instructorDetails.map((instructor, index) => (
+                    <div key={index} className="px-2 lg:px-[170px]">
+                      <div className="flex justify-between items-center ">
+                        <h2 className="text-[18px] font-bold mb-2">
+                          Instructor {index + 1}
+                        </h2>
+                        {instructorDetails.length > 1 &&
+                          (!instructor.instructorId ||
+                            instructorDetails.filter((inst) => inst.instructorId)
+                              .length > 1) && (
                             <button
-                              onClick={() => downloadImage(testimonial.img)}
-                              className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                              style={{
-                                borderRadius: "4px",
+                              onClick={() => {
+                                if (instructor.instructorId) {
+                                  removeInstructor(instructor.instructorId);
+                                } else {
+                                  removeInstructorByIndex(index);
+                                }
                               }}
+                              className="rounded-full  font-bold text-black text-[18px] "
                             >
-                              View
+                              <RxCross2 />
                             </button>
                           )}
-                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-            </div>
-          </div>
-        </div>
-
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Subscription Section</h1>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
-            <div id="fileUpload" className="max-w-md relative">
-              <div className="mb-2 block">
-                <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
-              </div>
-              <FileInput
-                type="file"
-                onChange={(event) => handleFileChange5(event, "SubscriptionBg")}
-                id="SubscriptionBg"
-                helperText="It’s The Services Background of the Subscription"
-                style={{
-                  borderColor: "#D1D5DB",
-                  backgroundColor: "#F9FAFB",
-                  borderRadius: "8px",
-                }}
-              />
-              {templateDetails.SubscriptionBg && templateDetails.SubscriptionBg.trim() !== "" && (
-              <button
-                onClick={() => downloadImage(templateDetails.SubscriptionBg)}
-                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                style={{
-                  borderRadius: "4px",
-                }}
-              >
-                View
-              </button>
-              )}
-            </div>
-          </div>
-
-          {subscriptionDetails && subscriptionDetails.length > 0 && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-              ref={refs.Subscriptions}
-            >
-              {subscriptionDetails.map((subscription, index) => (
-                <div key={index} className="px-2 lg:px-[170px]">
-                  <div className="flex justify-between items-center ">
-                    <h2 className="text-[18px] font-bold mb-2">
-                      Subscription {index + 1}
-                    </h2>
-                    {subscriptionDetails.length > 1 &&
-                      (!subscription.productId ||
-                        subscriptionDetails.filter((sub) => sub.productId)
-                          .length > 1) && (
-                        <button
-                          onClick={() => {
-                            if (subscription.productId) {
-                              removeSubscription(subscription.productId);
-                            } else {
-                              removeSubscriptionByIndex(index);
-                            }
-                          }}
-                          className="rounded-full  font-bold text-black text-[18px] "
-                        >
-                          <RxCross2 />
-                        </button>
-                      )}
-                  </div>
-                  <FloatingLabel
-                    variant="filled"
-                    label="Heading"
-                    style={{
-                      width: "100%",
-                      borderColor: "#D1D5DB",
-                      backgroundColor: invalidSubscriptionIndex.some(
-                        t => t.subscriptionIndex === index && t.field === "heading"
-                      )
-                        ? "#FEE2E2"
-                        : "#F9FAFB",
-          
-                    }}
-                    inputStyle={{ width: "100%" }}
-                    
-                    value={subscription.heading}
-                    onChange={(e) => handleHeadingChange(e, index)}
-                  />
-
-                  {/* Duration */}
-                  <div className="max-w-md mt-4">
-                    <div className="mb-2 block">
-                      <Label
-                        htmlFor={`Duration-${index}`}
-                        value="Select your Duration"
-                      />
-                    </div>
-                    <Select
-                      id={`Duration-${index}`}
-                      required
-                      value={`${subscription.subscriptionType}:${subscription.durationText}`}
-                      onChange={(e) => handleSubscriptionTypeChange(e, index)}
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <option value="year:yearly">Year</option>
-                      <option value="month:monthly">Month</option>
-                      <option value="week:weekly">Week</option>
-                      <option value="quarter:quarterly">Quarter</option>
-                    </Select>
-                  </div>
-
-                  {/* Currency */}
-                  <div className="max-w-md mt-4">
-                    <div className="mb-2 block">
-                      <Label
-                        htmlFor={`Currency-${index}`}
-                        value="Select your Currency"
-                      />
-                    </div>
-                    <Select
-                      id={`Currency-${index}`}
-                      required
-                      value={subscription.currency}
-                      onChange={(e) => handleCountryChange(e, index)}
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <Currency />
-                    </Select>
-                  </div>
-                  <div className="mt-6">
-                    {/* Amount */}
-                    <FloatingLabel
-                      variant="filled"
-                      label="Amount"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidSubscriptionIndex.some(
-                          t => t.subscriptionIndex === index && t.field === "amount"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                      }}
-                      type="Number"
-                      inputStyle={{ width: "100%" }}
-                      value={subscription.amount}
-                      onChange={(e) => handleAmountChange(e, index)}
-                    />
-                  </div>
-                  {/* Radio Buttons */}
-                  <fieldset className="flex max-w-md flex-col gap-4 mt-4">
-                    <legend className="mb-4">India</legend>
-                    <div className="flex items-center gap-2">
-                      <div className="radio-label mt-1 ">
-                        <label>
-                          <input
-                            type="radio"
-                            value="true"
-                            checked={subscription.india === true}
-                            onChange={(e) => handleIndiaChange(e, index)}
-                          />
-                        </label>
-                        <span className="mb-1">True</span>
-                        <label>
-                          <input
-                            type="radio"
-                            value="false"
-                            checked={subscription.india === false}
-                            onChange={(e) => handleIndiaChange(e, index)}
-                            className="ml-2"
-                          />
-                        </label>
-                        <span className="mb-1">False</span>
-                      </div>
-                    </div>
-                  </fieldset>
-
-                  <h2 className="text-lg font-bold mt-4">Provides:</h2>
-                  {subscription.provides.map((provide, idx) => (
-                    <div key={idx} className="relative mt-2">
                       <FloatingLabel
                         variant="filled"
-                        label={`Provide ${idx + 1}`}
+                        label="Name"
                         style={{
                           width: "100%",
                           borderColor: "#D1D5DB",
-                          backgroundColor: invalidSubscriptionIndex.some(
-                            t => t.subscriptionIndex === index && t.field === "provides" && t.itemIndex === idx
+                          backgroundColor: invalidInstructors.some(
+                            t => t.index === index && t.field === "name"
                           )
                             ? "#FEE2E2"
                             : "#F9FAFB",
                         }}
                         inputStyle={{ width: "100%" }}
-                        value={provide}
-                        onChange={(e) => handleProvideChange(e, index, idx)}
+                        value={instructor.name}
+                        onChange={(e) => handleInstructorChange(e, "name", index)}
                       />
-                      {subscription.provides.length > 1 && (
-                        <button
-                          onClick={() => removeProvide(index, idx)}
-                          className="absolute right-2 top-3 rounded-full text-[#959595] px-1 py-0.5 text-[14px]"
-                        >
-                          <RxCross2 />
-                        </button>
-                      )}
+
+                      <FloatingLabel
+                        variant="filled"
+                        label="Position"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: invalidInstructors.some(
+                            t => t.index === index && t.field === "position"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
+                        }}
+                        inputStyle={{ width: "100%" }}
+                        value={instructor.position}
+                        onChange={(e) =>
+                          handleInstructorChange(e, "position", index)
+                        }
+                      />
+
+                      <FloatingLabel
+                        variant="filled"
+                        label="Email ID"
+                        style={{
+                          width: "100%",
+                          borderColor: "#D1D5DB",
+                          backgroundColor: invalidInstructors.some(
+                            t => t.index === index && t.field === "emailId"
+                          )
+                            ? "#FEE2E2"
+                            : "#F9FAFB",
+                        }}
+                        inputStyle={{ width: "100%" }}
+                        value={instructor.emailId}
+                        onChange={(e) =>
+                          handleInstructorChange(e, "emailId", index)
+                        }
+                      />
+
+                      <div className="relative mt-4">
+                        <FileInput
+                          type="file"
+                          onChange={(e) => handleFileChange3(e, index)}
+                          id={`InstructorImg-${index}`}
+                          helperText="Upload the Instructor Image"
+                          style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidInstructors.some(
+                              t => t.index === index && t.field === "image"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                        />
+                        {instructor.image && (
+                          <button
+                            onClick={() => downloadImage(instructor.image)}
+                            className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                            style={{
+                              borderRadius: "4px",
+                            }}
+                          >
+                            View
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
-
-                  <div className="flex flex-col items-center mt-4">
-                    {subscription.provides.length < 3 && (
-                      <button
-                        onClick={() => addProvides(index)}
-                        className="text-[30px] py-2 px-4 "
-                      >
-                        <MdOutlineAddCircle />
-                      </button>
-                    )}
-                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-          <div className="flex justify-center mt-4">
-            {subscriptionDetails.length < 6 && (
-              <button
-                onClick={addSubscription}
-                className="text-[40px] py-2 px-4 "
-              >
-                <MdOutlineAddCircle />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Instructor Section</h1>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
-            <div id="fileUpload" className="max-w-md relative">
-              <div className="mb-2 block">
-                <Label htmlFor="InstructorBg" value="InstructorBg" />
-              </div>
-              <FileInput
-                type="file"
-                onChange={(event) => handleFileChange5(event, "InstructorBg")}
-                id="InstructorBg"
-                helperText="It’s The Background of the Instructor"
-                style={{
-                  borderColor: "#D1D5DB",
-                  backgroundColor: "#F9FAFB",
-                  borderRadius: "8px",
-                }}
-              />
-              {templateDetails.InstructorBg && templateDetails.InstructorBg.trim() !== "" && (
-              <button
-                onClick={() => downloadImage(templateDetails.InstructorBg)}
-                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                style={{
-                  borderRadius: "4px",
-                }}
-              >
-                View
-              </button>
               )}
+              <div className="flex justify-center mt-4">
+                <button onClick={addInstructor} className="text-[30px]">
+                  <MdOutlineAddCircle />
+                </button>
+              </div>
             </div>
-          </div>
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">FAQ Section</h1>
+              {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                  ref={refs.FAQ}
+                >
+                  {templateDetails.FAQ.map((faq, index) => (
+                    <div key={index} className="px-2 lg:px-[170px]">
+                      <div className="flex justify-between items-center ">
+                        <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
+                        {templateDetails.FAQ.length > 1 && (
+                          <button
+                            onClick={() => removeFAQ(index)}
+                            className="rounded-full font-bold text-black text-[18px]"
+                          >
+                            <RxCross2 />
+                          </button>
+                        )}
+                      </div>
 
-          {instructorDetails && instructorDetails.length > 0 && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-              ref={refs.Instructors}
-            >
-              {instructorDetails.map((instructor, index) => (
-                <div key={index} className="px-2 lg:px-[170px]">
-                  <div className="flex justify-between items-center ">
-                    <h2 className="text-[18px] font-bold mb-2">
-                      Instructor {index + 1}
-                    </h2>
-                    {instructorDetails.length > 1 &&
-                      (!instructor.instructorId ||
-                        instructorDetails.filter((inst) => inst.instructorId)
-                          .length > 1) && (
-                        <button
-                          onClick={() => {
-                            if (instructor.instructorId) {
-                              removeInstructor(instructor.instructorId);
-                            } else {
-                              removeInstructorByIndex(index);
-                            }
+                      <div>
+                        <div className="mb-2 block">
+                          <Label htmlFor="Question" value="Question" />
+                        </div>
+                        <TextInput
+                          variant="filled"
+                          label="Question"
+                          sizing="sm"
+                          id="Question"
+                          type="text"
+                          placeholder="Question"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidFaqs.some(
+                              t => t.index === index && t.field === "title"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
                           }}
-                          className="rounded-full  font-bold text-black text-[18px] "
-                        >
-                          <RxCross2 />
-                        </button>
-                      )}
-                  </div>
-                  <FloatingLabel
-                    variant="filled"
-                    label="Name"
-                    style={{
-                      width: "100%",
-                      borderColor: "#D1D5DB",
-                      backgroundColor: invalidInstructors.some(
-                        t => t.index === index && t.field === "name"
-                      )
-                        ? "#FEE2E2"
-                        : "#F9FAFB",
-                    }}
-                    inputStyle={{ width: "100%" }}
-                    value={instructor.name}
-                    onChange={(e) => handleInstructorChange(e, "name", index)}
-                  />
+                          inputStyle={{ width: "100%" }}
+                          value={faq.title}
+                          onChange={(e) =>
+                            FaqInputChange(index, "title", e.target.value)
+                          }
+                        />
+                      </div>
 
-                  <FloatingLabel
-                    variant="filled"
-                    label="Position"
-                    style={{
-                      width: "100%",
-                      borderColor: "#D1D5DB",
-                      backgroundColor: invalidInstructors.some(
-                        t => t.index === index && t.field === "position"
-                      )
-                        ? "#FEE2E2"
-                        : "#F9FAFB",
-                    }}
-                    inputStyle={{ width: "100%" }}
-                    value={instructor.position}
-                    onChange={(e) =>
-                      handleInstructorChange(e, "position", index)
-                    }
-                  />
-
-                  <FloatingLabel
-                    variant="filled"
-                    label="Email ID"
-                    style={{
-                      width: "100%",
-                      borderColor: "#D1D5DB",
-                      backgroundColor: invalidInstructors.some(
-                        t => t.index === index && t.field === "emailId"
-                      )
-                        ? "#FEE2E2"
-                        : "#F9FAFB",
-                    }}
-                    inputStyle={{ width: "100%" }}
-                    value={instructor.emailId}
-                    onChange={(e) =>
-                      handleInstructorChange(e, "emailId", index)
-                    }
-                  />
-
-                  <div className="relative mt-4">
-                    <FileInput
-                      type="file"
-                      onChange={(e) => handleFileChange3(e, index)}
-                      id={`InstructorImg-${index}`}
-                      helperText="Upload the Instructor Image"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidInstructors.some(
-                          t => t.index === index && t.field === "image"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    {instructor.image && (
-                      <button
-                        onClick={() => downloadImage(instructor.image)}
-                        className="absolute bottom-0 right-0 mb-[1px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                        style={{
-                          borderRadius: "4px",
-                        }}
-                      >
-                        View
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="flex justify-center mt-4">
-            <button onClick={addInstructor} className="text-[30px]">
-              <MdOutlineAddCircle />
-            </button>
-          </div>
-        </div>
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">FAQ Section</h1>
-          {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-              ref={refs.FAQ}
-            >
-              {templateDetails.FAQ.map((faq, index) => (
-                <div key={index} className="px-2 lg:px-[170px]">
-                  <div className="flex justify-between items-center ">
-                    <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
-                    {templateDetails.FAQ.length > 1 && (
-                      <button
-                        onClick={() => removeFAQ(index)}
-                        className="rounded-full font-bold text-black text-[18px]"
-                      >
-                        <RxCross2 />
-                      </button>
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="mb-2 block">
-                      <Label htmlFor="Question" value="Question" />
+                      <div className="mt-4">
+                        <div className="mb-2 block">
+                          <Label htmlFor="Answer" value="Answer" />
+                        </div>
+                        <Textarea
+                          variant="filled"
+                          required
+                          rows={4}
+                          id="Answer"
+                          placeholder="Answer..."
+                          label="Answer"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidFaqs.some(
+                              t => t.index === index && t.field === "content"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          inputStyle={{ width: "100%" }}
+                          value={faq.content}
+                          onChange={(e) =>
+                            FaqInputChange(index, "content", e.target.value)
+                          }
+                        />
+                      </div>
                     </div>
-                    <TextInput
-                      variant="filled"
-                      label="Question"
-                      sizing="sm"
-                      id="Question"
-                      type="text"
-                      placeholder="Question"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidFaqs.some(
-                          t => t.index === index && t.field === "title"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      inputStyle={{ width: "100%" }}
-                      value={faq.title}
-                      onChange={(e) =>
-                        FaqInputChange(index, "title", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="mt-4">
-                    <div className="mb-2 block">
-                      <Label htmlFor="Answer" value="Answer" />
-                    </div>
-                    <Textarea
-                      variant="filled"
-                      required
-                      rows={4}
-                      id="Answer"
-                      placeholder="Answer..."
-                      label="Answer"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidFaqs.some(
-                          t => t.index === index && t.field === "content"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      inputStyle={{ width: "100%" }}
-                      value={faq.content}
-                      onChange={(e) =>
-                        FaqInputChange(index, "content", e.target.value)
-                      }
-                    />
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex justify-center mt-4">
-            {templateDetails.FAQ && templateDetails.FAQ.length < 4 && (
-              <button onClick={addFAQ} className="text-[30px]">
-                <MdOutlineAddCircle />
-              </button>
-            )}
-          </div>
-        </div>
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Policy Section</h1>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
-            <div id="fileUpload" className="max-w-md relative">
-              <div className="mb-2 block">
-                <Label htmlFor="AboutUsBg" value="AboutUsBg" />
-              </div>
-              <FileInput
-                type="file"
-                onChange={(event) => handleFileChange5(event, "AboutUsBg")}
-                id="AboutUsBg"
-                helperText="It’s The Background of the AboutUs"
-                style={{
-                  borderColor: "#D1D5DB",
-                  backgroundColor: "#F9FAFB",
-                  borderRadius: "8px",
-                }}
-              />
-              {templateDetails.AboutUsBg && templateDetails.AboutUsBg.trim() !== "" && (
-              <button
-                onClick={() => downloadImage(templateDetails.AboutUsBg)}
-                className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
-                style={{
-                  borderRadius: "4px",
-                }}
-              >
-                View
-              </button>
               )}
-            </div>
-          </div>
-          {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-              ref={refs.AboutUs}
-            >
-              {templateDetails.AboutUs.map((item, index) => (
-                <div key={index} className="px-2 lg:px-[170px]">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-[18px] font-bold">
-                      AboutUs {index + 1}
-                    </h2>
-                    {templateDetails.AboutUs &&
-                      templateDetails.AboutUs.length > 1 && (
-                        <button
-                          onClick={() => removeAboutUsItem(index)}
-                          className="rounded-full font-bold text-black text-[18px]"
-                        >
-                          <RxCross2 />
-                        </button>
-                      )}
-                  </div>
 
-                  <div className="mt-4">
-                    <Label
-                      htmlFor={`aboutUsHeading-${index}`}
-                      value="Heading"
-                    />
-                    <TextInput
-                      id={`aboutUsHeading-${index}`}
-                      variant="filled"
-                      label="Heading"
-                      placeholder="Enter AboutUs Policy Heading"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidAboutUs.some(
-                          t => t.index === index && t.field === "heading"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      value={item.heading}
-                      onChange={(e) => handleAboutUsChange(e, index, "heading")}
-                    />
-                  </div>
-
-                  <div className="mt-4">
-                    <Label
-                      htmlFor={`aboutUsContent-${index}`}
-                      value="Content"
-                    />
-                    <Textarea
-                      id={`aboutUsContent-${index}`}
-                      variant="filled"
-                      label="Content"
-                      placeholder="Enter AboutUs Content"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidAboutUs.some(
-                          t => t.index === index && t.field === "content"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      rows={4}
-                      value={item.content}
-                      onChange={(e) => handleAboutUsChange(e, index, "content")}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex justify-center mt-4">
-            {templateDetails.AboutUs && templateDetails.AboutUs.length < 6 && (
-              <button
-                onClick={addAboutUsItem}
-                className="flex items-center text-[30px] bg-black px-2 rounded"
-              >
-                <MdOutlineAddCircle className="text-white" />
-                <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
-                  About Us
-                </h2>
-              </button>
-            )}
-          </div>
-          {templateDetails.PrivacyPolicy &&
-            templateDetails.PrivacyPolicy.length > 0 && (
-              <div
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-                ref={refs.PrivacyPolicy}
-              >
-                {templateDetails.PrivacyPolicy.map((item, index) => (
-                  <div key={index} className="px-2 lg:px-[170px]">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-[18px] font-bold">
-                        PrivacyPolicy {index + 1}
-                      </h2>
-                      {templateDetails.PrivacyPolicy &&
-                        templateDetails.PrivacyPolicy.length > 1 && (
-                          <button
-                            onClick={() => removePrivacyPolicyItem(index)}
-                            className="rounded-full font-bold text-black text-[18px]"
-                          >
-                            <RxCross2 />
-                          </button>
-                        )}
-                    </div>
-
-                    <div className="mt-4">
-                      <Label
-                        htmlFor={`privacyPolicyHeading-${index}`}
-                        value="Heading"
-                      />
-                      <TextInput
-                        id={`privacyPolicyHeading-${index}`}
-                        variant="filled"
-                        label="Heading"
-                        placeholder="Enter PrivacyPolicy Heading"
-                        style={{
-                          width: "100%",
-                          borderColor: "#D1D5DB",
-                          backgroundColor: invalidPrivacyPolicy.some(
-                            t => t.index === index && t.field === "heading"
-                          )
-                            ? "#FEE2E2"
-                            : "#F9FAFB",
-                          borderRadius: "8px",
-                        }}
-                        value={item.heading}
-                        onChange={(e) =>
-                          handlePrivacyPolicyChange(e, index, "heading")
-                        }
-                      />
-                    </div>
-
-                    <div className="mt-4">
-                      <Label
-                        htmlFor={`privacyPolicyContent-${index}`}
-                        value="Content"
-                      />
-                      <Textarea
-                        id={`privacyPolicyContent-${index}`}
-                        variant="filled"
-                        label="Content"
-                        placeholder="Enter PrivacyPolicy Content"
-                        style={{
-                          width: "100%",
-                          borderColor: "#D1D5DB",
-                          backgroundColor: invalidPrivacyPolicy.some(
-                            t => t.index === index && t.field === "content"
-                          )
-                            ? "#FEE2E2"
-                            : "#F9FAFB",
-                          borderRadius: "8px",
-                        }}
-                        rows={4}
-                        value={item.content}
-                        onChange={(e) =>
-                          handlePrivacyPolicyChange(e, index, "content")
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
+              <div className="flex justify-center mt-4">
+                {templateDetails.FAQ && templateDetails.FAQ.length < 4 && (
+                  <button onClick={addFAQ} className="text-[30px]">
+                    <MdOutlineAddCircle />
+                  </button>
+                )}
               </div>
-            )}
-
-          <div className="flex justify-center mt-4">
-            {templateDetails.PrivacyPolicy &&
-              templateDetails.PrivacyPolicy.length < 6 && (
-                <button
-                  onClick={addPrivacyPolicyItem}
-                  className="flex items-center text-[30px] bg-black px-2 rounded"
-                >
-                  <MdOutlineAddCircle className="text-white" />
-                  <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
-                    PrivacyPolicy
-                  </h2>
-                </button>
-              )}
-          </div>
-          {templateDetails.Refund && templateDetails.Refund.length > 0 && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-              ref={refs.Refund}
-            >
-              {templateDetails.Refund.map((item, index) => (
-                <div key={index} className="px-2 lg:px-[170px]">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-[18px] font-bold">
-                      Refund Policy {index + 1}
-                    </h2>
-                    {templateDetails.Refund &&
-                      templateDetails.Refund.length > 1 && (
-                        <button
-                          onClick={() => removeRefundItem(index)}
-                          className="rounded-full font-bold text-black text-[18px]"
-                        >
-                          <RxCross2 />
-                        </button>
-                      )}
-                  </div>
-
-                  <div className="mt-4">
-                    <Label htmlFor={`refundHeading-${index}`} value="Heading" />
-                    <TextInput
-                      id={`refundHeading-${index}`}
-                      variant="filled"
-                      label="Heading"
-                      placeholder="Enter Refund Policy Heading"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidRefund.some(
-                          t => t.index === index && t.field === "heading"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      value={item.heading}
-                      onChange={(e) => handleRefundChange(e, index, "heading")}
-                    />
-                  </div>
-
-                  <div className="mt-4">
-                    <Label htmlFor={`refundContent-${index}`} value="Content" />
-                    <Textarea
-                      id={`refundContent-${index}`}
-                      variant="filled"
-                      label="Content"
-                      placeholder="Enter Refund Policy Content"
-                      style={{
-                        width: "100%",
-                        borderColor: "#D1D5DB",
-                        backgroundColor: invalidRefund.some(
-                          t => t.index === index && t.field === "content"
-                        )
-                          ? "#FEE2E2"
-                          : "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      rows={4}
-                      value={item.content}
-                      onChange={(e) => handleRefundChange(e, index, "content")}
-                    />
-                  </div>
-                </div>
-              ))}
             </div>
-          )}
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Policy Section</h1>
 
-          <div className="flex justify-center mt-4">
-            {templateDetails.Refund && templateDetails.Refund.length < 6 && (
-              <button
-                onClick={addRefundItem}
-                className="flex items-center text-[30px] bg-black px-2 rounded"
-              >
-                <MdOutlineAddCircle className="text-white" />
-                <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
-                  RefundPolicy
-                </h2>
-              </button>
-            )}
-          </div>
-          {templateDetails.TermsData &&
-            templateDetails.TermsData.length > 0 && (
-              <div
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
-                ref={refs.TermsData}
-              >
-                {templateDetails.TermsData.map((item, index) => (
-                  <div key={index} className="px-2 lg:px-[170px]">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-[18px] font-bold">
-                        Terms And Data {index + 1}
-                      </h2>
-                      {templateDetails.TermsData &&
-                        templateDetails.TermsData.length > 1 && (
-                          <button
-                            onClick={() => removeTermsDataItem(index)}
-                            className="rounded-full font-bold text-black text-[18px]"
-                          >
-                            <RxCross2 />
-                          </button>
-                        )}
-                    </div>
-
-                    <div className="mt-4">
-                      <Label
-                        htmlFor={`termsDataTitle-${index}`}
-                        value="Title"
-                      />
-                      <TextInput
-                        id={`termsDataTitle-${index}`}
-                        variant="filled"
-                        label="Title"
-                        placeholder="Enter Terms Data Title"
-                        style={{
-                          width: "100%",
-                          borderColor: "#D1D5DB",
-                          backgroundColor: invalidTermsData.some(
-                            t => t.index === index && t.field === "title"
-                          )
-                            ? "#FEE2E2"
-                            : "#F9FAFB",
-                          borderRadius: "8px",
-                        }}
-                        value={item.title}
-                        onChange={(e) =>
-                          handleTermsDataChange(e, index, "title")
-                        }
-                      />
-                    </div>
-
-                    <div className="mt-4">
-                      <Label
-                        htmlFor={`termsDataContent-${index}`}
-                        value="Content"
-                      />
-                      <Textarea
-                        id={`termsDataContent-${index}`}
-                        variant="filled"
-                        label="Content"
-                        placeholder="Enter Terms Data Content"
-                        style={{
-                          width: "100%",
-                          borderColor: "#D1D5DB",
-                          backgroundColor: invalidTermsData.some(
-                            t => t.index === index && t.field === "content"
-                          )
-                            ? "#FEE2E2"
-                            : "#F9FAFB",
-                          borderRadius: "8px",
-                        }}
-                        rows={4}
-                        value={item.content}
-                        onChange={(e) =>
-                          handleTermsDataChange(e, index, "content")
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-          <div className="flex justify-center mt-4">
-            {templateDetails.TermsData &&
-              templateDetails.TermsData.length < 6 && (
-                <button
-                  onClick={addTermsDataItem}
-                  className="flex items-center text-[30px] bg-black px-2 rounded"
-                >
-                  <MdOutlineAddCircle className="text-white" />
-                  <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
-                    Terms&Data
-                  </h2>
-                </button>
-              )}
-          </div>
-        </div>
-
-        <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-        <div className="relative p-4">
-          <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Contact Section</h1>
-          <div className="lg:px-[180px] md:px-[150px] sm:px-4">
-            <div className="flex flex-col gap-4 ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
-                <div className="relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
+                <div id="fileUpload" className="max-w-md relative">
                   <div className="mb-2 block">
-                    <Label htmlFor="address" color="gray" value="Address" />
-                    <span className="text-red-500 ml-1">*</span>
+                    <Label htmlFor="AboutUsBg" value="AboutUsBg" />
                   </div>
-                  <TextInput
-                    id="address"
-                    placeholder="Enter your address"
-                    ref={refs.Query_Address}
-                    required
-                    value={templateDetails.Query_Address}
-                    onChange={(event) => handleChange(event, "Query_Address")}
-                    sizing="sm"
-                    color={errors.Query_Address ? "failure" : "gray"}
-                    style={{
-                      border: errors.Query_Address
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="email" color="gray" value="Email Id" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <TextInput
-                    id="email"
-                    placeholder="Enter your email id"
-                    required
-                    ref={refs.Query_EmailId}
-                    value={templateDetails.Query_EmailId}
-                    onChange={(event) => handleChange(event, "Query_EmailId")}
-                    sizing="sm"
-                    color={errors.Query_EmailId ? "failure" : "gray"}
-                    style={{
-                      border: errors.Query_EmailId
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="phone" color="gray" value="Phone Number" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <TextInput
-                    id="phone"
-                    placeholder="Enter your phone number"
-                    required
-                    ref={refs.Query_PhoneNumber}
-                    value={templateDetails.Query_PhoneNumber}
-                    onChange={(event) =>
-                      handleChange(event, "Query_PhoneNumber")
-                    }
-                    sizing="sm"
-                    color={errors.Query_PhoneNumber ? "failure" : "gray"}
-                    style={{
-                      border: errors.Query_PhoneNumber
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="upi" color="gray" value="Upi Id" />
-                  </div>
-                  <TextInput
-                    id="upi"
-                    placeholder="Enter your UPI id"
-                    value={templateDetails.UpiId}
-                    onChange={(event) => handleChange(event, "UpiId")}
-                    sizing="sm"
+                  <FileInput
+                    type="file"
+                    onChange={(event) => handleFileChange5(event, "AboutUsBg")}
+                    id="AboutUsBg"
+                    helperText="It’s The Background of the AboutUs"
                     style={{
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                       borderRadius: "8px",
                     }}
                   />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="youtube" color="gray" value="Youtube" />
-                  </div>
-                  <TextInput
-                    id="youtube"
-                    placeholder="Enter your Youtube channel"
-                    required
-                    value={templateDetails.YTLink}
-                    onChange={(event) => handleChange(event, "YTLink")}
-                    sizing="sm"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="facebook" color="gray" value="Facebook" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <TextInput
-                    id="facebook"
-                    placeholder="Enter your Facebook profile"
-                    ref={refs.Facebook}
-                    value={templateDetails.Facebook}
-                    onChange={(event) => handleChange(event, "Facebook")}
-                    sizing="sm"
-                    color={errors.Facebook ? "failure" : "gray"}
-                    style={{
-                      border: errors.Facebook
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-
-                <div className="relative">
-                  <div className="mb-2 block">
-                    <Label htmlFor="instagram" color="gray" value="Instagram" />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <TextInput
-                    id="instagram"
-                    placeholder="Enter your Instagram handle"
-                    ref={refs.Instagram}
-                    value={templateDetails.Instagram}
-                    onChange={(event) => handleChange(event, "Instagram")}
-                    sizing="sm"
-                    color={errors.Instagram ? "failure" : "gray"}
-                    style={{
-                      border: errors.Instagram
-                        ? "1px solid red"
-                        : "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
+                  {templateDetails.AboutUsBg && templateDetails.AboutUsBg.trim() !== "" && (
+                    <button
+                      onClick={() => downloadImage(templateDetails.AboutUsBg)}
+                      className="absolute bottom-0 right-0 mb-[5px] mr-2 px-4 py-1 rounded text-black text-[10px] font-bold border border-black"
+                      style={{
+                        borderRadius: "4px",
+                      }}
+                    >
+                      View
+                    </button>
+                  )}
                 </div>
               </div>
+              {templateDetails.AboutUs && templateDetails.AboutUs.length > 0 && (
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                  ref={refs.AboutUs}
+                >
+                  {templateDetails.AboutUs.map((item, index) => (
+                    <div key={index} className="px-2 lg:px-[170px]">
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[18px] font-bold">
+                          AboutUs {index + 1}
+                        </h2>
+                        {templateDetails.AboutUs &&
+                          templateDetails.AboutUs.length > 1 && (
+                            <button
+                              onClick={() => removeAboutUsItem(index)}
+                              className="rounded-full font-bold text-black text-[18px]"
+                            >
+                              <RxCross2 />
+                            </button>
+                          )}
+                      </div>
+
+                      <div className="mt-4">
+                        <Label
+                          htmlFor={`aboutUsHeading-${index}`}
+                          value="Heading"
+                        />
+                        <TextInput
+                          id={`aboutUsHeading-${index}`}
+                          variant="filled"
+                          label="Heading"
+                          placeholder="Enter AboutUs Policy Heading"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidAboutUs.some(
+                              t => t.index === index && t.field === "heading"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          value={item.heading}
+                          onChange={(e) => handleAboutUsChange(e, index, "heading")}
+                        />
+                      </div>
+
+                      <div className="mt-4">
+                        <Label
+                          htmlFor={`aboutUsContent-${index}`}
+                          value="Content"
+                        />
+                        <Textarea
+                          id={`aboutUsContent-${index}`}
+                          variant="filled"
+                          label="Content"
+                          placeholder="Enter AboutUs Content"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidAboutUs.some(
+                              t => t.index === index && t.field === "content"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          rows={4}
+                          value={item.content}
+                          onChange={(e) => handleAboutUsChange(e, index, "content")}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex justify-center mt-4">
+                {templateDetails.AboutUs && templateDetails.AboutUs.length < 6 && (
+                  <button
+                    onClick={addAboutUsItem}
+                    className="flex items-center text-[30px] bg-black px-2 rounded"
+                  >
+                    <MdOutlineAddCircle className="text-white" />
+                    <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                      About Us
+                    </h2>
+                  </button>
+                )}
+              </div>
+              {templateDetails.PrivacyPolicy &&
+                templateDetails.PrivacyPolicy.length > 0 && (
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                    ref={refs.PrivacyPolicy}
+                  >
+                    {templateDetails.PrivacyPolicy.map((item, index) => (
+                      <div key={index} className="px-2 lg:px-[170px]">
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-[18px] font-bold">
+                            PrivacyPolicy {index + 1}
+                          </h2>
+                          {templateDetails.PrivacyPolicy &&
+                            templateDetails.PrivacyPolicy.length > 1 && (
+                              <button
+                                onClick={() => removePrivacyPolicyItem(index)}
+                                className="rounded-full font-bold text-black text-[18px]"
+                              >
+                                <RxCross2 />
+                              </button>
+                            )}
+                        </div>
+
+                        <div className="mt-4">
+                          <Label
+                            htmlFor={`privacyPolicyHeading-${index}`}
+                            value="Heading"
+                          />
+                          <TextInput
+                            id={`privacyPolicyHeading-${index}`}
+                            variant="filled"
+                            label="Heading"
+                            placeholder="Enter PrivacyPolicy Heading"
+                            style={{
+                              width: "100%",
+                              borderColor: "#D1D5DB",
+                              backgroundColor: invalidPrivacyPolicy.some(
+                                t => t.index === index && t.field === "heading"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                            value={item.heading}
+                            onChange={(e) =>
+                              handlePrivacyPolicyChange(e, index, "heading")
+                            }
+                          />
+                        </div>
+
+                        <div className="mt-4">
+                          <Label
+                            htmlFor={`privacyPolicyContent-${index}`}
+                            value="Content"
+                          />
+                          <Textarea
+                            id={`privacyPolicyContent-${index}`}
+                            variant="filled"
+                            label="Content"
+                            placeholder="Enter PrivacyPolicy Content"
+                            style={{
+                              width: "100%",
+                              borderColor: "#D1D5DB",
+                              backgroundColor: invalidPrivacyPolicy.some(
+                                t => t.index === index && t.field === "content"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                            rows={4}
+                            value={item.content}
+                            onChange={(e) =>
+                              handlePrivacyPolicyChange(e, index, "content")
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+              <div className="flex justify-center mt-4">
+                {templateDetails.PrivacyPolicy &&
+                  templateDetails.PrivacyPolicy.length < 6 && (
+                    <button
+                      onClick={addPrivacyPolicyItem}
+                      className="flex items-center text-[30px] bg-black px-2 rounded"
+                    >
+                      <MdOutlineAddCircle className="text-white" />
+                      <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                        PrivacyPolicy
+                      </h2>
+                    </button>
+                  )}
+              </div>
+              {templateDetails.Refund && templateDetails.Refund.length > 0 && (
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                  ref={refs.Refund}
+                >
+                  {templateDetails.Refund.map((item, index) => (
+                    <div key={index} className="px-2 lg:px-[170px]">
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[18px] font-bold">
+                          Refund Policy {index + 1}
+                        </h2>
+                        {templateDetails.Refund &&
+                          templateDetails.Refund.length > 1 && (
+                            <button
+                              onClick={() => removeRefundItem(index)}
+                              className="rounded-full font-bold text-black text-[18px]"
+                            >
+                              <RxCross2 />
+                            </button>
+                          )}
+                      </div>
+
+                      <div className="mt-4">
+                        <Label htmlFor={`refundHeading-${index}`} value="Heading" />
+                        <TextInput
+                          id={`refundHeading-${index}`}
+                          variant="filled"
+                          label="Heading"
+                          placeholder="Enter Refund Policy Heading"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidRefund.some(
+                              t => t.index === index && t.field === "heading"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          value={item.heading}
+                          onChange={(e) => handleRefundChange(e, index, "heading")}
+                        />
+                      </div>
+
+                      <div className="mt-4">
+                        <Label htmlFor={`refundContent-${index}`} value="Content" />
+                        <Textarea
+                          id={`refundContent-${index}`}
+                          variant="filled"
+                          label="Content"
+                          placeholder="Enter Refund Policy Content"
+                          style={{
+                            width: "100%",
+                            borderColor: "#D1D5DB",
+                            backgroundColor: invalidRefund.some(
+                              t => t.index === index && t.field === "content"
+                            )
+                              ? "#FEE2E2"
+                              : "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          rows={4}
+                          value={item.content}
+                          onChange={(e) => handleRefundChange(e, index, "content")}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex justify-center mt-4">
+                {templateDetails.Refund && templateDetails.Refund.length < 6 && (
+                  <button
+                    onClick={addRefundItem}
+                    className="flex items-center text-[30px] bg-black px-2 rounded"
+                  >
+                    <MdOutlineAddCircle className="text-white" />
+                    <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                      RefundPolicy
+                    </h2>
+                  </button>
+                )}
+              </div>
+              {templateDetails.TermsData &&
+                templateDetails.TermsData.length > 0 && (
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
+                    ref={refs.TermsData}
+                  >
+                    {templateDetails.TermsData.map((item, index) => (
+                      <div key={index} className="px-2 lg:px-[170px]">
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-[18px] font-bold">
+                            Terms And Data {index + 1}
+                          </h2>
+                          {templateDetails.TermsData &&
+                            templateDetails.TermsData.length > 1 && (
+                              <button
+                                onClick={() => removeTermsDataItem(index)}
+                                className="rounded-full font-bold text-black text-[18px]"
+                              >
+                                <RxCross2 />
+                              </button>
+                            )}
+                        </div>
+
+                        <div className="mt-4">
+                          <Label
+                            htmlFor={`termsDataTitle-${index}`}
+                            value="Title"
+                          />
+                          <TextInput
+                            id={`termsDataTitle-${index}`}
+                            variant="filled"
+                            label="Title"
+                            placeholder="Enter Terms Data Title"
+                            style={{
+                              width: "100%",
+                              borderColor: "#D1D5DB",
+                              backgroundColor: invalidTermsData.some(
+                                t => t.index === index && t.field === "title"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                            value={item.title}
+                            onChange={(e) =>
+                              handleTermsDataChange(e, index, "title")
+                            }
+                          />
+                        </div>
+
+                        <div className="mt-4">
+                          <Label
+                            htmlFor={`termsDataContent-${index}`}
+                            value="Content"
+                          />
+                          <Textarea
+                            id={`termsDataContent-${index}`}
+                            variant="filled"
+                            label="Content"
+                            placeholder="Enter Terms Data Content"
+                            style={{
+                              width: "100%",
+                              borderColor: "#D1D5DB",
+                              backgroundColor: invalidTermsData.some(
+                                t => t.index === index && t.field === "content"
+                              )
+                                ? "#FEE2E2"
+                                : "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                            rows={4}
+                            value={item.content}
+                            onChange={(e) =>
+                              handleTermsDataChange(e, index, "content")
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+              <div className="flex justify-center mt-4">
+                {templateDetails.TermsData &&
+                  templateDetails.TermsData.length < 6 && (
+                    <button
+                      onClick={addTermsDataItem}
+                      className="flex items-center text-[30px] bg-black px-2 rounded"
+                    >
+                      <MdOutlineAddCircle className="text-white" />
+                      <h2 className="text-[18px] font-bold text-white mr-2 mt-2">
+                        Terms&Data
+                      </h2>
+                    </button>
+                  )}
+              </div>
             </div>
-          </div>{" "}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          className="px-[50px] mb-10"
-        >
-          <button
-            onClick={goBack}
-            className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg"
-          >
-            Back
-          </button>
-          <button
-            onClick={saveChanges}
-            className="bg-[#3c919b] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg"
-          >
-            Save
-          </button>{" "}
-        </div>
-      </div>
+
+            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            <div className="relative p-4">
+              <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Contact Section</h1>
+              <div className="lg:px-[180px] md:px-[150px] sm:px-4">
+                <div className="flex flex-col gap-4 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-10 sm:gap-4">
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="address" color="gray" value="Address" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="address"
+                        placeholder="Enter your address"
+                        ref={refs.Query_Address}
+                        required
+                        value={templateDetails.Query_Address}
+                        onChange={(event) => handleChange(event, "Query_Address")}
+                        sizing="sm"
+                        color={errors.Query_Address ? "failure" : "gray"}
+                        style={{
+                          border: errors.Query_Address
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="email" color="gray" value="Email Id" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="email"
+                        placeholder="Enter your email id"
+                        required
+                        ref={refs.Query_EmailId}
+                        value={templateDetails.Query_EmailId}
+                        onChange={(event) => handleChange(event, "Query_EmailId")}
+                        sizing="sm"
+                        color={errors.Query_EmailId ? "failure" : "gray"}
+                        style={{
+                          border: errors.Query_EmailId
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="phone" color="gray" value="Phone Number" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+
+                      <select
+                        value={selectedCountryCode}
+                        onChange={handleCountryChange1}
+                        className="border w-[9rem] border-[#ccc] rounded-l px-2 py-1"
+                      >
+                        {/* Render country options */}
+                        <Country />
+                      </select>
+                      <TextInput
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        required
+                        ref={refs.Query_PhoneNumber}
+                        value={templateDetails.Query_PhoneNumber}
+                        onChange={(event) =>
+                          handleChange(event, "Query_PhoneNumber")
+                        }
+                        sizing="sm"
+                        color={errors.Query_PhoneNumber ? "failure" : "gray"}
+                        style={{
+                          border: errors.Query_PhoneNumber
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="upi" color="gray" value="Upi Id" />
+                      </div>
+                      <TextInput
+                        id="upi"
+                        placeholder="Enter your UPI id"
+                        value={templateDetails.UpiId}
+                        onChange={(event) => handleChange(event, "UpiId")}
+                        sizing="sm"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="youtube" color="gray" value="Youtube" />
+                      </div>
+                      <TextInput
+                        id="youtube"
+                        placeholder="Enter your Youtube channel"
+                        required
+                        value={templateDetails.YTLink}
+                        onChange={(event) => handleChange(event, "YTLink")}
+                        sizing="sm"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="facebook" color="gray" value="Facebook" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="facebook"
+                        placeholder="Enter your Facebook profile"
+                        ref={refs.Facebook}
+                        value={templateDetails.Facebook}
+                        onChange={(event) => handleChange(event, "Facebook")}
+                        sizing="sm"
+                        color={errors.Facebook ? "failure" : "gray"}
+                        style={{
+                          border: errors.Facebook
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="instagram" color="gray" value="Instagram" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="instagram"
+                        placeholder="Enter your Instagram handle"
+                        ref={refs.Instagram}
+                        value={templateDetails.Instagram}
+                        onChange={(event) => handleChange(event, "Instagram")}
+                        sizing="sm"
+                        color={errors.Instagram ? "failure" : "gray"}
+                        style={{
+                          border: errors.Instagram
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+                    <div className="relative">
+                      <div className="mb-2 block">
+                        <Label htmlFor="userName" color="gray" value="OwnerName" />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="instagram"
+                        placeholder="Enter your OwnerName handle"
+                        ref={refs.userName}
+                        value={templateDetails.userName}
+                        onChange={(event) => handleChange(event, "userName")}
+                        sizing="sm"
+                        color={errors.userName ? "failure" : "gray"}
+                        style={{
+                          border: errors.userName
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>{" "}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              className="px-[50px] mb-10"
+            >
+              <button
+                onClick={goBack}
+                className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg"
+              >
+                Back
+              </button>
+              <button
+                onClick={saveChanges}
+                className="bg-[#3c919b] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg"
+              >
+                Save
+              </button>{" "}
+            </div>
+          </div>
+        ) : null}
     </>
   );
 };

@@ -155,10 +155,10 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
       alert("Signed Up");
       // client dashboard
-      if (userdata.status === "Active") {
+      // if (userdata.status === "Active") {
         UtilCtx.setLoader(false);
         Navigate("/dashboard");
-      }
+      // }
       UtilCtx.setLoader(false);
       Navigate("/Pricing");
     } catch (error) {
