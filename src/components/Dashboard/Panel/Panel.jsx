@@ -11,8 +11,36 @@ import "react-toastify/dist/ReactToastify.css";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination, Dropdown, Flowbite } from "flowbite-react";
-import Index from "../MemberList/Index";
+import { Pagination, Select, Flowbite } from "flowbite-react";
+
+const customTableTheme = {
+  root: {
+    base: "w-full text-left text-sm text-gray-500 dark:text-gray-400",
+    shadow:
+      "absolute left-0 top-0 -z-10 h-full w-full rounded-lg bg-white drop-shadow-md dark:bg-black",
+    wrapper: "relative",
+  },
+  body: {
+    base: "group/body",
+    cell: {
+      base: "px-6 py-4 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-center",
+    },
+  },
+  head: {
+    base: "group/head text-xs uppercase text-gray-700 dark:text-gray-400",
+    cell: {
+      base: "bg-gray-50 px-6 py-3 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg dark:bg-gray-700 ",
+    },
+  },
+  row: {
+    base: "group/row",
+    hovered: "hover:bg-gray-50 dark:hover:bg-gray-600",
+    striped:
+      "odd:bg-white even:bg-gray-50 odd:dark:bg-gray-800 even:dark:bg-gray-700",
+  },
+};
+
+
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -427,24 +455,31 @@ const Panel = () => {
     {!showMemberList ? (
     <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
-      <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
-        {/* WebDevelopment Form Link */}
-        <Flowbite theme={{ theme: customTheme }}>
-          <Dropdown
-            label={instituteType ? splitandjoin(instituteType) : "Type"}
-            className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
-          >
-            {type.map((type) => (
-              <Dropdown.Item
-                key={type}
-                onClick={() => setInstituteType(type)}
-                className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]" // Apply rounded-[0] here
-              >
-                {splitandjoin(type)}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
-        </Flowbite>
+
+
+      <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+        <Select
+          value={instituteType || ""}
+          onChange={(e) => setInstituteType(e.target.value)}
+          className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          {instituteType === "" && (
+            <option value="" disabled hidden>
+              Type
+            </option>
+          )}
+          {instituteTypes.map((type) => (
+            <option
+              key={type}
+              value={type}
+              className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
+            >
+              {splitandjoin(type)}
+            </option>
+          ))}
+        </Select>
+
+
         <div>
           <Link
             to={
@@ -653,141 +688,172 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
-          <Table className="w-full text-sm text-left text-gray-500">
-            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-              {/* <Table.HeadCell></Table.HeadCell> */}
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Institution
-              </Table.HeadCell>
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Type
-              </Table.HeadCell>
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Status
-              </Table.HeadCell>
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Is Delivered
-              </Table.HeadCell>
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Payment
-              </Table.HeadCell>
-              {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+        <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
+          <Flowbite theme={{ theme: customTableTheme }}>
+            <Table className="w-full text-sm text-left text-gray-500">
+              <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+                {/* <Table.HeadCell></Table.HeadCell> */}
+                <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+                  Institution
+                </Table.HeadCell>
+                <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+                  Type
+                </Table.HeadCell>
+                <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
+                  Status
+                </Table.HeadCell>
+                {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                Members
-              </Table.HeadCell>
-              {/* <Table.HeadCell
+                <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px] text-center">
+                  Members
+                </Table.HeadCell>
+                {/* <Table.HeadCell
+
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
                 } uppercase font-semibold text-[14px]`}
               >
                 Attendance
               </Table.HeadCell> */}
-              <Table.HeadCell
-                className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
-              >
-                Created By
-              </Table.HeadCell>
-              {/* <Table.HeadCell
-                className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[20px]`}
-              >
-                Leads
-              </Table.HeadCell> */}
-              {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                More
-              </Table.HeadCell> */}
-            </Table.Head>
-
-            <Table.Body className="bg-white">
-              {clientsToDisplay.map(([key, client], index) => (
-                <Table.Row
-                  key={client.institutionid}
-                  className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                <Table.HeadCell
+                  className={`${
+                    showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[14px] text-center`}
                 >
-                  <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                    onClick={(e) => handleRowClick(client.institutionid, e)}
+                  Created By
+                </Table.HeadCell>
+                <Table.HeadCell
+                  className={`${
+                    showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[14px] text-center`}
+                >
+                  Leads
+                </Table.HeadCell>
+                <Table.HeadCell className="more uppercase font-semibold text-[14px]">
+                  More
+                </Table.HeadCell>
+              </Table.Head>
+
+              <Table.Body className="bg-white">
+                {clientsToDisplay.map(([key, client], index) => (
+                  <Table.Row
+                    key={client.institution}
+                    className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                    onClick={(e) => handleRowClick(client.institution, e)}
                   >
-                    <Link
-                onClick={() => handleInstitutionClick(client)}
-                    >
-                      <div className="email-hover uppercase font-semibold text-[#11192B]">
-                        {client.institutionid}
+                    {/* Checkbox */}
+                    {/* <Table.Cell className="px-4 py-2">
+                    <label className="relative">
+                      <input
+                        type="checkbox"
+                        className="hidden"
+                        onChange={() =>
+                          handleCheckboxChange(client.institution)
+                        }
+                        checked={isRowSelected(client.institution)}
+                      />
+                      <div className="absolute w-4 h-4 border-2 border-gray-400 cursor-pointer">
+                        {isRowSelected(client.institution) && (
+                          <img
+                            src={Select}
+                            alt="Selected"
+                            className="w-full h-full"
+                          />
+                        )}
                       </div>
-                    </Link>
-                  </Table.Cell>
+                    </label>
+                  </Table.Cell> */}
 
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {splitandjoin(client.institutionType)}
-                  </Table.Cell>
-
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {(() => {
-                      const { text, color } = getBadgeProps(client.isFormFilled, client.payment, client.isDelivered);
-                      return (
-                        <Badge
-                          color={color}
-                          size="sm"
-                          className="flex justify-center items-center"
-                        >
-                          {text}
-                        </Badge>
-                      );
-                    })()}
-                  </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    <select
-                      value={client.isDelivered ? "Delivered" : "Not Delivered"}
-                      onChange={(e) => handleDropdownChange(client.institutionid, e.target.value, client.index)}
-                      className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                    >
-                      <option value="Not Delivered">Not Delivered</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                  </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {client.payment ? "Paid" : "Not Paid"}
-                  </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {client.recentMonthMembers}
-                  </Table.Cell>
-                  <Table.Cell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"} whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                  >
-                    {/* {client.createdBy} */}
-                    {client.createdBy
-                      ? getUsernameByCognitoId(client.createdBy)
-                      : 'Unknown'} {/* Fallback for undefined createdBy */}
-                  </Table.Cell>
-                  <Link
-                   onClick={() => handleInstitutionClick(client)}
-                    className="hidden change-page"
-                  ></Link>
-                  {/* <div
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
-                  >
-                    <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
-                      {client.recentMonthLeads}
+                    <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
+                      <Link
+                        to={`/Dashboard?institution=${client.institution}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePersonIconClick(client.institution);
+                        }}
+                      >
+                        <div className="email-hover uppercase font-semibold text-[#11192B]">
+                          {client.institution}
+                        </div>
+                      </Link>
                     </Table.Cell>
-                  </div> */}
-                  <Table.Cell
-                    className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                  // onClick={handleMoreClick}
+
+                    <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] ">
+                      {splitandjoin(userData.institutionType)}
+                    </Table.Cell>
+
+                    <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
+                      <Badge
+                        color={getColor(client.status)}
+                        size="sm"
+                        className="flex justify-center items-center"
+                      >
+                        {client.status}
+                      </Badge>
+                    </Table.Cell>
+
+                    {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
+                    {client.country === "USA"
+                      ? `$${client.recentMonthIncome}`
+                      : `₹${client.recentMonthIncome}`}
+                  </Table.Cell> */}
+
+                    <Table.Cell className="max1008:hidden px-6 py-2 font-semibold text-gray-900 text-center">
+                      {client.recentMonthMembers}
+                    </Table.Cell>
+
+                    {/* <Table.Cell
+                    className={`${
+                      showHiddenContent ? "" : "max1008:hidden"
+                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
                   >
-                    <Link
-                     onClick={() => handleInstitutionClick(client)}
+                    {client.recentMonthAttendance}
+                  </Table.Cell> */}
+
+                    <Table.Cell
+                      className={`${
+                        showHiddenContent ? "" : "max1008:hidden"
+                      } px-6 py-2 font-semibold text-gray-900 text-center`}
                     >
-                      {isMoreVisible ? <FaChevronRight /> : ""}
-                    </Link>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+                      {createdBy[index]}
+                    </Table.Cell>
+                    <Link
+                      to={`/Dashboard?institution=${client.institution}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePersonIconClick(client.institution);
+                      }}
+                      className="hidden change-page"
+                    ></Link>
+                    <div
+                      className={`${
+                        showHiddenContent ? "" : "max1008:hidden"
+                      } h-full p-2 flex justify-center space-x-2 items-center lg:justify-center `}
+                    >
+                      <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
+                        {client.recentMonthLeads}
+                      </Table.Cell>
+                    </div>
+                    <Table.Cell
+                      className="more"
+                      // onClick={handleMoreClick}
+                    >
+                      <Link
+                        to={`/Dashboard?institution=${client.institution}`}
+                        onClick={() =>
+                          handlePersonIconClick(client.institution)
+                        }
+                      >
+                        {isMoreVisible ? <FaChevronRight /> : ""}
+                      </Link>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </Flowbite>
+              
         </div>
 
         {clientsToDisplay.map(([key, client], index) => (
