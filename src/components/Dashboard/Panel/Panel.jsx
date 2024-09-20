@@ -40,7 +40,6 @@ const customTableTheme = {
   },
 };
 
-
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -73,7 +72,6 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental"];
 
   const customTheme = {
     pages: {
@@ -98,54 +96,59 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData || []; // Ensure that it returns an array
+      return clientsData;
     }
 
     const query = searchQuery.toLowerCase();
 
-    console.log("Search Query:", query);
-    console.log("Clients Data:", clientsData);
-
     const filtered = clientsData?.filter(([key, client]) => {
-      const institution = typeof client.institutionid === 'string'
-        ? client.institutionid.toLowerCase()
-        : "";  // Default to an empty string if institution is not a valid string
+      const institution = client.institution
+        ? client.institution.toLowerCase()
+        : "";
+      // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
+      const institutionTypes = userData.institutionType;
+      const crreatedBy = userData.userName;
+      const matches =
+        institution.includes(query) ||
+        institutionTypes.includes(query) ||
+        crreatedBy.includes(query);
 
-      return institution.includes(query);
+      return matches;
     });
 
     console.log("Filtered Clients:", filtered);
-    return filtered || []; // Ensure that it always returns an array
-  }, [searchQuery, clientsData]);
+    return filtered;
+  }, [searchQuery, clientsData, userData.institutionType, userData.userName]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
-
   useEffect(() => {
-    if (!Array.isArray(filteredClients)) {
-      console.error("filteredClients is not an array:", filteredClients);
-      return;
-    }
-
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+    const endIndex = Math.min(
+      startIndex + itemsPerPage,
+      filteredClients.length
+    );
 
+    // Get the clients to be displayed on the current page
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
+    // Extract unique institution types from the clients
     const newInstituteTypes = Array.from(
       new Set(clientsToDisplay.map(() => userData.institutionType))
     );
 
+    // Update the state only if there is a change
     setInstituteTypes((prevTypes) => {
       const combinedTypes = [...prevTypes, ...newInstituteTypes];
       const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
 
+      // Only update state if there are new types to add
       if (uniqueCombinedTypes.length !== prevTypes.length) {
         return uniqueCombinedTypes;
       } else {
         return prevTypes;
       }
     });
-  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]);
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
 
   useEffect(() => {
     const newInstituteType = userData.institutionType;
@@ -244,6 +247,12 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
+  const onPageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
@@ -260,11 +269,11 @@ const Panel = () => {
     }
   });
 
-  // const handlePersonIconClick = (institution) => {
-  //   setisMonthlyReport(institution);
-  //   const updatedUserData = { ...userData, institutionName: institution };
-  //   setUserData(updatedUserData);
-  // };
+  const handlePersonIconClick = (institution) => {
+    setisMonthlyReport(institution);
+    const updatedUserData = { ...userData, institutionName: institution };
+    setUserData(updatedUserData);
+  };
 
   const toggleAddUserForm = () => {
     setIsUserAdd(!isUserAdd);
@@ -441,21 +450,10 @@ const Panel = () => {
       console.error("Error updating delivery status:", error);
     }
   }, []);
-  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
-  const [showMemberList, setShowMemberList] = useState(false);
-  const handleInstitutionClick = (client) => {
-    // Set the institutionid as tempInstitution and show the MemberList
-    const updatedUserData = { ...userData, tempinstitutionName: client.institutionid };
-    setUserData(updatedUserData);
-    setTempInstitution(client.institutionid);
-    setShowMemberList(true); // Toggle view to MemberList
-  };
+  
   return (
-    <>
-    {!showMemberList ? (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
-
 
       <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
         <Select
@@ -479,11 +477,10 @@ const Panel = () => {
           ))}
         </Select>
 
-
         <div>
           <Link
             to={
-              instituteType !== "" && instituteType === "Dance Studio"
+              instituteType !== "" && instituteType === "danceStudio"
                 ? "/template"
                 : "#"
             }
@@ -514,7 +511,7 @@ const Panel = () => {
           </Link>
         </div>
       </div>
-      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
+      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
 
@@ -853,11 +850,10 @@ const Panel = () => {
               </Table.Body>
             </Table>
           </Flowbite>
-              
         </div>
 
         {clientsToDisplay.map(([key, client], index) => (
-          <div key={client.institutionid}>
+          <div key={client.institution}>
             {/* {
             // isRowSelected(client.institution) && 
             (
@@ -1062,26 +1058,19 @@ const Panel = () => {
         )}
 
         {/* Pagination */}
-        <div className="py-2 flex justify-between items-center px-4">
-          {/* Dynamic "Showing X-Y of Z" */}
-          <div className="text-sm text-gray-600">
-            Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
-          </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            className="flex justify-end"
-            showIcons
-            theme={customTheme}
-          />
-        </div>
+
+        <Pagination
+          layout="pagination"
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          previousLabel=""
+          nextLabel=""
+          showIcons
+          theme={customTheme}
+        />
       </div>
     </div>
-     ) : (
-      <Index tempInstitution={tempInstitution} />
-    )}
-    </>
   );
 };
 

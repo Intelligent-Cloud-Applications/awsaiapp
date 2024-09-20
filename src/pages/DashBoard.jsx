@@ -1,5 +1,5 @@
-import React, { useState, useContext,useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import Context from "../context/Context";
 // import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
@@ -18,15 +18,9 @@ import AdminMemberlist from "../components/Dashboard/AdminMemberlist/AdminMember
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
-  const location = useLocation();
   // const location = useLocation();
   const Ctx = useContext(Context);
   console.log(Ctx);
-  useEffect(() => {
-    if (location.state && location.state.section === 'institution-draft') {
-      setClick(3);  // Assuming 'Institution Draft' is at index 3
-    }
-  }, [location.state]);
   // useEffect(() => {
   //   const selectedPage = localStorage.getItem("selectedPage");
   //   if (selectedPage !== null) {
@@ -60,12 +54,12 @@ const DashBoard = () => {
 
         case 4:
           return <AdminMemberlist />
-
+          
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }
     } else if (
-      Ctx.userData.institutionName !== "awsaiapp"
+      Ctx.userData.institutionName !== "awsaiapp" 
       && (Ctx.userData.userType === "member" || Ctx.userData.userType === "admin")
     ) {
       switch (click) {
@@ -143,7 +137,7 @@ const DashBoard = () => {
                   </Link>
                 </div>
               </div> */}
-            </>
+             </>
           )}
       </div>
       <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse lg:ml-28">
@@ -155,8 +149,7 @@ const DashBoard = () => {
           />
         </div>
 
-        <div className={` ${click === 1 ? "mt-0" : click === 0
-          ? "mt-[34px]" : "flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]"
+        <div className={` ${click === 1 ? "mt-0" : "flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]"
           }`}>
           <div className="">{displayAfterClick()}</div>
         </div>

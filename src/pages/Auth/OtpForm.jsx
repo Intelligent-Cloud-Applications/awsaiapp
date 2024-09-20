@@ -1,7 +1,7 @@
 import {OtpInput, PrimaryButton} from "../../components/Auth/Inputs";
 import {useState, useEffect} from "react";
 import {Auth} from "aws-amplify";
-// import {toast} from "react-toastify";
+import {toast} from "react-toastify";
 
 const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
   const [timer, setTimer] = useState(30);
@@ -26,10 +26,10 @@ const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
       );
 
 
-      alert('OTP sent');
+      toast.info('OTP sent');
     } catch (error) {
       console.log(error)
-      alert('Could not resend OTP');
+      toast.error('Could not resend OTP');
     }
   }
 
