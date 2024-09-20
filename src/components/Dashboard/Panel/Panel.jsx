@@ -11,35 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination, Select, Flowbite } from "flowbite-react";
-
-const customTableTheme = {
-  root: {
-    base: "w-full text-left text-sm text-gray-500 dark:text-gray-400",
-    shadow:
-      "absolute left-0 top-0 -z-10 h-full w-full rounded-lg bg-white drop-shadow-md dark:bg-black",
-    wrapper: "relative",
-  },
-  body: {
-    base: "group/body",
-    cell: {
-      base: "px-6 py-4 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-center",
-    },
-  },
-  head: {
-    base: "group/head text-xs uppercase text-gray-700 dark:text-gray-400",
-    cell: {
-      base: "bg-gray-50 px-6 py-3 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg dark:bg-gray-700 ",
-    },
-  },
-  row: {
-    base: "group/row",
-    hovered: "hover:bg-gray-50 dark:hover:bg-gray-600",
-    striped:
-      "odd:bg-white even:bg-gray-50 odd:dark:bg-gray-800 even:dark:bg-gray-700",
-  },
-};
-
+import { Pagination, Dropdown, Flowbite } from "flowbite-react";
+import Index from "../MemberList/Index";
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -72,6 +45,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
+  const type = ["Dance Studio", "Dental"];
 
   const customTheme = {
     pages: {
@@ -96,59 +70,54 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData;
+      return clientsData || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
 
-    const filtered = clientsData?.filter(([key, client]) => {
-      const institution = client.institution
-        ? client.institution.toLowerCase()
-        : "";
-      // const emailId = client.emailId ? client.emailId.toLowerCase() : "";
-      const institutionTypes = userData.institutionType;
-      const crreatedBy = userData.userName;
-      const matches =
-        institution.includes(query) ||
-        institutionTypes.includes(query) ||
-        crreatedBy.includes(query);
+    console.log("Search Query:", query);
+    console.log("Clients Data:", clientsData);
 
-      return matches;
+    const filtered = clientsData?.filter(([key, client]) => {
+      const institution = typeof client.institutionid === 'string'
+        ? client.institutionid.toLowerCase()
+        : "";  // Default to an empty string if institution is not a valid string
+
+      return institution.includes(query);
     });
 
     console.log("Filtered Clients:", filtered);
-    return filtered;
-  }, [searchQuery, clientsData, userData.institutionType, userData.userName]);
+    return filtered || []; // Ensure that it always returns an array
+  }, [searchQuery, clientsData]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(
-      startIndex + itemsPerPage,
-      filteredClients.length
-    );
 
-    // Get the clients to be displayed on the current page
+  useEffect(() => {
+    if (!Array.isArray(filteredClients)) {
+      console.error("filteredClients is not an array:", filteredClients);
+      return;
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
-    // Extract unique institution types from the clients
     const newInstituteTypes = Array.from(
       new Set(clientsToDisplay.map(() => userData.institutionType))
     );
 
-    // Update the state only if there is a change
     setInstituteTypes((prevTypes) => {
       const combinedTypes = [...prevTypes, ...newInstituteTypes];
       const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
 
-      // Only update state if there are new types to add
       if (uniqueCombinedTypes.length !== prevTypes.length) {
         return uniqueCombinedTypes;
       } else {
         return prevTypes;
       }
     });
-  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]); // Add dependencies here
+  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]);
 
   useEffect(() => {
     const newInstituteType = userData.institutionType;
@@ -247,12 +216,6 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  const onPageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   function formatEpochToReadableDate(epochDate) {
     const date = new Date(epochDate);
     const year = date.getFullYear();
@@ -269,11 +232,11 @@ const Panel = () => {
     }
   });
 
-  const handlePersonIconClick = (institution) => {
-    setisMonthlyReport(institution);
-    const updatedUserData = { ...userData, institutionName: institution };
-    setUserData(updatedUserData);
-  };
+  // const handlePersonIconClick = (institution) => {
+  //   setisMonthlyReport(institution);
+  //   const updatedUserData = { ...userData, institutionName: institution };
+  //   setUserData(updatedUserData);
+  // };
 
   const toggleAddUserForm = () => {
     setIsUserAdd(!isUserAdd);
@@ -450,37 +413,42 @@ const Panel = () => {
       console.error("Error updating delivery status:", error);
     }
   }, []);
-  
+  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
+  const [showMemberList, setShowMemberList] = useState(false);
+  const handleInstitutionClick = (client) => {
+    // Set the institutionid as tempInstitution and show the MemberList
+    const updatedUserData = { ...userData, tempinstitutionName: client.institutionid };
+    setUserData(updatedUserData);
+    setTempInstitution(client.institutionid);
+    setShowMemberList(true); // Toggle view to MemberList
+  };
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+    <>
+    {!showMemberList ? (
+    <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
       <ToastContainer />
-
-      <div className="w-[80%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
-        <Select
-          value={instituteType || ""}
-          onChange={(e) => setInstituteType(e.target.value)}
-          className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          {instituteType === "" && (
-            <option value="" disabled hidden>
-              Type
-            </option>
-          )}
-          {instituteTypes.map((type) => (
-            <option
-              key={type}
-              value={type}
-              className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
-            >
-              {splitandjoin(type)}
-            </option>
-          ))}
-        </Select>
-
+      <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+        {/* WebDevelopment Form Link */}
+        <Flowbite theme={{ theme: customTheme }}>
+          <Dropdown
+            label={instituteType ? splitandjoin(instituteType) : "Type"}
+            className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
+          >
+            {type.map((type) => (
+              <Dropdown.Item
+                key={type}
+                onClick={() => setInstituteType(type)}
+                className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]" // Apply rounded-[0] here
+              >
+                {splitandjoin(type)}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </Flowbite>
         <div>
           <Link
             to={
-              instituteType !== "" && instituteType === "danceStudio"
+              instituteType !== "" && instituteType === "Dance Studio"
                 ? "/template"
                 : "#"
             }
@@ -511,7 +479,7 @@ const Panel = () => {
           </Link>
         </div>
       </div>
-      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
+      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
         <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
           {/* Search Bar */}
 
@@ -685,175 +653,145 @@ const Panel = () => {
         )}
 
         {/* Headings */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[300px] md:max-h-[400px] overflow-y-auto">
-          <Flowbite theme={{ theme: customTableTheme }}>
-            <Table className="w-full text-sm text-left text-gray-500">
-              <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                {/* <Table.HeadCell></Table.HeadCell> */}
-                <Table.HeadCell className=" uppercase font-semibold text-[14px]">
-                  Institution
-                </Table.HeadCell>
-                <Table.HeadCell className=" uppercase font-semibold text-[14px]">
-                  Type
-                </Table.HeadCell>
-                <Table.HeadCell className="max600:hidden uppercase font-semibold text-[14px]">
-                  Status
-                </Table.HeadCell>
-                {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
+          <Table className="w-full text-sm text-left text-gray-500">
+            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+              {/* <Table.HeadCell></Table.HeadCell> */}
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Institution
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Type
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Status
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Is Delivered
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Payment
+              </Table.HeadCell>
+              {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                <Table.HeadCell className="max1008:hidden uppercase font-semibold text-[14px] text-center">
-                  Members
-                </Table.HeadCell>
-                {/* <Table.HeadCell
-
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Members
+              </Table.HeadCell>
+              {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
                 } uppercase font-semibold text-[14px]`}
               >
                 Attendance
               </Table.HeadCell> */}
-                <Table.HeadCell
-                  className={`${
-                    showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[14px] text-center`}
+              <Table.HeadCell
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+              >
+                Created By
+              </Table.HeadCell>
+              {/* <Table.HeadCell
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } uppercase font-semibold text-[20px]`}
+              >
+                Leads
+              </Table.HeadCell> */}
+              {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                More
+              </Table.HeadCell> */}
+            </Table.Head>
+
+            <Table.Body className="bg-white">
+              {clientsToDisplay.map(([key, client], index) => (
+                <Table.Row
+                  key={client.institutionid}
+                  className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
                 >
-                  Created By
-                </Table.HeadCell>
-                <Table.HeadCell
-                  className={`${
-                    showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[14px] text-center`}
-                >
-                  Leads
-                </Table.HeadCell>
-                <Table.HeadCell className="more uppercase font-semibold text-[14px]">
-                  More
-                </Table.HeadCell>
-              </Table.Head>
-
-              <Table.Body className="bg-white">
-                {clientsToDisplay.map(([key, client], index) => (
-                  <Table.Row
-                    key={client.institution}
-                    className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                    onClick={(e) => handleRowClick(client.institution, e)}
+                  <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+                    onClick={(e) => handleRowClick(client.institutionid, e)}
                   >
-                    {/* Checkbox */}
-                    {/* <Table.Cell className="px-4 py-2">
-                    <label className="relative">
-                      <input
-                        type="checkbox"
-                        className="hidden"
-                        onChange={() =>
-                          handleCheckboxChange(client.institution)
-                        }
-                        checked={isRowSelected(client.institution)}
-                      />
-                      <div className="absolute w-4 h-4 border-2 border-gray-400 cursor-pointer">
-                        {isRowSelected(client.institution) && (
-                          <img
-                            src={Select}
-                            alt="Selected"
-                            className="w-full h-full"
-                          />
-                        )}
-                      </div>
-                    </label>
-                  </Table.Cell> */}
-
-                    <Table.Cell className="px-4 py-2 font-semibold text-gray-900">
-                      <Link
-                        to={`/Dashboard?institution=${client.institution}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePersonIconClick(client.institution);
-                        }}
-                      >
-                        <div className="email-hover uppercase font-semibold text-[#11192B]">
-                          {client.institution}
-                        </div>
-                      </Link>
-                    </Table.Cell>
-
-                    <Table.Cell className="px-4 py-2 font-semibold text-[#9095A0] ">
-                      {splitandjoin(userData.institutionType)}
-                    </Table.Cell>
-
-                    <Table.Cell className="max600:hidden px-4 py-2 font-semibold text-gray-900">
-                      <Badge
-                        color={getColor(client.status)}
-                        size="sm"
-                        className="flex justify-center items-center"
-                      >
-                        {client.status}
-                      </Badge>
-                    </Table.Cell>
-
-                    {/* <Table.Cell className="px-2 py-2 font-semibold text-gray-900  ">
-                    {client.country === "USA"
-                      ? `$${client.recentMonthIncome}`
-                      : `₹${client.recentMonthIncome}`}
-                  </Table.Cell> */}
-
-                    <Table.Cell className="max1008:hidden px-6 py-2 font-semibold text-gray-900 text-center">
-                      {client.recentMonthMembers}
-                    </Table.Cell>
-
-                    {/* <Table.Cell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-2 py-2 font-semibold text-gray-900 text-center lg:pr-16`}
-                  >
-                    {client.recentMonthAttendance}
-                  </Table.Cell> */}
-
-                    <Table.Cell
-                      className={`${
-                        showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 font-semibold text-gray-900 text-center`}
-                    >
-                      {createdBy[index]}
-                    </Table.Cell>
                     <Link
-                      to={`/Dashboard?institution=${client.institution}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePersonIconClick(client.institution);
-                      }}
-                      className="hidden change-page"
-                    ></Link>
-                    <div
-                      className={`${
-                        showHiddenContent ? "" : "max1008:hidden"
-                      } h-full p-2 flex justify-center space-x-2 items-center lg:justify-center `}
+                onClick={() => handleInstitutionClick(client)}
                     >
-                      <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
-                        {client.recentMonthLeads}
-                      </Table.Cell>
-                    </div>
-                    <Table.Cell
-                      className="more"
-                      // onClick={handleMoreClick}
+                      <div className="email-hover uppercase font-semibold text-[#11192B]">
+                        {client.institutionid}
+                      </div>
+                    </Link>
+                  </Table.Cell>
+
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {splitandjoin(client.institutionType)}
+                  </Table.Cell>
+
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {(() => {
+                      const { text, color } = getBadgeProps(client.isFormFilled, client.payment, client.isDelivered);
+                      return (
+                        <Badge
+                          color={color}
+                          size="sm"
+                          className="flex justify-center items-center"
+                        >
+                          {text}
+                        </Badge>
+                      );
+                    })()}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    <select
+                      value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                      onChange={(e) => handleDropdownChange(client.institutionid, e.target.value, client.index)}
+                      className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
                     >
-                      <Link
-                        to={`/Dashboard?institution=${client.institution}`}
-                        onClick={() =>
-                          handlePersonIconClick(client.institution)
-                        }
-                      >
-                        {isMoreVisible ? <FaChevronRight /> : ""}
-                      </Link>
+                      <option value="Not Delivered">Not Delivered</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {client.payment ? "Paid" : "Not Paid"}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {client.recentMonthMembers}
+                  </Table.Cell>
+                  <Table.Cell
+                    className={`${showHiddenContent ? "" : "max1008:hidden"} whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                  >
+                    {/* {client.createdBy} */}
+                    {client.createdBy
+                      ? getUsernameByCognitoId(client.createdBy)
+                      : 'Unknown'} {/* Fallback for undefined createdBy */}
+                  </Table.Cell>
+                  <Link
+                   onClick={() => handleInstitutionClick(client)}
+                    className="hidden change-page"
+                  ></Link>
+                  {/* <div
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
+                  >
+                    <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
+                      {client.recentMonthLeads}
                     </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </Flowbite>
+                  </div> */}
+                  <Table.Cell
+                    className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
+                  // onClick={handleMoreClick}
+                  >
+                    <Link
+                     onClick={() => handleInstitutionClick(client)}
+                    >
+                      {isMoreVisible ? <FaChevronRight /> : ""}
+                    </Link>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </div>
 
         {clientsToDisplay.map(([key, client], index) => (
-          <div key={client.institution}>
+          <div key={client.institutionid}>
             {/* {
             // isRowSelected(client.institution) && 
             (
@@ -1058,19 +996,26 @@ const Panel = () => {
         )}
 
         {/* Pagination */}
-
-        <Pagination
-          layout="pagination"
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          previousLabel=""
-          nextLabel=""
-          showIcons
-          theme={customTheme}
-        />
+        <div className="py-2 flex justify-between items-center px-4">
+          {/* Dynamic "Showing X-Y of Z" */}
+          <div className="text-sm text-gray-600">
+            Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            className="flex justify-end"
+            showIcons
+            theme={customTheme}
+          />
+        </div>
       </div>
     </div>
+     ) : (
+      <Index tempInstitution={tempInstitution} />
+    )}
+    </>
   );
 };
 
