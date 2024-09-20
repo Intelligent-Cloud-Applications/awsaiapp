@@ -7,24 +7,31 @@ import countries from './countries.json';
 // import institutionContext from "../../Context/InstitutionContext";
 import {LuHash, LuMail, LuPhone, LuText} from "react-icons/lu";
 //import {useSelector} from "react-redux";
+import {useContext} from "react";
+import Context from "../../../context/Context";
 
 export const CountrySelect = (props) => {
-  const { country, setCountry } = useState(91);
-  
+  const { userData } = useContext(Context);
+  const [country, setCountry] = useState(userData?.countryValue);
+
+  const handleChange = (event) => {
+    setCountry(event.target.value);
+  };
+
   return (
     <Select
       value={country}
-      onChange={setCountry}
+      onChange={handleChange}
       {...props}
     >
       {countries.map((item, index) =>
-        <option key={ index } value={ item.value }>
-          { item.name }
+        <option key={index} value={item.value}>
+          {item.name}
         </option>
       )}
     </Select>
-  )
-}
+  );
+};
 
 
 export const PhoneInput = (props) => {
