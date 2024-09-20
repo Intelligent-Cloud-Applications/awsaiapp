@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { API, Storage } from 'aws-amplify'; // Make sure Storage is imported
 import { FaPencilAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
@@ -22,11 +22,11 @@ const ClientsProfile = ({ institution }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchClientAndOwnerDetails = useCallback(async () => {
+  const fetchClientAndOwnerDetails = async () => {
     if (!institution) return; // Ensure institution is defined
 
     try {
-      util.setLoader(true);
+      util.setLoader(true)
       const [templateResponse, response] = await Promise.all([
         API.get("clients", `/user/development-form/get-user/${institution}`),
         API.get("clients", `/user/list-members/${institution}`)
@@ -70,12 +70,12 @@ const ClientsProfile = ({ institution }) => {
     } catch (error) {
       console.error("Error fetching details:", error);
     }
-    util.setLoader(false);
-  }, [institution, util]); // Add institution and util to the dependency array
+    util.setLoader(false)
+  };
 
   useEffect(() => {
     fetchClientAndOwnerDetails();
-  }, [fetchClientAndOwnerDetails]);
+  }, [institution]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

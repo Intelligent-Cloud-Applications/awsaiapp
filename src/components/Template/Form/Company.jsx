@@ -20,11 +20,21 @@ function Company({
   setSelectedFile,
   CSVFile,
   setCSVFile,
+  setInstitutionFormat,
+  institutionFormat,
+  setInstitutionType,
+  institutionType
 }) {
   const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
   const [companyLineColor, setCompanyLineColor] = useState("#939393");
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+  const handleInstitutionTypeChange = (e) => {
+    setInstitutionType(e.target.value);
+  };
 
+  const handleInstitutionFormatChange = (e) => {
+    setInstitutionFormat(e.target.value);
+  };
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
   };
@@ -93,7 +103,7 @@ function Company({
   // };
 
   return (
-    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '745px' }}>
+    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '450px' }}>
       <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -153,7 +163,31 @@ function Company({
           />
         </div>
       </div>
+      <div className="mt-4">
+        <label className="block text-[#939393] mb-2">Select Institution Type</label>
+        <select
+          value={institutionType}
+          onChange={handleInstitutionTypeChange}
+          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+        >
+          <option value="DanceStudio">Dance Studio</option>
+          <option value="Dentist">Dentist</option>
+        </select>
+      </div>
 
+      {/* Dropdown for Institution Format */}
+      <div className="mt-4">
+        <label className="block text-[#939393] mb-2">Select Institution Format</label>
+        <select
+          value={institutionFormat}
+          onChange={handleInstitutionFormatChange}
+          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+        >
+          <option value="Online_Classes">Online_Classes</option>
+          <option value="Inperson_Classes">Inperson_Classes</option>
+          <option value="Hybrid_Classes">Hybrid_Classes</option>
+        </select>
+      </div>
       <div className="border border-black w-[15rem] h-[12rem] mt-2 relative boxtoselect">
         {!selectedFile ? (
           <label

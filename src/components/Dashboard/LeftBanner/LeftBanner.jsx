@@ -4,7 +4,7 @@ import Context from "../../../context/Context";
 import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
 import { MdInsertPageBreak } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link,useLocation,useNavigate } from "react-router-dom";
 import "./LeftBanner.css";
 
 const customTheme = {
@@ -17,12 +17,26 @@ const customTheme = {
 
 const LeftBanner = ({ displayAfterClick }) => {
   const { userData } = useContext(Context);
+  const navigate = useNavigate();
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
-  const isSuperAdmin = Ctx.userData.institutionName === "awsaiapp" && Ctx.userData.userType === "admin";
+  const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
-
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (location.state && Object.keys(location.state).length > 0) {
+      if (location.state.section === 'institution-draft') {
+        setClick(3);  // "Institution Draft" is index 3
+        displayAfterClick(3); // Show "Institution Draft"
+      }
+      
+      // Clear the state to prevent repeated execution
+      navigate('/dashboard', { state: {} });
+   
+    }
+  }, [location.state, displayAfterClick, navigate]);
   // useEffect(() => {
   //   const selectedPage = localStorage.getItem("selectedPage");
   //   if (selectedPage) {
@@ -175,7 +189,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 )}
                 {isNotSuperAdmin && (
                   <>
-                    <Sidebar.Item
+                    {/* <Sidebar.Item
                       icon={HiChartPie}
                       onClick={() => {
                         setClick(0);
@@ -213,7 +227,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                       <span className="hidden md:inline font-[Poppins] text-base">
                         Leads
                       </span>
-                    </Sidebar.Item>
+                    </Sidebar.Item> */}
                   </>
                 )}
               </Sidebar.ItemGroup>

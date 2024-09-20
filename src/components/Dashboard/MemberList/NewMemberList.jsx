@@ -36,7 +36,7 @@ function NewMemberList({ institution: tempInstitution }) {
     const fetchData = async (institution) => {
       try {
         if (isLoader === false) {
-          util.setLoader(true);
+          util.setLoader(true)
           setisLoader(true);
         }
         const data = await API.get("clients", `/user/list-members/${institution}`);
@@ -47,9 +47,10 @@ function NewMemberList({ institution: tempInstitution }) {
       } catch (error) {
         console.error('Error fetching the members:', error);
       }
-     
+      if (isLoader === true) {
         util.setLoader(false)
-       
+        // setisLoader(false);
+      }
     };
 
     fetchData(institution); // Pass institution to fetchData
