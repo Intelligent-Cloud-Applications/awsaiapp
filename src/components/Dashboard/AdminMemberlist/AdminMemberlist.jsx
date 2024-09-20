@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import Context from "../../../context/Context";
 import { Table, Pagination } from 'flowbite-react';
 import { API } from 'aws-amplify';
@@ -6,16 +6,22 @@ import { FiSearch } from 'react-icons/fi';
 
 const AdminMemberlist = () => {
   const { util } = useContext(Context);
+  const utilRef = useRef(util);  // Reference to util to avoid infinite loading
+
   const [members, setMembers] = useState([]);
   const [memberData, setMemberData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7); // Items per page
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    utilRef.current = util; // Keep util updated in the ref
+  }, [util]);
+
   // Fetching data function
-  const fetchData = async (institution = 'awsaiapp') => {
+  const fetchData = useCallback(async (institution = 'awsaiapp') => {
     try {
-      util.setLoader(true)
+      utilRef.current.setLoader(true);  // Use the ref instead of util
       const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
       const filteredData = memberResponse.filter(
         (member) => member.userType === 'member' || member.userType === 'admin'
@@ -51,16 +57,31 @@ const AdminMemberlist = () => {
     } catch (error) {
       console.error('Error fetching the members or institution data:', error);
     }
-    util.setLoader(false)
-  };
+    utilRef.current.setLoader(false);  // Use the ref
+  }, []);
+
+  useEffect(() => {
+    fetchData();  // Call fetchData on component mount
+  }, [fetchData]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleSearch = useCallback(() => {
+    const filteredData = members.filter((member) =>
+      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setMemberData(filteredData);
+    setCurrentPage(1);
+  }, [members, searchQuery]);
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    handleSearch();  // Call handleSearch whenever searchQuery changes
+  }, [searchQuery, handleSearch]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -87,26 +108,10 @@ const AdminMemberlist = () => {
     }
   };
 
-  // Handle search across multiple attributes
-  const handleSearch = () => {
-    const filteredData = members.filter((member) =>
-      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setMemberData(filteredData);
-     setCurrentPage(1);
-  };
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchQuery]);
-
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-4rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%]">
       {/* Table container with reduced width */}
-      <div className="w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white">
+      <div className="w-full max-w-6xl shadow-lg rounded-md overflow-hidden bg-white">
         <div className="flex justify-end p-4">
           {/* Search bar */}
           <form className="flex items-center w-[30rem] border border-gray rounded-md">
@@ -149,7 +154,7 @@ const AdminMemberlist = () => {
             <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
               Delivered
             </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none" style={{borderRadius: 0}}>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
               In Progress
             </Table.HeadCell>
           </Table.Head>
@@ -162,56 +167,25 @@ const AdminMemberlist = () => {
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.emailId}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.phoneNumber}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.role}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{new Date(member.joiningDate).toLocaleDateString()}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.joiningDate}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.status}</Table.Cell>
-                {member.role === 'sales' ? (
-                  <>
-                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.inprogress}</Table.Cell>
-                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.delivered}</Table.Cell>
-                  </>
-                ) : (
-                  <>
-                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
-                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
-                  </>
-                )}
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.delivered}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.inprogress}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-          <div className="flex flex-1 justify-between sm:hidden">
-            <Pagination
-              currentPage={currentPage}
-              layout="pagination"
-              onPageChange={handlePageChange}
-              showIcons
-              totalPages={Math.ceil(memberData.length / itemsPerPage)}
-              previousLabel="Previous"
-              nextLabel="Next"
-              theme={customTheme}
-            />
-          </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">{indexOfFirstItem + 1}</span> to <span className="font-medium">{Math.min(indexOfLastItem, memberData.length)}</span> of{' '}
-                <span className="font-medium">{memberData.length}</span> results
-              </p>
-            </div>
-            <div>
-              <Pagination
-                currentPage={currentPage}
-                layout="pagination"
-                onPageChange={handlePageChange}
-                showIcons
-                totalPages={Math.ceil(memberData.length / itemsPerPage)}
-                previousLabel="Previous"
-                nextLabel="Next"
-                theme={customTheme}
-              />
-            </div>
-          </div>
+        {/* Pagination */}
+        <div className="flex items-center justify-between px-6 py-3 bg-gray-50">
+          <span className="text-sm text-gray-700">
+            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, memberData.length)} of {memberData.length} results
+          </span>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(memberData.length / itemsPerPage)}
+            onPageChange={handlePageChange}
+            theme={customTheme}
+          />
         </div>
       </div>
     </div>
