@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from "../../../context/Context";
 import { Table, Pagination } from 'flowbite-react';
 import { API } from 'aws-amplify';
@@ -6,22 +6,16 @@ import { FiSearch } from 'react-icons/fi';
 
 const AdminMemberlist = () => {
   const { util } = useContext(Context);
-  const utilRef = useRef(util);  // Reference to util to avoid infinite loading
-
   const [members, setMembers] = useState([]);
   const [memberData, setMemberData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7); // Items per page
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    utilRef.current = util; // Keep util updated in the ref
-  }, [util]);
-
   // Fetching data function
-  const fetchData = useCallback(async (institution = 'awsaiapp') => {
+  const fetchData = async (institution = 'awsaiapp') => {
     try {
-      utilRef.current.setLoader(true);  // Use the ref instead of util
+      util.setLoader(true)
       const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
       const filteredData = memberResponse.filter(
         (member) => member.userType === 'member' || member.userType === 'admin'
@@ -57,37 +51,22 @@ const AdminMemberlist = () => {
     } catch (error) {
       console.error('Error fetching the members or institution data:', error);
     }
-    utilRef.current.setLoader(false);  // Use the ref
-  }, []);
-
-  useEffect(() => {
-    fetchData();  // Call fetchData on component mount
-  }, [fetchData]);
+    util.setLoader(false)
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleSearch = useCallback(() => {
-    const filteredData = members.filter((member) =>
-      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setMemberData(filteredData);
-    setCurrentPage(1);
-  }, [members, searchQuery]);
-
   useEffect(() => {
-    handleSearch();  // Call handleSearch whenever searchQuery changes
-  }, [searchQuery, handleSearch]);
+    fetchData();
+  }, []);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentMembers = memberData.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Custom theme for pagination
+  //custom theme for pagination
   const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -108,10 +87,56 @@ const AdminMemberlist = () => {
     }
   };
 
+  // Handle search across multiple attributes
+  const handleSearch = () => {
+    const filteredData = members.filter((member) =>
+      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setMemberData(filteredData);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
+
+  // Utility function to censor email
+  const censorEmail = (email) => {
+    const [name, domain] = email.split('@');
+    const censoredName = name.slice(0, 3) + 'xxxxxx';
+    return `${censoredName}@${domain}`;
+  };
+
+  // Utility function to censor phone number
+  const censorPhoneNumber = (phone) => {
+    if (!phone) return 'Phone Number Not Available';
+
+    // Identify the length of the country code (usually 1-3 digits)
+    const countryCodeMatch = phone.match(/^\+\d{1,3}/);
+    if (!countryCodeMatch) return 'Invalid Phone Number';
+
+    const countryCode = countryCodeMatch[0];
+    const numberWithoutCountryCode = phone.slice(countryCode.length);
+
+    if (numberWithoutCountryCode.length < 3) {
+      return 'Invalid Phone Number';
+    }
+
+    const visibleStart = numberWithoutCountryCode.slice(0, 2);
+    const visibleEnd = numberWithoutCountryCode.slice(-1);
+    const censoredMiddle = 'x'.repeat(numberWithoutCountryCode.length - 3);
+
+    return `${countryCode}${visibleStart}${censoredMiddle}${visibleEnd}`;
+  }
+
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-4rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%]">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%]">
+      <h2 className="text-2xl font-bold mb-4">Admin Member List</h2>
+
       {/* Table container with reduced width */}
-      <div className="w-full max-w-6xl shadow-lg rounded-md overflow-hidden bg-white">
+      <div className="w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white">
         <div className="flex justify-end p-4">
           {/* Search bar */}
           <form className="flex items-center w-[30rem] border border-gray rounded-md">
@@ -132,31 +157,15 @@ const AdminMemberlist = () => {
           </form>
         </div>
         <Table striped>
-          <Table.Head className="border-t border-b border-gray rounded-none">
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase" style={{borderRadius: 0}}>
-              Name
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Email Address
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Phone Number
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Role
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Date of Joining
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Status
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Delivered
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              In Progress
-            </Table.HeadCell>
+          <Table.Head className='border-t border-b border-gray'>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email Address</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Role</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Date of Joining</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Delivered</Table.HeadCell>
+            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">In Progress</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {currentMembers.map((member) => (
@@ -164,26 +173,38 @@ const AdminMemberlist = () => {
                 <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
                   {member.userName}
                 </Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.emailId}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.phoneNumber}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{censorEmail(member.emailId)}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{censorPhoneNumber(member.phoneNumber)}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.role}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.joiningDate}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{new Date(member.joiningDate).toLocaleDateString()}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.status}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.delivered}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.inprogress}</Table.Cell>
+                {member.role === 'sales' ? (
+                  <>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.inprogress}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">{member.delivered}</Table.Cell>
+                  </>
+                ) : (
+                  <>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white font-bold">--</Table.Cell>
+                  </>
+                )}
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
+
         {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-3 bg-gray-50">
+        <div className="p-4 flex justify-between items-center bg-gray-50">
           <span className="text-sm text-gray-700">
-            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, memberData.length)} of {memberData.length} results
+            Showing <strong>{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, memberData.length)}</strong> of <strong>{memberData.length}</strong> members
           </span>
           <Pagination
             currentPage={currentPage}
+            layout="pagination"
             totalPages={Math.ceil(memberData.length / itemsPerPage)}
             onPageChange={handlePageChange}
+            showIcons
             theme={customTheme}
           />
         </div>
