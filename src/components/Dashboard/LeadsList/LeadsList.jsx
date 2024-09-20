@@ -18,10 +18,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const location = useLocation()
   // const searchParams = new URLSearchParams(window.location.search);
   let institution;
-  if (user.profile.institutionName === "awsaiapp") {
-    institution = userData.institutionName;
+  if (user.profile.tempinstitutionName === "awsaiapp") {
+    institution = userData.tempinstitutionName;
   } else {
-    institution = userData.institutionName || tempInstitution;
+    institution = userData.tempinstitutionName || tempInstitution;
   }
   const itemsPerPage = 7;
   const [leadsData, setLeadsData] = useState([]);
@@ -630,17 +630,17 @@ const LeadsList = ({ institution: tempInstitution }) => {
     document.body.removeChild(link);
   };
 
-  useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      util.setLoader(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } else {
-      util.setLoader(false);
-    }
-    // eslint-disable-next-line
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname === "/dashboard") {
+  //     util.setLoader(true);
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 2000);
+  //   } else {
+  //     util.setLoader(false);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [location.pathname]);
 
   console.log("additionalInfoTitle:", additionalInfoTitle);
   console.log("additionalInfo:", additionalInfo);
@@ -737,9 +737,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 <section className="table_body K2D w-[95%] border border-[#2e2e2e] rounded-[6px] overflow-auto bg-[#fffb] my-[1rem] mb-[1rem] mx-auto custom-scrollbar">
                   <Table hoverable className="min-w-full">
                     <Table.Head>
-                      <Table.HeadCell className="w-1/4 text-lg">Template Name</Table.HeadCell>
-                      <Table.HeadCell className="w-1/4 text-lg text-center">Select</Table.HeadCell>
-                      <Table.HeadCell className="w-1/4 text-lg text-center">View</Table.HeadCell>
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Template Name</Table.HeadCell>
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Select</Table.HeadCell>
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y divide-gray-200">
                       {currentTemplates.length > 0 ? (
@@ -748,7 +748,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             key={index}
                             className="hover:bg-gray-200 cursor-pointer"
                           >
-                            <Table.Cell className="p-4 text-sm text-gray-900">{templateData}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">{templateData}</Table.Cell>
                             <Table.Cell className="text-center text-sm text-gray-900">
                               <input
                                 type="radio"
@@ -1048,14 +1048,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     }}
                   />
                 </Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Name</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Email</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Phone Number</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Date</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Device</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">Age</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-700 uppercase">View</Table.HeadCell>
-                <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-700 uppercase"></Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Date</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Device</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Age</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase"></Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
                 {currentLeads.map((lead, index) => (
