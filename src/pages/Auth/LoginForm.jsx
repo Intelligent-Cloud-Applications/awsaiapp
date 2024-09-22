@@ -25,7 +25,7 @@ const LoginForm = ({ handler }) => {
         w-full`
       }
     >
-      <h2 className='font-bold text-2xl'>Login/Signup</h2>
+      <h2 className='font-bold text-2xl'>Login</h2>
       <CountrySelect name='country' className='rounded w-full'/>
       <PhoneInput name='phone' className='rounded w-full'/>
       <PrimaryButton>Send OTP</PrimaryButton>

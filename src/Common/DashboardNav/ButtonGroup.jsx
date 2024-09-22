@@ -3,14 +3,14 @@ import { Button } from 'flowbite-react';
 import { IoMdCash, IoMdPerson } from 'react-icons/io';
 import { HiUserGroup, HiUserAdd } from 'react-icons/hi';
 import { MdEdit } from 'react-icons/md';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const ButtonGroup = ({ onTabChange }) => {
+const ButtonGroup = ({ onTabChange,institutionNames }) => {
   const [activeTab, setActiveTab] = useState('members');
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const institutionNames = queryParams.get("institution");
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+  // const institutionNames = queryParams.get("institution");
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
