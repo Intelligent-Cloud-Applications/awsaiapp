@@ -80,11 +80,6 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       const last2YearsLeads = RevenueApi.Leads.last2YearsData;
       const last2YearsMembers = RevenueApi.MembersCount.last2YearsData;
 
-      console.log(last3YearsLeads)
-      console.log(last3YearsRevenue)
-      console.log(last3YearsAttendance)
-      console.log(last3YearsMembers)
-
       if (RevenueApi && RevenueApi.Revenue && selectedYear && selectedYear !== 'Last3YearsData' && selectedYear !== 'Last2YearsData') {
         setRevenueReport(RevenueApi.Revenue[selectedYear] || {});
         setAttendance(RevenueApi.Attendance[selectedYear] || {});
