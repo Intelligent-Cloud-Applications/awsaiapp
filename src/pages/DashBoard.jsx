@@ -15,6 +15,8 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Profile from "../components/Dashboard/Profile/Profile";
 import InstitutionDraft from "../components/Dashboard/InstittionDraft/InstitutionDraft";
 import AdminMemberlist from "../components/Dashboard/AdminMemberlist/AdminMemberlist";
+import InstitutionRevenue from "../components/Dashboard/InstitutionRevenue";
+import AwsaiappRevenue from "../components/Dashboard/AwsaiappRevenue";
 const DashBoard = () => {
   const [click, setClick] = useState(0);
   const navigate = useNavigate();
@@ -54,7 +56,13 @@ const DashBoard = () => {
 
         case 4:
           return <AdminMemberlist />
+        
+        case 5:
+          return <InstitutionRevenue/>
           
+        case 6:
+          return <AwsaiappRevenue />
+        
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }

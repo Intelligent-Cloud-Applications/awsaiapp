@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
-import { HiChartPie, HiShoppingBag, HiInbox } from "react-icons/hi";
+import { HiChartPie, HiShoppingBag, HiInbox, HiCash } from "react-icons/hi";
 import { MdInsertPageBreak } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -103,6 +103,23 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Revenue
                       </span>
                     </Sidebar.Item>
+                    <Sidebar.Item
+                      onClick={() => {
+                        setClick(1); // Set click to 1 for "Revenue"
+                        displayAfterClick(1); // Redirect to Revenue
+                      }}
+
+                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <svg class="w-[34px] h-[34px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-width="1.3" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                      </svg>
+
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Admin Revenue
+                      </span>
+                    </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         icon={HiInbox}
@@ -122,7 +139,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 )}
                 {isSalesUser && (
                   <>
-                   <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                    <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
                       <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
                           (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
@@ -169,6 +186,37 @@ const LeftBanner = ({ displayAfterClick }) => {
                         <span className="hidden md:inline text-base font-[Poppins]">
                           Profile
                         </span>
+                      </Sidebar.Item>
+                    </Link>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiCash}
+                        onClick={() => {
+                          setClick(5);
+                          displayAfterClick(5);
+                        }}
+                        className={`custom-sidebar-item ${click === 5 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline text-base font-[Poppins]">
+                          revenue
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiCash}
+                        onClick={() => {
+                          setClick(6); // Set click to 1 for "Revenue"
+                          displayAfterClick(6); // Redirect to Revenue
+                        }}
+
+                        className={`custom-sidebar-item ${click === 6 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                          <span className="hidden md:inline font-[Poppins] text-base">
+                            Admin Revenue
+                          </span>
                       </Sidebar.Item>
                     </Link>
                   </>
