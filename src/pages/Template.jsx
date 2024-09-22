@@ -41,7 +41,7 @@ const Template = () => {
   const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const [companyName, setCompanyName] = useState(null);
-
+  const [institutionId, setinstitutionId] = useState(null);
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
@@ -445,7 +445,7 @@ const Template = () => {
 
   //   fetchData();
   // }, [Ctx.userData.institutionName, loaderInitialized, util]);
-  const institutionId = companyName;
+  // const institutionId = companyName;
 
   const handleCompanyUpload = async () => {
     try {
@@ -469,7 +469,7 @@ const Template = () => {
       await API.put("clients", "/user/development-form/company", {
         body: {
           institutionid: institutionId,
-          companyName: institutionId,
+          companyName: companyName,
           PrimaryColor,
           institutionFormat,
           institutionType,
@@ -894,6 +894,11 @@ const Template = () => {
 
       switch (currentSection) {
         case 0:
+          if (!institutionId) {
+            alert("Please enter the institutionId.");
+            
+           return prevSection;
+          }
           if (!companyName) {
             alert("Please enter the institution Name.");
             
@@ -909,7 +914,7 @@ const Template = () => {
           // }
           if (!institutionCheckInProgress) {
             institutionCheckInProgress = true;
-            API.get("clients", `/user/check-institution?institutionid=${companyName}`)
+            API.get("clients", `/user/check-institution?institutionid=${institutionId}`)
               .then(response => {
                 institutionCheckInProgress = false;
                 if (response && response.exists) {
@@ -1099,6 +1104,8 @@ const Template = () => {
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
+              institutionId={institutionId}
+              setinstitutionId={setinstitutionId}
               PrimaryColor={PrimaryColor}
               setPrimaryColor={setPrimaryColor}
               SecondaryColor={SecondaryColor}
