@@ -7,7 +7,7 @@ import Context from "./../../context/Context";
 import {API, Auth} from "aws-amplify";
 import {useNavigate} from "react-router-dom";
 import countries from "../../components/Auth/Inputs/countries.json";
-
+import {toast} from "react-toastify";
 const AuthPage = () => {
 
 
@@ -102,14 +102,13 @@ const AuthPage = () => {
       setUserData(userdata);
       setIsAuth(true);
       setLoader(false);
-
-      alert('Logged in');
+      toast.info('Logged in');
       navigate('/dashboard');
     } catch (error) {
       if (error === 'The user is not authenticated')
-        alert('Incorrect OTP. Try again');
+        toast.error('Incorrect OTP. Try again');
       else if (error.name === 'NotAuthorizedException')
-        alert('OTP expired. Use resend OTP');
+        toast.error('OTP expired. Use resend OTP');
       // else if (error.response.status === 404)
       //   toast.error('User data not found. Delete old data');
 
@@ -142,7 +141,7 @@ const AuthPage = () => {
 
       setFormState('otp');
     } catch {
-      alert('Unknown error occurred');
+      toast.error('Unknown error occurred');
     } finally {
       setLoader(false);
     }
