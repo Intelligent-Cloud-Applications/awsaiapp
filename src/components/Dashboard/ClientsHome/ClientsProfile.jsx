@@ -161,6 +161,16 @@ const ClientsProfile = ({ institution }) => {
     }
   };
 
+  const generateWebsiteLink = (institutionid) => {
+    if (institutionid === "happyprancer") {
+      return "happyprancer.com";
+    } else if (institutionid === "bworkz") {
+      return "https://bworkzlive.com/";
+    } else {
+      return `${institutionid}.happyprancer.com`;
+    }
+  };
+
 
   return (
     <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw]">
@@ -253,8 +263,8 @@ const ClientsProfile = ({ institution }) => {
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Website:</span>
-              <a href={clientData.Query_WebLink} className="text-teal-600 hover:underline">
-                {clientData.Query_WebLink}
+              <a href={`https://${generateWebsiteLink(clientData.institutionid)}`} className="text-teal-600 hover:underline">
+                {generateWebsiteLink(clientData.institutionid)}
               </a>
             </div>
           </div>

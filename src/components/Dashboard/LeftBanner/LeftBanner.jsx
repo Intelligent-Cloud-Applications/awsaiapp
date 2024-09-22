@@ -65,7 +65,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
                       <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
-                          console.log(userData)
                           (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
                           className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
                         >
