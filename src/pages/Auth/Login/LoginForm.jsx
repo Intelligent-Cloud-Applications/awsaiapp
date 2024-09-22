@@ -5,7 +5,7 @@ import {useContext, useState} from "react";
 import { Auth, API } from "aws-amplify";
 import institutionContext from "../../../Context/InstitutionContext";
 import Context from "../../../context/Context";
-
+import {toast} from "react-toastify";
 
 const LoginForm = ({ setSigninResponse }) => {
   const { InstitutionId } = useContext(institutionContext).institutionData;
@@ -46,7 +46,7 @@ const LoginForm = ({ setSigninResponse }) => {
         }
     } catch (e) {
       if (e.message === 'Unexpected Lambda Output') {
-        alert('Sign Up First')
+        toast.info('Sign Up First')
         util.setLoader(false);
         navigate(`/signup${redirect ? `?redirect=${redirect}` : ''}`)
       }
