@@ -10,6 +10,9 @@ function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
   const { templateDetails} = useContext(Context);
+  const setUserDataRef = useRef(UserCtx.current.setUserData);
+
+
 
   useEffect(() => {
     templateDetails.fetchTemplateDetails()
@@ -22,6 +25,14 @@ function App() {
   // const institution = institutionFromParams || institutionFromLocalStorage;
   console.log(UserCtx)
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await API.get("clients", '/user/check-user-location');
+      setUserDataRef.current((p) => ({ ...p, ...userInfo }));
+    };
+
+    fetchUserInfo();
+  }, []);
 
   useEffect(() => {
     const check = async () => {
