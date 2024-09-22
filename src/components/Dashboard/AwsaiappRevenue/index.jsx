@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { API } from 'aws-amplify';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown, Table } from "flowbite-react";
 import ChartComponent2 from '../MonthlyReport/ChartComponents/ChartComponent2';
-import PieChartComponent from '../MonthlyReport/ChartComponents/PieChartComponent';
+import Context from '../../../context/Context';
 
 function AwsaiappRevenue() {
-  const [payments, setPayments] = useState([]);
+  const { payments } = useContext(Context);
   const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+  // eslint-disable-next-line
   const [paymentModeDistribution, setPaymentModeDistribution] = useState({
     online: 0,
     offline: 0,
@@ -14,53 +14,44 @@ function AwsaiappRevenue() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [years, setYears] = useState([new Date().getFullYear()]);
 
+  const processPaymentData = (payments, year) => {
+    const months = Array(12).fill(0);
+    let online = 0;
+    let offline = 0;
+
+    payments
+      .filter((payment) => new Date(payment.paymentDate).getFullYear() === year)
+      .forEach((payment) => {
+        const date = new Date(payment.paymentDate);
+        const month = date.getMonth(); // get month index (0-11)
+        months[month] += payment.amount / 100 || 0;
+
+        if (payment.paymentMode === 'online') {
+          online += payment.amount / 100 || 0;
+        } else if (payment.paymentMode === 'offline') {
+          offline += payment.amount / 100 || 0;
+        }
+      });
+
+    setMonthlyRevenue(months);
+    setPaymentModeDistribution({ online, offline });
+  };
+
+  const updateAvailableYears = (payments) => {
+    const uniqueYears = [...new Set(payments.map((payment) => new Date(payment.paymentDate).getFullYear()))];
+    setYears(uniqueYears);
+  };
   useEffect(() => {
-    const fetchPaymentHistory = async () => {
-      try {
-        const response = await API.get('beta_dance', `/payment-history/awsaiapp`);
-        const payments = response?.payments || [];
-        setPayments(payments);
-        updateAvailableYears(payments);
-        processPaymentData(payments, selectedYear);
-      } catch (error) {
-        console.error('Error fetching payment history:', error);
-      }
-    };
-
-    const processPaymentData = (payments, year) => {
-      const months = Array(12).fill(0);
-      let online = 0;
-      let offline = 0;
-
-      payments
-        .filter((payment) => new Date(payment.paymentDate).getFullYear() === year)
-        .forEach((payment) => {
-          const date = new Date(payment.paymentDate);
-          const month = date.getMonth(); // get month index (0-11)
-          months[month] += payment.amount / 100 || 0;
-
-          if (payment.paymentMode === 'online') {
-            online += payment.amount / 100 || 0;
-          } else if (payment.paymentMode === 'offline') {
-            offline += payment.amount / 100 || 0;
-          }
-        });
-
-      setMonthlyRevenue(months);
-      setPaymentModeDistribution({ online, offline });
-    };
-
-    const updateAvailableYears = (payments) => {
-      const uniqueYears = [...new Set(payments.map((payment) => new Date(payment.paymentDate).getFullYear()))];
-      setYears(uniqueYears);
-    };
-
-    fetchPaymentHistory();
+    if (payments) {
+      updateAvailableYears(payments);
+      processPaymentData(payments, selectedYear);
+    }
+    // eslint-disable-next-line
   }, [selectedYear]);
 
-  const handleYearChange = (event) => {
-    setSelectedYear(parseInt(event.target.value));
-  };
+  // const handleYearChange = (event) => {
+  //   setSelectedYear(parseInt(event.target.value));
+  // };
 
   console.log(monthlyRevenue)
   const barChartData = {
@@ -71,19 +62,6 @@ function AwsaiappRevenue() {
         data: monthlyRevenue,
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const pieChartData = {
-    labels: ['Online', 'Offline'],
-    datasets: [
-      {
-        label: 'Payment Mode Distribution',
-        data: [paymentModeDistribution.online, paymentModeDistribution.offline],
-        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,
       },
     ],

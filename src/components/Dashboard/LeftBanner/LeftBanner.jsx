@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
-import { HiChartPie, HiShoppingBag, HiInbox, HiCash } from "react-icons/hi";
+import { HiChartPie, HiInbox, HiCash } from "react-icons/hi";
 import { MdInsertPageBreak } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { Link,useLocation,useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./LeftBanner.css";
 
 const customTheme = {
@@ -24,17 +24,17 @@ const LeftBanner = ({ displayAfterClick }) => {
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
   const location = useLocation();
-  
+
   useEffect(() => {
     if (location.state && Object.keys(location.state).length > 0) {
       if (location.state.section === 'institution-draft') {
         setClick(3);  // "Institution Draft" is index 3
         displayAfterClick(3); // Show "Institution Draft"
       }
-      
+
       // Clear the state to prevent repeated execution
       navigate('/dashboard', { state: {} });
-   
+
     }
   }, [location.state, displayAfterClick, navigate]);
   // useEffect(() => {
@@ -64,9 +64,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                   <>
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
                       <div className="font-bold flex space-x-2 pb-3 items-center">
-                        {
-                          console.log(userData)
-                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
+                        {(userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
                           className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
                         >
                           <span className="text-[3rem] font-bold text-gray-700">
@@ -116,37 +114,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Members
                       </span>
                     </Sidebar.Item>
-                    {/* Revenue */}
-                    <Sidebar.Item
-                      icon={HiShoppingBag}
-                      onClick={() => {
-                        setClick(1); // Set click to 1 for "Revenue"
-                        displayAfterClick(1); // Redirect to Revenue
-                      }}
-                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
-                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                    >
-                      <span className="hidden md:inline font-[Poppins] text-base">
-                        Revenue
-                      </span>
-                    </Sidebar.Item>
-                    <Sidebar.Item
-                      onClick={() => {
-                        setClick(1); // Set click to 1 for "Revenue"
-                        displayAfterClick(1); // Redirect to Revenue
-                      }}
-
-                      className={`custom-sidebar-item ${click === 1 ? "active bg-white" : ""
-                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                    >
-                      <svg class="w-[34px] h-[34px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="1.3" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                      </svg>
-
-                      <span className="hidden md:inline font-[Poppins] text-base">
-                        Admin Revenue
-                      </span>
-                    </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         icon={HiInbox}
@@ -170,12 +137,12 @@ const LeftBanner = ({ displayAfterClick }) => {
                       <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
                           (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
-                          className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
-                        >
-                          <span className="text-3xl font-bold text-gray-700">
-                            {getInitials(userData.userName)}
-                          </span>
-                        </div>
+                            className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
+                          >
+                            <span className="text-3xl font-bold text-gray-700">
+                              {getInitials(userData.userName)}
+                            </span>
+                          </div>
                         }
                         <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
                       </div>
@@ -219,37 +186,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                         <span className="hidden md:inline text-base font-[Poppins]">
                           Profile
                         </span>
-                      </Sidebar.Item>
-                    </Link>
-                    <Link to={`/dashboard`} className="hover:no-underline">
-                      <Sidebar.Item
-                        icon={HiCash}
-                        onClick={() => {
-                          setClick(5);
-                          displayAfterClick(5);
-                        }}
-                        className={`custom-sidebar-item ${click === 5 ? "active bg-white" : ""
-                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                      >
-                        <span className="hidden md:inline text-base font-[Poppins]">
-                          revenue
-                        </span>
-                      </Sidebar.Item>
-                    </Link>
-                    <Link to={`/dashboard`} className="hover:no-underline">
-                      <Sidebar.Item
-                        icon={HiCash}
-                        onClick={() => {
-                          setClick(6); // Set click to 1 for "Revenue"
-                          displayAfterClick(6); // Redirect to Revenue
-                        }}
-
-                        className={`custom-sidebar-item ${click === 6 ? "active bg-white" : ""
-                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                      >
-                          <span className="hidden md:inline font-[Poppins] text-base">
-                            Admin Revenue
-                          </span>
                       </Sidebar.Item>
                     </Link>
                   </>
@@ -297,6 +233,22 @@ const LeftBanner = ({ displayAfterClick }) => {
                     </Sidebar.Item> */}
                   </>
                 )}
+                <Link to={`/dashboard`} className="hover:no-underline">
+                  <Sidebar.Item
+                    icon={HiCash}
+                    onClick={() => {
+                      setClick(5); // Set click to 1 for "Revenue"
+                      displayAfterClick(5); // Redirect to Revenue
+                    }}
+
+                    className={`custom-sidebar-item ${click === 5 ? "active bg-white" : ""
+                      } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                  >
+                    <span className="hidden md:inline font-[Poppins] text-base">
+                      Admin Revenue
+                    </span>
+                  </Sidebar.Item>
+                </Link>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

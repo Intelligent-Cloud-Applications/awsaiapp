@@ -4,7 +4,8 @@ import { Dropdown } from "flowbite-react";
 import ChartComponent2 from '../MonthlyReport/ChartComponents/ChartComponent2';
 import PieChartComponent from '../MonthlyReport/ChartComponents/PieChartComponent';
 
-function InstitutionRevenue() {
+function InstitutionRevenue({ institution }) {
+  // eslint-disable-next-line
   const [payments, setPayments] = useState([]);
   const [monthlyRevenue, setMonthlyRevenue] = useState([]);
   const [paymentModeDistribution, setPaymentModeDistribution] = useState({
@@ -17,7 +18,7 @@ function InstitutionRevenue() {
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       try {
-        const response = await API.get('beta_dance', `/payment-history/happyprancer`);
+        const response = await API.get('beta_dance', `/payment-history/${institution}`);
         const payments = response?.payments || [];
         setPayments(payments);
         updateAvailableYears(payments);
@@ -56,11 +57,13 @@ function InstitutionRevenue() {
     };
 
     fetchPaymentHistory();
+    // eslint-disable-next-line
   }, [selectedYear]);
 
-  const handleYearChange = (event) => {
-    setSelectedYear(parseInt(event.target.value));
-  };
+  
+  // const handleYearChange = (event) => {
+  //   setSelectedYear(parseInt(event.target.value));
+  // };
 
   console.log(monthlyRevenue)
   const barChartData = {
@@ -90,7 +93,7 @@ function InstitutionRevenue() {
   };
 
   return (
-    <div className='p-4 w-[70vw] h-[70vh] ml-[8rem] max600:ml-0'>
+    <div className='p-4 w-[70vw] h-[70vh] bg-white mt-[5rem] max600:ml-0'>
       <div className='w-full'>
         <h2 className='text-2xl font-bold text-center Poppins'>Payment Details</h2>
         {/* Dropdown for Year Selection */}
