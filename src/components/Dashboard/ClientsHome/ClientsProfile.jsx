@@ -117,10 +117,12 @@ const ClientsProfile = ({ institution }) => {
       if (clientData.logoUrl || logoUrl) {
         const logoPayload = {
           institutionid: institution,
-          companyName: institution,
+          companyName: clientData.companyName,
+          institutionFormat: clientData.institutionFormat,
+          institutionType:clientData.institutionType,
           PrimaryColor: clientData.PrimaryColor,
           SecondaryColor: clientData.SecondaryColor,
-          logoUrl: logoUrl || clientData.logoUrl, // Use updated logo URL if available
+          logoUrl: logoUrl || clientData.logoUrl, 
           LightPrimaryColor: clientData.LightPrimaryColor,
           LightestPrimaryColor: clientData.LightestPrimaryColor,
         };
@@ -158,6 +160,16 @@ const ClientsProfile = ({ institution }) => {
       setIsSaving(false);
       setIsEditing(false);
       fetchClientAndOwnerDetails(); // Refresh the data after saving
+    }
+  };
+
+  const generateWebsiteLink = (institutionid) => {
+    if (institutionid === "happyprancer") {
+      return "happyprancer.com";
+    } else if (institutionid === "bworkz") {
+      return "https://bworkzlive.com/";
+    } else {
+      return `${institutionid}.happyprancer.com`;
     }
   };
 
@@ -253,8 +265,8 @@ const ClientsProfile = ({ institution }) => {
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Website:</span>
-              <a href={clientData.Query_WebLink} className="text-teal-600 hover:underline">
-                {clientData.Query_WebLink}
+              <a href={`https://${generateWebsiteLink(clientData.institutionid)}`} className="text-teal-600 hover:underline">
+                {generateWebsiteLink(clientData.institutionid)}
               </a>
             </div>
           </div>

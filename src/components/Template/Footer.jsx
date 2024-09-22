@@ -33,7 +33,9 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     showModal();
   };
 
-
+  const handleBackClick = () => {
+   Navigate("/dashboard")
+  };
   const submitSections = async () => {
     nextSection();
     await API.put("clients", "/user/development-form/put-time/awsaiapp", {
@@ -72,6 +74,11 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
         </div>
 
         <div className='absolute right-4 bottom-4 flex gap-[19rem] max950:gap-[32rem] max767:gap-36 max406:gap-[2rem] '>
+        {currentSection === 0 && (
+            <button onClick={handleBackClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+              BACK
+            </button>
+          )}
           {currentSection > 0 && (
             <button onClick={handlePrevClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
               BACK

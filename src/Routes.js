@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useContext,useEffect,useState } from "react";
+import { Route, Routes,useNavigate, Navigate,useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 // import Login from "./pages/Login";
 import Logout from "./pages/Auth/Logout";
@@ -44,26 +44,39 @@ import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 
 const RoutesContainer = () => {
   const Ctx = useContext(Context);
-  const { institutionName, web, isVerified, isDelivered } = Ctx.userData;
+  const { institutionName } = Ctx.userData;
+  const [isAwsApp, setIsAwsApp] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/auth") {
+      if (institutionName) {
+        if (institutionName === "awsaiapp") {
+          setIsAwsApp(true);
+          navigate("/dashboard");
+        } else {
+          setIsAwsApp(false);
+          navigate("/auth");
+        }
+      }
+    }
+  }, [institutionName, navigate, location.pathname]);
   console.log("routes", Ctx.userData.institutionName);
 
-  const redirectToDashboard = !web || !isVerified || !isDelivered;
+ 
 
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       {/* <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} /> */}
-      <Route path='/auth' element={<Auth />} />
       <Route path="/subpopup" element={<SubscriptionPopup />} />
       <Route path="/subpopup1" element={<SubscriptionPopup1 />} />
       <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
       <Route path="/logout" element={<Logout />} />
-      {institutionName !== "awsaiapp" && redirectToDashboard ? (
-        <Route path="/dashboard" element={<DashBoard />} />
-      ) : (
-        <Route path="/Dashboard" element={<DashBoard />} />
-      )}
+      <Route path="/dashboard" element={isAwsApp ? <DashBoard /> : <Navigate to="/auth" />} />
+      <Route path="/auth" element={<Auth />} />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
       <Route
         path="/MonthlyReport"
