@@ -40,12 +40,12 @@ const Index = ({ institution: tempInstitution }) => {
         <Navbar />
         <div className="flex flex-col items-center w-full">
 
-        <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
-          <ButtonGroup onTabChange={setActiveTab} institutionNames={institution}/>
-        </div>
-        <div className="mt-[8rem] w-full ">
-          {renderContent()}
-
+          <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
+            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} />
+          </div>
+          <div className="mt-[8rem] w-full ">
+            {renderContent()}
+          </div>
         </div>
       </div>
     </div>
