@@ -44,6 +44,12 @@ const LeftBanner = ({ displayAfterClick }) => {
   //   }
   // }, []);
 
+  const getInitials = (name) => {
+    const names = name.split(' ')
+    const initials = names.map(name => name.charAt(0).toUpperCase()).join('')
+    return initials
+  }
+
   return (
     <Flowbite theme={{ theme: customTheme }}>
       <div className="flex justify-center items-center fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20">
@@ -59,7 +65,14 @@ const LeftBanner = ({ displayAfterClick }) => {
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
                       <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
-                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                          console.log(userData)
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
+                          className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
+                        >
+                          <span className="text-[3rem] font-bold text-gray-700">
+                            {getInitials(userData.userName)}
+                          </span>
+                        </div>
                         }
                         <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
                       </div>
@@ -139,7 +152,13 @@ const LeftBanner = ({ displayAfterClick }) => {
                    <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
                       <div className="font-bold flex space-x-2 pb-3 items-center">
                         {
-                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <img src="https://www.w3schools.com/howto/img_avatar.png" alt="profile" className="w-12 h-12 rounded-full" />
+                          (userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
+                          className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
+                        >
+                          <span className="text-3xl font-bold text-gray-700">
+                            {getInitials(userData.userName)}
+                          </span>
+                        </div>
                         }
                         <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
                       </div>
