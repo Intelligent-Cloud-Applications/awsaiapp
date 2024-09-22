@@ -107,12 +107,25 @@ const ContextProvider = (props) => {
     }
   }, [institutionId]);
 
+  const [payments, setPayments] = useState([]);
+
+  const fetchPaymentHistory = async () => {
+    try {
+      const response = await API.get('beta_dance', `/payment-history/awsaiapp`);
+      const payments = response?.payments || [];
+      setPayments(payments);
+    } catch (error) {
+      console.error('Error fetching payment history:', error);
+    }
+  };
+
   useEffect(() => {
     fetchUserProfile();
     fetchProducts();
     fetchTemplateDetails();
     fetchInstructorDetails();
     fetchUserData();
+    fetchPaymentHistory();
   }, [
     fetchUserProfile,
     fetchProducts,
@@ -169,6 +182,7 @@ const ContextProvider = (props) => {
     fetchInstructorDetails: fetchInstructorDetails,
     saleData: saleData,
     setSaleData: setSaleData,
+    payments:payments,
   };
 
   return (
