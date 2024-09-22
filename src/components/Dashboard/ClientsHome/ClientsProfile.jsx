@@ -117,10 +117,12 @@ const ClientsProfile = ({ institution }) => {
       if (clientData.logoUrl || logoUrl) {
         const logoPayload = {
           institutionid: institution,
-          companyName: institution,
+          companyName: clientData.companyName,
+          institutionFormat: clientData.institutionFormat,
+          institutionType:clientData.institutionType,
           PrimaryColor: clientData.PrimaryColor,
           SecondaryColor: clientData.SecondaryColor,
-          logoUrl: logoUrl || clientData.logoUrl, // Use updated logo URL if available
+          logoUrl: logoUrl || clientData.logoUrl, 
           LightPrimaryColor: clientData.LightPrimaryColor,
           LightestPrimaryColor: clientData.LightestPrimaryColor,
         };
