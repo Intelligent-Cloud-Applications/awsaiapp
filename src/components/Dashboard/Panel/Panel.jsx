@@ -11,9 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
-import { Pagination } from "flowbite-react";
-import { Select } from "flowbite-react";
-import Index from "../MemberList/Index";
+import { Pagination, Dropdown, Flowbite } from "flowbite-react";
+
 const Panel = () => {
   const itemsPerPage = 7;
   const [status, setStatus] = useState();
@@ -54,18 +53,18 @@ const Panel = () => {
       showIcon: "inline-flex",
       previous: {
         base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
       },
       next: {
         base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white"
       },
       selector: {
         base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
         active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
-        disabled: "cursor-not-allowed opacity-50",
-      },
-    },
+        disabled: "cursor-not-allowed opacity-50"
+      }
+    }
   };
 
   // const navigate = useNavigate();
@@ -77,10 +76,9 @@ const Panel = () => {
     const query = searchQuery.toLowerCase();
 
     const filtered = clientsData?.filter(([key, client]) => {
-      const institution =
-        typeof client.institutionid === "string"
-          ? client.institutionid.toLowerCase()
-          : ""; // Default to an empty string if institution is not a valid string
+      const institution = typeof client.institutionid === 'string'
+        ? client.institutionid.toLowerCase()
+        : "";  // Default to an empty string if institution is not a valid string
 
       return institution.includes(query);
     });
@@ -98,10 +96,7 @@ const Panel = () => {
     }
 
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(
-      startIndex + itemsPerPage,
-      filteredClients.length
-    );
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
 
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
@@ -185,11 +180,11 @@ const Panel = () => {
     const trimmedInputId = String(cognitoId).trim();
 
     // Find the user with matching Cognito ID
-    const user = useDataForSales.find((user) => {
+    const user = useDataForSales.find(user => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
     console.log("user Name:", user);
-    return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
+    return user ? user.userName : 'Unknown'; // Return userName if found, otherwise 'Unknown'
   };
 
   if (1 < 0) {
@@ -234,11 +229,11 @@ const Panel = () => {
     }
   });
 
-  // const handlePersonIconClick = (institution) => {
-  //   setisMonthlyReport(institution);
-  //   const updatedUserData = { ...userData, institutionName: institution };
-  //   setUserData(updatedUserData);
-  // };
+  const handlePersonIconClick = (institution) => {
+    setisMonthlyReport(institution);
+    const updatedUserData = { ...userData, institutionName: institution };
+    setUserData(updatedUserData);
+  };
 
   const toggleAddUserForm = () => {
     setIsUserAdd(!isUserAdd);
@@ -354,7 +349,7 @@ const Panel = () => {
     if (web) {
       if (payment && delivered) {
         text = "Active";
-        color = "success"; // Yellow color for Pending status
+        color = "success"; // Yellow color for Pending status  
       } else {
         text = "Pending";
         color = "warning"; // Green color for Active status
@@ -402,45 +397,35 @@ const Panel = () => {
     }
   };
 
-  const handleDropdownChange = useCallback(
-    async (clientInstitution, status, index) => {
-      const isDelivered = status === "Delivered";
-      try {
-        const body = { institutionId: clientInstitution, index, isDelivered };
-        const response = await API.put("clients", "/user/updateDelivary", {
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log("API response:", response);
-      } catch (error) {
-        console.error("Error updating delivery status:", error);
-      }
-    },
-    []
-  );
-  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
-  const [showMemberList, setShowMemberList] = useState(false);
-  const handleInstitutionClick = (client) => {
-    // Set the institutionid as tempInstitution and show the MemberList
-    const updatedUserData = {
-      ...userData,
-      tempinstitutionName: client.institutionid,
-    };
-    setUserData(updatedUserData);
-    setTempInstitution(client.institutionid);
-    setShowMemberList(true); // Toggle view to MemberList
-  };
+  const handleDropdownChange = useCallback(async (clientInstitution, status, index) => {
+    const isDelivered = status === "Delivered";
+    try {
+      const body = { institutionId: clientInstitution, index, isDelivered };
+      const response = await API.put("clients", "/user/updateDelivary", {
+        body,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log("API response:", response);
+    } catch (error) {
+      console.error("Error updating delivery status:", error);
+    }
+  }, []);
+
   return (
-    <>
-      {!showMemberList ? (
-        <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
-          <ToastContainer />
-          <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
-            <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
-              <Select
-                value={instituteType && splitandjoin(instituteType)}
-                onChange={(e) => setInstituteType(e.target.value)}
-                className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-6rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+      <ToastContainer />
+      <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+        {/* WebDevelopment Form Link */}
+        <Flowbite theme={{ theme: customTheme }}>
+          <Dropdown
+            label={instituteType ? splitandjoin(instituteType) : "Type"}
+            className="bg-white text-white font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-[0]" // Apply rounded-[0] here
+          >
+            {type.map((type) => (
+              <Dropdown.Item
+                key={type}
+                onClick={() => setInstituteType(type)}
+                className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]" // Apply rounded-[0] here
               >
                 {splitandjoin(type)}
               </Dropdown.Item>
@@ -499,42 +484,31 @@ const Panel = () => {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  viewBox="0 0 20 20"               
+                  viewBox="0 0 20 20"
                 >
-                  Search
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    id="default-search"
-                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                    placeholder="Search"
-                    required
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                   />
-                </div>
-              </form>
+                </svg>
+              </div>
+              <input
+                type="search"
+                id="default-search"
+                class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+                placeholder="Search"
+                required
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </form>
 
-              {/* Functionalities */}
-              {/* <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
+          {/* Functionalities */}
+          {/* <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
             <div className="flex flex-row justify-center items-center gap-3 px-5 py-1 bg-white rounded-full h-14 ">
               <button onClick={() => setIsUserAdd(true)}>
                 <img className="w-5 h-5" src={Add} alt="Add" />
@@ -542,8 +516,8 @@ const Panel = () => {
 
             </div>
             <div className="absolute right-[4px] bottom-[-7px] border border-gray-300 w-[9rem] rounded-2xl h-8 mt-6 z-[-1]"></div> */}
-              {/* WebDevelopment Form Link */}
-              {/* <div className="">
+          {/* WebDevelopment Form Link */}
+          {/* <div className="">
               <Link to="/template">
                 <button className="flex items-center gap-2 p-2 bg-[#48d6e0] text-white font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff]">
                   <p>Web Development</p>
@@ -551,250 +525,243 @@ const Panel = () => {
               </Link>
             </div>
           </div> */}
-            </div>
+        </div>
 
-            {/* form of creating new client */}
-            {isUserAdd && (
-              <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
-                <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+        {/* form of creating new client */}
+        {isUserAdd && (
+          <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
+            <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+              <input
+                required
+                placeholder="Name"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Email Address"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Country"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="text"
+                value={Country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}
+              />
+              <input
+                required
+                placeholder="Joining date"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="date"
+                value={JoiningDate}
+                onChange={(e) => {
+                  setJoiningDate(e.target.value);
+                }}
+              />
+              <div className="flex mt-[-1.5rem] mb-[-1rem]">
+                <label>Status:</label>
+                <div className="flex justify-center items-center space-x-1">
                   <input
-                    required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
+                    type="radio"
+                    name="memberStatus"
+                    value="Active"
+                    className="ml-3"
+                    checked={status === "Active"}
+                    onChange={() => setStatus("Active")}
                   />
+                  <p className="text-[#85e758]">Active</p>
+                </div>
+                <div className="flex justify-center items-center space-x-1">
                   <input
-                    required
-                    placeholder="Email Address"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
+                    type="radio"
+                    name="memberStatus"
+                    value="InActive"
+                    className="ml-3"
+                    checked={status === "InActive"}
+                    onChange={() => setStatus("InActive")}
                   />
+                  <p className="text-[#ff1010d9]">InActive</p>
+                </div>
+                <div className="flex justify-center items-center space-x-1">
                   <input
-                    required
-                    placeholder="Country"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={Country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
-                    }}
+                    type="radio"
+                    name="memberStatus"
+                    value="Pending"
+                    className="ml-3"
+                    checked={status === "Pending"}
+                    onChange={() => setStatus("Pending")}
                   />
+                  <p className="text-[#ff1010d9]">Pending</p>
+                </div>
+                <div className="flex justify-center items-center space-x-1">
                   <input
-                    required
-                    placeholder="Joining date"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="date"
-                    value={JoiningDate}
-                    onChange={(e) => {
-                      setJoiningDate(e.target.value);
-                    }}
+                    type="radio"
+                    name="memberStatus"
+                    value="comingSoon"
+                    className="ml-3"
+                    checked={status === "comingSoon"}
+                    onChange={() => setStatus("comingSoon")}
                   />
-                  <div className="flex mt-[-1.5rem] mb-[-1rem]">
-                    <label>Status:</label>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="Active"
-                        className="ml-3"
-                        checked={status === "Active"}
-                        onChange={() => setStatus("Active")}
-                      />
-                      <p className="text-[#85e758]">Active</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="InActive"
-                        className="ml-3"
-                        checked={status === "InActive"}
-                        onChange={() => setStatus("InActive")}
-                      />
-                      <p className="text-[#ff1010d9]">InActive</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="Pending"
-                        className="ml-3"
-                        checked={status === "Pending"}
-                        onChange={() => setStatus("Pending")}
-                      />
-                      <p className="text-[#ff1010d9]">Pending</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="comingSoon"
-                        className="ml-3"
-                        checked={status === "comingSoon"}
-                        onChange={() => setStatus("comingSoon")}
-                      />
-                    </div>
-                    <p className="text-[#5521B5]">Coming Soon</p>
-                  </div>
-                  <div className="flex flex-col  gap-3 w-full justify-center items-center">
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                      onClick={handleAddClient}
-                    >
-                      Create
-                    </button>
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
-                      onClick={() => {
-                        setIsUserAdd(false);
-                        setUserCheck(0);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+                </div>
+                <p className="text-[#5521B5]">Coming Soon</p>
               </div>
-            )}
+              <div className="flex flex-col  gap-3 w-full justify-center items-center">
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                  onClick={handleAddClient}
+                >
+                  Create
+                </button>
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
+                  onClick={() => {
+                    setIsUserAdd(false);
+                    setUserCheck(0);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
-            {/* Headings */}
-            <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
-              <Table className="w-full text-sm text-left text-gray-500">
-                <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                  {/* <Table.HeadCell></Table.HeadCell> */}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Type
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Status
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Is Delivered
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Payment
-                  </Table.HeadCell>
-                  {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
+        {/* Headings */}
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
+          <Table className="w-full text-sm text-left text-gray-500">
+            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+              {/* <Table.HeadCell></Table.HeadCell> */}
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Institution
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Type
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Status
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Is Delivered
+              </Table.HeadCell>
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Payment
+              </Table.HeadCell>
+              {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Members
-                  </Table.HeadCell>
-                  {/* <Table.HeadCell
+              <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                Members
+              </Table.HeadCell>
+              {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
                 } uppercase font-semibold text-[14px]`}
               >
                 Attendance
               </Table.HeadCell> */}
-                  <Table.HeadCell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
-                  >
-                    Created By
-                  </Table.HeadCell>
-                  {/* <Table.HeadCell
+              <Table.HeadCell
+                className={`${showHiddenContent ? "" : "max1008:hidden"
+                  } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+              >
+                Created By
+              </Table.HeadCell>
+              {/* <Table.HeadCell
                 className={`${showHiddenContent ? "" : "max1008:hidden"
                   } uppercase font-semibold text-[20px]`}
               >
                 Leads
               </Table.HeadCell> */}
-                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+              {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                 More
               </Table.HeadCell> */}
-                </Table.Head>
+            </Table.Head>
 
-                <Table.Body className="bg-white">
-                  {clientsToDisplay.map(([key, client], index) => (
-                    <Table.Row
-                      key={client.institutionid}
-                      className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+            <Table.Body className="bg-white">
+              {clientsToDisplay.map(([key, client], index) => (
+                <Table.Row
+                  key={client.institutionid}
+                  className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                >
+                  <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+                    onClick={(e) => handleRowClick(client.institutionid, e)}
+                  >
+                    <Link
+                      to={`/Dashboard?institution=${client.institutionid}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePersonIconClick(client.institutionid);
+                      }}
                     >
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                        onClick={(e) => handleRowClick(client.institutionid, e)}
-                      >
-                        <Link onClick={() => handleInstitutionClick(client)}>
-                          <div className="email-hover uppercase font-semibold text-[#11192B]">
-                            {client.institutionid}
-                          </div>
-                        </Link>
-                      </Table.Cell>
+                      <div className="email-hover uppercase font-semibold text-[#11192B]">
+                        {client.institutionid}
+                      </div>
+                    </Link>
+                  </Table.Cell>
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {splitandjoin(client.institutionType)}
-                      </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {splitandjoin(client.institutionType)}
+                  </Table.Cell>
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {(() => {
-                          const { text, color } = getBadgeProps(
-                            client.isFormFilled,
-                            client.payment,
-                            client.isDelivered
-                          );
-                          return (
-                            <Badge
-                              color={color}
-                              size="sm"
-                              className="flex justify-center items-center"
-                            >
-                              {text}
-                            </Badge>
-                          );
-                        })()}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <select
-                          value={
-                            client.isDelivered ? "Delivered" : "Not Delivered"
-                          }
-                          onChange={(e) =>
-                            handleDropdownChange(
-                              client.institutionid,
-                              e.target.value,
-                              client.index
-                            )
-                          }
-                          className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {(() => {
+                      const { text, color } = getBadgeProps(client.isFormFilled, client.payment, client.isDelivered);
+                      return (
+                        <Badge
+                          color={color}
+                          size="sm"
+                          className="flex justify-center items-center"
                         >
-                          <option value="Not Delivered">Not Delivered</option>
-                          <option value="Delivered">Delivered</option>
-                        </select>
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.payment ? "Paid" : "Not Paid"}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.recentMonthMembers}
-                      </Table.Cell>
-                      <Table.Cell
-                        className={`${
-                          showHiddenContent ? "" : "max1008:hidden"
-                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                      >
-                        {/* {client.createdBy} */}
-                        {client.createdBy
-                          ? getUsernameByCognitoId(client.createdBy)
-                          : "Unknown"}{" "}
-                        {/* Fallback for undefined createdBy */}
-                      </Table.Cell>
-                      <Link
-                        onClick={() => handleInstitutionClick(client)}
-                        className="hidden change-page"
-                      ></Link>
-                      {/* <div
+                          {text}
+                        </Badge>
+                      );
+                    })()}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    <select
+                      value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                      onChange={(e) => handleDropdownChange(client.institutionid, e.target.value, client.index)}
+                      className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                    >
+                      <option value="Not Delivered">Not Delivered</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {client.payment ? "Paid" : "Not Paid"}
+                  </Table.Cell>
+                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                    {client.recentMonthMembers}
+                  </Table.Cell>
+                  <Table.Cell
+                    className={`${showHiddenContent ? "" : "max1008:hidden"} whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                  >
+                    {/* {client.createdBy} */}
+                    {client.createdBy
+                      ? getUsernameByCognitoId(client.createdBy)
+                      : 'Unknown'} {/* Fallback for undefined createdBy */}
+                  </Table.Cell>
+                  <Link
+                    to={`/Dashboard?institution=${client.institutionid}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePersonIconClick(client.institutionid);
+                    }}
+                    className="hidden change-page"
+                  ></Link>
+                  {/* <div
                     className={`${showHiddenContent ? "" : "max1008:hidden"
                       } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
                   >
@@ -802,23 +769,26 @@ const Panel = () => {
                       {client.recentMonthLeads}
                     </Table.Cell>
                   </div> */}
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                        // onClick={handleMoreClick}
-                      >
-                        <Link onClick={() => handleInstitutionClick(client)}>
-                          {isMoreVisible ? <FaChevronRight /> : ""}
-                        </Link>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+                  <Table.Cell
+                    className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
+                  // onClick={handleMoreClick}
+                  >
+                    <Link
+                      to={`/Dashboard?institution=${client.institutionid}`}
+                      onClick={() => handlePersonIconClick(client.institutionid)}
+                    >
+                      {isMoreVisible ? <FaChevronRight /> : ""}
+                    </Link>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </div>
 
-            {clientsToDisplay.map(([key, client], index) => (
-              <div key={client.institutionid}>
-                {/* {
+        {clientsToDisplay.map(([key, client], index) => (
+          <div key={client.institutionid}>
+            {/* {
             // isRowSelected(client.institution) && 
             (
               <p
@@ -828,121 +798,121 @@ const Panel = () => {
                 -- See Details --
               </p>
             )} */}
-              </div>
-            ))}
+          </div>
+        ))}
 
-            {showDetails && selectedUser && (
-              <div
-                class="flex justify-center items-center mt-[-55vh] rounded-lg w-[22rem] h-[40rem] relative bg-white z-50"
-                style={{
-                  boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-                }}
+        {showDetails && selectedUser && (
+          <div
+            class="flex justify-center items-center mt-[-55vh] rounded-lg w-[22rem] h-[40rem] relative bg-white z-50"
+            style={{
+              boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
+              <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
+                <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Email Id:
+                </div>
+                <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {email}
+                </div>
+                <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Country:
+                </div>
+                <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {Country}
+                </div>
+                <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Status:
+                </div>
+                <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {status}
+                </div>
+                <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  Joining Date:
+                </div>
+                <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                  {formatEpochToReadableDate(JoiningDate)}
+                </div>
+              </div>
+              <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Revenue:
+              </div>
+              <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalIncome}
+              </div>
+              <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Members:
+              </div>
+              <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {memberCount}
+              </div>
+              <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Attendance:
+              </div>
+              <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalAttendance}
+              </div>
+              <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                Leads:
+              </div>
+              <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
+                {TotalLeads}
+              </div>
+              <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">
+                {name}
+              </div>
+            </div>
+            <div>
+              <button
+                className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]"
+                onClick={() => setShowDetails(false)}
               >
-                <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
-                  <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
-                    <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Email Id:
-                    </div>
-                    <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {email}
-                    </div>
-                    <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Country:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {Country}
-                    </div>
-                    <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Status:
-                    </div>
-                    <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {status}
-                    </div>
-                    <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Joining Date:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {formatEpochToReadableDate(JoiningDate)}
-                    </div>
-                  </div>
-                  <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Revenue:
-                  </div>
-                  <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalIncome}
-                  </div>
-                  <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Members:
-                  </div>
-                  <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {memberCount}
-                  </div>
-                  <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Attendance:
-                  </div>
-                  <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalAttendance}
-                  </div>
-                  <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Leads:
-                  </div>
-                  <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalLeads}
-                  </div>
-                  <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">
-                    {name}
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]"
-                    onClick={() => setShowDetails(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
-            {isUpdateFormVisible && selectedUser && (
-              <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
-                <form className="relative h-[38rem] m-auto flex flex-col justify-between p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                  {/* Include form fields for updating user details */}
-                  <input
-                    required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Email Address"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Phone Number"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="number"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Country"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={Country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
-                    }}
-                  />
-                  {/* <div className="flex gap-1">
+        {isUpdateFormVisible && selectedUser && (
+          <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
+            <form className="relative h-[38rem] m-auto flex flex-col justify-between p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
+              {/* Include form fields for updating user details */}
+              <input
+                required
+                placeholder="Name"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Email Address"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Phone Number"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
+                type="number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+              <input
+                required
+                placeholder="Country"
+                className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
+                type="text"
+                value={Country}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}
+              />
+              {/* <div className="flex gap-1">
                 <label className="mt-2">Total Member :</label>
                 <input
                   required
@@ -968,84 +938,76 @@ const Panel = () => {
                   }}
                 />
               </div> */}
-                  <div className="flex items-baseline mt-[-1.5rem] mb-[-1rem]">
-                    <label>Status:</label>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="Active"
-                      className="ml-3"
-                      checked={status === "Active"}
-                      onChange={() => setStatus("Active")}
-                    />{" "}
-                    <p className="ml-1 text-[#85e758]"> Active</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="InActive"
-                      className="ml-3"
-                      checked={status === "InActive"}
-                      onChange={() => setStatus("InActive")}
-                    />{" "}
-                    <p className="ml-1 text-[#ff1010d9]">InActive</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="comingSoon"
-                      className="ml-3"
-                      checked={status === "comingSoon"}
-                      onChange={() => setStatus("comingSoon")}
-                    />{" "}
-                    <p className="ml-1 text-[#5521B5]">Coming Soon</p>
-                  </div>
-
-                  {/* Add other fields for updating user details */}
-                  <div className="flex flex-col gap-3 w-full justify-center items-center">
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUpdateClient(selectedUser);
-                      }}
-                    >
-                      Update
-                    </button>
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
-                      onClick={() => handleCancelUpdate()}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+              <div className="flex items-baseline mt-[-1.5rem] mb-[-1rem]">
+                <label>Status:</label>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="Active"
+                  className="ml-3"
+                  checked={status === "Active"}
+                  onChange={() => setStatus("Active")}
+                />{" "}
+                <p className="ml-1 text-[#85e758]"> Active</p>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="InActive"
+                  className="ml-3"
+                  checked={status === "InActive"}
+                  onChange={() => setStatus("InActive")}
+                />{" "}
+                <p className="ml-1 text-[#ff1010d9]">InActive</p>
+                <input
+                  type="radio"
+                  name="memberStatus"
+                  value="comingSoon"
+                  className="ml-3"
+                  checked={status === "comingSoon"}
+                  onChange={() => setStatus("comingSoon")}
+                />{" "}
+                <p className="ml-1 text-[#5521B5]">Coming Soon</p>
               </div>
-            )}
 
-            {/* Pagination */}
-            <div className="py-2 flex justify-between items-center px-4">
-              {/* Dynamic "Showing X-Y of Z" */}
-              <div className="text-sm text-gray-600">
-                Showing{" "}
-                <strong>
-                  {startIndex + 1}-{startIndex + clientsToDisplay.length}
-                </strong>{" "}
-                of <strong>{clientsToDisplay.length}</strong>
+              {/* Add other fields for updating user details */}
+              <div className="flex flex-col gap-3 w-full justify-center items-center">
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleUpdateClient(selectedUser);
+                  }}
+                >
+                  Update
+                </button>
+                <button
+                  className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
+                  onClick={() => handleCancelUpdate()}
+                >
+                  Cancel
+                </button>
               </div>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                className="flex justify-end"
-                showIcons
-                theme={customTheme}
-              />
-            </div>
+            </form>
           </div>
+        )}
+
+        {/* Pagination */}
+        <div className="py-2 flex justify-between items-center px-4">
+          {/* Dynamic "Showing X-Y of Z" */}
+          <div className="text-sm text-gray-600">
+            Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            className="flex justify-end"
+            showIcons
+            theme={customTheme}
+          />
         </div>
-      ) : (
-        <Index tempInstitution={tempInstitution} />
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
