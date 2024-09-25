@@ -46,7 +46,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental"];
+  const type = ["DanceStudio", "Dental"];
 
   const customTheme = {
     pages: {
@@ -71,13 +71,10 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData || []; // Ensure that it returns an array
+      return clientsData?.filter(([key,client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
-
-    console.log("Search Query:", query);
-    console.log("Clients Data:", clientsData);
 
     const filtered = clientsData?.filter(([key, client]) => {
       const institution =
@@ -445,63 +442,64 @@ const Panel = () => {
                 onChange={(e) => setInstituteType(e.target.value)}
                 className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
               >
-                {instituteType === "" && (
-                  <option value="" disabled hidden>
-                    Type
-                  </option>
-                )}
-                {type.map((type) => (
-                  <option
-                    key={type}
-                    value={type}
-                    className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
-                  >
-                    {splitandjoin(type)}
-                  </option>
-                ))}
-              </Select>
+                {splitandjoin(type)}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </Flowbite>
+        <div>
+          <Link
+            to={
+              instituteType !== "" && instituteType === "DanceStudio"
+                ? "/template"
+                : "#"
+            }
+            onClick={(e) => {
+              if (instituteType === "") {
+                e.stopPropagation();
+                console.log("Showing toast message"); // Debug line
+                toast.error("Please Select a type of Institution.", {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  style: {
+                    backgroundColor: "#f8d7da",
+                    color: "#721c24",
+                  },
+                });
+              }
+            }}
+            className="hover:no-underline"
+          >
+            <button className="flex items-center gap-2 p-2 bg-[#48d6e0]  font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+              <p className="text-white">Create New Institution</p>
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
+        <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
+          {/* Search Bar */}
 
-              <Link
-                to={
-                  instituteType !== "" && instituteType === "Dance Studio"
-                    ? "/template"
-                    : "#"
-                }
-                onClick={(e) => {
-                  if (instituteType === "") {
-                    e.stopPropagation();
-                    console.log("Showing toast message"); // Debug line
-                    toast.error("Please Select a type of Institution.", {
-                      position: "top-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      style: {
-                        backgroundColor: "#f8d7da",
-                        color: "#721c24",
-                      },
-                    });
-                  }
-                }}
-                className="hover:no-underline"
-              >
-                <button className="flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto">
-                  <p className="text-white">Create New Institution</p>
-                </button>
-              </Link>
-            </div>
-          </div>
-          <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-            <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
-              {/* Search Bar */}
-
-              <form class="w-full min800:w-[30%] rounded-sm my-3">
-                <label
-                  for="default-search"
-                  class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          <form class="w-full min800:w-[30%] rounded-sm my-3">
+            <label
+              for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >
+              Search
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"               
                 >
                   Search
                 </label>
