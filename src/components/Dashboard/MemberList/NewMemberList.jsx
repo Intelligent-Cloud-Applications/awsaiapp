@@ -24,19 +24,40 @@ function NewMemberList({ institution: tempInstitution }) {
   const [isEditUser, setIsEditUser] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMemberDetails, setSelectedMemberDetails] = useState(null);
+  const [isLoader, setisLoader] = useState(false);
 
   useEffect(() => {
     let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
+    if (user.profile.tempinstitutionName === "awsaiapp") {
+      institution = userData.tempinstitutionName;
     } else {
-      institution = userData.institutionName || tempInstitution;
+      institution = userData.tempinstitutionName || tempInstitution;
     }
+    const fetchData = async (institution) => {
+      try {
+        if (isLoader === false) {
+          util.setLoader(true);
+          setisLoader(true);
+        }
+        const data = await API.get("clients", `/user/list-members/${institution}`);
+        const filteredData = data.filter(member => member.userType === 'member');
+        console.log(filteredData);
+        setMembers(filteredData);
+        setMemberData(filteredData);
+      } catch (error) {
+        console.error('Error fetching the members:', error);
+      }
+     
+        util.setLoader(false)
+       
+    };
+
     fetchData(institution); // Pass institution to fetchData
-  }, [userData, tempInstitution, user.profile.institutionName]);
+  }, [userData, tempInstitution, user.profile.tempinstitutionName, util, isLoader]);
 
   const fetchData = async (institution) => {
     try {
+      util.setLoader(true)
       const data = await API.get("clients", `/user/list-members/${institution}`);
       const filteredData = data.filter(member => member.userType === 'member');
       console.log(filteredData);
@@ -45,6 +66,7 @@ function NewMemberList({ institution: tempInstitution }) {
     } catch (error) {
       console.error('Error fetching the members:', error);
     }
+    util.setLoader(false)
   };
 
   const handleUpdateUser = async (formData) => {

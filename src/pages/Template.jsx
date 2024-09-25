@@ -41,7 +41,7 @@ const Template = () => {
   const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const [companyName, setCompanyName] = useState(null);
-
+  const [institutionId, setinstitutionId] = useState(null);
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
@@ -51,6 +51,8 @@ const Template = () => {
   //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
+  const [institutionType, setInstitutionType] = useState("DanceStudio");
+  const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
   const [video, setVideo] = useState(null);
@@ -443,7 +445,7 @@ const Template = () => {
 
   //   fetchData();
   // }, [Ctx.userData.institutionName, loaderInitialized, util]);
-  const institutionId = companyName;
+  // const institutionId = companyName;
 
   const handleCompanyUpload = async () => {
     try {
@@ -467,8 +469,10 @@ const Template = () => {
       await API.put("clients", "/user/development-form/company", {
         body: {
           institutionid: institutionId,
-          companyName: institutionId,
+          companyName: companyName,
           PrimaryColor,
+          institutionFormat,
+          institutionType,
           SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
@@ -890,6 +894,11 @@ const Template = () => {
 
       switch (currentSection) {
         case 0:
+          if (!institutionId) {
+            alert("Please enter the institutionId.");
+            
+           return prevSection;
+          }
           if (!companyName) {
             alert("Please enter the institution Name.");
             
@@ -905,7 +914,7 @@ const Template = () => {
           // }
           if (!institutionCheckInProgress) {
             institutionCheckInProgress = true;
-            API.get("clients", `/user/check-institution?institutionid=${companyName}`)
+            API.get("clients", `/user/check-institution?institutionid=${institutionId}`)
               .then(response => {
                 institutionCheckInProgress = false;
                 if (response && response.exists) {
@@ -1058,9 +1067,9 @@ const Template = () => {
   // };
   const [showModal, setShowModal] = useState(false);
   const handleSaveDraft = () => {
-    Navigate(`/full?institutionName=${institutionId}`)
+    Navigate('/dashboard', { state: { section: 'institution-draft' } });
   };
-
+  
   const handleClearData = async () => {
     try {
       util.setLoader(true);
@@ -1095,11 +1104,17 @@ const Template = () => {
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
+              institutionId={institutionId}
+              setinstitutionId={setinstitutionId}
               PrimaryColor={PrimaryColor}
               setPrimaryColor={setPrimaryColor}
               SecondaryColor={SecondaryColor}
               setSecondaryColor={setSecondaryColor}
               logo={logo}
+              institutionType={institutionType}
+              setInstitutionType={setInstitutionType}
+              institutionFormat={institutionFormat}
+              setInstitutionFormat={setInstitutionFormat}
               setLogo={setLogo}
               LightestPrimaryColor={LightestPrimaryColor}
               setLightestPrimaryColor={setLightestPrimaryColor}

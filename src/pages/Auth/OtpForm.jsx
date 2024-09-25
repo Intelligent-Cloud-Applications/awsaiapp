@@ -41,10 +41,10 @@ const OtpForm = ({ handler, phoneNumber, setSignInResponse }) => {
             shadow-xl px-20 py-12 w-[480px] rounded-xl`
           }
         >
-            <h2 className='font-bold text-2xl'>Login/Signup</h2>
+            <h2 className='font-bold text-2xl'>Login</h2>
            
           <p className='text-center w-64'>{
-            'Please enter the otp to finish your login process Otp is send to number'
+            'Please enter the OTP to finish your login process OTP is send to number'
           }</p>
     <form
       onSubmit={handler}

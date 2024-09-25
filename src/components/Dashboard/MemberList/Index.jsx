@@ -5,15 +5,15 @@ import Navbar from '../../Home/Navbar';
 import ClientsProfile from '../ClientsHome/ClientsProfile';
 import Context from "../../../context/Context";
 import LeadsList from "../LeadsList/LeadsList";
-
+import InstitutionRevenue from "../InstitutionRevenue";
 const Index = ({ institution: tempInstitution }) => {
   const {  user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
   let institution
-  if (user.profile.institutionName === "awsaiapp") {
-    institution = userData.institutionName;
+  if (user.profile.tempinstitutionName === "awsaiapp") {
+    institution = userData.tempinstitutionName;
   } else {
-    institution = userData.institutionName || tempInstitution;
+    institution = userData.tempinstitutionName || tempInstitution;
   }
   const renderContent = () => {
     switch (activeTab) {
@@ -25,18 +25,20 @@ const Index = ({ institution: tempInstitution }) => {
         return <LeadsList />;
       case 'client':
         return <ClientsProfile institution={institution}/>;
+      case 'economy':
+        return <InstitutionRevenue institution={userData.tempinstitutionName} />
       default:
         return null;
     }
   };
 
   return (
-    <div className="w-[97vw] flex flex-col items-center h-[120vh] bg-[#e6e4e4]">
-      <div className="p-4">
+    <div className="w-[97vw] flex flex-col items-center h-[120vh] ml-[220px] bg-[#e6e4e4]">
+      <div className="">
         <Navbar />
         <div className="flex flex-col items-center w-full">
         <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
-          <ButtonGroup onTabChange={setActiveTab} />
+          <ButtonGroup onTabChange={setActiveTab} institutionNames={institution}/>
         </div>
         <div className="mt-[8rem] w-full ">
           {renderContent()}

@@ -1,5 +1,5 @@
 import Header from "./../../components/Home/Navbar";
-import {useContext, useState} from "react";
+import {useContext, useState,useEffect,useRef} from "react";
 import LoginForm from "./LoginForm";
 import OtpForm from "./OtpForm";
 import SignupForm from "./SignupForm";
@@ -7,7 +7,7 @@ import Context from "./../../context/Context";
 import {API, Auth} from "aws-amplify";
 import {useNavigate} from "react-router-dom";
 import countries from "../../components/Auth/Inputs/countries.json";
-
+import {toast} from "react-toastify";
 const AuthPage = () => {
 
 
@@ -18,12 +18,22 @@ const AuthPage = () => {
 
   // const [userName, setUserName] = useState("");
   // const [email, setEmail] = useState("");
+  const setUserDataRef = useRef(setUserData);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState("");
   const [signInResponse, setSignInResponse] = useState();
   const [formState, setFormState] = useState('login')
 
   
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await API.get("clients", '/user/check-user-location');
+      setUserDataRef.current((p) => ({ ...p, ...userInfo }));
+    };
+
+    fetchUserInfo();
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoader(true);
@@ -92,14 +102,13 @@ const AuthPage = () => {
       setUserData(userdata);
       setIsAuth(true);
       setLoader(false);
-
-      alert('Logged in');
+      toast.info('Logged in');
       navigate('/dashboard');
     } catch (error) {
       if (error === 'The user is not authenticated')
-        alert('Incorrect OTP. Try again');
+        toast.error('Incorrect OTP. Try again');
       else if (error.name === 'NotAuthorizedException')
-        alert('OTP expired. Use resend OTP');
+        toast.error('OTP expired. Use resend OTP');
       // else if (error.response.status === 404)
       //   toast.error('User data not found. Delete old data');
 
@@ -132,7 +141,7 @@ const AuthPage = () => {
 
       setFormState('otp');
     } catch {
-      alert('Unknown error occurred');
+      toast.error('Unknown error occurred');
     } finally {
       setLoader(false);
     }
