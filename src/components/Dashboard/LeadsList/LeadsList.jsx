@@ -10,12 +10,12 @@ import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { CSVUpload } from '../../UploadFile/CSVUpload';
 
 const LeadsList = ({ institution: tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
-  const location = useLocation()
+  // const location = useLocation()
   // const searchParams = new URLSearchParams(window.location.search);
   let institution;
   if (user.profile.tempinstitutionName === "awsaiapp") {
