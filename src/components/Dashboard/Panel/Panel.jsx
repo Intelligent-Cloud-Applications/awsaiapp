@@ -70,13 +70,10 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData || []; // Ensure that it returns an array
+      return clientsData?.filter(([key,client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
-
-    console.log("Search Query:", query);
-    console.log("Clients Data:", clientsData);
 
     const filtered = clientsData?.filter(([key, client]) => {
       const institution = typeof client.institutionid === 'string'
