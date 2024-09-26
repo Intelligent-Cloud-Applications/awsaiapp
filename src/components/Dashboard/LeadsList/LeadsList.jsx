@@ -233,29 +233,23 @@ const LeadsList = ({ institution: tempInstitution }) => {
     return tempElement.textContent || tempElement.innerText || "";
   };
 
-  const handleUpdatedSubjectOfTemplate = (e) => {
-    setTemplateSubject({
-      ...templateDetails,
-      SubjectPart: e.target.value, // Update the SubjectPart as the user types
-    });
-  };
-
   const convertTextToHtml = (text) => {
     // Replace newlines with <br> tags, and wrap the text in <p> tags
     return text.split('\n').map(line => `<p>${line}</p>`).join('');
-  }
-  
+  };
+
+  const handleUpdatedSubjectOfTemplate = (e) => {
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      SubjectPart: e.target.value, // Update the SubjectPart as the user types
+    }));
+  };
+
   const handleUpdatedTemplateOnChange = (e) => {
-    const plainText = e.target.value;
-  
-    // Convert the plain text into HTML format
-    const htmlText = convertTextToHtml(plainText);
-  
-    // Update the state with HTML content
-    setTemplateContent({
-      ...templateDetails,
-      HtmlPart: htmlText,
-    });
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      HtmlPart: e.target.value, // Use the value from the textarea
+    }));
   };
 
   const handleSendMail = async () => {
@@ -277,10 +271,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
   };
 
   const handleDoneClick = async () => {
+    const htmlContent = convertTextToHtml(templateContent);
     const dataToCreate = {
       'TemplateName': newName,
       'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'HtmlPart': htmlContent,
       'TextPart': ""
     };
 
@@ -302,11 +297,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [institution]);
 
-  const handleUpdateClick = async (name) => {
+  const handleUpdateClick = async (tempalteDataForUpdate) => {
+    const updateContent = convertTextToHtml(templateDetails.HtmlPart);
     const dataToUpdate = {
-      'TemplateName': name,
-      'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'TemplateName': tempalteDataForUpdate.TemplateName,
+      'SubjectPart': tempalteDataForUpdate.SubjectPart,
+      'HtmlPart': updateContent,
       'TextPart': ""
     };
 
@@ -315,10 +311,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
         body: dataToUpdate
       });
       console.log('Response:', response);
-      alert('Email added successfully!');
+      alert('Email Updated successfully!');
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      alert('Error updating emails. Please try again later.');
     }
     handleCloseTemplateUpdate();
   }
@@ -810,16 +806,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             type="text"
                             className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
                             value={templateDetails.SubjectPart}
-                            onChange={handleSubjectOfTemplate}
+                            onChange={handleUpdatedSubjectOfTemplate}
                           />
                           <textarea
                             // placeholder='Type the body of your mail here in HTML format'
                             className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                             value={htmlToPlainText(templateDetails.HtmlPart)}
-                            onChange={handleTemplateOnChange}
+                            onChange={handleUpdatedTemplateOnChange}
                           />
                         </div>
-                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick(templateDetails.TemplateName) }}>
+                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick(templateDetails) }}>
                           Update
                         </button>
                       </div>
@@ -844,13 +840,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           placeholder='Subject of your template'
                           className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
                           value={templateSubject}
-                          onChange={handleUpdatedSubjectOfTemplate}
+                          onChange={handleSubjectOfTemplate}
                         />
                         <textarea
                           placeholder='Type the body of your mail here in HTML format'
                           className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                           value={templateContent}
-                          onChange={handleUpdatedTemplateOnChange}
+                          onChange={handleTemplateOnChange}
                         />
                       </div>
                       <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleDoneClick() }}>
