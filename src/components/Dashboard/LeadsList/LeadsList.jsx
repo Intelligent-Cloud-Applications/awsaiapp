@@ -53,7 +53,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const newName = `${institution}_${templateName}`;
   const [templateDetails, setTemplateDetails] = useState({});
   const [addNewValue, setAddNewValue] = useState(false);
-  const [viewTemplate, setViewTemplate] = useState(null);
   const [category, setCategory] = useState('Gold');
   const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
@@ -168,7 +167,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   const handleClosePopup = () => {
     setAddNewValue(false);
-    setViewTemplate(null);
   };
 
   const handleCloseTemplateUpdate = () => {
@@ -210,7 +208,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
     try {
       const response = await API.get('clients', `/user/get-ses-templates/${institution}?action=get&templateName=${template}`);
       setTemplateDetails(response || {});
-      console.log("tempalte Details", templateDetails);
     } catch (error) {
       console.error('Error fetching templates:', error);
       // Handle error appropriately
@@ -766,7 +763,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             key={index}
                             className="hover:bg-gray-200 cursor-pointer"
                           >
-                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">{templateDataA}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center">{templateDataA}</Table.Cell>
                             <Table.Cell className="text-center text-sm text-gray-900">
                               <input
                                 type="radio"
@@ -843,7 +840,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={handleSubjectOfTemplate}
                         />
                         <textarea
-                          placeholder='Type the body of your mail here in HTML format'
+                          placeholder='Type the body of your mail here'
                           className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                           value={templateContent}
                           onChange={handleTemplateOnChange}
@@ -855,7 +852,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
                 )}
-                {viewTemplate && (
+                {/* {viewTemplate && (
                   <div className="popup-overlay">
                     <div className="popup-content">
                       <button className="close-button" onClick={handleClosePopup}>×</button>
@@ -865,7 +862,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
                 {/* <Pagination
                   count={Math.ceil(filteredTemplates.length / itemsPerPage)}
                   page={currentPage}
