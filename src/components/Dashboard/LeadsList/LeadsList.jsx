@@ -10,12 +10,12 @@ import TabletImg from '../../../utils/Assets/Dashboard/images/PNG/Tablet.png'
 import LaptopImg from '../../../utils/Assets/Dashboard/images/PNG/laptop.png'
 import Swal from "sweetalert2";
 import "./LeadsList.css";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { CSVUpload } from '../../UploadFile/CSVUpload';
 
 const LeadsList = ({ institution: tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
-  const location = useLocation()
+  // const location = useLocation()
   // const searchParams = new URLSearchParams(window.location.search);
   let institution;
   if (user.profile.tempinstitutionName === "awsaiapp") {
@@ -27,7 +27,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [leadsData, setLeadsData] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentPageTemplate, setCurrentPageTemplate] = useState(1);
   // const membersPerPage = 7;
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -52,32 +51,22 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [templateName, setTemplateName] = useState('');
   const newName = `${institution}_${templateName}`;
+  const [templateDetails, setTemplateDetails] = useState({});
   const [addNewValue, setAddNewValue] = useState(false);
-  const [viewTemplate, setViewTemplate] = useState(null);
   const [category, setCategory] = useState('Gold');
   const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
   const [isAllSelected, setisAllSelected] = useState(false);/*to check wheather all the leads data is selected or not*/
-  const { dataToMail } = location.state || {};
-  const [templateNameInUpdate, settemplateNameInUpdate] = useState("");
   const [additionalInfoArray, setAdditionalInfoArray] = useState([
     { title: "", info: "" },
   ]);
-  const filteredTemplates = Array.isArray(templateData) ? templateData.filter(template => {
-    // Ensure `template` is not null and has a property you want to search
-    return template && template.toLowerCase().includes(searchInput.toLowerCase());
-  }) : [];
-  const indexOfLastLeadmail = currentPageTemplate * itemsPerPage;
-  const indexOfFirstLeadmail = indexOfLastLeadmail - itemsPerPage;
-  const currentTemplates = filteredTemplates.slice(indexOfFirstLeadmail, indexOfLastLeadmail);
   const [selectedDevices, setSelectedDevices] = useState({
     SmartPhone: false,
     Tablet: false,
     Laptop: false,
   });
   const [id, setId] = useState("");
-  // console.log(userCheck)
 
   const customTheme = {
     pages: {
@@ -118,11 +107,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setisAllSelected(!isAllSelected);
   };
 
-  const sendMail = (dataToMail) => {
-    if (dataToMail.length !== 0) {
-      console.log(dataToMail);
+  const sendMail = (dataForMail) => {
+    if (dataForMail.length !== 0) {
       setSendmail(true);
-      // navigate('/templatemail', { state: { dataToMail } });
+      const emails = dataForMail
+        .filter(item => item.institution === institution)
+        .map(item => item.emailId) || [];
+      setFilteredEmails(emails);
     } else {
       return (
         alert("Please select leads")
@@ -144,7 +135,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
     );
   };
 
-  console.log(userData)
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -153,7 +143,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const fetchLeads = async (institution) => {
     try {
       const response = await API.get("clients", `/user/get-leads/${institution}`);
-      console.log(response.Items);
       setLeadsData(response.Items);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -163,10 +152,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
     }
   };
 
-  const handleEditTemplate = (data) => {
-    setEditTemplate(true);
-    settemplateNameInUpdate(data);
-  }
 
   const handleNameOfTemplate = (event) => {
     setTemplateName(event.target.value);
@@ -182,7 +167,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   const handleClosePopup = () => {
     setAddNewValue(false);
-    setViewTemplate(null);
   };
 
   const handleCloseTemplateUpdate = () => {
@@ -205,7 +189,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
     try {
       const response = await API.get('clients', `/user/get-ses-templates/${institution}?action=list`);
       setTemplateData(response || []);
-      console.log("template", response);
     } catch (error) {
       console.error('Error fetching templates:', error);
       // Handle error appropriately
@@ -221,44 +204,82 @@ const LeadsList = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [institution]);
 
-  useEffect(() => {
-    if (dataToMail) {
-      const emails = dataToMail
-        .filter(item => item.institution === institution)
-        .map(item => item.emailId) || [];
-      setFilteredEmails(emails);
+  const fetchTemplatesDetails = async (institution, template) => {
+    try {
+      const response = await API.get('clients', `/user/get-ses-templates/${institution}?action=get&templateName=${template}`);
+      setTemplateDetails(response || {});
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      // Handle error appropriately
+    } finally {
+      util.setLoader(false);
     }
-  }, [dataToMail, institution]);
+  };
 
-  useEffect(() => {
-    setCurrentPageTemplate(1);
-  }, [searchInput]);
+  const handleEditTemplate = (data) => {
+    setEditTemplate(true);
+    fetchTemplatesDetails(institution, data)
+  };
+
+  const htmlToPlainText = (html) => {
+    // Create a new DOM element to parse the HTML
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = html;
+
+    // Use textContent to get the plain text without HTML tags
+    return tempElement.textContent || tempElement.innerText || "";
+  };
+
+  const convertTextToHtml = (text) => {
+    // Replace newlines with <br> tags, and wrap the text in <p> tags
+    return text.split('\n').map(line => `<p>${line}</p>`).join('');
+  };
+
+  const handleUpdatedSubjectOfTemplate = (e) => {
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      SubjectPart: e.target.value, // Update the SubjectPart as the user types
+    }));
+  };
+
+  const handleUpdatedTemplateOnChange = (e) => {
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      HtmlPart: e.target.value, // Use the value from the textarea
+    }));
+  };
 
   const handleSendMail = async () => {
-    const payload = {
-      emailIds: filteredEmails,
-      templateName: selectedTemplate
-    };
 
-    console.log('Sending request with payload:', payload);
+    if (selectedTemplate) {
 
-    try {
-      const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
-        body: payload
-      });
-      console.log('Response:', response);
-      alert('Email sent successfully!');
-    } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error sending emails. Please try again later.');
+      const payload = {
+        emailIds: filteredEmails,
+        templateName: selectedTemplate
+      };
+
+      try {
+        const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
+          body: payload
+        });
+        console.log('Response:', response);
+        alert('Email sent successfully!');
+      } catch (error) {
+        console.error('Error sending emails:', error);
+        alert('Error sending emails. Please try again later.');
+      }
+    }
+    else {
+      alert("Please select a tempalte");
     }
   };
 
   const handleDoneClick = async () => {
+    const htmlContent = convertTextToHtml(templateContent);
     const dataToCreate = {
       'TemplateName': newName,
       'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'HtmlPart': htmlContent,
       'TextPart': ""
     };
 
@@ -270,7 +291,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       alert('Email added successfully!');
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      alert('Error creating tempalte. Please try again later.');
     }
     handleClosePopup();
   };
@@ -280,23 +301,24 @@ const LeadsList = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [institution]);
 
-  const handleUpdateClick = async () => {
+  const handleUpdateClick = async (tempalteDataForUpdate) => {
+    const updateContent = convertTextToHtml(tempalteDataForUpdate.HtmlPart);
     const dataToUpdate = {
-      'TemplateName': newName,
-      'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'TemplateName': tempalteDataForUpdate.TemplateName,
+      'SubjectPart': tempalteDataForUpdate.SubjectPart,
+      'HtmlPart': updateContent,
       'TextPart': ""
     };
 
     try {
-      const response = await API.post('clients', `/user/update-ses-template/${institution}`, {
+      const response = await API.post('clients', `/user/create-ses-template/${institution}`, {
         body: dataToUpdate
       });
       console.log('Response:', response);
-      alert('Email added successfully!');
+      alert('Email Updated successfully!');
     } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      console.error('Error updataing templates:', error);
+      alert('Error updating tempaltes. Please try again later.');
     }
     handleCloseTemplateUpdate();
   }
@@ -739,27 +761,27 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <Table.Head>
                       <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Template Name</Table.HeadCell>
                       <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Select</Table.HeadCell>
-                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Edit</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y divide-gray-200">
-                      {currentTemplates.length > 0 ? (
-                        currentTemplates.map((templateData, index) => (
+                      {templateData.length > 0 ? (
+                        templateData.map((templateDataA, index) => (
                           <Table.Row
                             key={index}
                             className="hover:bg-gray-200 cursor-pointer"
                           >
-                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">{templateData}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center">{templateDataA}</Table.Cell>
                             <Table.Cell className="text-center text-sm text-gray-900">
                               <input
                                 type="radio"
                                 className="h-[20px] w-[20px] cursor-pointer"
                                 name="selectedTemplate"
-                                onChange={() => handleRadioChange(templateData)}
+                                onChange={() => handleRadioChange(templateDataA)}
                               />
                             </Table.Cell>
                             <Table.Cell className="whitespace-nowrap text-gray-500 text-right "
                               style={{ width: '14px' }}
-                              onClick={() => handleEditTemplate(templateData)}
+                              onClick={() => handleEditTemplate(templateDataA)}
                             >
                               <img src={EditImage} alt="Edit" style={{ height: '40px' }} />
                             </Table.Cell>
@@ -781,24 +803,23 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             type="text"
                             placeholder='Name of your template'
                             className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
-                            value={templateNameInUpdate}
+                            value={templateDetails.TemplateName}
                             readOnly
                           />
                           <input
                             type="text"
-                            // placeholder='Subject of your template'
                             className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
-                            value={templateSubject}
-                            onChange={handleSubjectOfTemplate}
+                            value={templateDetails.SubjectPart}
+                            onChange={handleUpdatedSubjectOfTemplate}
                           />
                           <textarea
                             // placeholder='Type the body of your mail here in HTML format'
                             className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
-                            value={templateContent}
-                            onChange={handleTemplateOnChange}
+                            value={htmlToPlainText(templateDetails.HtmlPart)}
+                            onChange={handleUpdatedTemplateOnChange}
                           />
                         </div>
-                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick() }}>
+                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick(templateDetails) }}>
                           Update
                         </button>
                       </div>
@@ -826,7 +847,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={handleSubjectOfTemplate}
                         />
                         <textarea
-                          placeholder='Type the body of your mail here in HTML format'
+                          placeholder='Type the body of your mail here'
                           className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                           value={templateContent}
                           onChange={handleTemplateOnChange}
@@ -838,7 +859,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
                 )}
-                {viewTemplate && (
+                {/* {viewTemplate && (
                   <div className="popup-overlay">
                     <div className="popup-content">
                       <button className="close-button" onClick={handleClosePopup}>×</button>
@@ -848,7 +869,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
                 {/* <Pagination
                   count={Math.ceil(filteredTemplates.length / itemsPerPage)}
                   page={currentPage}
@@ -1029,7 +1050,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
           </div>
         )} */}
         {filteredLeads.length === 0 ? (
-          <p>Loading...</p>
+          <tr>
+            <td colSpan="2" className="p-4 text-center text-sm text-gray-500">No Leads found</td>
+          </tr>
         ) : (
           <div className="bg-white max-w-full mx-auto rounded-b-md">
             <Table hoverable className="min-w-full">
