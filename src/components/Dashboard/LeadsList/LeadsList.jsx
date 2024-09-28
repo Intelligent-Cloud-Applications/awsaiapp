@@ -250,20 +250,27 @@ const LeadsList = ({ institution: tempInstitution }) => {
   };
 
   const handleSendMail = async () => {
-    const payload = {
-      emailIds: filteredEmails,
-      templateName: selectedTemplate
-    };
 
-    try {
-      const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
-        body: payload
-      });
-      console.log('Response:', response);
-      alert('Email sent successfully!');
-    } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error sending emails. Please try again later.');
+    if (selectedTemplate) {
+
+      const payload = {
+        emailIds: filteredEmails,
+        templateName: selectedTemplate
+      };
+
+      try {
+        const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
+          body: payload
+        });
+        console.log('Response:', response);
+        alert('Email sent successfully!');
+      } catch (error) {
+        console.error('Error sending emails:', error);
+        alert('Error sending emails. Please try again later.');
+      }
+    }
+    else {
+      alert("Please select a tempalte");
     }
   };
 
@@ -284,7 +291,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       alert('Email added successfully!');
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      alert('Error creating tempalte. Please try again later.');
     }
     handleClosePopup();
   };
@@ -295,7 +302,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   }, [institution]);
 
   const handleUpdateClick = async (tempalteDataForUpdate) => {
-    const updateContent = convertTextToHtml(templateDetails.HtmlPart);
+    const updateContent = convertTextToHtml(tempalteDataForUpdate.HtmlPart);
     const dataToUpdate = {
       'TemplateName': tempalteDataForUpdate.TemplateName,
       'SubjectPart': tempalteDataForUpdate.SubjectPart,
@@ -304,14 +311,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
     };
 
     try {
-      const response = await API.post('clients', `/user/update-ses-template/${institution}`, {
+      const response = await API.post('clients', `/user/create-ses-template/${institution}`, {
         body: dataToUpdate
       });
       console.log('Response:', response);
       alert('Email Updated successfully!');
     } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error updating emails. Please try again later.');
+      console.error('Error updataing templates:', error);
+      alert('Error updating tempaltes. Please try again later.');
     }
     handleCloseTemplateUpdate();
   }
