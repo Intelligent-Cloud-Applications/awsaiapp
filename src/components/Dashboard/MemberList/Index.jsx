@@ -53,7 +53,6 @@ const Index = ({ institution: tempInstitution }) => {
         </div>
       </div>
       </div>
-    </div>
   );
 };
 

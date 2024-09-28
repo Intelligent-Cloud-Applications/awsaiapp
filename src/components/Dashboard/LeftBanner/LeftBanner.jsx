@@ -129,6 +129,22 @@ const LeftBanner = ({ displayAfterClick }) => {
                         </span>
                       </Sidebar.Item>
                     </Link>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiCash}
+                        onClick={() => {
+                          setClick(5); // Set click to 1 for "Revenue"
+                          displayAfterClick(5); // Redirect to Revenue
+                        }}
+
+                        className={`custom-sidebar-item ${click === 5 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline font-[Poppins] text-base">
+                          Revenue Report
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
                   </>
                 )}
                 {isSalesUser && (
@@ -192,22 +208,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                 )}
                 {isNotSuperAdmin && (
                   <>
-                    <Link to={`/dashboard`} className="hover:no-underline">
-                      <Sidebar.Item
-                        icon={HiCash}
-                        onClick={() => {
-                          setClick(5); // Set click to 1 for "Revenue"
-                          displayAfterClick(5); // Redirect to Revenue
-                        }}
-
-                        className={`custom-sidebar-item ${click === 5 ? "active bg-white" : ""
-                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                      >
-                        <span className="hidden md:inline font-[Poppins] text-base">
-                          Admin Revenue
-                        </span>
-                      </Sidebar.Item>
-                    </Link>
+                    
                   </>
                 )}
               </Sidebar.ItemGroup>
