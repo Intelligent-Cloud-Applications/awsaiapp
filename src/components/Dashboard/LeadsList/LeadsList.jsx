@@ -53,7 +53,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const newName = `${institution}_${templateName}`;
   const [templateDetails, setTemplateDetails] = useState({});
   const [addNewValue, setAddNewValue] = useState(false);
-  const [viewTemplate, setViewTemplate] = useState(null);
   const [category, setCategory] = useState('Gold');
   const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
@@ -168,7 +167,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
   const handleClosePopup = () => {
     setAddNewValue(false);
-    setViewTemplate(null);
   };
 
   const handleCloseTemplateUpdate = () => {
@@ -210,7 +208,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
     try {
       const response = await API.get('clients', `/user/get-ses-templates/${institution}?action=get&templateName=${template}`);
       setTemplateDetails(response || {});
-      console.log("tempalte Details", templateDetails);
     } catch (error) {
       console.error('Error fetching templates:', error);
       // Handle error appropriately
@@ -233,54 +230,56 @@ const LeadsList = ({ institution: tempInstitution }) => {
     return tempElement.textContent || tempElement.innerText || "";
   };
 
-  const handleUpdatedSubjectOfTemplate = (e) => {
-    setTemplateSubject({
-      ...templateDetails,
-      SubjectPart: e.target.value, // Update the SubjectPart as the user types
-    });
-  };
-
   const convertTextToHtml = (text) => {
     // Replace newlines with <br> tags, and wrap the text in <p> tags
     return text.split('\n').map(line => `<p>${line}</p>`).join('');
-  }
-  
+  };
+
+  const handleUpdatedSubjectOfTemplate = (e) => {
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      SubjectPart: e.target.value, // Update the SubjectPart as the user types
+    }));
+  };
+
   const handleUpdatedTemplateOnChange = (e) => {
-    const plainText = e.target.value;
-  
-    // Convert the plain text into HTML format
-    const htmlText = convertTextToHtml(plainText);
-  
-    // Update the state with HTML content
-    setTemplateContent({
-      ...templateDetails,
-      HtmlPart: htmlText,
-    });
+    setTemplateDetails((prevDetails) => ({
+      ...prevDetails,
+      HtmlPart: e.target.value, // Use the value from the textarea
+    }));
   };
 
   const handleSendMail = async () => {
-    const payload = {
-      emailIds: filteredEmails,
-      templateName: selectedTemplate
-    };
 
-    try {
-      const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
-        body: payload
-      });
-      console.log('Response:', response);
-      alert('Email sent successfully!');
-    } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error sending emails. Please try again later.');
+    if (selectedTemplate) {
+
+      const payload = {
+        emailIds: filteredEmails,
+        templateName: selectedTemplate
+      };
+
+      try {
+        const response = await API.post('clients', `/user/send-emails-to-leads/${institution}`, {
+          body: payload
+        });
+        console.log('Response:', response);
+        alert('Email sent successfully!');
+      } catch (error) {
+        console.error('Error sending emails:', error);
+        alert('Error sending emails. Please try again later.');
+      }
+    }
+    else {
+      alert("Please select a tempalte");
     }
   };
 
   const handleDoneClick = async () => {
+    const htmlContent = convertTextToHtml(templateContent);
     const dataToCreate = {
       'TemplateName': newName,
       'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'HtmlPart': htmlContent,
       'TextPart': ""
     };
 
@@ -292,7 +291,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
       alert('Email added successfully!');
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      alert('Error creating tempalte. Please try again later.');
     }
     handleClosePopup();
   };
@@ -302,23 +301,24 @@ const LeadsList = ({ institution: tempInstitution }) => {
     // eslint-disable-next-line
   }, [institution]);
 
-  const handleUpdateClick = async (name) => {
+  const handleUpdateClick = async (tempalteDataForUpdate) => {
+    const updateContent = convertTextToHtml(tempalteDataForUpdate.HtmlPart);
     const dataToUpdate = {
-      'TemplateName': name,
-      'SubjectPart': templateSubject,
-      'HtmlPart': templateContent,
+      'TemplateName': tempalteDataForUpdate.TemplateName,
+      'SubjectPart': tempalteDataForUpdate.SubjectPart,
+      'HtmlPart': updateContent,
       'TextPart': ""
     };
 
     try {
-      const response = await API.post('clients', `/user/update-ses-template/${institution}`, {
+      const response = await API.post('clients', `/user/create-ses-template/${institution}`, {
         body: dataToUpdate
       });
       console.log('Response:', response);
-      alert('Email added successfully!');
+      alert('Email Updated successfully!');
     } catch (error) {
-      console.error('Error sending emails:', error);
-      alert('Error creating emails. Please try again later.');
+      console.error('Error updataing templates:', error);
+      alert('Error updating tempaltes. Please try again later.');
     }
     handleCloseTemplateUpdate();
   }
@@ -770,7 +770,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             key={index}
                             className="hover:bg-gray-200 cursor-pointer"
                           >
-                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">{templateDataA}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center">{templateDataA}</Table.Cell>
                             <Table.Cell className="text-center text-sm text-gray-900">
                               <input
                                 type="radio"
@@ -810,16 +810,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             type="text"
                             className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
                             value={templateDetails.SubjectPart}
-                            onChange={handleSubjectOfTemplate}
+                            onChange={handleUpdatedSubjectOfTemplate}
                           />
                           <textarea
                             // placeholder='Type the body of your mail here in HTML format'
                             className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                             value={htmlToPlainText(templateDetails.HtmlPart)}
-                            onChange={handleTemplateOnChange}
+                            onChange={handleUpdatedTemplateOnChange}
                           />
                         </div>
-                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick(templateDetails.TemplateName) }}>
+                        <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleUpdateClick(templateDetails) }}>
                           Update
                         </button>
                       </div>
@@ -844,13 +844,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           placeholder='Subject of your template'
                           className='h-[2rem] w-[15rem] p-[2%] border border-[#2e2e2e]'
                           value={templateSubject}
-                          onChange={handleUpdatedSubjectOfTemplate}
+                          onChange={handleSubjectOfTemplate}
                         />
                         <textarea
-                          placeholder='Type the body of your mail here in HTML format'
+                          placeholder='Type the body of your mail here'
                           className='h-[20rem] w-[25rem] p-[2%] border border-[#2e2e2e]'
                           value={templateContent}
-                          onChange={handleUpdatedTemplateOnChange}
+                          onChange={handleTemplateOnChange}
                         />
                       </div>
                       <button className="bg-[#3193b6] text-white py-3 px-4 flex items-center" onClick={() => { handleDoneClick() }}>
@@ -859,7 +859,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
                 )}
-                {viewTemplate && (
+                {/* {viewTemplate && (
                   <div className="popup-overlay">
                     <div className="popup-content">
                       <button className="close-button" onClick={handleClosePopup}>×</button>
@@ -869,7 +869,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
                 {/* <Pagination
                   count={Math.ceil(filteredTemplates.length / itemsPerPage)}
                   page={currentPage}
