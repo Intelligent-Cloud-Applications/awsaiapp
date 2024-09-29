@@ -21,6 +21,7 @@ const Query = ({activeComponent}) => {
     fullName: "",
     companyName: "",
     email: "",
+    phoneNumber: "",
     address: "",
     projectDetails: "",
   });
@@ -49,6 +50,7 @@ const Query = ({activeComponent}) => {
         formData.fullName === "" ||
         formData.companyName === "" ||
         formData.email === "" ||
+        formData.phoneNumber === "" ||
         formData.address === "" ||
         formData.projectDetails === ""
       ) {
@@ -79,6 +81,7 @@ const Query = ({activeComponent}) => {
           fullName: formData.fullName,
           companyName: formData.companyName,
           emailId: formData.email,
+          phoneNumber: formData.phoneNumber,
           address: formData.address,
           projectDetails: formData.projectDetails,
         },
@@ -92,6 +95,7 @@ const Query = ({activeComponent}) => {
         fullName: "",
         companyName: "",
         email: "",
+        phoneNumber: "",
         address: "",
         projectDetails: "",
       });
@@ -189,6 +193,23 @@ const Query = ({activeComponent}) => {
                   id="email"
                   name="email"
                   value={formData.email}
+                  onChange={handleChange}
+                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phoneNumber" 
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   onChange={handleChange}
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                   required
