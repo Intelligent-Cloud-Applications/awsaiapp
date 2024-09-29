@@ -48,7 +48,7 @@ const Query = ({ activeComponent }) => {
       const token = await recaptchaRef.current.executeAsync();
 
       if (!token) {
-        toast.error("Please fill out the CAPTCHA.");
+        alert("Please fill out the CAPTCHA.");
         return;
       }
 
