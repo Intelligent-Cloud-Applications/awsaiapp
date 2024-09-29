@@ -1,12 +1,15 @@
 import React from "react";
 import Navbar from "../components/Home/Navbar";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Pic from "../utils/contactusPic.png";
 import { motion } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
 import { API } from "aws-amplify";
+import Context from "../context/Context";
 
-const Query = ({activeComponent}) => {
+
+const Query = ({ activeComponent }) => {
   // //Get the action url by inspecting the form
   // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
 
@@ -17,6 +20,8 @@ const Query = ({activeComponent}) => {
   // const FORMS_ADDRESS = "entry.727108387";
   // const FORMS_PROJECT_DETAILS = "entry.218886769";
 
+  const util = useContext(Context).util;
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
@@ -39,10 +44,11 @@ const Query = ({activeComponent}) => {
     e.preventDefault();
 
     try {
+      util.setLoader(true);
       const token = await recaptchaRef.current.executeAsync();
 
       if (!token) {
-        alert("Please fill out the CAPTCHA.");
+        toast.error("Please fill out the CAPTCHA.");
         return;
       }
 
@@ -55,6 +61,7 @@ const Query = ({activeComponent}) => {
         formData.projectDetails === ""
       ) {
         alert("Please fill out all form fields.");
+        util.setLoader(false);
         return;
       }
 
@@ -91,6 +98,7 @@ const Query = ({activeComponent}) => {
 
       alert("Submitted Successfully");
 
+
       setFormData({
         fullName: "",
         companyName: "",
@@ -100,16 +108,19 @@ const Query = ({activeComponent}) => {
         projectDetails: "",
       });
 
-      console.log(formData);
+      navigate('/');
       console.log("reCAPTCHA Token:", token);
     } catch (error) {
+      alert("Error sending message: " + error.message);
       console.error("reCAPTCHA error:", error);
+    } finally {
+      util.setLoader(false);
     }
   };
 
   return (
     <>
-      {activeComponent !== 'contact' ? <Navbar />:""}
+      {activeComponent !== 'contact' ? <Navbar /> : ""}
       {/* new contact us page */}
       <div
         className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
@@ -200,7 +211,7 @@ const Query = ({activeComponent}) => {
               </div>
               <div>
                 <label
-                  htmlFor="phoneNumber" 
+                  htmlFor="phoneNumber"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Phone Number
