@@ -71,7 +71,7 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData || []; // Ensure that it returns an array
+      return clientsData?.filter(([key,client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
