@@ -109,7 +109,7 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
   
 
   return (
-    <div className="w-[100%] p-0 m-0" style={{ overflow: 'auto', maxHeight: '705px' }}>
+    <div className="w-[100%] p-0 m-0" style={{ overflow: 'auto', maxHeight: '800px' }}>
       <h1 className="font-medium text-7xl">SERVICE HIGHLIGHT</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
