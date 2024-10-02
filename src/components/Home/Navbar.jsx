@@ -80,19 +80,19 @@ const Navbar = () => {
                   UserCtx.userData.institutionName = "awsaiapp";
                     Navigate("/dashboard");
                 }}
-                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 max800:mb-5"
               >
                 {UserCtx.userData.userName}
               </button>
             ) : (
               <div className="flex flex-row">
                 <button
-                  className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8 hover:scale-105 duration-200 hover:shadow-lg focus:bg-black max800:mb-5"
+                  className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-8  max800:mb-5"
                   onClick={() => {
                     Navigate("/auth");
                   }}
                 >
-                 Login/Signup
+                 Login
                 </button>
               </div>
             )}

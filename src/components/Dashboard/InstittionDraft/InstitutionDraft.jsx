@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Table, Pagination } from "flowbite-react";
 import "../Panel/Panel.css";
 import { API } from "aws-amplify";
+import { MdDeleteForever } from 'react-icons/md';
 const InstitutionDraft = () => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,6 +16,9 @@ const InstitutionDraft = () => {
   const Ctx = useContext(Context);
   const [clients, setClients] = useState([]);
   const[LoaderInitialized,setLoaderInitialized]=useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [institutionIdToDelete, setInstitutionIdToDelete] = useState(null);
+  
   const fetchClients = useCallback(async () => {
     try {
       if(!LoaderInitialized){
@@ -78,6 +82,37 @@ const InstitutionDraft = () => {
 
     return filtered;
   }, [searchQuery, clientsData]);
+  const handleDeleteClick = (institutionId) => {
+    setInstitutionIdToDelete(institutionId);
+    setShowConfirm(true);
+};
+
+const handleConfirmDelete = async () => {
+    if (!institutionIdToDelete) return;
+
+    try {
+        util.setLoader(true);
+        setShowConfirm(false);
+        await API.del("clients", `/user/development-form/delete-all/${institutionIdToDelete}`);
+        alert('All data deleted successfully');
+        util.setLoader(false);
+        await fetchClients(); 
+        navigate('/dashboard');
+    } catch (error) {
+        alert('No matching data found', error);
+        util.setLoader(false);
+    } finally {
+        setShowConfirm(false);
+        await fetchClients(); 
+        setInstitutionIdToDelete(null);
+    }
+};
+
+const handleCancelDelete = () => {
+    setShowConfirm(false);
+    setInstitutionIdToDelete(null);
+};
+
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
@@ -92,7 +127,11 @@ const InstitutionDraft = () => {
   //   }
   // };
 
-  const handleRowClick = (institutionId) => {
+  const handleRowClick = (institutionId, event) => {
+   
+    if (event.target.closest('.delete-button')) {
+        return; // Prevent navigation
+    }
     navigate(`/full?institutionName=${institutionId}`);
   };
   const showCreatedBy = userData.userType === "admin" && userData.role === "owner";
@@ -155,6 +194,11 @@ const InstitutionDraft = () => {
 
         {/* Table */}
         <div className=" w-full mb-4 max-h-[400px] overflow-y-auto">
+        {clientsToDisplay.length === 0 ? (
+            <div className="text-center text-gray-600 py-4 font-bold">
+              No drafts found. Please add a new institution to begin.
+            </div>
+          ) : (
           <Table className="w-full text-sm text-left text-gray-500">
             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
               <Table.HeadCell>Index</Table.HeadCell>
@@ -163,15 +207,17 @@ const InstitutionDraft = () => {
               {showCreatedBy && <Table.HeadCell>Created By</Table.HeadCell>}
               <Table.HeadCell>Updated Date</Table.HeadCell> 
               <Table.HeadCell>Action</Table.HeadCell>
+              <Table.HeadCell></Table.HeadCell>
             </Table.Head>
 
             <Table.Body className="bg-white">
               {clientsToDisplay.map(([key, client], index) => (
-                <Table.Row
-                  key={client.institutionid}
-                  className="border-b cursor-pointer"
-                  onClick={() => handleRowClick(client.institutionid)}
-                >
+              <Table.Row
+              key={client.institutionid}
+              className="border-b cursor-pointer"
+              onClick={(e) => handleRowClick(client.institutionid, e)} // Pass the event
+          >
+          
                  
                   <Table.Cell>{startIndex + index + 1}</Table.Cell>
 
@@ -213,11 +259,25 @@ const InstitutionDraft = () => {
                     >
                     Continue Draft
                     </Link>
+                    
+                  </Table.Cell>
+                  <Table.Cell>
+                  <Table.Cell>
+    <MdDeleteForever
+        onClick={(e) => {
+            e.stopPropagation(); // Prevent row click event
+            handleDeleteClick(client.institutionid);
+        }}
+        className="text-red-500 cursor-pointer delete-button"
+    />
+</Table.Cell>
+
                   </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
           </Table>
+           )}
         </div>
         <div className="py-2 flex justify-between items-center px-4 w-full">
 
@@ -240,6 +300,30 @@ const InstitutionDraft = () => {
 </div>
 
       </div>
+      {showConfirm && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">Are you sure you want to delete this institution? </p>
+            <div className="flex justify-center gap-10 mt-6">
+                <button 
+                    onClick={handleConfirmDelete} 
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mr-2 transition duration-200"
+                >
+                    Confirm
+                </button>
+                <button 
+                    onClick={handleCancelDelete} 
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded transition duration-200"
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+)}
+
+
     </div>
   );
 };

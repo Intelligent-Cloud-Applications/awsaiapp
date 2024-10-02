@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import upload from "../../../utils/png/upload.png";
+import React from "react";
 import "../../../pages/Template.css";
+import { Label, TextInput, FileInput } from 'flowbite-react';
 
 function Company({
   clients,
   companyName,
   setCompanyName,
+  institutionId,
+  setinstitutionId,
   PrimaryColor,
   setPrimaryColor,
   SecondaryColor,
@@ -22,15 +24,10 @@ function Company({
   setCSVFile,
   setInstitutionFormat,
   institutionFormat,
-  setInstitutionType,
-  institutionType
+
 }) {
-  const [isCompanyInputVisible, setCompanyInputVisible] = useState(false);
-  const [companyLineColor, setCompanyLineColor] = useState("#939393");
-  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
-  const handleInstitutionTypeChange = (e) => {
-    setInstitutionType(e.target.value);
-  };
+
+
 
   const handleInstitutionFormatChange = (e) => {
     setInstitutionFormat(e.target.value);
@@ -38,11 +35,14 @@ function Company({
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
   };
-
-  const toggleCompanyInputVisibility = () => {
-    setCompanyInputVisible(true);
-    setCompanyLineColor("#000000"); // Change company line color to black on click
+  const handleinstitutionIdInputChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    const validValue = value.replace(/[^a-z0-9]/g, '');
+    setinstitutionId(validValue);
   };
+
+
+
 
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
@@ -59,7 +59,6 @@ function Company({
   const handleColorChange4 = (e) => {
     setLightestPrimaryColor(e.target.value);
   };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -68,25 +67,20 @@ function Company({
         alert("File size exceeds 4MB. Please choose a smaller file.");
         return;
       }
+
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
+      if (file instanceof File && validTypes.includes(file.type)) {
+        setLogo(file);
+        setSelectedFile(URL.createObjectURL(file));
+      } else {
+        alert("Invalid file type. Please select a JPG, JPEG, PNG, or SVG file.");
+        setLogo(null);
+        setSelectedFile(null);
+        event.target.value = "";
+      }
     }
-    if (file instanceof File && (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/"))) {
-      setLogo(file);
-      setSelectedFile(URL.createObjectURL(file));
-    }
   };
 
-  const handleUploadImageClick = () => {
-    const element = document.getElementById("fileInput");
-    element?.click();
-  };
-
-  const handleUploadImageMouseEnter = () => {
-    setFileOptionVisible(true);
-  };
-
-  const handleUploadImageMouseLeave = () => {
-    setFileOptionVisible(false);
-  };
 
   // const handleCSVFlie = (e) => {
   //   const file = e.target.files[0];
@@ -103,34 +97,60 @@ function Company({
   // };
 
   return (
-    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '450px' }}>
+    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '790px' }}>
       <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
 
-      <div className="relative mt-6">
-        <h5
-          className="w-[28rem] text-[#939393] relative cursor-pointer py-1"
-          onClick={toggleCompanyInputVisibility}
-        >
-          {isCompanyInputVisible ? (
-            <input
-              type="text"
-              value={companyName}
-              onChange={handleCompanyInputChange}
-              className="w-[28rem] text-black border-none outline-none bg-transparent"
-              placeholder="Enter Institution Name"
-              autoFocus
-            />
-          ) : (
-            <span>{companyName || "Enter Institution Name"}</span>
-          )}
-        </h5>
-        <div
-          className="absolute left-0 right-0 bottom-0 h-[1.5px]"
-          style={{ backgroundColor: companyLineColor }}
-        ></div>
+      <div className="relative mt-6 px-[1px] mr-10">
+        <div className="mb-2 block">
+          <Label
+            htmlFor="institutionid"
+            color="gray"
+            value="Institution ID"
+          />
+          <span className="text-red-500 ml-1">*</span>
+        </div>
+        <TextInput
+          id="institutionid"
+          placeholder="Enter institution ID"
+          required
+          value={institutionId}
+          sizing="sm"
+          helperText="This input will only accept lowercase letters and numbers. No spaces or uppercase letters will be allowed.it wil not chnageble later"
+          onChange={handleinstitutionIdInputChange}
+          style={{
+            borderColor: "#D1D5DB",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "8px",
+          }}
+        />
+
+      </div>
+
+      <div className="relative mt-2 px-[1px] mr-10">
+        <div className="mb-2 block">
+          <Label
+            htmlFor="companyName"
+            color="gray"
+            value="Company Name"
+          />
+          <span className="text-red-500 ml-1">*</span>
+        </div>
+        <TextInput
+          id="companyName"
+          placeholder="Enter company Name"
+          required
+          value={companyName}
+          sizing="sm"
+          onChange={handleCompanyInputChange}
+          style={{
+            borderColor: "#D1D5DB",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "8px",
+          }}
+        />
       </div>
 
       <div className="mt-2">
@@ -163,7 +183,7 @@ function Company({
           />
         </div>
       </div>
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <label className="block text-[#939393] mb-2">Select Institution Type</label>
         <select
           value={institutionType}
@@ -173,7 +193,7 @@ function Company({
           <option value="DanceStudio">Dance Studio</option>
           <option value="Dentist">Dentist</option>
         </select>
-      </div>
+      </div> */}
 
       {/* Dropdown for Institution Format */}
       <div className="mt-4">
@@ -188,59 +208,26 @@ function Company({
           <option value="Hybrid_Classes">Hybrid_Classes</option>
         </select>
       </div>
-      <div className="border border-black w-[15rem] h-[12rem] mt-2 relative boxtoselect">
-        {!selectedFile ? (
-          <label
+
+      <div className="max-w-md relative">
+        <div className="mb-2 block">
+          <Label
             htmlFor="fileInput"
-            className="cursor-pointer"
-            onMouseEnter={handleUploadImageMouseEnter}
-            onMouseLeave={handleUploadImageMouseLeave}
-          >
-            <img
-              src={upload}
-              alt="Upload"
-              className="ml-[3.5rem] mt-10 w-[7rem]"
-              onClick={handleUploadImageClick}
-            />
-            {isFileOptionVisible && (
-              <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
-                <input
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <h4 className="text-white">Choose your file</h4>
-              </div>
-            )}
-            <h4 className="text-[#939393] ml-[60px] text-[15px]">Upload your logo</h4>
-          </label>
-        ) : (
-          <label
-            htmlFor="fileInput"
-            className="cursor-pointer"
-            onMouseEnter={handleUploadImageMouseEnter}
-            onMouseLeave={handleUploadImageMouseLeave}
-          >
-            <img
-              src={selectedFile}
-              alt="Uploaded"
-              className="absolute top-0 left-0 w-[100%] h-[100%] cursor-pointer"
-              onClick={handleUploadImageClick}
-            />
-            {isFileOptionVisible && (
-              <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
-                <input
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <h4 className="text-white">Choose your file</h4>
-              </div>
-            )}
-          </label>
-        )}
+            value="Logo Upload File"
+          />
+          <span className="text-red-500 ml-1">*</span>
+        </div>
+        <FileInput
+          id="fileInput"
+          onChange={handleFileChange}
+          helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
+          style={{
+            borderColor: "#D1D5DB",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "8px",
+          }}
+        />
+
       </div>
       {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>

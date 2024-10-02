@@ -34,7 +34,7 @@ const OtpForm = ({ signinResponse, setSigninResponse }) => {
         setUserData(userdata);
         setIsAuth(true);
         util.setLoader(false);
-        alert('Logged In');
+        toast.info('Logged In');
         onAuthLoad(true, InstitutionId);
 //        dispatch(fetchUserData());
         navigate(redirect ? `/${redirect}` : '/dashboard');

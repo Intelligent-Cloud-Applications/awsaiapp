@@ -53,6 +53,15 @@ const New_Full = () => {
           const defaultInstitutionType = "DanceStudio";
           const defaultInstitutionFormat = "Online_Classes";
           const institutionType = templateResponse.institutionType || defaultInstitutionType;
+          const defaultServices = Array.from({ length: 4 }, () => ({ title: "", items: [""] }));
+          const defaultFAQ = [{ title: "", content: "" }];
+          const defaultAboutUs = [{ heading: "", content: "" }];
+const defaultPrivacyPolicy = [{ heading: "", content: "" }];
+const defaultRefund = [{ heading: "", content: "" }];
+const defaultTermsData = [{ title: "", content: "" }];
+          const services = templateResponse.Services && templateResponse.Services.length > 0
+            ? templateResponse.Services
+            : defaultServices;  
           const institutionFormat = templateResponse.institutionFormat || defaultInstitutionFormat;
           if (updatedPhoneNumber) {
             updatedPhoneNumber = updatedPhoneNumber.replace(/\D/g, '');
@@ -83,6 +92,13 @@ const New_Full = () => {
             Query_PhoneNumber: updatedPhoneNumber,
             countryCode: updatedCountryCode,
     institutionType,  
+    Services: services,
+    FAQ: templateResponse.FAQ && templateResponse.FAQ.length > 0 ? templateResponse.FAQ : defaultFAQ,
+    ClassTypes: templateResponse.ClassTypes || [""],
+    AboutUs: templateResponse.AboutUs && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
+  PrivacyPolicy: templateResponse.PrivacyPolicy && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
+  Refund:templateResponse.Refund && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
+  TermsData: templateResponse.TermsData && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
     institutionFormat  
           };
 
@@ -98,13 +114,25 @@ const New_Full = () => {
           amount: product.amount / 100, // Convert amount to rupee
         }));
 
-        await setSubscriptionDetails(convertedProductResponse || null);
+        await setSubscriptionDetails(convertedProductResponse.length > 0 ? convertedProductResponse : [
+          { heading: "",
+            amount: "",
+            india: true,
+            subscriptionType: "year",
+            durationText: "yearly",
+            country: "India",
+            currency: "INR",
+            duration: 365 * 24 * 60 * 60 * 1000,
+            provides: [""]}
+        ]);
 
         const instructorResponse = await API.get(
           "clients",
           `/user/development-form/get-instructor/${institutionNames}`
         );
-        await setInstructorDetails(instructorResponse || null);
+        await setInstructorDetails(instructorResponse.length > 0 ? instructorResponse : [
+          { name: "", position: "", emailId: "", image: "" }
+        ]);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
@@ -455,7 +483,7 @@ const New_Full = () => {
         amount: "",
         india: true,
         subscriptionType: "year",
-        durationText: "Yearly",
+        durationText: "yearly",
         country: "India",
         currency: "INR",
         duration: 365 * 24 * 60 * 60 * 1000,
@@ -742,6 +770,7 @@ const New_Full = () => {
         name: "LightestPrimaryColor",
       },
       { value: templateDetails.logoUrl, name: "logoUrl" },
+      { value: templateDetails.companyName, name: "companyName" },
       { value: templateDetails.videoUrl, name: "videoUrl" },
       { value: templateDetails.TagLine, name: "TagLine" },
       { value: templateDetails.Query_Address, name: "Query_Address" },
@@ -1364,7 +1393,7 @@ const New_Full = () => {
         API.put("clients", "/user/development-form/company", {
           body: {
             institutionid: institutionNames,
-            companyName: institutionNames,
+            companyName: templateDetails.companyName,
             institutionType:templateDetails.institutionType,
             institutionFormat:templateDetails.institutionFormat,
             PrimaryColor: templateDetails.PrimaryColor,
@@ -1386,8 +1415,8 @@ const New_Full = () => {
           body: {
             institutionid: institutionNames,
             Services: templateDetails.Services,
-            ServicesBg: templateDetails.ServicesBg,
-            ServicesPortrait: templateDetails.ServicesPortrait,
+            ServicesBg: templateDetails.ServicesBg || null,
+            ServicesPortrait: templateDetails.ServicesPortrait || null,
             ClassTypes: templateDetails.ClassTypes,
           },
         }),
@@ -1396,7 +1425,7 @@ const New_Full = () => {
           body: {
             institutionid: institutionNames,
             Testimonial: templateDetails.Testimonial,
-            TestimonialBg: templateDetails.TestimonialBg,
+            TestimonialBg: templateDetails.TestimonialBg || null,
           },
         }),
         API.put("clients", "/user/development-form/faq", {
@@ -1411,7 +1440,7 @@ const New_Full = () => {
             Refund: templateDetails.Refund,
             TermsData: templateDetails.TermsData,
             AboutUs: templateDetails.AboutUs,
-            AboutUsBg: templateDetails.AboutUsBg,
+            AboutUsBg: templateDetails.AboutUsBg || null,
             PrivacyPolicy: templateDetails.PrivacyPolicy,
           },
         }),
@@ -1429,8 +1458,8 @@ const New_Full = () => {
             country: templateDetails.country,
             Footer_Link_1: templateDetails.Footer_Link_1,
             Footer_Link_2: templateDetails.Footer_Link_2,
-            InstructorBg: templateDetails.InstructorBg,
-            SubscriptionBg: templateDetails.SubscriptionBg,
+            InstructorBg: templateDetails.InstructorBg || null,
+            SubscriptionBg: templateDetails.SubscriptionBg || null,
           },
         }),
       ]);
@@ -2115,29 +2144,37 @@ const New_Full = () => {
                 <div className="flex flex-col gap-4 ">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                     
-                  <div className="mt-4">
-
-  <label className="block text-gray-700 mb-2">Select Institution Type</label>
-  <select
-    value={templateDetails.institutionType}
-    onChange={(event) =>
-      handleChange(event, "institutionType")
-    }
-    className="w-full max-w-md rounded-md p-2"
-     style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-  >
-    <option value="DanceStudio">Dance Studio</option>
-    <option value="Dentist">Dentist</option>
+                  <div className="relative mt-4 mr-16">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="companyName"
+                          color="gray"
+                          value="companyName"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="companyName"
+                        placeholder="companyName"
+                        required
+                        value={templateDetails.companyName}
+                        helperText="It’s the companyName"
+                        sizing="sm"
+                        onChange={(event) => handleChange(event, "companyName")}
+                        ref={refs.companyName}
+                        color={errors.companyName ? "failure" : "gray"}
+                        style={{
+                          border: errors.companyName
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
  
-  </select>
-</div>
 
 <div className="mt-4">
-  <label className="block text-gray-700 mb-2">Select Institution Format</label>
+  <label className="block text-gray-700 mb-2 font-bold">Select Institution Format</label>
   <select
     value={templateDetails.institutionFormat}
     onChange={(event) =>
