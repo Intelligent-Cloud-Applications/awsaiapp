@@ -6,28 +6,22 @@ import ContextProvider from "./context/ContextProvider";
 import "./index.css";
 import App from "./App";
 
-const process = {
-  env: {
-    STAGE: "DEV",
-  },
-};
-
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
     region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1": "us-east-2",
     userPoolId:
       process.env.REACT_APP_STAGE === "PROD"
-        ? "us-east-1_a3Fk5S3hh"
-        : "us-east-2_L3E5BSjIf",
+        ? process.env.REACT_APP_PROD_USER_POOL_ID
+        : process.env.REACT_APP_DEV_USER_POOL_ID,
     identityPoolId:
       process.env.REACT_APP_STAGE === "PROD"
-        ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
-        : "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
+        ? process.env.REACT_APP_PROD_IDENTITY_POOL_ID
+        : process.env.REACT_APP_DEV_IDENTITY_POOL_ID,
     userPoolWebClientId:
       process.env.REACT_APP_STAGE === "PROD"
-        ? "jevucp6v2ehehqerq0rlgn4d8"
-        : "5pqia04a65b3ef6fbmpoccj4vl",
+        ? process.env.REACT_APP_PROD_CLIENT_ID
+        : process.env.REACT_APP_DEV_CLIENT_ID,
     oauth: {
       responseType: "token",
     },
@@ -37,9 +31,9 @@ Amplify.configure({
     bucket: "institution-utils",
     identityPoolId:
       process.env.STAGE === "PROD"
-        ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
-        : "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
-    additionalIdentityPoolId: "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d"
+        ? process.env.REACT_APP_PROD_IDENTITY_POOL_ID
+        : process.env.REACT_APP_DEV_IDENTITY_POOL_ID,
+    additionalIdentityPoolId: process.env.REACT_APP_DEV_IDENTITY_POOL_ID
   },
   API: {
     endpoints: [
