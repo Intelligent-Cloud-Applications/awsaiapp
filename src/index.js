@@ -12,13 +12,6 @@ const process = {
   },
 };
 
-REACT_APP_PROD_USER_POOL_ID = us-east-1_a3Fk5S3hh
-REACT_APP_DEV_USER_POOL_ID = us-east-2_L3E5BSjIf
-REACT_APP_PROD_IDENTITY_POOL_ID = us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6
-REACT_APP_DEV_IDENTITY_POOL_ID = us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d
-REACT_APP_PROD_CLIENT_ID = jevucp6v2ehehqerq0rlgn4d8
-REACT_APP_DEV_CLIENT_ID = 5pqia04a65b3ef6fbmpoccj4vl
-
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
