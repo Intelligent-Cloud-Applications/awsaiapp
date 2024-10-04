@@ -16,6 +16,7 @@ import Country from "../components/Auth/Country";
 const New_Full = () => {
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const navigate = useNavigate();
+  const UserCtx = useContext(Context)
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const institutionNames = searchParams.get("institutionName");
@@ -1468,7 +1469,22 @@ const defaultTermsData = [{ title: "", content: "" }];
       setTimeout(() => {
         util.setLoader(false);
       }, 0);
-      navigate("/dashboard");
+      if (templateDetails?.payment === true) {
+       
+        navigate("/dashboard");
+      } else {
+       
+        const baseUrl =
+        process.env.REACT_APP_STAGE === 'PROD'
+          ? 'http://happyprancer.com'
+          : 'http://beta.happyprancer.com';
+  
+        
+        const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${templateDetails.institutionId}`;
+  
+        
+        window.open(url, "_blank");
+      }
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
