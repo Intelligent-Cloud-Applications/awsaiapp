@@ -99,6 +99,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "css-loader": "^7.1.2",
     "postcss-loader": "^8.1.1",
-    "source-map-loader": "^5.0.0"
+    "source-map-loader": "^5.0.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
