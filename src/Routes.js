@@ -3,7 +3,7 @@ import { Route, Routes,useNavigate, Navigate,useLocation } from "react-router-do
 import Home from "./pages/Home";
 // import Login from "./pages/Login";
 import Logout from "./pages/Auth/Logout";
-import Auth from "./pages/Auth";
+import Auth from "./pages/Auth/index.jsx";
 import DashBoard from "./pages/DashBoard";
 import MemberList from "./components/Dashboard/MemberList/MembersList";
 import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
