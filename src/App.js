@@ -10,7 +10,7 @@ function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
   const { templateDetails} = useContext(Context);
-  const setUserDataRef = useRef(UserCtx.current.setUserData);
+  // const setUserDataRef = useRef(UserCtx.current.setUserData);
 
 
 
@@ -23,16 +23,16 @@ function App() {
   // const institutionFromParams = new URLSearchParams(location.search).get("institution");
   // const institutionFromLocalStorage = localStorage.getItem('institution');
   // const institution = institutionFromParams || institutionFromLocalStorage;
-  console.log(UserCtx)
+  // console.log(UserCtx)
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfo = await API.get("clients", '/user/check-user-location');
-      setUserDataRef.current((p) => ({ ...p, ...userInfo }));
-    };
+  // useEffect(() => {
+  //   const fetchUserInfo = async () => {
+  //     const userInfo = await API.get("clients", '/user/check-user-location');
+  //     setUserDataRef.current((p) => ({ ...p, ...userInfo }));
+  //   };
 
-    fetchUserInfo();
-  }, []);
+  //   fetchUserInfo();
+  // }, []);
 
   useEffect(() => {
     const check = async () => {
