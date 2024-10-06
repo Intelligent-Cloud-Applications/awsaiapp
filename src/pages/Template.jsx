@@ -1206,6 +1206,7 @@ const Template = () => {
             nextSection={handleNextSection}
             prevSection={handlePrevSectionDraft}
             showModal={() => setShowModal(true)}
+            institutionId={institutionId}
           />
         </div>
         
