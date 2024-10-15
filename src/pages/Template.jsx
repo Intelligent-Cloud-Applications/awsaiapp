@@ -1092,13 +1092,13 @@ const Template = () => {
   };
   //  console.log("Logo in Template:", logo);
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
           <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
         </div>
-        <div className=" w-[33%] pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
+        <div className=" w-[33%] h-full pt-[6rem] pb-[10rem] no-scrollbar max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}

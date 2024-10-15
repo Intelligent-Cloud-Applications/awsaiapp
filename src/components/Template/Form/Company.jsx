@@ -97,7 +97,7 @@ function Company({
   // };
 
   return (
-    <div className="mx-auto max-w-[800px] company" style={{ overflowY: 'auto', maxHeight: '500px' }}>
+    <div className="mx-auto max-w-[800px] company max-h-screen overflow-y-auto">
       <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
