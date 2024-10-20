@@ -149,36 +149,6 @@ const Panel = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const showDetailForm = (institution) => {
-  //   const userDetail = clientsData.find(
-  //     ([key, client]) => client.institution === institution
-  //   );
-  //   setSelectedUser(userDetail);
-  //   setName(userDetail[1].institution);
-  //   setEmail(userDetail[1].emailId);
-  //   setCountry(userDetail[1].country);
-  //   setPhoneNumber(userDetail[1].phoneNumber);
-  //   setTotalLeads(userDetail[1].recentMonthLeads);
-  //   setTotalAttendance(userDetail[1].recentMonthAttendance);
-  //   setTotalIncome(userDetail[1].recentMonthIncome);
-  //   setMemberCount(userDetail[1].recentMonthMembers);
-  //   setStatus(userDetail[1].status);
-  //   setCountry(userDetail[1].country);
-  //   setJoiningDate(userDetail[1].JoiningDate);
-  //   setShowDetails(true);
-  // };
-
-  // const handleCheckboxChange = (institution) => {
-  //   if (selectedRow.includes(institution)) {
-  //     setSelectedRow(selectedRow.filter((id) => id !== institution));
-  //   } else {
-  //     setSelectedRow([...selectedRow, institution]);
-  //   }
-  // };
-
-  // const isRowSelected = (institution) => {
-  //   return selectedRow.includes(institution);
-  // };
   const useDataForSales = Ctx.saleData || [];
 
   const getUsernameByCognitoId = (cognitoId) => {
@@ -338,19 +308,6 @@ const Panel = () => {
     setStatus("");
   };
 
-  // const showUpdateForm = (institution) => {
-  //   const userToUpdate = clientsData.find(
-  //     ([key, client]) => client.institution === institution
-  //   );
-  //   setSelectedUser(userToUpdate);
-  //   setName(userToUpdate[1].institution);
-  //   setEmail(userToUpdate[1].emailId);
-  //   setPhoneNumber(userToUpdate[1].phoneNumber);
-  //   setMemberCount(userToUpdate[1].memberCount);
-  //   setStatus(userToUpdate[1].status);
-  //   setCountry(userToUpdate[1].country);
-  //   setIsUpdateFormVisible(true);
-  // };
   const getBadgeProps = (web, payment, delivered) => {
     let text, color;
 
@@ -465,7 +422,7 @@ const Panel = () => {
                 to={
                   instituteType !== "" && instituteType === "Dance Studio"
                     ? "/template"
-                    : "#"
+                    : "/template2"
                 }
                 onClick={(e) => {
                   if (instituteType === "") {

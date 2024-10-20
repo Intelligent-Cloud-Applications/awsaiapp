@@ -47,7 +47,7 @@ Amplify.configure({
         name: "clients",
         endpoint:
           process.env.STAGE === "PROD"
-            ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
+            ? "https://lo0fd7fboa.execute-api.us-east-1.amazonaws.com/prod"
             : "https://gn41h453j1.execute-api.us-east-2.amazonaws.com/dev",
         region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
       },

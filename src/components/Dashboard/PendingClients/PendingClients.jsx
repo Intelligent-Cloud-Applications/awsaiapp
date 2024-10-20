@@ -118,20 +118,7 @@ const PendingClients = (props) => {
 
   const filteredClients = filterClients();
   console.log("Type = ", typeof filteredClients);
-
-  // async function updateDelivery(paymentId, isDelivered, cognitoId) {
-  //   return await API.put("clients", "/admin/update-delivery", {
-  //     body: {
-  //       paymentId,
-  //       isDelivered,
-  //       cognitoId,
-  //     },
-  //   });
-  // }
   const selectedRowCount = selectedRow.length;
-
- 
-
 
   return (
     <div className="w-[85vw] flex flex-col items-center pt-6 gap-10 mx-[4rem] max1050:mr-[8rem]">
