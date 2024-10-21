@@ -97,12 +97,12 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
   };
 
   return (
-    <div className="mx-auto max-w-[900px]" style={{ overflowY: 'auto', maxHeight: '490px' }}>
-      <h1 className="font-medium text-7xl">TESTIMONIALS SECTION</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+    <div className="mx-auto h-[74vh] w-full" style={{ overflowY: 'auto'}}>
+      <h1 className="font-medium text-7xl text-center">TESTIMONIALS SECTION</h1>
+      {/* <h5 className="text-center text-[#cc3f3f] text-[13px]">
         ** The testimonial page shown is just an example how your given data will look like for the testimonials it will not change on giving your input.**
-      </h5>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+      </h5> */}
+      <h5 className="text-center text-[#939393]">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
       <div className="relative flex items-center mt-4">
@@ -118,7 +118,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
         />
         <label
           htmlFor="TestimonialBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className=" w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',
@@ -127,7 +127,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[14px] ${TestimonialBg ? 'hidden' : 'block'
+            className={`block text-[#000000] font-inter text-[22px] ${TestimonialBg ? 'hidden' : 'block'
               }`}
           >
             Choose File
@@ -166,10 +166,10 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
                 <label
                   htmlFor={`testimonialImgInput${index}`}
                   onClick={() => toggleActiveTestimonial(index)}
-                  className={`w-[150px] h-[25px] border  border-[#3f3e3e] flex items-center justify-center cursor-pointer relative`}
+                  className={`w-[30vh] h-[25px] border  border-[#3f3e3e] flex items-center justify-center cursor-pointer relative`}
                   style={{ borderColor: 'cement', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#D9D9D9' }}
                 >
-                  <span className={`block text-[#000000] font-inter text-[14px] ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
+                  <span className={`block text-[#000000] font-inter text-[22px] ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
                     Choose File
                   </span>
                   <div className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${testimonial.uploadedFile ? 'block' : 'hidden'}`}>
@@ -195,7 +195,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
                   value={testimonial.name}
                   onChange={(e) => handleTestimonialChange(index, 'name', e.target.value)}
                   placeholder="Name"
-                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2"
                   onFocus={() => toggleActiveTestimonial(index)}
                   onBlur={() => toggleActiveTestimonial(null)}
                   maxLength="20"
@@ -213,7 +213,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
                   value={testimonial.feedback}
                   onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
                   placeholder="Feedback"
-                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none"
                   onFocus={() => toggleActiveTestimonial(index)}
                   onBlur={() => toggleActiveTestimonial(null)}
                   rows={1}

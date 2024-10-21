@@ -39,9 +39,9 @@ function FAQs({ faqs, setFaqs }) {
   };
 
   return (
-    <div className="mx-auto max-w-[800px]" style={{ overflowY: 'auto', maxHeight: '500px' }}>
-      <h1 className="font-medium text-7xl">FAQs SECTION</h1>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+    <div className="mx-auto " style={{ overflowY: 'auto', maxHeight: '76vh' }}>
+      <h1 className="font-medium text-7xl text-center">FAQs SECTION</h1>
+      <h5 className="text-center text-[#939393]">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
       <div className="mt-4 pb-4  " ref={faqsContainerRef}>
@@ -51,7 +51,6 @@ function FAQs({ faqs, setFaqs }) {
               <button
                 onClick={() => removeFAQ(index)}
                 className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 " 
-
                 >
                 <span>✕</span>
               </button>
@@ -64,7 +63,7 @@ function FAQs({ faqs, setFaqs }) {
                 value={faq.question}
                 onChange={(e) => handleFAQChange(index, e)}
                 placeholder="Question"
-                className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
+                className="w-full text-black border-none outline-none bg-transparent mt-2"
                 onFocus={() => toggleActiveFAQ(index)}
                 onBlur={() => toggleActiveFAQ(null)}
               />
@@ -79,7 +78,7 @@ function FAQs({ faqs, setFaqs }) {
               value={faq.answer}
               onChange={(e) => handleFAQChange(index, e)}
               placeholder="Answer"
-              className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none "
+              className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none "
               rows={activeFAQIndex === index ? 2 : 1}
               onFocus={() => toggleActiveFAQ(index)}
               onBlur={() => toggleActiveFAQ(null)}

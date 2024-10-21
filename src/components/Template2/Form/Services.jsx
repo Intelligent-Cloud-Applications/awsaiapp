@@ -109,7 +109,7 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
   
 
   return (
-    <div className="h-[76vh] p-0 m-0" style={{ overflow: 'auto'}}>
+    <div className="h-[76vh] p-5 m-0" style={{ overflow: 'auto'}}>
       <h1 className="font-medium text-7xl text-center">SERVICE HIGHLIGHT</h1>
       {/* <h5 className="text-[#cc3f3f] text-[13px] text-center">
         ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
@@ -132,7 +132,7 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
         />
         <label
           htmlFor="servicesBgInput"
-          className="h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',
@@ -179,7 +179,7 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
         />
         <label
           htmlFor="servicesPortraitInput"
-          className="h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',

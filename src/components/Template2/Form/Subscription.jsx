@@ -163,12 +163,12 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   }, [subscriptionTypes, countryCodes, provides]);
 
   return (
-    <div className="mx-auto max-w-[850px]" style={{ overflow: 'auto', maxHeight: '500px' }}>
-      <h1 className="font-medium text-7xl">SUBSCRIPTION PLANS</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+    <div className="mx-auto " style={{ overflow: 'auto', maxHeight: '76vh' }}>
+      <h1 className="font-medium text-7xl text-center">SUBSCRIPTION PLANS</h1>
+      {/* <h5 className="text-center text-[#cc3f3f] text-[13px]">
         ** The subscription model shown is just an example of how your given data will look like for the subscription; it will not change on giving your input.**
-      </h5>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+      </h5> */}
+      <h5 className="text-center text-[#939393]">
         Clearly outline your subscription options, highlighting key features and benefits to help users make informed decisions.      </h5>
       <div className="mt-4">
         {subscriptions.map((subscription, index) => (
@@ -190,7 +190,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 value={subscription.heading}
                 onChange={(e) => handleSubscriptionChange(index, e)}
                 placeholder="Subscription Heading"
-                className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
+                className="w-full text-black border-none outline-none bg-transparent mt-2"
                 onFocus={() => setActiveSubscriptionIndex(index)}
                 onBlur={() => setActiveSubscriptionIndex(null)}
               />
@@ -204,7 +204,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 value={subscriptionTypes[index]}
                 name="subscriptionType"
                 id=""
-                className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
+                className=" mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
                 onChange={(e) => {
                   handleSubscriptionChange(index, e);
                 }}
@@ -221,7 +221,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                   value={countryCodes[index]}
                   name="currency"
                   id=""
-                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78]   max500:w-[80vw] mt-6"
+                  className="mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
                   onChange={(e) => {
                     handleSubscriptionChange(index, e);
                   }}
@@ -238,7 +238,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 value={subscription.amount}
                 onChange={(e) => handleSubscriptionChange(index, e)}
                 placeholder="Pricing and Billing (e.g.100)"
-                className={`w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'
+                className={`w-full text-black border-none outline-none bg-transparent mt-2 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'
                   }`}
                 rows={index === activeSubscriptionIndex ? 3 : 1}
                 onFocus={() => setActiveSubscriptionIndex(index)}
@@ -254,20 +254,20 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
               <label className="mr-2">India:</label>
               <div className="flex items-center">
                 <div
-                  className={`w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer ${subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+                  className={`h-6 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer ${subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
                     }`}
                   onClick={() => updateIndiaAttribute(index, true)}
                 >
                   {subscription.india && <div className="w-full h-full bg-[#30AFBC] rounded-full" />}
-                  <span className="text-xs font-semibold ml-14 ">True</span>
+                  <span className="text-xs font-semibold mx-[3vh]">True</span>
                 </div>
                 <div
-                  className={`w-6 h-6 rounded-full border border-gray-500 ml-10 flex items-center justify-center cursor-pointer ${!subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+                  className={`h-6 rounded-full border border-gray-500 ml-10 flex items-center justify-center cursor-pointer ${!subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
                     }`}
                   onClick={() => updateIndiaAttribute(index, false)}
                 >
                   {!subscription.india && <div className="w-full h-full bg-transparent rounded-full" />}
-                  <span className="text-xs font-semibold ml-14">False</span>
+                  <span className="text-xs font-semibold mx-[3vh]">False</span>
                 </div>
               </div>
             </div>
@@ -287,7 +287,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                     value={service}
                     onChange={(e) => handleSubscriptionChange(index, e)}
                     placeholder={`Service ${serviceIndex + 1} Description`}
-                    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
+                    className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none"
                     rows={1}
                     onFocus={() => setActiveSubscriptionIndex(index)}
                     onBlur={() => setActiveSubscriptionIndex(null)}

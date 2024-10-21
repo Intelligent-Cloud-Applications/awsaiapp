@@ -41,12 +41,12 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
     return fileName;
   };
   return (
-    <div className="mx-auto max-w-[800px]" style={{ overflowY: 'auto', maxHeight: '490px' }}>
-      <h1 className="font-medium text-7xl">POLICY AND TERMS</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
+    <div className="mx-auto" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
+      <h1 className="font-medium text-7xl text-center">POLICY AND TERMS</h1>
+      {/* <h5 className="text-center text-[#cc3f3f] text-[13px]">
         ** The Privacy page shown is just an example how your given data will look like for the Privacy page it will not change on giving your input.**
-      </h5>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+      </h5> */}
+      <h5 className="text-center text-[#939393]">
         Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>
       <div className="relative flex items-center mt-4">
@@ -62,7 +62,7 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
         />
         <label
           htmlFor="AboutUsBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',
@@ -71,7 +71,7 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[14px] ${
+            className={`block text-[#000000] font-inter text-[22px] ${
               AboutUsBg ? 'hidden' : 'block'
             }`}
           >
@@ -113,13 +113,13 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
                   value={item.heading}
                   onChange={(e) => handlePolicyChange(type, 'heading', e.target.value, itemIndex)}
                   placeholder="Heading"
-                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
                 />
                 <textarea
                   value={item.content}
                   onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}
                   placeholder="Content"
-                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
                   rows={3}
                 />
               </div>

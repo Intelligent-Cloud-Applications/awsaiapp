@@ -156,7 +156,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
         />
         <label
           htmlFor="SubscriptionBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',
@@ -165,7 +165,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[14px] ${SubscriptionBg ? 'hidden' : 'block'
+            className={`block text-[#000000] font-inter text-[22px] ${SubscriptionBg ? 'hidden' : 'block'
               }`}
           >
             Choose File
@@ -199,7 +199,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
         />
         <label
           htmlFor="InstructorBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
           style={{
             borderColor: 'cement',
             borderWidth: '2px',
@@ -208,7 +208,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[14px] ${InstructorBg ? 'hidden' : 'block'
+            className={`block text-[#000000] font-inter text-[22px] ${InstructorBg ? 'hidden' : 'block'
               }`}
           >
             Choose File
