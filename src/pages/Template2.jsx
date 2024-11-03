@@ -25,8 +25,10 @@ const Template2 = () => {
   console.log("🚀 ~ file: Template2.jsx:21 ~ Template2 ~ savedData:", savedData)
   const [Companydata, setCompanydata] = useState([]);
   const [logo, setLogo] = useState(null);
-  const [danceTypes, setDanceTypes] = useState(['', '', '', '', '']);
-  //
+  const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
+  const [countBanner, setCountBanner] = useState(
+    titleOfCountBanner.map(title => ({ count: '', title }))
+  );
   const [LightPrimaryColor, setLightPrimaryColor] = useState("#225c59");
   const [LightestPrimaryColor, setLightestPrimaryColor] = useState("#c3f3f1");
   const [Footer_Link_1] = useState("https://bworkzlive.com/");
@@ -43,15 +45,16 @@ const Template2 = () => {
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
   const [institutionType, setInstitutionType] = useState("DanceStudio");
-  const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
+  const [TagLine2, setTagLine2] = useState("");
+  const [TagLine3, setTagLine3] = useState("");
   const [video, setVideo] = useState(null);
   const [TestimonialBg, setTestimonialBg] = useState(null);
   const [AboutUsBg, setAboutUsBg] = useState(null);
   const [SubscriptionBg, setSubscriptionBg] = useState(null);
   const [InstructorBg, setInstructorBg] = useState(null);
-  const [CSVFile, setCSVFile] = useState(null);
+  const [logoName, setLogoName] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -167,7 +170,8 @@ const Template2 = () => {
     email: '',
     upiId: '',
     instagram: '',
-    youtube: '',
+    Linkedin: '',
+    Twitter: '',
     facebook: '',
   });
 
@@ -200,7 +204,6 @@ const Template2 = () => {
           institutionid: institutionId,
           companyName: companyName,
           PrimaryColor,
-          institutionFormat,
           institutionType,
           SecondaryColor,
           logoUrl: imageUrl,
@@ -269,19 +272,12 @@ const Template2 = () => {
       }
       setServicesPortrait(servicesPortraitUrl);
 
-      const filledDanceTypes = danceTypes.filter(type => type.trim() !== '').slice(0, 5);
-
-      // Pad the array with empty strings to ensure it has a length of 5
-      const paddedDanceTypes = filledDanceTypes.concat(Array(5 - filledDanceTypes.length).fill(''));
-
-      // Filter out empty strings from the paddedDanceTypes array
-      const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
           Services: services,
           // dance_type: services[0].dance_type,
-          ClassTypes: nonEmptyDanceTypes,
+          ClassTypes: "",
           ServicesPortrait: servicesPortraitUrl,
           ServicesBg: servicesBgUrl,
         },
@@ -615,13 +611,10 @@ const Template2 = () => {
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-          // if (!CSVFile) {
-          //   alert("Please select a csv file to upload.");
-          //  return prevSection;
-          // }
+          console.log("institution:",institutionId);
           if (!institutionCheckInProgress) {
             institutionCheckInProgress = true;
-            API.get("clients", `/user/check-institution?institutionid=${institutionId}`)
+            API.get("clients", `/user/check-dental?institutionId=${institutionId}`)
               .then(response => {
                 institutionCheckInProgress = false;
                 if (response && response.exists) {
@@ -801,7 +794,7 @@ const Template2 = () => {
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
-        <div className="pt-[6rem] w-screen max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
+        <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}
@@ -816,25 +809,20 @@ const Template2 = () => {
               logo={logo}
               institutionType={institutionType}
               setInstitutionType={setInstitutionType}
-              institutionFormat={institutionFormat}
-              setInstitutionFormat={setInstitutionFormat}
               setLogo={setLogo}
               LightestPrimaryColor={LightestPrimaryColor}
               setLightestPrimaryColor={setLightestPrimaryColor}
               LightPrimaryColor={LightPrimaryColor}
               setLightPrimaryColor={setLightPrimaryColor}
-              selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-              CSVFile={CSVFile}
-              setCSVFile={setCSVFile}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
+              logoName={logoName}
+              setLogoName={setLogoName}      
             />}
           {currentSection === 1 &&
             <Contact
               contactInfo={contactInfo}
               setContactInfo={setContactInfo}
-              SubscriptionBg={SubscriptionBg}
-              setSubscriptionBg={setSubscriptionBg}
-              InstructorBg={InstructorBg}
-              setInstructorBg={setInstructorBg}
             />}
           {currentSection === 2 &&
             <Home
@@ -848,18 +836,19 @@ const Template2 = () => {
               setSelectedMedia={setSelectedMedia}
               mediaType={mediaType}
               setMediaType={setMediaType}
+              TagLine2={TagLine2}
+              setTagLine2={setTagLine2}
+              TagLine3={TagLine3}
+              setTagLine3={setTagLine3}
             />}
 
           {currentSection === 3 &&
             <Services
-              setServicesPortrait={setServicesPortrait}
-              servicesPortrait={servicesPortrait}
-              setServicesBg={setServicesBg}
-              servicesBg={servicesBg}
               services={services}
               setServices={setServices}
-              danceTypes={danceTypes}
-              setDanceTypes={setDanceTypes}
+              countBanner={countBanner}
+              setCountBanner={setCountBanner}
+              titleOfCountBanner={titleOfCountBanner}
             />}
 
           {currentSection === 4 &&

@@ -19,8 +19,9 @@
     }
 
     .boxtoselect {
-        height: 170px;
-        width: 170px;
+        height: 270px;
+        width: 1070px;
+        margin-left: 10%;
     }
 
     .colorbox {

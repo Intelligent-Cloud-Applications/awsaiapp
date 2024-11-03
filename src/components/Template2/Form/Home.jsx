@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
 import "../../../pages/Template.css";
 
-function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType }) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType, TagLine2, setTagLine2, TagLine3, setTagLine3 }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
   const [charTag, setCharTag] = useState(0);
   const [charTag2, setCharTag2] = useState(0);
+  const [charTag3, setCharTag3] = useState(0);
+  const [charTag4, setCharTag4] = useState(0);
   // const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
 
   const handleTagLineInputChange = (e) => {
@@ -16,7 +18,14 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
   const handleTagLineInputChange1 = (e) => {
     setTagLine1(e.target.value);
     setCharTag2(e.target.value.length);
-
+  };
+  const handleTagLineInputChange2 = (e) => {
+    setTagLine2(e.target.value);
+    setCharTag3(e.target.value.length);
+  };
+  const handleTagLineInputChange3 = (e) => {
+    setTagLine3(e.target.value);
+    setCharTag4(e.target.value.length);
   };
   const toggleTagLineInputVisibility = () => {
     setTagLineInputVisible(true);
@@ -65,8 +74,8 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div className="home" style={{ overflowY: 'auto'}}>
-      <h1 className="font-medium text-7xl pb-[2rem] text-center">HOME SECTION</h1>
+    <div className="home h-[120vh]" style={{ overflowY: 'auto'}}>
+      <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
       <h5 class="text-[#939393] text-center">
         <strong>Introduce Your Brand:</strong><br />
         Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
@@ -85,7 +94,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               className="w-full text-black border-none outline-none bg-transparent "
               placeholder="Enter Short Description TagLine "
               autoFocus
-              maxlength="40"
+              maxlength="30"
             />
           ) : (
             <span>{TagLine || "Short Description TagLine "}</span>
@@ -94,7 +103,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
         <div
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
         ></div>
-        <p>{charTag}/40</p>
+        <p>{charTag}/30</p>
       </div>
       <div className="relative mt-2">
         <h5
@@ -108,18 +117,64 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               onChange={handleTagLineInputChange1}
               className="w-full text-black border-none outline-none bg-transparent "
               placeholder="Enter Short Description TagLine1"
-              maxlength="60"
+              maxlength="20"
             />
           ) : (
-            <span>{TagLine1 || "Short Description TagLine1 (Optional)"}</span>
+            <span>{TagLine1 || "Short Description TagLine1"}</span>
           )}
         </h5>
         <div
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
         ></div>
-        <p>{charTag2}/60</p>
+        <p>{charTag2}/20</p>
       </div>
-      <div className="border border-black h-[10rem] mt-[2rem] relative boxtoselect">
+      <div className="relative mt-2">
+        <h5
+          className="text-[#939393] relative cursor-pointer py-2"
+          onClick={toggleTagLineInputVisibility}
+        >
+          {isTagLineInputVisible ? (
+            <input
+              type="text"
+              value={TagLine2}
+              onChange={handleTagLineInputChange2}
+              className="w-full text-black border-none outline-none bg-transparent "
+              placeholder="Enter Short Description TagLine2"
+              maxlength="60"
+            />
+          ) : (
+            <span>{TagLine2 || "Short Description TagLine2"}</span>
+          )}
+        </h5>
+        <div
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
+        ></div>
+        <p>{charTag3}/60</p>
+      </div>
+      <div className="relative mt-2">
+        <h5
+          className="text-[#939393] relative cursor-pointer py-2"
+          onClick={toggleTagLineInputVisibility}
+        >
+          {isTagLineInputVisible ? (
+            <input
+              type="text"
+              value={TagLine3}
+              onChange={handleTagLineInputChange3}
+              className="w-full text-black border-none outline-none bg-transparent "
+              placeholder="Enter Short Description TagLine3"
+              maxlength="60"
+            />
+          ) : (
+            <span>{TagLine3 || "Short Description TagLine3"}</span>
+          )}
+        </h5>
+        <div
+          className="absolute left-0 right-0  h-[1px] bg-[#939393]"
+        ></div>
+        <p>{charTag4}/60</p>
+      </div>
+      <div className="border border-black mt-[2rem] relative boxtoselect">
         <label
           htmlFor="fileInput"
           className="cursor-pointer"

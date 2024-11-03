@@ -20,29 +20,21 @@ function Company({
   setLightestPrimaryColor,
   selectedFile,
   setSelectedFile,
-  CSVFile,
-  setCSVFile,
-  setInstitutionFormat,
-  institutionFormat,
-
+  logoName,
+  setLogoName,
 }) {
 
-
-
-  const handleInstitutionFormatChange = (e) => {
-    setInstitutionFormat(e.target.value);
-  };
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
+  };
+  const handleLogoNameChange = (e) => {
+    setLogoName(e.target.value);
   };
   const handleinstitutionIdInputChange = (e) => {
     const value = e.target.value.toLowerCase();
     const validValue = value.replace(/[^a-z0-9]/g, '');
     setinstitutionId(validValue);
   };
-
-
-
 
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
@@ -82,7 +74,7 @@ function Company({
   };
 
   return (
-    <div className="company mx-[2%] max-h-[76vh]" style={{ overflowY: 'auto'}}>
+    <div className=" w-full mx-[2%] max-h-[76vh]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">Tell Us About Your Company</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -168,18 +160,21 @@ function Company({
           />
         </div>
       </div>
-      {/* Dropdown for Institution Format */}
       <div className="mt-4">
-        <label className="block text-[#939393] mb-2">Select Institution Format</label>
-        <select
-          value={institutionFormat}
-          onChange={handleInstitutionFormatChange}
-          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
-        >
-          <option value="Online_Classes">Online_Classes</option>
-          <option value="Inperson_Classes">Inperson_Classes</option>
-          <option value="Hybrid_Classes">Hybrid_Classes</option>
-        </select>
+        <label className="block text-[#939393] mb-2">Logo Name</label>
+        <TextInput
+          id="LogoName"
+          placeholder="Enter Logo Name"
+          required
+          value={logoName}
+          sizing="sm"
+          onChange={handleLogoNameChange}
+          style={{
+            borderColor: "#D1D5DB",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "8px",
+          }}
+        />
       </div>
 
       <div className="max-w-md relative">

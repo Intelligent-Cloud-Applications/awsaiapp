@@ -10,6 +10,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
+    'CONTACT INFO',
     'HOME',
     'SERVICES',
     'TESTIMONIALS',
@@ -17,7 +18,6 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     'FAQS',
     'INSTRUCTORS',
     'POLICY',
-    'CONTACT INFO',
   ];
 
   const progress = (currentSection / sections.length) * 100;

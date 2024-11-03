@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Country from '../../Auth/Country';
-function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg }) {
+function Contact({ contactInfo, setContactInfo}) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
   //   phoneNumber: '',
@@ -10,7 +10,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
   //   youtube: '',
   //   facebook: '',
   // });
-  
+
 
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default country code
 
@@ -42,32 +42,32 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
   const toggleActiveContact = (index) => {
     setActiveContactIndex(index === activeContactIndex ? null : index);
   };
-  const handleBgImageChange3 = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setSubscriptionBg(file);
-    }
-  };
-  const handleBgImageChange4 = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setInstructorBg(file);
-    }
-  };
+  // const handleBgImageChange3 = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const fileSizeMB = file.size / (1024 * 1024);
+  //     if (fileSizeMB > 4) {
+  //       alert("File size exceeds 4MB. Please choose a smaller file.");
+  //       return;
+  //     }
+  //   }
+  //   if (file) {
+  //     setSubscriptionBg(file);
+  //   }
+  // };
+  // const handleBgImageChange4 = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const fileSizeMB = file.size / (1024 * 1024);
+  //     if (fileSizeMB > 4) {
+  //       alert("File size exceeds 4MB. Please choose a smaller file.");
+  //       return;
+  //     }
+  //   }
+  //   if (file) {
+  //     setInstructorBg(file);
+  //   }
+  // };
   // const handleCSVFlie = (e) => {
   //   const file = e.target.files[0];
   //   if (file) {
@@ -81,17 +81,17 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
   //     setCSVFile(file);
   //   }
   // }
-  const shortenFileName1 = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
-  };
+  // const shortenFileName1 = (file) => {
+  //   if (!file || !file.name) return '';
+  //   const maxLength = 15;
+  //   const fileName = file.name;
+  //   if (fileName.length > maxLength) {
+  //     return `${fileName.substring(0, maxLength)}...`;
+  //   }
+  //   return fileName;
+  // };
   return (
-    <div className="mx-[2%]" style={{ overflowY: 'auto'}}>
+    <div className="mx-[2%]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl text-center">CONTACT INFORMATION</h1>
       {/* <h5 className="text-[#cc3f3f] text-[13px]">
         ** The Footer shown is just an example how your given data will look like for the Footer it will not change on giving your input.**
@@ -111,8 +111,8 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
                     onChange={handleCountryChange}
                     className="border w-[9rem] border-gray-300 rounded-l px-2 py-1"
                   >
-                  
-              <Country />
+
+                    <Country />
                   </select>
                   <input
                     type="text"
@@ -143,7 +143,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
           </div>
         ))}
       </div>
-      <div className="relative flex items-center">
+      {/* <div className="relative flex items-center">
         <h2 className='font-bold'>Subscription Bg</h2>
         <div className='mr-10'></div>
         <input
@@ -185,8 +185,8 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
             </span>
           </div>
         </label>
-      </div>
-      <div className="relative flex items-center mt-4">
+      </div> */}
+      {/* <div className="relative flex items-center mt-4">
         <h2 className='font-bold'>Instructor Bg</h2>
         <div className='mr-16'></div>
         <input
@@ -228,7 +228,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
             </span>
           </div>
         </label>
-      </div>
+      </div> */}
       {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
