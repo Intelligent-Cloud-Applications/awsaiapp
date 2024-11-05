@@ -174,7 +174,8 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
         ></div>
         <p>{charTag4}/60</p>
       </div>
-      <div className="border border-black mt-[2rem] relative boxtoselect">
+      <h5 className="mt-6 font-bold"> Select the Image for the hero page</h5>
+      <div className="border border-black mt-[1rem] relative boxtoselect">
         <label
           htmlFor="fileInput"
           className="cursor-pointer"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Services({ services, setServices, countBanner, setCountBanner, titleOfCountBanner}) {
+function Services({ services, setServices, countBanner, setCountBanner, titleOfCountBanner, values, setValues }) {
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
   const handleServiceChange = (index, e) => {
     const updatedServices = [...services];
@@ -37,6 +37,24 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
       )
     );
   };
+
+  const handleValueChange = (index, newValue) => {
+    const updatedValues = [...values];
+    updatedValues[index] = newValue;
+    setValues(updatedValues);
+  };
+
+  // Function to add a new input field
+  const addValueField = () => {
+    setValues([...values, '']); // Add an empty string for the new input
+  };
+
+  // Function to remove an input field
+  const removeValueField = (index) => {
+    const updatedValues = values.filter((_, i) => i !== index);
+    setValues(updatedValues);
+  };
+
   // console.log("Updated countBanner:", countBanner);
 
   // const handleImageChange = (setImage, e) => {
@@ -46,7 +64,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
   //   }
   // };
   return (
-    <div className="h-[76vh] p-5 m-0" style={{ overflow: 'auto' }}>
+    <div className="h-[100vh] p-5 m-0" style={{ overflow: 'auto' }}>
       <h1 className="font-medium text-7xl text-center">SERVICE HIGHLIGHT</h1>
       {/* <h5 className="text-[#cc3f3f] text-[13px] text-center">
         ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
@@ -115,7 +133,39 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
           ))}
         </div>
       </div>
-    </div>
+      <div className="relative mt-4">
+        <div className="pb-6">
+          <h2 className="font-medium text-xl">Company Values</h2>
+          {values.map((title, index) => (
+            <div key={index} className="mt-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={values[index]}
+                  onChange={(e) => handlevalueChange(index, e.target.value)}
+                  placeholder="Give the values of our company"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeValueField(index)} // Remove field on click
+                  className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2"
+                >
+                  <span>X</span>
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addValueField} // Add field on click
+            className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
+          >
+            Add Value
+          </button>
+        </div>
+      </div>
+    </div >
   );
 }
 

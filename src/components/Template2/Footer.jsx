@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
-import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
 function Footer({ currentSection, nextSection, prevSection, saveData, showModal }) {
@@ -13,10 +12,10 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     'CONTACT INFO',
     'HOME',
     'SERVICES',
-    'TESTIMONIALS',
+    // 'TESTIMONIALS',
     'SUBSCRIPTION',
-    'FAQS',
-    'INSTRUCTORS',
+    // 'FAQS',
+    // 'INSTRUCTORS',
     'POLICY',
   ];
 
@@ -34,15 +33,10 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
   };
 
   const handleBackClick = () => {
-   Navigate("/dashboard")
+    Navigate("/dashboard")
   };
   const submitSections = async () => {
     nextSection();
-    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
-      body: {
-        submissiontime: new Date().getTime(),
-      },
-    });
     Navigate("/pay");
     setUserData(userData => ({ ...userData, web: true, isVerified: false }));
   }
@@ -64,7 +58,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
           ))}
         </div>
 
-        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[50%] h-[3px] z-40 max1250:hidden'>
+        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[32%] h-[3px] z-40 max1250:hidden'>
           <div
             className='h-full bg-black rounded-lg'
             style={{
@@ -74,13 +68,13 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
         </div>
 
         <div className='absolute right-4 bottom-4 flex gap-[19rem] max950:gap-[32rem] max767:gap-36 max406:gap-[2rem] '>
-        {currentSection === 0 && (
-            <button onClick={handleBackClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+          {currentSection === 0 && (
+            <button onClick={handleBackClick} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
               BACK
             </button>
           )}
           {currentSection > 0 && (
-            <button onClick={handlePrevClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+            <button onClick={handlePrevClick} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
               BACK
             </button>
           )}

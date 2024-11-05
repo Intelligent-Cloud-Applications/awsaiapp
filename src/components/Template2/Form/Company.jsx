@@ -6,6 +6,8 @@ function Company({
   clients,
   companyName,
   setCompanyName,
+  companyDescription,
+  setCompanyDescription,
   institutionId,
   setinstitutionId,
   PrimaryColor,
@@ -26,6 +28,9 @@ function Company({
 
   const handleCompanyInputChange = (e) => {
     setCompanyName(e.target.value);
+  };
+  const handleCompanyDescriptionInputChange = (e) => {
+    setCompanyDescription(e.target.value);
   };
   const handleLogoNameChange = (e) => {
     setLogoName(e.target.value);
@@ -74,7 +79,7 @@ function Company({
   };
 
   return (
-    <div className=" w-full mx-[2%] max-h-[76vh]" style={{ overflowY: 'auto' }}>
+    <div className=" w-full mx-[2%] h-[100vh]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">Tell Us About Your Company</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -122,6 +127,29 @@ function Company({
           value={companyName}
           sizing="sm"
           onChange={handleCompanyInputChange}
+          style={{
+            borderColor: "#D1D5DB",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "8px",
+          }}
+        />
+      </div>
+      <div className="relative mt-2 px-[1px] mr-10">
+        <div className="mb-2 block">
+          <Label
+            htmlFor="companyDescription"
+            color="gray"
+            value="Company Description"
+          />
+          <span className="text-red-500 ml-1">*</span>
+        </div>
+        <TextInput
+          id="companyDescription"
+          placeholder="Enter company Description"
+          required
+          value={companyDescription}
+          sizing="sm"
+          onChange={handleCompanyDescriptionInputChange}
           style={{
             borderColor: "#D1D5DB",
             backgroundColor: "#F9FAFB",

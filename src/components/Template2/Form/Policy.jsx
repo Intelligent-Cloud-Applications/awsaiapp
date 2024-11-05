@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
+function Policy({ policies, setPolicies }) {
 
   const handlePolicyChange = (type, field, value, index) => {
     const updatedPolicies = [...policies[type]];
@@ -18,28 +18,28 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
     updatedPolicies.splice(index, 1);
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
-  const handleBgImageChange3 = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }}
-    if (file) {
-      setAboutUsBg(file);
-    }
-  };
+  // const handleBgImageChange3 = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const fileSizeMB = file.size / (1024 * 1024);
+  //     if (fileSizeMB > 4) {
+  //       alert("File size exceeds 4MB. Please choose a smaller file.");
+  //       return;
+  //     }}
+  //   if (file) {
+  //     setAboutUsBg(file);
+  //   }
+  // };
 
-  const shortenFileName1 = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
-  };
+  // const shortenFileName1 = (file) => {
+  //   if (!file || !file.name) return '';
+  //   const maxLength = 15;
+  //   const fileName = file.name;
+  //   if (fileName.length > maxLength) {
+  //     return `${fileName.substring(0, maxLength)}...`;
+  //   }
+  //   return fileName;
+  // };
   return (
     <div className="mx-auto" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
       <h1 className="font-medium text-7xl text-center">POLICY AND TERMS</h1>
@@ -49,9 +49,9 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
       <h5 className="text-center text-[#939393]">
         Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>
-      <div className="relative flex items-center mt-4">
-      <h2 className='font-bold'>AboutUsBg</h2>
-      <div className='mr-10'></div>
+      {/* <div className="relative flex items-center mt-4">
+        <h2 className='font-bold'>AboutUsBg</h2>
+        <div className='mr-10'></div>
         <input
           type="file"
           accept="image/*"
@@ -71,16 +71,14 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
           }}
         >
           <span
-            className={`block text-[#000000] font-inter text-[22px] ${
-              AboutUsBg ? 'hidden' : 'block'
-            }`}
+            className={`block text-[#000000] font-inter text-[22px] ${AboutUsBg ? 'hidden' : 'block'
+              }`}
           >
             Choose File
           </span>
           <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
-              AboutUsBg ? 'block' : 'hidden'
-            }`}
+            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${AboutUsBg ? 'block' : 'hidden'
+              }`}
           >
             <span className="text-[#636262]">
               {shortenFileName1(AboutUsBg)}
@@ -93,7 +91,7 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
             </span>
           </div>
         </label>
-      </div>
+      </div> */}
       <div className="mt-8">
         {Object.entries(policies).map(([type, value], index) => (
           <div key={index} className="mt-4">
