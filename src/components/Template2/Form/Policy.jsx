@@ -1,12 +1,15 @@
-import React from 'react';
+import { useState, useRef } from "react";
+import { Label, FileInput } from 'flowbite-react';
 
-function Policy({ policies, setPolicies }) {
+function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
 
   const handlePolicyChange = (type, field, value, index) => {
     const updatedPolicies = [...policies[type]];
     updatedPolicies[index][field] = value;
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
+
+  const fileInputRef = useRef(null);
 
   const addPolicy = (type) => {
     const updatedPolicies = [...policies[type], { heading: '', content: '' }];
@@ -18,80 +21,46 @@ function Policy({ policies, setPolicies }) {
     updatedPolicies.splice(index, 1);
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
-  // const handleBgImageChange3 = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const fileSizeMB = file.size / (1024 * 1024);
-  //     if (fileSizeMB > 4) {
-  //       alert("File size exceeds 4MB. Please choose a smaller file.");
-  //       return;
-  //     }}
-  //   if (file) {
-  //     setAboutUsBg(file);
-  //   }
-  // };
 
-  // const shortenFileName1 = (file) => {
-  //   if (!file || !file.name) return '';
-  //   const maxLength = 15;
-  //   const fileName = file.name;
-  //   if (fileName.length > maxLength) {
-  //     return `${fileName.substring(0, maxLength)}...`;
-  //   }
-  //   return fileName;
-  // };
+  const handleFileChange = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }
+
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
+      if (validTypes.includes(file.type)) {
+        const updatedImages = [...aboutImage];
+        updatedImages[index] = file; // Replace or add the file at the correct index
+        setAboutImage(updatedImages);
+      } else {
+        alert("Invalid file type. Please select a JPG, JPEG, PNG, or SVG file.");
+        e.target.value = "";
+      }
+    }
+  };
+  console.log("Images:",aboutImage);
+
+  const addValueField = () => {
+    setAboutImage([...aboutImage, null]); // Add null as a placeholder for a new file
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const removeValueField = (index) => {
+    setAboutImage((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="mx-auto" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
       <h1 className="font-medium text-7xl text-center">POLICY AND TERMS</h1>
-      {/* <h5 className="text-center text-[#cc3f3f] text-[13px]">
-        ** The Privacy page shown is just an example how your given data will look like for the Privacy page it will not change on giving your input.**
-      </h5> */}
       <h5 className="text-center text-[#939393]">
         Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>
-      {/* <div className="relative flex items-center mt-4">
-        <h2 className='font-bold'>AboutUsBg</h2>
-        <div className='mr-10'></div>
-        <input
-          type="file"
-          accept="image/*"
-          // onChange={(e) => handleImageChange(setAboutUsBg, e)}
-          onChange={handleBgImageChange3}
-          className="hidden"
-          id="AboutUsBgInput"
-        />
-        <label
-          htmlFor="AboutUsBgInput"
-          className="w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-          style={{
-            borderColor: 'cement',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            backgroundColor: '#D9D9D9',
-          }}
-        >
-          <span
-            className={`block text-[#000000] font-inter text-[22px] ${AboutUsBg ? 'hidden' : 'block'
-              }`}
-          >
-            Choose File
-          </span>
-          <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${AboutUsBg ? 'block' : 'hidden'
-              }`}
-          >
-            <span className="text-[#636262]">
-              {shortenFileName1(AboutUsBg)}
-            </span>
-            <span
-              onClick={() => setAboutUsBg(null)}
-              className="text-[#3b9d33] cursor-pointer"
-            >
-              Change
-            </span>
-          </div>
-        </label>
-      </div> */}
       <div className="mt-8">
         {Object.entries(policies).map(([type, value], index) => (
           <div key={index} className="mt-4">
@@ -129,6 +98,50 @@ function Policy({ policies, setPolicies }) {
             </div>
           </div>
         ))}
+        <div className="relative mt-4">
+          <div className="pb-6">
+            <h2 className="font-medium text-xl">About Us Images</h2>
+            {aboutImage.map((file, index) => (
+              <div key={index} className="mt-2">
+                <div className="relative">
+                  <div className="max-w-md relative">
+                    <div className="mb-2 block">
+                      <Label
+                        htmlFor={`fileInput-${index}`}
+                        value="Image Upload File"
+                      />
+                      <span className="text-red-500 ml-1">*</span>
+                    </div>
+                    <FileInput
+                      id={`fileInput-${index}`}
+                      onChange={(e) => handleFileChange(e, index)}
+                      helperText={file ? file.name : "It’s the Images to About Us Page"}
+                      style={{
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeValueField(index)}
+                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2"
+                  >
+                    <span>X</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addValueField}
+              className="bg-[#30AFBC] text-white px-4 py-2 rounded-md mt-5"
+            >
+              Add images
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -39,7 +39,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
   };
 
   const handleValueChange = (index, newValue) => {
-    const updatedValues = [...values];
+    const updatedValues = [...(values || [])];
     updatedValues[index] = newValue;
     setValues(updatedValues);
   };
@@ -73,7 +73,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
         Effectively highlight your services by showcasing their unique benefits and value propositions. Make it clear how each service meets your audience’s needs and stands out from the competition.
       </h5>
 
-      {services.map((service, serviceIndex) => (
+      {services && services.map((service, serviceIndex) => (
         <div key={serviceIndex} className="mt-4">
           <h2 className="font-medium text-xl">Service {serviceIndex + 1}</h2>
           <div className="relative">
@@ -122,7 +122,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
               <h2 className="font-medium text-xl">{title}</h2>
               <div className="relative">
                 <input
-                  type="text"
+                  type="number"
                   value={countBanner[index].count}
                   onChange={(e) => handlecountChange(index, e.target.value)}
                   placeholder={`Number of ${title}`}
@@ -136,13 +136,13 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
       <div className="relative mt-4">
         <div className="pb-6">
           <h2 className="font-medium text-xl">Company Values</h2>
-          {values.map((title, index) => (
+          {values && values.map((title, index) => (
             <div key={index} className="mt-2">
               <div className="relative">
                 <input
                   type="text"
-                  value={values[index]}
-                  onChange={(e) => handlevalueChange(index, e.target.value)}
+                  value={title}
+                  onChange={(e) => handleValueChange(index, e.target.value)}
                   placeholder="Give the values of our company"
                   className="w-full text-black border-none outline-none bg-transparent mt-2"
                 />
@@ -159,7 +159,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
           <button
             type="button"
             onClick={addValueField} // Add field on click
-            className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
+            className="bg-[#30AFBC] text-white px-4 py-2 rounded-md mt-5"
           >
             Add Value
           </button>

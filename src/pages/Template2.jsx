@@ -47,6 +47,7 @@ const Template2 = () => {
   const [TagLine2, setTagLine2] = useState("");
   const [TagLine3, setTagLine3] = useState("");
   const [video, setVideo] = useState(null);
+  const [aboutImage, setAboutImage] = useState([]);
   const [logoName, setLogoName] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [values, setValues] = useState([]);
@@ -142,8 +143,6 @@ const Template2 = () => {
   const [policies, setPolicies] = useState({
     'Privacy Policy': [{ heading: '', content: '' }],
     'About Us': [{ heading: '', content: '' }],
-    'Refund Policy': [{ heading: '', content: '' }],
-    'Terms and Conditions': [{ heading: '', content: '' }]
   });
 
   const [contactInfo, setContactInfo] = useState({
@@ -160,7 +159,6 @@ const Template2 = () => {
     facebook: '',
   });
 
-  const Ctx = useContext(Context);
   const util = useContext(Context).util;
   useEffect(() => {
     console.log(policies);
@@ -246,7 +244,7 @@ const Template2 = () => {
           Services: services,
           socials: socials,
           subscriptions: subscriptions,
-          ourValues: Values,
+          ourValues: values,
           UpiId: contactInfo.upiId,
         },
       });
@@ -533,7 +531,7 @@ const Template2 = () => {
               countBanner={countBanner}
               setCountBanner={setCountBanner}
               titleOfCountBanner={titleOfCountBanner}
-              Values={values}
+              values={values}
               setValues={setValues}
             />}
           {/* {currentSection === 4 &&
@@ -563,6 +561,8 @@ const Template2 = () => {
             <Policy
               policies={policies}
               setPolicies={setPolicies}
+              aboutImage={aboutImage}
+              setAboutImage={setAboutImage}
             />}
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
