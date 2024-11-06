@@ -30,13 +30,9 @@ const Template2 = () => {
   const [LightPrimaryColor, setLightPrimaryColor] = useState("#225c59");
   const [LightestPrimaryColor, setLightestPrimaryColor] = useState("#c3f3f1");
   // const [logo, setLogo] = useState(null);
-  const [servicesBg, setServicesBg] = useState(null);
-  const [servicesPortrait, setServicesPortrait] = useState(null);
-
   const [companyName, setCompanyName] = useState(null);
   const [companyDescription, setCompanyDescription] = useState(null);
   const [institutionId, setinstitutionId] = useState(null);
-
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
   const [countryCode, setCountryCode] = useState("INR");
@@ -51,6 +47,7 @@ const Template2 = () => {
   const [logoName, setLogoName] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [values, setValues] = useState([]);
+  const [imgUrl, setimgUrl] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [services, setServices] = useState([
@@ -186,53 +183,43 @@ const Template2 = () => {
       let videoUrl = await Storage.get(response2.key);
       videoUrl = videoUrl.split("?")[0];
       setVideo(videoUrl);
-      let servicesBgUrl = null;
-      if (servicesBg) {
-        const response = await Storage.put(`${institutionId}/${servicesBg.name}`, servicesBg, {
-          contentType: servicesBg.type,
+      const updatedImgUrls = [...imgUrl];
+      for (let index = 0; index < aboutImage.length; index++) {
+        const file = aboutImage[index];
+        const response5 = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
+          contentType: file.type,
         });
 
-        if (response && response.key) {
-          servicesBgUrl = await Storage.get(response.key);
-          servicesBgUrl = servicesBgUrl.split("?")[0];
-        }
+        // Get URL and update in the image URL array
+        let aboutImageUrl = await Storage.get(response5.key);
+        aboutImageUrl = aboutImageUrl.split("?")[0];
+        updatedImgUrls[index] = aboutImageUrl;
       }
-      setServicesBg(servicesBgUrl);
 
-      // Upload servicesPortrait image
-      let servicesPortraitUrl = null;
-      if (servicesPortrait) {
-        const response1 = await Storage.put(`${institutionId}/${servicesPortrait.name}`, servicesPortrait, {
-          contentType: servicesPortrait.type,
-        });
-
-        if (response1 && response1.key) {
-          servicesPortraitUrl = await Storage.get(response1.key);
-          servicesPortraitUrl = servicesPortraitUrl.split("?")[0];
-        }
-      }
+      // Set updated image URLs
+      setimgUrl(updatedImgUrls);
       const socials = {
         facebook: contactInfo.facebook,
         instagram: contactInfo.instagram,
         linkedin: contactInfo.Linkedin,
         twitter: contactInfo.Twitter
       }
-      setServicesPortrait(servicesPortraitUrl);
       await API.put("clients", "/user/dentalWebDevForm", {
         body: {
           institutionid: institutionId,
           companyName: companyName,
-          PrimaryColor,
-          SecondaryColor,
+          PrimaryColor: PrimaryColor,
+          SecondaryColor: SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
-          institutionType,
+          institutionType: institutionType,
           TagLine: TagLine,
           TagLine1: TagLine1,
           TagLine2: TagLine2,
           TagLine3: TagLine3,
           videoUrl: videoUrl,
           aboutParagraphs: policies['About Us'],
+          aboutImages: imgUrl,
           address: contactInfo.address,
           countBanner: countBanner,
           description: companyDescription,
@@ -294,7 +281,6 @@ const Template2 = () => {
             alert("Please upload a company logo before proceeding.");
             return prevSection;
           }
-          console.log("institution:", institutionId);
           if (!institutionCheckInProgress) {
             institutionCheckInProgress = true;
             API.get("clients", `/user/check-dental?institutionId=${institutionId}`)

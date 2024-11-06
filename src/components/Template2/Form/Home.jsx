@@ -74,7 +74,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div className="home h-[120vh]" style={{ overflowY: 'auto'}}>
+    <div className="home h-[185vh]" style={{ overflowY: 'auto'}}>
       <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
       <h5 class="text-[#939393] text-center">
         <strong>Introduce Your Brand:</strong><br />

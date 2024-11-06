@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { Label, FileInput } from 'flowbite-react';
 
 function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {

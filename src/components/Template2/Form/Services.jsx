@@ -64,7 +64,7 @@ function Services({ services, setServices, countBanner, setCountBanner, titleOfC
   //   }
   // };
   return (
-    <div className="h-[100vh] p-5 m-0" style={{ overflow: 'auto' }}>
+    <div className="h-[200vh] p-5 m-0" style={{ overflow: 'auto' }}>
       <h1 className="font-medium text-7xl text-center">SERVICE HIGHLIGHT</h1>
       {/* <h5 className="text-[#cc3f3f] text-[13px] text-center">
         ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
