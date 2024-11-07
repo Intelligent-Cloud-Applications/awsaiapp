@@ -12,6 +12,22 @@ body {
   overflow-x: hidden;
 }
 
+.primary-color{
+  color: rgb(48,175,188);
+  border-color: rgb(48,175,188);
+}
+
+
+.primary-color {
+  color: rgb(48,175,188);
+}
+.secondary-color {
+  color: #000000;
+}
+
+
+
+
 @import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sansita&display=swap");
 
@@ -56,6 +72,9 @@ body {
   box-shadow: 20px 10px 20px  #FFC73B;
 }
 
+.inter {
+  font-family: "Inter", sans-serif;
+}
 
 .loader  {
   animation: rotate 1s infinite;  
@@ -152,7 +171,6 @@ body {
   }
 }
 
-/* Add this to your CSS file */
 
 @keyframes spin {
   0% {
@@ -192,4 +210,12 @@ body {
 
 .bounce {
   animation: bounce 2s infinite;
+}
+
+.scrollbar-none::-webkit-scrollbar{
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;     /* Firefox */
 }

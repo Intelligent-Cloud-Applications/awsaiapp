@@ -1,4 +1,5 @@
 import React from 'react';
+import "../Preview.css"
 
 
 const Home2 = () => {
@@ -63,11 +64,11 @@ const Home2 = () => {
 
     return (
         <>
-          <div className="bg-white flex justify-center flex-col items-center min-h-[20vh] max850:h-auto fixed w-[78%] ml-[7.56%] py-12 relative">
+          <div className="bg-white flex justify-center flex-col items-center min-h-[20vh] max850:h-auto fixed w-[78%] ml-[7.56%] py-12 relative home2">
             <div className="New flex justify-between max600:h-[40rem] h-[36rem] blurimg w-auto relative pr-3 pl-3 max600:flex-col max600:mx-0 max600:items-start max600:m-0 max600:w-[100vw] overflow-hidden gap-4" style={{ backgroundSize: 'cover' }}>
-                <div className="p-5 flex flex-col max600:items-center justify-between bg-transparent border-y-[0.2rem] rounded-tl-lg rounded-bl-lg border-l-[0.2rem] w-[24vw] h-[35rem] max600:h-auto max600:border-0 max600:w-[100%]" style={{ borderColor: '#225C59' }}>
+                <div className="Over p-5 flex flex-col max600:items-center justify-between bg-transparent border-y-[0.2rem] rounded-tl-lg rounded-bl-lg border-l-[0.2rem] w-[24vw] h-[35rem] max600:h-auto max600:border-0 max1450:w-[16rem]" style={{ borderColor: '#225C59' }}>
                     {servicesData.Services.slice(0, 2).map((service, index) => (
-                        <div className="w-[16rem] max800:w-[12rem] max600:w-[100%]" key={index}>
+                        <div className="w-[16rem] max800:w-[12rem] max600:w-[100%] OverPass" key={index}>
                             <h1 className="text-[1rem] max800:text-[1rem] font-russo max600:text-[1rem]" style={{ color: servicesData.ServicesBg ? "white" : "black" }}>
                                 {service.title}
                             </h1>
@@ -81,7 +82,7 @@ const Home2 = () => {
                 </div>
                 <div className="Over p-5 flex flex-col max600:items-center max600:pt-0 items-end bg-transparent border-y-[0.2rem] rounded-tr-lg rounded-br-lg border-r-[0.2rem] w-[24vw] h-[35rem] max600:h-auto max600:border-0 max600:w-[100%] justify-between" style={{ borderColor: '#225C59' }}>
                     {servicesData.Services.slice(2).map((service, index) => (
-                        <div className="w-[16rem] max800:w-[12rem] max600:w-[100%]" key={index}>
+                        <div className="w-[16rem] max800:w-[12rem] max600:w-[100%] OverPass" key={index}>
                             <h1 className="text-[1rem] max800:text-[1rem] max600:text-[1rem] font-russo max950:pl-[1.5rem] max600:pl-0" style={{ color: servicesData.ServicesBg ? "white" : "black" }}>
                                 {service.title}
                             </h1>

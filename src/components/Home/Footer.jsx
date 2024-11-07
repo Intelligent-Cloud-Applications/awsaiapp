@@ -236,7 +236,7 @@ export default function Footer(props) {
             <div className="bg-black w-0.5 border-black rounded-md"></div>
             <h5 className="text-black sans-sarif mb-0 font-[400]">
               {" "}
-              All rights reserved. © 2023 awsaiapp.com
+              All rights reserved. © {new Date().getFullYear()} awsaiapp.com
             </h5>
           </div>
         </div>

@@ -109,18 +109,18 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
   
 
   return (
-    <div className="mx-auto max-w-[800px] px-8" style={{ overflowY: 'auto', maxHeight: '525px' }}>
-      <h1 className="font-medium text-7xl">SERVICE SECTION</h1>
+    <div className="w-[100%] p-0 m-0" style={{ overflow: 'auto', maxHeight: '495px' }}>
+      <h1 className="font-medium text-7xl">SERVICE HIGHLIGHT</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The Services shown is just an example how your given data will look like for the services section it will not change on giving your input.**
       </h5>
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
-        Highlight services distinctly, showcasing their benefits and unique value propositions for your audience's needs.
+      Effectively highlight your services by showcasing their unique benefits and value propositions. Make it clear how each service meets your audience’s needs and stands out from the competition.
       </h5>
 
       {/* Service Background Image Upload */}
       <div className="relative flex items-center mt-4">
-        <h2 className='font-bold'>ServicesBg</h2>
+        <h2 className='font-bold'>Services Bg</h2>
         <div className='mr-20'></div>
         <input
           type="file"
@@ -167,7 +167,7 @@ function Services({ services, setServices, danceTypes, setDanceTypes,servicesBg,
 
       {/* Service Portrait Image Upload */}
       <div className="relative flex items-center mt-4">
-      <h2 className='font-bold'>ServicesProtrait</h2>
+      <h2 className='font-bold'>Services Protrait</h2>
       <div className='mr-10'></div>
         <input
           type="file"

@@ -9,13 +9,13 @@ import Footer1 from './Preview/Footer1';
 import Instructors1 from './Preview/Instructors1';
 import Terms1 from './Preview/Terms1';
 
-const Preview = ({ currentSection, logo, setLogo, TagLine, setTagLine, video, setVideo, services, setServices, faqs, setFaqs, instructors, setInstructors}) => {
+const Preview = ({ currentSection, logo, setLogo, TagLine, setTagLine, video, setVideo, services, setServices, faqs, setFaqs, instructors, setInstructors, src_Components_Home_Header3__h1, src_Components_Home_Header3__h2 }) => {
   const home1Ref = useRef(null);
   const testimonial1Ref = useRef(null);
   const subscription1Ref = useRef(null);
   const faq1Ref = useRef(null);
   const home2Ref = useRef(null);
-  
+
   useEffect(() => {
 
     // Scroll to Home1 when currentSection is 1
@@ -43,14 +43,14 @@ const Preview = ({ currentSection, logo, setLogo, TagLine, setTagLine, video, se
     }
 
   });
-
+  console.log("src_Components_Home_Header3__h2",src_Components_Home_Header3__h2);
   return (
     <div className='h-[100%] pb-[29%]'>
       <Navbar1 logo={logo} setLogo={setLogo} />
       {(currentSection === 0 || currentSection === 1 || currentSection === 2 || currentSection === 3 || currentSection === 4 || currentSection === 5) && (
         <div className=" bg-[#30AFBC]">
           <div ref={home1Ref} ><Home1 TagLine={TagLine} setTagLine={setTagLine} video={video} setVideo={setVideo} /></div>
-          <div ref={home2Ref}><Home2 services={services}  setServices={setServices}/></div>
+          <div ref={home2Ref}><Home2 services={services} setServices={setServices} src_Components_Home_Header3__h1={src_Components_Home_Header3__h1} src_Components_Home_Header3__h2={src_Components_Home_Header3__h2} /></div>
           <div ref={testimonial1Ref}><Testimonial1 /></div>
           <div ref={subscription1Ref}><Subscription1 /></div>
           <div ref={faq1Ref}><FAQ1 faqs={faqs} setFaqs={setFaqs} /></div>

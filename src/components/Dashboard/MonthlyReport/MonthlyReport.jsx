@@ -80,11 +80,6 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       const last2YearsLeads = RevenueApi.Leads.last2YearsData;
       const last2YearsMembers = RevenueApi.MembersCount.last2YearsData;
 
-      console.log(last3YearsLeads)
-      console.log(last3YearsRevenue)
-      console.log(last3YearsAttendance)
-      console.log(last3YearsMembers)
-
       if (RevenueApi && RevenueApi.Revenue && selectedYear && selectedYear !== 'Last3YearsData' && selectedYear !== 'Last2YearsData') {
         setRevenueReport(RevenueApi.Revenue[selectedYear] || {});
         setAttendance(RevenueApi.Attendance[selectedYear] || {});
@@ -314,7 +309,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
       <NavBar />
       {renderButton()}
       {/* dropdown to select year */}
-      <div className="flex w-[100vw] justify-center mt-[-6.5rem]">
+      <div className="flex w-[100vw] lg:w-[70%] lg:ml-72 justify-center mt-[-6.5rem]">
         <div class="w-[90vw] h-14 relative rounded-2xl" style={{
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
         }}>
@@ -340,7 +335,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
 
       <div className={`flex flex-col justify-center items-center max536:pt-0 gap-1 ${IsDashboard ? 'flex flex-col justify-center items-center max536:pt-0 gap-1 mt-[5rem]' : ''}`}>
         {/* first two graph */}
-        <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-3 `}>
+        <div className={`w-[83vw] max536:bg-transparent rounded-3xl p-8 `}>
           <div className="flex mb-4 flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center">
             <div className="relative">
               <div className="flex justify-between">
@@ -435,7 +430,7 @@ const MonthlyReport = ({ institution: tempInstitution }) => {
         <div className=" w-[80vw] bg-[#757575] h-[0.095rem] mb-8 max850:hidden"></div>
 
         {/* last two graph */}
-        <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-3  mt-[-2rem]`}>
+        <div className={`w-[83vw] max536:bg-transparent max600:mr-[2rem] rounded-3xl p-8  mt-[-2rem]`}>
           <div className="flex flex-row justify-between max1300:flex-col max1300:items-center max1300:gap-[1rem] max850:justify-center max850:items-center ">
             <div className="relative">
               <div className="flex justify-between">

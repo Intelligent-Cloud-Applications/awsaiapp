@@ -2,44 +2,45 @@ import { createContext } from "react";
 
 const Context = createContext({
   isAuth: "",
-  setIsAuth: () => { },
+  setIsAuth: () => {},
   userData: "",
-  setUserData: () => { },
+  setUserData: () => {},
   isUserDataLoaded: false,
-  setIsUserDataLoaded: () => { },
+  setIsUserDataLoaded: () => {},
   util: {
     loader: false,
-    setLoader: () => { },
+    setLoader: () => {},
   },
   clients: {
     data: {},
-    fetchClients: () => { },
-    onReload: () => { },
+    fetchClients: () => {},
+    onReload: () => {},
   },
   products: [],
-  fetchProducts: () => { },
+  fetchProducts: () => {},
   pending: {
     data: {},
-    fetchPending: () => { },
-    onReload: () => { },
+    fetchPending: () => {},
+    onReload: () => {},
   },
   user: {
     profile: {},
-    fetchUserProfile: () => { },
+    fetchUserProfile: () => {},
   },
   templateDetails: {
     details: {},
-    fetchTemplateDetails: () => { },
+    fetchTemplateDetails: () => {},
   },
   subscriptionDetails: {},
   instructorDetails: {},
-  fetchProductDetails: () => { },
+  fetchProductDetails: () => {},
   fetchInstructorDetails: () => { },
   getCartItems: () => { },
   getPaymentHistory:() => { },
   removeCartItem: () => { },
   addCartItem: () => { },
   paymentHistory: [],
+  payments:[]
 });
 
 export default Context;

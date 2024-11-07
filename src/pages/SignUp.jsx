@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import Country from "../components/Auth/Country";
 import signUpPng from "../utils/Signup.png";
+import Swal from "sweetalert2";
+
 import "./Login.css";
 
 const SignUp = () => {
@@ -24,6 +26,7 @@ const SignUp = () => {
   const [confirmationCode, setConfirmationCode] = useState(0);
   const [err, setErr] = useState("");
   // const [passwordVisible, setPasswordVisible] = useState(false);
+  // eslint-disable-next-line
   const [isNewUser, setIsNewUser] = useState(true);
   const data = {
     Otp_Msg: `An OTP has been sent to ${email}. Please check your inbox, and in case you don’t find it there, kindly review the spam folder.`,
@@ -46,6 +49,7 @@ const SignUp = () => {
     }
   }, []);
 
+  if(isNewUser){}
   // Function to handle resend OTP
   const resendOTP = async (event) => {
     event.preventDefault();
@@ -84,8 +88,17 @@ const SignUp = () => {
   //   setPasswordVisible((prevState) => !prevState);
   // };
 
+  const checkInstitutionName = async (institutionName) => {
+    const instituteArray = (UserCtx?.clients?.data).map((e)=> e.institution)
+    if(instituteArray.includes(institutionName)){
+      setErr("Institution Name already exists")
+    }else{
+      setErr("")
+    }
+  }
+
   const form1Validator = () => {
-    // console.log(phoneNumber.length);
+    console.log(phoneNumber.length);
 
     if (firstName.length === 0) {
       setErr("Enter the Name");
@@ -121,7 +134,6 @@ const SignUp = () => {
     }
   };
 
-
   const userExistPhoneNumberSignUp = async () => {
     try {
       console.log("Sign in");
@@ -131,7 +143,7 @@ const SignUp = () => {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
-          phoneNumber: `+${countryCode}${phoneNumber}`,
+          phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
           institutionName: institutionName
         },
@@ -143,16 +155,16 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
       alert("Signed Up");
       // client dashboard
-      if (userdata.status === "Active") {
+      // if (userdata.status === "Active") {
         UtilCtx.setLoader(false);
         Navigate("/dashboard");
-      }
+      // }
       UtilCtx.setLoader(false);
       Navigate("/Pricing");
     } catch (error) {
       UtilCtx.setLoader(false);
       if (error.message === "Incorrect username or password.") {
-        // console.log("Phone Number User Doesn't Exist");
+        console.log("Phone Number User Doesn't Exist");
         await userExistEmailIdSignUp();
       }
       throw error;
@@ -160,17 +172,18 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
     }
   };
-
+  if(1<0){userExistPhoneNumberSignUp()}
+  
   const userExistEmailIdSignUp = async () => {
     try {
-      // console.log("Sign in");
+      console.log("Sign in");
       await Auth.signIn(`+${countryCode}${phoneNumber}`);
-      // console.log("post");
+      console.log("post");
       const userdata = await API.post("clients", "/user/signup-members/awsaiapp", {
         body: {
           emailId: email,
           userName: `${firstName} ${lastName}`,
-          phoneNumber: `+${countryCode}${phoneNumber}`,
+          phoneNumber: `${countryCode}${phoneNumber}`,
           country: country,
           institutionName: institutionName
         },
@@ -195,63 +208,80 @@ const SignUp = () => {
       UtilCtx.setLoader(false);
     }
   };
-  console.log(isNewUser,userExistPhoneNumberSignUp);
+
   const onSubmit = async (event) => {
     event.preventDefault();
 
     UtilCtx.setLoader(true);
 
     try {
-      if (form1Validator()) {
-//        if (!isNewUser) {
-//          await userExistPhoneNumberSignUp();
-//          UtilCtx.setLoader(false);
-//          return;
-//        }
-        // console.log(phoneNumber);
-        try {
-          const newUserCheck = await Auth.signUp({
-            username: `+${countryCode}${phoneNumber}`,
-            password: "Avishek@123",
-            institutionName: institutionName,
-            attributes: {
-              phone_number: `+${countryCode}${phoneNumber}`,
-              name: `${firstName} ${lastName}`,
-              email: email,
-            },
-          });
-          console.log(newUserCheck);
-        }
-        catch (e) {
-          console.error(e);
-        }
-        finally {
-          const phoneResponse = await API.post(
-            'clients',
-            '/any/phone-exists/awsaiapp',
-            {
-              body: {
-                phoneNumber: `+${countryCode}${phoneNumber}`
-              }
-            }
-          )
+        // Check if phone number exists
+        const checkResponse = await API.get("clients", `/user/check-phone?phoneNumber=${institutionName}`);
+        console.log("Check response:", checkResponse);
 
-          if (phoneResponse.exists === true) {
-            alert('An account with this phone number already exists. Please login or signup with a different number.')
-          }
-          else {
-            const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-            setSigninResponse(response)
-            setNewUser(true)
-          }
+        if (checkResponse.exists) {
+            Swal.fire({
+                icon: "error",
+                title: "This Company is Already Registered,Please use another Company Name",
+            });
+            UtilCtx.setLoader(false);
+            return;
         }
-      }
-      UtilCtx.setLoader(false);
+
+        // Validate form
+        if (form1Validator()) {
+            try {
+                // Sign up with Auth
+                await Auth.signUp({
+                    username: `+${countryCode}${phoneNumber}`,
+                    password: "Avishek@123",
+                    institutionName: institutionName,
+                    attributes: {
+                        phone_number: `+${countryCode}${phoneNumber}`,
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                    },
+                });
+
+                // Check if phone number already exists
+                const phoneResponse = await API.post(
+                    'clients',
+                    '/any/phone-exists',
+                    {
+                        body: {
+                            phoneNumber: `+${countryCode}${phoneNumber}`,
+                        },
+                    }
+                );
+
+                if (phoneResponse.exists) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "An account with this phone number already exists. Please login or sign up with a different number.",
+                });  
+                } else {
+                    const response = await Auth.signIn(`+${countryCode}${phoneNumber}`);
+                    setSigninResponse(response);
+                    setNewUser(true);
+                }
+            } catch (signUpError) {
+                Swal.fire({
+                  icon: "error",
+                  title: "An account with this phone number already exists. Please login or sign up with a different number.",
+              });  
+            
+                console.error("Sign up error:", signUpError);
+                // Handle specific sign up errors here
+            }
+        }
+
     } catch (e) {
-      setErr(e.message);
-      UtilCtx.setLoader(false);
+        setErr(e.message);
+    } finally {
+        UtilCtx.setLoader(false);
     }
-  };
+};
+
 
   const onConfirmationSubmit = async (event) => {
     event.preventDefault();
@@ -273,7 +303,7 @@ const SignUp = () => {
           body: {
             emailId: email,
             userName: `${firstName} ${lastName}`,
-            phoneNumber: `+${countryCode}${phoneNumber}`,
+            phoneNumber: `${countryCode}${phoneNumber}`,
             country: country,
             institutionName: institutionName,
           },
@@ -343,6 +373,9 @@ const SignUp = () => {
                   value={institutionName}
                   onChange={(e) => {
                     setInstitutionName(e.target.value);
+                  }}
+                  onBlur={(e) => {
+                    checkInstitutionName(e.target.value)
                   }}
                 />
               </li>

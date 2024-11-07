@@ -1,0 +1,2 @@
+yarn add react-intersection-observer
+yarn add framer-motion 

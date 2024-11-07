@@ -48,11 +48,9 @@ function Nav({ institution, setActiveComponent, activeComponent, userType, setIs
             PLANS
           </div>
           <div
-            onClick={
-              handleContactClick
-            }
-            className={` rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[8rem]`}
-            style={activeComponent === 'contact' ? { backgroundColor: color.primary, hover: color.primary } : {}}
+            onClick={handleContactClick}
+            className={`rounded-full cursor-pointer text-[#cacaca] font-[500] py-2 px-4 inter text-center max600:text-[0.8rem] max600:-mb-2 max600:-mr-4 max600:w-[8rem]`}
+            style={activeComponent === 'contact' ? { backgroundColor: color.primary } : {}}
           >
             CONTACT US
           </div>

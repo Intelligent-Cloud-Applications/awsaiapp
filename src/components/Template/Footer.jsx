@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
-function Footer({ currentSection, nextSection, prevSection, saveData }) {
+function Footer({ currentSection, nextSection, prevSection, saveData, showModal,institutionId}) {
   // eslint-disable-next-line
-  const { userData, setUserData } = useContext(Context)
+  const UserCtx = useContext(Context)
+  // const { userData, setUserData } = useContext(Context)
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
@@ -29,11 +30,13 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
 
   // eslint-disable-next-line
   const handlePrevClick = () => {
-    saveData();
-    nextSection();
-
+    // Trigger the modal
+    showModal();
   };
 
+  const handleBackClick = () => {
+   Navigate("/dashboard")
+  };
   const submitSections = async () => {
     nextSection();
     await API.put("clients", "/user/development-form/put-time/awsaiapp", {
@@ -41,8 +44,18 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
         submissiontime: new Date().getTime(),
       },
     });
-    Navigate("/pay");
-    setUserData(userData => ({ ...userData, web: true, isVerified: false }));
+    // Navigate("/pay");
+    // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
+    const baseUrl =
+    process.env.REACT_APP_STAGE === 'PROD'
+      ? 'http://happyprancer.com'
+      : 'http://beta.happyprancer.com';
+
+ 
+  const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
+
+
+  window.open(url, '_blank');
   }
 
   return (
@@ -72,8 +85,13 @@ function Footer({ currentSection, nextSection, prevSection, saveData }) {
         </div>
 
         <div className='absolute right-4 bottom-4 flex gap-[19rem] max950:gap-[32rem] max767:gap-36 max406:gap-[2rem] '>
+        {currentSection === 0 && (
+            <button onClick={handleBackClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+              BACK
+            </button>
+          )}
           {currentSection > 0 && (
-            <button onClick={prevSection} className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
+            <button onClick={handlePrevClick}className='bg-black w-24 text-white px-4 py-2 rounded-[2px]  '>
               BACK
             </button>
           )}

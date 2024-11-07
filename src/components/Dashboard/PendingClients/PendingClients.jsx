@@ -89,7 +89,7 @@ const PendingClients = (props) => {
   const [showDetails] = useState(false);
 
 
-  console.log("dfdfdfdfdfd", pending.isDelivered);
+  // console.log("dfdfdfdfdfd", pending.isDelivered);
 
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);

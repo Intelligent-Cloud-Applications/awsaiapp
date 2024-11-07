@@ -1,5 +1,10 @@
-DATE = 11/06/2024
+Prod Awsaiapp -10/3/24
 
-Changes Made = (Cart system Introduced in folder named common)
 
-message change from email to phonenumber
+--------------------------------------------------------
+Phone Number otp Login
+Complete Web-dev Implementation
+Payment using Razor Pay
+Pending Clients View option for SuperAdmin
+Implementation of Pending Clients 
+

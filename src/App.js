@@ -4,11 +4,15 @@ import { Auth, API } from "aws-amplify";
 import Context from "./context/Context";
 import RoutesContainer from "./Routes";
 import LoaderProvider from "./components/LoaderProvider";
+import PeendingTasksProvider from "../src/internal/context/PendingTasksProvider";
 
 function App() {
   const UtilCtx = useRef(useContext(Context).util);
   const UserCtx = useRef(useContext(Context));
   const { templateDetails} = useContext(Context);
+  // const setUserDataRef = useRef(UserCtx.current.setUserData);
+
+
 
   useEffect(() => {
     templateDetails.fetchTemplateDetails()
@@ -21,6 +25,14 @@ function App() {
   // const institution = institutionFromParams || institutionFromLocalStorage;
   // console.log(UserCtx)
 
+  // useEffect(() => {
+  //   const fetchUserInfo = async () => {
+  //     const userInfo = await API.get("clients", '/user/check-user-location');
+  //     setUserDataRef.current((p) => ({ ...p, ...userInfo }));
+  //   };
+
+  //   fetchUserInfo();
+  // }, []);
 
   useEffect(() => {
     const check = async () => {
@@ -39,8 +51,8 @@ function App() {
         //   }
         // } else {
         const defaultUserdata = await API.get("clients", "/self/read-self/awsaiapp");
-        // console.log(defaultUserdata)
-        if (defaultUserdata.userType === "admin") {
+        console.log(defaultUserdata)
+        if (defaultUserdata.userType === "admin" || defaultUserdata.userType === "member") {
           UserCtx.current.setUserData(defaultUserdata);
           UserCtx.current.setIsAuth(true);
         } else {
@@ -48,7 +60,7 @@ function App() {
         }
         // }
       } catch (e) {
-        // console.log(e);
+        console.log(e);
       } finally {
         UtilCtx.current.setLoader(false);
       }
@@ -59,9 +71,11 @@ function App() {
 
 
   return (
+    <PeendingTasksProvider>
     <LoaderProvider>
       <RoutesContainer />
     </LoaderProvider>
+    </PeendingTasksProvider>
   );
 }
 

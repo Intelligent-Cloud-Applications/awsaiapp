@@ -1,24 +1,30 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import vupload from "../../../utils/png/vupload.png";
+import "../../../pages/Template.css";
 
-function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType,TagLine1, setTagLine1, setMediaType }) {
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType }) {
   // const [TagLineName, setTagLineName] = useState("");
   const [isTagLineInputVisible, setTagLineInputVisible] = useState(false);
+  const [charTag, setCharTag] = useState(0);
+  const [charTag2, setCharTag2] = useState(0);
   // const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
 
   const handleTagLineInputChange = (e) => {
     setTagLine(e.target.value);
+    setCharTag(e.target.value.length);
   };
   const handleTagLineInputChange1 = (e) => {
     setTagLine1(e.target.value);
+    setCharTag2(e.target.value.length);
+
   };
   const toggleTagLineInputVisibility = () => {
     setTagLineInputVisible(true);
     // setTagLineLineColor("#000000"); // Change TagLine line color to black on click
   };
 
-//  const [selectedMedia, setSelectedMedia] = useState(null);
-//  const [mediaType, setMediaType] = useState(null);
+  //  const [selectedMedia, setSelectedMedia] = useState(null);
+  //  const [mediaType, setMediaType] = useState(null);
   const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleFileChange = (event) => {
@@ -28,7 +34,8 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
       if (fileSizeMB > 4) {
         alert("File size exceeds 4MB. Please choose a smaller file.");
         return;
-      }}
+      }
+    }
     setVideo(file);
     setSelectedMedia(URL.createObjectURL(file));
 
@@ -40,9 +47,9 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
     }
   };
 
-//  const handleMediaClick = () => {
-//    document.getElementById("fileInput").click();
-//  };
+  //  const handleMediaClick = () => {
+  //    document.getElementById("fileInput").click();
+  //  };
 
   const handleMediaMouseEnter = () => {
     if (selectedMedia) {
@@ -56,15 +63,15 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
     }
   };
 
-  return (
-    <div className="px-8">
-      <h1 className="font-medium text-7xl">HOME SECTION</h1>
-      <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
-        Craft a compelling brand introduction, captivating visitors with your
-        uniqueness and core values.
-      </h5>
 
-      <div className="relative mt-10">
+  return (
+    <div className="home" style={{ overflowY: 'auto', maxHeight: '480px' }}>
+      <h1 className="font-medium text-7xl pb-[2rem]">HOME SECTION</h1>
+      <h5 class="w-[28rem] max950:w-[15rem] text-[#939393]">
+        <strong>Introduce Your Brand:</strong><br />
+        Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
+      </h5>
+      <div className="relative mt-2">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
           onClick={toggleTagLineInputVisibility}
@@ -72,11 +79,13 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
           {isTagLineInputVisible ? (
             <input
               type="text"
+              id="inputField"
               value={TagLine}
               onChange={handleTagLineInputChange}
               className="w-[28rem] text-black border-none outline-none bg-transparent "
               placeholder="Enter Short Description TagLine "
               autoFocus
+              maxlength="40"
             />
           ) : (
             <span>{TagLine || "Short Description TagLine "}</span>
@@ -84,10 +93,10 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
         </h5>
         <div
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
-          
         ></div>
+        <p>{charTag}/40</p>
       </div>
-      <div className="relative mt-10">
+      <div className="relative mt-2">
         <h5
           className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
           onClick={toggleTagLineInputVisibility}
@@ -99,18 +108,18 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               onChange={handleTagLineInputChange1}
               className="w-[28rem] text-black border-none outline-none bg-transparent "
               placeholder="Enter Short Description TagLine1"
-             
+              maxlength="60"
             />
           ) : (
-            <span>{TagLine1 || "Short Description TagLine1 "}</span>
+            <span>{TagLine1 || "Short Description TagLine1 (Optional)"}</span>
           )}
         </h5>
         <div
           className="absolute left-0 right-0  h-[1px] bg-[#939393]"
-          
         ></div>
+        <p>{charTag2}/60</p>
       </div>
-      <div className="border border-black w-[16rem] h-[14rem] mt-[5rem] relative">
+      <div className="border border-black w-[16rem] h-[10rem] mt-[2rem] relative boxtoselect">
         <label
           htmlFor="fileInput"
           className="cursor-pointer"
@@ -124,13 +133,14 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                 id="fileInput"
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
               />
               <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
                 <img
                   src={vupload}
                   alt="Upload"
                   className="w-[5rem] cursor-pointer"
-//                  onClick={handleMediaClick}
+                //                  onClick={handleMediaClick}
                 />
                 <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
               </div>
@@ -142,14 +152,14 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
                   controls
                   src={selectedMedia}
                   className="w-full h-full object-cover"
-//                  onClick={handleMediaClick}
+                //                  onClick={handleMediaClick}
                 />
               ) : (
                 <img
                   src={selectedMedia}
                   alt="Uploaded media"
                   className="w-full h-full object-cover"
-//                  onClick={handleMediaClick}
+                  //                  onClick={handleMediaClick}
                   onError={(e) => {
                     e.target.src = vupload; // Display default image if image fails to load
                   }}

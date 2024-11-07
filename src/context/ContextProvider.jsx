@@ -3,10 +3,8 @@ import Context from "./Context";
 import { API } from "aws-amplify";
 
 const ContextProvider = (props) => {
-  // State definitions
   const [loader, setLoader] = useState(false);
   const [clients, setClients] = useState({});
-  const [pending, setPending] = useState({});
   const [products, setProducts] = useState([]);
   const [userProfile, setUserProfile] = useState({});
   const [isAuth, setIsAuth] = useState(false);
@@ -14,34 +12,11 @@ const ContextProvider = (props) => {
   const [subscriptionDetails, setSubscriptionDetails] = useState();
   const [instructordetails, setInstructordetails] = useState({});
   const [userData, setUserData] = useState({});
-  const [itemCount, setItemCount] = useState(0);
-  const [cartItems, setCartItems] = useState([]);
-  const [paymentHistory, setPaymentHistory] = useState([]);
-  const [cartState, setCartState] = useState({
-    subtotal: 0,
-    productItems: [],
-    quantities: [],
-    currencySymbol: '$',
-  });
-  const institutionId = localStorage.getItem('institution');
+  const [saleData, setSaleData] = useState([]);
+  const institutionId = localStorage.getItem("institution");
 
-  // Fetch functions
-  useEffect(() => {
-    fetchClients();
-    fetchUserProfile();
-    fetchProducts();
-    fetchTemplateDetails();
-    fetchInstructorDetails();
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    if (isAuth) {
-      fetchPending();
-    }
-  }, [isAuth]);
-
-  const fetchProducts = async () => {
+  // Memoize the fetch functions to prevent re-creation on every render
+  const fetchProducts = useCallback(async () => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/any/list-products");
@@ -51,33 +26,9 @@ const ContextProvider = (props) => {
     } finally {
       setLoader(false);
     }
-  };
+  }, []);
 
-  const fetchPending = async () => {
-    try {
-      setLoader(true);
-      const response = await API.get("clients", "/admin/list-pending_clients");
-      setPending(response);
-    } catch (error) {
-      console.error("Error fetching pending clients:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const fetchClients = async () => {
-    try {
-      setLoader(true);
-      const response = await API.get("clients", "/admin/list-institution");
-      setClients(response);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       setLoader(true);
       const response = await API.get("clients", "/self/read-self/awsaiapp");
@@ -87,90 +38,107 @@ const ContextProvider = (props) => {
     } finally {
       setLoader(false);
     }
-  };
+  }, []);
 
-  const fetchTemplateDetails = async () => {
+  const fetchClients = useCallback(async () => {
     try {
-      const response = await API.get("clients", `/user/development-form/get-user/${institutionId}`);
+      setLoader(true);
+      let response;
+      if (userProfile.role === "owner") {
+        response = await API.get("clients", "/admin/list-institution");
+      } else {
+        response = await API.get("clients", "/admin/list-institutionForSales");
+      }
+      setClients(response);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    } finally {
+      setLoader(false);
+    }
+  }, [userProfile.role]);
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      setLoader(true);
+      const response = await API.get("clients", "/admin/list-clients");
+      setSaleData(response);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoader(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  const fetchTemplateDetails = useCallback(async () => {
+    try {
+      const response = await API.get(
+        "clients",
+        `/user/development-form/get-user/${institutionId}`
+      );
       setTemplateDetails(response);
     } catch (error) {
       console.error("Error fetching template details:", error);
     } finally {
       setLoader(false);
     }
-  };
+  }, [institutionId]);
 
   const fetchProductDetails = async () => {
     try {
       const response = await API.get("clients", `/user/development-form/get-product/${institutionId}`);
-      setSubscriptionDetails(response);
+      setSubscriptionDetails(response)
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
   };
-
-  const fetchInstructorDetails = async () => {
+  const fetchInstructorDetails = useCallback(async () => {
     try {
-      const response = await API.get("clients", `/user/development-form/get-instructor/${institutionId}`);
+      const response = await API.get(
+        "clients",
+        `/user/development-form/get-instructor/${institutionId}`
+      );
       setInstructordetails(response);
     } catch (error) {
       console.error("Error fetching instructor details:", error);
     }
-  };
+  }, [institutionId]);
 
-  const getCartItems = async (institution, cognitoId) => {
+  const [payments, setPayments] = useState([]);
+
+  const fetchPaymentHistory = async () => {
     try {
-      const response = await API.get('clients', `/any/getcartitems/${institution}/${cognitoId}`);
-      setCartItems(response);
-      setItemCount(response.length);
-      getPaymentHistory(institution, cognitoId)
-      if (Array.isArray(response) && response.length > 0) {
-        const quantities = response.map(() => 1);
-        const subtotal = response.reduce((total, item, index) => total + (item.amount / 100) * quantities[index], 0);
-        const currencySymbol = response[0].currency === 'INR' ? '₹' : '$';
-        setCartState({ productItems: response, quantities, subtotal, currencySymbol });
-      }
+      const response = await API.get('beta_dance', `/payment-history/awsaiapp`);
+      const payments = response?.payments || [];
+      setPayments(payments);
     } catch (error) {
-      console.error('Error fetching cart items:', error);
+      console.error('Error fetching payment history:', error);
     }
   };
 
-  const removeCartItem = async (productId, institution, cognitoId) => {
-    try {
-      await API.del('clients', `/any/deleteCartItem/${institution}/${cognitoId}`, {
-        body: { productId },
-      });
-      getCartItems(institution, cognitoId);
-    } catch (error) {
-      console.error('Error removing product:', error);
-    }
-  };
+  useEffect(() => {
+    fetchUserProfile();
+    fetchProducts();
+    fetchTemplateDetails();
+    fetchInstructorDetails();
+    fetchUserData();
+    fetchPaymentHistory();
+  }, [
+    fetchUserProfile,
+    fetchProducts,
+    fetchTemplateDetails,
+    fetchInstructorDetails,
+    fetchUserData,
+  ]);
 
-  const addCartItem = async (item, institution, cognitoId) => {
-    try {
-      await API.post('clients', '/any/addtocart', {
-        body: { institution, cognitoId, cart: [item] },
-      });
-      getCartItems(institution, cognitoId);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
+  useEffect(() => {
+    if (userProfile && userProfile.role) {
+      fetchClients();
     }
-  };
-
-  const getPaymentHistory = async (institution, cognitoId) => {
-    try {
-      const paymentHistory = await API.get('clients', `/getReciept/${institution}/${cognitoId}`)
-      console.log(paymentHistory)
-      setPaymentHistory(paymentHistory)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // New function to check if a product is in the cart
-  const isProductInCart = useCallback((productId) => {
-    return Array.isArray(cartItems) && cartItems.some(item => item.planId === productId);
-  }, [cartItems]);
+  }, [userProfile, fetchClients]);
 
   const setLoaderFn = (data) => {
     setLoader(data);
@@ -199,11 +167,7 @@ const ContextProvider = (props) => {
       onReload: fetchClients,
     },
     products: products,
-    pending: {
-      data: pending,
-      fetchPending: fetchPending,
-      onReload: fetchPending,
-    },
+    fetchProducts: () => { },
     user: {
       profile: userProfile,
       fetchUserProfile: fetchUserProfile,
@@ -216,17 +180,9 @@ const ContextProvider = (props) => {
     instructorDetails: instructordetails,
     fetchProductDetails: fetchProductDetails,
     fetchInstructorDetails: fetchInstructorDetails,
-    getCartItems: getCartItems,
-    getPaymentHistory:getPaymentHistory,
-    cartState: cartState,
-    setCartState: setCartState,
-    removeCartItem: removeCartItem,
-    addCartItem: addCartItem,
-    setCartItems: setCartItems,
-    paymentHistory:paymentHistory,
-    cartItems,
-    itemCount,
-    isProductInCart // Add the new function to context data
+    saleData: saleData,
+    setSaleData: setSaleData,
+    payments:payments,
   };
 
   return (
