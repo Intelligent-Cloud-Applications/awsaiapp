@@ -11,7 +11,6 @@ function Contact({ contactInfo, setContactInfo}) {
   //   facebook: '',
   // });
 
-
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default country code
 
   const handleContactChange = (e) => {

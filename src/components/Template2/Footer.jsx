@@ -37,7 +37,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
   };
   const submitSections = async () => {
     nextSection();
-    Navigate("/pay");
+    // Navigate("/pay");
     setUserData(userData => ({ ...userData, web: true, isVerified: false }));
   }
 

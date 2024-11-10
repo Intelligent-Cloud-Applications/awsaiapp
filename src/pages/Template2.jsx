@@ -47,7 +47,6 @@ const Template2 = () => {
   const [logoName, setLogoName] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [values, setValues] = useState([]);
-  const [imgUrl, setimgUrl] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [services, setServices] = useState([
@@ -154,6 +153,7 @@ const Template2 = () => {
     Linkedin: '',
     Twitter: '',
     facebook: '',
+    "Establishment Year of Company": '',
   });
 
   const util = useContext(Context).util;
@@ -163,80 +163,94 @@ const Template2 = () => {
 
   const handleSubmitForm = async () => {
     try {
+      // Upload the logo image
       const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
 
-      // Get the URL of the uploaded file
+      // Get the URL of the uploaded logo
       let imageUrl = await Storage.get(response1.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-      //      console.log("logo: ", imageUrl);
+
       const additionalAttributes = {
-        LightPrimaryColor: LightPrimaryColor !== undefined ? LightPrimaryColor : null,
-        LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
+        LightPrimaryColor: LightPrimaryColor || null,
+        LightestPrimaryColor: LightestPrimaryColor || null,
       };
 
+      // Upload the video
       const response2 = await Storage.put(`${institutionId}/${video.name}`, video, {
         contentType: video.type,
       });
       let videoUrl = await Storage.get(response2.key);
       videoUrl = videoUrl.split("?")[0];
       setVideo(videoUrl);
-      const updatedImgUrls = [...imgUrl];
-      for (let index = 0; index < aboutImage.length; index++) {
-        const file = aboutImage[index];
-        const response5 = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
-          contentType: file.type,
-        });
+      // Using a promise to fetch all image URLs concurrently
+      const imageUrls = await Promise.all(
+        aboutImage.map(async (file, index) => {
+          const response5 = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
+            contentType: file.type,
+          });
 
-        // Get URL and update in the image URL array
-        let aboutImageUrl = await Storage.get(response5.key);
-        aboutImageUrl = aboutImageUrl.split("?")[0];
-        updatedImgUrls[index] = aboutImageUrl;
-      }
+          // Get URL and clean up the URL if needed
+          let aboutImageUrl = await Storage.get(response5.key);
+          aboutImageUrl = aboutImageUrl.split("?")[0];
 
-      // Set updated image URLs
-      setimgUrl(updatedImgUrls);
+          // Return the cleaned-up URL
+          return aboutImageUrl;
+        })
+      );
+
+      // Prepare social media data
       const socials = {
         facebook: contactInfo.facebook,
         instagram: contactInfo.instagram,
         linkedin: contactInfo.Linkedin,
-        twitter: contactInfo.Twitter
-      }
+        twitter: contactInfo.Twitter,
+      };
+
+      const body = {
+        institutionId: institutionId,
+        companyName: companyName,
+        PrimaryColor: PrimaryColor,
+        SecondaryColor: SecondaryColor,
+        logoUrl: imageUrl,
+        LightPrimaryColor: additionalAttributes.LightPrimaryColor,
+        LightestPrimaryColor: additionalAttributes.LightestPrimaryColor,
+        institutionType: institutionType,
+        TagLine: TagLine,
+        TagLine1: TagLine1,
+        TagLine2: TagLine2,
+        TagLine3: TagLine3,
+        videoUrl: videoUrl,
+        aboutParagraphs: policies['About Us'],
+        aboutImages: imageUrls,
+        address: contactInfo.address,
+        countBanner: countBanner,
+        description: companyDescription,
+        email: contactInfo.email,
+        logoName: logoName,
+        ownerName: contactInfo.owner_name,
+        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}`,
+        privacyPolicy: policies['Privacy Policy'],
+        services: services,
+        socials: socials,
+        subscriptions: subscriptions,
+        ourValues: values,
+        estYear: contactInfo['Establishment Year of Company'],
+        UpiId: contactInfo.upiId,
+      };
+      console.log("Data requesting for put", body);
+      // Call the API to submit the form
       await API.put("clients", "/user/dentalWebDevForm", {
-        body: {
-          institutionid: institutionId,
-          companyName: companyName,
-          PrimaryColor: PrimaryColor,
-          SecondaryColor: SecondaryColor,
-          logoUrl: imageUrl,
-          ...additionalAttributes,
-          institutionType: institutionType,
-          TagLine: TagLine,
-          TagLine1: TagLine1,
-          TagLine2: TagLine2,
-          TagLine3: TagLine3,
-          videoUrl: videoUrl,
-          aboutParagraphs: policies['About Us'],
-          aboutImages: imgUrl,
-          address: contactInfo.address,
-          countBanner: countBanner,
-          description: companyDescription,
-          email: contactInfo.email,
-          logoName: logoName,
-          ownerName: contactInfo.owner_name,
-          phone: '+' + contactInfo.countryCode + contactInfo.phoneNumber,
-          PrivacyPolicy: policies['Privacy Policy'],
-          Services: services,
-          socials: socials,
-          subscriptions: subscriptions,
-          ourValues: values,
-          UpiId: contactInfo.upiId,
-        },
+        body,
+        headers: {
+          "Content-Type": "application/json"
+        }
       });
     } catch (error) {
-      console.error("Error on completing the form ", error);
+      console.error("Error on completing the form", error.message, error.stack);
+      alert("There was an error submitting the form. Please try again.");
     }
   };
 
@@ -411,6 +425,7 @@ const Template2 = () => {
         //   handleInstructorsUpload();
         //   break;
         case 5:
+          console.log("the form will submit now")
           handleSubmitForm();
           break;
 
