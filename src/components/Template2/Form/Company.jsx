@@ -3,7 +3,6 @@ import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 
 function Company({
-  clients,
   companyName,
   setCompanyName,
   companyDescription,
