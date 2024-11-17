@@ -75,13 +75,13 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
                     X
                   </button>
                 </div>
-                <input
+                {/* <input
                   type="text"
                   value={item.heading}
                   onChange={(e) => handlePolicyChange(type, 'heading', e.target.value, itemIndex)}
                   placeholder="Heading"
                   className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
-                />
+                /> */}
                 <textarea
                   value={item.content}
                   onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}

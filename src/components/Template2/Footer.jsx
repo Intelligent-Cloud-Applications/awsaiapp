@@ -13,7 +13,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     'HOME',
     'SERVICES',
     // 'TESTIMONIALS',
-    'SUBSCRIPTION',
+    // 'SUBSCRIPTION',
     // 'FAQS',
     // 'INSTRUCTORS',
     'POLICY',
@@ -58,7 +58,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
           ))}
         </div>
 
-        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[32%] h-[3px] z-40 max1250:hidden'>
+        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[25%] h-[3px] z-40 max1250:hidden'>
           <div
             className='h-full bg-black rounded-lg'
             style={{

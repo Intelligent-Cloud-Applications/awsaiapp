@@ -6,7 +6,7 @@ import Company from '../components/Template2/Form/Company';
 import Home from '../components/Template2/Form/Home';
 import Services from '../components/Template2/Form/Services';
 // import Testimonials from '../components/Template2/Form/Testimonials';
-import Subscription from '../components/Template2/Form/Subscription';
+// import Subscription from '../components/Template2/Form/Subscription';
 // import FAQs from '../components/Template2/Form/FAQs';
 import Policy from '../components/Template2/Form/Policy';
 import Contact from '../components/Template2/Form/Contact';
@@ -35,8 +35,8 @@ const Template2 = () => {
   const [institutionId, setinstitutionId] = useState(null);
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
-  const [countryCode, setCountryCode] = useState("INR");
-  const [country, setCountry] = useState("India");
+  // const [countryCode, setCountryCode] = useState("INR");
+  // const [country, setCountry] = useState("India");
   const [institutionType, setInstitutionType] = useState("DanceStudio");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
@@ -52,8 +52,6 @@ const Template2 = () => {
   const [services, setServices] = useState([
     { title: '', items: [''] },
     { title: '', items: [''] },
-    { title: '', items: [''] },
-    { title: '', items: [''] },
   ]);
 
   // const [testimonials, setTestimonials] = useState([
@@ -62,55 +60,55 @@ const Template2 = () => {
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
   // ]);
 
-  const calculateDuration = (subscriptionType) => {
-    const daysInMonth = 30; // assuming 30 days in a month
+  // const calculateDuration = (subscriptionType) => {
+  //   const daysInMonth = 30; // assuming 30 days in a month
 
-    if (subscriptionType === 'monthly') {
-      return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    } else if (subscriptionType === 'weekly') {
-      return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    } else if (subscriptionType === 'yearly') {
-      return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    }
+  //   if (subscriptionType === 'monthly') {
+  //     return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
+  //   } else if (subscriptionType === 'weekly') {
+  //     return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+  //   } else if (subscriptionType === 'yearly') {
+  //     return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
+  //   }
 
-    return 0;
-  };
-  const [subscriptions, setSubscriptions] = useState([
+  //   return 0;
+  // };
+  // const [subscriptions, setSubscriptions] = useState([
 
-    {
-      heading: '',
-      amount: '',
-      currency: 'INR',
-      country: 'INDIA',
-      subscriptionType: 'monthly',
-      provides: [''],
-      duration: calculateDuration('monthly'),
-      durationText: 'Monthly',
-      india: true,
-    },
-    {
-      heading: '',
-      amount: '',
-      currency: 'INR',
-      country: 'INDIA',
-      subscriptionType: 'monthly',
-      provides: [''],
-      duration: calculateDuration('monthly'),
-      durationText: 'Monthly',
-      india: true,
-    },
-    {
-      heading: '',
-      amount: '',
-      currency: 'INR',
-      country: 'INDIA',
-      subscriptionType: 'monthly',
-      provides: [''],
-      duration: calculateDuration('monthly'),
-      durationText: 'Monthly',
-      india: true,
-    },
-  ]);
+  //   {
+  //     heading: '',
+  //     amount: '',
+  //     currency: 'INR',
+  //     country: 'INDIA',
+  //     subscriptionType: 'monthly',
+  //     provides: [''],
+  //     duration: calculateDuration('monthly'),
+  //     durationText: 'Monthly',
+  //     india: true,
+  //   },
+  //   {
+  //     heading: '',
+  //     amount: '',
+  //     currency: 'INR',
+  //     country: 'INDIA',
+  //     subscriptionType: 'monthly',
+  //     provides: [''],
+  //     duration: calculateDuration('monthly'),
+  //     durationText: 'Monthly',
+  //     india: true,
+  //   },
+  //   {
+  //     heading: '',
+  //     amount: '',
+  //     currency: 'INR',
+  //     country: 'INDIA',
+  //     subscriptionType: 'monthly',
+  //     provides: [''],
+  //     duration: calculateDuration('monthly'),
+  //     durationText: 'Monthly',
+  //     india: true,
+  //   },
+  // ]);
 
 
   // const [faqs, setFaqs] = useState([
@@ -137,8 +135,8 @@ const Template2 = () => {
   // ]);
 
   const [policies, setPolicies] = useState({
-    'Privacy Policy': [{ heading: '', content: '' }],
-    'About Us': [{ heading: '', content: '' }],
+    'Privacy Policy': [{ content: '' }],
+    'About Us': [{ content: '' }],
   });
 
   const [contactInfo, setContactInfo] = useState({
@@ -150,9 +148,8 @@ const Template2 = () => {
     email: '',
     upiId: '',
     instagram: '',
-    Linkedin: '',
-    Twitter: '',
     facebook: '',
+    youTube: '',
     "Establishment Year of Company": '',
   });
 
@@ -205,8 +202,7 @@ const Template2 = () => {
       const socials = {
         facebook: contactInfo.facebook,
         instagram: contactInfo.instagram,
-        linkedin: contactInfo.Linkedin,
-        twitter: contactInfo.Twitter,
+        youTube: contactInfo.youTube,
       };
 
       const body = {
@@ -235,14 +231,14 @@ const Template2 = () => {
         privacyPolicy: policies['Privacy Policy'],
         services: services,
         socials: socials,
-        subscriptions: subscriptions,
+        // subscriptions: subscriptions,
         ourValues: values,
         estYear: contactInfo['Establishment Year of Company'],
         UpiId: contactInfo.upiId,
       };
       console.log("Data requesting for put", body);
       // Call the API to submit the form
-      await API.put("clients", "/user/dentalWebDevForm", {
+      await API.post("clients", "/user/dentalWebDevForm", {
         body,
         headers: {
           "Content-Type": "application/json"
@@ -389,13 +385,13 @@ const Template2 = () => {
         //   }
         //   handleTestimonialsUpload();
         //   break;
-        case 4:
-          const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-          if (invalidPriceIndex !== -1) {
-            alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
-            return prevSection;
-          }
-          break;
+        // case 4:
+        //   const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
+        //   if (invalidPriceIndex !== -1) {
+        //     alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+        //     return prevSection;
+        //   }
+        //   break;
         // case 6:
         //   const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
@@ -424,7 +420,7 @@ const Template2 = () => {
         //   }
         //   handleInstructorsUpload();
         //   break;
-        case 5:
+        case 4:
           console.log("the form will submit now")
           handleSubmitForm();
           break;
@@ -543,7 +539,7 @@ const Template2 = () => {
               setTestimonialBg={setTestimonialBg}
             />} */}
 
-          {currentSection === 4 &&
+          {/* {currentSection === 4 &&
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
@@ -551,14 +547,14 @@ const Template2 = () => {
               setCountry={setCountry}
               countryCode={countryCode}
               setCountryCode={setCountryCode}
-            />}
+            />} */}
 
           {/* {currentSection === 6 &&
             <FAQs
               faqs={faqs}
               setFaqs={setFaqs}
             />} */}
-          {currentSection === 5 &&
+          {currentSection === 4 &&
             <Policy
               policies={policies}
               setPolicies={setPolicies}

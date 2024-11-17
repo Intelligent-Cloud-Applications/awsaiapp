@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
+import theme from "../../../theme";
 
 function Company({
   companyName,
@@ -40,21 +41,15 @@ function Company({
     setinstitutionId(validValue);
   };
 
+  
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
+    const generatedTheme = theme(PrimaryColor);
+    setSecondaryColor(generatedTheme.secondary);
+    setLightPrimaryColor(generatedTheme.accent);
+    setLightestPrimaryColor(generatedTheme.background);
   };
 
-  const handleColorChange2 = (e) => {
-    setSecondaryColor(e.target.value);
-  };
-
-  const handleColorChange3 = (e) => {
-    setLightPrimaryColor(e.target.value);
-  };
-
-  const handleColorChange4 = (e) => {
-    setLightestPrimaryColor(e.target.value);
-  };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -164,25 +159,25 @@ function Company({
             type="color"
             value={PrimaryColor}
             onChange={handleColorChange1}
-            className="rounded-full h-12 w-12 cursor-pointer border-none outline-none colorbox"
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
 
           <input
             type="color"
+            readOnly
             value={SecondaryColor}
-            onChange={handleColorChange2}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
+            readOnly
             value={LightPrimaryColor}
-            onChange={handleColorChange3}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
+            readOnly
             value={LightestPrimaryColor}
-            onChange={handleColorChange4}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
         </div>

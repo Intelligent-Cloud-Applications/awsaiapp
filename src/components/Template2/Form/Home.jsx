@@ -92,7 +92,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               value={TagLine}
               onChange={handleTagLineInputChange}
               className="w-full text-black border-none outline-none bg-transparent "
-              placeholder="Enter Short Description TagLine "
+              placeholder="Enter Short Description TagLine within 30 character"
               autoFocus
               maxlength="30"
             />
@@ -116,7 +116,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               value={TagLine1}
               onChange={handleTagLineInputChange1}
               className="w-full text-black border-none outline-none bg-transparent "
-              placeholder="Enter Short Description TagLine1"
+              placeholder="Enter Short Description TagLine1 within 20 character"
               maxlength="20"
             />
           ) : (
@@ -139,7 +139,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               value={TagLine2}
               onChange={handleTagLineInputChange2}
               className="w-full text-black border-none outline-none bg-transparent "
-              placeholder="Enter Short Description TagLine2"
+              placeholder="Enter Short Description TagLine2 within 60 character"
               maxlength="60"
             />
           ) : (
@@ -162,7 +162,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
               value={TagLine3}
               onChange={handleTagLineInputChange3}
               className="w-full text-black border-none outline-none bg-transparent "
-              placeholder="Enter Short Description TagLine3"
+              placeholder="Enter Short Description TagLine3 within 60 character"
               maxlength="60"
             />
           ) : (

@@ -5353,7 +5353,7 @@ aws-sdk@^2.1646.0:
     aws-cdk "^2.96.2"
     aws-cdk-lib "^2.96.2"
     aws-sdk "^2.1646.0"
-    awsaiapp "file:C:/Users/anant/AppData/Local/Yarn/Cache/v6/npm-awsaiapp-0.1.0-11c8bd02-fb0f-4a27-8db6-8e160de24c0e-1730833742017/node_modules/awsaiapp"
+    awsaiapp "file:C:/Users/anant/AppData/Local/Yarn/Cache/v6/npm-awsaiapp-0.1.0-78e83aa4-9e22-4086-aab8-be8b665288ef-1731824894410/node_modules/awsaiapp"
     axios "^1.7.2"
     bootstrap "^5.3.2"
     browserify-zlib "^0.2.0"
@@ -6014,6 +6014,11 @@ chokidar@^3.4.2, chokidar@^3.5.3, chokidar@^3.6.0:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+chroma-js@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-3.1.2.tgz#cfb807045182228574eae5380587cdb830e985d6"
+  integrity sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==
 
 chrome-trace-event@^1.0.2:
   version "1.0.3"
