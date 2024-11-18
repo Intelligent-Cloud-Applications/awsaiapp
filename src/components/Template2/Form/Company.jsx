@@ -27,21 +27,31 @@ function Company({
 }) {
 
   const handleCompanyInputChange = (e) => {
-    setCompanyName(e.target.value);
-  };
+    const inputValue = e.target.value; // Get the value from the event
+    setCompanyName(inputValue);  // Set the state with the input value
+
+    const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
+    const id1 = noSpaces.substring(0, 5);  // Take the first 5 characters without spaces
+    const id2 = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
+    const newid = id1 + id2;  // Combine the two parts to form the new ID
+
+    setinstitutionId(newid);  // Update the institution ID state
+
+    console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
+};
+
   const handleCompanyDescriptionInputChange = (e) => {
     setCompanyDescription(e.target.value);
   };
   const handleLogoNameChange = (e) => {
     setLogoName(e.target.value);
   };
-  const handleinstitutionIdInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    const validValue = value.replace(/[^a-z0-9]/g, '');
-    setinstitutionId(validValue);
-  };
+  // const handleinstitutionIdInputChange = (e) => {
+  //   const value = e.target.value.toLowerCase();
+  //   const validValue = value.replace(/[^a-z0-9]/g, '');
+  //   setinstitutionId(validValue);
+  // };
 
-  
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
     const generatedTheme = theme(PrimaryColor);
@@ -78,8 +88,7 @@ function Company({
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
-
-      <div className="relative mt-6 px-[1px] mr-10">
+      {/* <div className="relative mt-6 px-[1px] mr-10">
         <div className="mb-2 block">
           <Label
             htmlFor="institutionid"
@@ -102,8 +111,7 @@ function Company({
             borderRadius: "8px",
           }}
         />
-
-      </div>
+      </div> */}
 
       <div className="relative mt-2 px-[1px] mr-10">
         <div className="mb-2 block">

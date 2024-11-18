@@ -21,7 +21,7 @@ const Template2 = () => {
   const [savedData, setsavedData] = useState();
 
   console.log("🚀 ~ file: Template2.jsx:21 ~ Template2 ~ savedData:", savedData)
-  const [Companydata, setCompanydata] = useState([]);
+  // const [Companydata, setCompanydata] = useState([]);
   const [logo, setLogo] = useState(null);
   const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
   const [countBanner, setCountBanner] = useState(
@@ -37,7 +37,7 @@ const Template2 = () => {
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
   // const [countryCode, setCountryCode] = useState("INR");
   // const [country, setCountry] = useState("India");
-  const [institutionType, setInstitutionType] = useState("DanceStudio");
+  const institutionType = "Dental";
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
   const [TagLine2, setTagLine2] = useState("");
@@ -135,8 +135,8 @@ const Template2 = () => {
   // ]);
 
   const [policies, setPolicies] = useState({
-    'Privacy Policy': [{ content: '' }],
-    'About Us': [{ content: '' }],
+    'Privacy Policy': "",
+    'About Us': "",
   });
 
   const [contactInfo, setContactInfo] = useState({
@@ -206,34 +206,34 @@ const Template2 = () => {
       };
 
       const body = {
-        institutionId: institutionId,
-        companyName: companyName,
-        PrimaryColor: PrimaryColor,
-        SecondaryColor: SecondaryColor,
-        logoUrl: imageUrl,
-        LightPrimaryColor: additionalAttributes.LightPrimaryColor,
-        LightestPrimaryColor: additionalAttributes.LightestPrimaryColor,
-        institutionType: institutionType,
-        TagLine: TagLine,
-        TagLine1: TagLine1,
-        TagLine2: TagLine2,
-        TagLine3: TagLine3,
-        videoUrl: videoUrl,
+        index: '0',
+        estYear: contactInfo['Establishment Year of Company'],
+        institutionid: institutionId,
         aboutParagraphs: policies['About Us'],
-        aboutImages: imageUrls,
-        address: contactInfo.address,
-        countBanner: countBanner,
-        description: companyDescription,
+        LightestPrimaryColor: additionalAttributes.LightestPrimaryColor,
         email: contactInfo.email,
         logoName: logoName,
-        ownerName: contactInfo.owner_name,
-        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}`,
-        privacyPolicy: policies['Privacy Policy'],
-        services: services,
+        videoUrl: videoUrl,
+        institutionType: institutionType,
         socials: socials,
-        // subscriptions: subscriptions,
+        aboutImages: imageUrls,
         ourValues: values,
-        estYear: contactInfo['Establishment Year of Company'],
+        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}`,
+        LightPrimaryColor: additionalAttributes.LightPrimaryColor,
+        TagLine3: TagLine3,
+        SecondaryColor: SecondaryColor,
+        TagLine2: TagLine2,
+        TagLine1: TagLine1,
+        privacyPolicy: policies['Privacy Policy'],
+        companyName: companyName,
+        services: services,
+        logoUrl: imageUrl,
+        address: contactInfo.address,
+        ownerName: contactInfo.owner_name,
+        TagLine: TagLine,
+        PrimaryColor: PrimaryColor,
+        countBanner: countBanner,
+        description: companyDescription,
         UpiId: contactInfo.upiId,
       };
       console.log("Data requesting for put", body);
@@ -250,23 +250,23 @@ const Template2 = () => {
     }
   };
 
-  const fetchClients = async (institution) => {
-    try {
-      //      setLoader(true);
-      const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
-      //      console.log(response)
-      setCompanydata(response);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-    } finally {
-      //      setLoader(false);
-    }
-  };
+  // const fetchClients = async (institution) => {
+  //   try {
+  //     //      setLoader(true);
+  //     const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
+  //     //      console.log(response)
+  //     setCompanydata(response);
+  //   } catch (error) {
+  //     console.error("Error fetching clients:", error);
+  //   } finally {
+  //     //      setLoader(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchClients();
-    //    console.log("The daTa are fetching!");
-  }, []);
+  // useEffect(() => {
+  //   fetchClients();
+  //   //    console.log("The daTa are fetching!");
+  // }, []);
 
 
   const handleNextSection = () => {
@@ -293,7 +293,7 @@ const Template2 = () => {
           }
           if (!institutionCheckInProgress) {
             institutionCheckInProgress = true;
-            API.get("clients", `/user/check-dental?institutionId=${institutionId}`)
+            API.get("clients", `/user/check-dental?institutionid=${institutionId}`)
               .then(response => {
                 institutionCheckInProgress = false;
                 if (response && response.exists) {
@@ -474,7 +474,7 @@ const Template2 = () => {
         <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
-              clients={Companydata}
+              // clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
               institutionId={institutionId}
@@ -484,8 +484,6 @@ const Template2 = () => {
               SecondaryColor={SecondaryColor}
               setSecondaryColor={setSecondaryColor}
               logo={logo}
-              institutionType={institutionType}
-              setInstitutionType={setInstitutionType}
               setLogo={setLogo}
               LightestPrimaryColor={LightestPrimaryColor}
               setLightestPrimaryColor={setLightestPrimaryColor}

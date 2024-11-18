@@ -25,7 +25,7 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  const [isUserAdd, setIsUserAdd] = useState(false);
+  // const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -35,8 +35,8 @@ const Panel = () => {
   const [TotalLeads, setTotalLeads] = useState("");
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
-  // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
+  // eslint-disable-next-line
   const [JoiningDate, setJoiningDate] = useState("");
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -213,53 +213,53 @@ const Panel = () => {
   //   setUserData(updatedUserData);
   // };
 
-  const toggleAddUserForm = () => {
-    setIsUserAdd(!isUserAdd);
-  };
+  // const toggleAddUserForm = () => {
+  //   setIsUserAdd(!isUserAdd);
+  // };
 
   // Function to add a new client
-  const handleAddClient = async (e) => {
-    e.preventDefault();
-    try {
-      util.setLoader(true);
-      const apiName = "clients";
-      const path = "/admin/create-clients";
-      const myInit = {
-        body: {
-          institution: name,
-          emailId: email,
-          phoneNumber: phoneNumber,
-          country: Country,
-          JoiningDate: JoiningDate,
-          status: status,
-        },
-      };
-      const response = await API.post(apiName, path, myInit);
-      Swal.fire({
-        icon: "success",
-        title: "User Added",
-      });
-      clients.onReload();
-      console.log("Client added successfully:", response);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("");
-      setRevenue("");
-      setJoiningDate("");
-      setStatus("");
-      toggleAddUserForm();
-      util.setLoader(false);
-    } catch (error) {
-      console.error("Error adding client:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while creating the user.",
-      });
-      util.setLoader(false);
-    }
-  };
+  // const handleAddClient = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     util.setLoader(true);
+  //     const apiName = "clients";
+  //     const path = "/admin/create-clients";
+  //     const myInit = {
+  //       body: {
+  //         institution: name,
+  //         emailId: email,
+  //         phoneNumber: phoneNumber,
+  //         country: Country,
+  //         JoiningDate: JoiningDate,
+  //         status: status,
+  //       },
+  //     };
+  //     const response = await API.post(apiName, path, myInit);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "User Added",
+  //     });
+  //     clients.onReload();
+  //     console.log("Client added successfully:", response);
+  //     setName("");
+  //     setEmail("");
+  //     setPhoneNumber("");
+  //     setCountry("");
+  //     setRevenue("");
+  //     setJoiningDate("");
+  //     setStatus("");
+  //     toggleAddUserForm();
+  //     util.setLoader(false);
+  //   } catch (error) {
+  //     console.error("Error adding client:", error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "An error occurred while creating the user.",
+  //     });
+  //     util.setLoader(false);
+  //   }
+  // };
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -363,14 +363,22 @@ const Panel = () => {
   };
 
   const handleDropdownChange = useCallback(
-    async (clientInstitution, status, index) => {
+    async (clientInstitution, status) => {
       const isDelivered = status === "Delivered";
       try {
-        const body = { institutionId: clientInstitution, index, isDelivered };
-        const response = await API.put("clients", "/user/updateDelivary", {
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
+        let response;
+        const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
+        if(clientInstitution.institutionType === "Dance Studio"){
+          response = await API.put("clients", "/user/updateDelivary", {
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+        }else{
+          response = await API.put("clients", "/user/updateDelivaryForDental", {
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
         console.log("API response:", response);
       } catch (error) {
         console.error("Error updating delivery status:", error);
@@ -513,7 +521,7 @@ const Panel = () => {
             </div>
 
             {/* form of creating new client */}
-            {isUserAdd && (
+            {/* {isUserAdd && (
               <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
                 <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
                   <input
@@ -622,7 +630,7 @@ const Panel = () => {
                   </div>
                 </form>
               </div>
-            )}
+            )} */}
 
             {/* Headings */}
             <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
@@ -664,15 +672,6 @@ const Panel = () => {
                   >
                     Created By
                   </Table.HeadCell>
-                  {/* <Table.HeadCell
-                className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[20px]`}
-              >
-                Leads
-              </Table.HeadCell> */}
-                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                More
-              </Table.HeadCell> */}
                 </Table.Head>
 
                 <Table.Body className="bg-white">
@@ -721,9 +720,8 @@ const Panel = () => {
                           }
                           onChange={(e) =>
                             handleDropdownChange(
-                              client.institutionid,
+                              client,
                               e.target.value,
-                              client.index
                             )
                           }
                           className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"

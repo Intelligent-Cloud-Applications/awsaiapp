@@ -42,7 +42,7 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
       }
     }
   };
-  console.log("Images:",aboutImage);
+  console.log("Images:", aboutImage);
 
   const addValueField = () => {
     setAboutImage([...aboutImage, null]); // Add null as a placeholder for a new file
@@ -65,7 +65,7 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
         {Object.entries(policies).map(([type, value], index) => (
           <div key={index} className="mt-4">
             <h2 className="font-medium text-xl">{type}</h2>
-            {value.map((item, itemIndex) => (
+            {Array.isArray(value) && value.map((item, itemIndex) => (
               <div key={itemIndex} className="mt-4">
                 <div className="relative">
                   <button
@@ -75,13 +75,6 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
                     X
                   </button>
                 </div>
-                {/* <input
-                  type="text"
-                  value={item.heading}
-                  onChange={(e) => handlePolicyChange(type, 'heading', e.target.value, itemIndex)}
-                  placeholder="Heading"
-                  className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
-                /> */}
                 <textarea
                   value={item.content}
                   onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}

@@ -14,13 +14,8 @@ import { API } from "aws-amplify";
 import { Link } from "react-router-dom";
 
 const PendingClients = (props) => {
-  // const itemsPerPage = 6;
- 
-  // const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRow] = useState([]);
-
- 
 
   const [setData] = useState([
     {
@@ -28,7 +23,7 @@ const PendingClients = (props) => {
     },
   ]);
 
-  const { userData,setUserData,pending } = useContext(Context);
+  const { userData, setUserData, pending } = useContext(Context);
   const UtilCtx = useContext(Context).util;
   const clientsData = Object.entries(pending.data);
   async function updateDelivery(isDelivered, cognitoId) {
@@ -65,31 +60,20 @@ const PendingClients = (props) => {
         );
         if (userToUpdateIndex !== -1) {
           updatedUserData[userToUpdateIndex].isDelivered = newStatus;
-          setUserData(updatedUserData); 
+          setUserData(updatedUserData);
         }
 
         UtilCtx.setLoader(false);
-        setData(updatedClients); 
+        setData(updatedClients);
       } catch (error) {
         UtilCtx.setLoader(false);
-        console.error("Error updating delivery status:", error);  
+        console.error("Error updating delivery status:", error);
       }
     }
   };
 
-
-  // const Navigate = useNavigate();
-
-  // eslint-disable-next-line
-
-  // eslint-disable-next-line
-
-
   const [selectedUser] = useState(null);
   const [showDetails] = useState(false);
-
-
-  // console.log("dfdfdfdfdfd", pending.isDelivered);
 
   const isRowSelected = (institution) => {
     return selectedRow.includes(institution);
@@ -162,9 +146,6 @@ const PendingClients = (props) => {
             </div>
           </div>
         </div>
-
-      
-
         {/* Headings */}
         <div className=" w-[75vw] items-center relative text-[0.9rem] border-2 border-solid border-[#757575] gap-[0] mb-2 max1050:hidden">
           <div className="absolute w-[8px] h-[8px] top-[0.45rem] left-3 bg-black rounded-[4px]" />
@@ -180,13 +161,6 @@ const PendingClients = (props) => {
                 <div className="font-[700] ">Website Status</div>
               </div>
             </div>
-
-            {/* <div className="flex justify-between w-[14vw] max1300:w-[13rem] pl-[1rem]"> */}
-            {/* <div className="font-[700] ">Paymeent</div>
-              <div className="font-[700] mr-9">Attendance</div> */}
-            {/* <div className="font-[700] mr-[-3rem] max1300:hidden">Leads</div> */}
-            {/* </div> */}
-        
             <div></div>
           </div>
         </div>
@@ -195,11 +169,10 @@ const PendingClients = (props) => {
           {filteredClients.map(([key, pending], index) => (
             <div
               key={pending.institution}
-              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${
-                isRowSelected(pending.institution)
+              className={`w-[75vw] mb-3 p-2 border-2 border-solid rounded-[0.5rem] item-center relative max1050:w-[83vw] ${isRowSelected(pending.institution)
                   ? "my-2 border-[#30AFBC] transform scale-y-[1.18] transition-transform duration-500 ease-in-out"
                   : "border-[#a2a2a280]"
-              }`}
+                }`}
               style={{
                 margin: isRowSelected(pending.institution)
                   ? "1rem 0"
@@ -224,48 +197,36 @@ const PendingClients = (props) => {
                     {/* <div className="col-span-3 ml-[3rem] font-semibold text-sm max600:hidden">
                       {pending.country}
                     </div> */}
-                    
+
                     <div className="col-span-2 ml-[-4rem] relative max1008:hidden pl-[7rem]">
-                      
+
                       <div
-                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[7rem] pl-2 K2D ${
-                          pending.isVerified === true
+                        className={`border-2 flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[7rem] pl-2 K2D ${pending.isVerified === true
                             ? "border-[#99EF72] text-[#99EF72]"
                             : "border-[#FF4343AB] text-[#FF4343AB]"
-                        }`}
+                          }`}
                       >
                         <div
-                          className={`w-3 h-3 mt-[0.4rem] ${
-                            pending.isVerified === true
+                          className={`w-3 h-3 mt-[0.4rem] ${pending.isVerified === true
                               ? "bg-[#99EF72]"
                               : "bg-[#FF4343AB]"
-                          } rounded-full transform K2D`}
+                            } rounded-full transform K2D`}
                         ></div>
                         <div>
                           {pending.isVerified === true
                             ? "Complete"
                             : "Pending"}
                         </div>
-                        
-                      </div>
-                      
-                    </div>
-                 
-                    {/* <div className="col-span-3 ml-[1rem] font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                      {pending.country}
-                    </div> */}
-                    
-                    <div className="ml-[9rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">
-                        {pending.paymentId}
-                      </div>
-                      
-                    <div className="flex flex-row justify-between w-[17vw]">
-                      
-                      <div className="w-[10rem] ml-[17rem] text-center font-semibold text-sm ">
-                    
 
+                      </div>
+
+                    </div>
+                    <div className="ml-[9rem] relative font-semibold text-sm max850:ml-[1rem] max600:hidden">
+                      {pending.paymentId}
+                    </div>
+                    <div className="flex flex-row justify-between w-[17vw]">
+                      <div className="w-[10rem] ml-[17rem] text-center font-semibold text-sm ">
                         <div className="w-[95%] flex  justify-end m-[0.8rem] max600:ml-[-3rem] max450:mr-[-3rem] max375:ml-[-3rem] gap-3 ">
-                          
                           <div className=" ml-[-4rem] relative max950:mr-[3rem] max800:mr-28 h-6 max450:hidden">
                             <FormControl className=" flex flex-row gap-[0.5rem] text-center rounded-[1.5rem] w-[10rem] max600:w-[8rem]  max450:w-[6rem] max375:w-[5rem]  max800:font-[1px] ">
                               <Select
@@ -292,43 +253,27 @@ const PendingClients = (props) => {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="w-[10rem] font-semibold text-center text-sm max1300:hidden">
-                        {pending.recentMonthLeads}
-                      </div> */}
                     </div>
-                    
                   </div>
                 </div>
                 <Link
-  to={{
-    pathname: "/full",
-    search: `?institutionName=${pending.institutionName}`,
-  }}
-  // to={{
-  //   pathname: "/full",
-  //   search: `?institutionName=happyprancer`,
-  // }}
-  className="ml-8 focus:outline-none "
->
-  <img
-    className="w-6 h-6 max478:w-10 "
-    src={personIcon}
-    alt="Track"
-    
-  />
-</Link>
+                  to={{
+                    pathname: "/full",
+                    search: `?institutionName=${pending.institutionName}`,
+                  }}
+                  className="ml-8 focus:outline-none "
+                >
+                  <img
+                    className="w-6 h-6 max478:w-10 "
+                    src={personIcon}
+                    alt="Track"
 
-
-
-
-
-              
+                  />
+                </Link>
               </div>
-              
             </div>
           ))}
         </div>
-
         {showDetails && selectedUser && (
           <div
             class=" mt-[-38rem] rounded-lg right-[4%] w-[22rem] h-[40rem] relative bg-white"
@@ -345,16 +290,8 @@ const PendingClients = (props) => {
               {selectedRowCount} Item{selectedRowCount > 1 ? "s" : ""} selected
             </div>
           )}
-
           {/* Pagination */}
           <div className="flex justify-start pt-4 ml-[2rem]">
-            {/* <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              className="custom-pagination"
-            /> */}
-           
           </div>
         </div>
       </div>
