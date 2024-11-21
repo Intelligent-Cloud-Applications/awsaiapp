@@ -15,7 +15,7 @@ import { Pagination } from "flowbite-react";
 import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
 const Panel = () => {
-  const itemsPerPage = 7;
+  const itemsPerPage = 5;
   const [status, setStatus] = useState();
   const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
