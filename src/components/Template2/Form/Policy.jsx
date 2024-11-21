@@ -3,9 +3,9 @@ import { Label, FileInput } from 'flowbite-react';
 
 function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
 
-  const handlePolicyChange = (type, field, value, index) => {
+  const handlePolicyChange = (type, value, index) => {
     const updatedPolicies = [...policies[type]];
-    updatedPolicies[index][field] = value;
+    updatedPolicies[index] = value;
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
 
@@ -77,7 +77,7 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
                 </div>
                 <textarea
                   value={item.content}
-                  onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}
+                  onChange={(e) => handlePolicyChange(type, e.target.value, itemIndex)}
                   placeholder="Content"
                   className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none placeholder-border-b-2 policy-textarea"
                   rows={3}

@@ -37,7 +37,6 @@ const Template2 = () => {
   const [SecondaryColor, setSecondaryColor] = useState("#000000");
   // const [countryCode, setCountryCode] = useState("INR");
   // const [country, setCountry] = useState("India");
-  const institutionType = "Dental";
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
   const [TagLine2, setTagLine2] = useState("");
@@ -135,8 +134,8 @@ const Template2 = () => {
   // ]);
 
   const [policies, setPolicies] = useState({
-    'Privacy Policy': "",
-    'About Us': "",
+    'Privacy Policy': [""],
+    'About Us': [""],
   });
 
   const [contactInfo, setContactInfo] = useState({
@@ -150,7 +149,7 @@ const Template2 = () => {
     instagram: '',
     facebook: '',
     youTube: '',
-    "Establishment Year of Company": '',
+    'Establishment Year of Company': '',
   });
 
   const util = useContext(Context).util;
@@ -164,91 +163,87 @@ const Template2 = () => {
       const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
-
+  
       // Get the URL of the uploaded logo
       let imageUrl = await Storage.get(response1.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-
-      const additionalAttributes = {
-        LightPrimaryColor: LightPrimaryColor || null,
-        LightestPrimaryColor: LightestPrimaryColor || null,
-      };
-
+  
       // Upload the video
-      const response2 = await Storage.put(`${institutionId}/${video.name}`, video, {
+      const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
         contentType: video.type,
       });
       let videoUrl = await Storage.get(response2.key);
       videoUrl = videoUrl.split("?")[0];
       setVideo(videoUrl);
-      // Using a promise to fetch all image URLs concurrently
-      const imageUrls = await Promise.all(
-        aboutImage.map(async (file, index) => {
-          const response5 = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
+  
+      // Upload "About Us" images and fetch URLs concurrently
+      const aboutImagesUrls = await Promise.all(
+        aboutImage.map(async (file) => {
+          const response = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
             contentType: file.type,
           });
-
-          // Get URL and clean up the URL if needed
-          let aboutImageUrl = await Storage.get(response5.key);
-          aboutImageUrl = aboutImageUrl.split("?")[0];
-
-          // Return the cleaned-up URL
-          return aboutImageUrl;
+          let aboutImageUrl = await Storage.get(response.key);
+          return aboutImageUrl.split("?")[0];
         })
       );
-
-      // Prepare social media data
+  
+      // Prepare social media links
       const socials = {
-        facebook: contactInfo.facebook,
-        instagram: contactInfo.instagram,
-        youTube: contactInfo.youTube,
+        facebook: contactInfo.facebook || null,
+        instagram: contactInfo.instagram || null,
+        youTube: contactInfo.youTube || null,
       };
-
+  
+      // Prepare the request body
       const body = {
-        index: '0',
-        estYear: contactInfo['Establishment Year of Company'],
         institutionid: institutionId,
-        aboutParagraphs: policies['About Us'],
-        LightestPrimaryColor: additionalAttributes.LightestPrimaryColor,
-        email: contactInfo.email,
-        logoName: logoName,
-        videoUrl: videoUrl,
-        institutionType: institutionType,
-        socials: socials,
-        aboutImages: imageUrls,
-        ourValues: values,
-        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}`,
-        LightPrimaryColor: additionalAttributes.LightPrimaryColor,
-        TagLine3: TagLine3,
-        SecondaryColor: SecondaryColor,
-        TagLine2: TagLine2,
-        TagLine1: TagLine1,
-        privacyPolicy: policies['Privacy Policy'],
-        companyName: companyName,
-        services: services,
+        index:"0", // Example index value, replace as needed
+        companyName: companyName || null,
+        PrimaryColor: PrimaryColor || null,
+        SecondaryColor: SecondaryColor || null,
         logoUrl: imageUrl,
-        address: contactInfo.address,
-        ownerName: contactInfo.owner_name,
-        TagLine: TagLine,
-        PrimaryColor: PrimaryColor,
-        countBanner: countBanner,
-        description: companyDescription,
-        UpiId: contactInfo.upiId,
+        LightPrimaryColor: LightPrimaryColor || null,
+        LightestPrimaryColor: LightestPrimaryColor || null,
+        TagLine: TagLine || null,
+        TagLine1: TagLine1 || null,
+        TagLine2: TagLine2 || null,
+        TagLine3: TagLine3 || null,
+        videoUrl: videoUrl,
+        aboutParagraphs: policies['About Us'] || [],
+        aboutImages: aboutImagesUrls,
+        address: contactInfo.address || null,
+        countBanner: countBanner || [],
+        description: companyDescription || null,
+        email: contactInfo.email || null,
+        logoName: logo.name || null,
+        ownerName: contactInfo.owner_name || null,
+        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}` || null,
+        privacyPolicy: policies['Privacy Policy'] || [],
+        services: services || [],
+        socials: socials,
+        ourValues: values || [],
+        estYear: contactInfo['Establishment Year of Company'] || null,
+        UpiId: contactInfo.upiId || null,
       };
-      console.log("Data requesting for put", body);
-      // Call the API to submit the form
-      await API.post("clients", "/user/dentalWebDevForm", {
+  
+      console.log("Data requesting for PUT", body);
+  
+      // Call the API
+      const response = await API.post("clients", "/user/dentalWebDevForm", {
         body,
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
+  
+      console.log("API response:", response);
     } catch (error) {
-      console.error("Error on completing the form", error.message, error.stack);
+      console.error("Error on completing the form:", error.message, error.stack);
       alert("There was an error submitting the form. Please try again.");
     }
   };
+  
 
   // const fetchClients = async (institution) => {
   //   try {
