@@ -22,8 +22,6 @@ function Company({
   setLightestPrimaryColor,
   selectedFile,
   setSelectedFile,
-  logoName,
-  setLogoName,
 }) {
 
   const handleCompanyInputChange = (e) => {
@@ -42,9 +40,6 @@ function Company({
 
   const handleCompanyDescriptionInputChange = (e) => {
     setCompanyDescription(e.target.value);
-  };
-  const handleLogoNameChange = (e) => {
-    setLogoName(e.target.value);
   };
   // const handleinstitutionIdInputChange = (e) => {
   //   const value = e.target.value.toLowerCase();
@@ -83,7 +78,7 @@ function Company({
   };
 
   return (
-    <div className=" w-full mx-[2%] h-[150vh]" style={{ overflowY: 'auto' }}>
+    <div className=" w-full h-[auto]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">Tell Us About Your Company</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -190,23 +185,6 @@ function Company({
           />
         </div>
       </div>
-      <div className="mt-4">
-        <label className="block text-[#939393] mb-2">Logo Name</label>
-        <TextInput
-          id="LogoName"
-          placeholder="Enter Logo Name"
-          required
-          value={logoName}
-          sizing="sm"
-          onChange={handleLogoNameChange}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
-      </div>
-
       <div className="max-w-md relative">
         <div className="mb-2 block">
           <Label

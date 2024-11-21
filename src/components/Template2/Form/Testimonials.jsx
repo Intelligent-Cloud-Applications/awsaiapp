@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimonialBg }) {
+function Testimonials({ testimonials, setTestimonials}) {
   // const [testimonials, setTestimonials] = useState([
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
   //   { imgSrc: '', name: '', feedback: '', uploadedFile: null },
@@ -54,46 +54,23 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
     return fileName;
   };
 
-  // const addNewTestimonial = () => {
-  //   if (testimonials.length < 3) {
-  //     setTestimonials([
-  //       ...testimonials,
-  //       { imgSrc: '', name: '', feedback: '', uploadedFile: null },
-  //     ]);
-  //   }
-  //   // Scroll to the newly added testimonial
-  //   testimonialsContainerRef.current.scrollTo({
-  //     top: testimonialsContainerRef.current.scrollHeight,
-  //     behavior: 'smooth',
-  //   });
-  // };
+  const addNewTestimonial = () => {
+    if (testimonials.length < 3) {
+      setTestimonials([
+        ...testimonials,
+        { imgSrc: '', name: '', feedback: '', uploadedFile: null },
+      ]);
+    }
+    // Scroll to the newly added testimonial
+    testimonialsContainerRef.current.scrollTo({
+      top: testimonialsContainerRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
   const removeTestimonial = (index) => {
     const updatedTestimonials = [...testimonials];
     updatedTestimonials.splice(index, 1);
     setTestimonials(updatedTestimonials);
-  };
-  const handleBgImageChange3 = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setTestimonialBg(file);
-    }
-  };
-
-  const shortenFileName1 = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
   };
 
   return (
@@ -105,49 +82,6 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
       <h5 className="text-center text-[#939393]">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
-      <div className="relative flex items-center mt-4">
-        <h2 className='font-bold'>TestimonialBg</h2>
-        <div className='mr-10'></div>
-        <input
-          type="file"
-          accept="image/*"
-          // onChange={(e) => handleImageChange(setTestimonialBg, e)}
-          onChange={handleBgImageChange3}
-          className="hidden"
-          id="TestimonialBgInput"
-        />
-        <label
-          htmlFor="TestimonialBgInput"
-          className=" w-[30vh] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-          style={{
-            borderColor: 'cement',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            backgroundColor: '#D9D9D9',
-          }}
-        >
-          <span
-            className={`block text-[#000000] font-inter text-[22px] ${TestimonialBg ? 'hidden' : 'block'
-              }`}
-          >
-            Choose File
-          </span>
-          <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${TestimonialBg ? 'block' : 'hidden'
-              }`}
-          >
-            <span className="text-[#636262]">
-              {shortenFileName1(TestimonialBg)}
-            </span>
-            <span
-              onClick={() => setTestimonialBg(null)}
-              className="text-[#3b9d33] cursor-pointer"
-            >
-              Change
-            </span>
-          </div>
-        </label>
-      </div>
       <div className="max-h-[480px]">
         <div ref={testimonialsContainerRef} className="pb-6">
           {testimonials.map((testimonial, index) => (
@@ -233,9 +167,9 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
         {/* Add button after the third testimonial */}
         {testimonials.length < 5 && (
           <div className="mt-2 flex justify-center max950:mt-0">
-            {/* <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+            <button onClick={addNewTestimonial} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
               Add Testimonial
-            </button> */}
+            </button>
           </div>
         )}
       </div>

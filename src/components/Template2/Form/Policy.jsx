@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Label, FileInput } from 'flowbite-react';
 
-function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
+function Policy({ policies, setPolicies, aboutImage, setAboutImage, countBanner, setCountBanner, titleOfCountBanner, values, setValues }) {
 
   const handlePolicyChange = (type, value, index) => {
     const updatedPolicies = [...policies[type]];
@@ -44,6 +44,31 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
   };
   console.log("Images:", aboutImage);
 
+  const handlecountChange = (index, value) => {
+    setCountBanner(prevCountBanner =>
+      prevCountBanner.map((item, i) =>
+        i === index ? { ...item, count: value } : item
+      )
+    );
+  };
+
+  const handleValueChange = (index, newValue) => {
+    const updatedValues = [...(values || [])];
+    updatedValues[index] = newValue;
+    setValues(updatedValues);
+  };
+
+  // Function to add a new input field
+  const addValueField1 = () => {
+    setValues([...values, '']); // Add an empty string for the new input
+  };
+
+  // Function to remove an input field
+  const removeValueField1 = (index) => {
+    const updatedValues = values.filter((_, i) => i !== index);
+    setValues(updatedValues);
+  };
+
   const addValueField = () => {
     setAboutImage([...aboutImage, null]); // Add null as a placeholder for a new file
     if (fileInputRef.current) {
@@ -57,10 +82,60 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage }) {
 
   return (
     <div className="mx-auto" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
-      <h1 className="font-medium text-7xl text-center">POLICY AND TERMS</h1>
+      <h1 className="font-medium text-7xl text-center">ABOUT COMPANY</h1>
       <h5 className="text-center text-[#939393]">
-        Establish transparent guidelines, sharing policies and terms for clarity and understanding.
+        Establish transparent guidelines, sharing policies and terms for clarity and understanding and also your count banner.
       </h5>
+      <div className="relative mt-4">
+        <div className="pb-6">
+          {titleOfCountBanner.map((title, index) => (
+            <div key={index} className="mt-2">
+              <h2 className="font-medium text-xl">{title}</h2>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={countBanner[index].count}
+                  onChange={(e) => handlecountChange(index, e.target.value)}
+                  placeholder={`Number of ${title}`}
+                  className="w-full text-black border-none outline-none bg-transparent mt-2"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="relative mt-4">
+        <div className="pb-6">
+          <h2 className="font-medium text-xl">Company Values</h2>
+          {values && values.map((title, index) => (
+            <div key={index} className="mt-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => handleValueChange(index, e.target.value)}
+                  placeholder="Give the values of our company"
+                  className="w-full text-black border-none outline-none bg-transparent mt-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeValueField1(index)} // Remove field on click
+                  className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2"
+                >
+                  <span>X</span>
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addValueField1} // Add field on click
+            className="bg-[#30AFBC] text-white px-4 py-2 rounded-md mt-5"
+          >
+            Add Value
+          </button>
+        </div>
+      </div>
       <div className="mt-8">
         {Object.entries(policies).map(([type, value], index) => (
           <div key={index} className="mt-4">

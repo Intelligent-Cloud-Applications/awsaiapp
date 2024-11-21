@@ -11,12 +11,12 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     'COMPANY INFO',
     'CONTACT INFO',
     'HOME',
-    'SERVICES',
     // 'TESTIMONIALS',
     // 'SUBSCRIPTION',
     // 'FAQS',
     // 'INSTRUCTORS',
-    'POLICY',
+    'ABOUT',
+    'TESTIMONIAL'
   ];
 
   const progress = (currentSection / sections.length) * 100;
@@ -36,8 +36,8 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     Navigate("/dashboard")
   };
   const submitSections = async () => {
-    nextSection();
-    // Navigate("/pay");
+    await nextSection();
+    Navigate("/pay");
     setUserData(userData => ({ ...userData, web: true, isVerified: false }));
   }
 

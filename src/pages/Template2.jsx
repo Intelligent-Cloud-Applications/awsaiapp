@@ -4,7 +4,6 @@ import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template2/Footer';
 import Company from '../components/Template2/Form/Company';
 import Home from '../components/Template2/Form/Home';
-import Services from '../components/Template2/Form/Services';
 // import Testimonials from '../components/Template2/Form/Testimonials';
 // import Subscription from '../components/Template2/Form/Subscription';
 // import FAQs from '../components/Template2/Form/FAQs';
@@ -14,6 +13,7 @@ import { API, Storage } from "aws-amplify";
 import PrevSectionDraftHandler from '../components/Template2/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
+import Testimonials from '../components/Template2/Form/Testimonials';
 // import {CSVUpload} from '../components/UploadFile/CSVUpload';
 const Template2 = () => {
   const Navigate = useNavigate();
@@ -43,21 +43,16 @@ const Template2 = () => {
   const [TagLine3, setTagLine3] = useState("");
   const [video, setVideo] = useState(null);
   const [aboutImage, setAboutImage] = useState([]);
-  const [logoName, setLogoName] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [values, setValues] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [services, setServices] = useState([
-    { title: '', items: [''] },
-    { title: '', items: [''] },
+  const { userData } = useContext(Context)
+  const [testimonials, setTestimonials] = useState([
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
+    { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
   ]);
-
-  // const [testimonials, setTestimonials] = useState([
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-  //   { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-  // ]);
 
   // const calculateDuration = (subscriptionType) => {
   //   const daysInMonth = 30; // assuming 30 days in a month
@@ -157,18 +152,43 @@ const Template2 = () => {
     console.log(policies);
   }, [policies]);
 
+  const uploadTestimonials = async () => {
+    const updatedTestimonials = await Promise.all(
+      testimonials.map(async (testimonial, index) => {
+        if (testimonial.uploadedFile) {
+          // Upload the file to S3
+          const response = await Storage.put(
+            `institution-utils/${institutionId}/images/Testimonial/${testimonial.uploadedFile.name}`,
+            testimonial.actualFile,
+            { contentType: testimonial.actualFile.type }
+          );
+
+          // Get the URL of the uploaded file
+          let imageUrl = await Storage.get(response.key);
+          imageUrl = imageUrl.split("?")[0];
+
+          // Update the testimonial with the image URL
+          return { ...testimonial, imgSrc: imageUrl };
+        }
+        return testimonial; // If no file, return the original testimonial
+      })
+    );
+
+    setTestimonials(updatedTestimonials);
+  };
+
   const handleSubmitForm = async () => {
     try {
       // Upload the logo image
       const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
-  
+
       // Get the URL of the uploaded logo
       let imageUrl = await Storage.get(response1.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-  
+
       // Upload the video
       const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
         contentType: video.type,
@@ -176,7 +196,7 @@ const Template2 = () => {
       let videoUrl = await Storage.get(response2.key);
       videoUrl = videoUrl.split("?")[0];
       setVideo(videoUrl);
-  
+
       // Upload "About Us" images and fetch URLs concurrently
       const aboutImagesUrls = await Promise.all(
         aboutImage.map(async (file) => {
@@ -187,18 +207,18 @@ const Template2 = () => {
           return aboutImageUrl.split("?")[0];
         })
       );
-  
+
       // Prepare social media links
       const socials = {
         facebook: contactInfo.facebook || null,
         instagram: contactInfo.instagram || null,
         youTube: contactInfo.youTube || null,
       };
-  
+
       // Prepare the request body
       const body = {
         institutionid: institutionId,
-        index:"0", // Example index value, replace as needed
+        index: "0", // Example index value, replace as needed
         companyName: companyName || null,
         PrimaryColor: PrimaryColor || null,
         SecondaryColor: SecondaryColor || null,
@@ -216,19 +236,19 @@ const Template2 = () => {
         countBanner: countBanner || [],
         description: companyDescription || null,
         email: contactInfo.email || null,
-        logoName: logo.name || null,
         ownerName: contactInfo.owner_name || null,
         phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}` || null,
         privacyPolicy: policies['Privacy Policy'] || [],
-        services: services || [],
         socials: socials,
+        cognitoIdentityId: userData.cognitoId,
         ourValues: values || [],
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo.upiId || null,
+        testimonials: testimonials || [],
       };
-  
+      console.log("cognito id passing", userData.cognitoId);
       console.log("Data requesting for PUT", body);
-  
+
       // Call the API
       const response = await API.post("clients", "/user/dentalWebDevForm", {
         body,
@@ -236,14 +256,14 @@ const Template2 = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       console.log("API response:", response);
     } catch (error) {
       console.error("Error on completing the form:", error.message, error.stack);
       alert("There was an error submitting the form. Please try again.");
     }
   };
-  
+
 
   // const fetchClients = async (institution) => {
   //   try {
@@ -351,13 +371,6 @@ const Template2 = () => {
             return prevSection;
           }
           break;
-        case 3:
-          const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
-          if (!areServicesFilled) {
-            alert("Please fill all service fields before proceeding.");
-            return prevSection;
-          }
-          break;
         // case 4:
         //   const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
         //   if (!isTestimonialsFilled) {
@@ -416,10 +429,10 @@ const Template2 = () => {
         //   handleInstructorsUpload();
         //   break;
         case 4:
+          uploadTestimonials();
           console.log("the form will submit now")
           handleSubmitForm();
           break;
-
         default:
           break;
       }
@@ -486,8 +499,6 @@ const Template2 = () => {
               setLightPrimaryColor={setLightPrimaryColor}
               selectedFile={selectedFile}
               setSelectedFile={setSelectedFile}
-              logoName={logoName}
-              setLogoName={setLogoName}
               companyDescription={companyDescription}
               setCompanyDescription={setCompanyDescription}
             />}
@@ -513,17 +524,6 @@ const Template2 = () => {
               TagLine3={TagLine3}
               setTagLine3={setTagLine3}
             />}
-
-          {currentSection === 3 &&
-            <Services
-              services={services}
-              setServices={setServices}
-              countBanner={countBanner}
-              setCountBanner={setCountBanner}
-              titleOfCountBanner={titleOfCountBanner}
-              values={values}
-              setValues={setValues}
-            />}
           {/* {currentSection === 4 &&
             <Testimonials
               testimonials={testimonials}
@@ -547,12 +547,22 @@ const Template2 = () => {
               faqs={faqs}
               setFaqs={setFaqs}
             />} */}
-          {currentSection === 4 &&
+          {currentSection === 3 &&
             <Policy
+              countBanner={countBanner}
+              setCountBanner={setCountBanner}
+              titleOfCountBanner={titleOfCountBanner}
+              values={values}
+              setValues={setValues}
               policies={policies}
               setPolicies={setPolicies}
               aboutImage={aboutImage}
               setAboutImage={setAboutImage}
+            />}
+          {currentSection === 4 &&
+            <Testimonials
+              testimonials={testimonials}
+              setTestimonials={setTestimonials}
             />}
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
