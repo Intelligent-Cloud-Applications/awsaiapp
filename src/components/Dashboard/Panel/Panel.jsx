@@ -428,9 +428,9 @@ const Panel = () => {
 
               <Link
                 to={
-                  instituteType !== "" && instituteType === "Dance Studio"
+                  instituteType !== null && instituteType === "Dance Studio"
                     ? "/template"
-                    : "/template2"
+                    : instituteType === "Dental" ? "/template2" : ""
                 }
                 onClick={(e) => {
                   if (instituteType === "") {
