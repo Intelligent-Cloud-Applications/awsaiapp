@@ -180,6 +180,7 @@ const Template2 = () => {
   const handleSubmitForm = async () => {
     try {
       // Upload the logo image
+      util.setLoader(true);
       const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
@@ -258,7 +259,9 @@ const Template2 = () => {
       });
 
       console.log("API response:", response);
+      util.setLoader(false);
     } catch (error) {
+      util.setLoader(false);
       console.error("Error on completing the form:", error.message, error.stack);
       alert("There was an error submitting the form. Please try again.");
     }
@@ -307,6 +310,7 @@ const Template2 = () => {
             return prevSection;
           }
           if (!institutionCheckInProgress) {
+            util.setLoader(true);
             institutionCheckInProgress = true;
             API.get("clients", `/user/check-dental?institutionid=${institutionId}`)
               .then(response => {
@@ -326,7 +330,7 @@ const Template2 = () => {
                 alert(error.message);
                 setCurrentSection(prevSection);
               });
-
+              util.setLoader(false);
             // Exit early to prevent automatic section change
             return prevSection; // Prevent automatic section change
           }
