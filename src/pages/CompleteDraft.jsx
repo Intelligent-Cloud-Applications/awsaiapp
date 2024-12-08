@@ -216,6 +216,7 @@ const CompleteDraft = () => {
             alert("Failed to save changes. Please try again.");
         }
         util.setLoader(false);
+        navigate("/dashboard");
     };
 
     return (
