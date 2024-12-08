@@ -41,6 +41,8 @@ import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import Template2 from "./pages/Template2";
+import Template3 from "./pages/Template3";
+import CompleteDraft from "./pages/CompleteDraft";
 
 
 const RoutesContainer = () => {
@@ -64,8 +66,6 @@ const RoutesContainer = () => {
     }
   }, [institutionName, navigate, location.pathname]);
   console.log("routes", Ctx.userData.institutionName);
-
- 
 
   return (
     <Routes>
@@ -98,10 +98,12 @@ const RoutesContainer = () => {
       <Route path="/refund" element={<Refund />} />
       <Route path="/template" element={<Template />} />
       <Route path="/template2" element={<Template2 />} />
+      <Route path="/template3" element={<Template3 />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
       <Route path="/full" element={<Full />} />
+      <Route path="/completeDraft" element={<CompleteDraft />} />
       <Route path="/edit" element={<Edit />} />
       {/* This is the routes for asana portal */}
       <Route path="/asana-internal" element={<AsanaLayout />}>

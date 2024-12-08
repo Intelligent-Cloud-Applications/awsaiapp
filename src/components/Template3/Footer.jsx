@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
-import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
 function Footer({ currentSection, nextSection, prevSection, saveData, showModal }) {
@@ -10,14 +9,14 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
-    'HOME',
-    'SERVICES',
-    'TESTIMONIALS',
-    'SUBSCRIPTION',
-    'FAQS',
-    'INSTRUCTORS',
-    'POLICY',
     'CONTACT INFO',
+    'HOME',
+    // 'TESTIMONIALS',
+    // 'SUBSCRIPTION',
+    // 'FAQS',
+    // 'INSTRUCTORS',
+    'ABOUT',
+    'TESTIMONIAL'
   ];
 
   const progress = (currentSection / sections.length) * 100;
@@ -37,12 +36,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
     Navigate("/dashboard")
   };
   const submitSections = async () => {
-    nextSection();
-    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
-      body: {
-        submissiontime: new Date().getTime(),
-      },
-    });
+    await nextSection();
     Navigate("/pay");
     setUserData(userData => ({ ...userData, web: true, isVerified: false }));
   }
@@ -64,7 +58,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
           ))}
         </div>
 
-        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[50%] h-[3px] z-40 max1250:hidden'>
+        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[25%] h-[3px] z-40 max1250:hidden'>
           <div
             className='h-full bg-black rounded-lg'
             style={{

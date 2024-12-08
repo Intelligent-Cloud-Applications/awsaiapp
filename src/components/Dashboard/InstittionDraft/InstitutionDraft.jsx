@@ -1,6 +1,6 @@
-import React, { useState, useContext, useCallback, useMemo,useEffect} from "react";
+import React, { useState, useContext, useCallback, useMemo, useEffect } from "react";
 import Context from "../../../context/Context";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Table, Pagination } from "flowbite-react";
@@ -11,35 +11,41 @@ const InstitutionDraft = () => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const { userData,util } = useContext(Context);
+  const { userData, util } = useContext(Context);
   const navigate = useNavigate();
   const Ctx = useContext(Context);
   const [clients, setClients] = useState([]);
-  const[LoaderInitialized,setLoaderInitialized]=useState(false);
+  const [LoaderInitialized, setLoaderInitialized] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [institutionIdToDelete, setInstitutionIdToDelete] = useState(null);
-  
+  const [institutionIdToDelete, setInstitutionIdToDelete] = useState("");
+  const [deleteData, setDeleteData] = useState(null);
   const fetchClients = useCallback(async () => {
     try {
-      if(!LoaderInitialized){
-          util.setLoader(true);
-          setLoaderInitialized(true);
+      if (!LoaderInitialized) {
+        util.setLoader(true);
+        setLoaderInitialized(true);
       }
-   
+
       let response;
       if (userData.role === "owner") {
         response = await API.get("clients", "/admin/list-institution");
       } else {
-        response = await API.get("clients", "/admin/list-institutionForSales");
+        const response1 = await API.get("clients", "/admin/list-institutionForSales");
+        const response2 = await API.get("clients", "/admin/list-clinicForSales");
+        // Validate that response1 is an array and response2 has 'records' as an array
+        const validResponse1 = Array.isArray(response1) ? response1 : [];
+        const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];
+        // Combine the valid responses into one array
+        response = [...validResponse1, ...validResponse2];
       }
       setClients(response);
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
-     
-     util.setLoader(false);
+
+      util.setLoader(false);
     }
-  }, [userData.role,LoaderInitialized,util]);
+  }, [userData.role, LoaderInitialized, util]);
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
@@ -52,23 +58,23 @@ const InstitutionDraft = () => {
   const getUsernameByCognitoId = (cognitoId) => {
     console.log("cognitoid:", cognitoId);
     console.log("data:", useDataForSales.userName);
-    
+
     const trimmedInputId = String(cognitoId).trim();
-    
+
     const user = useDataForSales.find(user => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
     console.log("user Name:", user);
-    return user ? user.userName : 'Unknown'; 
+    return user ? user.userName : 'Unknown';
   };
-  
+
   const clientsData = Object.entries(clients);
   const filterClients = useCallback(() => {
     const filtered = clientsData
-      .filter(([key, client]) => !client.isFormFilled || client.isFormFilled === false) 
+      .filter(([key, client]) => !client.isFormFilled || client.isFormFilled === false)
       .sort((a, b) => {
-      
-        const dateA = a[1].date || -Infinity; 
+
+        const dateA = a[1].date || -Infinity;
         const dateB = b[1].date || -Infinity;
         return dateB - dateA;
       });
@@ -82,36 +88,46 @@ const InstitutionDraft = () => {
 
     return filtered;
   }, [searchQuery, clientsData]);
-  const handleDeleteClick = (institutionId) => {
-    setInstitutionIdToDelete(institutionId);
+  const handleDeleteClick = (clientData) => {
+    setDeleteData(clientData);
+    setInstitutionIdToDelete(clientData.institutionid);
     setShowConfirm(true);
-};
+  };
 
-const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async () => {
+    console.log("confirm is clicked");
+    console.log("institution to delete", institutionIdToDelete);
     if (!institutionIdToDelete) return;
-
     try {
-        util.setLoader(true);
-        setShowConfirm(false);
+      util.setLoader(true);
+      setShowConfirm(false);
+      if (deleteData.institutionType === "DanceStudio") {
         await API.del("clients", `/user/development-form/delete-all/${institutionIdToDelete}`);
-        alert('All data deleted successfully');
-        util.setLoader(false);
-        await fetchClients(); 
-        navigate('/dashboard');
+      } else {
+        await API.del("clients", "/user/deleteData", {
+          body: {
+            institutionid: institutionIdToDelete,
+          }
+        })
+      }
+      alert('All data deleted successfully');
+      util.setLoader(false);
+      await fetchClients();
+      navigate('/dashboard');
     } catch (error) {
-        alert('No matching data found', error);
-        util.setLoader(false);
+      alert('No matching data found', error);
+      util.setLoader(false);
     } finally {
-        setShowConfirm(false);
-        await fetchClients(); 
-        setInstitutionIdToDelete(null);
+      setShowConfirm(false);
+      await fetchClients();
+      setInstitutionIdToDelete(null);
     }
-};
+  };
 
-const handleCancelDelete = () => {
+  const handleCancelDelete = () => {
     setShowConfirm(false);
     setInstitutionIdToDelete(null);
-};
+  };
 
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
@@ -127,10 +143,34 @@ const handleCancelDelete = () => {
   //   }
   // };
 
+  const handleContinueDraft = (clientData) => {
+    const keyData = clientData.institutionType.trim(); // Remove whitespace
+    console.log("key Data:", keyData);
+    console.log("key id Data:", clientData.institutionid);
+    switch (keyData) {
+      case "DanceStudio":
+        console.log("Navigating to DanceStudio");
+        navigate(`/full?institutionName=${clientData.institutionid}`);
+        break;
+      case "Dental":
+        console.log("Navigating to Dental");
+        navigate(`/completeDraft?institutionName=${clientData.institutionid}`);
+        break;
+      case "cafe":
+        console.log("Navigating to cafe");
+        navigate('/template3');
+        break;
+      default:
+        console.log("Default case reached");
+        navigate("");
+        break;
+    }
+  };
+
   const handleRowClick = (institutionId, event) => {
-   
+
     if (event.target.closest('.delete-button')) {
-        return; // Prevent navigation
+      return; // Prevent navigation
     }
     navigate(`/full?institutionName=${institutionId}`);
   };
@@ -163,7 +203,7 @@ const handleCancelDelete = () => {
         <div className="w-full flex justify-end">
           <form className="w-[30%] rounded-sm my-3">
             <div className="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   class="w-4 h-4 text-gray-500 dark:text-gray-400"
                   aria-hidden="true"
@@ -194,136 +234,128 @@ const handleCancelDelete = () => {
 
         {/* Table */}
         <div className=" w-full mb-4 max-h-[400px] overflow-y-auto">
-        {clientsToDisplay.length === 0 ? (
+          {clientsToDisplay.length === 0 ? (
             <div className="text-center text-gray-600 py-4 font-bold">
               No drafts found. Please add a new institution to begin.
             </div>
           ) : (
-          <Table className="w-full text-sm text-left text-gray-500">
-            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-              <Table.HeadCell>Index</Table.HeadCell>
-              <Table.HeadCell>Logo</Table.HeadCell>
-              <Table.HeadCell>Institution</Table.HeadCell>
-              {showCreatedBy && <Table.HeadCell>Created By</Table.HeadCell>}
-              <Table.HeadCell>Updated Date</Table.HeadCell> 
-              <Table.HeadCell>Action</Table.HeadCell>
-              <Table.HeadCell></Table.HeadCell>
-            </Table.Head>
+            <Table className="w-full text-sm text-left text-gray-500">
+              <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+                <Table.HeadCell>Index</Table.HeadCell>
+                <Table.HeadCell>Logo</Table.HeadCell>
+                <Table.HeadCell>Institution</Table.HeadCell>
+                {showCreatedBy && <Table.HeadCell>Created By</Table.HeadCell>}
+                <Table.HeadCell>Updated Date</Table.HeadCell>
+                <Table.HeadCell>Action</Table.HeadCell>
+                <Table.HeadCell></Table.HeadCell>
+              </Table.Head>
 
-            <Table.Body className="bg-white">
-              {clientsToDisplay.map(([key, client], index) => (
-              <Table.Row
-              key={client.institutionid}
-              className="border-b cursor-pointer"
-              onClick={(e) => handleRowClick(client.institutionid, e)} // Pass the event
-          >
-          
-                 
-                  <Table.Cell>{startIndex + index + 1}</Table.Cell>
-
-               
-                  <Table.Cell>
-                    {client.logoUrl ? (
-                      <img
-                        src={client.logoUrl}
-                        alt="logo"
-                        className="w-8 h-8 object-cover rounded-full"
-                      />
-                    ) : (
-                      "No Logo"
-                    )}
-                  </Table.Cell>
-
-          
-                  <Table.Cell>{client.institutionid}</Table.Cell>
-
-                
-                  {showCreatedBy && (
+              <Table.Body className="bg-white">
+                {clientsToDisplay.map(([key, client], index) => (
+                  <Table.Row
+                    key={client.institutionid}
+                    className="border-b cursor-pointer"
+                    onClick={(e) => handleRowClick(client.institutionid, e)} // Pass the event
+                  >
+                    <Table.Cell>{startIndex + index + 1}</Table.Cell>
                     <Table.Cell>
-                      {client.createdBy
-                      ? getUsernameByCognitoId(client.createdBy)
-                      : 'Unknown'}
+                      {client.logoUrl ? (
+                        <img
+                          src={client.logoUrl}
+                          alt="logo"
+                          className="w-8 h-8 object-cover rounded-full"
+                        />
+                      ) : (
+                        "No Logo"
+                      )}
                     </Table.Cell>
-                  )}
+                    <Table.Cell>{client.institutionid}</Table.Cell>
+                    {showCreatedBy && (
+                      <Table.Cell>
+                        {client.createdBy
+                          ? getUsernameByCognitoId(client.createdBy)
+                          : 'Unknown'}
+                      </Table.Cell>
+                    )}
 
-                  {/* Updated Date */}
-                  <Table.Cell>
-                    {client.date ? formatDate(client.date) : "N/A"}
-                  </Table.Cell>
+                    {/* Updated Date */}
+                    <Table.Cell>
+                      {client.date ? formatDate(client.date) : "N/A"}
+                    </Table.Cell>
 
-            
-                  <Table.Cell>
-                    <Link
-                      to={`/full?institutionName=${client.institutionid}`}
-                      className="text-blue-500"
-                    >
-                    Continue Draft
-                    </Link>
-                    
-                  </Table.Cell>
-                  <Table.Cell>
-                  <Table.Cell>
-    <MdDeleteForever
-        onClick={(e) => {
-            e.stopPropagation(); // Prevent row click event
-            handleDeleteClick(client.institutionid);
-        }}
-        className="text-red-500 cursor-pointer delete-button"
-    />
-</Table.Cell>
 
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-           )}
+                    <Table.Cell>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click from firing
+                          handleContinueDraft(client);
+                        }}
+                        className="text-blue-500 underline"
+                      >
+                        Continue Draft
+                      </button>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Table.Cell>
+                        <MdDeleteForever
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent row click event
+                            handleDeleteClick(client);
+                          }}
+                          className="text-red-500 cursor-pointer delete-button"
+                        />
+                      </Table.Cell>
+
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          )}
         </div>
         <div className="py-2 flex justify-between items-center px-4 w-full">
 
-  <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
-    <button className="focus:outline-none">
-      Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
-    </button>
-  </div>
+          <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
+            <button className="focus:outline-none">
+              Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
+            </button>
+          </div>
 
-  <div className="flex-shrink-0  px-4 py-2 rounded-md">
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={setCurrentPage}
-      showIcons
-      theme={customTheme}
-      className="focus:outline-none"
-    />
-  </div>
-</div>
+          <div className="flex-shrink-0  px-4 py-2 rounded-md">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              showIcons
+              theme={customTheme}
+              className="focus:outline-none"
+            />
+          </div>
+        </div>
 
       </div>
       {showConfirm && (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
             <p className="mb-4">Are you sure you want to delete this institution? </p>
             <div className="flex justify-center gap-10 mt-6">
-                <button 
-                    onClick={handleConfirmDelete} 
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mr-2 transition duration-200"
-                >
-                    Confirm
-                </button>
-                <button 
-                    onClick={handleCancelDelete} 
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded transition duration-200"
-                >
-                    Cancel
-                </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mr-2 transition duration-200"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={handleCancelDelete}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded transition duration-200"
+              >
+                Cancel
+              </button>
             </div>
+          </div>
         </div>
-    </div>
-)}
-
-
+      )}
     </div>
   );
 };

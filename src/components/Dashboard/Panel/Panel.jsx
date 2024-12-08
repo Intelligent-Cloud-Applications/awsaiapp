@@ -46,7 +46,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental"];
+  const type = ["Dance Studio", "Dental", "Cafe"];
 
   const customTheme = {
     pages: {
@@ -71,7 +71,7 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData?.filter(([key,client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
+      return clientsData?.filter(([key, client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
@@ -368,12 +368,12 @@ const Panel = () => {
       try {
         let response;
         const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
-        if(clientInstitution.institutionType === "Dance Studio"){
+        if (clientInstitution.institutionType === "Dance Studio") {
           response = await API.put("clients", "/user/updateDelivary", {
             body,
             headers: { "Content-Type": "application/json" },
           });
-        }else{
+        } else {
           response = await API.put("clients", "/user/updateDelivaryForDental", {
             body,
             headers: { "Content-Type": "application/json" },
@@ -398,6 +398,20 @@ const Panel = () => {
     setTempInstitution(client.institutionid);
     setShowMemberList(true); // Toggle view to MemberList
   };
+
+  const getLinkPath = (instituteType) => {
+    switch (instituteType) {
+      case "Dance Studio":
+        return "/template";
+      case "Dental":
+        return "/template2";
+      case "Cafe":
+        return "/template3"
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       {!showMemberList ? (
@@ -427,11 +441,7 @@ const Panel = () => {
               </Select>
 
               <Link
-                to={
-                  instituteType !== null && instituteType === "Dance Studio"
-                    ? "/template"
-                    : instituteType === "Dental" ? "/template2" : ""
-                }
+                to={getLinkPath(instituteType)}
                 onClick={(e) => {
                   if (instituteType === "") {
                     e.stopPropagation();
@@ -666,9 +676,8 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
@@ -737,9 +746,8 @@ const Panel = () => {
                         {client.recentMonthMembers}
                       </Table.Cell>
                       <Table.Cell
-                        className={`${
-                          showHiddenContent ? "" : "max1008:hidden"
-                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${showHiddenContent ? "" : "max1008:hidden"
+                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -761,7 +769,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                        // onClick={handleMoreClick}
+                      // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
