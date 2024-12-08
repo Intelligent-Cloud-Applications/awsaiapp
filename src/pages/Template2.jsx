@@ -161,7 +161,7 @@ const Template2 = () => {
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo.upiId || null,
         testimonials: testimonials || [],
-        isFormedFilled: isFormedFilled,
+        isFormFilled: isFormedFilled,
       };
       console.log("cognito id passing", userData.cognitoId);
       console.log("Data requesting for PUT", body);

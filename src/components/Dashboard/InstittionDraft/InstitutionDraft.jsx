@@ -167,12 +167,12 @@ const InstitutionDraft = () => {
     }
   };
 
-  const handleRowClick = (institutionId, event) => {
+  const handleRowClick = (client, event) => {
 
     if (event.target.closest('.delete-button')) {
       return; // Prevent navigation
     }
-    navigate(`/full?institutionName=${institutionId}`);
+    handleContinueDraft(client);
   };
   const showCreatedBy = userData.userType === "admin" && userData.role === "owner";
   const customTheme = {
@@ -255,7 +255,7 @@ const InstitutionDraft = () => {
                   <Table.Row
                     key={client.institutionid}
                     className="border-b cursor-pointer"
-                    onClick={(e) => handleRowClick(client.institutionid, e)} // Pass the event
+                    onClick={(e) => handleRowClick(client, e)} // Pass the event
                   >
                     <Table.Cell>{startIndex + index + 1}</Table.Cell>
                     <Table.Cell>

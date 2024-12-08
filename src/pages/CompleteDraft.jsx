@@ -199,7 +199,7 @@ const CompleteDraft = () => {
                 estYear: templateDetails.estYear || null,
                 UpiId: templateDetails.UpiId || null,
                 testimonials: templateDetails.testimonials || [],
-                isFormedFilled: true,
+                isFormFilled: true,
             };
             console.log("Data requesting for PUT", body);
 
