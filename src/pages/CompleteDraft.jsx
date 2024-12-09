@@ -143,7 +143,7 @@ const CompleteDraft = () => {
         reader.onloadend = async () => {
             try {
                 const response = await Storage.put(
-                    `institution-utils/${templateDetails.companyName}/images/AboutUs/${file.name}`,
+                    `${templateDetails.companyName}/AboutUsImage/${file.name}`,
                     file,
                     {
                         contentType: file.type,
