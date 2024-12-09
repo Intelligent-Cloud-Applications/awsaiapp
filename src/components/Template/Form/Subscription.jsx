@@ -8,29 +8,30 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
-  const [classTypes, setClassTypes] = useState([]); // Holds the class types fetched from localStorage
-  const [selectedClassTypes, setSelectedClassTypes] = useState(Array(subscriptions.length).fill([])); 
+  const [classType, setclassType] = useState([]); // Holds the class types fetched from localStorage
+  const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([])); 
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
   const Ctx = useContext(Context);
 
   useEffect(() => {
     // Load class types from localStorage and set them correctly
-    const savedClassTypes = JSON.parse(localStorage.getItem('classTypes')) || [];
-    setClassTypes(savedClassTypes);
+    const savedclassType = JSON.parse(localStorage.getItem('classTypes')) || [];
+    setclassType(savedclassType);
   }, []);
 
   useEffect(() => {
     // Save class types to localStorage whenever they change
-    localStorage.setItem('classTypes', JSON.stringify(classTypes));
-  }, [classTypes]);
+    localStorage.setItem('classTypes', JSON.stringify(classType));
+  }, [classType]);
+  
 
   const handleClassTypeChange = (subscriptionIndex, selectedOptions) => {
-    const updatedSelectedClassTypes = [...selectedClassTypes];
-    updatedSelectedClassTypes[subscriptionIndex] = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    setSelectedClassTypes(updatedSelectedClassTypes);
+    const updatedSelectedclassType = [...selectedclassType];
+    updatedSelectedclassType[subscriptionIndex] = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    setSelectedclassType(updatedSelectedclassType);
 
     const updatedSubscriptions = [...subscriptions];
-    updatedSubscriptions[subscriptionIndex].classTypes = updatedSelectedClassTypes[subscriptionIndex];
+    updatedSubscriptions[subscriptionIndex].classType = updatedSelectedclassType[subscriptionIndex];
     setSubscriptions(updatedSubscriptions);
   };
 
@@ -148,7 +149,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
-      classTypes: [''],
+      classType: [''],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
@@ -156,7 +157,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     };
 
     setSubscriptions([...subscriptions, newSubscription]);
-    setSelectedClassTypes([...selectedClassTypes, []]);
+    setSelectedclassType([...selectedclassType, []]);
   };
 
   const removeSubscription = async (indexToRemove) => {
@@ -227,12 +228,12 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
               <Select
                 isMulti
                 value={
-                  selectedClassTypes[index].map(value => ({
+                  selectedclassType[index].map(value => ({
                     value,
                     label: value,
                   })) || []
                 }
-                options={classTypes.map((type) => ({
+                options={classType.map((type) => ({
                   value: type,
                   label: type,
                 }))}
