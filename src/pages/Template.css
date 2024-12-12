@@ -1,3 +1,8 @@
+.boxtoselect {
+    height: 270px;
+    width: 270px;
+}
+
 @media (max-width: 1585px) {
     .respo {
         right: 5px;
@@ -18,17 +23,10 @@
         padding-bottom: 2rem;
     }
 
-    .boxtoselect {
-        height: 170px;
-        width: 170px;
-    }
-
     .colorbox {
         height: 50px;
         width: 50px;
     }
-
-
 }
 
 @media (max-width: 1360px) {

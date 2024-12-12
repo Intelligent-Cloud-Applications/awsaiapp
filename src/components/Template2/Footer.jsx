@@ -1,24 +1,22 @@
 import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
-import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
-function Footer({ currentSection, nextSection, prevSection, saveData, showModal,institutionId}) {
+function Footer({ currentSection, nextSection, prevSection, saveData, showModal }) {
   // eslint-disable-next-line
-  const UserCtx = useContext(Context)
-  // const { userData, setUserData } = useContext(Context)
+  const { userData, setUserData } = useContext(Context)
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
-    'HOME',
-    'SERVICES',
-    'TESTIMONIALS',
-    'SUBSCRIPTION',
-    'FAQS',
-    'INSTRUCTORS',
-    'POLICY',
     'CONTACT INFO',
+    'HOME',
+    // 'TESTIMONIALS',
+    // 'SUBSCRIPTION',
+    // 'FAQS',
+    // 'INSTRUCTORS',
+    'ABOUT',
+    'TESTIMONIAL'
   ];
 
   const progress = (currentSection / sections.length) * 100;
@@ -38,24 +36,9 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     Navigate("/dashboard")
   };
   const submitSections = async () => {
-    nextSection();
-    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
-      body: {
-        submissiontime: new Date().getTime(),
-      },
-    });
-    // Navigate("/pay");
-    // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
-    const baseUrl =
-    process.env.REACT_APP_STAGE === 'PROD'
-      ? 'http://happyprancer.com'
-      : 'http://beta.happyprancer.com';
-
- 
-  const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
-
-
-  window.open(url, '_blank');
+    await nextSection();
+    Navigate("/pay");
+    setUserData(userData => ({ ...userData, web: true, isVerified: false }));
   }
 
   return (
@@ -75,7 +58,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
           ))}
         </div>
 
-        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[50%] h-[3px] z-40 max1250:hidden'>
+        <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[6rem] max1320:left-[4rem] w-[25%] h-[3px] z-40 max1250:hidden'>
           <div
             className='h-full bg-black rounded-lg'
             style={{

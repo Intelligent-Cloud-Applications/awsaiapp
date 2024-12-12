@@ -15,7 +15,7 @@ import { Pagination } from "flowbite-react";
 import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
 const Panel = () => {
-  const itemsPerPage = 7;
+  const itemsPerPage = 5;
   const [status, setStatus] = useState();
   const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +25,7 @@ const Panel = () => {
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, util, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  const [isUserAdd, setIsUserAdd] = useState(false);
+  // const [isUserAdd, setIsUserAdd] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -35,8 +35,8 @@ const Panel = () => {
   const [TotalLeads, setTotalLeads] = useState("");
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
-  // eslint-disable-next-line
   const [userCheck, setUserCheck] = useState(0);
+  // eslint-disable-next-line
   const [JoiningDate, setJoiningDate] = useState("");
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -46,7 +46,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental"];
+  const type = ["Dance Studio", "Dental", "Cafe"];
 
   const customTheme = {
     pages: {
@@ -71,7 +71,7 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData?.filter(([key,client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
+      return clientsData?.filter(([key, client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
     }
 
     const query = searchQuery.toLowerCase();
@@ -149,36 +149,6 @@ const Panel = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const showDetailForm = (institution) => {
-  //   const userDetail = clientsData.find(
-  //     ([key, client]) => client.institution === institution
-  //   );
-  //   setSelectedUser(userDetail);
-  //   setName(userDetail[1].institution);
-  //   setEmail(userDetail[1].emailId);
-  //   setCountry(userDetail[1].country);
-  //   setPhoneNumber(userDetail[1].phoneNumber);
-  //   setTotalLeads(userDetail[1].recentMonthLeads);
-  //   setTotalAttendance(userDetail[1].recentMonthAttendance);
-  //   setTotalIncome(userDetail[1].recentMonthIncome);
-  //   setMemberCount(userDetail[1].recentMonthMembers);
-  //   setStatus(userDetail[1].status);
-  //   setCountry(userDetail[1].country);
-  //   setJoiningDate(userDetail[1].JoiningDate);
-  //   setShowDetails(true);
-  // };
-
-  // const handleCheckboxChange = (institution) => {
-  //   if (selectedRow.includes(institution)) {
-  //     setSelectedRow(selectedRow.filter((id) => id !== institution));
-  //   } else {
-  //     setSelectedRow([...selectedRow, institution]);
-  //   }
-  // };
-
-  // const isRowSelected = (institution) => {
-  //   return selectedRow.includes(institution);
-  // };
   const useDataForSales = Ctx.saleData || [];
 
   const getUsernameByCognitoId = (cognitoId) => {
@@ -243,53 +213,53 @@ const Panel = () => {
   //   setUserData(updatedUserData);
   // };
 
-  const toggleAddUserForm = () => {
-    setIsUserAdd(!isUserAdd);
-  };
+  // const toggleAddUserForm = () => {
+  //   setIsUserAdd(!isUserAdd);
+  // };
 
   // Function to add a new client
-  const handleAddClient = async (e) => {
-    e.preventDefault();
-    try {
-      util.setLoader(true);
-      const apiName = "clients";
-      const path = "/admin/create-clients";
-      const myInit = {
-        body: {
-          institution: name,
-          emailId: email,
-          phoneNumber: phoneNumber,
-          country: Country,
-          JoiningDate: JoiningDate,
-          status: status,
-        },
-      };
-      const response = await API.post(apiName, path, myInit);
-      Swal.fire({
-        icon: "success",
-        title: "User Added",
-      });
-      clients.onReload();
-      console.log("Client added successfully:", response);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("");
-      setRevenue("");
-      setJoiningDate("");
-      setStatus("");
-      toggleAddUserForm();
-      util.setLoader(false);
-    } catch (error) {
-      console.error("Error adding client:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while creating the user.",
-      });
-      util.setLoader(false);
-    }
-  };
+  // const handleAddClient = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     util.setLoader(true);
+  //     const apiName = "clients";
+  //     const path = "/admin/create-clients";
+  //     const myInit = {
+  //       body: {
+  //         institution: name,
+  //         emailId: email,
+  //         phoneNumber: phoneNumber,
+  //         country: Country,
+  //         JoiningDate: JoiningDate,
+  //         status: status,
+  //       },
+  //     };
+  //     const response = await API.post(apiName, path, myInit);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "User Added",
+  //     });
+  //     clients.onReload();
+  //     console.log("Client added successfully:", response);
+  //     setName("");
+  //     setEmail("");
+  //     setPhoneNumber("");
+  //     setCountry("");
+  //     setRevenue("");
+  //     setJoiningDate("");
+  //     setStatus("");
+  //     toggleAddUserForm();
+  //     util.setLoader(false);
+  //   } catch (error) {
+  //     console.error("Error adding client:", error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "An error occurred while creating the user.",
+  //     });
+  //     util.setLoader(false);
+  //   }
+  // };
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -338,19 +308,6 @@ const Panel = () => {
     setStatus("");
   };
 
-  // const showUpdateForm = (institution) => {
-  //   const userToUpdate = clientsData.find(
-  //     ([key, client]) => client.institution === institution
-  //   );
-  //   setSelectedUser(userToUpdate);
-  //   setName(userToUpdate[1].institution);
-  //   setEmail(userToUpdate[1].emailId);
-  //   setPhoneNumber(userToUpdate[1].phoneNumber);
-  //   setMemberCount(userToUpdate[1].memberCount);
-  //   setStatus(userToUpdate[1].status);
-  //   setCountry(userToUpdate[1].country);
-  //   setIsUpdateFormVisible(true);
-  // };
   const getBadgeProps = (web, payment, delivered) => {
     let text, color;
 
@@ -406,14 +363,22 @@ const Panel = () => {
   };
 
   const handleDropdownChange = useCallback(
-    async (clientInstitution, status, index) => {
+    async (clientInstitution, status) => {
       const isDelivered = status === "Delivered";
       try {
-        const body = { institutionId: clientInstitution, index, isDelivered };
-        const response = await API.put("clients", "/user/updateDelivary", {
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
+        let response;
+        const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
+        if (clientInstitution.institutionType === "Dance Studio") {
+          response = await API.put("clients", "/user/updateDelivary", {
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+        } else {
+          response = await API.put("clients", "/user/updateDelivaryForDental", {
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
         console.log("API response:", response);
       } catch (error) {
         console.error("Error updating delivery status:", error);
@@ -433,6 +398,20 @@ const Panel = () => {
     setTempInstitution(client.institutionid);
     setShowMemberList(true); // Toggle view to MemberList
   };
+
+  const getLinkPath = (instituteType) => {
+    switch (instituteType) {
+      case "Dance Studio":
+        return "/template";
+      case "Dental":
+        return "/template2";
+      case "Cafe":
+        return "/template3"
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       {!showMemberList ? (
@@ -462,11 +441,7 @@ const Panel = () => {
               </Select>
 
               <Link
-                to={
-                  instituteType !== "" && instituteType === "Dance Studio"
-                    ? "/template"
-                    : "#"
-                }
+                to={getLinkPath(instituteType)}
                 onClick={(e) => {
                   if (instituteType === "") {
                     e.stopPropagation();
@@ -556,7 +531,7 @@ const Panel = () => {
             </div>
 
             {/* form of creating new client */}
-            {isUserAdd && (
+            {/* {isUserAdd && (
               <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
                 <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
                   <input
@@ -665,7 +640,7 @@ const Panel = () => {
                   </div>
                 </form>
               </div>
-            )}
+            )} */}
 
             {/* Headings */}
             <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
@@ -701,21 +676,11 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
-                  {/* <Table.HeadCell
-                className={`${showHiddenContent ? "" : "max1008:hidden"
-                  } uppercase font-semibold text-[20px]`}
-              >
-                Leads
-              </Table.HeadCell> */}
-                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                More
-              </Table.HeadCell> */}
                 </Table.Head>
 
                 <Table.Body className="bg-white">
@@ -764,9 +729,8 @@ const Panel = () => {
                           }
                           onChange={(e) =>
                             handleDropdownChange(
-                              client.institutionid,
+                              client,
                               e.target.value,
-                              client.index
                             )
                           }
                           className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
@@ -782,9 +746,8 @@ const Panel = () => {
                         {client.recentMonthMembers}
                       </Table.Cell>
                       <Table.Cell
-                        className={`${
-                          showHiddenContent ? "" : "max1008:hidden"
-                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${showHiddenContent ? "" : "max1008:hidden"
+                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -806,7 +769,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                        // onClick={handleMoreClick}
+                      // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
