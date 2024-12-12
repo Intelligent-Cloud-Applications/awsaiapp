@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 // import Login from "./pages/Login";
 import Logout from "./pages/Auth/Logout";
 import Auth from "./pages/Auth";
+import DevAuth from "./pages/Auth/Dev";
 import DashBoard from "./pages/DashBoard";
 import MemberList from "./components/Dashboard/MemberList/MembersList";
 import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
@@ -77,7 +78,7 @@ const RoutesContainer = () => {
       <Route path="/subpopup2" element={<SubscriptionPopup2 />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/dashboard" element={isAwsApp ? <DashBoard /> : <Navigate to="/auth" />} />
-      <Route path="/auth" element={<Auth />} />
+      <Route path="/auth" element={process.env.REACT_APP_STAGE === 'PROD' ? <Auth /> : <DevAuth /> } />
       <Route path="/memberlist" element={<MemberList institution={null} />} />
       <Route
         path="/MonthlyReport"

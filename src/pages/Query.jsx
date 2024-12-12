@@ -113,6 +113,8 @@ const Query = ({ activeComponent }) => {
     } catch (error) {
       alert("Error sending message: " + error.message);
       console.error("reCAPTCHA error:", error);
+    } finally {
+      util.setLoader(false);
     }
     util.setLoader(false);
 

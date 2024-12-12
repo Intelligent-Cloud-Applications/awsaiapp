@@ -70,6 +70,8 @@ const Template = () => {
     { title: '', items: [''] },
     { title: '', items: [''] },
   ]);
+  const Ctx = useContext(Context);
+  const util = useContext(Context).util;
 
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -99,9 +101,11 @@ const Template = () => {
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
+      classType: [''],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
     {
       heading:'',
@@ -110,13 +114,16 @@ const Template = () => {
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
+      classType: [],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
     {
       heading: '',
       amount: '',
+      classType: [],
       currency: 'INR',
       country: 'INDIA',
       subscriptionType: 'monthly',
@@ -124,6 +131,7 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
   ]);
 
@@ -186,8 +194,7 @@ const Template = () => {
     facebook: '',
   });
 
-  const Ctx = useContext(Context);
-  const util = useContext(Context).util;
+
   useEffect(() => {
     console.log(policies);
   }, [policies]);
@@ -547,6 +554,10 @@ const Template = () => {
 
       // Filter out empty strings from the paddedDanceTypes array
       const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
+      localStorage.removeItem('classTypes');
+
+    // Save the nonEmptyDanceTypes array in local storage
+    localStorage.setItem('classTypes', JSON.stringify(nonEmptyDanceTypes));
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
@@ -557,6 +568,7 @@ const Template = () => {
           ServicesBg: servicesBgUrl,
         },
       });
+
     } catch (error) {
       console.error("Error uploading services: ", error);
     }
@@ -939,7 +951,7 @@ const Template = () => {
           return prevSection; 
           // handleCompanyUpload();
           // break;
-        case 1:
+        case 3:
             if (!contactInfo.phoneNumber || !contactInfo.email) {
               if (!contactInfo.phoneNumber) {
                 alert("Please enter a valid phone number before proceeding.");
@@ -966,7 +978,7 @@ const Template = () => {
             }
             handleContactUpload();
             break;
-        case 2:
+        case 5:
           if (!video || !TagLine) {
             if (!video) {
               alert("Please upload a video before proceeding.");
@@ -978,10 +990,16 @@ const Template = () => {
           }
           handleHomeUpload();
           break;
-        case 3:
+        case 1:
           const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
           if (!areServicesFilled) {
             alert("Please fill all service fields before proceeding.");
+            return prevSection;
+          }
+          const hasDanceType = danceTypes.some(danceType => danceType.trim() !== '');
+  
+          if (!hasDanceType) {
+            alert("Please add at least one dance type before saving.");
             return prevSection;
           }
           handleServicesUpload();
@@ -1008,7 +1026,7 @@ const Template = () => {
           }
           handleTestimonialsUpload();
           break;
-        case 5:
+        case 2:
           const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
           if (invalidPriceIndex !== -1) {
             alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
@@ -1092,13 +1110,13 @@ const Template = () => {
   };
   //  console.log("Logo in Template:", logo);
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
           <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
         </div>
-        <div className=" w-[33%] pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
+        <div className=" w-[33%] h-full pt-[6rem] pb-[10rem] no-scrollbar max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}
@@ -1124,7 +1142,7 @@ const Template = () => {
               CSVFile={CSVFile}
               setCSVFile={setCSVFile}
             />}
-  {currentSection === 1 &&
+  {currentSection === 3 &&
             <Contact
               contactInfo={contactInfo}
               setContactInfo={setContactInfo}
@@ -1133,7 +1151,7 @@ const Template = () => {
               InstructorBg={InstructorBg}
               setInstructorBg={setInstructorBg}
             />}
-          {currentSection === 2 &&
+          {currentSection === 5 &&
             <Home
               TagLine={TagLine}
               setTagLine={setTagLine}
@@ -1147,7 +1165,7 @@ const Template = () => {
               setMediaType={setMediaType}
             />}
 
-          {currentSection === 3 &&
+          {currentSection === 1 &&
             <Services
               setServicesPortrait={setServicesPortrait}
               servicesPortrait={servicesPortrait}
@@ -1167,7 +1185,7 @@ const Template = () => {
               setTestimonialBg={setTestimonialBg}
             />}
 
-          {currentSection === 5 &&
+          {currentSection === 2 &&
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
@@ -1206,6 +1224,7 @@ const Template = () => {
             nextSection={handleNextSection}
             prevSection={handlePrevSectionDraft}
             showModal={() => setShowModal(true)}
+            institutionId={institutionId}
           />
         </div>
         

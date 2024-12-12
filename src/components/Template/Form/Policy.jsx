@@ -41,7 +41,7 @@ function Policy({ policies, setPolicies,AboutUsBg,setAboutUsBg }) {
     return fileName;
   };
   return (
-    <div className="mx-auto max-w-[800px]" style={{ overflowY: 'auto', maxHeight: '490px' }}>
+    <div className="mx-auto max-w-[800px] max-h-screen overflow-y-auto">
       <h1 className="font-medium text-7xl">POLICY AND TERMS</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The Privacy page shown is just an example how your given data will look like for the Privacy page it will not change on giving your input.**
