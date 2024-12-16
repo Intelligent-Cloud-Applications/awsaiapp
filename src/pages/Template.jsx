@@ -951,7 +951,7 @@ const Template = () => {
           return prevSection; 
           // handleCompanyUpload();
           // break;
-        case 3:
+        case 1:
             if (!contactInfo.phoneNumber || !contactInfo.email) {
               if (!contactInfo.phoneNumber) {
                 alert("Please enter a valid phone number before proceeding.");
@@ -978,7 +978,7 @@ const Template = () => {
             }
             handleContactUpload();
             break;
-        case 5:
+        case 2:
           if (!video || !TagLine) {
             if (!video) {
               alert("Please upload a video before proceeding.");
@@ -990,7 +990,7 @@ const Template = () => {
           }
           handleHomeUpload();
           break;
-        case 1:
+        case 3:
           const areServicesFilled = services.every(service => service.title.trim() !== '' && service.items.every(item => item.trim() !== ''));
           if (!areServicesFilled) {
             alert("Please fill all service fields before proceeding.");
@@ -1026,7 +1026,7 @@ const Template = () => {
           }
           handleTestimonialsUpload();
           break;
-        case 2:
+        case 5:
           const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
           if (invalidPriceIndex !== -1) {
             alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
@@ -1142,7 +1142,7 @@ const Template = () => {
               CSVFile={CSVFile}
               setCSVFile={setCSVFile}
             />}
-  {currentSection === 3 &&
+  {currentSection === 1 &&
             <Contact
               contactInfo={contactInfo}
               setContactInfo={setContactInfo}
@@ -1151,7 +1151,7 @@ const Template = () => {
               InstructorBg={InstructorBg}
               setInstructorBg={setInstructorBg}
             />}
-          {currentSection === 5 &&
+          {currentSection === 2 &&
             <Home
               TagLine={TagLine}
               setTagLine={setTagLine}
@@ -1165,7 +1165,7 @@ const Template = () => {
               setMediaType={setMediaType}
             />}
 
-          {currentSection === 1 &&
+          {currentSection === 3 &&
             <Services
               setServicesPortrait={setServicesPortrait}
               servicesPortrait={servicesPortrait}
@@ -1185,7 +1185,7 @@ const Template = () => {
               setTestimonialBg={setTestimonialBg}
             />}
 
-          {currentSection === 2 &&
+          {currentSection === 5 &&
             <Subscription
               subscriptions={subscriptions}
               setSubscriptions={setSubscriptions}
