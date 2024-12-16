@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Country from '../../Auth/Country';
-function Contact({ contactInfo, setContactInfo}) {
+import { Label, TextInput} from 'flowbite-react';
+function Contact({ contactInfo, setContactInfo }) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
   //   phoneNumber: '',
@@ -29,13 +30,6 @@ function Contact({ contactInfo, setContactInfo}) {
     setSelectedCountryCode(selectedCountryCode);
   };
 
-  // Function to handle phone number changes
-  const handlePhoneNumberChange = (e) => {
-    setContactInfo(prevInfo => ({
-      ...prevInfo,
-      phoneNumber: e.target.value
-    }));
-  };
   const [activeContactIndex, setActiveContactIndex] = useState(null);
 
   const toggleActiveContact = (index) => {
@@ -98,49 +92,90 @@ function Contact({ contactInfo, setContactInfo}) {
       <h5 class="text-[#939393] text-center">
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
-      <div className="mb-8">
-        {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
-          <div key={index} className="mt-1">
-            <h2 className="font-medium text-[20px]">{key.charAt(0).toUpperCase() + key.slice(1)}</h2>
-            <div className="relative">
-              {key === 'phoneNumber' ? (
-                <div className="flex items-center">
-                  <select
-                    value={selectedCountryCode}
-                    onChange={handleCountryChange}
-                    className="border w-[9rem] border-gray-300 rounded-l px-2 py-1"
-                  >
+      <div className="flex justify-center min-h-screen">
+        <div className="w-[60%] p-8">
+          <div className="mb-8">
+            {Object.keys(contactInfo)
+              .filter((key) => key !== 'country' && key !== 'countryCode')
+              .map((key, index) => {
+                const placeholderText = (() => {
+                  switch (key) {
+                    case 'facebook':
+                      return 'Enter the Facebook link';
+                    case 'instagram':
+                      return 'Enter the Instagram link';
+                    case 'youTube':
+                      return 'Enter the YouTube link';
+                    default:
+                      return `Enter the ${key}`;
+                  }
+                })();
 
-                    <Country />
-                  </select>
-                  <input
-                    type="text"
-                    name={key}
-                    value={contactInfo[key]}
-                    onChange={handlePhoneNumberChange}
-                    placeholder="Phone Number"
-                    className="w-full text-black border border-gray-300 rounded-r outline-none bg-transparent mt-2"
-                  />
-                </div>
-              ) : (
-                <input
-                  type="text"
-                  name={key}
-                  value={contactInfo[key]}
-                  onChange={handleContactChange}
-                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                  className="w-full text-black border-none outline-none bg-transparent mt-2"
-                  onFocus={() => toggleActiveContact(index)}
-                  onBlur={() => toggleActiveContact(null)}
-                />
-              )}
-              <div
-                className={`absolute left-0 right-0 bottom-0 h-[1px] ${activeContactIndex === index ? 'bg-black' : 'bg-[#939393]'
-                  }`}
-              ></div>
-            </div>
+                return (
+                  <div key={index} className="mt-1">
+                    <div className="mb-2 block">
+                      <Label
+                        color="gray"
+                        value={key.charAt(0).toUpperCase() + key.slice(1)}
+                        className="font-medium text-xl"
+                      />
+                      <span className="text-red-500 ml-1">*</span>
+                    </div>
+                    <div className="relative">
+                      {key === 'Phone Number' ? (
+                        <div className="flex items-center gap-4">
+                          <select
+                            value={selectedCountryCode}
+                            onChange={handleCountryChange}
+                            className="w-[20%]"
+                            style={{
+                              borderColor: "#D1D5DB",
+                              backgroundColor: "#F9FAFB",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            <Country />
+                          </select>
+                          <input
+                            type="text"
+                            name={key}
+                            value={contactInfo[key]}
+                            onChange={handleContactChange}
+                            placeholder="Enter 10-digit phone number" // Use the computed placeholder here
+                            required
+                            maxLength='10'
+                            className='w-[80%]'
+                            style={{
+                              borderColor: "#D1D5DB",
+                              backgroundColor: "#F9FAFB",
+                              borderRadius: "8px",
+                              font:"sm"
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <TextInput
+                          id={key} // Ensure unique ids
+                          name={key}
+                          value={contactInfo[key]}
+                          onChange={handleContactChange}
+                          placeholder={placeholderText} // Use the computed placeholder here
+                          required
+                          style={{
+                            borderColor: "#D1D5DB",
+                            backgroundColor: "#F9FAFB",
+                            borderRadius: "8px",
+                          }}
+                          onFocus={() => toggleActiveContact(index)}
+                          onBlur={() => toggleActiveContact(null)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
           </div>
-        ))}
+        </div>
       </div>
       {/* <div className="relative flex items-center">
         <h2 className='font-bold'>Subscription Bg</h2>
