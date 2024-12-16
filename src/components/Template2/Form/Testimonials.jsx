@@ -53,14 +53,13 @@ function Testimonials({ testimonials, setTestimonials }) {
   };
 
   useEffect(() => {
-    console.log("number of testimonials",activeTestimonialIndex);
     if (testimonials.length > 0) {
       testimonialsContainerRef.current.scrollTo({
         top: testimonialsContainerRef.current.scrollHeight,
         behavior: 'smooth',
       });
     }
-  }, [testimonials]);
+  }, [testimonials, activeTestimonialIndex]);
 
   return (
     <div className="mx-auto w-full overflow-y-auto mb-[2rem]">
