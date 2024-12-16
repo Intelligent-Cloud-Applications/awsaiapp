@@ -55,8 +55,8 @@ const Template2 = () => {
     address: '',
     country: 'India',
     countryCode: '91',
-    owner_name: '',
-    phoneNumber: '',
+    'Owner Name': '',
+    'Phone Number': '',
     email: '',
     upiId: '',
     instagram: '',
@@ -152,8 +152,8 @@ const Template2 = () => {
         countBanner: countBanner || [],
         description: companyDescription || null,
         email: contactInfo.email || null,
-        ownerName: contactInfo.owner_name || null,
-        phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}` || null,
+        ownerName: contactInfo['Owner Name'] || null,
+        phone: `+${contactInfo.countryCode}${contactInfo['Phone Number']}` || null,
         privacyPolicy: policies['Privacy Policy'] || [],
         socials: socials,
         cognitoIdentityId: userData.cognitoId,
@@ -182,6 +182,12 @@ const Template2 = () => {
       alert("There was an error submitting the form. Please try again.");
     }
   };
+
+  const isValidUrl = (data) => {
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+    return urlPattern.test(data);
+  }
+
   const handleNextSection = () => {
     let institutionCheckInProgress = false;
     setCurrentSection((prevSection) => {
@@ -233,20 +239,17 @@ const Template2 = () => {
         // handleCompanyUpload();
         // break;
         case 1:
-          if (!contactInfo.phoneNumber || !contactInfo.email) {
-            if (!contactInfo.phoneNumber) {
+          if (!contactInfo['Phone Number'] || !contactInfo.email) {
+            if (!contactInfo['Phone Number'])
               alert("Please enter a valid phone number before proceeding.");
-            }
-            if (!contactInfo.email) {
+            if (!contactInfo.email)
               alert("Please enter a valid email address before proceeding.");
-            }
-            if (!contactInfo.owner_name) {
+            if (!contactInfo.owner_name)
               alert("Please enter a valid ownername before proceeding.");
-            }
-            return prevSection;
+            return prevSection; // return to prevent proceeding
           }
           const phoneRegex = /^[0-9]+$/;
-          if (!phoneRegex.test(contactInfo.phoneNumber)) {
+          if (!phoneRegex.test(contactInfo['Phone Number'])) {
             alert("Please enter a valid phone number.");
             return prevSection;
           }
@@ -255,7 +258,27 @@ const Template2 = () => {
             alert("Please enter a valid email address.");
             return prevSection;
           }
-          // handleContactUpload();
+          if (contactInfo.facebook || contactInfo.instagram || contactInfo.youTube) {
+            if (contactInfo.facebook) {
+              const valid = isValidUrl(contactInfo.facebook);
+              if (!valid) {
+                alert("Please provide a valid link for Facebook");
+              }
+            }
+            if (contactInfo.instagram) {
+              const valid = isValidUrl(contactInfo.instagram);
+              if (!valid) {
+                alert("Please provide a valid link for Instagram");
+              }
+            }
+            if (contactInfo.youTube) {
+              const valid = isValidUrl(contactInfo.youTube);
+              if (!valid) {
+                alert("Please provide a valid link for YouTube");
+              }
+            }
+            return prevSection; // return to prevent proceeding
+          }
           break;
         case 2:
           if (!video || !TagLine) {
@@ -265,14 +288,16 @@ const Template2 = () => {
             if (!TagLine) {
               alert("Please provide a tagline before proceeding.");
             }
-            return prevSection;
+            return prevSection; // return to prevent proceeding
           }
           break;
+
         case 4:
           uploadTestimonials();
-          console.log("the form will submit now")
+          console.log("The form will submit now");
           handleSubmitForm();
           break;
+
         default:
           break;
       }
