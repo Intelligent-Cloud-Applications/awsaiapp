@@ -167,56 +167,73 @@ const CompleteDraft = () => {
     };
 
     const saveChanges = async () => {
-        util.setLoader(true);
-        try {
-            console.log("cognito id passing", userData.cognitoId);
-            const body = {
-                institutionid: institutionNames,
-                index: "0", // Example index value, replace as needed
-                companyName: templateDetails.companyName || null,
-                PrimaryColor: templateDetails.PrimaryColor || null,
-                SecondaryColor: templateDetails.SecondaryColor || null,
-                logoUrl: templateDetails.logoUrl,
-                LightPrimaryColor: templateDetails.LightPrimaryColor || null,
-                LightestPrimaryColor: templateDetails.LightestPrimaryColor || null,
-                TagLine: templateDetails.TagLine || null,
-                TagLine1: templateDetails.TagLine1 || null,
-                TagLine2: templateDetails.TagLine2 || null,
-                TagLine3: templateDetails.TagLine3 || null,
-                videoUrl: templateDetails.videoUrl,
-                aboutParagraphs: templateDetails.aboutParagraphs || [],
-                aboutImages: templateDetails.aboutImagesUrls,
-                address: templateDetails.address || null,
-                countBanner: templateDetails.countBanner || [],
-                description: templateDetails.description || null,
-                email: templateDetails.email || null,
-                ownerName: templateDetails.ownerName || null,
-                phone: templateDetails.phone || null,
-                privacyPolicy: templateDetails.privacyPolicy || [],
-                socials: templateDetails.socials,
-                cognitoIdentityId: userData.cognitoId,
-                ourValues: templateDetails.ourValues || [],
-                estYear: templateDetails.estYear || null,
-                UpiId: templateDetails.UpiId || null,
-                testimonials: templateDetails.testimonials || [],
-                isFormFilled: true,
-            };
-            console.log("Data requesting for PUT", body);
-
-            // Call the API
-            const response = await API.post("clients", "/user/dentalWebDevForm", {
-                body,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            console.log("API response:", response);
-        } catch (error) {
-            console.error("Error saving changes:", error);
-            alert("Failed to save changes. Please try again.");
+        if (institutionNames === null ||
+            templateDetails.companyName === null ||
+            templateDetails.description === null ||
+            templateDetails.TagLine === "" ||
+            templateDetails.TagLine1 === "" ||
+            templateDetails.TagLine2 === "" ||
+            templateDetails.TagLine3 === "" ||
+            templateDetails.address === "" ||
+            templateDetails.ownerName === "" ||
+            templateDetails.UpiId === "" ||
+            templateDetails.estYear === "" ||
+            templateDetails.videoUrl === null ||
+            templateDetails.phone === "") {
+            alert("You have not filled all the required filled please follow up and fill all the required field");
         }
-        util.setLoader(false);
-        navigate("/dashboard");
+        else {
+            util.setLoader(true);
+            try {
+                console.log("cognito id passing", userData.cognitoId);
+                const body = {
+                    institutionid: institutionNames,
+                    index: "0", // Example index value, replace as needed
+                    companyName: templateDetails.companyName || null,
+                    PrimaryColor: templateDetails.PrimaryColor || null,
+                    SecondaryColor: templateDetails.SecondaryColor || null,
+                    logoUrl: templateDetails.logoUrl,
+                    LightPrimaryColor: templateDetails.LightPrimaryColor || null,
+                    LightestPrimaryColor: templateDetails.LightestPrimaryColor || null,
+                    TagLine: templateDetails.TagLine || null,
+                    TagLine1: templateDetails.TagLine1 || null,
+                    TagLine2: templateDetails.TagLine2 || null,
+                    TagLine3: templateDetails.TagLine3 || null,
+                    videoUrl: templateDetails.videoUrl,
+                    aboutParagraphs: templateDetails.aboutParagraphs || [],
+                    aboutImages: templateDetails.aboutImagesUrls,
+                    address: templateDetails.address || null,
+                    countBanner: templateDetails.countBanner || [],
+                    description: templateDetails.description || null,
+                    email: templateDetails.email || null,
+                    ownerName: templateDetails.ownerName || null,
+                    phone: templateDetails.phone || null,
+                    privacyPolicy: templateDetails.privacyPolicy || [],
+                    socials: templateDetails.socials,
+                    cognitoIdentityId: userData.cognitoId,
+                    ourValues: templateDetails.ourValues || [],
+                    estYear: templateDetails.estYear || null,
+                    UpiId: templateDetails.UpiId || null,
+                    testimonials: templateDetails.testimonials || [],
+                    isFormFilled: true,
+                };
+                console.log("Data requesting for PUT", body);
+
+                // Call the API
+                const response = await API.post("clients", "/user/dentalWebDevForm", {
+                    body,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log("API response:", response);
+            } catch (error) {
+                console.error("Error saving changes:", error);
+                alert("Failed to save changes. Please try again.");
+            }
+            util.setLoader(false);
+            navigate("/dashboard");
+        }
     };
 
     return (
@@ -232,11 +249,11 @@ const CompleteDraft = () => {
                             <h2 className="text-[40px]">Template Details</h2>
                             <div className="middle-right-section mt-5">
                                 <div className="col gap-4">
-                                    <h2 className="text-[20px] font-bold ">Company Name :</h2>
+                                    <h2 className="text-[20px] font-bold ">Company Name<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <p>{templateDetails.companyName}</p>
                                     </div>
-                                    <h2 className="text-[20px] font-bold ">Company Description :</h2>
+                                    <h2 className="text-[20px] font-bold ">Company Description<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -251,7 +268,7 @@ const CompleteDraft = () => {
                                     </div>
                                     <div>
                                         <p>
-                                            <h2 className="text-[20px] font-bold ">Theme Color:</h2>
+                                            <h2 className="text-[20px] font-bold ">Theme Color<span className="text-red-500 ml-1">*</span> :</h2>
                                             <input
                                                 type="color"
                                                 value={templateDetails.PrimaryColor}
@@ -287,7 +304,7 @@ const CompleteDraft = () => {
                                             />
                                         </p>
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Logo:</h2>
+                                    <h2 className="text-[20px] font-bold">Logo<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="file"
@@ -301,7 +318,7 @@ const CompleteDraft = () => {
                                             View
                                         </button>
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Address:</h2>
+                                    <h2 className="text-[20px] font-bold">Address<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -314,7 +331,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Owner Name:</h2>
+                                    <h2 className="text-[20px] font-bold">Owner Name<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -327,7 +344,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Phone Number:</h2>
+                                    <h2 className="text-[20px] font-bold">Phone Number<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -340,7 +357,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Upi Id:</h2>
+                                    <h2 className="text-[20px] font-bold">Upi Id<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -392,7 +409,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Establishment Year:</h2>
+                                    <h2 className="text-[20px] font-bold">Establishment Year<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="number"
@@ -405,7 +422,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold ">Tagline:</h2>
+                                    <h2 className="text-[20px] font-bold ">Tagline<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -416,7 +433,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold ">Short Tagline:</h2>
+                                    <h2 className="text-[20px] font-bold ">Heading<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -427,7 +444,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold ">Tagline2:</h2>
+                                    <h2 className="text-[20px] font-bold ">Short Heading<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -438,7 +455,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold ">Tagline3:</h2>
+                                    <h2 className="text-[20px] font-bold ">Descriptive Heading<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="text"
@@ -449,7 +466,7 @@ const CompleteDraft = () => {
                                             autoFocus
                                         />
                                     </div>
-                                    <h2 className="text-[20px] font-bold">Video:</h2>
+                                    <h2 className="text-[20px] font-bold">Video<span className="text-red-500 ml-1">*</span> :</h2>
                                     <div className="rectangular-box">
                                         <input
                                             type="file"
@@ -465,7 +482,7 @@ const CompleteDraft = () => {
                                     </div>
                                     {templateDetails.countBanner.map((item, index) => (
                                         <div key={index} className="mb-4">
-                                            <h2 className="text-[20px] font-bold">{item.title}:</h2>
+                                            <h2 className="text-[20px] font-bold">{item.title}<span className="text-red-500 ml-1">*</span> :</h2>
                                             <div className="rectangular-box">
                                                 <input
                                                     type="number"

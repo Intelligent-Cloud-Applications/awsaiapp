@@ -94,6 +94,7 @@ const Template2 = () => {
     try {
       // Upload the logo image
       util.setLoader(true);
+      console.log("the name of logo is", logo.name);
       const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
         contentType: logo.type,
       });
@@ -103,13 +104,15 @@ const Template2 = () => {
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
 
-      // Upload the video
-      const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
-        contentType: video.type,
-      });
-      let videoUrl = await Storage.get(response2.key);
-      videoUrl = videoUrl.split("?")[0];
-      setVideo(videoUrl);
+      if (video) {
+        // Upload the video
+        const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
+          contentType: video.type,
+        });
+        let videoUrl = await Storage.get(response2.key);
+        videoUrl = videoUrl.split("?")[0];
+        setVideo(videoUrl);
+      }
 
       // Upload "About Us" images and fetch URLs concurrently
       const aboutImagesUrls = await Promise.all(
@@ -145,7 +148,7 @@ const Template2 = () => {
         TagLine1: TagLine1 || null,
         TagLine2: TagLine2 || null,
         TagLine3: TagLine3 || null,
-        videoUrl: videoUrl,
+        videoUrl: video || null,
         aboutParagraphs: policies['About Us'] || [],
         aboutImages: aboutImagesUrls,
         address: contactInfo.address || null,
