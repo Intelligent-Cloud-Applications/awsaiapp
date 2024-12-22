@@ -32,6 +32,7 @@ const InstitutionDraft = () => {
       } else {
         const response1 = await API.get("clients", "/admin/list-institutionForSales");
         const response2 = await API.get("clients", "/admin/list-clinicForSales");
+        console.log("the clinic data",response2);
         // Validate that response1 is an array and response2 has 'records' as an array
         const validResponse1 = Array.isArray(response1) ? response1 : [];
         const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];

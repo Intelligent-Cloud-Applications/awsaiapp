@@ -210,7 +210,6 @@ const CompleteDraft = () => {
                     phone: templateDetails.phone || null,
                     privacyPolicy: templateDetails.privacyPolicy || [],
                     socials: templateDetails.socials,
-                    cognitoIdentityId: userData.cognitoId,
                     ourValues: templateDetails.ourValues || [],
                     estYear: templateDetails.estYear || null,
                     UpiId: templateDetails.UpiId || null,

@@ -159,7 +159,6 @@ const Template2 = () => {
         phone: `+${contactInfo.countryCode}${contactInfo['Phone Number']}` || null,
         privacyPolicy: policies['Privacy Policy'] || [],
         socials: socials,
-        cognitoIdentityId: userData.cognitoId,
         ourValues: values || [],
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo.upiId || null,
@@ -216,27 +215,29 @@ const Template2 = () => {
           if (!institutionCheckInProgress) {
             util.setLoader(true);
             institutionCheckInProgress = true;
-            API.get("clients", `/user/check-dental?institutionid=${institutionId}`)
+
+            API.get("clients", `/user/check-dental?companyName=${companyName}`)
               .then(response => {
+                console.log("API Response:", response);  // Debugging line
                 institutionCheckInProgress = false;
-                if (response && response.exists) {
+
+                const exists = response?.exists || response?.data?.exists;  // Handle nested response
+
+                if (exists) {
                   alert("This institution already exists. Please use a different name.");
                   setCurrentSection(prevSection);
-                } else if (response) {
-                  // handleCompanyUpload();
-                  setCurrentSection(nextSection);
                 } else {
-                  throw new Error("Error checking institution. Please try again.");
+                  setCurrentSection(nextSection);
                 }
               })
               .catch(error => {
+                console.error("API Error:", error);  // Log errors
                 institutionCheckInProgress = false;
-                alert(error.message);
+                alert(error.message || "Error checking institution.");
                 setCurrentSection(prevSection);
               });
             util.setLoader(false);
-            // Exit early to prevent automatic section change
-            return prevSection; // Prevent automatic section change
+            return prevSection;
           }
           return prevSection;
         // handleCompanyUpload();
