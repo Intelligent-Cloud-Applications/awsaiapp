@@ -63,7 +63,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
           )}
         </div>
         <div>
-          <div className='flex flex-row gap-[11.5em] max1320:gap-4 max1320:left-[4rem] absolute left-[14rem] right-0 top-4 max1250:hidden'>
+          <div className='flex flex-row gap-[11em] max1320:gap-4 max1320:left-[4rem] absolute left-[14rem] right-0 top-4 max1250:hidden'>
             {sections.map((section, index) => (
               <div
                 key={index}
