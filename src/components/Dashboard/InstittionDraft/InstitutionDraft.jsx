@@ -153,7 +153,7 @@ const InstitutionDraft = () => {
         console.log("Navigating to DanceStudio");
         navigate(`/full?institutionName=${clientData.institutionid}`);
         break;
-      case "Dental":
+      case "Dentist":
         console.log("Navigating to Dental");
         navigate(`/completeDraft?institutionName=${clientData.institutionid}`);
         break;
@@ -234,7 +234,7 @@ const InstitutionDraft = () => {
         </div>
 
         {/* Table */}
-        <div className=" w-full mb-4 max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
           {clientsToDisplay.length === 0 ? (
             <div className="text-center text-gray-600 py-4 font-bold">
               No drafts found. Please add a new institution to begin.
@@ -318,7 +318,7 @@ const InstitutionDraft = () => {
 
           <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
             <button className="focus:outline-none">
-              Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{clientsToDisplay.length}</strong>
+              Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{filteredClients.length}</strong>
             </button>
           </div>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Country from '../../Auth/Country';
-import { Label, TextInput} from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 function Contact({ contactInfo, setContactInfo }) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
@@ -119,7 +119,12 @@ function Contact({ contactInfo, setContactInfo }) {
                         value={key.charAt(0).toUpperCase() + key.slice(1)}
                         className="font-medium text-xl"
                       />
-                      <span className="text-red-500 ml-1">*</span>
+                      {(key === 'facebook' || key === 'instagram' || key === 'youTube') ? (
+                        <></>
+                      ) : (
+                        <span className="text-red-500 ml-1">*</span>
+                      )
+                      }
                     </div>
                     <div className="relative">
                       {key === 'Phone Number' ? (
@@ -149,7 +154,7 @@ function Contact({ contactInfo, setContactInfo }) {
                               borderColor: "#D1D5DB",
                               backgroundColor: "#F9FAFB",
                               borderRadius: "8px",
-                              font:"sm"
+                              font: "sm"
                             }}
                           />
                         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
+import theme from "../../../theme";
 
 function Company({
   clients,
@@ -33,32 +34,27 @@ function Company({
     setInstitutionFormat(e.target.value);
   };
   const handleCompanyInputChange = (e) => {
-    setCompanyName(e.target.value);
+    const inputValue = e.target.value; // Get the value from the event
+    setCompanyName(inputValue);  // Set the state with the input value    
+    const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
+    const id1 = noSpaces.substring(0, 5);  // Take the first 5 characters without spaces
+    const id2 = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
+    const newid = id1 + id2;  // Combine the two parts to form the new ID
+
+    setinstitutionId(newid);  // Update the institution ID state
+    console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
+
   };
-  const handleinstitutionIdInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    const validValue = value.replace(/[^a-z0-9]/g, '');
-    setinstitutionId(validValue);
-  };
-
-
-
 
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
+    const generatedTheme = theme(PrimaryColor);
+    setSecondaryColor(generatedTheme.secondary);
+    setLightPrimaryColor(generatedTheme.accent);
+    setLightestPrimaryColor(generatedTheme.background);
   };
 
-  const handleColorChange2 = (e) => {
-    setSecondaryColor(e.target.value);
-  };
-
-  const handleColorChange3 = (e) => {
-    setLightPrimaryColor(e.target.value);
-  };
-
-  const handleColorChange4 = (e) => {
-    setLightestPrimaryColor(e.target.value);
-  };
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -102,7 +98,7 @@ function Company({
       <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
-
+{/* 
       <div className="relative mt-6 px-[1px] mr-10">
         <div className="mb-2 block">
           <Label
@@ -127,7 +123,7 @@ function Company({
           }}
         />
 
-      </div>
+      </div> */}
 
       <div className="relative mt-2 px-[1px] mr-10">
         <div className="mb-2 block">
@@ -154,31 +150,28 @@ function Company({
       </div>
 
       <div className="mt-2">
-        <h4 className="text-[#939393]">Choose Your Theme Color</h4>
+        <h4 >Choose Your Theme Color</h4>
         <div className="flex gap-8">
           <input
             type="color"
             value={PrimaryColor}
             onChange={handleColorChange1}
-            className="rounded-full h-12 w-12 cursor-pointer border-none outline-none colorbox"
+            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
 
           <input
             type="color"
             value={SecondaryColor}
-            onChange={handleColorChange2}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
             value={LightPrimaryColor}
-            onChange={handleColorChange3}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
           <input
             type="color"
             value={LightestPrimaryColor}
-            onChange={handleColorChange4}
             className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
           />
         </div>
@@ -197,15 +190,15 @@ function Company({
 
       {/* Dropdown for Institution Format */}
       <div className="mt-4">
-        <label className="block text-[#939393] mb-2">Select Institution Format</label>
+        <label className="block mb-2">Select Institution Format</label>
         <select
           value={institutionFormat}
           onChange={handleInstitutionFormatChange}
           className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
         >
-          <option value="Online_Classes">Online_Classes</option>
-          <option value="Inperson_Classes">Inperson_Classes</option>
-          <option value="Hybrid_Classes">Hybrid_Classes</option>
+          <option value="Online_Classes">Online Classes</option>
+          <option value="Inperson_Classes">Inperson Classes</option>
+          <option value="Hybrid_Classes">Hybrid Classes</option>
         </select>
       </div>
 

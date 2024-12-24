@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft }) => {
+const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, currentSection, setCurrentSection }) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
@@ -18,6 +18,16 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft }) => {
           >
             Discard
           </button>
+          <button
+            className="bg-black text-white px-6 py-3 rounded-lg transition duration-200"
+            onClick={() => {
+              setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
+              onClose();
+            }}
+          >
+            Previous Page
+          </button>
+
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-200"
             onClick={() => {

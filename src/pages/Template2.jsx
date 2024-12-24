@@ -58,7 +58,7 @@ const Template2 = () => {
     'Owner Name': '',
     'Phone Number': '',
     email: '',
-    upiId: '',
+    'UPI Id': '',
     instagram: '',
     facebook: '',
     youTube: '',
@@ -161,7 +161,7 @@ const Template2 = () => {
         socials: socials,
         ourValues: values || [],
         estYear: contactInfo['Establishment Year of Company'] || null,
-        UpiId: contactInfo.upiId || null,
+        UpiId: contactInfo['UPI Id'] || null,
         testimonials: testimonials || [],
         isFormFilled: isFormedFilled,
       };
@@ -422,6 +422,8 @@ const Template2 = () => {
         onClose={handleCloseModal}
         onClear={handleClearData}
         onSaveDraft={handleSaveDraft}
+        currentSection={currentSection}
+        setCurrentSection={setCurrentSection}
       />
     </div>
   );

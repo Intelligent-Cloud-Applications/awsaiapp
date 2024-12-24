@@ -46,7 +46,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dental", "Cafe"];
+  const type = ["Dance Studio", "Dentist", "Cafe"];
 
   const customTheme = {
     pages: {
@@ -403,7 +403,7 @@ const Panel = () => {
     switch (instituteType) {
       case "Dance Studio":
         return "/template";
-      case "Dental":
+      case "Dentist":
         return "/template2";
       case "Cafe":
         return "/template3"
@@ -723,21 +723,24 @@ const Panel = () => {
                         })()}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <select
-                          value={
-                            client.isDelivered ? "Delivered" : "Not Delivered"
-                          }
-                          onChange={(e) =>
-                            handleDropdownChange(
-                              client,
-                              e.target.value,
-                            )
-                          }
-                          className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                        >
-                          <option value="Not Delivered">Not Delivered</option>
-                          <option value="Delivered">Delivered</option>
-                        </select>
+                        {client.payment ? (
+                          <select
+                            value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                            onChange={(e) => handleDropdownChange(client, e.target.value)}
+                            className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                          >
+                            <option value="Not Delivered">Not Delivered</option>
+                            <option value="Delivered">Delivered</option>
+                          </select>
+                        ) : (
+                          <select
+                            value="Not Delivered"
+                            disabled
+                            className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
+                          >
+                            <option value="Not Delivered">Not Delivered</option>
+                          </select>
+                        )}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {client.payment ? "Paid" : "Not Paid"}
@@ -994,7 +997,7 @@ const Panel = () => {
                 <strong>
                   {startIndex + 1}-{startIndex + clientsToDisplay.length}
                 </strong>{" "}
-                of <strong>{clientsToDisplay.length}</strong>
+                of <strong>{filteredClients.length}</strong>
               </div>
               <Pagination
                 currentPage={currentPage}

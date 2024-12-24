@@ -152,7 +152,7 @@ function Company({
           </div>
 
           <div className="mt-4">
-            <h4 className="text-[#939393] font-medium text-xl">Choose Your Theme Color</h4>
+            <h4 className="font-medium text-xl">Choose Your Theme Color</h4>
             <div className="flex gap-8 mt-2">
               <input
                 type="color"
