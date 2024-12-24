@@ -71,26 +71,25 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-      return clientsData?.filter(([key, client]) => client.isFormFilled === true) || []; // Ensure that it returns an array
+        return Array.isArray(clientsData)
+            ? clientsData.filter(([key, client]) => client?.isFormFilled || false)
+            : [];
     }
-
     const query = searchQuery.toLowerCase();
-
     console.log("Search Query:", query);
     console.log("Clients Data:", clientsData);
-
-    const filtered = clientsData?.filter(([key, client]) => {
-      const institution =
-        typeof client.institutionid === "string"
-          ? client.institutionid.toLowerCase()
-          : ""; // Default to an empty string if institution is not a valid string
-
-      return institution.includes(query);
-    });
-
+    
+    const filtered = Array.isArray(clientsData)
+        ? clientsData.filter(([key, client]) => {
+              const institution = client?.institutionid
+                  ? String(client.institutionid).toLowerCase()
+                  : "";
+              return institution.includes(query);
+          })
+        : [];
     console.log("Filtered Clients:", filtered);
-    return filtered || []; // Ensure that it always returns an array
-  }, [searchQuery, clientsData]);
+    return filtered;
+}, [searchQuery, clientsData]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
@@ -411,7 +410,7 @@ const Panel = () => {
         return "";
     }
   };
-
+  console.log("teh data of listed client", filteredClients);
   return (
     <>
       {!showMemberList ? (

@@ -28,11 +28,16 @@ const InstitutionDraft = () => {
 
       let response;
       if (userData.role === "owner") {
-        response = await API.get("clients", "/admin/list-institution");
+        const response1 = await API.get("clients", "/admin/list-institution");
+        const response2 = await API.get("clients", "/admin/list-dentist");
+        const validResponse1 = Array.isArray(response1) ? response1 : [];
+        const validResponse2 = Array.isArray(response2.records) ? response2.records : (Array.isArray(response2) ? response2 : []);
+        // Combine the valid responses into one array
+        response = [...validResponse1, ...validResponse2];
       } else {
         const response1 = await API.get("clients", "/admin/list-institutionForSales");
         const response2 = await API.get("clients", "/admin/list-clinicForSales");
-        console.log("the clinic data",response2);
+        console.log("the clinic data", response2);
         // Validate that response1 is an array and response2 has 'records' as an array
         const validResponse1 = Array.isArray(response1) ? response1 : [];
         const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];
@@ -96,7 +101,6 @@ const InstitutionDraft = () => {
   };
 
   const handleConfirmDelete = async () => {
-    console.log("confirm is clicked");
     console.log("institution to delete", institutionIdToDelete);
     if (!institutionIdToDelete) return;
     try {
