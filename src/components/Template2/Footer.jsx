@@ -3,9 +3,10 @@ import './Footer.css';
 import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
 
-function Footer({ currentSection, nextSection, prevSection, saveData, showModal }) {
+function Footer({ currentSection, nextSection, prevSection, saveData, showModal, institutionId }) {
   // eslint-disable-next-line
-  const { userData, setUserData } = useContext(Context)
+  // const { userData, setUserData } = useContext(Context)
+  const UserCtx = useContext(Context);
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
@@ -37,8 +38,14 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal 
   };
   const submitSections = async () => {
     await nextSection();
-    Navigate("/pay");
-    setUserData(userData => ({ ...userData, web: true, isVerified: false }));
+    // Navigate("/pay");
+    // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
+    const baseUrl =
+      process.env.REACT_APP_STAGE === 'PROD'
+        ? 'http://happyprancer.com'
+        : 'http://beta.happyprancer.com';
+    const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
+    window.open(url, '_blank');
   }
 
   return (
