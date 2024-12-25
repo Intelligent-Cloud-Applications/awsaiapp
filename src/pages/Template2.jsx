@@ -321,12 +321,6 @@ const Template2 = () => {
 
   const handleClearData = async () => {
     try {
-      util.setLoader(true);
-      await API.del(
-        "clients",
-        `/user/development-form/delete-all/${institutionId}`);
-      alert('All Data deleted successfully');
-      util.setLoader(false);
       Navigate('/dashboard');
     } catch (error) {
       alert('No matching data found', error);
