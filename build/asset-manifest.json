@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.88502ffb.css",
-    "main.js": "/static/js/main.bd97fd7e.js",
+    "main.js": "/static/js/main.15143def.js",
     "static/media/backgroundvideo.mp4": "/static/media/backgroundvideo.18f8ded3f4efab06b7d4.mp4",
     "static/media/Bapuji_Mallik.png": "/static/media/Bapuji_Mallik.8540906ed2697236cc4a.png",
     "static/media/Prajakta.jpg": "/static/media/Prajakta.5e2aeba9e28c304e93d0.jpg",
@@ -76,10 +76,10 @@
     "static/media/plus.svg": "/static/media/plus.7905852c3d6ed226d1e95ae8d546d09e.svg",
     "static/media/Menu.svg": "/static/media/Menu.82a73dd21f8142f248a15bfdd93e4d48.svg",
     "main.88502ffb.css.map": "/static/css/main.88502ffb.css.map",
-    "main.bd97fd7e.js.map": "/static/js/main.bd97fd7e.js.map"
+    "main.15143def.js.map": "/static/js/main.15143def.js.map"
   },
   "entrypoints": [
     "static/css/main.88502ffb.css",
-    "static/js/main.bd97fd7e.js"
+    "static/js/main.15143def.js"
   ]
 }
