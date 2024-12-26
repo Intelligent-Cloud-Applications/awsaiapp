@@ -1,14 +1,40 @@
 import React, { useState, useEffect, useContext } from 'react';
+import Select from 'react-select';
 import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
 import Context from "../../../context/Context";
+
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
-
-
+  const [classType, setclassType] = useState([]); // Holds the class types fetched from localStorage
+  const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([])); 
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
+  const Ctx = useContext(Context);
+
+  useEffect(() => {
+    // Load class types from localStorage and set them correctly
+    const savedclassType = JSON.parse(localStorage.getItem('classTypes')) || [];
+    setclassType(savedclassType);
+  }, []);
+
+  useEffect(() => {
+    // Save class types to localStorage whenever they change
+    localStorage.setItem('classTypes', JSON.stringify(classType));
+  }, [classType]);
+  
+
+  const handleClassTypeChange = (subscriptionIndex, selectedOptions) => {
+    const updatedSelectedclassType = [...selectedclassType];
+    updatedSelectedclassType[subscriptionIndex] = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    setSelectedclassType(updatedSelectedclassType);
+
+    const updatedSubscriptions = [...subscriptions];
+    updatedSubscriptions[subscriptionIndex].classType = updatedSelectedclassType[subscriptionIndex];
+    setSubscriptions(updatedSubscriptions);
+  };
+
   useEffect(() => {
     const savedSubscriptionTypes = JSON.parse(localStorage.getItem('subscriptionTypes')) || Array(subscriptions.length).fill('monthly');
     const savedCountryCodes = JSON.parse(localStorage.getItem('countryCodes')) || Array(subscriptions.length).fill('');
@@ -20,7 +46,6 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
   }, [subscriptions.length]);
 
   const util = useContext(Context).util;
-
 
   const handleSubscriptionChange = (subscriptionIndex, e) => {
     const { name, value } = e.target;
@@ -95,10 +120,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     return 0;
   };
 
-
-
   const addService = (index) => {
-    console.log(subscriptions);
     const updatedSubscriptions = [...subscriptions];
     updatedSubscriptions[index].provides.push('');
     setSubscriptions(updatedSubscriptions);
@@ -110,7 +132,6 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setSubscriptions(updatedSubscriptions);
   };
 
-
   const updateIndiaAttribute = (index, value) => {
     const updatedSubscriptions = [...subscriptions];
     updatedSubscriptions[index] = {
@@ -119,6 +140,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     };
     setSubscriptions(updatedSubscriptions);
   };
+
   const addSubscription = () => {
     const newSubscription = {
       heading: '',
@@ -127,14 +149,17 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
+      classType: [''],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     };
 
     setSubscriptions([...subscriptions, newSubscription]);
+    setSelectedclassType([...selectedclassType, []]);
   };
-  const Ctx = useContext(Context);
+
   const removeSubscription = async (indexToRemove) => {
     const subscription = subscriptions[indexToRemove]
     if (subscription.productId) {
@@ -161,9 +186,8 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     localStorage.setItem('countryCodes', JSON.stringify(countryCodes));
     localStorage.setItem('provides', JSON.stringify(provides));
   }, [subscriptionTypes, countryCodes, provides]);
-
   return (
-    <div className="mx-auto max-w-[850px]" style={{ overflow: 'auto', maxHeight: '500px' }}>
+    <div className="mx-auto max-w-[850px] max-h-screen overflow-y-auto scroll-smooth">
       <h1 className="font-medium text-7xl">SUBSCRIPTION PLANS</h1>
       <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
         ** The subscription model shown is just an example of how your given data will look like for the subscription; it will not change on giving your input.**
@@ -198,6 +222,27 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                 className="absolute left-0 right-0  h-[1px] bg-[#939393]"
 
               ></div>
+            </div>
+            {/* Multi-select for class types */}
+            <div className="relative">
+              <Select
+                isMulti
+                value={
+                  selectedclassType[index].map(value => ({
+                    value,
+                    label: value,
+                  })) || []
+                }
+                options={classType.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+                onChange={(selectedOptions) =>
+                  handleClassTypeChange(index, selectedOptions)
+                }
+                placeholder="Select Class Types"
+                className="w-[19.5rem] mr-[1.5rem] border-[2px] border-[#9d9d9d78] max500:w-[80vw] mt-6"
+              />
             </div>
             <div className="relative">
               <select
