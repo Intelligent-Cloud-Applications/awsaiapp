@@ -38,13 +38,13 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     Navigate("/dashboard")
   };
   const submitSections = async () => {
-    nextSection();
+    // nextSection();
     await API.put("clients", "/user/development-form/put-time/awsaiapp", {
       body: {
         submissiontime: new Date().getTime(),
       },
     });
-    // Navigate("/pay");
+    Navigate("/dashboard");
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
     // const baseUrl =
     //   process.env.REACT_APP_STAGE === 'PROD'
