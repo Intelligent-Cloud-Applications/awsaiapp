@@ -10,7 +10,7 @@ import Services from '../components/Template/Form/Services';
 import Testimonials from '../components/Template/Form/Testimonials';
 import Subscription from '../components/Template/Form/Subscription';
 import FAQs from '../components/Template/Form/FAQs';
-import Instructors from '../components/Template/Form/Instructors';
+// import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
@@ -728,71 +728,71 @@ const Template = () => {
     }
   }
 
-  const handleInstructorsUpload = async () => {
-    try {
-      // Upload images first
-      let uploadedImages = [];
-      for (let i = 0; i < instructors.length; i++) {
-        const instructor = instructors[i];
-        if (instructor.actualFile) {
-          const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
-            contentType: instructor.actualFile.type,
-          });
-          let inst_pic = await Storage.get(response.key);
-          inst_pic = inst_pic.split("?")[0];
-          uploadedImages.push(inst_pic);
-        } else {
-          uploadedImages.push(null);
-        }
-      }
+  // const handleInstructorsUpload = async () => {
+  //   try {
+  //     // Upload images first
+  //     let uploadedImages = [];
+  //     for (let i = 0; i < instructors.length; i++) {
+  //       const instructor = instructors[i];
+  //       if (instructor.actualFile) {
+  //         const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+  //           contentType: instructor.actualFile.type,
+  //         });
+  //         let inst_pic = await Storage.get(response.key);
+  //         inst_pic = inst_pic.split("?")[0];
+  //         uploadedImages.push(inst_pic);
+  //       } else {
+  //         uploadedImages.push(null);
+  //       }
+  //     }
 
-      for (let i = 0; i < instructors.length; i++) {
-        const instructor = instructors[i];
-        if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
-          try {
-            if (instructor.instructorId) {
-              await API.put("clients", `/user/development-form/update-instructor`, {
-                body: {
-                  instructorId: instructor.instructorId,
-                  institution: Ctx.userData.institutionName,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: uploadedImages[i],
-                  position: instructor.position,
-                },
-              });
-            }
-            else {
-              const response = await API.put("clients", "/user/development-form/instructor", {
-                body: {
-                  institution: institutionId,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: uploadedImages[i],
-                  position: instructor.position,
-                },
-              });
-              const inst = [...instructors];
-              console.log(inst);
-              console.log(response);
-              inst[i].instructorId = response.Attributes.instructorId;
-              inst[i].institution = response.Attributes.institution;
-              console.log(inst);
-              setInstructors(inst)
-            }
-            //            console.log("API Response:", response);
-          } catch (error) {
-            console.error("Error uploading instructor:", instructor.name, error);
-          }
-        } else {
-          //          console.log("Skipping instructor due to missing data:", instructor.name);
-        }
-      }
+  //     for (let i = 0; i < instructors.length; i++) {
+  //       const instructor = instructors[i];
+  //       if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
+  //         try {
+  //           if (instructor.instructorId) {
+  //             await API.put("clients", `/user/development-form/update-instructor`, {
+  //               body: {
+  //                 instructorId: instructor.instructorId,
+  //                 institution: Ctx.userData.institutionName,
+  //                 name: instructor.name,
+  //                 emailId: instructor.emailId,
+  //                 image: uploadedImages[i],
+  //                 position: instructor.position,
+  //               },
+  //             });
+  //           }
+  //           else {
+  //             const response = await API.put("clients", "/user/development-form/instructor", {
+  //               body: {
+  //                 institution: institutionId,
+  //                 name: instructor.name,
+  //                 emailId: instructor.emailId,
+  //                 image: uploadedImages[i],
+  //                 position: instructor.position,
+  //               },
+  //             });
+  //             const inst = [...instructors];
+  //             console.log(inst);
+  //             console.log(response);
+  //             inst[i].instructorId = response.Attributes.instructorId;
+  //             inst[i].institution = response.Attributes.institution;
+  //             console.log(inst);
+  //             setInstructors(inst)
+  //           }
+  //           //            console.log("API Response:", response);
+  //         } catch (error) {
+  //           console.error("Error uploading instructor:", instructor.name, error);
+  //         }
+  //       } else {
+  //         //          console.log("Skipping instructor due to missing data:", instructor.name);
+  //       }
+  //     }
 
-    } catch (error) {
-      console.error("Error uploading instructors: ", error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error("Error uploading instructors: ", error);
+  //   }
+  // }
 
   const handlePolicyUpload = async () => {
     try {
@@ -1046,23 +1046,23 @@ const Template = () => {
           }
           handleFAQsUpload();
           break;
-        case 7:
-          const incompleteIndex = instructors.findIndex(instructor => {
-            return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-          });
+        // case 7:
+        //   const incompleteIndex = instructors.findIndex(instructor => {
+        //     return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
+        //   });
 
-          // If incompleteIndex is not -1, it means there's at least one incomplete instructor
-          if (incompleteIndex !== -1) {
-            // Check if all fields for the incomplete instructor are filled
-            const incompleteInstructor = instructors[incompleteIndex];
-            if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
-              alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
-              return prevSection;
-            }
-          }
-          handleInstructorsUpload();
-          break;
-        case 8:
+        //   // If incompleteIndex is not -1, it means there's at least one incomplete instructor
+        //   if (incompleteIndex !== -1) {
+        //     // Check if all fields for the incomplete instructor are filled
+        //     const incompleteInstructor = instructors[incompleteIndex];
+        //     if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
+        //       alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
+        //       return prevSection;
+        //     }
+        //   }
+        //   handleInstructorsUpload();
+        //   break;
+        case 7:
           handlePolicyUpload();
           break;
        
@@ -1201,13 +1201,13 @@ const Template = () => {
               setFaqs={setFaqs}
             />}
 
-          {currentSection === 7 &&
+          {/* {currentSection === 7 &&
             <Instructors
               instructors={instructors}
               setInstructors={setInstructors}
-            />}
+            />} */}
 
-          {currentSection === 8 &&
+          {currentSection === 7 &&
             <Policy
               policies={policies}
               setPolicies={setPolicies}
@@ -1234,6 +1234,8 @@ const Template = () => {
         onClose={handleCloseModal}
         onClear={handleClearData}
         onSaveDraft={handleSaveDraft}
+        currentSection={currentSection}
+        setCurrentSection={setCurrentSection}
       />
     </div>
   );

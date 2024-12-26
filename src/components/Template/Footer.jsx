@@ -16,7 +16,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     'TESTIMONIALS',
     'SUBSCRIPTION',
     'FAQS',
-    'INSTRUCTORS',
+    // 'INSTRUCTORS',
     'POLICY',
     'CONTACT INFO',
   ];
@@ -46,19 +46,20 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     });
     // Navigate("/pay");
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
-    const baseUrl =
-      process.env.REACT_APP_STAGE === 'PROD'
-        ? 'http://happyprancer.com'
-        : 'http://beta.happyprancer.com';
-    const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
-    window.open(url, '_blank');
+    // const baseUrl =
+    //   process.env.REACT_APP_STAGE === 'PROD'
+    //     ? 'http://happyprancer.com'
+    //     : 'http://beta.happyprancer.com';
+    const url = `http://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
+    // window.open(url);
+    window.location.href = url;
   }
 
   return (
     <div className='footer-wrapper relative'>
       <div className='bg-white h-[4rem] footer flex justify-end items-center relative'>
         {/* Sections */}
-        <div className='flex flex-row gap-6 max1320:gap-4 max1320:left-[4rem] absolute left-[6rem] right-0 top-4 max1250:hidden'>
+        <div className='flex flex-row gap-10 max1320:gap-4 max1320:left-[4rem] absolute left-[6rem] right-0 top-4 max1250:hidden'>
           {sections.map((section, index) => (
             <div
               key={index}

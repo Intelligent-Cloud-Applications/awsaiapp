@@ -40,12 +40,13 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     await nextSection();
     // Navigate("/pay");
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
-    const baseUrl =
-      process.env.REACT_APP_STAGE === 'PROD'
-        ? 'http://happyprancer.com'
-        : 'http://beta.happyprancer.com';
-    const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
-    window.open(url, '_blank');
+    // const baseUrl =
+    //   process.env.REACT_APP_STAGE === 'PROD'
+    //     ? 'http://happyprancer.com'
+    //     : 'http://beta.happyprancer.com';
+    const url = `http://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
+    // window.open(url);
+    window.location.href = url;
   }
 
   return (
