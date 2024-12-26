@@ -1,3 +1,8 @@
+.boxtoselect {
+    height: 270px;
+    width: 270px;
+}
+
 @media (max-width: 1585px) {
     .respo {
         right: 5px;
@@ -18,17 +23,10 @@
         padding-bottom: 2rem;
     }
 
-    .boxtoselect {
-        height: 170px;
-        width: 170px;
-    }
-
     .colorbox {
         height: 50px;
         width: 50px;
     }
-
-
 }
 
 @media (max-width: 1360px) {
@@ -94,4 +92,14 @@
 .policy-input,
 .policy-textarea {
     border-bottom: 1px solid black;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }

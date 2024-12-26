@@ -126,27 +126,6 @@ const DashBoard = () => {
                   className="text-5xl"
                 />
               </div>
-              {/* <div
-                class="w-[90vw] lg:w-[70vw] lg:ml-16 h-14 ml-2 relative rounded-2xl lg:mt-20"
-                style={{
-                  boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <div className="flex justify-between items-center h-full text-stone-900 text-xl max800:text-[white]">
-                  <p className="max700:text-[20px] pl-4">
-                    Do you want to change your Website?
-                  </p>
-                  <Link
-                   to={{
-                    pathname: "/full",
-                    search: `?institutionName=${institutionNames}`,
-                  }}
-                    className="text-white bg-[#30AFBC] px-4 py-0.5 rounded text-small mr-4"
-                  >
-                    Edit
-                  </Link>
-                </div>
-              </div> */}
             </>
           )}
       </div>

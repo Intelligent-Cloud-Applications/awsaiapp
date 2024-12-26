@@ -116,6 +116,8 @@ const Query = ({ activeComponent }) => {
     } finally {
       util.setLoader(false);
     }
+    util.setLoader(false);
+
   };
 
   return (

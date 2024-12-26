@@ -5,10 +5,6 @@ import Navbar from '../components/Home/Navbar';
 import Timer from './Timer';
 
 const Complete = () => {
-  
-
-
-
   return (
     <div className='hello1 h-screen'>
       <Navbar />
