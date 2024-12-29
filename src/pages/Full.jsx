@@ -17,7 +17,7 @@ const Full = () => {
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [instructorDetails, setInstructorDetails] = useState(null);
   const [loader, setLoader] = useState(true);
-const Ctx = useContext(Context);
+  const Ctx = useContext(Context);
   const util = useContext(Context).util;
   const goBack = () => {
     navigate('/');
@@ -28,29 +28,29 @@ const Ctx = useContext(Context);
       if (institutionNames) {
         try {
           if (!loaderInitialized) { // Check if loader is false and not initialized
-            util.setLoader(true); 
+            util.setLoader(true);
             setLoaderInitialized(true);
           }
-  
+
           const templateResponse = await API.get(
             "clients",
             `/user/development-form/get-user/${institutionNames}`
           );
           await setTemplateDetails(templateResponse);
-  
+
           const productResponse = await API.get(
             "clients",
             `/user/development-form/get-product/${institutionNames}`
           );
-               // Convert the subscription amount to rupee
-               const convertedProductResponse = productResponse.map(product => ({
-                ...product,
-                amount: product.amount / 100, // Convert amount to rupee
-              }));
-      
-              await setSubscriptionDetails(convertedProductResponse);
-      
-  
+          // Convert the subscription amount to rupee
+          const convertedProductResponse = productResponse.map(product => ({
+            ...product,
+            amount: product.amount / 100, // Convert amount to rupee
+          }));
+
+          await setSubscriptionDetails(convertedProductResponse);
+
+
           const instructorResponse = await API.get(
             "clients",
             `/user/development-form/get-instructor/${institutionNames}`
@@ -64,11 +64,11 @@ const Ctx = useContext(Context);
         }
       }
     };
-  
+
     fetchData();
   }, [institutionNames, loader, loaderInitialized, util]);
-  
-  
+
+
   const handleServiceTitleChange = (event, index) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[index].title = event.target.value;
@@ -89,8 +89,8 @@ const Ctx = useContext(Context);
     setTemplateDetails({ ...templateDetails, Services: updatedServices });
   };
 
-  
- 
+
+
   // util.setLoader(false);
   const handleVideoChange = async (event) => {
     const videoFile = event.target.files[0];
@@ -103,11 +103,11 @@ const Ctx = useContext(Context);
         }
       );
 
-    
+
       let videoUrl = await Storage.get(response.key);
       videoUrl = videoUrl.split("?")[0];
 
-     
+
       setTemplateDetails((prevState) => ({
         ...prevState,
         videoUrl: videoUrl,
@@ -129,7 +129,7 @@ const Ctx = useContext(Context);
         [key]: reader.result,
       }));
 
-     
+
       try {
         const response = await Storage.put(
           `${institutionNames}/images/${file.name}`,
@@ -139,11 +139,11 @@ const Ctx = useContext(Context);
           }
         );
 
-      
+
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
 
-       
+
         setTemplateDetails((prevState) => ({
           ...prevState,
           [key]: imageUrl,
@@ -165,7 +165,7 @@ const Ctx = useContext(Context);
         [key]: reader.result,
       }));
 
-     
+
       try {
         const response = await Storage.put(
           `${institutionNames}/images/${file.name}`,
@@ -175,11 +175,11 @@ const Ctx = useContext(Context);
           }
         );
 
-      
+
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
 
-       
+
         setTemplateDetails((prevState) => ({
           ...prevState,
           [key]: imageUrl,
@@ -191,7 +191,7 @@ const Ctx = useContext(Context);
       }
     };
   };
- 
+
   const handleFileChange1 = async (event, testimonialIndex) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -209,7 +209,7 @@ const Ctx = useContext(Context);
         let imageUrl = await Storage.get(response.key);
         imageUrl = imageUrl.split("?")[0];
 
-        
+
         setTemplateDetails((prevState) => {
           const updatedTestimonials = [...prevState.Testimonial];
           updatedTestimonials[testimonialIndex].img = imageUrl;
@@ -221,61 +221,61 @@ const Ctx = useContext(Context);
     };
   };
   const handleFileChange3 = async (event, index) => {
-    const file = event.target.files[0]; 
+    const file = event.target.files[0];
     try {
       const uploadedFile = await Storage.put(
-        `institution-utils/${institutionNames}/images/Instructor/${file.name}`, 
-        file, 
+        `institution-utils/${institutionNames}/images/Instructor/${file.name}`,
+        file,
         {
-          contentType: file.type 
+          contentType: file.type
         }
       );
-  
+
       console.log("File uploaded successfully:", uploadedFile);
-  
-      
+
+
       let imageUrl = await Storage.get(uploadedFile.key);
       imageUrl = imageUrl.split("?")[0];
-  
-     
+
+
       setInstructorDetails((prevState) => {
         const updatedInstructors = [...prevState];
         updatedInstructors[index].image = imageUrl;
         return updatedInstructors;
       });
-  
+
       console.log("File URL:", imageUrl);
     } catch (error) {
       console.error("Error uploading file: ", error);
     }
   };
- 
+
   const durationInMilliseconds = (subscriptionType, durationText) => {
     let durationInMillis = 0;
-  
+
     switch (subscriptionType) {
       case 'year':
         durationInMillis = 365 * 24 * 60 * 60 * 1000;
         break;
       case 'month':
-        durationInMillis = 30 * 24 * 60 * 60 * 1000; 
+        durationInMillis = 30 * 24 * 60 * 60 * 1000;
         break;
       case 'week':
-        durationInMillis = 7 * 24 * 60 * 60 * 1000; 
+        durationInMillis = 7 * 24 * 60 * 60 * 1000;
         break;
-        case 'quarter':
-          durationInMillis = 3 * 30 * 24 * 60 * 60 * 1000; 
-          break;
+      case 'quarter':
+        durationInMillis = 3 * 30 * 24 * 60 * 60 * 1000;
+        break;
       default:
         break;
     }
-  
+
     return durationInMillis;
   };
-  
+
   const handleSubscriptionTypeChange = (e, index) => {
     const [subscriptionType, durationText] = e.target.value.split(':');
-  
+
     setSubscriptionDetails(prevDetails => {
       return prevDetails.map((subscription, i) => {
         if (i === index) {
@@ -290,46 +290,46 @@ const Ctx = useContext(Context);
       });
     });
   };
-  
-  
-  
+
+
+
   const addSubscription = () => {
     setSubscriptionDetails(prevDetails => [...prevDetails, {
       heading: '',
       amount: '',
       india: true,
       subscriptionType: 'year',
-      durationText:'Yearly',
+      durationText: 'Yearly',
       country: 'India',
       currency: 'INR',
       duration: 365 * 24 * 60 * 60 * 1000,
-      provides: [] 
+      provides: []
     }]);
   };
- 
+
   const handleCountryChange = (e, index) => {
     const newValue = e.target.value;
     // const countryCode = e.target.options[e.target.selectedIndex].getAttribute("data-countryCode");
     const countryName = e.target.options[e.target.selectedIndex].textContent.split(' ')[0];
     setSubscriptionDetails(prevDetails => {
-        const updatedDetails = [...prevDetails];
-        updatedDetails[index].country = countryName;
-        updatedDetails[index].currency = newValue; 
-        return updatedDetails;
+      const updatedDetails = [...prevDetails];
+      updatedDetails[index].country = countryName;
+      updatedDetails[index].currency = newValue;
+      return updatedDetails;
     });
-};
+  };
 
-  
+
   const saveChanges = async () => {
     util.setLoader(true);
     try {
       if (instructorDetails && instructorDetails.length > 0) {
-        
+
         const instructorPromises = [];
         instructorDetails.forEach(instructor => {
           // Check if instructor already has an ID
           if (instructor.instructorId) {
-           
+
             instructorPromises.push(API.put("clients", `/user/development-form/update-instructor`, {
               body: {
                 instructorId: instructor.instructorId,
@@ -341,8 +341,8 @@ const Ctx = useContext(Context);
               },
             }));
           } else {
-           
-            const imageUrl = instructor.image; 
+
+            const imageUrl = instructor.image;
             instructorPromises.push(API.put("clients", `/user/development-form/instructor`, {
               body: {
                 institution: institutionNames,
@@ -354,20 +354,20 @@ const Ctx = useContext(Context);
             }));
           }
         });
-       
+
         await Promise.all(instructorPromises);
       }
       if (subscriptionDetails && subscriptionDetails.length > 0) {
-      
+
         const subscriptionPromises = [];
-      
+
         subscriptionDetails.forEach(subscription => {
           const amountInPaisa = subscription.amount * 100;
           if (subscription.productId) {
-           
+
             subscriptionPromises.push(API.put("clients", "/user/development-form/update-subscription", {
               body: {
-                cognitoId:Ctx.userData.cognitoId,
+                cognitoId: Ctx.userData.cognitoId,
                 productId: subscription.productId,
                 institution: institutionNames,
                 amount: amountInPaisa,
@@ -382,10 +382,10 @@ const Ctx = useContext(Context);
               },
             }));
           } else {
-           
+
             subscriptionPromises.push(API.put("clients", "/user/development-form/subscriptions", {
               body: {
-                cognitoId:Ctx.userData.cognitoId,
+                cognitoId: Ctx.userData.cognitoId,
                 institution: institutionNames,
                 amount: amountInPaisa,
                 country: subscription.country,
@@ -400,12 +400,12 @@ const Ctx = useContext(Context);
             }));
           }
         });
-      
-       
+
+
         await Promise.all(subscriptionPromises);
       }
-      
-  
+
+
       await Promise.all([
         API.put("clients", "/user/development-form/company", {
           body: {
@@ -429,13 +429,13 @@ const Ctx = useContext(Context);
         API.put("clients", "/user/development-form/why-choose", {
           body: {
             institutionid: institutionNames,
-            Services:templateDetails.Services,
-            ServicesBg:  templateDetails.ServicesBg,
-            ServicesPortrait:  templateDetails.ServicesPortrait,
+            Services: templateDetails.Services,
+            ServicesBg: templateDetails.ServicesBg,
+            ServicesPortrait: templateDetails.ServicesPortrait,
             ClassTypes: templateDetails.ClassTypes,
           },
         }),
-        
+
         API.put("clients", "/user/development-form/testimonial", {
           body: {
             institutionid: institutionNames,
@@ -454,9 +454,9 @@ const Ctx = useContext(Context);
             institutionid: institutionNames,
             Refund: templateDetails.Refund,
             TermsData: templateDetails.TermsData,
-            AboutUs:templateDetails.AboutUs,
-            AboutUsBg:templateDetails.AboutUsBg,
-            PrivacyPolicy:templateDetails.PrivacyPolicy,
+            AboutUs: templateDetails.AboutUs,
+            AboutUsBg: templateDetails.AboutUsBg,
+            PrivacyPolicy: templateDetails.PrivacyPolicy,
           },
         }),
         API.put("clients", "/user/development-form/contact", {
@@ -512,67 +512,68 @@ const Ctx = useContext(Context);
   };
   const removeInstructor = async (instructorId) => {
     if (instructorId) {
-    const confirmed = window.confirm("Are you sure you want to delete this instructor?");
-    if (!confirmed) return;
-  
-    try {
-      util.setLoader(true);
-      // Make the API call to delete the instructor
-      await API.del("clients", `/user/development-form/delete-instructor/${institutionNames}`, {
-        body: {
-          instructorId: instructorId
-        }
-      });
-      
-     
-      
-      alert("Instructor removed successfully!");
-    } catch (error) {
-      console.error("Error removing instructor:", error);
-      alert("Failed to remove instructor. Please try again.");
-    } finally {
-      util.setLoader(false);
-    }
+      const confirmed = window.confirm("Are you sure you want to delete this instructor?");
+      if (!confirmed) return;
+
+      try {
+        util.setLoader(true);
+        // Make the API call to delete the instructor
+        await API.del("clients", `/user/development-form/delete-instructor/${institutionNames}`, {
+          body: {
+            instructorId: instructorId
+          }
+        });
+
+
+
+        alert("Instructor removed successfully!");
+      } catch (error) {
+        console.error("Error removing instructor:", error);
+        alert("Failed to remove instructor. Please try again.");
+      } finally {
+        util.setLoader(false);
+      }
     } setInstructorDetails(prevState => {
       return prevState.filter(instructor => instructor.instructorId !== instructorId);
     });
   };
   const removeSubscription = async (productId) => {
     if (productId) {
-    const confirm = window.confirm("Are you sure you want to delete this Subscription?");
-    if (!confirm) return;
-    try {
-      util.setLoader(true);
-      // Make the API call to delete the subscription
-      await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
-        body: {
-          cognitoId:Ctx.userData.cognitoId,
-          productId: productId
-        }
-      });
-      
-     
-     
-      
-      alert("Subscription deleted successfully!");
-    } catch (error) {
-      console.error("Error removing subscription:", error);
-      alert("Failed to delete subscription. Please try again.");
-    } finally {
-      util.setLoader(false);
-    }}
+      const confirm = window.confirm("Are you sure you want to delete this Subscription?");
+      if (!confirm) return;
+      try {
+        util.setLoader(true);
+        // Make the API call to delete the subscription
+        await API.del("clients", `/user/development-form/delete-subscription/${institutionNames}`, {
+          body: {
+            cognitoId: Ctx.userData.cognitoId,
+            productId: productId
+          }
+        });
+
+
+
+
+        alert("Subscription deleted successfully!");
+      } catch (error) {
+        console.error("Error removing subscription:", error);
+        alert("Failed to delete subscription. Please try again.");
+      } finally {
+        util.setLoader(false);
+      }
+    }
     setSubscriptionDetails(prevDetails => {
       return prevDetails.filter(subscription => subscription.productId !== productId);
     });
   };
-  
-  
+
+
   const downloadImage = (imageUrl) => {
     if (imageUrl) {
-      
+
       window.open(imageUrl, '_blank');
     } else {
-      
+
       alert("Please provide an image URL");
     }
   };
@@ -592,14 +593,14 @@ const Ctx = useContext(Context);
       return { ...prevState, Refund: updatedRefund };
     });
   };
-  
+
   const addRefundItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
       Refund: [...prevState.Refund, { heading: '', content: '' }],
     }));
   };
-  
+
   const removeRefundItem = (index) => {
     setTemplateDetails((prevState) => {
       const updatedRefund = [...prevState.Refund];
@@ -615,14 +616,14 @@ const Ctx = useContext(Context);
       return { ...prevState, AboutUs: updatedAboutUs };
     });
   };
-  
+
   const addAboutUsItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
       AboutUs: [...prevState.AboutUs, { heading: '', content: '' }],
     }));
   };
-  
+
   const removeAboutUsItem = (index) => {
     setTemplateDetails((prevState) => {
       const updatedAboutUs = [...prevState.AboutUs];
@@ -638,14 +639,14 @@ const Ctx = useContext(Context);
       return { ...prevState, PrivacyPolicy: updatedPrivacyPolicy };
     });
   };
-  
+
   const addPrivacyPolicyItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
       PrivacyPolicy: [...prevState.PrivacyPolicy, { heading: '', content: '' }],
     }));
   };
-  
+
   const removePrivacyPolicyItem = (index) => {
     setTemplateDetails((prevState) => {
       const updatedPrivacyPolicy = [...prevState.PrivacyPolicy];
@@ -661,14 +662,14 @@ const Ctx = useContext(Context);
       return { ...prevState, TermsData: updatedTermsData };
     });
   };
-  
+
   const addTermsDataItem = () => {
     setTemplateDetails((prevState) => ({
       ...prevState,
       TermsData: [...prevState.TermsData, { title: '', content: '' }],
     }));
   };
-  
+
   const removeTermsDataItem = (index) => {
     setTemplateDetails((prevState) => {
       const updatedTermsData = [...prevState.TermsData];
@@ -676,11 +677,11 @@ const Ctx = useContext(Context);
       return { ...prevState, TermsData: updatedTermsData };
     });
   };
-  
+
   const addClassType = () => {
     setTemplateDetails({
       ...templateDetails,
-      ClassTypes: [...templateDetails.ClassTypes, ''], 
+      ClassTypes: [...templateDetails.ClassTypes, ''],
     });
   };
   const removeClassType = (index) => {
@@ -708,19 +709,19 @@ const Ctx = useContext(Context);
   };
 
   const addInstructor = () => {
-   
+
     const newInstructor = {
       name: '',
       emailId: '',
       image: '',
       position: '',
     };
-    
+
     setInstructorDetails([...instructorDetails, newInstructor]);
   };
-  
-  
-  
+
+
+
   const handleInstructorChange = (event, field, index) => {
     const { value } = event.target;
     setInstructorDetails((prevState) => {
@@ -738,18 +739,13 @@ const Ctx = useContext(Context);
       updatedDetails[index].provides.push(newProvides[index]);
       return updatedDetails;
     });
-  
+
     setNewProvides((prevProvides) => {
       const updatedProvides = [...prevProvides];
-      updatedProvides.push(''); 
+      updatedProvides.push('');
       return updatedProvides;
     });
   };
-  
-  
-  
-  
-  
 
   const removeProvide = (subscriptionIndex, provideIndex) => {
     setSubscriptionDetails((prevDetails) => {
@@ -772,11 +768,11 @@ const Ctx = useContext(Context);
     const amountInRupee = event.target.value;
     setSubscriptionDetails(prevDetails => {
       const updatedDetails = [...prevDetails];
-      updatedDetails[index].amount = amountInRupee; 
+      updatedDetails[index].amount = amountInRupee;
       return updatedDetails;
     });
   };
-  
+
   const handleProvideChange = (e, subscriptionIndex, provideIndex) => {
     setSubscriptionDetails((prevDetails) => {
       const updatedDetails = [...prevDetails];
@@ -792,36 +788,33 @@ const Ctx = useContext(Context);
       return updatedDetails;
     });
   };
-  
+
   const removeItem = (serviceIndex, itemIndex) => {
     const updatedServices = [...templateDetails.Services];
     updatedServices[serviceIndex].items.splice(itemIndex, 1);
     setTemplateDetails({ ...templateDetails, Services: updatedServices });
-  };  
-  
-  
+  };
 
-  
   return (
     <>
       <Navbar />
       <div className="bg-[#30AFBC]">
         <div className="mt-[4.5rem] ">
-         
+
           {loader ? (
             <div className="bg-[#30AFBC] h-screen">
-            <p>Loading...</p> </div>
+              <p>Loading...</p> </div>
           ) : (
-            
+
             <>
               <div className="container  ">
                 <h2 className="text-[20px]">Template Details</h2>
-                 <div className="middle-right-section mt-5">
-                
+                <div className="middle-right-section mt-5">
+
                   <div className="col gap-4">
-                  <h2 className="text-[20px] font-bold ">Institution ID:</h2>
+                    <h2 className="text-[20px] font-bold ">Institution ID:</h2>
                     <div className="rectangular-box">
-                      
+
                       <p>{templateDetails.institutionid}</p>
                     </div>
                     <div>
@@ -873,7 +866,7 @@ const Ctx = useContext(Context);
                         autoFocus
                       />
                     </div>
-                   
+
                     <h2 className="text-[20px] font-bold ">Tagline1:</h2>
                     <div className="rectangular-box">
                       <input
@@ -885,90 +878,90 @@ const Ctx = useContext(Context);
                         autoFocus
                       />
                     </div>
-<>
-  {templateDetails.Services && templateDetails.Services.length > 0 && (
-    <>
-      {templateDetails.Services.map((service, index) => (
-        <div key={index}>
-           <h2 className="text-[20px] font-bold">Service {index + 1}</h2>
-           <div className="rectangular-box">
-          <input
-            type="text"
-            value={service.title}
-            onChange={(e) => handleServiceTitleChange(e, index)}
-            className="w-full text-black border-none outline-none bg-transparent"
-            placeholder="Service Title"
-          /></div>
-          {service.items && service.items.length > 0 && (
-          
-<div>
-              {service.items.map((item, itemIndex) => (
-                 
-                <div key={itemIndex}>
-                  <div className="flex justify-end items-center">
-                  <button
-                    onClick={() => removeItem(index, itemIndex)}
-                    className="rounded-full bg-red-500 text-white px-2"
-                  >
-                    X
-                  </button>
-                </div>
-                    <div className="rectangular-box ">
-                   
-                  
-                  <input
-                    type="text"
-                    value={item}
-                    onChange={(e) => handleItemChange(e, index, itemIndex)}
-                    className="w-full text-black border-none outline-none bg-transparent"
-                    placeholder="Service Item"
-                  />
-                </div> </div>
-              ))}
-          </div>
-          )}
-             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <button onClick={() => addItem(index)} className="bg-[#ffffff] text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg mb-4">
-            Add Item
-          </button>  </div>
-        </div>
-      ))}
-    </>
-  )}
- 
-</>
+                    <>
+                      {templateDetails.Services && templateDetails.Services.length > 0 && (
+                        <>
+                          {templateDetails.Services.map((service, index) => (
+                            <div key={index}>
+                              <h2 className="text-[20px] font-bold">Service {index + 1}</h2>
+                              <div className="rectangular-box">
+                                <input
+                                  type="text"
+                                  value={service.title}
+                                  onChange={(e) => handleServiceTitleChange(e, index)}
+                                  className="w-full text-black border-none outline-none bg-transparent"
+                                  placeholder="Service Title"
+                                /></div>
+                              {service.items && service.items.length > 0 && (
+
+                                <div>
+                                  {service.items.map((item, itemIndex) => (
+
+                                    <div key={itemIndex}>
+                                      <div className="flex justify-end items-center">
+                                        <button
+                                          onClick={() => removeItem(index, itemIndex)}
+                                          className="rounded-full bg-red-500 text-white px-2"
+                                        >
+                                          X
+                                        </button>
+                                      </div>
+                                      <div className="rectangular-box ">
+
+
+                                        <input
+                                          type="text"
+                                          value={item}
+                                          onChange={(e) => handleItemChange(e, index, itemIndex)}
+                                          className="w-full text-black border-none outline-none bg-transparent"
+                                          placeholder="Service Item"
+                                        />
+                                      </div> </div>
+                                  ))}
+                                </div>
+                              )}
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <button onClick={() => addItem(index)} className="bg-[#ffffff] text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg mb-4">
+                                  Add Item
+                                </button>  </div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+
+                    </>
 
 
 
                     <h2 className="text-[20px] font-bold">Class Types:</h2>
-                   
-      {templateDetails.ClassTypes &&
-        templateDetails.ClassTypes.length > 0 && (
-          <>
-            {templateDetails.ClassTypes.map((ClassType, index) => (
-              <div key={index}>
-                <div className="rectangular-box">
-                  <input
-                    type="text"
-                    value={ClassType}
-                    onChange={(event) => handleChange1(event, index)}
-                    className="w-full text-black border-none outline-none bg-transparent"
-                    placeholder={`Enter Class Type ${index + 1}`}
-                  />
-                  <button
-                    onClick={() => removeClassType(index)}
-                    className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm"
-                  >
-                    X
-                  </button>
-                </div>
-              </div>
-            ))}
-          </>
-        )}
-         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-         <button onClick={addClassType} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Class Type</button>
-</div>
+
+                    {templateDetails.ClassTypes &&
+                      templateDetails.ClassTypes.length > 0 && (
+                        <>
+                          {templateDetails.ClassTypes.map((ClassType, index) => (
+                            <div key={index}>
+                              <div className="rectangular-box">
+                                <input
+                                  type="text"
+                                  value={ClassType}
+                                  onChange={(event) => handleChange1(event, index)}
+                                  className="w-full text-black border-none outline-none bg-transparent"
+                                  placeholder={`Enter Class Type ${index + 1}`}
+                                />
+                                <button
+                                  onClick={() => removeClassType(index)}
+                                  className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm"
+                                >
+                                  X
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <button onClick={addClassType} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Class Type</button>
+                    </div>
                     <div className="h-4"></div>
                     <h2 className="text-[20px] font-bold">Testimonial Name 1:</h2>
                     <div className="rectangular-box">
@@ -990,12 +983,12 @@ const Ctx = useContext(Context);
                         onChange={(event) => handleFileChange1(event, 0)}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
-                        <button
-          onClick={() => downloadImage(templateDetails.Testimonial[0].img)}
-          className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
-        >
-          View
-        </button>
+                      <button
+                        onClick={() => downloadImage(templateDetails.Testimonial[0].img)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
                     </div>
                     <h2 className="text-[20px] font-bold">Testimonial Description 1:</h2>
                     <div className="rectangular-box">
@@ -1030,12 +1023,12 @@ const Ctx = useContext(Context);
                         onChange={(event) => handleFileChange1(event, 1)}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
-                       <button
-          onClick={() => downloadImage(templateDetails.Testimonial[1].img)}
-          className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
-        >
-          View
-        </button>
+                      <button
+                        onClick={() => downloadImage(templateDetails.Testimonial[1].img)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
                     </div>
                     <h2 className="text-[20px] font-bold">Testimonial Description 2:</h2>
                     <div className="rectangular-box">
@@ -1071,11 +1064,11 @@ const Ctx = useContext(Context);
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
-          onClick={() => downloadImage(templateDetails.Testimonial[2].img)}
-          className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
-        >
-          View
-        </button>
+                        onClick={() => downloadImage(templateDetails.Testimonial[2].img)}
+                        className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                      >
+                        View
+                      </button>
                     </div>
                     <h2 className="text-[20px] font-bold">Testimonial Description 3:</h2>
                     <div className="rectangular-box">
@@ -1091,52 +1084,52 @@ const Ctx = useContext(Context);
                       />
                     </div>
 
-                   
-                    <div>
-      {/* <h2 className="text-2xl font-bold">FAQ</h2> */}
-      {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
-        <>
-          {templateDetails.FAQ.map((faq, index) => (
-            <div key={index}>
-                            <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold mt-4">FAQ {index + 1}</h2>
-                <button
-                  onClick={() => removeFAQ(index)}
-                  className="rounded-full bg-red-500 text-white px-2"
-                >
-                  X
-                </button>
-              </div>
 
-              <div className="rectangular-box">
-                <input
-                  type="text"
-                  value={faq.title}
-                  onChange={(e) => FaqInputChange(index, 'title', e.target.value)}
-                  className="w-full text-black border-none outline-none bg-transparent"
-                  placeholder="FAQ Title"
-                />
-              </div>
-              <div className="rectangular-box faq-box mt-2">
-                <textarea
-                  value={faq.content}
-                  onChange={(e) => FaqInputChange(index, 'content', e.target.value)}
-                  className="w-full text-black border-none outline-none bg-transparent"
-                  placeholder="FAQ Content"
-                />
-              </div>
-            
-            </div>
-          ))}
-        </>
-      )}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <button onClick={addFAQ}  className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>
-        Add FAQ
-      </button></div>
-    </div>
-    <div className="h-4"></div>
-    {/* <h2 className="text-[20px] font-bold">Privacy Policy:</h2>
+                    <div>
+                      {/* <h2 className="text-2xl font-bold">FAQ</h2> */}
+                      {templateDetails.FAQ && templateDetails.FAQ.length > 0 && (
+                        <>
+                          {templateDetails.FAQ.map((faq, index) => (
+                            <div key={index}>
+                              <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-bold mt-4">FAQ {index + 1}</h2>
+                                <button
+                                  onClick={() => removeFAQ(index)}
+                                  className="rounded-full bg-red-500 text-white px-2"
+                                >
+                                  X
+                                </button>
+                              </div>
+
+                              <div className="rectangular-box">
+                                <input
+                                  type="text"
+                                  value={faq.title}
+                                  onChange={(e) => FaqInputChange(index, 'title', e.target.value)}
+                                  className="w-full text-black border-none outline-none bg-transparent"
+                                  placeholder="FAQ Title"
+                                />
+                              </div>
+                              <div className="rectangular-box faq-box mt-2">
+                                <textarea
+                                  value={faq.content}
+                                  onChange={(e) => FaqInputChange(index, 'content', e.target.value)}
+                                  className="w-full text-black border-none outline-none bg-transparent"
+                                  placeholder="FAQ Content"
+                                />
+                              </div>
+
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <button onClick={addFAQ} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>
+                          Add FAQ
+                        </button></div>
+                    </div>
+                    <div className="h-4"></div>
+                    {/* <h2 className="text-[20px] font-bold">Privacy Policy:</h2>
   
                     <div className="rectangular-box">
                       <textarea
@@ -1162,132 +1155,132 @@ const Ctx = useContext(Context);
                       />
                     </div> */}
 
-{templateDetails.AboutUs.map((item, index) => (
-    <div key={index}>
-        <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold mt-4">AboutUs{index + 1}</h2>
-                <button
-                  onClick={() => removeAboutUsItem(index)}
-                  className="rounded-full bg-red-500 text-white px-2"
-                >
-                  X
-                </button>
-              </div>
-       <div className="rectangular-box">
-      <input
-        value={item.heading}
-        onChange={(event) => handleAboutUsChange(event, index, 'heading')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter AboutUs Policy Heading"
-      /></div>
-       <div className="rectangular-box">
-      <textarea
-        value={item.content}
-        onChange={(event) => handleAboutUsChange(event, index, 'content')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter AboutUs Content"
-      /></div>
-       
-    </div>
-  ))}
- <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-       <button onClick={addAboutUsItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add AboutUs Item</button></div>
+                    {templateDetails.AboutUs.map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-bold mt-4">AboutUs{index + 1}</h2>
+                          <button
+                            onClick={() => removeAboutUsItem(index)}
+                            className="rounded-full bg-red-500 text-white px-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                        <div className="rectangular-box">
+                          <input
+                            value={item.heading}
+                            onChange={(event) => handleAboutUsChange(event, index, 'heading')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter AboutUs Policy Heading"
+                          /></div>
+                        <div className="rectangular-box">
+                          <textarea
+                            value={item.content}
+                            onChange={(event) => handleAboutUsChange(event, index, 'content')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter AboutUs Content"
+                          /></div>
 
-       {templateDetails.PrivacyPolicy.map((item, index) => (
-    <div key={index}>
-        <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold mt-4">PrivacyPolicy{index + 1}</h2>
-                <button
-                  onClick={() => removePrivacyPolicyItem(index)}
-                  className="rounded-full bg-red-500 text-white px-2"
-                >
-                  X
-                </button>
-              </div>
-       <div className="rectangular-box">
-      <input
-        value={item.heading}
-        onChange={(event) => handlePrivacyPolicyChange(event, index, 'heading')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter PrivacyPolicy Heading"
-      /></div>
-       <div className="rectangular-box">
-      <textarea
-        value={item.content}
-        onChange={(event) => handlePrivacyPolicyChange(event, index, 'content')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter PrivacyPolicy Content"
-      /></div>
-       
-    </div>
-  ))}
- <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-       <button onClick={addPrivacyPolicyItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add PrivacyPolicy Item</button></div>     
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <button onClick={addAboutUsItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add AboutUs Item</button></div>
 
-                    
-                   
-  {templateDetails.Refund.map((item, index) => (
-    <div key={index}>
-        <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold mt-4">Refund Policy{index + 1}</h2>
-                <button
-                  onClick={() => removeRefundItem(index)}
-                  className="rounded-full bg-red-500 text-white px-2"
-                >
-                  X
-                </button>
-              </div>
-       <div className="rectangular-box">
-      <input
-        value={item.heading}
-        onChange={(event) => handleRefundChange(event, index, 'heading')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter Refund Policy Heading"
-      /></div>
-       <div className="rectangular-box">
-      <textarea
-        value={item.content}
-        onChange={(event) => handleRefundChange(event, index, 'content')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter Refund Policy Content"
-      /></div>
-       
-    </div>
-  ))}
- <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-       <button onClick={addRefundItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Refund Item</button></div>
+                    {templateDetails.PrivacyPolicy.map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-bold mt-4">PrivacyPolicy{index + 1}</h2>
+                          <button
+                            onClick={() => removePrivacyPolicyItem(index)}
+                            className="rounded-full bg-red-500 text-white px-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                        <div className="rectangular-box">
+                          <input
+                            value={item.heading}
+                            onChange={(event) => handlePrivacyPolicyChange(event, index, 'heading')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter PrivacyPolicy Heading"
+                          /></div>
+                        <div className="rectangular-box">
+                          <textarea
+                            value={item.content}
+                            onChange={(event) => handlePrivacyPolicyChange(event, index, 'content')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter PrivacyPolicy Content"
+                          /></div>
 
-       <div>
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <button onClick={addPrivacyPolicyItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add PrivacyPolicy Item</button></div>
 
-  {templateDetails.TermsData.map((item, index) => (
-    <div key={index}>
-      <div className="flex justify-between items-center">
-      <h2 className="text-lg font-bold mt-4">Terms And Data{index + 1}</h2>
-      <button onClick={() => removeTermsDataItem(index)}className="rounded-full bg-red-500 text-white px-2"
-                >
-                  X
-                </button></div>
-                <div className="rectangular-box">
-      <input
-        value={item.title}
-        onChange={(event) => handleTermsDataChange(event, index, 'title')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter Terms Data Title"
-      /></div>
-        <div className="rectangular-box">
-      <textarea
-        value={item.content}
-        onChange={(event) => handleTermsDataChange(event, index, 'content')}
-        className="w-full text-black border-none outline-none bg-transparent"
-        placeholder="Enter Terms Data Content"
-        autoFocus={index === 0} 
-      />
-      </div>
-    </div>
-  ))}
-   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-  <button onClick={addTermsDataItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Terms Data Item</button></div>
-</div>
+
+
+                    {templateDetails.Refund.map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-bold mt-4">Refund Policy{index + 1}</h2>
+                          <button
+                            onClick={() => removeRefundItem(index)}
+                            className="rounded-full bg-red-500 text-white px-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                        <div className="rectangular-box">
+                          <input
+                            value={item.heading}
+                            onChange={(event) => handleRefundChange(event, index, 'heading')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter Refund Policy Heading"
+                          /></div>
+                        <div className="rectangular-box">
+                          <textarea
+                            value={item.content}
+                            onChange={(event) => handleRefundChange(event, index, 'content')}
+                            className="w-full text-black border-none outline-none bg-transparent"
+                            placeholder="Enter Refund Policy Content"
+                          /></div>
+
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <button onClick={addRefundItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Refund Item</button></div>
+
+                    <div>
+
+                      {templateDetails.TermsData.map((item, index) => (
+                        <div key={index}>
+                          <div className="flex justify-between items-center">
+                            <h2 className="text-lg font-bold mt-4">Terms And Data{index + 1}</h2>
+                            <button onClick={() => removeTermsDataItem(index)} className="rounded-full bg-red-500 text-white px-2"
+                            >
+                              X
+                            </button></div>
+                          <div className="rectangular-box">
+                            <input
+                              value={item.title}
+                              onChange={(event) => handleTermsDataChange(event, index, 'title')}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                              placeholder="Enter Terms Data Title"
+                            /></div>
+                          <div className="rectangular-box">
+                            <textarea
+                              value={item.content}
+                              onChange={(event) => handleTermsDataChange(event, index, 'content')}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                              placeholder="Enter Terms Data Content"
+                              autoFocus={index === 0}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <button onClick={addTermsDataItem} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Terms Data Item</button></div>
+                    </div>
 
 
 
@@ -1414,7 +1407,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange(event, "logoUrl")} 
+                        onChange={(event) => handleFileChange(event, "logoUrl")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1442,7 +1435,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "ServicesBg")} 
+                        onChange={(event) => handleFileChange5(event, "ServicesBg")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1456,7 +1449,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "ServicesPortrait")} 
+                        onChange={(event) => handleFileChange5(event, "ServicesPortrait")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1471,7 +1464,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "TestimonialBg")} 
+                        onChange={(event) => handleFileChange5(event, "TestimonialBg")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1485,7 +1478,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "AboutUsBg")} 
+                        onChange={(event) => handleFileChange5(event, "AboutUsBg")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1499,7 +1492,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "InstructorBg")} 
+                        onChange={(event) => handleFileChange5(event, "InstructorBg")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1513,7 +1506,7 @@ const Ctx = useContext(Context);
                     <div className="rectangular-box">
                       <input
                         type="file"
-                        onChange={(event) => handleFileChange5(event, "SubscriptionBg")} 
+                        onChange={(event) => handleFileChange5(event, "SubscriptionBg")}
                         className="w-full text-black border-none outline-none bg-transparent"
                       />
                       <button
@@ -1524,189 +1517,189 @@ const Ctx = useContext(Context);
                       </button>
                     </div>
                     {instructorDetails.map((instructor, index) => (
-       <div key={index}>
-       
-       <div className="flex justify-between items-center">
-       <h2 className="text-lg font-bold mt-4">Instructor {index + 1}</h2>
-       <button
-        onClick={() => removeInstructor(instructor.instructorId)}
-        className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
-      >
-        X
-      </button>
-                </div>
-       <div>
-         <div className="rectangular-box">
-           <input
-             type="text"
-             value={instructor.name}
-             onChange={(e) => handleInstructorChange(e, 'name', index)}
-             className="w-full text-black border-none outline-none bg-transparent"
-             placeholder="Instructor name"
-           />
-         </div>
-         <div className="rectangular-box">
-           <input
-             type="text"
-             value={instructor.emailId}
-             onChange={(e) => handleInstructorChange(e, 'emailId', index)}
-             className="w-full text-black border-none outline-none bg-transparent"
-             placeholder="Enter emailId"
-           />
-         </div>
-         <div className="rectangular-box">
-           <input
-             type="text"
-             value={instructor.position}
-             onChange={(e) => handleInstructorChange(e, 'position', index)}
-             className="w-full text-black border-none outline-none bg-transparent"
-             placeholder="Enter position"
-           />
-         </div>
-         <div className="rectangular-box">
-           <input
-             type="file"
-             onChange={(e) => handleFileChange3(e, index)}
-             className="w-full text-black border-none outline-none bg-transparent"
-           />
-           <button
-             onClick={() => downloadImage(instructor.image)}
-             className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
-           >
-             View
-           </button>
-         </div>
-       </div>
-     </div>
-     
-        
-      ))}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}><button onClick={addInstructor} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Instructor</button>
+                      <div key={index}>
 
-      </div>
-              {subscriptionDetails.map((subscription, index) => (
-  <div key={index}>
-      <div className="flex justify-between items-center">
-    <h2 className="text-lg font-bold mt-4">Subscription {index + 1}</h2>
-    <button
-        onClick={() => removeSubscription(subscription.productId)}
-        className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
-      >
-        X
-      </button>
-   
-                </div>
-    <h2 className="text-lg font-bold mt-4">Heading</h2>
-    <div className="rectangular-box">
-    
-              <input
-                type="text"
-                value={subscription.heading}
-                onChange={(e) => handleHeadingChange(e, index)}
-                placeholder="Heading"
-                className="w-full text-black border-none outline-none bg-transparent "
-              />
-            </div>
-            <h2 className="text-lg font-bold mt-4">Amount</h2>
-            <div className="rectangular-box">
-              <input
-                type="text"
-                value={subscription.amount}
-                onChange={(e) => handleAmountChange(e, index)}
-                placeholder="Amount"
-                className="w-full text-black border-none outline-none bg-transparent "
-              />
-            </div>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-bold mt-4">Instructor {index + 1}</h2>
+                          <button
+                            onClick={() => removeInstructor(instructor.instructorId)}
+                            className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
+                          >
+                            X
+                          </button>
+                        </div>
+                        <div>
+                          <div className="rectangular-box">
+                            <input
+                              type="text"
+                              value={instructor.name}
+                              onChange={(e) => handleInstructorChange(e, 'name', index)}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                              placeholder="Instructor name"
+                            />
+                          </div>
+                          <div className="rectangular-box">
+                            <input
+                              type="text"
+                              value={instructor.emailId}
+                              onChange={(e) => handleInstructorChange(e, 'emailId', index)}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                              placeholder="Enter emailId"
+                            />
+                          </div>
+                          <div className="rectangular-box">
+                            <input
+                              type="text"
+                              value={instructor.position}
+                              onChange={(e) => handleInstructorChange(e, 'position', index)}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                              placeholder="Enter position"
+                            />
+                          </div>
+                          <div className="rectangular-box">
+                            <input
+                              type="file"
+                              onChange={(e) => handleFileChange3(e, index)}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                            />
+                            <button
+                              onClick={() => downloadImage(instructor.image)}
+                              className="absolute top-0 right-0 mt-[15px] mr-2 px-4 py-2 rounded bg-[#30AFBC] text-white"
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      </div>
 
-{/* 
+
+                    ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}><button onClick={addInstructor} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Instructor</button>
+
+                    </div>
+                    {subscriptionDetails.map((subscription, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-bold mt-4">Subscription {index + 1}</h2>
+                          <button
+                            onClick={() => removeSubscription(subscription.productId)}
+                            className="rounded-full mt-3 bg-red-500 text-white px-[4.5px] text-xs"
+                          >
+                            X
+                          </button>
+
+                        </div>
+                        <h2 className="text-lg font-bold mt-4">Heading</h2>
+                        <div className="rectangular-box">
+
+                          <input
+                            type="text"
+                            value={subscription.heading}
+                            onChange={(e) => handleHeadingChange(e, index)}
+                            placeholder="Heading"
+                            className="w-full text-black border-none outline-none bg-transparent "
+                          />
+                        </div>
+                        <h2 className="text-lg font-bold mt-4">Amount</h2>
+                        <div className="rectangular-box">
+                          <input
+                            type="text"
+                            value={subscription.amount}
+                            onChange={(e) => handleAmountChange(e, index)}
+                            placeholder="Amount"
+                            className="w-full text-black border-none outline-none bg-transparent "
+                          />
+                        </div>
+
+                        {/* 
     <p>Country: {subscription.country}</p> */}
-    
 
 
-    
-    {/* <p>India: {subscription.india ? 'true' : 'false'}</p>
+
+
+                        {/* <p>India: {subscription.india ? 'true' : 'false'}</p>
     <p>Subscription Type: {subscription.subscriptionType}</p> */}
-     <div className="flex flex-row">
-    <h2 className="text-lg font-bold ">India:</h2>
-    <div className="radio-label mt-1 ">
-      <label>
-        <input
-          type="radio"
-          value="true"
-          checked={subscription.india === true}
-          onChange={(e) => handleIndiaChange(e, index)}
-          
-        />
+                        <div className="flex flex-row">
+                          <h2 className="text-lg font-bold ">India:</h2>
+                          <div className="radio-label mt-1 ">
+                            <label>
+                              <input
+                                type="radio"
+                                value="true"
+                                checked={subscription.india === true}
+                                onChange={(e) => handleIndiaChange(e, index)}
 
-      
-      </label>
-      <span className="mb-1">True</span>
-      <label>
-        <input
-          type="radio"
-          value="false"
-          checked={subscription.india === false}
-          onChange={(e) => handleIndiaChange(e, index)}
-          className="ml-2"
-        />
-        
-       
-      </label>
-      <span className="mb-1">False</span>
-    </div>
-  </div>
+                              />
 
-  <div className="flex flex-row max850:flex-col">
-  <h2 className="text-lg font-bold mt-2 mr-4">Subscription Type:</h2>
-  <div className="border bg-white border-gray-400 rounded-md p-2">
-  <select
-  value={`${subscription.subscriptionType}:${subscription.durationText}`}
-  onChange={(e) => handleSubscriptionTypeChange(e, index)}
-  className="w-full text-black border-none outline-none bg-transparent"
->
-  <option value="year:yearly">Year</option>
-  <option value="month:monthly">Month</option>
-  <option value="week:weekly">Week</option>
-  <option value="quarter:quarterly">Quater</option>
-</select>
 
-  </div>
-  <div className="flex flex-row ml-2 max850:flex-col max850:ml-0">
-  <h2 className="text-lg font-bold mt-2 mr-4">Country:</h2>
-  <div className="border  bg-white border-gray-400 rounded-md p-2">
-    <select
-      value={subscription.currency}
-      onChange={(e) => handleCountryChange(e, index)}
-      className="w-full text-black border-none outline-none bg-transparent"
-    >
-      <Currency />
-    </select>
-  </div>
-</div>
-</div>
+                            </label>
+                            <span className="mb-1">True</span>
+                            <label>
+                              <input
+                                type="radio"
+                                value="false"
+                                checked={subscription.india === false}
+                                onChange={(e) => handleIndiaChange(e, index)}
+                                className="ml-2"
+                              />
 
-    <h2 className="text-lg font-bold mt-4">Provides:</h2>
-              
-    {subscription.provides.map((provide, idx) => (
-  <div className="rectangular-box" key={idx}>
-    <input
-      type="text"
-      value={provide}
-      onChange={(e) => handleProvideChange(e, index, idx)}
-      placeholder="Provide"
-      className="w-full text-black border-none outline-none bg-transparent"
-    />
-    <button
-      onClick={() => removeProvide(index, idx)}
-      className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm"
-    >
-      X
-    </button>
-  </div>
-))}
 
-            
-              {/* <div className="rectangular-box">
+                            </label>
+                            <span className="mb-1">False</span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-row max850:flex-col">
+                          <h2 className="text-lg font-bold mt-2 mr-4">Subscription Type:</h2>
+                          <div className="border bg-white border-gray-400 rounded-md p-2">
+                            <select
+                              value={`${subscription.subscriptionType}:${subscription.durationText}`}
+                              onChange={(e) => handleSubscriptionTypeChange(e, index)}
+                              className="w-full text-black border-none outline-none bg-transparent"
+                            >
+                              <option value="year:yearly">Year</option>
+                              <option value="month:monthly">Month</option>
+                              <option value="week:weekly">Week</option>
+                              <option value="quarter:quarterly">Quater</option>
+                            </select>
+
+                          </div>
+                          <div className="flex flex-row ml-2 max850:flex-col max850:ml-0">
+                            <h2 className="text-lg font-bold mt-2 mr-4">Country:</h2>
+                            <div className="border  bg-white border-gray-400 rounded-md p-2">
+                              <select
+                                value={subscription.currency}
+                                onChange={(e) => handleCountryChange(e, index)}
+                                className="w-full text-black border-none outline-none bg-transparent"
+                              >
+                                <Currency />
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <h2 className="text-lg font-bold mt-4">Provides:</h2>
+
+                        {subscription.provides.map((provide, idx) => (
+                          <div className="rectangular-box" key={idx}>
+                            <input
+                              type="text"
+                              value={provide}
+                              onChange={(e) => handleProvideChange(e, index, idx)}
+                              placeholder="Provide"
+                              className="w-full text-black border-none outline-none bg-transparent"
+                            />
+                            <button
+                              onClick={() => removeProvide(index, idx)}
+                              className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm"
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+
+
+                        {/* <div className="rectangular-box">
       <input
         type="text"
         value={newProvides[index]}
@@ -1719,25 +1712,25 @@ const Ctx = useContext(Context);
         placeholder="Add Provide"
       />
     </div> */}
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <button onClick={() => addProvides(index)} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Provide</button>
-  </div></div>
-))}
-    </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <button onClick={() => addProvides(index)} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Provide</button>
+                        </div></div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </>
           )}
- <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <button onClick={addSubscription} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Subscription</button></div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <button onClick={addSubscription} className="bg-[#ffffff]  text-[#30AFBC] font-bold py-2 px-4 rounded-lg shadow-lg" style={{ marginTop: '20px' }}>Add Subscription</button></div>
         </div>
 
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} className="px-[50px]">
-  <button onClick={goBack}  className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg">Back</button>
-  <button onClick={saveChanges} className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg">Save</button>
-</div>
-<div className="h-4"></div>
+          <button onClick={goBack} className="bg-[#000000] text-[rgb(255,255,255)] font-bold py-2 px-4 rounded-xl shadow-lg">Back</button>
+          <button onClick={saveChanges} className="bg-[#000000] text-[#ffffff] font-bold py-2 px-4 rounded-xl shadow-lg">Save</button>
+        </div>
+        <div className="h-4"></div>
 
       </div>
     </>
