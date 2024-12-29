@@ -6,25 +6,29 @@ import ClientsProfile from '../ClientsHome/ClientsProfile';
 import Context from "../../../context/Context";
 import LeadsList from "../LeadsList/LeadsList";
 import InstitutionRevenue from "../InstitutionRevenue";
-const Index = ({ institution: tempInstitution }) => {
-  const {  user, userData } = useContext(Context);
+import { IoCaretBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+
+const Index = ({ institution: tempInstitution, setShowMemberList }) => {
+  const { user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
-  let institution
+  const navigate = useNavigate();
+
+  let institution;
   if (user.profile.tempinstitutionName === "awsaiapp") {
     institution = userData.tempinstitutionName;
   } else {
     institution = userData.tempinstitutionName || tempInstitution;
   }
+
   const renderContent = () => {
     switch (activeTab) {
-      // case 'economy':
-      //   return <EconomyComponent />;
       case 'members':
         return <NewMemberList />;
       case 'leads':
         return <LeadsList />;
       case 'client':
-        return <ClientsProfile institution={institution}/>;
+        return <ClientsProfile institution={institution} />;
       case 'economy':
         return <InstitutionRevenue institution={userData.tempinstitutionName} />
       default:
@@ -32,27 +36,31 @@ const Index = ({ institution: tempInstitution }) => {
     }
   };
 
+  const goBack = () => {
+    setShowMemberList(false);
+    navigate("/dashboard");
+  };
+
   return (
     <div className="w-[97vw] flex flex-col items-center h-[120vh] ml-[220px] bg-[#e6e4e4]">
       <div className="">
         <Navbar />
         <div className="flex flex-col items-center w-full">
-
-          <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
+          <div className="fixed mt-20 ml-[19.4rem] z-10 w-full flex flex-col items-start">
+            <div
+              onClick={goBack}
+              className="border  bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
+            >
+              <IoCaretBack />
+            </div>
             <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} />
           </div>
-          <div className="mt-[8rem] w-full ">
+          <div className="mt-[11rem] w-full ">
             {renderContent()}
           </div>
         </div>
-        {/* <div className="fixed mt-20 ml-[19.4rem] z-10 w-full ">
-          <ButtonGroup onTabChange={setActiveTab} institutionNames={institution}/>
-        </div>
-        <div className="mt-[8rem] w-full ">
-          {renderContent()}
-        </div> */}
       </div>
-      </div>
+    </div>
   );
 };
 

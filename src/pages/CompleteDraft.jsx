@@ -15,7 +15,7 @@ const CompleteDraft = () => {
     const { userData } = useContext(Context)
     const util = useContext(Context).util;
     const goBack = () => {
-        navigate('/');
+        navigate('/dashboard');
     };
     const [loaderInitialized, setLoaderInitialized] = useState(false);
     useEffect(() => {

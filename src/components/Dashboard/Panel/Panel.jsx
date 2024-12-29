@@ -47,6 +47,7 @@ const Panel = () => {
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
   const type = ["Dance Studio", "Dentist", "Cafe"];
+  const [memberCounts, setMemberCounts] = useState({});
 
   const customTheme = {
     pages: {
@@ -71,25 +72,29 @@ const Panel = () => {
   // const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery) {
-        return Array.isArray(clientsData)
-            ? clientsData.filter(([key, client]) => client?.isFormFilled || false)
-            : [];
+      return Array.isArray(clientsData)
+        ? clientsData
+        .filter(([key, client]) => client?.isFormFilled || false)
+        .sort((a, b) => {
+          const dateA = a[1].date || -Infinity;
+          const dateB = b[1].date || -Infinity;
+          return dateB - dateA;
+        })
+        : [];
     }
     const query = searchQuery.toLowerCase();
-    console.log("Search Query:", query);
-    console.log("Clients Data:", clientsData);
-    
+
     const filtered = Array.isArray(clientsData)
-        ? clientsData.filter(([key, client]) => {
-              const institution = client?.institutionid
-                  ? String(client.institutionid).toLowerCase()
-                  : "";
-              return institution.includes(query);
-          })
-        : [];
+      ? clientsData.filter(([key, client]) => {
+        const institution = client?.institutionid
+          ? String(client.institutionid).toLowerCase()
+          : "";
+        return institution.includes(query);
+      })
+      : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
-}, [searchQuery, clientsData]);
+  }, [searchQuery, clientsData]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
@@ -206,59 +211,28 @@ const Panel = () => {
     }
   });
 
-  // const handlePersonIconClick = (institution) => {
-  //   setisMonthlyReport(institution);
-  //   const updatedUserData = { ...userData, institutionName: institution };
-  //   setUserData(updatedUserData);
-  // };
+  useEffect(() => {
+    const fetchMemberCounts = async () => {
+      const counts = {};
+      for (const [client] of clientsToDisplay) {
+        try {
+          const response = await API.get(
+            "clients",
+            `/user/list-members/${client.institutionid}`
+          );
+          const filteredData = response.filter(client => client.userType === 'member');
+          counts[client.institutionid] = filteredData.length || 0;
+        } catch (error) {
+          console.error(`Error fetching for ${client.institutionid}:`, error);
+          counts[client.institutionid] = 0;
+        }
+      }
+      setMemberCounts(counts);
+    };
 
-  // const toggleAddUserForm = () => {
-  //   setIsUserAdd(!isUserAdd);
-  // };
+    fetchMemberCounts();
+  }, [clientsToDisplay]);
 
-  // Function to add a new client
-  // const handleAddClient = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     util.setLoader(true);
-  //     const apiName = "clients";
-  //     const path = "/admin/create-clients";
-  //     const myInit = {
-  //       body: {
-  //         institution: name,
-  //         emailId: email,
-  //         phoneNumber: phoneNumber,
-  //         country: Country,
-  //         JoiningDate: JoiningDate,
-  //         status: status,
-  //       },
-  //     };
-  //     const response = await API.post(apiName, path, myInit);
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "User Added",
-  //     });
-  //     clients.onReload();
-  //     console.log("Client added successfully:", response);
-  //     setName("");
-  //     setEmail("");
-  //     setPhoneNumber("");
-  //     setCountry("");
-  //     setRevenue("");
-  //     setJoiningDate("");
-  //     setStatus("");
-  //     toggleAddUserForm();
-  //     util.setLoader(false);
-  //   } catch (error) {
-  //     console.error("Error adding client:", error);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "An error occurred while creating the user.",
-  //     });
-  //     util.setLoader(false);
-  //   }
-  // };
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -325,12 +299,6 @@ const Panel = () => {
 
     return { text, color };
   };
-
-  // Inside your component
-
-  // const handleMoreClick = () => {
-  //   setShowHiddenContent(!showHiddenContent);
-  // };
 
   const splitandjoin = (str) => {
     if (typeof str !== "string") {
@@ -508,139 +476,7 @@ const Panel = () => {
                   />
                 </div>
               </form>
-
-              {/* Functionalities */}
-              {/* <div className=" flex flex-col md:flex-row space-y-2 md:space-x-2 justify-between items-center">
-            <div className="flex flex-row justify-center items-center gap-3 px-5 py-1 bg-white rounded-full h-14 ">
-              <button onClick={() => setIsUserAdd(true)}>
-                <img className="w-5 h-5" src={Add} alt="Add" />
-              </button>
-
             </div>
-            <div className="absolute right-[4px] bottom-[-7px] border border-gray-300 w-[9rem] rounded-2xl h-8 mt-6 z-[-1]"></div> */}
-              {/* WebDevelopment Form Link */}
-              {/* <div className="">
-              <Link to="/template">
-                <button className="flex items-center gap-2 p-2 bg-[#48d6e0] text-white font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff]">
-                  <p>Web Development</p>
-                </button>
-              </Link>
-            </div>
-          </div> */}
-            </div>
-
-            {/* form of creating new client */}
-            {/* {isUserAdd && (
-              <div className=" absolute top-[21%] flex w-[78vw] h-[70vh] bg-[#ffffff60] backdrop-blur-sm z-50 max1050:w-[85vw]">
-                <form className="relative m-auto flex flex-col gap-10 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[22rem] h-[37rem] max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                  <input
-                    required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                  <input
-                    required
-                    placeholder="Email Address"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                  />
-                  <input
-                    required
-                    placeholder="Country"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={Country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
-                    }}
-                  />
-                  <input
-                    required
-                    placeholder="Joining date"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="date"
-                    value={JoiningDate}
-                    onChange={(e) => {
-                      setJoiningDate(e.target.value);
-                    }}
-                  />
-                  <div className="flex mt-[-1.5rem] mb-[-1rem]">
-                    <label>Status:</label>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="Active"
-                        className="ml-3"
-                        checked={status === "Active"}
-                        onChange={() => setStatus("Active")}
-                      />
-                      <p className="text-[#85e758]">Active</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="InActive"
-                        className="ml-3"
-                        checked={status === "InActive"}
-                        onChange={() => setStatus("InActive")}
-                      />
-                      <p className="text-[#ff1010d9]">InActive</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="Pending"
-                        className="ml-3"
-                        checked={status === "Pending"}
-                        onChange={() => setStatus("Pending")}
-                      />
-                      <p className="text-[#ff1010d9]">Pending</p>
-                    </div>
-                    <div className="flex justify-center items-center space-x-1">
-                      <input
-                        type="radio"
-                        name="memberStatus"
-                        value="comingSoon"
-                        className="ml-3"
-                        checked={status === "comingSoon"}
-                        onChange={() => setStatus("comingSoon")}
-                      />
-                    </div>
-                    <p className="text-[#5521B5]">Coming Soon</p>
-                  </div>
-                  <div className="flex flex-col  gap-3 w-full justify-center items-center">
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                      onClick={handleAddClient}
-                    >
-                      Create
-                    </button>
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
-                      onClick={() => {
-                        setIsUserAdd(false);
-                        setUserCheck(0);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )} */}
-
             {/* Headings */}
             <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
               <Table className="w-full text-sm text-left text-gray-500">
@@ -745,7 +581,7 @@ const Panel = () => {
                         {client.payment ? "Paid" : "Not Paid"}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.recentMonthMembers}
+                        {memberCounts[client.institutionid] || 0}
                       </Table.Cell>
                       <Table.Cell
                         className={`${showHiddenContent ? "" : "max1008:hidden"
@@ -785,16 +621,6 @@ const Panel = () => {
 
             {clientsToDisplay.map(([key, client], index) => (
               <div key={client.institutionid}>
-                {/* {
-            // isRowSelected(client.institution) && 
-            (
-              <p
-                className="cursor-pointer w-[10rem] K2D text-[#13838d] font-[600] ml-[11rem] min600:hidden"
-                onClick={() => showDetailForm(client.institution)}
-              >
-                -- See Details --
-              </p>
-            )} */}
               </div>
             ))}
 
@@ -909,32 +735,6 @@ const Panel = () => {
                       setCountry(e.target.value);
                     }}
                   />
-                  {/* <div className="flex gap-1">
-                <label className="mt-2">Total Member :</label>
-                <input
-                  required
-                  placeholder="Members"
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-[11rem] focus:border-opacity-20  "
-                  type="text"
-                  value={memberCount}
-                  onChange={(e) => {
-                    setMemberCount(e.target.value);
-                  }}
-                />
-              </div>
-              <div className="flex gap-9">
-                <label className="mt-2">Revenue :</label>
-                <input
-                  required
-                  placeholder="Revenue"
-                  className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-[11rem] focus:border-opacity-20  "
-                  type="text"
-                  value={memberCount}
-                  onChange={(e) => {
-                    setRevenue(e.target.value);
-                  }}
-                />
-              </div> */}
                   <div className="flex items-baseline mt-[-1.5rem] mb-[-1rem]">
                     <label>Status:</label>
                     <input
@@ -1010,7 +810,10 @@ const Panel = () => {
           </div>
         </div>
       ) : (
-        <Index tempInstitution={tempInstitution} />
+        <Index 
+        tempInstitution={tempInstitution}
+        setShowMemberList={setShowMemberList}
+        />
       )}
     </>
   );
