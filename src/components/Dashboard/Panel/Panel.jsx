@@ -74,12 +74,12 @@ const Panel = () => {
     if (!searchQuery) {
       return Array.isArray(clientsData)
         ? clientsData
-        .filter(([key, client]) => client?.isFormFilled || false)
-        .sort((a, b) => {
-          const dateA = a[1].date || -Infinity;
-          const dateB = b[1].date || -Infinity;
-          return dateB - dateA;
-        })
+          .filter(([key, client]) => client?.isFormFilled || false)
+          .sort((a, b) => {
+            const dateA = a[1].date || -Infinity;
+            const dateB = b[1].date || -Infinity;
+            return dateB - dateA;
+          })
         : [];
     }
     const query = searchQuery.toLowerCase();
@@ -211,28 +211,34 @@ const Panel = () => {
     }
   });
 
-  useEffect(() => {
-    const fetchMemberCounts = async () => {
-      const counts = {};
-      for (const [client] of clientsToDisplay) {
-        try {
-          const response = await API.get(
-            "clients",
-            `/user/list-members/${client.institutionid}`
-          );
-          const filteredData = response.filter(client => client.userType === 'member');
-          counts[client.institutionid] = filteredData.length || 0;
-        } catch (error) {
-          console.error(`Error fetching for ${client.institutionid}:`, error);
-          counts[client.institutionid] = 0;
+  const fetchMemberCounts = async () => {
+    try {
+      const response = await API.get(
+        "clients",
+        "/user/list-all-members"
+      );
+
+      const counts = response.reduce((acc, user) => {
+        if (user.userType === 'member') {
+          acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
         }
-      }
+        return acc;
+      }, {});
+
       setMemberCounts(counts);
-    };
+    } catch (error) {
+      console.error("Error fetching member counts:", error);
+      const defaultCounts = clientsToDisplay.reduce((acc, client) => {
+        acc[client.institutionid] = 0;
+        return acc;
+      }, {});
+      setMemberCounts(defaultCounts);
+    }
+  };
 
+  useEffect(() => {
     fetchMemberCounts();
-  }, [clientsToDisplay]);
-
+  }, []);
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -810,9 +816,9 @@ const Panel = () => {
           </div>
         </div>
       ) : (
-        <Index 
-        tempInstitution={tempInstitution}
-        setShowMemberList={setShowMemberList}
+        <Index
+          tempInstitution={tempInstitution}
+          setShowMemberList={setShowMemberList}
         />
       )}
     </>
