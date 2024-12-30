@@ -1,32 +1,31 @@
-import {CountrySelect, PhoneInput, PrimaryButton} from "../../../common/Inputs";
-import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import { CountrySelect, PhoneInput, PrimaryButton } from "../../../common/Inputs";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 //import {useSelector} from "react-redux";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import { Auth, API } from "aws-amplify";
 import institutionContext from "../../../Context/InstitutionContext";
 import Context from "../../../context/Context";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const LoginForm = ({ setSigninResponse }) => {
   const { InstitutionId } = useContext(institutionContext).institutionData;
   const { util } = useContext(Context);
-//  const { InstitutionId } = useSelector((state) => state.institutionData.data);
+  //  const { InstitutionId } = useSelector((state) => state.institutionData.data);
   const [errorText, setErrorText] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
-  
+
 
   const sendOtp = async (event) => {
     event.preventDefault()
     util.setLoader(true);
     const countryCode = event.target.country.value;
     const phoneNumber = event.target.phone.value;
-    
 
     try {
       console.log(countryCode, phoneNumber);
-      const exist = await API.post(
+      const exist = await API.get(
         'main',
         `/any/phone-exists/${InstitutionId}`,
         {
@@ -35,15 +34,15 @@ const LoginForm = ({ setSigninResponse }) => {
           }
         }
       );
-      
+
       console.log('Exist: ', exist);
 
-        if (exist.exists) {
-            const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
-            setSigninResponse(response)
-        } else {
-            throw new Error('Unexpected Lambda Output');
-        }
+      if (exist.exists) {
+        const response = await Auth.signIn(`+${countryCode}${phoneNumber}`)
+        setSigninResponse(response)
+      } else {
+        throw new Error('Unexpected Lambda Output');
+      }
     } catch (e) {
       if (e.message === 'Unexpected Lambda Output') {
         toast.info('Sign Up First')
