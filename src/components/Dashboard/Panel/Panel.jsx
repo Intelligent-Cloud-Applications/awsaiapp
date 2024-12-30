@@ -238,7 +238,7 @@ const Panel = () => {
 
   useEffect(() => {
     fetchMemberCounts();
-  }, []);
+  });
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
