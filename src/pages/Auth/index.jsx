@@ -71,7 +71,7 @@ const AuthPage = () => {
       const user = await Auth.currentAuthenticatedUser();
       console.log(user);
 
-      const exist = await API.post(
+      const exist = await API.get(
         'clients',
         '/any/phone-exists',
         {
