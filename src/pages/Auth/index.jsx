@@ -1,5 +1,5 @@
 import Header from "./../../components/Home/Navbar";
-import {useContext, useState,useEffect,useRef} from "react";
+import {useContext, useState, useEffect, useRef} from "react";
 import LoginForm from "./LoginForm";
 import OtpForm from "./OtpForm";
 import SignupForm from "./SignupForm";
@@ -71,7 +71,7 @@ const AuthPage = () => {
       const user = await Auth.currentAuthenticatedUser();
       console.log(user);
 
-      const exist = await API.get(
+      const exist = await API.post(
         'clients',
         '/any/phone-exists',
         {
