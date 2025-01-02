@@ -26,7 +26,7 @@ const LoginForm = ({ setSigninResponse }) => {
 
     try {
       console.log(countryCode, phoneNumber);
-      const exist = await API.get(
+      const exist = await API.post(
         'clients',
         `/any/phone-exists/${InstitutionId}`,
         {
