@@ -8,6 +8,7 @@ const ClientsProfile = ({ institution }) => {
   const [logo, setLogo] = useState(null); // Actual file selected by the user
   const [selectedFile, setSelectedFile] = useState(null); // URL for preview purposes
   const { util } = useContext(Context);
+  const [typeOfInstitution, setTypeOfInstitution] = useState("");
   const [clientData, setClientData] = useState({
     institutionid: '',
     Query_Address: '',
@@ -27,51 +28,57 @@ const ClientsProfile = ({ institution }) => {
 
     try {
       util.setLoader(true);
-      const [templateResponse, response] = await Promise.all([
+
+      // Call all APIs in parallel
+      const [templateResponse, response, companyData] = await Promise.all([
         API.get("clients", `/user/development-form/get-user/${institution}`),
-        API.get("clients", `/user/list-members/${institution}`)
+        API.get("clients", `/user/list-members/${institution}`),
+        API.get("clients", `/user/get-companyData/${institution}`)  // New API call
       ]);
 
-      const owner = response.find(member => member.role === 'owner');
-      const formattedDate = owner
-        ? new Date(owner.joiningDate).toLocaleDateString("en-US", {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-        : 'Joining Date';
+      const mergedData = { ...templateResponse, ...companyData };
 
+      const owner = response.find(member => member.role === 'owner');
+      const formattedDate = new Date(mergedData.joiningDate || mergedData.date).toLocaleDateString("en-US", {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+
+      // Update state with merged data
       setClientData({
-        institutionid: templateResponse.institutionid || 'Institution ID',
-        Query_Address: templateResponse.Query_Address || 'Address',
-        Query_WebLink: templateResponse.Query_WebLink || 'Website URL',
-        Query_EmailId: templateResponse.Query_EmailId || 'Email',
-        logoUrl: templateResponse.logoUrl || 'https://via.placeholder.com/150',
-        PrimaryColor: templateResponse.PrimaryColor,
-        SecondaryColor: templateResponse.SecondaryColor,
-        LightPrimaryColor: templateResponse.LightPrimaryColor,
-        LightestPrimaryColor: templateResponse.LightestPrimaryColor,
-        Query_PhoneNumber: templateResponse.Query_PhoneNumber,
-        Facebook: templateResponse.Facebook,
-        Instagram: templateResponse.Instagram,
-        YTLink: templateResponse.YTLink,
-        UpiId: templateResponse.UpiId,
-        Footer_Link_1: templateResponse.Footer_Link_1,
-        Footer_Link_2: templateResponse.Footer_Link_2,
-        InstructorBg: templateResponse.InstructorBg,
-        SubscriptionBg: templateResponse.SubscriptionBg,
-        userName: templateResponse.userName || "Owner Name",
-        country: templateResponse.country || "India",
+        institutionid: mergedData.institutionid || 'Institution ID',
+        Query_Address: mergedData.Query_Address || mergedData.address || 'Address',
+        Query_WebLink: mergedData.Query_WebLink || 'Website URL',
+        Query_EmailId: mergedData.Query_EmailId || mergedData.email || 'Email',
+        logoUrl: mergedData.logoUrl || 'https://via.placeholder.com/150',
+        PrimaryColor: mergedData.PrimaryColor,
+        SecondaryColor: mergedData.SecondaryColor,
+        LightPrimaryColor: mergedData.LightPrimaryColor,
+        LightestPrimaryColor: mergedData.LightestPrimaryColor,
+        Query_PhoneNumber: mergedData.Query_PhoneNumber,
+        Facebook: mergedData.Facebook,
+        Instagram: mergedData.Instagram,
+        YTLink: mergedData.YTLink,
+        UpiId: mergedData.UpiId,
+        Footer_Link_1: mergedData.Footer_Link_1,
+        Footer_Link_2: mergedData.Footer_Link_2,
+        InstructorBg: mergedData.InstructorBg,
+        SubscriptionBg: mergedData.SubscriptionBg,
+        userName: mergedData.userName || mergedData.ownerName || "Owner Name",
+        country: mergedData.country || "India",
         cognitoId: owner?.cognitoId || '',
-        phoneNumber: owner?.phoneNumber || 'Phone Number',
+        phoneNumber: owner?.phoneNumber || mergedData.phone || 'Phone Number',
         joiningDate: formattedDate
       });
-      setSelectedFile(templateResponse.logoUrl); // Set logo preview
+
+      setTypeOfInstitution(mergedData.institutionType);
+      setSelectedFile(mergedData.logoUrl); // Set logo preview
     } catch (error) {
       console.error("Error fetching details:", error);
     }
     util.setLoader(false);
-  }, [institution, util]); // Add institution and util to the dependency array
+  }, [institution, util]);
 
   useEffect(() => {
     fetchClientAndOwnerDetails();
@@ -113,45 +120,31 @@ const ClientsProfile = ({ institution }) => {
         logoUrl = logoUrl.split('?')[0];
       }
 
-      // If the logo URL exists, update the company information using the company API
-      if (clientData.logoUrl || logoUrl) {
-        const logoPayload = {
-          institutionid: institution,
-          companyName: clientData.companyName,
-          institutionFormat: clientData.institutionFormat,
-          institutionType:clientData.institutionType,
-          PrimaryColor: clientData.PrimaryColor,
-          SecondaryColor: clientData.SecondaryColor,
-          logoUrl: logoUrl || clientData.logoUrl, 
-          LightPrimaryColor: clientData.LightPrimaryColor,
-          LightestPrimaryColor: clientData.LightestPrimaryColor,
-        };
+      console.log("institution type we need :",typeOfInstitution);
 
-        await API.put("clients", "/user/development-form/company", { body: logoPayload });
+      if (typeOfInstitution === "DanceStudio") {
+        await API.put("clients", "/admin/update-owner-dance", {
+          body: {
+            institutionid: institution,
+            userName: clientData.userName,
+            Query_EmailId: clientData.Query_EmailId,
+            Query_Address: clientData.Query_Address,
+            logoUrl: logoUrl || clientData.logoUrl,
+          },
+        });
+      };
+      if(typeOfInstitution === "Dentist"){
+        await API.put("clients", "/admin/update-owner", {
+          body: {
+            institutionid: institution,
+            index: "0",
+            ownerName: clientData.userName,
+            email: clientData.Query_EmailId,
+            logoUrl: clientData.logoUrl,
+            address: clientData.Query_Address,
+          },
+        });
       }
-
-      // If email or address is present, update contact information using the contact API
-      if (clientData.Query_EmailId || clientData.Query_Address) {
-        const contactPayload = {
-          institutionid: institution,
-          Query_EmailId: clientData.Query_EmailId,
-          Query_Address: clientData.Query_Address,
-          country: clientData.country,
-          userName: clientData.userName,
-          Query_PhoneNumber: clientData.Query_PhoneNumber,
-          Facebook: clientData.Facebook,
-          Instagram: clientData.Instagram,
-          YTLink: clientData.YTLink,
-          UpiId: clientData.UpiId,
-          Footer_Link_1: clientData.Footer_Link_1,
-          Footer_Link_2: clientData.Footer_Link_2,
-          InstructorBg: clientData.InstructorBg,
-          SubscriptionBg: clientData.SubscriptionBg,
-        };
-
-        await API.put("clients", "/user/development-form/contact", { body: contactPayload });
-      }
-
       Swal.fire({ icon: "success", title: "Changes Saved" });
     } catch (error) {
       console.error("Error saving details:", error);

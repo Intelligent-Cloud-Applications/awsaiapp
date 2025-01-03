@@ -1,5 +1,5 @@
 import Header from "./../../components/Home/Navbar";
-import {useContext, useState} from "react";
+import {useContext, useState, useEffect, useRef} from "react";
 import LoginForm from "./LoginForm";
 import OtpForm from "./OtpForm";
 import SignupForm from "./SignupForm";
@@ -18,21 +18,21 @@ const AuthPage = () => {
 
   // const [userName, setUserName] = useState("");
   // const [email, setEmail] = useState("");
-  // const setUserDataRef = useRef(setUserData);
+  const setUserDataRef = useRef(setUserData);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState("");
   const [signInResponse, setSignInResponse] = useState();
   const [formState, setFormState] = useState('login')
 
   
-  // useEffect(() => {
-  //   const fetchUserInfo = async () => {
-  //     const userInfo = await API.get("clients", '/user/check-user-location');
-  //     setUserDataRef.current((p) => ({ ...p, ...userInfo }));
-  //   };
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfo = await API.get("clients", '/user/check-user-location');
+      setUserDataRef.current((p) => ({ ...p, ...userInfo }));
+    };
 
-  //   fetchUserInfo();
-  // }, []);
+    fetchUserInfo();
+  }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();

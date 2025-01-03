@@ -24,9 +24,11 @@ const AdminMemberlist = () => {
     try {
       utilRef.current.setLoader(true);  // Use the ref instead of util
       const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
-      const filteredData = memberResponse.filter(
-        (member) => member.userType === 'member' || member.userType === 'admin'
-      );
+      const filteredData = memberResponse
+        .filter(
+          (member) => member.userType === 'member' || member.userType === 'admin'
+        ).sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate));  // Sort by joiningDate
+
 
       const institutionResponse = await API.get('clients', '/admin/list-institution');
       const institutionData = institutionResponse;
@@ -83,7 +85,7 @@ const AdminMemberlist = () => {
   // Filter the member data based on the selected status
   const handleFilterStatus = (status) => {
     setFilterStatus(status);
-  
+
     if (status === 'All') {
       setMemberData(members);
     } else if (status === 'Active') {
@@ -94,10 +96,10 @@ const AdminMemberlist = () => {
       const inactiveMembers = members.filter((member) => member.status !== 'Active');
       setMemberData(inactiveMembers);
     }
-  
+
     setCurrentPage(1); // Reset pagination to page 1 after filtering
   };
-  
+
 
   const handleSearch = useCallback(() => {
     const filteredData = members.filter((member) =>

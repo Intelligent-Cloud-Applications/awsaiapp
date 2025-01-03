@@ -10,7 +10,7 @@ import Services from '../components/Template/Form/Services';
 import Testimonials from '../components/Template/Form/Testimonials';
 import Subscription from '../components/Template/Form/Subscription';
 import FAQs from '../components/Template/Form/FAQs';
-import Instructors from '../components/Template/Form/Instructors';
+// import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/Template/Form/Policy';
 import Contact from '../components/Template/Form/Contact';
 import { API, Storage } from "aws-amplify";
@@ -70,6 +70,8 @@ const Template = () => {
     { title: '', items: [''] },
     { title: '', items: [''] },
   ]);
+  const Ctx = useContext(Context);
+  const util = useContext(Context).util;
 
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -99,9 +101,11 @@ const Template = () => {
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
+      classType: [''],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
     {
       heading:'',
@@ -110,13 +114,16 @@ const Template = () => {
       country: 'INDIA',
       subscriptionType: 'monthly',
       provides: [''],
+      classType: [],
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
     {
       heading: '',
       amount: '',
+      classType: [],
       currency: 'INR',
       country: 'INDIA',
       subscriptionType: 'monthly',
@@ -124,6 +131,7 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
+      cognitoId:Ctx.userData.cognitoId,
     },
   ]);
 
@@ -186,8 +194,7 @@ const Template = () => {
     facebook: '',
   });
 
-  const Ctx = useContext(Context);
-  const util = useContext(Context).util;
+
   useEffect(() => {
     console.log(policies);
   }, [policies]);
@@ -547,6 +554,10 @@ const Template = () => {
 
       // Filter out empty strings from the paddedDanceTypes array
       const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
+      localStorage.removeItem('classTypes');
+
+    // Save the nonEmptyDanceTypes array in local storage
+    localStorage.setItem('classTypes', JSON.stringify(nonEmptyDanceTypes));
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
@@ -557,6 +568,7 @@ const Template = () => {
           ServicesBg: servicesBgUrl,
         },
       });
+
     } catch (error) {
       console.error("Error uploading services: ", error);
     }
@@ -716,71 +728,71 @@ const Template = () => {
     }
   }
 
-  const handleInstructorsUpload = async () => {
-    try {
-      // Upload images first
-      let uploadedImages = [];
-      for (let i = 0; i < instructors.length; i++) {
-        const instructor = instructors[i];
-        if (instructor.actualFile) {
-          const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
-            contentType: instructor.actualFile.type,
-          });
-          let inst_pic = await Storage.get(response.key);
-          inst_pic = inst_pic.split("?")[0];
-          uploadedImages.push(inst_pic);
-        } else {
-          uploadedImages.push(null);
-        }
-      }
+  // const handleInstructorsUpload = async () => {
+  //   try {
+  //     // Upload images first
+  //     let uploadedImages = [];
+  //     for (let i = 0; i < instructors.length; i++) {
+  //       const instructor = instructors[i];
+  //       if (instructor.actualFile) {
+  //         const response = await Storage.put(`institution-utils/${institutionId}/images/Instructor/${instructor.uploadedFile}`, instructor.actualFile, {
+  //           contentType: instructor.actualFile.type,
+  //         });
+  //         let inst_pic = await Storage.get(response.key);
+  //         inst_pic = inst_pic.split("?")[0];
+  //         uploadedImages.push(inst_pic);
+  //       } else {
+  //         uploadedImages.push(null);
+  //       }
+  //     }
 
-      for (let i = 0; i < instructors.length; i++) {
-        const instructor = instructors[i];
-        if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
-          try {
-            if (instructor.instructorId) {
-              await API.put("clients", `/user/development-form/update-instructor`, {
-                body: {
-                  instructorId: instructor.instructorId,
-                  institution: Ctx.userData.institutionName,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: uploadedImages[i],
-                  position: instructor.position,
-                },
-              });
-            }
-            else {
-              const response = await API.put("clients", "/user/development-form/instructor", {
-                body: {
-                  institution: institutionId,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: uploadedImages[i],
-                  position: instructor.position,
-                },
-              });
-              const inst = [...instructors];
-              console.log(inst);
-              console.log(response);
-              inst[i].instructorId = response.Attributes.instructorId;
-              inst[i].institution = response.Attributes.institution;
-              console.log(inst);
-              setInstructors(inst)
-            }
-            //            console.log("API Response:", response);
-          } catch (error) {
-            console.error("Error uploading instructor:", instructor.name, error);
-          }
-        } else {
-          //          console.log("Skipping instructor due to missing data:", instructor.name);
-        }
-      }
+  //     for (let i = 0; i < instructors.length; i++) {
+  //       const instructor = instructors[i];
+  //       if (instructor.name && instructor.emailId && instructor.position && (instructor.imgSrc || uploadedImages[i])) {
+  //         try {
+  //           if (instructor.instructorId) {
+  //             await API.put("clients", `/user/development-form/update-instructor`, {
+  //               body: {
+  //                 instructorId: instructor.instructorId,
+  //                 institution: Ctx.userData.institutionName,
+  //                 name: instructor.name,
+  //                 emailId: instructor.emailId,
+  //                 image: uploadedImages[i],
+  //                 position: instructor.position,
+  //               },
+  //             });
+  //           }
+  //           else {
+  //             const response = await API.put("clients", "/user/development-form/instructor", {
+  //               body: {
+  //                 institution: institutionId,
+  //                 name: instructor.name,
+  //                 emailId: instructor.emailId,
+  //                 image: uploadedImages[i],
+  //                 position: instructor.position,
+  //               },
+  //             });
+  //             const inst = [...instructors];
+  //             console.log(inst);
+  //             console.log(response);
+  //             inst[i].instructorId = response.Attributes.instructorId;
+  //             inst[i].institution = response.Attributes.institution;
+  //             console.log(inst);
+  //             setInstructors(inst)
+  //           }
+  //           //            console.log("API Response:", response);
+  //         } catch (error) {
+  //           console.error("Error uploading instructor:", instructor.name, error);
+  //         }
+  //       } else {
+  //         //          console.log("Skipping instructor due to missing data:", instructor.name);
+  //       }
+  //     }
 
-    } catch (error) {
-      console.error("Error uploading instructors: ", error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error("Error uploading instructors: ", error);
+  //   }
+  // }
 
   const handlePolicyUpload = async () => {
     try {
@@ -984,6 +996,12 @@ const Template = () => {
             alert("Please fill all service fields before proceeding.");
             return prevSection;
           }
+          const hasDanceType = danceTypes.some(danceType => danceType.trim() !== '');
+  
+          if (!hasDanceType) {
+            alert("Please add at least one dance type before saving.");
+            return prevSection;
+          }
           handleServicesUpload();
           break;
         case 4:
@@ -1028,23 +1046,23 @@ const Template = () => {
           }
           handleFAQsUpload();
           break;
-        case 7:
-          const incompleteIndex = instructors.findIndex(instructor => {
-            return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-          });
+        // case 7:
+        //   const incompleteIndex = instructors.findIndex(instructor => {
+        //     return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
+        //   });
 
-          // If incompleteIndex is not -1, it means there's at least one incomplete instructor
-          if (incompleteIndex !== -1) {
-            // Check if all fields for the incomplete instructor are filled
-            const incompleteInstructor = instructors[incompleteIndex];
-            if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
-              alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
-              return prevSection;
-            }
-          }
-          handleInstructorsUpload();
-          break;
-        case 8:
+        //   // If incompleteIndex is not -1, it means there's at least one incomplete instructor
+        //   if (incompleteIndex !== -1) {
+        //     // Check if all fields for the incomplete instructor are filled
+        //     const incompleteInstructor = instructors[incompleteIndex];
+        //     if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
+        //       alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
+        //       return prevSection;
+        //     }
+        //   }
+        //   handleInstructorsUpload();
+        //   break;
+        case 7:
           handlePolicyUpload();
           break;
        
@@ -1092,13 +1110,13 @@ const Template = () => {
   };
   //  console.log("Logo in Template:", logo);
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
         <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
           <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
         </div>
-        <div className=" w-[33%] pt-[6rem] max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
+        <div className=" w-[33%] h-full pt-[6rem] pb-[10rem] no-scrollbar max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}
@@ -1183,13 +1201,13 @@ const Template = () => {
               setFaqs={setFaqs}
             />}
 
-          {currentSection === 7 &&
+          {/* {currentSection === 7 &&
             <Instructors
               instructors={instructors}
               setInstructors={setInstructors}
-            />}
+            />} */}
 
-          {currentSection === 8 &&
+          {currentSection === 7 &&
             <Policy
               policies={policies}
               setPolicies={setPolicies}
@@ -1216,6 +1234,8 @@ const Template = () => {
         onClose={handleCloseModal}
         onClear={handleClearData}
         onSaveDraft={handleSaveDraft}
+        currentSection={currentSection}
+        setCurrentSection={setCurrentSection}
       />
     </div>
   );

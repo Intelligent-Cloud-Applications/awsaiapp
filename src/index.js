@@ -33,9 +33,9 @@ Amplify.configure({
     region: "us-east-1",
     bucket: "institution-utils",
     identityPoolId:
-      process.env.REACT_APP_STAGE === "PROD"
+      process.env.STAGE === "PROD"
         ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
-        : "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
+        : "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6",
     additionalIdentityPoolId: "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d"
   },
   API: {
@@ -43,17 +43,15 @@ Amplify.configure({
       {
         name: "clients",
         endpoint:
-          process.env.REACT_APP_STAGE === "PROD"
-            ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
+          process.env.STAGE === "PROD"
+            ? "https://lo0fd7fboa.execute-api.us-east-1.amazonaws.com/prod"
             : "https://gn41h453j1.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
+        region: process.env.STAGE === "PROD" ? "us-east-1" : "us-east-2",
       },
       {
         name: 'beta_dance',
-        endpoint: process.env.REACT_APP_STAGE === "PROD"
-        ? 'https://ozmwa310vk.execute-api.us-east-1.amazonaws.com/dev'
-        :' https://ikticbkaxh.execute-api.us-east-2.amazonaws.com/dev',
-        region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
+        endpoint: ' https://ikticbkaxh.execute-api.us-east-2.amazonaws.com/dev',
+        region: 'us-east-2',
     },
     ],
   },  

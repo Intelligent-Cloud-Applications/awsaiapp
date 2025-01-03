@@ -45,9 +45,31 @@ const ContextProvider = (props) => {
       setLoader(true);
       let response;
       if (userProfile.role === "owner") {
-        response = await API.get("clients", "/admin/list-institution");
+        const response1 = await API.get("clients", "/admin/list-institution");
+        const response2 = await API.get("clients", "/admin/list-dentist");
+        const validResponse1 = Array.isArray(response1) ? response1 : [];
+        const validResponse2 = Array.isArray(response2.records) ? response2.records : (Array.isArray(response2) ? response2 : []);
+        console.log("Valid response 1 (Dance Studio)", validResponse1);
+        console.log("Valid response 2 (Clinic)", validResponse2);
+        // Combine the valid responses into one array
+        response = [...validResponse1, ...validResponse2];
+        console.log("the clinic and dance", response);
+        // Log the combined response for debugging purposes
       } else {
-        response = await API.get("clients", "/admin/list-institutionForSales");
+        try {
+          // Fetch data from both APIs
+          const response1 = await API.get("clients", "/admin/list-institutionForSales");
+          const response2 = await API.get("clients", "/admin/list-clinicForSales");
+          // Validate that response1 is an array and response2 has 'records' as an array
+          const validResponse1 = Array.isArray(response1) ? response1 : [];
+          const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];
+          // Combine the valid responses into one array
+          response = [...validResponse1, ...validResponse2];
+          // Log the combined response for debugging purposes
+        } catch (error) {
+          // Log the error if there is an issue with the API calls
+          console.error("Error fetching data:", error);
+        }
       }
       setClients(response);
     } catch (error) {
@@ -182,7 +204,7 @@ const ContextProvider = (props) => {
     fetchInstructorDetails: fetchInstructorDetails,
     saleData: saleData,
     setSaleData: setSaleData,
-    payments:payments,
+    payments: payments,
   };
 
   return (
