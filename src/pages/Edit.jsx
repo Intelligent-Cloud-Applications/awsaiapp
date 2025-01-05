@@ -43,7 +43,7 @@ console.log(isDelivered);
   
           const productResponse = await API.get(
             "clients",
-            `/user/development-form/get-product/${institutionsNames}`
+            `/user/development-form/get-subscription/${institutionsNames}`
           );
           await setSubscriptionDetails(productResponse);
   

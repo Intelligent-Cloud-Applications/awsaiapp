@@ -111,7 +111,7 @@ const ContextProvider = (props) => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await API.get("clients", `/user/development-form/get-product/${institutionId}`);
+      const response = await API.get("clients", `/user/development-form/get-subscription/${institutionId}`);
       setSubscriptionDetails(response)
     } catch (error) {
       console.error("Error fetching product details:", error);
