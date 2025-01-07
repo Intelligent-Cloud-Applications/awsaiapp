@@ -234,9 +234,9 @@ const InstitutionDraft = () => {
           ) : (
             <Table className="w-full text-sm text-left text-gray-500">
               <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                <Table.HeadCell>Index</Table.HeadCell>
                 <Table.HeadCell>Logo</Table.HeadCell>
-                <Table.HeadCell>Institution</Table.HeadCell>
+                <Table.HeadCell>InstitutionId</Table.HeadCell>
+                <Table.HeadCell>Type</Table.HeadCell>
                 {showCreatedBy && <Table.HeadCell>Created By</Table.HeadCell>}
                 <Table.HeadCell>Updated Date</Table.HeadCell>
                 <Table.HeadCell>Action</Table.HeadCell>
@@ -250,7 +250,6 @@ const InstitutionDraft = () => {
                     className="border-b cursor-pointer"
                     onClick={(e) => handleRowClick(client, e)} // Pass the event
                   >
-                    <Table.Cell>{startIndex + index + 1}</Table.Cell>
                     <Table.Cell>
                       {client.logoUrl ? (
                         <img
@@ -263,6 +262,7 @@ const InstitutionDraft = () => {
                       )}
                     </Table.Cell>
                     <Table.Cell>{client.institutionid}</Table.Cell>
+                    <Table.Cell>{client.institutionType}</Table.Cell>
                     {showCreatedBy && (
                       <Table.Cell>
                         {client.createdBy
@@ -275,8 +275,6 @@ const InstitutionDraft = () => {
                     <Table.Cell>
                       {client.date ? formatDate(client.date) : "N/A"}
                     </Table.Cell>
-
-
                     <Table.Cell>
                       <button
                         onClick={(e) => {
@@ -298,7 +296,6 @@ const InstitutionDraft = () => {
                           className="text-red-500 cursor-pointer delete-button"
                         />
                       </Table.Cell>
-
                     </Table.Cell>
                   </Table.Row>
                 ))}
