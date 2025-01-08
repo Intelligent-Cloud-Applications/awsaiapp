@@ -47,9 +47,9 @@ function NewMemberList({ institution: tempInstitution }) {
       } catch (error) {
         console.error('Error fetching the members:', error);
       }
-     
-        util.setLoader(false)
-       
+
+      util.setLoader(false)
+
     };
 
     fetchData(institution); // Pass institution to fetchData

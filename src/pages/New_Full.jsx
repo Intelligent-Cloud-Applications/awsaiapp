@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Context from "../context/Context";
 import { FloatingLabel } from "flowbite-react";
 import { FileInput, Label, TextInput, Select, Textarea } from "flowbite-react";
+import { MultiSelect } from "react-multi-select-component";
 import { RxCross2 } from "react-icons/rx";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { IoCaretBack } from "react-icons/io5";
@@ -16,6 +17,7 @@ import Country from "../components/Auth/Country";
 const New_Full = () => {
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
   const navigate = useNavigate();
+  const UserCtx = useContext(Context)
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const institutionNames = searchParams.get("institutionName");
@@ -30,6 +32,7 @@ const New_Full = () => {
     navigate("/dashboard");
   };
   const [loaderInitialized, setLoaderInitialized] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       // if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
@@ -56,12 +59,12 @@ const New_Full = () => {
           const defaultServices = Array.from({ length: 4 }, () => ({ title: "", items: [""] }));
           const defaultFAQ = [{ title: "", content: "" }];
           const defaultAboutUs = [{ heading: "", content: "" }];
-const defaultPrivacyPolicy = [{ heading: "", content: "" }];
-const defaultRefund = [{ heading: "", content: "" }];
-const defaultTermsData = [{ title: "", content: "" }];
+          const defaultPrivacyPolicy = [{ heading: "", content: "" }];
+          const defaultRefund = [{ heading: "", content: "" }];
+          const defaultTermsData = [{ title: "", content: "" }];
           const services = templateResponse.Services && templateResponse.Services.length > 0
             ? templateResponse.Services
-            : defaultServices;  
+            : defaultServices;
           const institutionFormat = templateResponse.institutionFormat || defaultInstitutionFormat;
           if (updatedPhoneNumber) {
             updatedPhoneNumber = updatedPhoneNumber.replace(/\D/g, '');
@@ -91,15 +94,15 @@ const defaultTermsData = [{ title: "", content: "" }];
             country: updatedCountry,
             Query_PhoneNumber: updatedPhoneNumber,
             countryCode: updatedCountryCode,
-    institutionType,  
-    Services: services,
-    FAQ: templateResponse.FAQ && templateResponse.FAQ.length > 0 ? templateResponse.FAQ : defaultFAQ,
-    ClassTypes: templateResponse.ClassTypes || [""],
-    AboutUs: templateResponse.AboutUs && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
-  PrivacyPolicy: templateResponse.PrivacyPolicy && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
-  Refund:templateResponse.Refund && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
-  TermsData: templateResponse.TermsData && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
-    institutionFormat  
+            institutionType,
+            Services: services,
+            FAQ: templateResponse.FAQ && templateResponse.FAQ.length > 0 ? templateResponse.FAQ : defaultFAQ,
+            ClassTypes: templateResponse.ClassTypes || [""],
+            AboutUs: templateResponse.AboutUs && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
+            PrivacyPolicy: templateResponse.PrivacyPolicy && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
+            Refund: templateResponse.Refund && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
+            TermsData: templateResponse.TermsData && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
+            institutionFormat
           };
 
         });
@@ -115,7 +118,8 @@ const defaultTermsData = [{ title: "", content: "" }];
         }));
 
         await setSubscriptionDetails(convertedProductResponse.length > 0 ? convertedProductResponse : [
-          { heading: "",
+          {
+            heading: "",
             amount: "",
             india: true,
             subscriptionType: "year",
@@ -123,7 +127,9 @@ const defaultTermsData = [{ title: "", content: "" }];
             country: "India",
             currency: "INR",
             duration: 365 * 24 * 60 * 60 * 1000,
-            provides: [""]}
+            provides: [""],
+            // classType: [""]
+          }
         ]);
 
         const instructorResponse = await API.get(
@@ -150,8 +156,38 @@ const defaultTermsData = [{ title: "", content: "" }];
     util,
     Ctx.userData.institutionName,
   ]);
+  const [selectedClassTypes, setSelectedClassTypes] = useState([]);
+  const ClassTypes = templateDetails?.ClassTypes || [];
+  const classTypeOptions = ClassTypes.map((classType) => ({
+    value: classType,
+    label: classType,
+}));
 
 
+  useEffect(() => {
+    if (Array.isArray(subscriptionDetails) && subscriptionDetails.length > 0) {
+      const mappedClassTypes = subscriptionDetails.map((subscription) =>
+        Array.isArray(subscription.classType)
+          ? subscription.classType.map((type) => ({
+            value: type,
+            label: type,
+          }))
+          : []
+      );
+      console.log('Mapped Class Types:', mappedClassTypes);
+      setSelectedClassTypes(mappedClassTypes);
+    }
+  }, [subscriptionDetails]);
+
+  // const handleClassTypeChange = (selectedOptions, subscriptionIndex) => {
+  //   const updatedClassTypes = [...selectedClassTypes];
+  //   updatedClassTypes[subscriptionIndex] = selectedOptions.map((option) => ({
+  //     value: option.value,
+  //     label: option.label,
+  //   }));
+
+  //   setSelectedClassTypes(updatedClassTypes); // Update the selected class types for the specific subscription
+  // };
   const handleCountryChange1 = (e) => {
     const selectedCountry = e.target.options[e.target.selectedIndex].text;
     const selectedCountryCode = e.target.value;
@@ -488,6 +524,7 @@ const defaultTermsData = [{ title: "", content: "" }];
         currency: "INR",
         duration: 365 * 24 * 60 * 60 * 1000,
         provides: [""],
+        classType:[""]
       },
     ]);
   };
@@ -1344,8 +1381,13 @@ const defaultTermsData = [{ title: "", content: "" }];
       if (subscriptionDetails && subscriptionDetails.length > 0) {
         const subscriptionPromises = [];
 
-        subscriptionDetails.forEach((subscription) => {
+        subscriptionDetails.forEach((subscription,index) => {
           const amountInPaisa = subscription.amount * 100;
+          const normalizedClassTypes = selectedClassTypes[index]
+          ?.filter(item => item.value.trim() !== "") // Exclude empty values
+          .map(item => item.value) || [];
+      
+
           if (subscription.productId) {
             subscriptionPromises.push(
               API.put("clients", "/user/development-form/update-subscription", {
@@ -1362,6 +1404,9 @@ const defaultTermsData = [{ title: "", content: "" }];
                   india: subscription.india,
                   provides: subscription.provides,
                   subscriptionType: subscription.subscriptionType,
+                  classType: normalizedClassTypes
+
+                  
                 },
               })
             );
@@ -1380,6 +1425,8 @@ const defaultTermsData = [{ title: "", content: "" }];
                   india: subscription.india,
                   provides: subscription.provides,
                   subscriptionType: subscription.subscriptionType,
+                  classType: normalizedClassTypes
+
                 },
               })
             );
@@ -1394,8 +1441,8 @@ const defaultTermsData = [{ title: "", content: "" }];
           body: {
             institutionid: institutionNames,
             companyName: templateDetails.companyName,
-            institutionType:templateDetails.institutionType,
-            institutionFormat:templateDetails.institutionFormat,
+            institutionType: templateDetails.institutionType,
+            institutionFormat: templateDetails.institutionFormat,
             PrimaryColor: templateDetails.PrimaryColor,
             SecondaryColor: templateDetails.SecondaryColor,
             logoUrl: templateDetails.logoUrl,
@@ -1468,7 +1515,22 @@ const defaultTermsData = [{ title: "", content: "" }];
       setTimeout(() => {
         util.setLoader(false);
       }, 0);
-      navigate("/dashboard");
+      if (templateDetails?.payment === true) {
+
+        navigate("/dashboard");
+      } else {
+
+        const baseUrl =
+          process.env.REACT_APP_STAGE === 'PROD'
+            ? 'http://happyprancer.com'
+            : 'http://beta.happyprancer.com';
+
+
+        const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${templateDetails.institutionId}`;
+
+
+        window.open(url, "_blank");
+      }
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -2143,8 +2205,8 @@ const defaultTermsData = [{ title: "", content: "" }];
               <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4  lg:ml-20">
                 <div className="flex flex-col gap-4 ">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
-                    
-                  <div className="relative mt-4 mr-16">
+
+                    <div className="relative mt-4 mr-16">
                       <div className="mb-2 block">
                         <Label
                           htmlFor="companyName"
@@ -2171,31 +2233,31 @@ const defaultTermsData = [{ title: "", content: "" }];
                         }}
                       />
                     </div>
- 
 
-<div className="mt-4">
-  <label className="block text-gray-700 mb-2 font-bold">Select Institution Format</label>
-  <select
-    value={templateDetails.institutionFormat}
-    onChange={(event) =>
-      handleChange(event, "institutionFormat")
-    }
-    className="w-full max-w-md  border borounded-md p-2"
-     style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-  >
-    <option value="Online_Classes">Online Classes</option>
-    <option value="Inperson_Classes">In-person Classes</option>
-    <option value="Hybrid_Classes">Hybrid Classes</option>
-    {/* Add more options here as needed */}
-  </select>
-</div>
 
-                    
-                     </div>
+                    <div className="mt-4">
+                      <label className="block text-gray-700 mb-2 font-bold">Select Institution Format</label>
+                      <select
+                        value={templateDetails.institutionFormat}
+                        onChange={(event) =>
+                          handleChange(event, "institutionFormat")
+                        }
+                        className="w-full max-w-md  border borounded-md p-2"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        <option value="Online_Classes">Online Classes</option>
+                        <option value="Inperson_Classes">In-person Classes</option>
+                        <option value="Hybrid_Classes">Hybrid Classes</option>
+                        {/* Add more options here as needed */}
+                      </select>
+                    </div>
+
+
+                  </div>
                 </div>
               </div>
               <div className="lg:px-[170px] md:px-[80px] sm:px-6 lg:mt-10 mt-4 lg:ml-20">
@@ -2724,6 +2786,51 @@ const defaultTermsData = [{ title: "", content: "" }];
                           <option value="quarter:quarterly">Quarter</option>
                         </Select>
                       </div>
+                      {/* classTypes */}
+                      <div className="max-w-md mt-4">
+                        <div className="mb-2 block">
+                          <Label htmlFor={`classTypes-${index}`} value="Select Class Types" />
+                        </div>
+                        <MultiSelect
+  options={classTypeOptions}
+  value={selectedClassTypes[index] || []}
+  onChange={(selected) => {
+    console.log('Selected Class Types:', selected);  // This logs the selected options
+    setSelectedClassTypes((prev) => {
+      const updated = [...prev];
+      updated[index] = selected; // Store the selected class types at the corresponding index
+      return updated;
+  });
+  
+  }}
+  labelledBy="Select Class Types"
+  className="w-full z-10"
+  styles={{
+    multiselectContainer: (provided) => ({
+      ...provided,
+      backgroundColor: "#fff", // White background
+      opacity: 1, // Fully opaque
+    }),
+    searchBox: (provided) => ({
+      ...provided,
+      backgroundColor: "#fff", // White background for search box
+    }),
+    option: (provided) => ({
+      ...provided,
+      backgroundColor: "#fff", // White background for options
+      color: "#000", // Black text
+      ':hover': {
+        backgroundColor: "#f3f3f3", // Light grey on hover
+      },
+    }),
+    optionContainer: (provided) => ({
+      ...provided,
+      backgroundColor: "#fff", // White background for option container
+    }),
+  }}
+/>
+
+                      </div>
 
                       {/* Currency */}
                       <div className="max-w-md mt-4">
@@ -2752,6 +2859,7 @@ const defaultTermsData = [{ title: "", content: "" }];
                         <FloatingLabel
                           variant="filled"
                           label="Amount"
+                          className="z-0"
                           style={{
                             width: "100%",
                             borderColor: "#D1D5DB",

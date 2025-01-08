@@ -47,7 +47,13 @@ const ContextProvider = (props) => {
       if (userProfile.role === "owner") {
         response = await API.get("clients", "/admin/list-institution");
       } else {
-        response = await API.get("clients", "/admin/list-institutionForSales");
+        try {
+          // Fetch data from both APIs
+          response = await API.get("clients", "/admin/list-institutionForSales");
+        } catch (error) {
+          // Log the error if there is an issue with the API calls
+          console.error("Error fetching data:", error);
+        }
       }
       setClients(response);
     } catch (error) {
@@ -182,7 +188,7 @@ const ContextProvider = (props) => {
     fetchInstructorDetails: fetchInstructorDetails,
     saleData: saleData,
     setSaleData: setSaleData,
-    payments:payments,
+    payments: payments,
   };
 
   return (

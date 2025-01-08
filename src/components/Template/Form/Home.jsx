@@ -65,7 +65,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div className="home">
+    <div className="home max-h-screen overflow-y-auto">
       <h1 className="font-medium text-7xl pb-[2rem]">HOME SECTION</h1>
       <h5 class="w-[28rem] max950:w-[15rem] text-[#939393]">
         <strong>Introduce Your Brand:</strong><br />

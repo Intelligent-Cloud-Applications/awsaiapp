@@ -1,5 +1,5 @@
 import Header from "./../../components/Home/Navbar";
-import {useContext, useState,useEffect,useRef} from "react";
+import {useContext, useState, useEffect, useRef} from "react";
 import LoginForm from "./LoginForm";
 import OtpForm from "./OtpForm";
 import SignupForm from "./SignupForm";
