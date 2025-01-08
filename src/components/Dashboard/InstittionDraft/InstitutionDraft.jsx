@@ -28,21 +28,9 @@ const InstitutionDraft = () => {
 
       let response;
       if (userData.role === "owner") {
-        const response1 = await API.get("clients", "/admin/list-institution");
-        const response2 = await API.get("clients", "/admin/list-dentist");
-        const validResponse1 = Array.isArray(response1) ? response1 : [];
-        const validResponse2 = Array.isArray(response2.records) ? response2.records : (Array.isArray(response2) ? response2 : []);
-        // Combine the valid responses into one array
-        response = [...validResponse1, ...validResponse2];
+        response = await API.get("clients", "/admin/list-institution");
       } else {
-        const response1 = await API.get("clients", "/admin/list-institutionForSales");
-        const response2 = await API.get("clients", "/admin/list-clinicForSales");
-        console.log("the clinic data", response2);
-        // Validate that response1 is an array and response2 has 'records' as an array
-        const validResponse1 = Array.isArray(response1) ? response1 : [];
-        const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];
-        // Combine the valid responses into one array
-        response = [...validResponse1, ...validResponse2];
+        response = await API.get("clients", "/admin/list-institutionForSales");
       }
       setClients(response);
     } catch (error) {
@@ -246,9 +234,9 @@ const InstitutionDraft = () => {
           ) : (
             <Table className="w-full text-sm text-left text-gray-500">
               <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                <Table.HeadCell>Index</Table.HeadCell>
                 <Table.HeadCell>Logo</Table.HeadCell>
-                <Table.HeadCell>Institution</Table.HeadCell>
+                <Table.HeadCell>InstitutionId</Table.HeadCell>
+                <Table.HeadCell>Type</Table.HeadCell>
                 {showCreatedBy && <Table.HeadCell>Created By</Table.HeadCell>}
                 <Table.HeadCell>Updated Date</Table.HeadCell>
                 <Table.HeadCell>Action</Table.HeadCell>
@@ -262,7 +250,6 @@ const InstitutionDraft = () => {
                     className="border-b cursor-pointer"
                     onClick={(e) => handleRowClick(client, e)} // Pass the event
                   >
-                    <Table.Cell>{startIndex + index + 1}</Table.Cell>
                     <Table.Cell>
                       {client.logoUrl ? (
                         <img
@@ -275,6 +262,7 @@ const InstitutionDraft = () => {
                       )}
                     </Table.Cell>
                     <Table.Cell>{client.institutionid}</Table.Cell>
+                    <Table.Cell>{client.institutionType}</Table.Cell>
                     {showCreatedBy && (
                       <Table.Cell>
                         {client.createdBy
@@ -287,8 +275,6 @@ const InstitutionDraft = () => {
                     <Table.Cell>
                       {client.date ? formatDate(client.date) : "N/A"}
                     </Table.Cell>
-
-
                     <Table.Cell>
                       <button
                         onClick={(e) => {
@@ -310,7 +296,6 @@ const InstitutionDraft = () => {
                           className="text-red-500 cursor-pointer delete-button"
                         />
                       </Table.Cell>
-
                     </Table.Cell>
                   </Table.Row>
                 ))}

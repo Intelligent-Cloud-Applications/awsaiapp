@@ -211,7 +211,7 @@ const Panel = () => {
     }
   });
 
-  const fetchMemberCounts = async () => {
+  const fetchMemberCounts = useCallback(async () => {
     try {
       const response = await API.get(
         "clients",
@@ -234,11 +234,17 @@ const Panel = () => {
       }, {});
       setMemberCounts(defaultCounts);
     }
-  };
+  }, [clientsToDisplay]);  // Dependency for fetchMemberCounts
+
+  const [shouldFetch, setShouldFetch] = useState(true);
 
   useEffect(() => {
-    fetchMemberCounts();
-  });
+    if (shouldFetch) {
+      fetchMemberCounts();
+      setShouldFetch(false);
+    }
+  }, [shouldFetch, fetchMemberCounts]);
+
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -341,17 +347,10 @@ const Panel = () => {
       try {
         let response;
         const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
-        if (clientInstitution.institutionType === "Dance Studio") {
-          response = await API.put("clients", "/user/updateDelivary", {
-            body,
-            headers: { "Content-Type": "application/json" },
-          });
-        } else {
-          response = await API.put("clients", "/user/updateDelivaryForDental", {
-            body,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
+        response = await API.put("clients", "/user/updateDelivary", {
+          body,
+          headers: { "Content-Type": "application/json" },
+        });
         console.log("API response:", response);
       } catch (error) {
         console.error("Error updating delivery status:", error);
