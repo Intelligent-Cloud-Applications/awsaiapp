@@ -487,27 +487,39 @@ const Panel = () => {
               <Table className="w-full text-sm text-left text-gray-500">
                 <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                   {/* <Table.HeadCell></Table.HeadCell> */}
+                  
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution
+                    Institution Id
                   </Table.HeadCell>
+                  {Ctx.userData.userType === 'member' && Ctx.userData.role === 'operation' &&(
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Institution Name
+                  </Table.HeadCell>
+)}
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Type
                   </Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Status
                   </Table.HeadCell>
+                  {Ctx.userData.role !== 'operation' &&(
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Is Delivered
                   </Table.HeadCell>
+                  )}
+                   {Ctx.userData.role !== 'operation' &&(
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Payment
                   </Table.HeadCell>
+                   )}
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
+               {Ctx.userData.role !== 'operation' &&(
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Members
                   </Table.HeadCell>
+               )}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -533,11 +545,20 @@ const Panel = () => {
                         className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
                         onClick={(e) => handleRowClick(client.institutionid, e)}
                       >
-                        <Link onClick={() => handleInstitutionClick(client)}>
+                        <Link 
+                          onClick={() => {
+                            if (Ctx.userData.role !== 'operation') {
+                              handleInstitutionClick(client);
+                            }
+                          }}
+                        >
                           <div className="email-hover uppercase font-semibold text-[#11192B]">
                             {client.institutionid}
                           </div>
                         </Link>
+                      </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white">
+                      {client.companyName}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -562,6 +583,7 @@ const Panel = () => {
                           );
                         })()}
                       </Table.Cell>
+                      {Ctx.userData.role !== 'operation' &&(
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {client.payment ? (
                           <select
@@ -582,12 +604,17 @@ const Panel = () => {
                           </select>
                         )}
                       </Table.Cell>
+                      )}
+                           {Ctx.userData.role !== 'operation' &&(
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {client.payment ? "Paid" : "Not Paid"}
                       </Table.Cell>
+                           )}
+                                {Ctx.userData.role !== 'operation' &&(
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {memberCounts[client.institutionid] || 0}
                       </Table.Cell>
+                                )}
                       <Table.Cell
                         className={`${showHiddenContent ? "" : "max1008:hidden"
                           } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
