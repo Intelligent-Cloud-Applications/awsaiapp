@@ -79,7 +79,7 @@ function Company({
 
   return (
     <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
-      <h1 className="font-medium text-7xl comphead text-center">Tell Us About Your Company</h1>
+      <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
