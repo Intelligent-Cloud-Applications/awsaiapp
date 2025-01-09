@@ -21,6 +21,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
   const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
+  const isOperation=Ctx.userData.role ==="operation" && Ctx.userData.userType === "member";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
   const location = useLocation();
@@ -204,6 +205,54 @@ const LeftBanner = ({ displayAfterClick }) => {
                         </span>
                       </Sidebar.Item>
                     </Link>
+                  </>
+                )}
+                {isOperation && (
+                  <>
+                    <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
+                      <div className="font-bold flex space-x-2 pb-3 items-center">
+                        {(userData?.imgUrl) ? <img src={userData.imgUrl} alt="profile" className="w-12 h-12 rounded-full" /> : <div
+                          className="w-20 h-20 rounded-[100%] bg-gray-300 flex items-center justify-center cursor-pointer"
+                        >
+                          <span className="text-[3rem] font-bold text-gray-700">
+                            {getInitials(userData.userName)}
+                          </span>
+                        </div>
+                        }
+                        <p className="text-white text-xl">{`Hello, ${userData.userName.split(" ")[0]}`}</p>
+                      </div>
+                    </Sidebar.ItemGroup>
+                    <Sidebar.Item
+                      icon={HiChartPie}
+                      onClick={() => {
+                        setClick(0);
+                        displayAfterClick(0);
+                      }}
+                      className={`custom-sidebar-item ${click === 0 ? "active bg-white" : ""
+                        } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                    >
+                      <span className="hidden md:inline font-[Poppins] text-base">
+                        Client Panel
+                      </span>
+                    </Sidebar.Item>
+                   
+                    
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={HiInbox}
+                        onClick={() => {
+                          setClick(2);
+                          displayAfterClick(2);
+                        }}
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline text-base font-[Poppins]">
+                          Profile
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
+                   
                   </>
                 )}
                 {isNotSuperAdmin && (

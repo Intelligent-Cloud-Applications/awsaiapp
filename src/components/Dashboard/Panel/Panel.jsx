@@ -14,6 +14,9 @@ import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
 import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
+import { TextInput, Dropdown, Button } from "flowbite-react";
+import { FaCheck } from "react-icons/fa";
+
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
@@ -49,6 +52,21 @@ const Panel = () => {
   const type = ["Dance Studio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
 
+  // Clients Panel Enhancement with Status Attribute
+  const [selectedDeliverable, setSelectedDeliverable] = useState("");
+  const handleDeliverableChange = async (institutionid, deliverable) => {
+    await API.put("clients", `/admin/update-deliverable`, {
+      body: {
+        institutionid,
+        deliverable,
+      },
+    });
+    setSelectedDeliverable(deliverable);
+    // console.log(`Deliverable changed to: ${deliverable}`);
+    const response = await API.get("clients", "/admin/list-institution");
+    clients.setClients(response);
+  };
+
   const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -74,23 +92,23 @@ const Panel = () => {
     if (!searchQuery) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            .filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        return institution.includes(query);
-      })
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          return institution.includes(query);
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -213,13 +231,10 @@ const Panel = () => {
 
   const fetchMemberCounts = useCallback(async () => {
     try {
-      const response = await API.get(
-        "clients",
-        "/user/list-all-members"
-      );
+      const response = await API.get("clients", "/user/list-all-members");
 
       const counts = response.reduce((acc, user) => {
-        if (user.userType === 'member') {
+        if (user.userType === "member") {
           acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
         }
         return acc;
@@ -234,7 +249,7 @@ const Panel = () => {
       }, {});
       setMemberCounts(defaultCounts);
     }
-  }, [clientsToDisplay]);  // Dependency for fetchMemberCounts
+  }, [clientsToDisplay]); // Dependency for fetchMemberCounts
 
   const [shouldFetch, setShouldFetch] = useState(true);
 
@@ -244,7 +259,6 @@ const Panel = () => {
       setShouldFetch(false);
     }
   }, [shouldFetch, fetchMemberCounts]);
-
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -346,7 +360,11 @@ const Panel = () => {
       const isDelivered = status === "Delivered";
       try {
         let response;
-        const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
+        const body = {
+          institutionId: clientInstitution.institutionid,
+          index: clientInstitution.index,
+          isDelivered,
+        };
         response = await API.put("clients", "/user/updateDelivary", {
           body,
           headers: { "Content-Type": "application/json" },
@@ -378,7 +396,7 @@ const Panel = () => {
       case "Dentist":
         return "/template2";
       case "Cafe":
-        return "/template3"
+        return "/template3";
       default:
         return "";
     }
@@ -487,27 +505,41 @@ const Panel = () => {
               <Table className="w-full text-sm text-left text-gray-500">
                 <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                   {/* <Table.HeadCell></Table.HeadCell> */}
+
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution
+                    Institution Id
                   </Table.HeadCell>
+
+                  {Ctx.userData.userType === "member" &&
+                    Ctx.userData.role === "operation" && (
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                        Institution Name
+                      </Table.HeadCell>
+                    )}
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Type
                   </Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Status
                   </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Is Delivered
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Payment
-                  </Table.HeadCell>
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Is Delivered
+                    </Table.HeadCell>
+                  )}
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Payment
+                    </Table.HeadCell>
+                  )}
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Members
-                  </Table.HeadCell>
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Members
+                    </Table.HeadCell>
+                  )}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -516,11 +548,29 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${
+                      showHiddenContent ? "" : "max1008:hidden"
+                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
+
+                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
+
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Deliverable
+                  </Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Domain Link
+                  </Table.HeadCell>
+
+                  {Ctx.userData.role !== "sales" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Submit
+                    </Table.HeadCell>
+                  )}
+
+                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
 
                 <Table.Body className="bg-white">
@@ -533,12 +583,25 @@ const Panel = () => {
                         className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
                         onClick={(e) => handleRowClick(client.institutionid, e)}
                       >
-                        <Link onClick={() => handleInstitutionClick(client)}>
+                        <Link
+                          onClick={() => {
+                            if (Ctx.userData.role !== "operation") {
+                              handleInstitutionClick(client);
+                            }
+                          }}
+                        >
                           <div className="email-hover uppercase font-semibold text-[#11192B]">
                             {client.institutionid}
                           </div>
                         </Link>
                       </Table.Cell>
+
+                      {Ctx.userData.userType === "member" &&
+                        Ctx.userData.role === "operation" && (
+                          <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
+                            {client.companyName}
+                          </Table.Cell>
+                        )}
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {splitandjoin(client.institutionType)}
@@ -562,35 +625,52 @@ const Panel = () => {
                           );
                         })()}
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.payment ? (
-                          <select
-                            value={client.isDelivered ? "Delivered" : "Not Delivered"}
-                            onChange={(e) => handleDropdownChange(client, e.target.value)}
-                            className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                          >
-                            <option value="Not Delivered">Not Delivered</option>
-                            <option value="Delivered">Delivered</option>
-                          </select>
-                        ) : (
-                          <select
-                            value="Not Delivered"
-                            disabled
-                            className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
-                          >
-                            <option value="Not Delivered">Not Delivered</option>
-                          </select>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.payment ? "Paid" : "Not Paid"}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {memberCounts[client.institutionid] || 0}
-                      </Table.Cell>
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {client.payment ? (
+                            <select
+                              value={
+                                client.isDelivered
+                                  ? "Delivered"
+                                  : "Not Delivered"
+                              }
+                              onChange={(e) =>
+                                handleDropdownChange(client, e.target.value)
+                              }
+                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                            >
+                              <option value="Not Delivered">
+                                Not Delivered
+                              </option>
+                              <option value="Delivered">Delivered</option>
+                            </select>
+                          ) : (
+                            <select
+                              value="Not Delivered"
+                              disabled
+                              className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
+                            >
+                              <option value="Not Delivered">
+                                Not Delivered
+                              </option>
+                            </select>
+                          )}
+                        </Table.Cell>
+                      )}
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {client.payment ? "Paid" : "Not Paid"}
+                        </Table.Cell>
+                      )}
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {memberCounts[client.institutionid] || 0}
+                        </Table.Cell>
+                      )}
                       <Table.Cell
-                        className={`${showHiddenContent ? "" : "max1008:hidden"
-                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${
+                          showHiddenContent ? "" : "max1008:hidden"
+                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -598,6 +678,71 @@ const Panel = () => {
                           : "Unknown"}{" "}
                         {/* Fallback for undefined createdBy */}
                       </Table.Cell>
+
+                      {/*Clients Panel Enhancement with Status Attribute */}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {Ctx.userData.role !== "sales" ? (
+                          <Dropdown
+                            label={client.deliverable || "pending"}
+                            inline
+                          >
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "pending"
+                                )
+                              }
+                            >
+                              Pending
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "inProgress"
+                                )
+                              }
+                            >
+                              In-progress
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "completed"
+                                )
+                              }
+                            >
+                              Completed
+                            </Dropdown.Item>
+                          </Dropdown>
+                        ) : (
+                          <span className="text-gray-500">
+                            {client.deliverable || "Not Available"}
+                          </span>
+                        )}
+                      </Table.Cell>
+
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        <TextInput
+                          id="domain"
+                          value={client.domainLink}
+                          placeholder="Enter the Domain link"
+                          required
+                          disabled={selectedDeliverable !== "completed"}
+                        />
+                      </Table.Cell>
+
+                      {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          <Button>
+                            <FaCheck />
+                          </Button>
+                        </Table.Cell>
+                      )}
+                      {/*Clients Panel Enhancement with Status Attribute */}
+
                       <Link
                         onClick={() => handleInstitutionClick(client)}
                         className="hidden change-page"
@@ -612,7 +757,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                      // onClick={handleMoreClick}
+                        // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
@@ -625,8 +770,7 @@ const Panel = () => {
             </div>
 
             {clientsToDisplay.map(([key, client], index) => (
-              <div key={client.institutionid}>
-              </div>
+              <div key={client.institutionid}></div>
             ))}
 
             {showDetails && selectedUser && (
