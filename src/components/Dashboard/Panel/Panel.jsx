@@ -15,7 +15,8 @@ import { Pagination } from "flowbite-react";
 import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
 import { TextInput, Dropdown, Button } from "flowbite-react";
-import { HiOutlineArrowRight } from "react-icons/hi";
+import { FaCheck } from "react-icons/fa";
+
 
 const Panel = () => {
   const itemsPerPage = 5;
@@ -63,20 +64,11 @@ const Panel = () => {
     });
     setSelectedDeliverable(deliverable);
     // console.log(`Deliverable changed to: ${deliverable}`);
+    const response = await API.get("clients", "/admin/list-institution");
+    clients.setClients(response);
   };
 
-  const handleUpdate = async (institutionid) => {
-    try {
-      // setLoading(true);
-      // alert("Table deleted successfully.");
-      // setLoading(false);
-    } catch (error) {
-      console.error("Error upadate data:", error);
-      alert("Failed to delete table.");
-      // setLoading(false);
-    }
-  };
-
+  
   const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -574,6 +566,13 @@ const Panel = () => {
                     Domain Link
                   </Table.HeadCell>
 
+                  {/* {Ctx.userData.userType === "admin" &&
+                    Ctx.userData.role === "operation" && ( */}
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Submit
+                  </Table.HeadCell>
+                    {/* )} */}
+
                   {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
 
@@ -723,7 +722,7 @@ const Panel = () => {
                         </Dropdown>
                       </Table.Cell>
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex flex-wrap gap-2">
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <TextInput
                           id="domain"
                           value={client.domainLink}
@@ -731,8 +730,12 @@ const Panel = () => {
                           required
                           disabled={selectedDeliverable !== "completed"}
                         />
-                        <Button className="flex align-items: center">
-                          <HiOutlineArrowRight className="h-6 w-6" />
+                      </Table.Cell>
+
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        <Button>
+                          <FaCheck />
+
                         </Button>
                       </Table.Cell>
                       {/*Clients Panel Enhancement with Status Attribute */}
