@@ -37,9 +37,8 @@ function Company({
     const inputValue = e.target.value; // Get the value from the event
     setCompanyName(inputValue);  // Set the state with the input value    
     const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
-    const id1 = noSpaces.substring(0, 5);  // Take the first 5 characters without spaces
-    const id2 = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
-    const newid = id1 + id2;  // Combine the two parts to form the new ID
+    const id = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
+    const newid = noSpaces + id;  // Combine the two parts to form the new ID
 
     setinstitutionId(newid);  // Update the institution ID state
     console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
