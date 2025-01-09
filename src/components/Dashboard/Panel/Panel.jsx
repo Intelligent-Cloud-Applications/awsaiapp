@@ -566,12 +566,11 @@ const Panel = () => {
                     Domain Link
                   </Table.HeadCell>
 
-                  {/* {Ctx.userData.userType === "admin" &&
-                    Ctx.userData.role === "operation" && ( */}
+                  {Ctx.userData.role !== "sales" && (
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Submit
                   </Table.HeadCell>
-                    {/* )} */}
+                     )} 
 
                   {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
@@ -731,13 +730,14 @@ const Panel = () => {
                           disabled={selectedDeliverable !== "completed"}
                         />
                       </Table.Cell>
-
+                      
+                  {Ctx.userData.role !== "sales" && (
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <Button>
                           <FaCheck />
-
                         </Button>
                       </Table.Cell>
+                  )}
                       {/*Clients Panel Enhancement with Status Attribute */}
 
                       <Link
