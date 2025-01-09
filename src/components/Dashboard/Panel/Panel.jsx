@@ -17,7 +17,6 @@ import Index from "../MemberList/Index";
 import { TextInput, Dropdown, Button } from "flowbite-react";
 import { FaCheck } from "react-icons/fa";
 
-
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
@@ -68,7 +67,6 @@ const Panel = () => {
     clients.setClients(response);
   };
 
-  
   const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -567,10 +565,10 @@ const Panel = () => {
                   </Table.HeadCell>
 
                   {Ctx.userData.role !== "sales" && (
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Submit
-                  </Table.HeadCell>
-                     )} 
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Submit
+                    </Table.HeadCell>
+                  )}
 
                   {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
@@ -683,42 +681,47 @@ const Panel = () => {
 
                       {/*Clients Panel Enhancement with Status Attribute */}
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <Dropdown
-                          label={client.deliverable || "pending"}
-                          inline
-                          className=""
-                        >
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDeliverableChange(
-                                client.institutionid,
-                                "pending"
-                              )
-                            }
+                        {Ctx.userData.role !== "sales" ? (
+                          <Dropdown
+                            label={client.deliverable || "pending"}
+                            inline
                           >
-                            Pending
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDeliverableChange(
-                                client.institutionid,
-                                "inProgress"
-                              )
-                            }
-                          >
-                            In-progress
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDeliverableChange(
-                                client.institutionid,
-                                "completed"
-                              )
-                            }
-                          >
-                            Completed
-                          </Dropdown.Item>
-                        </Dropdown>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "pending"
+                                )
+                              }
+                            >
+                              Pending
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "inProgress"
+                                )
+                              }
+                            >
+                              In-progress
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeliverableChange(
+                                  client.institutionid,
+                                  "completed"
+                                )
+                              }
+                            >
+                              Completed
+                            </Dropdown.Item>
+                          </Dropdown>
+                        ) : (
+                          <span className="text-gray-500">
+                            {client.deliverable || "Not Available"}
+                          </span>
+                        )}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -730,14 +733,14 @@ const Panel = () => {
                           disabled={selectedDeliverable !== "completed"}
                         />
                       </Table.Cell>
-                      
-                  {Ctx.userData.role !== "sales" && (
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <Button>
-                          <FaCheck />
-                        </Button>
-                      </Table.Cell>
-                  )}
+
+                      {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          <Button>
+                            <FaCheck />
+                          </Button>
+                        </Table.Cell>
+                      )}
                       {/*Clients Panel Enhancement with Status Attribute */}
 
                       <Link
