@@ -14,7 +14,8 @@ import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
 import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
-import { TextInput, Dropdown } from "flowbite-react";
+import { TextInput, Dropdown, Button } from "flowbite-react";
+import { HiOutlineArrowRight } from "react-icons/hi";
 
 const Panel = () => {
   const itemsPerPage = 5;
@@ -53,9 +54,27 @@ const Panel = () => {
 
   // Clients Panel Enhancement with Status Attribute
   const [selectedDeliverable, setSelectedDeliverable] = useState("");
-  const handleDeliverableChange = (deliverable) => {
+  const handleDeliverableChange = async (institutionid, deliverable) => {
+    await API.put("clients", `/admin/update-deliverable`, {
+      body: {
+        institutionid,
+        deliverable,
+      },
+    });
     setSelectedDeliverable(deliverable);
-    console.log(`Deliverable changed to: ${deliverable}`);
+    // console.log(`Deliverable changed to: ${deliverable}`);
+  };
+
+  const handleUpdate = async (institutionid) => {
+    try {
+      // setLoading(true);
+      // alert("Table deleted successfully.");
+      // setLoading(false);
+    } catch (error) {
+      console.error("Error upadate data:", error);
+      alert("Failed to delete table.");
+      // setLoading(false);
+    }
   };
 
   const customTheme = {
@@ -497,17 +516,16 @@ const Panel = () => {
                 <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                   {/* <Table.HeadCell></Table.HeadCell> */}
 
-                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                        Institution Id
-                      </Table.HeadCell>
-                    
-                    
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Institution Id
+                  </Table.HeadCell>
+
                   {Ctx.userData.userType === "member" &&
                     Ctx.userData.role === "operation" && (
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution Name
-                  </Table.HeadCell>
-                  )}
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                        Institution Name
+                      </Table.HeadCell>
+                    )}
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Type
                   </Table.HeadCell>
@@ -668,37 +686,54 @@ const Panel = () => {
                       {/*Clients Panel Enhancement with Status Attribute */}
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <Dropdown
-                          label={selectedDeliverable || "Dropdown"}
+                          label={client.deliverable || "pending"}
                           inline
                           className=""
                         >
                           <Dropdown.Item
-                            onClick={() => handleDeliverableChange("Pending")}
+                            onClick={() =>
+                              handleDeliverableChange(
+                                client.institutionid,
+                                "pending"
+                              )
+                            }
                           >
                             Pending
                           </Dropdown.Item>
                           <Dropdown.Item
                             onClick={() =>
-                              handleDeliverableChange("In-progress")
+                              handleDeliverableChange(
+                                client.institutionid,
+                                "inProgress"
+                              )
                             }
                           >
                             In-progress
                           </Dropdown.Item>
                           <Dropdown.Item
-                            onClick={() => handleDeliverableChange("Completed")}
+                            onClick={() =>
+                              handleDeliverableChange(
+                                client.institutionid,
+                                "completed"
+                              )
+                            }
                           >
                             Completed
                           </Dropdown.Item>
                         </Dropdown>
                       </Table.Cell>
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex flex-wrap gap-2">
                         <TextInput
                           id="domain"
+                          value={client.domainLink}
                           placeholder="Enter the Domain link"
                           required
-                          disabled={selectedDeliverable !== "Completed"}
+                          disabled={selectedDeliverable !== "completed"}
                         />
+                        <Button className="flex align-items: center">
+                          <HiOutlineArrowRight className="h-6 w-6" />
+                        </Button>
                       </Table.Cell>
                       {/*Clients Panel Enhancement with Status Attribute */}
 
