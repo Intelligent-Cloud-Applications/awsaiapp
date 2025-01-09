@@ -177,6 +177,7 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
       onReload: fetchClients,
+      setClients:setClients,
     },
     products: products,
     fetchProducts: () => { },
