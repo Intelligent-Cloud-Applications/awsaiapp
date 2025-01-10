@@ -6,7 +6,7 @@ import { FiSearch } from 'react-icons/fi';
 import Swal from 'sweetalert2';
 
 const AdminMemberlist = () => {
-  const { util, userData, setUserData } = useContext(Context);
+  const { util, userData } = useContext(Context);
   const utilRef = useRef(util);  // Reference to util to avoid infinite loading
 
   const [members, setMembers] = useState([]);
@@ -195,17 +195,16 @@ const AdminMemberlist = () => {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
+          response: true, // Enable response handling
           body: {
             institution: 'awsaiapp',
             cognitoId: cognitoId,
-            // Preserve existing data
             userName: currentMember.userName,
             emailId: currentMember.emailId,
             phoneNumber: currentMember.phoneNumber,
             country: currentMember.country || '',
             balance: currentMember.balance || '',
             status: currentMember.status,
-            // Update only the role
             role: newRole
           },
         };
@@ -213,8 +212,7 @@ const AdminMemberlist = () => {
         try {
           const response = await API.put(apiName, path, myInit);
           
-          if (response.Attributes) {
-            // Update local state with the returned data
+          if (response && response.Attributes) {
             const updatedMembers = members.map(member => 
               member.cognitoId === cognitoId 
                 ? { ...member, role: newRole }
@@ -228,16 +226,20 @@ const AdminMemberlist = () => {
               title: 'Updated!',
               text: 'User role has been updated.',
               didClose: () => {
-                fetchData(); // Refresh data after alert closes
+                fetchData(); 
               }
             });
           }
         } catch (error) {
+          let errorMessage = 'Failed to update user role.';
+          if (error.response) {
+            errorMessage = error.response.data?.error || errorMessage;
+          }
           console.error('Error updating role:', error);
           Swal.fire({
             icon: 'error',
             title: 'Error!',
-            text: error.response?.data?.error || 'Failed to update user role.',
+            text: errorMessage,
           });
         }
       }
