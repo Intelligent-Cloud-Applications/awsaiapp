@@ -39,6 +39,7 @@ const Panel = () => {
   const [TotalLeads, setTotalLeads] = useState("");
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
   // eslint-disable-next-line
   const [JoiningDate, setJoiningDate] = useState("");
@@ -53,19 +54,69 @@ const Panel = () => {
   const type = ["Dance Studio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
 
-  // Clients Panel Enhancement with Status Attribute
-  const [selectedDeliverable, setSelectedDeliverable] = useState("");
-  const handleDeliverableChange = async (institutionid, deliverable) => {
-    await API.put("clients", `/admin/update-deliverable`, {
-      body: {
+  const [domainLinks, setDomainLinks] = useState({});
+
+  const handleDeliverableUpdate = async (institutionid, deliverable) => {
+    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+
+    if (deliverable === "completed" && !domainLink) {
+      // toast.error("Domain link cannot be empty for completed deliverables.");
+      return;
+    }
+
+    try {
+      // Construct the request body
+      const body = {
         institutionid,
         deliverable,
-      },
-    });
-    setSelectedDeliverable(deliverable);
-    // console.log(`Deliverable changed to: ${deliverable}`);
-    const response = await API.get("clients", "/admin/list-institution");
-    clients.setClients(response);
+        ...(deliverable === "completed" && { domainLink }), // Include domainLink only if deliverable is "completed"
+      };
+
+      // Make the API call
+      await API.put("clients", `/admin/update-deliverable`, { body });
+
+      if (deliverable === "completed") {
+        setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+        toast.success("Domain link and deliverable updated successfully!");
+      } else {
+        toast.success("Deliverable updated successfully!");
+      }
+
+      // Fetch updated clients data
+      const response = await API.get("clients", "/admin/list-institution");
+      clients.setClients(response);
+    } catch (error) {
+      console.error("Error updating deliverable:", error);
+      toast.error("An error occurred while updating the deliverable.");
+    }
+  };
+  const handleDomainLinkSubmit = async (institutionid) => {
+    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+
+    if (!domainLink) {
+      toast.error("Domain link cannot be empty for completed deliverables.");
+      return;
+    }
+
+    try {
+      // Make the API call to update the domain link
+      await API.put("clients", `/admin/update-deliverable`, {
+        body: {
+          institutionid,
+          deliverable: "completed",
+          domainLink,
+        },
+      });
+
+      // Update the state
+      setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+      const response = await API.get("clients", "/admin/list-institution");
+      clients.setClients(response);
+      toast.success("Domain link submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting domain link:", error);
+      toast.error("An error occurred while submitting the domain link.");
+    }
   };
 
   const customTheme = {
@@ -573,11 +624,11 @@ const Panel = () => {
                     </Table.HeadCell>
                   )}
 
-                  {Ctx.userData.role !== "sales" && (
+                  {/* {Ctx.userData.role !== "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Submit
                     </Table.HeadCell>
-                  )}
+                  )} */}
 
                   {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
@@ -692,36 +743,52 @@ const Panel = () => {
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {Ctx.userData.role !== "sales" ? (
                           <Dropdown
-                            label={client.deliverable || "pending"}
+                            label={
+                              selectedStatuses[client.institutionid] ||
+                              client.deliverable ||
+                              "pending"
+                            }
                             inline
                           >
                             <Dropdown.Item
-                              onClick={() =>
-                                handleDeliverableChange(
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "pending", // Update status for this institution
+                                }));
+                                handleDeliverableUpdate(
                                   client.institutionid,
                                   "pending"
-                                )
-                              }
+                                );
+                              }}
                             >
                               Pending
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() =>
-                                handleDeliverableChange(
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "inProgress", 
+                                }));
+                                handleDeliverableUpdate(
                                   client.institutionid,
                                   "inProgress"
-                                )
-                              }
+                                );
+                              }}
                             >
                               In-progress
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() =>
-                                handleDeliverableChange(
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "completed", 
+                                }));
+                                handleDeliverableUpdate(
                                   client.institutionid,
                                   "completed"
-                                )
-                              }
+                                );
+                              }}
                             >
                               Completed
                             </Dropdown.Item>
@@ -733,6 +800,39 @@ const Panel = () => {
                         )}
                       </Table.Cell>
                       {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex gap-2 items-center">
+                          <TextInput
+                            id="domain"
+                            value={domainLinks[client.institutionid] || ""}
+                            placeholder="Enter the Domain link"
+                            required
+                            disabled={
+                              (selectedStatuses[client.institutionid] !==
+                              "completed") && (client.deliverable !== "completed") 
+                            }
+                            className="w-[150px]"
+                            onChange={(e) =>
+                              setDomainLinks((prev) => ({
+                                ...prev,
+                                [client.institutionid]: e.target.value,
+                              }))
+                            }
+                          />
+                          {selectedStatuses[client.institutionid] ===
+                            "completed" && (
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
+                        </Table.Cell>
+                      )}
+
+                      {/* {Ctx.userData.role !== "sales" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                           <TextInput
                             id="domain"
@@ -742,21 +842,21 @@ const Panel = () => {
                             disabled={selectedDeliverable !== "completed"}
                           />
                         </Table.Cell>
-                      )}
+                      )} */}
 
-                      {Ctx.userData.role === "sales" && (
+                      {/* {Ctx.userData.role === "sales" && ( */}
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          <RiExternalLinkLine />
+                          {client.domainLink ? (
+                            <RiExternalLinkLine
+                              onClick={() =>
+                                window.open(client.domainLink, "_blank")
+                              }
+                              className="text-blue-500 cursor-pointer"
+                            />
+                          ) : null}
                         </Table.Cell>
-                      )}
+                      {/* )} */}
 
-                      {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          <Button>
-                            <FaCheck />
-                          </Button>
-                        </Table.Cell>
-                      )}
                       {/*Clients Panel Enhancement with Status Attribute */}
 
                       <Link
