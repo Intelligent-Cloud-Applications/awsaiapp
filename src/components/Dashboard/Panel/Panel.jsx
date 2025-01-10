@@ -49,6 +49,7 @@ const Panel = () => {
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState("");
   const Ctx = useContext(Context);
   const type = ["Dance Studio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
@@ -387,6 +388,7 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
+    setSelectedInstitutionType(client.institutionType);
     setShowMemberList(true); // Toggle view to MemberList
   };
 
@@ -978,6 +980,7 @@ const Panel = () => {
         <Index
           tempInstitution={tempInstitution}
           setShowMemberList={setShowMemberList}
+          selectedInstitutionType={selectedInstitutionType}
         />
       )}
     </>
