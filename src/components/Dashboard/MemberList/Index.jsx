@@ -9,7 +9,7 @@ import InstitutionRevenue from "../InstitutionRevenue";
 import { IoCaretBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-const Index = ({ institution: tempInstitution, setShowMemberList }) => {
+const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstitutionType }) => {
   const { user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ const Index = ({ institution: tempInstitution, setShowMemberList }) => {
   } else {
     institution = userData.tempinstitutionName || tempInstitution;
   }
-
   const renderContent = () => {
     switch (activeTab) {
       case 'members':
@@ -53,7 +52,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList }) => {
             >
               <IoCaretBack />
             </div>
-            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} />
+            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType}/>
           </div>
           <div className="mt-[11rem] w-full ">
             {renderContent()}
