@@ -16,6 +16,7 @@ import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
 import { TextInput, Dropdown, Button } from "flowbite-react";
 import { FaCheck } from "react-icons/fa";
+import { RiExternalLinkLine } from "react-icons/ri";
 
 const Panel = () => {
   const itemsPerPage = 5;
@@ -560,9 +561,17 @@ const Panel = () => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Deliverable
                   </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Domain Link
-                  </Table.HeadCell>
+
+                  {Ctx.userData.role !== "sales" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Domain Link
+                    </Table.HeadCell>
+                  )}
+                  {Ctx.userData.role === "sales" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Domain Link
+                    </Table.HeadCell>
+                  )}
 
                   {Ctx.userData.role !== "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
@@ -723,16 +732,23 @@ const Panel = () => {
                           </span>
                         )}
                       </Table.Cell>
+                      {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          <TextInput
+                            id="domain"
+                            value={client.domainLink}
+                            placeholder="Enter the Domain link"
+                            required
+                            disabled={selectedDeliverable !== "completed"}
+                          />
+                        </Table.Cell>
+                      )}
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <TextInput
-                          id="domain"
-                          value={client.domainLink}
-                          placeholder="Enter the Domain link"
-                          required
-                          disabled={selectedDeliverable !== "completed"}
-                        />
-                      </Table.Cell>
+                      {Ctx.userData.role === "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          <RiExternalLinkLine />
+                        </Table.Cell>
+                      )}
 
                       {Ctx.userData.role !== "sales" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
