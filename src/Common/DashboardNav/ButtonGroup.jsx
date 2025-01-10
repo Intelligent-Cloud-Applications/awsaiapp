@@ -74,7 +74,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
         }}
         className="flex items-center rounded-md ml-[38rem]"
         onClick={() => {
-          const targetPath = institutionType === 'dancestudio' ? '/full' : '/completeDraft';
+          const targetPath = institutionType === 'DanceStudio' ? '/full' : '/completeDraft';
           navigate({
             pathname: targetPath,
             search: `?institutionName=${institutionNames}`,
