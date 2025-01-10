@@ -30,16 +30,14 @@ const ClientsProfile = ({ institution }) => {
       util.setLoader(true);
 
       // Call all APIs in parallel
-      const [templateResponse, response, companyData] = await Promise.all([
+      const [templateResponse, response] = await Promise.all([
         API.get("clients", `/user/development-form/get-user/${institution}`),
         API.get("clients", `/user/list-members/${institution}`),
-        API.get("clients", `/user/get-companyData/${institution}`)  // New API call
       ]);
 
-      const mergedData = { ...templateResponse, ...companyData };
 
       const owner = response.find(member => member.role === 'owner');
-      const formattedDate = new Date(mergedData.joiningDate || mergedData.date).toLocaleDateString("en-US", {
+      const formattedDate = new Date(templateResponse.joiningDate || templateResponse.date).toLocaleDateString("en-US", {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -47,33 +45,33 @@ const ClientsProfile = ({ institution }) => {
 
       // Update state with merged data
       setClientData({
-        institutionid: mergedData.institutionid || 'Institution ID',
-        Query_Address: mergedData.Query_Address || mergedData.address || 'Address',
-        Query_WebLink: mergedData.Query_WebLink || 'Website URL',
-        Query_EmailId: mergedData.Query_EmailId || mergedData.email || 'Email',
-        logoUrl: mergedData.logoUrl || 'https://via.placeholder.com/150',
-        PrimaryColor: mergedData.PrimaryColor,
-        SecondaryColor: mergedData.SecondaryColor,
-        LightPrimaryColor: mergedData.LightPrimaryColor,
-        LightestPrimaryColor: mergedData.LightestPrimaryColor,
-        Query_PhoneNumber: mergedData.Query_PhoneNumber,
-        Facebook: mergedData.Facebook,
-        Instagram: mergedData.Instagram,
-        YTLink: mergedData.YTLink,
-        UpiId: mergedData.UpiId,
-        Footer_Link_1: mergedData.Footer_Link_1,
-        Footer_Link_2: mergedData.Footer_Link_2,
-        InstructorBg: mergedData.InstructorBg,
-        SubscriptionBg: mergedData.SubscriptionBg,
-        userName: mergedData.userName || mergedData.ownerName || "Owner Name",
-        country: mergedData.country || "India",
+        institutionid: templateResponse.institutionid || 'Institution ID',
+        Query_Address: templateResponse.Query_Address || 'Address',
+        Query_WebLink: templateResponse.Query_WebLink || 'Website URL',
+        Query_EmailId: templateResponse.Query_EmailId || 'Email',
+        logoUrl: templateResponse.logoUrl || 'https://via.placeholder.com/150',
+        PrimaryColor: templateResponse.PrimaryColor,
+        SecondaryColor: templateResponse.SecondaryColor,
+        LightPrimaryColor: templateResponse.LightPrimaryColor,
+        LightestPrimaryColor: templateResponse.LightestPrimaryColor,
+        Query_PhoneNumber: templateResponse.Query_PhoneNumber,
+        Facebook: templateResponse.Facebook,
+        Instagram: templateResponse.Instagram,
+        YTLink: templateResponse.YTLink,
+        UpiId: templateResponse.UpiId,
+        Footer_Link_1: templateResponse.Footer_Link_1,
+        Footer_Link_2: templateResponse.Footer_Link_2,
+        InstructorBg: templateResponse.InstructorBg,
+        SubscriptionBg: templateResponse.SubscriptionBg,
+        userName: templateResponse.userName || "",
+        country: templateResponse.country || "",
         cognitoId: owner?.cognitoId || '',
-        phoneNumber: owner?.phoneNumber || mergedData.phone || 'Phone Number',
+        phoneNumber: owner?.phoneNumber || '',
         joiningDate: formattedDate
       });
 
-      setTypeOfInstitution(mergedData.institutionType);
-      setSelectedFile(mergedData.logoUrl); // Set logo preview
+      setTypeOfInstitution(templateResponse.institutionType);
+      setSelectedFile(templateResponse.logoUrl); // Set logo preview
     } catch (error) {
       console.error("Error fetching details:", error);
     }

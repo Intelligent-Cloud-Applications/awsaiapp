@@ -238,7 +238,7 @@ const CompleteDraft = () => {
     return (
         <>
             <Navbar />
-            <div className="mt-[4.5rem]">
+            <div className="mt-[4.5rem] flex justify-center">
                 {loader ? (
                     <div className="bg-[#30AFBC] h-screen">
                         <p>Loading...</p> </div>
