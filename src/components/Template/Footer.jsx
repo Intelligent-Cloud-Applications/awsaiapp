@@ -35,7 +35,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
   };
 
   const handleBackClick = () => {
-    Navigate("/dashboard")
+    Navigate("/dashboard");
   };
   const submitSections = async () => {
     // nextSection();
@@ -44,15 +44,15 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
         submissiontime: new Date().getTime(),
       },
     });
-    Navigate("/dashboard");
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
     // const baseUrl =
     //   process.env.REACT_APP_STAGE === 'PROD'
     //     ? 'http://happyprancer.com'
     //     : 'http://beta.happyprancer.com';
     const url = `http://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
-    // window.open(url);
-    window.location.href = url;
+    Navigate("/dashboard");
+    window.open(url, '_blank');
+    // window.location.href = url;
   }
 
   return (
