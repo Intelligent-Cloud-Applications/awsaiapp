@@ -59,8 +59,8 @@ const Panel = () => {
   const handleDeliverableUpdate = async (institutionid, deliverable) => {
     const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
 
-    if (deliverable === "completed" && !domainLink) {
-      // toast.error("Domain link cannot be empty for completed deliverables.");
+    if (deliverable === "Completed" && !domainLink) {
+      // toast.error("Domain link cannot be empty for Completed deliverables.");
       return;
     }
 
@@ -69,13 +69,13 @@ const Panel = () => {
       const body = {
         institutionid,
         deliverable,
-        ...(deliverable === "completed" && { domainLink }), // Include domainLink only if deliverable is "completed"
+        ...(deliverable === "Completed" && { domainLink }), // Include domainLink only if deliverable is "Completed"
       };
 
       // Make the API call
       await API.put("clients", `/admin/update-deliverable`, { body });
 
-      if (deliverable === "completed") {
+      if (deliverable === "Completed") {
         setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
         toast.success("Domain link and deliverable updated successfully!");
       } else {
@@ -94,7 +94,7 @@ const Panel = () => {
     const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
 
     if (!domainLink) {
-      toast.error("Domain link cannot be empty for completed deliverables.");
+      toast.error("Domain link cannot be empty for Completed deliverables.");
       return;
     }
 
@@ -103,7 +103,7 @@ const Panel = () => {
       await API.put("clients", `/admin/update-deliverable`, {
         body: {
           institutionid,
-          deliverable: "completed",
+          deliverable: "Completed",
           domainLink,
         },
       });
@@ -618,11 +618,11 @@ const Panel = () => {
                       Domain Link
                     </Table.HeadCell>
                   )}
-                  {Ctx.userData.role === "sales" && (
+                  {/* {Ctx.userData.role === "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Domain Link
                     </Table.HeadCell>
-                  )}
+                  )} */}
 
                   {/* {Ctx.userData.role !== "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
@@ -744,49 +744,52 @@ const Panel = () => {
                         {Ctx.userData.role !== "sales" ? (
                           <Dropdown
                             label={
-                              selectedStatuses[client.institutionid] ||
+                              (selectedStatuses[client.institutionid] ||
                               client.deliverable ||
-                              "pending"
+                              "Pending")
                             }
                             inline
                           >
                             <Dropdown.Item
+                            className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "pending", // Update status for this institution
+                                  [client.institutionid]: "Pending", 
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
-                                  "pending"
+                                  "Pending"
                                 );
                               }}
                             >
                               Pending
                             </Dropdown.Item>
                             <Dropdown.Item
+                            className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "inProgress", 
+                                  [client.institutionid]: "In-progress", 
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
-                                  "inProgress"
+                                  "In-progress"
                                 );
                               }}
                             >
                               In-progress
                             </Dropdown.Item>
                             <Dropdown.Item
+                            className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "completed", 
+                                  [client.institutionid]: "Completed", 
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
-                                  "completed"
+                                  "Completed"
                                 );
                               }}
                             >
@@ -795,7 +798,7 @@ const Panel = () => {
                           </Dropdown>
                         ) : (
                           <span className="text-gray-500">
-                            {client.deliverable || "Not Available"}
+                            {client.deliverable || "Pending"}
                           </span>
                         )}
                       </Table.Cell>
@@ -804,11 +807,15 @@ const Panel = () => {
                           <TextInput
                             id="domain"
                             value={domainLinks[client.institutionid] || ""}
-                            placeholder="Enter the Domain link"
+                            placeholder={
+                              client.domainLink
+                                ? client.domainLink
+                                : "Enter the Domain link"
+                            }
                             required
                             disabled={
                               (selectedStatuses[client.institutionid] !==
-                              "completed") && (client.deliverable !== "completed") 
+                              "Completed") && (client.deliverable !== "Completed") 
                             }
                             className="w-[150px]"
                             onChange={(e) =>
@@ -819,7 +826,7 @@ const Panel = () => {
                             }
                           />
                           {selectedStatuses[client.institutionid] ===
-                            "completed" && (
+                            "Completed" && (
                             <Button
                               onClick={() =>
                                 handleDomainLinkSubmit(client.institutionid)
@@ -839,19 +846,19 @@ const Panel = () => {
                             value={client.domainLink}
                             placeholder="Enter the Domain link"
                             required
-                            disabled={selectedDeliverable !== "completed"}
+                            disabled={selectedDeliverable !== "Completed"}
                           />
                         </Table.Cell>
                       )} */}
 
                       {/* {Ctx.userData.role === "sales" && ( */}
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 test-center bg-white">
                           {client.domainLink ? (
                             <RiExternalLinkLine
                               onClick={() =>
                                 window.open(client.domainLink, "_blank")
                               }
-                              className="text-blue-500 cursor-pointer"
+                              className="text-blue-500 cursor-pointer h-[50px] w-[20px]"
                             />
                           ) : null}
                         </Table.Cell>
