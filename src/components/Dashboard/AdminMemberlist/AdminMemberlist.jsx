@@ -6,7 +6,7 @@ import { FiSearch } from 'react-icons/fi';
 import Swal from 'sweetalert2';
 
 const AdminMemberlist = () => {
-  const { util, userData, setUserData } = useContext(Context);
+  const { util, userData } = useContext(Context);
   const utilRef = useRef(util);  // Reference to util to avoid infinite loading
 
   const [members, setMembers] = useState([]);
