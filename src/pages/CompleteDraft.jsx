@@ -215,6 +215,7 @@ const CompleteDraft = () => {
                     UpiId: templateDetails.UpiId || null,
                     testimonials: templateDetails.testimonials || [],
                     isFormFilled: true,
+                    cognitoId:userData.cognitoId,
                 };
                 console.log("Data requesting for PUT", body);
 
