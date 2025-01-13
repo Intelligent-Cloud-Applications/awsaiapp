@@ -3,13 +3,14 @@ import Select from 'react-select';
 import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
 import Context from "../../../context/Context";
+import { TextInput } from 'flowbite-react';
 
 function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
   const [provides, setProvides] = useState([]);
   const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
   const [classType, setclassType] = useState([]); // Holds the class types fetched from localStorage
-  const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([])); 
+  const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([]));
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
   const Ctx = useContext(Context);
 
@@ -23,7 +24,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     // Save class types to localStorage whenever they change
     localStorage.setItem('classTypes', JSON.stringify(classType));
   }, [classType]);
-  
+
 
   const handleClassTypeChange = (subscriptionIndex, selectedOptions) => {
     const updatedSelectedclassType = [...selectedclassType];
@@ -153,7 +154,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      cognitoId:Ctx.userData.cognitoId,
+      cognitoId: Ctx.userData.cognitoId,
     };
 
     setSubscriptions([...subscriptions, newSubscription]);
@@ -187,186 +188,176 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     localStorage.setItem('provides', JSON.stringify(provides));
   }, [subscriptionTypes, countryCodes, provides]);
   return (
-    <div className="mx-auto max-w-[850px] max-h-screen overflow-y-auto scroll-smooth">
-      <h1 className="font-medium text-7xl">SUBSCRIPTION PLANS</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-        ** The subscription model shown is just an example of how your given data will look like for the subscription; it will not change on giving your input.**
-      </h5>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
-        Clearly outline your subscription options, highlighting key features and benefits to help users make informed decisions.      </h5>
-      <div className="mt-4">
-        {subscriptions.map((subscription, index) => (
-          <div key={index} className="mt-2">
-            <div className="mt-2 flex items-center justify-between">
-              <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
-              {index >= 3 && (
-                <button
-                  onClick={() => removeSubscription(index)}
-                  className="bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
-                >
-                  <span>✕</span>
-                </button>
-              )}</div>
-            <div className="relative">
-              <input
-                type="text"
-                name="heading"
-                value={subscription.heading}
-                onChange={(e) => handleSubscriptionChange(index, e)}
-                placeholder="Subscription Heading"
-                className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
-                onFocus={() => setActiveSubscriptionIndex(index)}
-                onBlur={() => setActiveSubscriptionIndex(null)}
-              />
-              <div
-                className="absolute left-0 right-0  h-[1px] bg-[#939393]"
-
-              ></div>
-            </div>
-            {/* Multi-select for class types */}
-            <div className="relative">
-              <Select
-                isMulti
-                value={
-                  selectedclassType[index].map(value => ({
-                    value,
-                    label: value,
-                  })) || []
-                }
-                options={classType.map((type) => ({
-                  value: type,
-                  label: type,
-                }))}
-                onChange={(selectedOptions) =>
-                  handleClassTypeChange(index, selectedOptions)
-                }
-                placeholder="Select Class Types"
-                className="w-[19.5rem] mr-[1.5rem] border-[2px] border-[#9d9d9d78] max500:w-[80vw] mt-6"
-              />
-            </div>
-            <div className="relative">
-              <select
-                value={subscriptionTypes[index]}
-                name="subscriptionType"
-                id=""
-                className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
-                onChange={(e) => {
-                  handleSubscriptionChange(index, e);
-                }}
-              >
-                <option value="monthly">Monthly</option>
-                <option value="weekly">Weekly</option>
-                <option value="yearly">Yearly</option>
-                <option value="quarterly">Quarterly</option>
-              </select>
-            </div>
-            <div className="relative">
-              <li className="flex gap-20 max500:flex-col max500:gap-2 max500:items-start relative ">
-                <select
-                  value={countryCodes[index]}
-                  name="currency"
-                  id=""
-                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78]   max500:w-[80vw] mt-6"
-                  onChange={(e) => {
-                    handleSubscriptionChange(index, e);
-                  }}
-                >
-                  {<Currency />}
-                </select>
-              </li>
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                name="amount"
-                value={subscription.amount}
-                onChange={(e) => handleSubscriptionChange(index, e)}
-                placeholder="Pricing and Billing (e.g.100)"
-                className={`w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'
-                  }`}
-                rows={index === activeSubscriptionIndex ? 3 : 1}
-                onFocus={() => setActiveSubscriptionIndex(index)}
-                onBlur={() => setActiveSubscriptionIndex(null)}
-              />
-              <div
-                className="absolute left-0 right-0  h-[1px] bg-[#939393]"
-
-              ></div>
-
-            </div>
-            <div className="relative mt-2">
-              <label className="mr-2">India:</label>
-              <div className="flex items-center">
-                <div
-                  className={`w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer ${subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
-                    }`}
-                  onClick={() => updateIndiaAttribute(index, true)}
-                >
-                  {subscription.india && <div className="w-full h-full bg-[#30AFBC] rounded-full" />}
-                  <span className="text-xs font-semibold ml-14 ">True</span>
-                </div>
-                <div
-                  className={`w-6 h-6 rounded-full border border-gray-500 ml-10 flex items-center justify-center cursor-pointer ${!subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
-                    }`}
-                  onClick={() => updateIndiaAttribute(index, false)}
-                >
-                  {!subscription.india && <div className="w-full h-full bg-transparent rounded-full" />}
-                  <span className="text-xs font-semibold ml-14">False</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative">
-              {subscription.provides.map((service, serviceIndex) => (
-                <div key={serviceIndex} className="mt-2">
-                  <button
-                    type="button"
-                    onClick={() => removeService(index, serviceIndex)}
-                    className="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] "
-                  >
-                    <span>✕</span>
-                  </button>
-                  <textarea
-                    name={`provides.${serviceIndex}.description`}
-                    value={service}
+    <div className="home h-[185vh] w-[100%]">
+      <h1 className="font-medium text-7xl pb-[1rem] text-center">SUBSCRIPTION PLANS</h1>
+      <h5 className="text-[#939393] text-center mx-[10%]">
+        Clearly outline your subscription options, highlighting key features and benefits to help users make informed decisions.</h5>
+      <div className="flex justify-center ml-[8%]">
+        <div className="w-[60%] p-8">
+          <div className="mt-4">
+            {subscriptions.map((subscription, index) => (
+              <div key={index} className="mt-2">
+                <div className="mt-2 flex items-center justify-between">
+                  <h2 className="font-medium text-xl">Subscription {index + 1}</h2>
+                  {index >= 3 && (
+                    <button
+                      onClick={() => removeSubscription(index)}
+                      className="bg-red-500 text-white px-1 rounded-full text-sm mr-[12px]"
+                    >
+                      <span>✕</span>
+                    </button>
+                  )}</div>
+                <div className="relative">
+                  <TextInput
+                    type="text"
+                    name="heading"
+                    value={subscription.heading}
                     onChange={(e) => handleSubscriptionChange(index, e)}
-                    placeholder={`Service ${serviceIndex + 1} Description`}
-                    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
-                    rows={1}
+                    placeholder="Subscription Heading"
+                    className="w-ful "
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
                     onFocus={() => setActiveSubscriptionIndex(index)}
                     onBlur={() => setActiveSubscriptionIndex(null)}
                   />
-                  {/* <textarea
-      name={`provides.${serviceIndex}.description`}
-      value={service && service.description} // Add check for service
-      onChange={(e) => handleSubscriptionChange(index, e)}
-      placeholder={`Service ${serviceIndex + 1} Description`}
-      className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2 resize-none"
-      rows={1}
-      onFocus={() => setActiveSubscriptionIndex(index)}
-      onBlur={() => setActiveSubscriptionIndex(null)}
-    /> */}
-                  <div
-                    className="absolute left-0 right-0  h-[1px] bg-[#939393]"
-
-                  ></div>
                 </div>
-              ))}
-              <div className="mb-10 flex justify-center ">
+                {/* Multi-select for class types */}
+                <div className="relative">
+                  <Select
+                    isMulti
+                    value={
+                      selectedclassType[index].map(value => ({
+                        value,
+                        label: value,
+                      })) || []
+                    }
+                    options={classType.map((type) => ({
+                      value: type,
+                      label: type,
+                    }))}
+                    onChange={(selectedOptions) =>
+                      handleClassTypeChange(index, selectedOptions)
+                    }
+                    placeholder="Select Class Types"
+                    className="w-[19.5rem] mr-[1.5rem] border-[2px] border-[#9d9d9d78] max500:w-[80vw] mt-6"
+                  />
+                </div>
+                <div className="relative">
+                  <select
+                    value={subscriptionTypes[index]}
+                    name="subscriptionType"
+                    id=""
+                    className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
+                    onChange={(e) => {
+                      handleSubscriptionChange(index, e);
+                    }}
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="quarterly">Quarterly</option>
+                  </select>
+                </div>
+                <div className="relative">
+                  <li className="flex gap-20 max500:flex-col max500:gap-2 max500:items-start relative ">
+                    <select
+                      value={countryCodes[index]}
+                      name="currency"
+                      id=""
+                      className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78]   max500:w-[80vw] mt-6"
+                      onChange={(e) => {
+                        handleSubscriptionChange(index, e);
+                      }}
+                    >
+                      {<Currency />}
+                    </select>
+                  </li>
+                </div>
+                <div className="relative">
+                  <TextInput
+                    type="text"
+                    name="amount"
+                    value={subscription.amount}
+                    onChange={(e) => handleSubscriptionChange(index, e)}
+                    placeholder="Pricing and Billing (e.g.100)"
+                    className={`w-full text-black border-none outline-none bg-transparent mt-2 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'}`}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }} 
+                    rows={index === activeSubscriptionIndex ? 3 : 1}
+                    onFocus={() => setActiveSubscriptionIndex(index)}
+                    onBlur={() => setActiveSubscriptionIndex(null)}
+                  />
+                </div>
+                <div className="relative mt-2">
+                  <label className="mr-2">India:</label>
+                  <div className="flex items-center">
+                    <div
+                      className={`w-6 h-6 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer ${subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+                        }`}
+                      onClick={() => updateIndiaAttribute(index, true)}
+                    >
+                      {subscription.india && <div className="w-full h-full bg-[#30AFBC] rounded-full" />}
+                      <span className="text-xs font-semibold ml-14 ">True</span>
+                    </div>
+                    <div
+                      className={`w-6 h-6 rounded-full border border-gray-500 ml-10 flex items-center justify-center cursor-pointer ${!subscription.india ? 'bg-[#30AFBC]' : 'bg-gray-300'
+                        }`}
+                      onClick={() => updateIndiaAttribute(index, false)}
+                    >
+                      {!subscription.india && <div className="w-full h-full bg-transparent rounded-full" />}
+                      <span className="text-xs font-semibold ml-14">False</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative">
+                  {subscription.provides.map((service, serviceIndex) => (
+                    <div key={serviceIndex} className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => removeService(index, serviceIndex)}
+                        className="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] z-10 "
+                      >
+                        <span>✕</span>
+                      </button>
+                      <TextInput
+                        name={`provides.${serviceIndex}.description`}
+                        value={service}
+                        onChange={(e) => handleSubscriptionChange(index, e)}
+                        placeholder={`Service ${serviceIndex + 1} Description`}
+                        className="w-full text-black border-none outline-none bg-transparent mt-2 resize-none"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}    
+                        rows={1}
+                        onFocus={() => setActiveSubscriptionIndex(index)}
+                        onBlur={() => setActiveSubscriptionIndex(null)}
+                      />
+                    </div>
+                  ))}
+                  <div className="mb-10 flex justify-center ">
 
-                <button type="button" onClick={() => addService(index)} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
-                  Add Service
-                </button>
+                    <button type="button" onClick={() => addService(index)} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
+                      Add Service
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+          <div className="mb-10 flex justify-center ">
+            <button type="button" onClick={addSubscription} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
+              Add Subscription
+            </button></div>
+        </div>
       </div>
-      <div className="mb-10 flex justify-center ">
-        <button type="button" onClick={addSubscription} className="bg-[#30AFBC] text-white px-4 py-2 mt-4 rounded-md">
-          Add Subscription
-        </button></div>
     </div>
   );
 }

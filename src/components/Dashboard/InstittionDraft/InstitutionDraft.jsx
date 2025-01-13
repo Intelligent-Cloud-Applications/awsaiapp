@@ -18,7 +18,6 @@ const InstitutionDraft = () => {
   const [LoaderInitialized, setLoaderInitialized] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [institutionIdToDelete, setInstitutionIdToDelete] = useState("");
-  const [deleteData, setDeleteData] = useState(null);
   const fetchClients = useCallback(async () => {
     try {
       if (!LoaderInitialized) {
@@ -83,7 +82,6 @@ const InstitutionDraft = () => {
     return filtered;
   }, [searchQuery, clientsData]);
   const handleDeleteClick = (clientData) => {
-    setDeleteData(clientData);
     setInstitutionIdToDelete(clientData.institutionid);
     setShowConfirm(true);
   };
@@ -94,15 +92,7 @@ const InstitutionDraft = () => {
     try {
       util.setLoader(true);
       setShowConfirm(false);
-      if (deleteData.institutionType === "DanceStudio") {
-        await API.del("clients", `/user/development-form/delete-all/${institutionIdToDelete}`);
-      } else {
-        await API.del("clients", "/user/deleteData", {
-          body: {
-            institutionid: institutionIdToDelete,
-          }
-        })
-      }
+      await API.del("clients", `/user/development-form/delete-all/${institutionIdToDelete}`);
       alert('All data deleted successfully');
       util.setLoader(false);
       await fetchClients();

@@ -1101,10 +1101,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       {lead.name}
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                      {censorEmail(lead.emailId)}
+                      {lead.emailId ? censorEmail(lead.emailId) : "None"}
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                      {censorPhoneNumber(lead.phoneNumber)}
+                      {lead.phoneNumber ? censorPhoneNumber(lead.phoneNumber) : "None"}
                     </Table.Cell>
                     <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                       {lead.date}

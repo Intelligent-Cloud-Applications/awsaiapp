@@ -516,10 +516,10 @@ function NewMemberList({ institution: tempInstitution }) {
                     {member.userName}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {censorEmail(member.emailId)}
+                    {member.emailId ? censorEmail(member.emailId) : "None"}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {censorPhoneNumber(member.phoneNumber)}
+                    {member.phoneNumber? censorPhoneNumber(member.phoneNumber) : "None"}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                     {member.joiningDate ? formatEpochToReadableDate(member.joiningDate) : ''}
