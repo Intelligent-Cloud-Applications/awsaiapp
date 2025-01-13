@@ -11,7 +11,7 @@ const AuthPage = () => {
   const options = [
     { userType: 'owner', email: 'admin@tester.com' },
     { userType: 'sales', email: 'user@tester.com' },
-    { userType: 'operation', email: 'lopaf96595@matmayer.com' },
+    { userType: 'operation', email: 'operation@tester.com' },
   ]
 
   const { util, setUserData, setIsAuth } = useContext(Context);
