@@ -558,7 +558,7 @@ function NewMemberList({ institution: tempInstitution }) {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
             className="flex justify-end"
-            showIcons
+            // showIcons
             theme={customTheme}
           />
         </div>
