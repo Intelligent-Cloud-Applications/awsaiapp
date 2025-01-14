@@ -1,10 +1,10 @@
 "use client";
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import Context from "../../../context/Context";
-import { Button, Checkbox, Pagination, Table } from "flowbite-react";
+import { Button, Pagination, Table } from "flowbite-react";
 import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
-import { MdDeleteForever } from 'react-icons/md';
+// import { MdDeleteForever } from 'react-icons/md';
 import { API } from 'aws-amplify';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
@@ -16,10 +16,12 @@ function NewMemberList({ institution: tempInstitution }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedIndices, setSelectedIndices] = useState([]);
-  const [selectedMember, setSelectedMember] = useState([]);
+  // const [selectedIndices, setSelectedIndices] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  // const [selectedMember, setSelectedMember] = useState([]);
   const membersPerPage = 7;
   const { util, user, userData } = useContext(Context);
+  // eslint-disable-next-line no-unused-vars
   const [memberData, setMemberData] = useState([]);
   const [isEditUser, setIsEditUser] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,26 +59,27 @@ function NewMemberList({ institution: tempInstitution }) {
 
   const fetchData = async (institution) => {
     try {
-      util.setLoader(true)
+      util.setLoader(true);
       const data = await API.get("clients", `/user/list-members/${institution}`);
-      const filteredData = data.filter(member => member.userType === 'member');
+      const filteredData = data.filter((member) => member.userType === "member");
       console.log(filteredData);
-      setMembers(filteredData);
-      setMemberData(filteredData);
+      setMembers(filteredData); // Update members state
+      setMemberData(filteredData); // Update memberData state
     } catch (error) {
-      console.error('Error fetching the members:', error);
+      console.error("Error fetching the members:", error);
+    } finally {
+      util.setLoader(false);
     }
-    util.setLoader(false)
   };
 
   const handleUpdateUser = async (formData) => {
-    let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
-    } else {
-      institution = userData.institutionName || tempInstitution;
-    }
+    let institution =
+      user.profile.institutionName === "awsaiapp"
+        ? userData.institutionName
+        : userData.institutionName || tempInstitution;
+
     util.setLoader(true);
+
     const apiName = "clients";
     const path = `/user/update-member/awsaiapp`;
     const myInit = {
@@ -97,31 +100,31 @@ function NewMemberList({ institution: tempInstitution }) {
     };
 
     try {
+      // Update the user via API
       await API.put(apiName, path, myInit);
-      setIsEditUser(false);
-      setSelectedMemberDetails(null);
-      setIsModalOpen(false);
 
-      // Update state with the updated member list immediately
-      const updatedMemberData = memberData.map((member) =>
-        member.cognitoId === formData.cognitoId ? { ...member, ...formData } : member
-      );
-      setMemberData(updatedMemberData);
-      setMembers(updatedMemberData);
-
+      // Display success alert
       Swal.fire({
         icon: "success",
         title: "User Updated",
       });
+
+      // Fetch and update the member list
+      await fetchData(institution); // Refresh the data
+
+      // Close modal and reset states
+      setIsEditUser(false);
+      setSelectedMemberDetails(null);
+      setIsModalOpen(false);
     } catch (e) {
-      console.error(e);
+      console.error("Error in updating user:", e);
+
       Swal.fire({
         icon: "error",
         title: "Error",
         text: "An error occurred while updating the user.",
       });
     } finally {
-      fetchData(institution); // Refresh the member list after updating
       util.setLoader(false);
     }
   };
@@ -158,13 +161,9 @@ function NewMemberList({ institution: tempInstitution }) {
   const selectedMembers = filteredMembers.slice(startIndex, startIndex + membersPerPage);
   const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
 
-  const handleDeleteMember = async (cognitoId) => {
-    let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
-    } else {
-      institution = userData.institutionName || tempInstitution;
-    }
+  const handleDeleteMember = async (institutionToDelete) => {
+    let institution = institutionToDelete.institution
+  
     Swal.fire({
       title: "Delete User",
       text: "Are you sure you want to delete this user?",
@@ -174,142 +173,144 @@ function NewMemberList({ institution: tempInstitution }) {
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        setIsModalOpen(false);
         util.setLoader(true);
+  
         const apiName = "clients";
         const path = "/user/delete-member";
         const myInit = {
           body: {
             institution: institution,
-            cognitoId: cognitoId,
+            cognitoId: institutionToDelete.cognitoId,
           },
         };
-
+  
         try {
+          // Call the delete API
           await API.del(apiName, path, myInit);
-          // Immediately update state before calling fetchData
-          const updatedMemberData = memberData.filter(
-            (member) => member.cognitoId !== cognitoId
-          );
-          setMemberData(updatedMemberData);
-          setMembers(updatedMemberData);
+  
+          // Display success notification
           Swal.fire({
             icon: "success",
             title: "User Deleted",
           });
+  
+          // Fetch updated member list after deletion
+          await fetchData(institution);
+  
+          // Reset modal and selection states
+          // setSelectedIndices([]);
+          // setSelectedMember([]);
+          setIsModalOpen(false);
         } catch (error) {
           console.error("Error deleting member:", error);
+  
+          // Display error notification
           Swal.fire({
             icon: "error",
             title: "Error",
             text: "An error occurred while deleting the member.",
           });
         } finally {
-          setSelectedIndices([]);
-          setSelectedMember([]);
-          fetchData(institution); // This will refresh the state again with the latest data
-          setIsModalOpen(false);
           util.setLoader(false);
         }
       }
     });
-  };
+  };  
 
-  const handleDeleteSelected = async () => {
-    let institution;
-    if (user.profile.institutionName === "awsaiapp") {
-      institution = userData.institutionName;
-    } else {
-      institution = userData.institutionName || tempInstitution;
-    }
-    Swal.fire({
-      title: "Delete Users",
-      text: "Are you sure you want to delete the selected users?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setIsModalOpen(false);
-        util.setLoader(true);
-        const apiName = "clients";
-        const path = "/user/delete-members";
-        try {
-          // Delete each selected member
-          for (const cognitoId of selectedMember) {
-            const myInit = {
-              body: {
-                institution: institution,
-                cognitoId: cognitoId,
-              },
-            };
-            await API.del(apiName, path, myInit);
-          }
+  // const handleDeleteSelected = async () => {
+  //   let institution;
+  //   if (user.profile.institutionName === "awsaiapp") {
+  //     institution = userData.institutionName;
+  //   } else {
+  //     institution = userData.institutionName || tempInstitution;
+  //   }
+  //   Swal.fire({
+  //     title: "Delete Users",
+  //     text: "Are you sure you want to delete the selected users?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Delete",
+  //     cancelButtonText: "Cancel",
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       setIsModalOpen(false);
+  //       util.setLoader(true);
+  //       const apiName = "clients";
+  //       const path = "/user/delete-members";
+  //       try {
+  //         // Delete each selected member
+  //         for (const cognitoId of selectedMember) {
+  //           const myInit = {
+  //             body: {
+  //               institution: institution,
+  //               cognitoId: cognitoId,
+  //             },
+  //           };
+  //           await API.del(apiName, path, myInit);
+  //         }
 
-          // Update member data and state
-          const updatedMemberData = memberData.filter(
-            (member) => !selectedMember.includes(member.cognitoId)
-          );
-          setMemberData(updatedMemberData);
-          setMembers(updatedMemberData); // Update members state
-          Swal.fire({
-            icon: "success",
-            title: "Users Deleted",
-          });
-        } catch (error) {
-          console.error("Error deleting members:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "An error occurred while deleting the members.",
-          });
-        } finally {
-          fetchData(institution);
-          util.setLoader(false);
-        }
-      }
-    });
-  };
+  //         // Update member data and state
+  //         const updatedMemberData = memberData.filter(
+  //           (member) => !selectedMember.includes(member.cognitoId)
+  //         );
+  //         setMemberData(updatedMemberData);
+  //         setMembers(updatedMemberData); // Update members state
+  //         Swal.fire({
+  //           icon: "success",
+  //           title: "Users Deleted",
+  //         });
+  //       } catch (error) {
+  //         console.error("Error deleting members:", error);
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: "Error",
+  //           text: "An error occurred while deleting the members.",
+  //         });
+  //       } finally {
+  //         fetchData(institution);
+  //         util.setLoader(false);
+  //       }
+  //     }
+  //   });
+  // };
 
-  const handleCheckboxChange = (index) => {
-    setSelectedIndices((prevSelected) => {
-      const newSelected = prevSelected.includes(index)
-        ? prevSelected.filter((i) => i !== index)
-        : [...prevSelected, index];
+  // const handleCheckboxChange = (index) => {
+  //   setSelectedIndices((prevSelected) => {
+  //     const newSelected = prevSelected.includes(index)
+  //       ? prevSelected.filter((i) => i !== index)
+  //       : [...prevSelected, index];
 
-      const newSelectedMembers = newSelected.map(i => selectedMembers[i]?.id);
-      setSelectedMember(newSelectedMembers);
+  //     const newSelectedMembers = newSelected.map(i => selectedMembers[i]?.id);
+  //     setSelectedMember(newSelectedMembers);
 
-      return newSelected;
-    });
-  };
+  //     return newSelected;
+  //   });
+  // };
 
-  const showIcons = (index) => {
-    const isSelected = selectedIndices.includes(index);
-    return (
-      <div style={{ width: '24px' }}>
-        {isSelected ? (
-          <MdDeleteForever
-            className="inline-block cursor-pointer text-red-600"
-            size={20}
-            onClick={() =>
-              selectedIndices.length > 1
-                ? handleDeleteSelected()
-                : handleDeleteMember(selectedMembers[index].cognitoId)
-            }
-          />
-        ) : (
-          <MdDeleteForever
-            className="inline-block"
-            size={20}
-            style={{ visibility: 'hidden' }}
-          />
-        )}
-      </div>
-    );
-  };
-
+  // const showIcons = (index) => {
+  //   const isSelected = selectedIndices.includes(index);
+  //   return (
+  //     <div style={{ width: '24px' }}>
+  //       {isSelected ? (
+  //         <MdDeleteForever
+  //           className="inline-block cursor-pointer text-red-600"
+  //           size={20}
+  //           onClick={() =>
+  //             // selectedIndices.length > 1
+  //             //   ? handleDeleteSelected(): 
+  //               handleDeleteMember(selectedMembers[index].cognitoId)
+  //           }
+  //         />
+  //       ) : (
+  //         <MdDeleteForever
+  //           className="inline-block"
+  //           size={20}
+  //           style={{ visibility: 'hidden' }}
+  //         />
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   const handleNameClick = (member) => {
     setSelectedMemberDetails(member);
@@ -481,9 +482,8 @@ function NewMemberList({ institution: tempInstitution }) {
         <div className="overflow-x-auto">
           <Table hoverable className="min-w-full">
             <Table.Head>
-              <Table.HeadCell className="p-2">
-                {/* <Checkbox /> */}
-              </Table.HeadCell>
+              {/* <Table.HeadCell className="p-2">
+              </Table.HeadCell> */}
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Email</Table.HeadCell>
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
@@ -491,8 +491,8 @@ function NewMemberList({ institution: tempInstitution }) {
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</Table.HeadCell>
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Due</Table.HeadCell>
               <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Product</Table.HeadCell>
-              <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase">
-              </Table.HeadCell>
+              {/* <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+              </Table.HeadCell> */}
             </Table.Head>
             <Table.Body className="divide-y">
               {selectedMembers.map((member, index) => (
@@ -501,7 +501,7 @@ function NewMemberList({ institution: tempInstitution }) {
                   className="hover:bg-gray-200 cursor-pointer"
                   onClick={() => handleNameClick(member)}
                 >
-                  <Table.Cell
+                  {/* <Table.Cell
                     className="p-2 bg-white"
                     onClick={(e) => e.stopPropagation()} // Prevent row click when checkbox is clicked
                   >
@@ -511,7 +511,7 @@ function NewMemberList({ institution: tempInstitution }) {
                       checked={selectedIndices.includes(index)}
                       onChange={() => handleCheckboxChange(index)}
                     />
-                  </Table.Cell>
+                  </Table.Cell> */}
                   <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
                     {member.userName}
                   </Table.Cell>
@@ -519,7 +519,7 @@ function NewMemberList({ institution: tempInstitution }) {
                     {member.emailId ? censorEmail(member.emailId) : "None"}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {member.phoneNumber? censorPhoneNumber(member.phoneNumber) : "None"}
+                    {member.phoneNumber ? censorPhoneNumber(member.phoneNumber) : "None"}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                     {member.joiningDate ? formatEpochToReadableDate(member.joiningDate) : ''}
@@ -532,16 +532,16 @@ function NewMemberList({ institution: tempInstitution }) {
                     </span>
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                    {member.balance}
+                    {member.balance || "0"}
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                     {member.product}
                   </Table.Cell>
-                  <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
+                  {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
                     style={{ width: '24px' }}
                     onClick={(e) => e.stopPropagation()}>
                     {showIcons(index)}
-                  </Table.Cell>
+                  </Table.Cell> */}
                 </Table.Row>
               ))}
             </Table.Body>
@@ -557,7 +557,7 @@ function NewMemberList({ institution: tempInstitution }) {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
             className="flex justify-end"
-            showIcons
+            // showIcons
             theme={customTheme}
           />
         </div>
@@ -568,7 +568,7 @@ function NewMemberList({ institution: tempInstitution }) {
         onClose={() => setIsModalOpen(false)}
         isEditUser={isEditUser}
         onSave={handleUpdateUser}
-        handleDeleteMember={() => handleDeleteMember(selectedMemberDetails.cognitoId)}
+        handleDeleteMember={() => handleDeleteMember(selectedMemberDetails)}
       />
     </>
   );

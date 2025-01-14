@@ -119,7 +119,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
             >
               {!selectedMedia ? (
                 <>
-                  <TextInput
+                  <input
                     type="file"
                     id="fileInput"
                     className="hidden"
