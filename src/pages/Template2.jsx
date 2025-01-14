@@ -38,7 +38,7 @@ const Template2 = () => {
   const [values, setValues] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  // const { userData } = useContext(Context)
+  const { userData } = useContext(Context)
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -159,6 +159,7 @@ const Template2 = () => {
         UpiId: contactInfo['UPI Id'] || null,
         testimonials: testimonials || [],
         isFormFilled: true,
+        cognitoId: userData.cognitoId,
       };
       console.log("Data requesting for PUT", body);
       // Call the API
