@@ -4,7 +4,7 @@ import Context from "../../../context/Context";
 import { Button, Pagination, Table } from "flowbite-react";
 import { FiSearch } from 'react-icons/fi';
 import { FaFileExport, FaFileImport } from 'react-icons/fa';
-import { MdDeleteForever } from 'react-icons/md';
+// import { MdDeleteForever } from 'react-icons/md';
 import { API } from 'aws-amplify';
 import Swal from 'sweetalert2';
 import UserModal from './UserModal';
@@ -16,9 +16,9 @@ function NewMemberList({ institution: tempInstitution }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedIndices, setSelectedIndices] = useState([]);
+  // const [selectedIndices, setSelectedIndices] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [selectedMember, setSelectedMember] = useState([]);
+  // const [selectedMember, setSelectedMember] = useState([]);
   const membersPerPage = 7;
   const { util, user, userData } = useContext(Context);
   // eslint-disable-next-line no-unused-vars
@@ -198,8 +198,8 @@ function NewMemberList({ institution: tempInstitution }) {
           await fetchData(institution);
   
           // Reset modal and selection states
-          setSelectedIndices([]);
-          setSelectedMember([]);
+          // setSelectedIndices([]);
+          // setSelectedMember([]);
           setIsModalOpen(false);
         } catch (error) {
           console.error("Error deleting member:", error);
@@ -287,31 +287,30 @@ function NewMemberList({ institution: tempInstitution }) {
   //   });
   // };
 
-  const showIcons = (index) => {
-    const isSelected = selectedIndices.includes(index);
-    return (
-      <div style={{ width: '24px' }}>
-        {isSelected ? (
-          <MdDeleteForever
-            className="inline-block cursor-pointer text-red-600"
-            size={20}
-            onClick={() =>
-              // selectedIndices.length > 1
-              //   ? handleDeleteSelected(): 
-                handleDeleteMember(selectedMembers[index].cognitoId)
-            }
-          />
-        ) : (
-          <MdDeleteForever
-            className="inline-block"
-            size={20}
-            style={{ visibility: 'hidden' }}
-          />
-        )}
-      </div>
-    );
-  };
-
+  // const showIcons = (index) => {
+  //   const isSelected = selectedIndices.includes(index);
+  //   return (
+  //     <div style={{ width: '24px' }}>
+  //       {isSelected ? (
+  //         <MdDeleteForever
+  //           className="inline-block cursor-pointer text-red-600"
+  //           size={20}
+  //           onClick={() =>
+  //             // selectedIndices.length > 1
+  //             //   ? handleDeleteSelected(): 
+  //               handleDeleteMember(selectedMembers[index].cognitoId)
+  //           }
+  //         />
+  //       ) : (
+  //         <MdDeleteForever
+  //           className="inline-block"
+  //           size={20}
+  //           style={{ visibility: 'hidden' }}
+  //         />
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   const handleNameClick = (member) => {
     setSelectedMemberDetails(member);
