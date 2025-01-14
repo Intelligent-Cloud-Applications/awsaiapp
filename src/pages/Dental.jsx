@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Home/Navbar';
-import Footer from '../components/Template2/Footer';
-import Company from '../components/Template2/Form/Company';
-import Home from '../components/Template2/Form/Home';
-import Policy from '../components/Template2/Form/Policy';
-import Contact from '../components/Template2/Form/Contact';
+import Footer from '../components/Dental/Footer';
+import Company from '../components/Dental/Form/Company';
+import Home from '../components/Dental/Form/Home';
+import Policy from '../components/Dental/Form/Policy';
+import Contact from '../components/Dental/Form/Contact';
 import { API, Storage } from "aws-amplify";
-import PrevSectionDraftHandler from '../components/Template2/Form/PrevSectionDraftHandler';
+import PrevSectionDraftHandler from '../components/Dental/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
-import Testimonials from '../components/Template2/Form/Testimonials';
-const Template2 = () => {
+import Testimonials from '../components/Dental/Form/Testimonials';
+const Dental = () => {
   const Navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
-  console.log("🚀 ~ file: Template2.jsx:21 ~ Template2 ~ savedData:", savedData)
+  console.log("🚀 ~ file: Dental.jsx:21 ~ Dental ~ savedData:", savedData)
   const [logo, setLogo] = useState(null);
   const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
   const [countBanner, setCountBanner] = useState(
@@ -424,4 +424,4 @@ const Template2 = () => {
   );
 };
 
-export default Template2;
+export default Dental;

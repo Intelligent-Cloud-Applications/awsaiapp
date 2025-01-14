@@ -109,11 +109,11 @@ const Panel = () => {
   const getLinkPath = (instituteType) => {
     switch (instituteType) {
       case "Dance Studio":
-        return "/template";
+        return "/dance-studio";
       case "Dentist":
-        return "/template2";
+        return "/dental";
       case "Cafe":
-        return "/template3";
+        return "/cafe";
       default:
         return "";
     }
