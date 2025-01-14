@@ -1,80 +1,61 @@
-import React, { useState, useContext } from "react";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import React, { useState, useContext, useCallback, useMemo } from "react";
 import Context from "../../../context/Context";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { API } from "aws-amplify";
-import Swal from "sweetalert2";
-import { FaChevronRight } from "react-icons/fa";
+import {  FaCheck } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Table, Badge } from "flowbite-react";
+import { Table, Badge, Pagination, Select, TextInput, Dropdown, Button } from "flowbite-react";
 import "./Panel.css";
-import { useEffect } from "react";
-import { Pagination } from "flowbite-react";
-import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
-import { TextInput, Dropdown, Button } from "flowbite-react";
-import { FaCheck } from "react-icons/fa";
-import { RiExternalLinkLine } from "react-icons/ri";
 
 const Panel = () => {
   const itemsPerPage = 5;
-  const [status, setStatus] = useState();
-  const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  // const [selectedRow, setSelectedRow] = useState([]);
-  // eslint-disable-next-line
-  const [isMonthlyReport, setisMonthlyReport] = useState("");
-  const { clients, util, userData, setUserData } = useContext(Context);
-  const clientsData = Object.entries(clients.data);
-  // const [isUserAdd, setIsUserAdd] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [Country, setCountry] = useState("");
-  const [TotalIncome, setTotalIncome] = useState("");
-  const [TotalAttendance, setTotalAttendance] = useState("");
-  const [TotalLeads, setTotalLeads] = useState("");
-  // eslint-disable-next-line
-  const [Revenue, setRevenue] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState({});
-  const [userCheck, setUserCheck] = useState(0);
-  // eslint-disable-next-line
-  const [JoiningDate, setJoiningDate] = useState("");
-  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const [isMoreVisible, setIsMoreVisible] = useState(false);
-  const [showHiddenContent, setShowHiddenContent] = useState(false);
-  const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
-  const [selectedInstitutionType, setSelectedInstitutionType] = useState("");
-  const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dentist", "Cafe"];
-  // eslint-disable-next-line
-  // const [memberCounts, setMemberCounts] = useState({});
-
   const [domainLinks, setDomainLinks] = useState({});
+  const [showMemberList, setShowMemberList] = useState(false);
+  const [tempInstitution, setTempInstitution] = useState(null);
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState("");
 
-  const handleDeliverableUpdate = async (institutionid, deliverable) => {
-    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+  const { clients, userData } = useContext(Context);
+  const clientsData = Object.entries(clients.data);
+  const type = ["Dance Studio", "Dentist", "Cafe"];
+  const Ctx = useContext(Context);
 
-    if (deliverable === "Completed" && !domainLink) {
-      // toast.error("Domain link cannot be empty for Completed deliverables.");
-      return;
+  // Filter clients based on search query
+  const filterClients = useCallback(() => {
+    if (!searchQuery) {
+      return Array.isArray(clientsData)
+        ? clientsData
+            .filter(([_, client]) => client?.isFormFilled || false)
+            .sort((a, b) => (b[1].date || -Infinity) - (a[1].date || -Infinity))
+        : [];
     }
+    const query = searchQuery.toLowerCase();
+    return Array.isArray(clientsData)
+      ? clientsData.filter(([_, client]) =>
+          String(client.institutionid || "").toLowerCase().includes(query)
+        )
+      : [];
+  }, [searchQuery, clientsData]);
+
+  const filteredClients = useMemo(() => filterClients(), [filterClients]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+
+  // Handle deliverable update
+  const handleDeliverableUpdate = async (institutionid, deliverable) => {
+    const domainLink = domainLinks[institutionid];
+    if (deliverable === "Completed" && !domainLink) return;
 
     try {
-      // Construct the request body
-      const body = {
-        institutionid,
-        deliverable,
-        ...(deliverable === "Completed" && { domainLink }), // Include domainLink only if deliverable is "Completed"
-      };
-
-      // Make the API call
+      const body = { institutionid, deliverable, ...(deliverable === "Completed" && { domainLink }) };
       await API.put("clients", `/admin/update-deliverable`, { body });
 
       if (deliverable === "Completed") {
@@ -84,7 +65,6 @@ const Panel = () => {
         toast.success("Deliverable updated successfully!");
       }
 
-      // Fetch updated clients data
       const response = await API.get("clients", "/admin/list-institution");
       clients.setClients(response);
     } catch (error) {
@@ -92,25 +72,20 @@ const Panel = () => {
       toast.error("An error occurred while updating the deliverable.");
     }
   };
-  const handleDomainLinkSubmit = async (institutionid) => {
-    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
 
+  // Handle domain link submission
+  const handleDomainLinkSubmit = async (institutionid) => {
+    const domainLink = domainLinks[institutionid];
     if (!domainLink) {
       toast.error("Domain link cannot be empty for Completed deliverables.");
       return;
     }
 
     try {
-      // Make the API call to update the domain link
       await API.put("clients", `/admin/update-deliverable`, {
-        body: {
-          institutionid,
-          deliverable: "Completed",
-          domainLink,
-        },
+        body: { institutionid, deliverable: "Completed", domainLink },
       });
 
-      // Update the state
       setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
       const response = await API.get("clients", "/admin/list-institution");
       clients.setClients(response);
@@ -121,329 +96,16 @@ const Panel = () => {
     }
   };
 
-  const customTheme = {
-    pages: {
-      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
-      showIcon: "inline-flex",
-      previous: {
-        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
-      },
-      next: {
-        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
-      },
-      selector: {
-        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
-        disabled: "cursor-not-allowed opacity-50",
-      },
-    },
-  };
-
-  // const navigate = useNavigate();
-  const filterClients = useCallback(() => {
-    if (!searchQuery) {
-      return Array.isArray(clientsData)
-        ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
-        : [];
-    }
-    const query = searchQuery.toLowerCase();
-
-    const filtered = Array.isArray(clientsData)
-      ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        return institution.includes(query);
-      })
-      : [];
-    console.log("Filtered Clients:", filtered);
-    return filtered;
-  }, [searchQuery, clientsData]);
-
-  const filteredClients = useMemo(() => filterClients(), [filterClients]);
-
-  useEffect(() => {
-    if (!Array.isArray(filteredClients)) {
-      console.error("filteredClients is not an array:", filteredClients);
-      return;
-    }
-
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(
-      startIndex + itemsPerPage,
-      filteredClients.length
-    );
-
-    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-
-    const newInstituteTypes = Array.from(
-      new Set(clientsToDisplay.map(() => userData.institutionType))
-    );
-
-    setInstituteTypes((prevTypes) => {
-      const combinedTypes = [...prevTypes, ...newInstituteTypes];
-      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
-
-      if (uniqueCombinedTypes.length !== prevTypes.length) {
-        return uniqueCombinedTypes;
-      } else {
-        return prevTypes;
-      }
-    });
-  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]);
-
-  useEffect(() => {
-    const newInstituteType = userData.institutionType;
-
-    if (!instituteTypes.includes(newInstituteType)) {
-      setInstituteTypes((prev) => [...prev, newInstituteType]);
-    }
-  }, [userData, instituteTypes]);
-  useEffect(() => {
-    const handleResize = () => {
-      const max670Hidden = window.innerWidth <= 670;
-      const max600Hidden = window.innerWidth <= 600;
-      const max800Hidden = window.innerWidth <= 800;
-      const max1008Hidden = window.innerWidth <= 1008;
-
-      setIsMoreVisible(
-        max670Hidden || max600Hidden || max800Hidden || max1008Hidden
-      );
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const useDataForSales = Ctx.saleData || [];
-
-  const getUsernameByCognitoId = (cognitoId) => {
-    console.log("cognitoid:", cognitoId);
-    console.log("data:", useDataForSales.userName);
-    // Normalize the input ID
-    const trimmedInputId = String(cognitoId).trim();
-
-    // Find the user with matching Cognito ID
-    const user = useDataForSales.find((user) => {
-      return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
-    });
-    console.log("user Name:", user);
-    return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
-  };
-
-  if (1 < 0) {
-    setShowHiddenContent(true);
-    setTotalLeads(0);
-    setTotalAttendance(0);
-    setTotalIncome(0);
-    setMemberCount(0);
-    isMonthlyReport.toUpperCase();
-    Revenue.toUpperCase();
-    userCheck === 0 && setUserCheck(1);
-  }
-
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-
-  // const selectedRowCount = selectedRow.length;
-  useEffect(() => {
-    if (currentPage < 1 && totalPages > 0) {
-      setCurrentPage(1);
-    } else if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
-
-  function formatEpochToReadableDate(epochDate) {
-    const date = new Date(epochDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-  const location = useLocation();
-  useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      util.setLoader(true);
-      util.setLoader(false);
-    }
-  });
-
-  // const fetchMemberCounts = useCallback(async () => {
-  //   try {
-  //     const response = await API.get("clients", "/user/list-all-members");
-
-  //     const counts = response.reduce((acc, user) => {
-  //       if (user.userType === "member") {
-  //         acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
-  //       }
-  //       return acc;
-  //     }, {});
-
-  //     setMemberCounts(counts);
-  //   } catch (error) {
-  //     console.error("Error fetching member counts:", error);
-  //     const defaultCounts = clientsToDisplay.reduce((acc, client) => {
-  //       acc[client.institutionid] = 0;
-  //       return acc;
-  //     }, {});
-  //     setMemberCounts(defaultCounts);
-  //   }
-  // }, [clientsToDisplay]); // Dependency for fetchMemberCounts
-
-  // const [shouldFetch, setShouldFetch] = useState(true);
-
-  // useEffect(() => {
-  //   if (shouldFetch) {
-  //     fetchMemberCounts();
-  //     setShouldFetch(false);
-  //   }
-  // }, [shouldFetch, fetchMemberCounts]);
-
-  const handleUpdateClient = async (e) => {
-    setIsUpdateFormVisible(true);
-    try {
-      const apiName = "clients";
-      const path = "/admin/update-clients";
-      const myInit = {
-        body: {
-          institution: name,
-          emailId: email,
-          phoneNumber: phoneNumber,
-          country: Country,
-          status: status,
-        },
-      };
-      console.log("my init", myInit);
-      const response = await API.put(apiName, path, myInit);
-      Swal.fire({
-        icon: "success",
-        title: "User Updated",
-      });
-      clients.onReload();
-      console.log("Client updated successfully:", response);
-      setIsUpdateFormVisible(false);
-      setSelectedUser(null);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while updating the user.",
-      });
-      console.error("Error updating client:", error);
-    }
-  };
-
-  const handleCancelUpdate = () => {
-    setIsUpdateFormVisible(false);
-    setSelectedUser(null);
-    setName("");
-    setEmail("");
-    setPhoneNumber("");
-    setStatus("");
-  };
-
-  const getBadgeProps = (web, payment, delivered) => {
-    let text, color;
-
-    if (web) {
-      if (payment && delivered) {
-        text = "Active";
-        color = "success"; // Yellow color for Pending status
-      } else {
-        text = "Pending";
-        color = "warning"; // Green color for Active status
-      }
-    } else {
-      text = "InActive";
-      color = "failure"; // Red color for InActive status
-    }
-
-    return { text, color };
-  };
-
-  const splitandjoin = (str) => {
-    if (typeof str !== "string") {
-      return "";
-    }
-    // if capital letter is found then split the string and join it with space
-    if (typeof str !== "string") {
-      return "";
-    }
-    if (str.match(/[A-Z]/) !== null) {
-      return str
-        .split(/(?=[A-Z])/)
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(" ");
-    } else {
-      // Handle cases where str is not a valid string
-      console.error("Invalid input: The input is not a string or is empty.");
-      return ""; // or return str if you want to return the original input
-    }
-  };
-
-  const handleRowClick = (institution, event) => {
-    setisMonthlyReport(institution);
-    // Find the link within the clicked row and trigger a click on it
-    const link = event.currentTarget.querySelector(".change-page");
-    if (link) {
-      link.click();
-    }
-  };
-
-  const handleDropdownChange = useCallback(
-    async (clientInstitution, status) => {
-      const isDelivered = status === "Delivered";
-      try {
-        let response;
-        const body = {
-          institutionId: clientInstitution.institutionid,
-          index: clientInstitution.index,
-          isDelivered,
-        };
-        response = await API.put("clients", "/user/updateDelivary", {
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log("API response:", response);
-      } catch (error) {
-        console.error("Error updating delivery status:", error);
-      }
-    },
-    []
-  );
-  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
-  const [showMemberList, setShowMemberList] = useState(false);
+  // Handle institution click
   const handleInstitutionClick = (client) => {
-    // Set the institutionid as tempInstitution and show the MemberList
-    const updatedUserData = {
-      ...userData,
-      tempinstitutionName: client.institutionid,
-    };
-    setUserData(updatedUserData);
+    const updatedUserData = { ...userData, tempinstitutionName: client.institutionid };
+    Ctx.setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
     setSelectedInstitutionType(client.institutionType);
-    setShowMemberList(true); // Toggle view to MemberList
+    setShowMemberList(true);
   };
 
+  // Get link path based on institution type
   const getLinkPath = (instituteType) => {
     switch (instituteType) {
       case "Dance Studio":
@@ -456,41 +118,50 @@ const Panel = () => {
         return "";
     }
   };
-  console.log("teh data of listed client", filteredClients);
+
+  // Get badge props based on status
+  const getBadgeProps = (web, payment, delivered) => {
+    if (web) {
+      return payment && delivered
+        ? { text: "Active", color: "success" }
+        : { text: "Pending", color: "warning" };
+    }
+    return { text: "InActive", color: "failure" };
+  };
+
+  // Split and join string for display
+  const splitAndJoin = (str) => {
+    if (typeof str !== "string") return "";
+    return str
+      .split(/(?=[A-Z])/)
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join(" ");
+  };
+
   return (
     <>
       {!showMemberList ? (
         <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
           <ToastContainer />
-          <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+          <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0">
             <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
               <Select
-                value={instituteType && splitandjoin(instituteType)}
+                value={instituteType && splitAndJoin(instituteType)}
                 onChange={(e) => setInstituteType(e.target.value)}
                 className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
               >
-                {instituteType === "" && (
-                  <option value="" disabled hidden>
-                    Type
-                  </option>
-                )}
+                {instituteType === "" && <option value="" disabled hidden>Type</option>}
                 {type.map((type) => (
-                  <option
-                    key={type}
-                    value={type}
-                    className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
-                  >
-                    {splitandjoin(type)}
+                  <option key={type} value={type} className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]">
+                    {splitAndJoin(type)}
                   </option>
                 ))}
               </Select>
-
               <Link
                 to={getLinkPath(instituteType)}
                 onClick={(e) => {
                   if (instituteType === "") {
                     e.stopPropagation();
-                    console.log("Showing toast message"); // Debug line
                     toast.error("Please Select a type of Institution.", {
                       position: "top-right",
                       autoClose: 5000,
@@ -499,10 +170,7 @@ const Panel = () => {
                       pauseOnHover: true,
                       draggable: true,
                       progress: undefined,
-                      style: {
-                        backgroundColor: "#f8d7da",
-                        color: "#721c24",
-                      },
+                      style: { backgroundColor: "#f8d7da", color: "#721c24" },
                     });
                   }
                 }}
@@ -515,38 +183,21 @@ const Panel = () => {
             </div>
           </div>
           <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-            <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
-              {/* Search Bar */}
-
-              <form class="w-full min800:w-[30%] rounded-sm my-3">
-                <label
-                  for="default-search"
-                  class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
+            <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
+              <form className="w-full min800:w-[30%] rounded-sm my-3">
+                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
                   Search
                 </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
+                <div className="relative">
+                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                   </div>
                   <input
                     type="search"
                     id="default-search"
-                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+                    className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB] shadow-md focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Search"
                     required
                     value={searchQuery}
@@ -555,543 +206,100 @@ const Panel = () => {
                 </div>
               </form>
             </div>
-            {/* Headings */}
             <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
               <Table className="w-full text-sm text-left text-gray-500">
                 <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                  {/* <Table.HeadCell></Table.HeadCell> */}
-
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution Id
-                  </Table.HeadCell>
-
-                  {Ctx.userData.userType === "member" &&
-                    Ctx.userData.role === "operation" && (
-                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                        Institution Name
-                      </Table.HeadCell>
-                    )}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Type
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Status
-                  </Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Institution Id</Table.HeadCell>
+                  {Ctx.userData.userType === "member" && Ctx.userData.role === "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Institution Name</Table.HeadCell>
+                  )}
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Type</Table.HeadCell>
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</Table.HeadCell>
                   {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Is Delivered
-                    </Table.HeadCell>
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Is Delivered</Table.HeadCell>
                   )}
                   {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Payment
-                    </Table.HeadCell>
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Payment</Table.HeadCell>
                   )}
-                  {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
-                Revenue
-              </Table.HeadCell> */}
-                  {/* {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Members
-                    </Table.HeadCell>
-                  )} */}
-                  {/* <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
-              >
-                Attendance
-              </Table.HeadCell> */}
-                  <Table.HeadCell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
-                  >
-                    Created By
-                  </Table.HeadCell>
-
-                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
-
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Deliverable
-                  </Table.HeadCell>
-
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Deliverable</Table.HeadCell>
                   {Ctx.userData.role !== "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Domain Link
-                    </Table.HeadCell>
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">Domain Link</Table.HeadCell>
                   )}
-                  {/* {Ctx.userData.role === "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Domain Link
-                    </Table.HeadCell>
-                  )} */}
-
-                  {/* {Ctx.userData.role !== "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Submit
-                    </Table.HeadCell>
-                  )} */}
-
-                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
-
                 <Table.Body className="bg-white">
-                  {clientsToDisplay.map(([key, client], index) => (
-                    <Table.Row
-                      key={client.institutionid}
-                      className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                    >
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                        onClick={(e) => handleRowClick(client.institutionid, e)}
-                      >
-                        <Link
-                          onClick={() => {
-                            if (Ctx.userData.role !== "operation") {
-                              handleInstitutionClick(client);
-                            }
-                          }}
-                        >
-                          <div className="email-hover uppercase font-semibold text-[#11192B]">
-                            {client.institutionid}
-                          </div>
+                  {clientsToDisplay.map(([key, client]) => (
+                    <Table.Row key={client.institutionid} className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer">
+                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
+                        <Link onClick={() => Ctx.userData.role !== "operation" && handleInstitutionClick(client)}>
+                          <div className="email-hover uppercase font-semibold text-[#11192B]">{client.institutionid}</div>
                         </Link>
                       </Table.Cell>
-
-                      {Ctx.userData.userType === "member" &&
-                        Ctx.userData.role === "operation" && (
-                          <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
-                            {client.companyName}
-                          </Table.Cell>
-                        )}
-
+                      {Ctx.userData.userType === "member" && Ctx.userData.role === "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">{client.companyName}</Table.Cell>
+                      )}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{splitAndJoin(client.institutionType)}</Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {splitandjoin(client.institutionType)}
-                      </Table.Cell>
-
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {(() => {
-                          const { text, color } = getBadgeProps(
-                            client.isFormFilled,
-                            client.payment,
-                            client.isDelivered
-                          );
-                          return (
-                            <Badge
-                              color={color}
-                              size="sm"
-                              className="flex justify-center items-center"
-                            >
-                              {text}
-                            </Badge>
-                          );
-                        })()}
+                        <Badge color={getBadgeProps(client.isFormFilled, client.payment, client.isDelivered).color} size="sm" className="flex justify-center items-center">
+                          {getBadgeProps(client.isFormFilled, client.payment, client.isDelivered).text}
+                        </Badge>
                       </Table.Cell>
                       {Ctx.userData.role !== "operation" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {client.payment ? (
-                            <select
-                              value={
-                                client.isDelivered
-                                  ? "Delivered"
-                                  : "Not Delivered"
-                              }
-                              onChange={(e) =>
-                                handleDropdownChange(client, e.target.value)
-                              }
-                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                            >
-                              <option value="Not Delivered">
-                                Not Delivered
-                              </option>
-                              <option value="Delivered">Delivered</option>
-                            </select>
-                          ) : (
-                            <select
-                              value="Not Delivered"
-                              disabled
-                              className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
-                            >
-                              <option value="Not Delivered">
-                                Not Delivered
-                              </option>
-                            </select>
-                          )}
-                        </Table.Cell>
-                      )}
-                      {Ctx.userData.role !== "operation" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {client.payment ? "Paid" : "Not Paid"}
-                        </Table.Cell>
-                      )}
-                      {/* {Ctx.userData.role !== "operation" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {memberCounts[client.institutionid] || 0}
-                        </Table.Cell>
-                      )} */}
-                      <Table.Cell
-                        className={`${showHiddenContent ? "" : "max1008:hidden"
-                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                      >
-                        {/* {client.createdBy} */}
-                        {client.createdBy
-                          ? getUsernameByCognitoId(client.createdBy)
-                          : "Unknown"}{" "}
-                        {/* Fallback for undefined createdBy */}
-                      </Table.Cell>
-
-                      {/*Clients Panel Enhancement with Status Attribute */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {Ctx.userData.role !== "sales" ? (
-                          <Dropdown
-                            label={
-                              (selectedStatuses[client.institutionid] ||
-                                client.deliverable ||
-                                "Pending")
-                            }
-                            inline
+                          <select
+                            value={client.isDelivered ? "Delivered" : "Not Delivered"}
+                            onChange={(e) => handleDeliverableUpdate(client, e.target.value)}
+                            className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
                           >
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "Pending",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "Pending"
-                                );
-                              }}
-                            >
-                              Pending
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "In-progress",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "In-progress"
-                                );
-                              }}
-                            >
-                              In-progress
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "Completed",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "Completed"
-                                );
-                              }}
-                            >
-                              Completed
-                            </Dropdown.Item>
-                          </Dropdown>
-                        ) : (
-                          <span className="text-gray-500">
-                            {client.deliverable || "Pending"}
-                          </span>
-                        )}
+                            <option value="Not Delivered">Not Delivered</option>
+                            <option value="Delivered">Delivered</option>
+                          </select>
+                        </Table.Cell>
+                      )}
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{client.payment ? "Paid" : "Not Paid"}</Table.Cell>
+                      )}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        <Dropdown label={client.deliverable || "Pending"} inline>
+                          <Dropdown.Item onClick={() => handleDeliverableUpdate(client.institutionid, "Pending")}>Pending</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleDeliverableUpdate(client.institutionid, "In-progress")}>In-progress</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleDeliverableUpdate(client.institutionid, "Completed")}>Completed</Dropdown.Item>
+                        </Dropdown>
                       </Table.Cell>
                       {Ctx.userData.role !== "sales" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex gap-2 items-center">
                           <TextInput
                             id="domain"
                             value={domainLinks[client.institutionid] || ""}
-                            placeholder={
-                              client.domainLink
-                                ? client.domainLink
-                                : "Enter the Domain link"
-                            }
+                            placeholder={client.domainLink || "Enter the Domain link"}
                             required
-                            disabled={
-                              (selectedStatuses[client.institutionid] !==
-                                "Completed") && (client.deliverable !== "Completed")
-                            }
+                            disabled={client.deliverable !== "Completed"}
                             className="w-[150px]"
-                            onChange={(e) =>
-                              setDomainLinks((prev) => ({
-                                ...prev,
-                                [client.institutionid]: e.target.value,
-                              }))
-                            }
+                            onChange={(e) => setDomainLinks((prev) => ({ ...prev, [client.institutionid]: e.target.value }))}
                           />
-                          {selectedStatuses[client.institutionid] ===
-                            "Completed" && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
+                          {client.deliverable === "Completed" && (
+                            <Button onClick={() => handleDomainLinkSubmit(client.institutionid)} className="flex items-center h-[25px] w-[40px]">
+                              <FaCheck />
+                            </Button>
+                          )}
                         </Table.Cell>
                       )}
-
-                      {/* {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          <TextInput
-                            id="domain"
-                            value={client.domainLink}
-                            placeholder="Enter the Domain link"
-                            required
-                            disabled={selectedDeliverable !== "Completed"}
-                          />
-                        </Table.Cell>
-                      )} */}
-
-                      {/* {Ctx.userData.role === "sales" && ( */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 test-center bg-white">
-                        {client.domainLink ? (
-                          <RiExternalLinkLine
-                            onClick={() =>
-                              window.open(client.domainLink, "_blank")
-                            }
-                            className="text-blue-500 cursor-pointer h-[50px] w-[20px]"
-                          />
-                        ) : null}
-                      </Table.Cell>
-                      {/* )} */}
-
-                      {/*Clients Panel Enhancement with Status Attribute */}
-
-                      <Link
-                        onClick={() => handleInstitutionClick(client)}
-                        className="hidden change-page"
-                      ></Link>
-                      {/* <div
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
-                  >
-                    <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
-                      {client.recentMonthLeads}
-                    </Table.Cell>
-                  </div> */}
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                      // onClick={handleMoreClick}
-                      >
-                        <Link onClick={() => handleInstitutionClick(client)}>
-                          {isMoreVisible ? <FaChevronRight /> : ""}
-                        </Link>
-                      </Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>
               </Table>
             </div>
-
-            {clientsToDisplay.map(([key, client], index) => (
-              <div key={client.institutionid}></div>
-            ))}
-
-            {showDetails && selectedUser && (
-              <div
-                class="flex justify-center items-center mt-[-55vh] rounded-lg w-[22rem] h-[40rem] relative bg-white z-50"
-                style={{
-                  boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-                }}
-              >
-                <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
-                  <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
-                    <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Email Id:
-                    </div>
-                    <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {email}
-                    </div>
-                    <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Country:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {Country}
-                    </div>
-                    <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Status:
-                    </div>
-                    <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {status}
-                    </div>
-                    <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Joining Date:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {formatEpochToReadableDate(JoiningDate)}
-                    </div>
-                  </div>
-                  <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Revenue:
-                  </div>
-                  <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalIncome}
-                  </div>
-                  {/* <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Members:
-                  </div>
-                  <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {memberCount}
-                  </div> */}
-                  <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Attendance:
-                  </div>
-                  <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalAttendance}
-                  </div>
-                  <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Leads:
-                  </div>
-                  <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalLeads}
-                  </div>
-                  <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">
-                    {name}
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]"
-                    onClick={() => setShowDetails(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {isUpdateFormVisible && selectedUser && (
-              <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
-                <form className="relative h-[38rem] m-auto flex flex-col justify-between p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                  {/* Include form fields for updating user details */}
-                  <input
-                    required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Email Address"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Phone Number"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="number"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Country"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={Country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
-                    }}
-                  />
-                  <div className="flex items-baseline mt-[-1.5rem] mb-[-1rem]">
-                    <label>Status:</label>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="Active"
-                      className="ml-3"
-                      checked={status === "Active"}
-                      onChange={() => setStatus("Active")}
-                    />{" "}
-                    <p className="ml-1 text-[#85e758]"> Active</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="InActive"
-                      className="ml-3"
-                      checked={status === "InActive"}
-                      onChange={() => setStatus("InActive")}
-                    />{" "}
-                    <p className="ml-1 text-[#ff1010d9]">InActive</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="comingSoon"
-                      className="ml-3"
-                      checked={status === "comingSoon"}
-                      onChange={() => setStatus("comingSoon")}
-                    />{" "}
-                    <p className="ml-1 text-[#5521B5]">Coming Soon</p>
-                  </div>
-
-                  {/* Add other fields for updating user details */}
-                  <div className="flex flex-col gap-3 w-full justify-center items-center">
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUpdateClient(selectedUser);
-                      }}
-                    >
-                      Update
-                    </button>
-                    <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
-                      onClick={() => handleCancelUpdate()}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Pagination */}
             <div className="py-2 flex justify-between items-center px-4">
-              {/* Dynamic "Showing X-Y of Z" */}
               <div className="text-sm text-gray-600">
-                Showing{" "}
-                <strong>
-                  {startIndex + 1}-{startIndex + clientsToDisplay.length}
-                </strong>{" "}
-                of <strong>{filteredClients.length}</strong>
+                Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{filteredClients.length}</strong>
               </div>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                className="flex justify-end"
-                showIcons
-                theme={customTheme}
-              />
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} className="flex justify-end" showIcons />
             </div>
           </div>
         </div>
+      ) : Ctx.userData.userType === "admin" ? (
+        <Index tempInstitution={tempInstitution} setShowMemberList={setShowMemberList} selectedInstitutionType={selectedInstitutionType} />
       ) : (
-        Ctx.userData.userType === "admin" ? (
-          <Index
-            tempInstitution={tempInstitution}
-            setShowMemberList={setShowMemberList}
-            selectedInstitutionType={selectedInstitutionType}
-          />) :
-          (
-            setShowMemberList(false)
-          )
+        setShowMemberList(false)
       )}
     </>
   );
