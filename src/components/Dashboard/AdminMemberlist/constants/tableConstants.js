@@ -2,7 +2,7 @@ export const ITEMS_PER_PAGE = 7;
 
 export const COLUMN_WIDTHS = {
   userName: 180,
-  emailId: 200,
+  emailId: 180,
   phoneNumber: 150,
   role: 120,
   joiningDate: 150,

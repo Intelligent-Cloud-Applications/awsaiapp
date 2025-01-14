@@ -17,6 +17,7 @@ export const useTableManagement = (initialData = []) => {
   const [sortDirection, setSortDirection] = useState('desc');
   const [columnWidths, setColumnWidths] = useState(COLUMN_WIDTHS);
   const [resizing, setResizing] = useState(null);
+  const [activeSort, setActiveSort] = useState(null);
 
   // Column resizing
   const startResizing = useCallback((field, e) => {
@@ -209,6 +210,15 @@ export const useTableManagement = (initialData = []) => {
     setSortField(field);
   }, [sortField]);
 
+  // Handle stat click
+  const handleStatClick = useCallback((sortConfig, index) => {
+    if (sortConfig) {
+      setSortField(sortConfig.field);
+      setSortDirection(sortConfig.direction);
+      setActiveSort(index);
+    }
+  }, []);
+
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
     let result = [...data];
@@ -260,6 +270,7 @@ export const useTableManagement = (initialData = []) => {
     sortField,
     sortDirection,
     columnWidths,
+    activeSort,
     totalPages,
     currentData,
     filteredAndSortedData,
@@ -267,6 +278,7 @@ export const useTableManagement = (initialData = []) => {
     handleSort,
     handleSearch,
     handleSearchFieldChange,
+    handleStatClick,
     startResizing,
     setData
   };
