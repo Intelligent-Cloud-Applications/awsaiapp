@@ -682,7 +682,7 @@ const Panel = () => {
                         )}
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {splitandjoin(client.institutionType)}
+                        {client.institutionType}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
