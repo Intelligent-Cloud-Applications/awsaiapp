@@ -21,7 +21,7 @@ import { RiExternalLinkLine } from "react-icons/ri";
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
-  const [memberCount, setMemberCount] = useState();
+  // const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   // const [selectedRow, setSelectedRow] = useState([]);
@@ -246,7 +246,7 @@ const Panel = () => {
     setTotalLeads(0);
     setTotalAttendance(0);
     setTotalIncome(0);
-    setMemberCount(0);
+    // setMemberCount(0);
     isMonthlyReport.toUpperCase();
     Revenue.toUpperCase();
     userCheck === 0 && setUserCheck(1);
