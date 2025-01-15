@@ -29,14 +29,13 @@ function Company({
     setCompanyName(inputValue);  // Set the state with the input value
 
     const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
-    const id1 = noSpaces.substring(0, 5);  // Take the first 5 characters without spaces
-    const id2 = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
-    const newid = id1 + id2;  // Combine the two parts to form the new ID
+    const id = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
+    const newid = noSpaces + id;  // Combine the two parts to form the new ID
 
     setinstitutionId(newid);  // Update the institution ID state
 
     console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
-};
+  };
 
   const handleCompanyDescriptionInputChange = (e) => {
     setCompanyDescription(e.target.value);
@@ -78,8 +77,8 @@ function Company({
   };
 
   return (
-    <div className=" w-full h-[auto]" style={{ overflowY: 'auto' }}>
-      <h1 className="font-medium text-7xl comphead text-center">Tell Us About Your Company</h1>
+    <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
+      <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
@@ -107,103 +106,98 @@ function Company({
           }}
         />
       </div> */}
+      <div className="flex justify-center">
+        <div className="w-[60%] p-8">
+          <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
+            <div className="mb-2 block">
+              <Label htmlFor="companyName" color="gray" value="Company Name" className='font-medium text-xl'/>
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <TextInput
+              id="companyName"
+              placeholder="Enter company Name"
+              required
+              value={companyName}
+              onChange={handleCompanyInputChange}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
+          <div className="relative mt-2 px-[1px] mr-10">
+            <div className="mb-2 block">
+              <Label
+                htmlFor="companyDescription"
+                color="gray"
+                value="Company Description"
+                className='font-medium text-xl'
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <TextInput
+              id="companyDescription"
+              placeholder="Enter company Description"
+              required
+              value={companyDescription}
+              onChange={handleCompanyDescriptionInputChange}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
 
-      <div className="relative mt-2 px-[1px] mr-10">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="companyName"
-            color="gray"
-            value="Company Name"
-          />
-          <span className="text-red-500 ml-1">*</span>
-        </div>
-        <TextInput
-          id="companyName"
-          placeholder="Enter company Name"
-          required
-          value={companyName}
-          sizing="sm"
-          onChange={handleCompanyInputChange}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
-      </div>
-      <div className="relative mt-2 px-[1px] mr-10">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="companyDescription"
-            color="gray"
-            value="Company Description"
-          />
-          <span className="text-red-500 ml-1">*</span>
-        </div>
-        <TextInput
-          id="companyDescription"
-          placeholder="Enter company Description"
-          required
-          value={companyDescription}
-          sizing="sm"
-          onChange={handleCompanyDescriptionInputChange}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
-      </div>
+          <div className="mt-4">
+            <h4 className="font-medium text-xl">Choose Your Theme Color</h4>
+            <div className="flex gap-8 mt-2">
+              <input
+                type="color"
+                value={PrimaryColor}
+                onChange={handleColorChange1}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
 
-      <div className="mt-2">
-        <h4 className="text-[#939393]">Choose Your Theme Color</h4>
-        <div className="flex gap-8">
-          <input
-            type="color"
-            value={PrimaryColor}
-            onChange={handleColorChange1}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
+              <input
+                type="color"
+                readOnly
+                value={SecondaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+              <input
+                type="color"
+                readOnly
+                value={LightPrimaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+              <input
+                type="color"
+                readOnly
+                value={LightestPrimaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+            </div>
+          </div>
 
-          <input
-            type="color"
-            readOnly
-            value={SecondaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
-          <input
-            type="color"
-            readOnly
-            value={LightPrimaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
-          <input
-            type="color"
-            readOnly
-            value={LightestPrimaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
+          <div className="max-w-md relative mt-4">
+            <div className="mb-2 block">
+              <Label htmlFor="fileInput" value="Logo Upload File" className='font-medium text-xl'/>
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <FileInput
+              id="fileInput"
+              onChange={handleFileChange}
+              helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+              }}
+            />
+          </div>
         </div>
-      </div>
-      <div className="max-w-md relative">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="fileInput"
-            value="Logo Upload File"
-          />
-          <span className="text-red-500 ml-1">*</span>
-        </div>
-        <FileInput
-          id="fileInput"
-          onChange={handleFileChange}
-          helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
-
       </div>
     </div>
   );

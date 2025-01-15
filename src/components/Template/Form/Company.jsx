@@ -37,9 +37,8 @@ function Company({
     const inputValue = e.target.value; // Get the value from the event
     setCompanyName(inputValue);  // Set the state with the input value    
     const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
-    const id1 = noSpaces.substring(0, 5);  // Take the first 5 characters without spaces
-    const id2 = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
-    const newid = id1 + id2;  // Combine the two parts to form the new ID
+    const id = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
+    const newid = noSpaces + id;  // Combine the two parts to form the new ID
 
     setinstitutionId(newid);  // Update the institution ID state
     console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
@@ -54,7 +53,7 @@ function Company({
     setLightestPrimaryColor(generatedTheme.background);
   };
 
-  
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -93,12 +92,15 @@ function Company({
   // };
 
   return (
-    <div className="mx-auto max-w-[800px] company max-h-screen overflow-y-auto">
-      <h1 className="font-medium text-7xl comphead">Tell Us About Your Company</h1>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+    <div className="mx-auto company max-h-screen overflow-y-auto">
+      <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
+      <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
       </h5>
-{/* 
+      {/* <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
+        Company profile, design preferences, and essential details for creating a tailored website experience.
+      </h5> */}
+      {/* 
       <div className="relative mt-6 px-[1px] mr-10">
         <div className="mb-2 block">
           <Label
@@ -125,58 +127,69 @@ function Company({
 
       </div> */}
 
-      <div className="relative mt-2 px-[1px] mr-10">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="companyName"
-            color="gray"
-            value="Company Name"
-          />
-          <span className="text-red-500 ml-1">*</span>
-        </div>
-        <TextInput
-          id="companyName"
-          placeholder="Enter company Name"
-          required
-          value={companyName}
-          sizing="sm"
-          onChange={handleCompanyInputChange}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
-      </div>
+      <div className="flex justify-center">
+        <div className="w-[50%] p-8 ml-[10%]">
+          <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
+            <div className="mb-2 block">
+              <Label
+                htmlFor="companyName"
+                color="gray"
+                value="Company Name"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <TextInput
+              id="companyName"
+              placeholder="Enter company Name"
+              required
+              value={companyName}
+              sizing="sm"
+              onChange={handleCompanyInputChange}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+                width: "30rem",
+              }}
+            />
+          </div>
 
-      <div className="mt-2">
-        <h4 >Choose Your Theme Color</h4>
-        <div className="flex gap-8">
-          <input
-            type="color"
-            value={PrimaryColor}
-            onChange={handleColorChange1}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
+          <div className="mt-2">
+            <div className="mb-2 block">
+              <Label
+                color="gray"
+                value="Choose Your Theme Color"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <div className="flex gap-8">
+              <input
+                type="color"
+                value={PrimaryColor}
+                onChange={handleColorChange1}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
 
-          <input
-            type="color"
-            value={SecondaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
-          <input
-            type="color"
-            value={LightPrimaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
-          <input
-            type="color"
-            value={LightestPrimaryColor}
-            className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-          />
-        </div>
-      </div>
-      {/* <div className="mt-4">
+              <input
+                type="color"
+                value={SecondaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+              <input
+                type="color"
+                value={LightPrimaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+              <input
+                type="color"
+                value={LightestPrimaryColor}
+                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+              />
+            </div>
+          </div>
+          {/* <div className="mt-4">
         <label className="block text-[#939393] mb-2">Select Institution Type</label>
         <select
           value={institutionType}
@@ -188,41 +201,50 @@ function Company({
         </select>
       </div> */}
 
-      {/* Dropdown for Institution Format */}
-      <div className="mt-4">
-        <label className="block mb-2">Select Institution Format</label>
-        <select
-          value={institutionFormat}
-          onChange={handleInstitutionFormatChange}
-          className="w-[28rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
-        >
-          <option value="Online_Classes">Online Classes</option>
-          <option value="Inperson_Classes">Inperson Classes</option>
-          <option value="Hybrid_Classes">Hybrid Classes</option>
-        </select>
-      </div>
+          {/* Dropdown for Institution Format */}
+          <div className="mt-4">
+            <div className="mb-2 block">
+              <Label
+                color="gray"
+                value="Select Institution Format"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <select
+              value={institutionFormat}
+              onChange={handleInstitutionFormatChange}
+              className="w-[30rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+            >
+              <option value="Online_Classes">Online Classes</option>
+              <option value="Inperson_Classes">Inperson Classes</option>
+              <option value="Hybrid_Classes">Hybrid Classes</option>
+            </select>
+          </div>
 
-      <div className="max-w-md relative">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="fileInput"
-            value="Logo Upload File"
-          />
-          <span className="text-red-500 ml-1">*</span>
-        </div>
-        <FileInput
-          id="fileInput"
-          onChange={handleFileChange}
-          helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
-        />
+          <div className="max-w-md relative mt-4">
+            <div className="mb-2 block">
+              <Label
+                htmlFor="fileInput"
+                value="Logo Upload File"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <FileInput
+              id="fileInput"
+              onChange={handleFileChange}
+              helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+                width: "30rem"
+              }}
+            />
 
-      </div>
-      {/* <div className="relative flex items-center mt-4 ">
+          </div>
+          {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
         <input
@@ -269,6 +291,8 @@ function Company({
         ( *Upload a .csv/.xsl/.xsls file here it should have the Columns institution, phoneNumber, emailId, userName, country, joiningDate, status:Active or Inactive)
       </p> */}
 
+        </div>
+      </div>
     </div>
   );
 }

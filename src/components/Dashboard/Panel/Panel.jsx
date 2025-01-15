@@ -12,8 +12,15 @@ import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
-import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
+import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
+import { FaCheck } from "react-icons/fa";
+import { RiExternalLinkLine } from "react-icons/ri";
+import { BsQrCodeScan } from "react-icons/bs";
+// import { FiDownload } from "react-icons/fi";
+// import QR from "../../../img/Qr.jpeg";
+import QR from "../../../Common/Qr";
+
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
@@ -35,6 +42,7 @@ const Panel = () => {
   const [TotalLeads, setTotalLeads] = useState("");
   // eslint-disable-next-line
   const [Revenue, setRevenue] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
   // eslint-disable-next-line
   const [JoiningDate, setJoiningDate] = useState("");
@@ -48,6 +56,82 @@ const Panel = () => {
   const Ctx = useContext(Context);
   const type = ["Dance Studio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
+
+  // Clients pannel enhancement
+  const [domainLinks, setDomainLinks] = useState({});
+
+  const handleDeliverableUpdate = async (institutionid, deliverable) => {
+    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+
+    if (deliverable === "Completed" && !domainLink) {
+      // toast.error("Domain link cannot be empty for Completed deliverables.");
+      return;
+    }
+
+    try {
+      // Construct the request body
+      const body = {
+        institutionid,
+        deliverable,
+        ...(deliverable === "Completed" && { domainLink }), // Include domainLink only if deliverable is "Completed"
+      };
+
+      // Make the API call
+      await API.put("clients", `/admin/update-deliverable`, { body });
+
+      if (deliverable === "Completed") {
+        setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+        toast.success("Domain link and deliverable updated successfully!");
+      } else {
+        toast.success("Deliverable updated successfully!");
+      }
+
+      // Fetch updated clients data
+      const response = await API.get("clients", "/admin/list-institution");
+      clients.setClients(response);
+    } catch (error) {
+      console.error("Error updating deliverable:", error);
+      toast.error("An error occurred while updating the deliverable.");
+    }
+  };
+  const handleDomainLinkSubmit = async (institutionid) => {
+    const domainLink = domainLinks[institutionid];
+
+    if (!domainLink) {
+      toast.error("Domain link cannot be empty for Completed deliverables.");
+      return;
+    }
+
+    try {
+      // Make the API call to update the domain link
+      await API.put("clients", `/admin/update-deliverable`, {
+        body: {
+          institutionid,
+          deliverable: "Completed",
+          domainLink,
+        },
+      });
+
+      // Update the state
+      setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+      const response = await API.get("clients", "/admin/list-institution");
+      clients.setClients(response);
+      toast.success("Domain link submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting domain link:", error);
+      toast.error("An error occurred while submitting the domain link.");
+    }
+  };
+
+  const [openModal, setOpenModal] = useState(false);
+  const [modalPlacement] = useState("center");
+
+  // const links = [
+  //   {
+  //     url: window.location.href.split("/")[0] + "/put-attendance",
+  //     label: "Attendance",
+  //   },
+  // ];
 
   const customTheme = {
     pages: {
@@ -74,23 +158,23 @@ const Panel = () => {
     if (!searchQuery) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            .filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        return institution.includes(query);
-      })
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          return institution.includes(query);
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -213,13 +297,10 @@ const Panel = () => {
 
   const fetchMemberCounts = useCallback(async () => {
     try {
-      const response = await API.get(
-        "clients",
-        "/user/list-all-members"
-      );
+      const response = await API.get("clients", "/user/list-all-members");
 
       const counts = response.reduce((acc, user) => {
-        if (user.userType === 'member') {
+        if (user.userType === "member") {
           acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
         }
         return acc;
@@ -234,7 +315,7 @@ const Panel = () => {
       }, {});
       setMemberCounts(defaultCounts);
     }
-  }, [clientsToDisplay]);  // Dependency for fetchMemberCounts
+  }, [clientsToDisplay]); // Dependency for fetchMemberCounts
 
   const [shouldFetch, setShouldFetch] = useState(true);
 
@@ -244,7 +325,6 @@ const Panel = () => {
       setShouldFetch(false);
     }
   }, [shouldFetch, fetchMemberCounts]);
-
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -346,7 +426,11 @@ const Panel = () => {
       const isDelivered = status === "Delivered";
       try {
         let response;
-        const body = { institutionId: clientInstitution.institutionid, index: clientInstitution.index, isDelivered };
+        const body = {
+          institutionId: clientInstitution.institutionid,
+          index: clientInstitution.index,
+          isDelivered,
+        };
         response = await API.put("clients", "/user/updateDelivary", {
           body,
           headers: { "Content-Type": "application/json" },
@@ -378,7 +462,7 @@ const Panel = () => {
       case "Dentist":
         return "/template2";
       case "Cafe":
-        return "/template3"
+        return "/template3";
       default:
         return "";
     }
@@ -487,27 +571,41 @@ const Panel = () => {
               <Table className="w-full text-sm text-left text-gray-500">
                 <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                   {/* <Table.HeadCell></Table.HeadCell> */}
+
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution
+                    Institution Id
                   </Table.HeadCell>
+
+                  {Ctx.userData.userType === "member" &&
+                    Ctx.userData.role === "operation" && (
+                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                        Institution Name
+                      </Table.HeadCell>
+                    )}
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Type
                   </Table.HeadCell>
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Status
                   </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Is Delivered
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Payment
-                  </Table.HeadCell>
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Is Delivered
+                    </Table.HeadCell>
+                  )}
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Payment
+                    </Table.HeadCell>
+                  )}
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Members
-                  </Table.HeadCell>
+                  {Ctx.userData.role !== "operation" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Members
+                    </Table.HeadCell>
+                  )}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -516,11 +614,41 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${
+                      showHiddenContent ? "" : "max1008:hidden"
+                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
+
+                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
+
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Deliverable
+                  </Table.HeadCell>
+
+                  {/* {Ctx.userData.role !== "sales" && ( */}
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Domain Link
+                  </Table.HeadCell>
+                  {/* )}  */}
+
+                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    QR
+                  </Table.HeadCell> */}
+                  {/* {Ctx.userData.role === "sales" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Domain Link
+                    </Table.HeadCell>
+                  )} */}
+
+                  {/* {Ctx.userData.role !== "sales" && (
+                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Submit
+                    </Table.HeadCell>
+                  )} */}
+
+                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
                 </Table.Head>
 
                 <Table.Body className="bg-white">
@@ -533,15 +661,28 @@ const Panel = () => {
                         className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
                         onClick={(e) => handleRowClick(client.institutionid, e)}
                       >
-                        <Link onClick={() => handleInstitutionClick(client)}>
+                        <Link
+                          onClick={() => {
+                            if (Ctx.userData.role !== "operation") {
+                              handleInstitutionClick(client);
+                            }
+                          }}
+                        >
                           <div className="email-hover uppercase font-semibold text-[#11192B]">
                             {client.institutionid}
                           </div>
                         </Link>
                       </Table.Cell>
 
+                      {Ctx.userData.userType === "member" &&
+                        Ctx.userData.role === "operation" && (
+                          <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
+                            {client.companyName}
+                          </Table.Cell>
+                        )}
+
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {splitandjoin(client.institutionType)}
+                        {client.institutionType}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -562,35 +703,52 @@ const Panel = () => {
                           );
                         })()}
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.payment ? (
-                          <select
-                            value={client.isDelivered ? "Delivered" : "Not Delivered"}
-                            onChange={(e) => handleDropdownChange(client, e.target.value)}
-                            className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
-                          >
-                            <option value="Not Delivered">Not Delivered</option>
-                            <option value="Delivered">Delivered</option>
-                          </select>
-                        ) : (
-                          <select
-                            value="Not Delivered"
-                            disabled
-                            className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
-                          >
-                            <option value="Not Delivered">Not Delivered</option>
-                          </select>
-                        )}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.payment ? "Paid" : "Not Paid"}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {memberCounts[client.institutionid] || 0}
-                      </Table.Cell>
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {client.payment ? (
+                            <select
+                              value={
+                                client.isDelivered
+                                  ? "Delivered"
+                                  : "Not Delivered"
+                              }
+                              onChange={(e) =>
+                                handleDropdownChange(client, e.target.value)
+                              }
+                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                            >
+                              <option value="Not Delivered">
+                                Not Delivered
+                              </option>
+                              <option value="Delivered">Delivered</option>
+                            </select>
+                          ) : (
+                            <select
+                              value="Not Delivered"
+                              disabled
+                              className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
+                            >
+                              <option value="Not Delivered">
+                                Not Delivered
+                              </option>
+                            </select>
+                          )}
+                        </Table.Cell>
+                      )}
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {client.payment ? "Paid" : "Not Paid"}
+                        </Table.Cell>
+                      )}
+                      {Ctx.userData.role !== "operation" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          {memberCounts[client.institutionid] || 0}
+                        </Table.Cell>
+                      )}
                       <Table.Cell
-                        className={`${showHiddenContent ? "" : "max1008:hidden"
-                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${
+                          showHiddenContent ? "" : "max1008:hidden"
+                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -598,6 +756,223 @@ const Panel = () => {
                           : "Unknown"}{" "}
                         {/* Fallback for undefined createdBy */}
                       </Table.Cell>
+
+                      {/*Clients Panel Enhancement with Status Attribute */}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {Ctx.userData.role !== "sales" ? (
+                          <Dropdown
+                            label={
+                              selectedStatuses[client.institutionid] ||
+                              client.deliverable ||
+                              "Pending"
+                            }
+                            inline
+                          >
+                            <Dropdown.Item
+                              className="hover:bg-gray-200 focus:bg-gray-200"
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "Pending",
+                                }));
+                                handleDeliverableUpdate(
+                                  client.institutionid,
+                                  "Pending"
+                                );
+                              }}
+                            >
+                              Pending
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              className="hover:bg-gray-200 focus:bg-gray-200"
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "In-progress",
+                                }));
+                                handleDeliverableUpdate(
+                                  client.institutionid,
+                                  "In-progress"
+                                );
+                              }}
+                            >
+                              In-progress
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              className="hover:bg-gray-200 focus:bg-gray-200"
+                              onClick={() => {
+                                setSelectedStatuses((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: "Completed",
+                                }));
+                                handleDeliverableUpdate(
+                                  client.institutionid,
+                                  "Completed"
+                                );
+                              }}
+                            >
+                              Completed
+                            </Dropdown.Item>
+                          </Dropdown>
+                        ) : (
+                          <span className="text-gray-500">
+                            {client.deliverable || "Pending"}
+                          </span>
+                        )}
+                      </Table.Cell>
+                      {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex gap-2 items-center">
+                          <TextInput
+                            id="domain"
+                            value={domainLinks[client.institutionid] || ""}
+                            placeholder={
+                              client.domainLink
+                                ? client.domainLink
+                                : "Enter the Domain link"
+                            }
+                            required
+                            disabled={
+                              selectedStatuses[client.institutionid] !==
+                                "Completed" &&
+                              client.deliverable !== "Completed"
+                            }
+                            className="w-[150px]"
+                            onChange={(e) =>
+                              setDomainLinks((prev) => ({
+                                ...prev,
+                                [client.institutionid]: e.target.value,
+                              }))
+                            }
+                          />
+                          {selectedStatuses[client.institutionid] ===
+                            "Completed" && (
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
+                        </Table.Cell>
+                      )}
+
+                      {/* {Ctx.userData.role !== "sales" && (
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                          <TextInput
+                            id="domain"
+                            value={client.domainLink}
+                            placeholder="Enter the Domain link"
+                            required
+                            disabled={selectedDeliverable !== "Completed"}
+                          />
+                        </Table.Cell>
+                      )} */}
+
+                      {/* {Ctx.userData.role === "sales" && ( */}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {client.domainLink ? (
+                          <RiExternalLinkLine
+                            onClick={() => {
+                              // Open the link in a new tab
+                              window.open(client.domainLink, "_blank");
+
+                              // Copy the link to the clipboard
+                              navigator.clipboard
+                                .writeText(client.domainLink)
+                                .then(() => {
+                                  toast.success(
+                                    "Domain link copied to clipboard!"
+                                  );
+                                })
+                                .catch((err) => {
+                                  toast.error("Failed to copy domain link.");
+                                  console.error("Clipboard copy failed:", err);
+                                });
+                            }}
+                            className="text-blue-500 cursor-pointer h-5 w-5"
+                          />
+                        ) : null}
+                      </Table.Cell>
+
+                      {/* )} */}
+
+                      {/*Clients Panel Enhancement with Status Attribute */}
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {client.domainLink ? (
+                          <>
+                            <Button
+                              onClick={() => setOpenModal(client.institutionid)}
+                            >
+                              <BsQrCodeScan className="cursor-pointer h-5 w-5" />
+                            </Button>
+                            <Modal
+                              show={openModal === client.institutionid}
+                              position={modalPlacement}
+                              onClose={() => setOpenModal(false)}
+                            >
+                              <Modal.Header>Attendance QR</Modal.Header>
+                              <Modal.Body>
+                                <div className="flex flex-col items-center space-y-4">
+                                  <figure className="w-fit flex flex-col items-center">
+                                    <QR
+                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                      size={300}
+                                    />
+                                    {/* {console.log("domain link" + client.domainLink)} */}
+                                  </figure>
+                                  <h1 className="text-center font-semibold">
+                                    Institution ID: {client.companyName}
+                                  </h1>
+                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                    This is the attendance QR for the{" "}
+                                    {client.companyName} institution. Please tap
+                                    on the QR code to download it.
+                                  </p>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <a
+                                  href={client.domainLink + "/put-attendance"}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={`QR_${client.institutionid}.png`}
+                                  onClick={(e) => {
+                                    const linkToCopy =
+                                      client.domainLink + "/put-attendance";
+
+                                    // Copy the link to the clipboard
+                                    navigator.clipboard
+                                      .writeText(linkToCopy)
+                                      .then(() => {
+                                        toast.success(
+                                          "Link copied to clipboard!"
+                                        );
+                                      })
+                                      .catch((err) => {
+                                        toast.error("Failed to copy link.");
+                                        console.error(
+                                          "Clipboard copy failed:",
+                                          err
+                                        );
+                                      });
+                                  }}
+                                >
+                                  <Button>
+                                    <RiExternalLinkLine />
+                                  </Button>
+                                </a>
+                              </Modal.Footer>
+                            </Modal>
+                          </>
+                        ) : null}
+                      </Table.Cell>
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
+
                       <Link
                         onClick={() => handleInstitutionClick(client)}
                         className="hidden change-page"
@@ -612,7 +987,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                      // onClick={handleMoreClick}
+                        // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
@@ -625,8 +1000,7 @@ const Panel = () => {
             </div>
 
             {clientsToDisplay.map(([key, client], index) => (
-              <div key={client.institutionid}>
-              </div>
+              <div key={client.institutionid}></div>
             ))}
 
             {showDetails && selectedUser && (

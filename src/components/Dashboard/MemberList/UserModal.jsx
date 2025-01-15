@@ -34,6 +34,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
   };
 
   if (!member) return null;
+  console.log("member in the modal", member.institution);
 
   return (
     <Modal show={isOpen} onClose={onClose} size="3xl" className="p-6">
@@ -66,9 +67,9 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
               <input
                 type="text"
                 name="emailId"
-                value={formData.emailId || ""}
-                onChange={handleChange}
+                value={formData.emailId || "None"}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
+                readOnly
               />
             </p>
             <p className="text-lg leading-relaxed text-gray-700 mt-2">
@@ -76,9 +77,9 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
               <input
                 type="text"
                 name="phoneNumber"
-                value={formData.phoneNumber || ""}
-                onChange={handleChange}
+                value={formData.phoneNumber || "None"}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
+                readOnly
               />
             </p>
             <p className="text-lg leading-relaxed text-gray-700 mt-2">
@@ -93,13 +94,16 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
             </p>
             <p className="text-lg leading-relaxed text-gray-700 mt-2">
               <strong className="font-semibold">Status:</strong>
-              <input
-                type="text"
+              <select
                 name="status"
                 value={formData.status || ""}
                 onChange={handleChange}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
-              />
+              >
+                <option value="Inactive">Inactive</option>
+                <option value="Active">Active</option>
+                <option value="Trial">Trial</option>
+              </select>
             </p>
           </div>
 
@@ -112,7 +116,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
               <input
                 type="text"
                 name="zpoints"
-                value={formData.zpoints || formData.zPoints ||""}
+                value={formData.zpoints || formData.zPoints || "0"}
                 onChange={handleChange}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
               />
@@ -122,7 +126,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
               <input
                 type="text"
                 name="balance"
-                value={formData.balance || ""}
+                value={formData.balance || "0"}
                 onChange={handleChange}
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
               />
@@ -143,7 +147,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
                 type="text"
                 name="joiningDate"
                 value={formData.joiningDate ? new Date(formData.joiningDate).toLocaleDateString() : ""}
-                onChange={handleChange}
+                readOnly
                 className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
               />
             </p>
@@ -151,7 +155,7 @@ const UserModal = ({ member, isOpen, onClose, onSave, handleDeleteMember }) => {
         </div>
         <div className="flex justify-end mt-4 space-x-2">
           <Button
-            onClick={() => handleDeleteMember(member.cognitoId)}
+            onClick={() => handleDeleteMember(member)}
             className="bg-red-600 text-white"
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#c53030')}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f56565')}

@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import Context from "../../../context/Context";
-import { Table, Pagination, Button } from 'flowbite-react';
+import { Table, Pagination, Button, Dropdown } from 'flowbite-react';
 import { API } from 'aws-amplify';
 import { FiSearch } from 'react-icons/fi';
+import Swal from 'sweetalert2';
 
 const AdminMemberlist = () => {
-  const { util } = useContext(Context);
+  const { util, userData} = useContext(Context);
   const utilRef = useRef(util);  // Reference to util to avoid infinite loading
 
   const [members, setMembers] = useState([]);
@@ -14,6 +15,7 @@ const AdminMemberlist = () => {
   const [itemsPerPage] = useState(7); // Items per page
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('All'); // New state for status filter
+  const [updatingRole, setUpdatingRole] = useState(null);
 
   useEffect(() => {
     utilRef.current = util; // Keep util updated in the ref
@@ -22,25 +24,23 @@ const AdminMemberlist = () => {
   // Fetching data function
   const fetchData = useCallback(async (institution = 'awsaiapp') => {
     try {
-      utilRef.current.setLoader(true);  // Use the ref instead of util
+      utilRef.current.setLoader(true);
       const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
+      
+      // Filter and sort the data
       const filteredData = memberResponse
-        .filter(
-          (member) => member.userType === 'member' || member.userType === 'admin'
-        ).sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate));  // Sort by joiningDate
-
+        .filter(member => member.userType === 'member' || member.userType === 'admin')
+        .sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate));
 
       const institutionResponse = await API.get('clients', '/admin/list-institution');
-      const institutionData = institutionResponse;
-
-      const statusCount = institutionData.reduce((acc, item) => {
+      
+      // Process status counts
+      const statusCount = institutionResponse.reduce((acc, item) => {
         const { createdBy, isDelivered, isFormFilled } = item;
-
         if (createdBy) {
           if (!acc[createdBy]) {
             acc[createdBy] = { delivered: 0, inprogress: 0 };
           }
-
           if (isDelivered) {
             acc[createdBy].delivered += 1;
           } else if (isFormFilled && !isDelivered) {
@@ -50,18 +50,32 @@ const AdminMemberlist = () => {
         return acc;
       }, {});
 
-      const updatedMembers = filteredData.map((member) => {
+      // Update member data with status counts
+      const updatedMembers = filteredData.map(member => {
         const { delivered = 0, inprogress = 0 } = statusCount[member.cognitoId] || {};
         return { ...member, delivered, inprogress };
       });
 
+      // Update both states
       setMembers(updatedMembers);
       setMemberData(updatedMembers);
+      
+      // Apply current filter
+      if (filterStatus !== 'All') {
+        const filtered = updatedMembers.filter(member => 
+          filterStatus === 'Active' 
+            ? member.status === 'Active'
+            : member.status !== 'Active'
+        );
+        setMemberData(filtered);
+      }
+
     } catch (error) {
       console.error('Error fetching the members or institution data:', error);
+    } finally {
+      utilRef.current.setLoader(false);
     }
-    utilRef.current.setLoader(false);  // Use the ref
-  }, []);
+  }, [filterStatus]); // Add filterStatus as dependency
 
   useEffect(() => {
     fetchData();  // Call fetchData on component mount
@@ -138,6 +152,104 @@ const AdminMemberlist = () => {
         active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
         disabled: "cursor-not-allowed opacity-50"
       }
+    }
+  };
+
+  // Define available roles based on user's role
+  const getRoleOptions = (currentRole) => {
+    // If current user is owner, they can assign any role
+    if (userData.role === 'owner') {
+      return ['sales', 'operation', 'owner'];
+    }
+    // If current user is operation, they can only assign sales role
+    if (userData.role === 'operation') {
+      return ['sales'];
+    }
+    // Return empty array if user doesn't have permission
+    return [];
+  };
+
+  // Handle role change with confirmation
+  const handleRoleChange = async (cognitoId, newRole) => {
+    try {
+      const result = await Swal.fire({
+        title: 'Change Role',
+        text: `Are you sure you want to change this user's role to ${newRole}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#30afbc',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, change it!'
+      });
+
+      if (result.isConfirmed) {
+        setUpdatingRole(cognitoId);
+        const apiName = "clients";
+        const path = `/user/update-member/awsaiapp`;
+
+        // Find the current member to preserve their data
+        const currentMember = memberData.find(m => m.cognitoId === cognitoId);
+        
+        const myInit = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: {
+            institution: 'awsaiapp',
+            cognitoId: cognitoId,
+            // Preserve existing data
+            userName: currentMember.userName,
+            emailId: currentMember.emailId,
+            phoneNumber: currentMember.phoneNumber,
+            country: currentMember.country || '',
+            balance: currentMember.balance || '',
+            status: currentMember.status,
+            // Update only the role
+            role: newRole
+          },
+        };
+
+        try {
+          const response = await API.put(apiName, path, myInit);
+          
+          if (response.Attributes) {
+            // Update local state with the returned data
+            const updatedMembers = members.map(member => 
+              member.cognitoId === cognitoId 
+                ? { ...member, role: newRole }
+                : member
+            );
+            setMembers(updatedMembers);
+            setMemberData(updatedMembers);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Updated!',
+              text: 'User role has been updated.',
+              didClose: () => {
+                fetchData(); // Refresh data after alert closes
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error updating role:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.response?.data?.error || 'Failed to update user role.',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error in role update process:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An unexpected error occurred.',
+      });
+    } finally {
+      setUpdatingRole(null);
     }
   };
 
@@ -223,7 +335,38 @@ const AdminMemberlist = () => {
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.emailId}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.phoneNumber}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.role}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                  {getRoleOptions(member.role).length > 0 ? (
+                    <Dropdown
+                      label={
+                        <span className="px-2 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md border border-gray-300">
+                          {member.role || 'Set Role'} 
+                          {updatingRole === member.cognitoId && '...'}
+                        </span>
+                      }
+                      dismissOnClick={true}
+                      disabled={updatingRole === member.cognitoId}
+                      inline={true}
+                    >
+                      {getRoleOptions(member.role).map((role) => (
+                        <Dropdown.Item 
+                          key={role}
+                          onClick={() => handleRoleChange(member.cognitoId, role)}
+                          className={`${member.role === role ? 'bg-gray-100' : ''} 
+                            ${role === 'owner' ? 'text-blue-600' : 
+                              role === 'operation' ? 'text-green-600' : 
+                              role === 'sales' ? 'text-orange-600' : 'text-gray-600'}`}
+                        >
+                          {role.charAt(0).toUpperCase() + role.slice(1)}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown>
+                  ) : (
+                    <span className="px-2 py-1 text-sm text-gray-500">
+                      {member.role || 'No Role'}
+                    </span>
+                  )}
+                </Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.joiningDate ? formatEpochToReadableDate(member.joiningDate) : ''}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"><span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} `}
@@ -249,6 +392,7 @@ const AdminMemberlist = () => {
           />
         </div>
       </div>
+
     </div>
   );
 };
