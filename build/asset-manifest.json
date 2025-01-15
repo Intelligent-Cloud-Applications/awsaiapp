@@ -1,11 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.8761b6f7.css",
-    "main.js": "/static/js/main.2568e883.js",
-    "static/media/backgroundvideo.mp4": "/static/media/backgroundvideo.18f8ded3f4efab06b7d4.mp4",
-    "static/media/Bapuji_Mallik.png": "/static/media/Bapuji_Mallik.8540906ed2697236cc4a.png",
-    "static/media/Prajakta.jpg": "/static/media/Prajakta.5e2aeba9e28c304e93d0.jpg",
-    "static/media/Monalisha_Sahoo.png": "/static/media/Monalisha_Sahoo.e2d7b8e527bab2fcbb9e.png",
+    "main.css": "/static/css/main.a8910ea0.css",
+    "main.js": "/static/js/main.0b3fc7f5.js",
     "static/media/about2.png": "/static/media/about2.9c4aa73f7aa2a83b831b.png",
     "static/media/about1.png": "/static/media/about1.06ac725f020ea20be7ba.png",
     "static/media/full.png": "/static/media/full.cf8b62eefbdeeb143c09.png",
@@ -39,7 +35,6 @@
     "static/media/Bikash.png": "/static/media/Bikash.a6604a8312964477a281.png",
     "static/media/Subham.png": "/static/media/Subham.6055c314364af95913d6.png",
     "static/media/Anchal.png": "/static/media/Anchal.efd6439c340ba1bd4ac8.png",
-    "static/media/FAQ.jpg": "/static/media/FAQ.31d79cd49185caa74687.jpg",
     "static/media/Harsh.png": "/static/media/Harsh.dbef2c3d48a5e80484ee.png",
     "static/media/Bhabesh.png": "/static/media/Bhabesh.fb9ab49247c94de49104.png",
     "static/media/Ananta.png": "/static/media/Ananta.e43a132729b4af142e52.png",
@@ -58,9 +53,9 @@
     "static/media/Auroshikha.png": "/static/media/Auroshikha.9ee27155ccd36c514826.png",
     "static/media/Balaraju.png": "/static/media/Balaraju.318556975343665539aa.png",
     "static/media/stages1.png": "/static/media/stages1.7bb92a45b7fc756b9eea.png",
-    "static/media/logo2.png": "/static/media/logo2.8ddb0ed354cbc541a58e.png",
     "static/media/vupload.png": "/static/media/vupload.ea6570ce3576aa0a6edd.png",
     "static/media/about.png": "/static/media/about.caee3cf631a6373e8242.png",
+    "static/media/logo2.png": "/static/media/logo2.8ddb0ed354cbc541a58e.png",
     "index.html": "/index.html",
     "static/media/Thunder.svg": "/static/media/Thunder.96173a2c9ddaecff9263e03c8de3c576.svg",
     "static/media/Filter.svg": "/static/media/Filter.3d28bd63d1dbcf21bfe9cb90cbfc1775.svg",
@@ -74,12 +69,11 @@
     "static/media/Line 16.svg": "/static/media/Line 16.c6d9712d2fa24d45a2900c14eaa062ec.svg",
     "static/media/Line 17.svg": "/static/media/Line 17.6faf6830a90ffd332b54714cc45e9f06.svg",
     "static/media/plus.svg": "/static/media/plus.7905852c3d6ed226d1e95ae8d546d09e.svg",
-    "static/media/Menu.svg": "/static/media/Menu.82a73dd21f8142f248a15bfdd93e4d48.svg",
-    "main.8761b6f7.css.map": "/static/css/main.8761b6f7.css.map",
-    "main.2568e883.js.map": "/static/js/main.2568e883.js.map"
+    "main.a8910ea0.css.map": "/static/css/main.a8910ea0.css.map",
+    "main.0b3fc7f5.js.map": "/static/js/main.0b3fc7f5.js.map"
   },
   "entrypoints": [
-    "static/css/main.8761b6f7.css",
-    "static/js/main.2568e883.js"
+    "static/css/main.a8910ea0.css",
+    "static/js/main.0b3fc7f5.js"
   ]
 }

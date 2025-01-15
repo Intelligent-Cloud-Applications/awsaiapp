@@ -24,7 +24,7 @@ import QR from "../../../Common/Qr";
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
-  const [memberCount, setMemberCount] = useState();
+  // const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   // const [selectedRow, setSelectedRow] = useState([]);
@@ -53,9 +53,11 @@ const Panel = () => {
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState("");
   const Ctx = useContext(Context);
   const type = ["Dance Studio", "Dentist", "Cafe"];
-  const [memberCounts, setMemberCounts] = useState({});
+  // eslint-disable-next-line
+  // const [memberCounts, setMemberCounts] = useState({});
 
   // Clients pannel enhancement
   const [domainLinks, setDomainLinks] = useState({});
@@ -158,23 +160,23 @@ const Panel = () => {
     if (!searchQuery) {
       return Array.isArray(clientsData)
         ? clientsData
-            .filter(([key, client]) => client?.isFormFilled || false)
-            .sort((a, b) => {
-              const dateA = a[1].date || -Infinity;
-              const dateB = b[1].date || -Infinity;
-              return dateB - dateA;
-            })
+          .filter(([key, client]) => client?.isFormFilled || false)
+          .sort((a, b) => {
+            const dateA = a[1].date || -Infinity;
+            const dateB = b[1].date || -Infinity;
+            return dateB - dateA;
+          })
         : [];
     }
     const query = searchQuery.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-          const institution = client?.institutionid
-            ? String(client.institutionid).toLowerCase()
-            : "";
-          return institution.includes(query);
-        })
+        const institution = client?.institutionid
+          ? String(client.institutionid).toLowerCase()
+          : "";
+        return institution.includes(query);
+      })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -258,7 +260,7 @@ const Panel = () => {
     setTotalLeads(0);
     setTotalAttendance(0);
     setTotalIncome(0);
-    setMemberCount(0);
+    // setMemberCount(0);
     isMonthlyReport.toUpperCase();
     Revenue.toUpperCase();
     userCheck === 0 && setUserCheck(1);
@@ -295,36 +297,36 @@ const Panel = () => {
     }
   });
 
-  const fetchMemberCounts = useCallback(async () => {
-    try {
-      const response = await API.get("clients", "/user/list-all-members");
+  // const fetchMemberCounts = useCallback(async () => {
+  //   try {
+  //     const response = await API.get("clients", "/user/list-all-members");
 
-      const counts = response.reduce((acc, user) => {
-        if (user.userType === "member") {
-          acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
-        }
-        return acc;
-      }, {});
+  //     const counts = response.reduce((acc, user) => {
+  //       if (user.userType === "member") {
+  //         acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
+  //       }
+  //       return acc;
+  //     }, {});
 
-      setMemberCounts(counts);
-    } catch (error) {
-      console.error("Error fetching member counts:", error);
-      const defaultCounts = clientsToDisplay.reduce((acc, client) => {
-        acc[client.institutionid] = 0;
-        return acc;
-      }, {});
-      setMemberCounts(defaultCounts);
-    }
-  }, [clientsToDisplay]); // Dependency for fetchMemberCounts
+  //     setMemberCounts(counts);
+  //   } catch (error) {
+  //     console.error("Error fetching member counts:", error);
+  //     const defaultCounts = clientsToDisplay.reduce((acc, client) => {
+  //       acc[client.institutionid] = 0;
+  //       return acc;
+  //     }, {});
+  //     setMemberCounts(defaultCounts);
+  //   }
+  // }, [clientsToDisplay]); // Dependency for fetchMemberCounts
 
-  const [shouldFetch, setShouldFetch] = useState(true);
+  // const [shouldFetch, setShouldFetch] = useState(true);
 
-  useEffect(() => {
-    if (shouldFetch) {
-      fetchMemberCounts();
-      setShouldFetch(false);
-    }
-  }, [shouldFetch, fetchMemberCounts]);
+  // useEffect(() => {
+  //   if (shouldFetch) {
+  //     fetchMemberCounts();
+  //     setShouldFetch(false);
+  //   }
+  // }, [shouldFetch, fetchMemberCounts]);
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -452,6 +454,7 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
+    setSelectedInstitutionType(client.institutionType);
     setShowMemberList(true); // Toggle view to MemberList
   };
 
@@ -601,11 +604,11 @@ const Panel = () => {
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  {Ctx.userData.role !== "operation" && (
+                  {/* {Ctx.userData.role !== "operation" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Members
                     </Table.HeadCell>
-                  )}
+                  )} */}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -614,9 +617,8 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
@@ -740,15 +742,14 @@ const Panel = () => {
                           {client.payment ? "Paid" : "Not Paid"}
                         </Table.Cell>
                       )}
-                      {Ctx.userData.role !== "operation" && (
+                      {/* {Ctx.userData.role !== "operation" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                           {memberCounts[client.institutionid] || 0}
                         </Table.Cell>
-                      )}
+                      )} */}
                       <Table.Cell
-                        className={`${
-                          showHiddenContent ? "" : "max1008:hidden"
-                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${showHiddenContent ? "" : "max1008:hidden"
+                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -762,9 +763,11 @@ const Panel = () => {
                         {Ctx.userData.role !== "sales" ? (
                           <Dropdown
                             label={
+
                               selectedStatuses[client.institutionid] ||
                               client.deliverable ||
                               "Pending"
+
                             }
                             inline
                           >
@@ -832,9 +835,11 @@ const Panel = () => {
                             }
                             required
                             disabled={
+
                               selectedStatuses[client.institutionid] !==
                                 "Completed" &&
                               client.deliverable !== "Completed"
+
                             }
                             className="w-[150px]"
                             onChange={(e) =>
@@ -846,15 +851,15 @@ const Panel = () => {
                           />
                           {selectedStatuses[client.institutionid] ===
                             "Completed" && (
-                            <Button
-                              onClick={() =>
-                                handleDomainLinkSubmit(client.institutionid)
-                              }
-                              className="flex items-center h-[25px] w-[40px]"
-                            >
-                              <FaCheck />
-                            </Button>
-                          )}
+                              <Button
+                                onClick={() =>
+                                  handleDomainLinkSubmit(client.institutionid)
+                                }
+                                className="flex items-center h-[25px] w-[40px]"
+                              >
+                                <FaCheck />
+                              </Button>
+                            )}
                         </Table.Cell>
                       )}
 
@@ -871,13 +876,17 @@ const Panel = () => {
                       )} */}
 
                       {/* {Ctx.userData.role === "sales" && ( */}
+
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+
                         {client.domainLink ? (
                           <RiExternalLinkLine
                             onClick={() =>
                               window.open(client.domainLink, "_blank")
                             }
+
                             className="text-blue-500 cursor-pointer h-5 w-5"
+
                           />
                         ) : null}
                       </Table.Cell>
@@ -948,7 +957,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                        // onClick={handleMoreClick}
+                      // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
@@ -1004,12 +1013,12 @@ const Panel = () => {
                   <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {TotalIncome}
                   </div>
-                  <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  {/* <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
                     Members:
                   </div>
                   <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {memberCount}
-                  </div>
+                  </div> */}
                   <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
                     Attendance:
                   </div>
@@ -1150,10 +1159,15 @@ const Panel = () => {
           </div>
         </div>
       ) : (
-        <Index
-          tempInstitution={tempInstitution}
-          setShowMemberList={setShowMemberList}
-        />
+        Ctx.userData.userType === "admin" ? (
+          <Index
+            tempInstitution={tempInstitution}
+            setShowMemberList={setShowMemberList}
+            selectedInstitutionType={selectedInstitutionType}
+          />) :
+          (
+            setShowMemberList(false)
+          )
       )}
     </>
   );

@@ -215,6 +215,7 @@ const CompleteDraft = () => {
                     UpiId: templateDetails.UpiId || null,
                     testimonials: templateDetails.testimonials || [],
                     isFormFilled: true,
+                    cognitoId:userData.cognitoId,
                 };
                 console.log("Data requesting for PUT", body);
 
@@ -238,7 +239,7 @@ const CompleteDraft = () => {
     return (
         <>
             <Navbar />
-            <div className="mt-[4.5rem]">
+            <div className="mt-[4.5rem] flex justify-center">
                 {loader ? (
                     <div className="bg-[#30AFBC] h-screen">
                         <p>Loading...</p> </div>
