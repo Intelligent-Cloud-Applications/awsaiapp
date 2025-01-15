@@ -12,11 +12,14 @@ import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
-import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
-import { TextInput, Dropdown, Button } from "flowbite-react";
+import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
 import { FaCheck } from "react-icons/fa";
 import { RiExternalLinkLine } from "react-icons/ri";
+import { BsQrCodeScan } from "react-icons/bs";
+import { FiDownload } from "react-icons/fi";
+// import QR from "../../../img/Qr.jpeg";
+import QR from "../../../Common/Qr";
 
 const Panel = () => {
   const itemsPerPage = 5;
@@ -54,6 +57,7 @@ const Panel = () => {
   const type = ["Dance Studio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
 
+  // Clients pannel enhancement
   const [domainLinks, setDomainLinks] = useState({});
 
   const handleDeliverableUpdate = async (institutionid, deliverable) => {
@@ -91,7 +95,7 @@ const Panel = () => {
     }
   };
   const handleDomainLinkSubmit = async (institutionid) => {
-    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+    const domainLink = domainLinks[institutionid];
 
     if (!domainLink) {
       toast.error("Domain link cannot be empty for Completed deliverables.");
@@ -118,6 +122,16 @@ const Panel = () => {
       toast.error("An error occurred while submitting the domain link.");
     }
   };
+
+  const [openModal, setOpenModal] = useState(false);
+  const [modalPlacement] = useState("center");
+
+  // const links = [
+  //   {
+  //     url: window.location.href.split("/")[0] + "/put-attendance",
+  //     label: "Attendance",
+  //   },
+  // ];
 
   const customTheme = {
     pages: {
@@ -613,11 +627,15 @@ const Panel = () => {
                     Deliverable
                   </Table.HeadCell>
 
-                  {Ctx.userData.role !== "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Domain Link
-                    </Table.HeadCell>
-                  )}
+                  {/* {Ctx.userData.role !== "sales" && ( */}
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Domain Link
+                  </Table.HeadCell>
+                  {/* )}  */}
+
+                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    QR
+                  </Table.HeadCell> */}
                   {/* {Ctx.userData.role === "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Domain Link
@@ -744,18 +762,18 @@ const Panel = () => {
                         {Ctx.userData.role !== "sales" ? (
                           <Dropdown
                             label={
-                              (selectedStatuses[client.institutionid] ||
+                              selectedStatuses[client.institutionid] ||
                               client.deliverable ||
-                              "Pending")
+                              "Pending"
                             }
                             inline
                           >
                             <Dropdown.Item
-                            className="hover:bg-gray-200 focus:bg-gray-200"
+                              className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "Pending", 
+                                  [client.institutionid]: "Pending",
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
@@ -766,11 +784,11 @@ const Panel = () => {
                               Pending
                             </Dropdown.Item>
                             <Dropdown.Item
-                            className="hover:bg-gray-200 focus:bg-gray-200"
+                              className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "In-progress", 
+                                  [client.institutionid]: "In-progress",
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
@@ -781,11 +799,11 @@ const Panel = () => {
                               In-progress
                             </Dropdown.Item>
                             <Dropdown.Item
-                            className="hover:bg-gray-200 focus:bg-gray-200"
+                              className="hover:bg-gray-200 focus:bg-gray-200"
                               onClick={() => {
                                 setSelectedStatuses((prev) => ({
                                   ...prev,
-                                  [client.institutionid]: "Completed", 
+                                  [client.institutionid]: "Completed",
                                 }));
                                 handleDeliverableUpdate(
                                   client.institutionid,
@@ -814,8 +832,9 @@ const Panel = () => {
                             }
                             required
                             disabled={
-                              (selectedStatuses[client.institutionid] !==
-                              "Completed") && (client.deliverable !== "Completed") 
+                              selectedStatuses[client.institutionid] !==
+                                "Completed" &&
+                              client.deliverable !== "Completed"
                             }
                             className="w-[150px]"
                             onChange={(e) =>
@@ -852,19 +871,68 @@ const Panel = () => {
                       )} */}
 
                       {/* {Ctx.userData.role === "sales" && ( */}
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 test-center bg-white">
-                          {client.domainLink ? (
-                            <RiExternalLinkLine
-                              onClick={() =>
-                                window.open(client.domainLink, "_blank")
-                              }
-                              className="text-blue-500 cursor-pointer h-[50px] w-[20px]"
-                            />
-                          ) : null}
-                        </Table.Cell>
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {client.domainLink ? (
+                          <RiExternalLinkLine
+                            onClick={() =>
+                              window.open(client.domainLink, "_blank")
+                            }
+                            className="text-blue-500 cursor-pointer h-5 w-5"
+                          />
+                        ) : null}
+                      </Table.Cell>
                       {/* )} */}
 
                       {/*Clients Panel Enhancement with Status Attribute */}
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                        {client.domainLink ? (
+                          <>
+                            <Button
+                              onClick={() => setOpenModal(client.institutionid)}
+                            >
+                              <BsQrCodeScan className="cursor-pointer h-5 w-5" />
+                            </Button>
+                            <Modal
+                              show={openModal === client.institutionid}
+                              position={modalPlacement}
+                              onClose={() => setOpenModal(false)}
+                            >
+                              <Modal.Header>Attendance QR</Modal.Header>
+                              <Modal.Body>
+                                <div className="flex flex-col items-center space-y-4">
+                                  <figure className="w-fit flex flex-col items-center">
+                                    <QR
+                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                      size={300}
+                                    />
+                                    {/* {console.log("domain link" + client.domainLink)} */}
+                                  </figure>
+                                  <h1 className="text-center font-semibold">
+                                    Institution ID: {client.companyName}
+                                  </h1>
+                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                    This is the attendance QR for the {client.companyName} institution. Please tap on the QR code to download it.
+                                  </p>
+                                </div>
+                              </Modal.Body>
+                              {/* <Modal.Footer>
+                                <a 
+                                  href={`${client.domainLink}/put-attendance}`}
+                                  download={`QR_${client.institutionid}.png`}
+                                >
+                                  <Button>
+                                  <RiExternalLinkLine />
+                                  </Button>
+                                </a>
+                              </Modal.Footer> */}
+                            </Modal>
+                          </>
+                        ) : null}
+                      </Table.Cell>
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
 
                       <Link
                         onClick={() => handleInstitutionClick(client)}
