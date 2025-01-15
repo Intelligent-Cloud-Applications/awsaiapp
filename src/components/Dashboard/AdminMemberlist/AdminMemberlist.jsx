@@ -250,7 +250,9 @@ const AdminMemberlist = () => {
                               <Dropdown
                                 label={
                                   <span className="px-2.5 py-1 text-[13px] font-medium text-gray-700 hover:bg-gray-50 rounded-md border border-gray-200 truncate block max-w-[120px] focus:outline-none focus:ring-0">
-                                    {member.role || 'Set Role'} 
+                                    {member.role === 'sales' ? 'Sales' : 
+                                     member.role === 'operation' ? 'Admin' : 
+                                     member.role === 'owner' ? 'Owner' : 'Set Role'}
                                     {updatingRole === member.cognitoId && '...'}
                                   </span>
                                 }
@@ -278,13 +280,17 @@ const AdminMemberlist = () => {
                                         role === 'sales' ? 'text-orange-600' : 'text-gray-600'}
                                       focus:outline-none focus:ring-0`}
                                   >
-                                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                                    {role === 'sales' ? 'Sales' : 
+                                     role === 'operation' ? 'Admin' : 
+                                     role === 'owner' ? 'Owner' : role}
                                   </Dropdown.Item>
                                 ))}
                               </Dropdown>
                             ) : (
                               <span className="px-2.5 py-1 text-[13px] text-gray-500 truncate block">
-                                {member.role || 'No Role'}
+                                {member.role === 'sales' ? 'Sales' : 
+                                 member.role === 'operation' ? 'Admin' : 
+                                 member.role === 'owner' ? 'Owner' : 'No Role'}
                               </span>
                             )}
                           </Table.Cell>
