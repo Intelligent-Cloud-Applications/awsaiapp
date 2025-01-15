@@ -1,20 +1,26 @@
-import QRCode from 'qrcode';
-import {useState} from "react";
+import QRCode from "qrcode";
+import { useState, useEffect } from "react";
 
-const QR = ({ url, size }) => {
-  const [QRSrc, setQRSrc] = useState('');
+const QR = ({ url, size, download }) => {
+  const [QRSrc, setQRSrc] = useState("");
 
-  console.log(url);
-  QRCode.toDataURL(url).then((data) => {
-    console.log(data);
-    setQRSrc(data);
-  });
+  useEffect(() => {
+    if (url) {
+      QRCode.toDataURL(url)
+        .then((data) => {
+          setQRSrc(data);
+        })
+        .catch((err) => {
+          console.error("Error generating QR code:", err);
+        });
+    }
+  }, [url]);
 
   return (
-    <a href={QRSrc} download='qrcode.png'>
+    <a href={QRSrc} download={download}>
       <img src={QRSrc} alt="QR Code" width={size} height={size} />
     </a>
-  )
-}
+  );
+};
 
 export default QR;
