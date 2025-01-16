@@ -716,7 +716,7 @@ const Panel = () => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Links
                   </Table.HeadCell>
-                  {/* )}  */}
+                   {/* )}   */}
 
                   {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     QR
@@ -919,26 +919,26 @@ const Panel = () => {
                               disabled={
                                 selectedStatuses[client.institutionid] !==
                                 "Completed" &&
-                                client.deliverable !== "Completed"
+                              client.deliverable !== "Completed"
+                            }
+                            className="w-[160px]"
+                            onChange={(e) =>
+                              setDomainLinks((prev) => ({
+                                ...prev,
+                                [client.institutionid]: e.target.value,
+                              }))
+                            }
+                          />
+                          {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
                               }
-                              className="w-[150px]"
-                              onChange={(e) =>
-                                setDomainLinks((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: e.target.value,
-                                }))
-                              }
-                            />
-                            {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
                           </div>
                         </Table.Cell>
                       )}
@@ -992,42 +992,42 @@ const Panel = () => {
                           {client.domainLink ? (
                             <>
                               <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
-                                onClick={() => setOpenModal(client.institutionid)}
+                              onClick={() => setOpenModal(client.institutionid)}
                               />
-                              <Modal
-                                show={openModal === client.institutionid}
-                                position={modalPlacement}
-                                onClose={() => setOpenModal(false)}
-                              >
-                                <Modal.Header>Attendance QR</Modal.Header>
-                                <Modal.Body>
-                                  <div className="flex flex-col items-center space-y-4">
-                                    <figure className="w-fit flex flex-col items-center">
-                                      <QR
-                                        url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                        download={`${client.companyName}Attendance QR Code.png`}
-                                        size={300}
-                                      />
-                                      {/* {console.log("domain link" + client.domainLink)} */}
-                                    </figure>
-                                    <h1 className="text-center font-semibold">
-                                      Institution Name: {client.companyName}
-                                    </h1>
-                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                      This is the attendance QR for the{" "}
-                                      {client.companyName} institution. Please tap
-                                      on the QR code to download it.
-                                    </p>
-                                  </div>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <a
-                                    href={client.domainLink + "/put-attendance"}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => {
-                                      const linkToCopy =
-                                        client.domainLink + "/put-attendance";
+                            <Modal
+                              show={openModal === client.institutionid}
+                              position={modalPlacement}
+                              onClose={() => setOpenModal(false)}
+                            >
+                              <Modal.Header>Attendance QR</Modal.Header>
+                              <Modal.Body>
+                                <div className="flex flex-col items-center space-y-4">
+                                  <figure className="w-fit flex flex-col items-center">
+                                    <QR
+                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                      download={`${client.companyName} Attendance QR Code.png`}
+                                      size={300}
+                                    />
+                                    {/* {console.log("domain link" + client.domainLink)} */}
+                                  </figure>
+                                  <h1 className="text-center font-semibold">
+                                    Institution Name: {client.companyName}
+                                  </h1>
+                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                    This is the attendance QR for the{" "}
+                                    {client.companyName} institution. Please tap
+                                    on the QR code to download it.
+                                  </p>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <a
+                                  href={client.domainLink + "/put-attendance"}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => {
+                                    const linkToCopy =
+                                      client.domainLink + "/put-attendance";
 
                                       // Copy the link to the clipboard
                                       navigator.clipboard
