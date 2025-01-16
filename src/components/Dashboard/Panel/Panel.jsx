@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import Context from "../../../context/Context";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { API } from "aws-amplify";
 import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
@@ -27,6 +27,7 @@ const Panel = () => {
   const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState(null);
   // const [selectedRow, setSelectedRow] = useState([]);
   // eslint-disable-next-line
   const [isMonthlyReport, setisMonthlyReport] = useState("");
@@ -54,8 +55,10 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dentist", "Cafe"];
+  const type = ["DanceStudio", "Dentist", "Cafe"];
   const [memberCounts, setMemberCounts] = useState({});
+  const [payment, setPayment] = useState(false);
+  const [filterStatus, setFilterStatus] = useState(null);
 
   // Clients pannel enhancement
   const [domainLinks, setDomainLinks] = useState({});
@@ -153,32 +156,45 @@ const Panel = () => {
     },
   };
 
-  // const navigate = useNavigate();
+  const handleTypeFilter = (typeSelected) => {
+    setFilterStatus(null);
+    setSelectedType(typeSelected);
+  };
+
+  const handleDeliverFilter = (value) => {
+    setSelectedType(null);
+    setFilterStatus(value);
+  }
+
+  const navigate = useNavigate();
   const filterClients = useCallback(() => {
-    if (!searchQuery) {
+    if (!searchQuery && !selectedType && filterStatus === null) {
       return Array.isArray(clientsData)
         ? clientsData
-            .filter(([key, client]) => client?.isFormFilled || false)
-            .sort((a, b) => {
-              const dateA = a[1].date || -Infinity;
-              const dateB = b[1].date || -Infinity;
-              return dateB - dateA;
-            })
+          .filter(([key, client]) => client?.isFormFilled || false)
+          .sort((a, b) => {
+            const dateA = a[1].date || -Infinity;
+            const dateB = b[1].date || -Infinity;
+            return dateB - dateA;
+          })
         : [];
     }
-    const query = searchQuery.toLowerCase();
+    const query = searchQuery?.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-          const institution = client?.institutionid
-            ? String(client.institutionid).toLowerCase()
-            : "";
-          return institution.includes(query);
-        })
+        const institution = client?.institutionid
+          ? String(client.institutionid).toLowerCase()
+          : "";
+        const matchesQuery = !searchQuery || institution.includes(query);
+        const matchesType = !selectedType || client.institutionType === selectedType;
+        const matchesDelivery = filterStatus === null || client.isDelivered === filterStatus;
+        return matchesQuery && matchesType && matchesDelivery;
+      })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
-  }, [searchQuery, clientsData]);
+  }, [searchQuery, selectedType, clientsData, filterStatus]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
@@ -413,12 +429,23 @@ const Panel = () => {
   };
 
   const handleRowClick = (institution, event) => {
-    setisMonthlyReport(institution);
+    setPayment(institution.payment);
+    setisMonthlyReport(institution.institutionid);
     // Find the link within the clicked row and trigger a click on it
     const link = event.currentTarget.querySelector(".change-page");
     if (link) {
       link.click();
     }
+  };
+
+  const handlePayment = () => {
+    console.log("redirect to payment");
+    const SecondaryColor = "#0000";
+    const PrimaryColor = "#30afbc"
+    const url = `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${tempInstitution}`;
+    window.open(url, '_blank');
+    setShowMemberList(false);
+    navigate("/dashboard");
   };
 
   const handleDropdownChange = useCallback(
@@ -467,7 +494,8 @@ const Panel = () => {
         return "";
     }
   };
-  console.log("teh data of listed client", filteredClients);
+  console.log("the sale payment info", payment);
+
   return (
     <>
       {!showMemberList ? (
@@ -527,8 +555,66 @@ const Panel = () => {
           </div>
           <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
             <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
+              {/*Filter by Type*/}
+              <div className="left-0 mr-[8vw]">
+                <Dropdown
+                  label="Filter by Type"
+                  style={{
+                    backgroundColor: "#0891b2",
+                    height: "2.5rem",
+                  }}
+                >
+                  <Dropdown.Item
+                    key="All"
+                    onClick={() => handleTypeFilter(null)}
+                    className="hover:bg-gray-200 focus:bg-gray-200"
+                  >
+                    All
+                  </Dropdown.Item>
+                  {type.map((typeValue) => (
+                    <Dropdown.Item
+                      key={typeValue}
+                      onClick={() => handleTypeFilter(typeValue)}
+                      className="hover:bg-gray-200 focus:bg-gray-200"
+                    >
+                      {typeValue}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown>
+              </div>
+              {/*Filter by isDelivered*/}
+              <div className="mr-[15vw]">
+                <Dropdown
+                  label="Filter by Delivery Status"
+                  style={{
+                    backgroundColor: "#0891b2",
+                    height: "2.5rem",
+                  }}
+                >
+                  <Dropdown.Item
+                    key="All"
+                    onClick={() => handleDeliverFilter(null)}
+                    className="hover:bg-gray-200 focus:bg-gray-200"
+                  >
+                    All
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    key="Delivered"
+                    onClick={() => handleDeliverFilter(true)}
+                    className="hover:bg-gray-200 focus:bg-gray-200"
+                  >
+                    Delivered
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    key="Not Delivered"
+                    onClick={() => handleDeliverFilter(false)}
+                    className="hover:bg-gray-200 focus:bg-gray-200"
+                  >
+                    Not Delivered
+                  </Dropdown.Item>
+                </Dropdown>
+              </div>
               {/* Search Bar */}
-
               <form class="w-full min800:w-[30%] rounded-sm my-3">
                 <label
                   for="default-search"
@@ -614,9 +700,8 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${
-                      showHiddenContent ? "" : "max1008:hidden"
-                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
@@ -659,7 +744,7 @@ const Panel = () => {
                     >
                       <Table.Cell
                         className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                        onClick={(e) => handleRowClick(client.institutionid, e)}
+                        onClick={(e) => handleRowClick(client, e)}
                       >
                         <Link
                           onClick={() => {
@@ -746,9 +831,8 @@ const Panel = () => {
                         </Table.Cell>
                       )}
                       <Table.Cell
-                        className={`${
-                          showHiddenContent ? "" : "max1008:hidden"
-                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${showHiddenContent ? "" : "max1008:hidden"
+                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -823,38 +907,38 @@ const Panel = () => {
                       {Ctx.userData.role !== "sales" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
                           <div className="flex items-center gap-2">
-                          <TextInput
-                            id="domain"
-                            value={domainLinks[client.institutionid] || ""}
-                            placeholder={
-                              client.domainLink
-                                ? client.domainLink
-                                : "Enter the Domain link"
-                            }
-                            required
-                            disabled={
-                              selectedStatuses[client.institutionid] !==
-                                "Completed" &&
-                              client.deliverable !== "Completed"
-                            }
-                            className="w-[150px]"
-                            onChange={(e) =>
-                              setDomainLinks((prev) => ({
-                                ...prev,
-                                [client.institutionid]: e.target.value,
-                              }))
-                            }
-                          />
-                          {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
-                            <Button
-                              onClick={() =>
-                                handleDomainLinkSubmit(client.institutionid)
+                            <TextInput
+                              id="domain"
+                              value={domainLinks[client.institutionid] || ""}
+                              placeholder={
+                                client.domainLink
+                                  ? client.domainLink
+                                  : "Enter the Domain link"
                               }
-                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                            >
-                              <FaCheck />
-                            </Button>
-                          )}
+                              required
+                              disabled={
+                                selectedStatuses[client.institutionid] !==
+                                "Completed" &&
+                                client.deliverable !== "Completed"
+                              }
+                              className="w-[150px]"
+                              onChange={(e) =>
+                                setDomainLinks((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: e.target.value,
+                                }))
+                              }
+                            />
+                            {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
+                              <Button
+                                onClick={() =>
+                                  handleDomainLinkSubmit(client.institutionid)
+                                }
+                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                              >
+                                <FaCheck />
+                              </Button>
+                            )}
                           </div>
                         </Table.Cell>
                       )}
@@ -873,102 +957,102 @@ const Panel = () => {
 
                       {/* {Ctx.userData.role === "sales" && ( */}
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
-                        
-                      <div className="flex items-center gap-2">
-                        {client.domainLink ? (
-                          <RiExternalLinkLine
-                            onClick={() => {
-                              // Open the link in a new tab
-                              window.open(client.domainLink, "_blank");
 
-                              // Copy the link to the clipboard
-                              navigator.clipboard
-                                .writeText(client.domainLink)
-                                .then(() => {
-                                  toast.success(
-                                    "Domain link copied to clipboard!"
-                                  );
-                                })
-                                .catch((err) => {
-                                  toast.error("Failed to copy domain link.");
-                                  console.error("Clipboard copy failed:", err);
-                                });
-                            }}
-                            className="text-blue-500 cursor-pointer h-5 w-5"
-                          />
-                        ) : null}
-                      {/* </Table.Cell> */}
+                        <div className="flex items-center gap-2">
+                          {client.domainLink ? (
+                            <RiExternalLinkLine
+                              onClick={() => {
+                                // Open the link in a new tab
+                                window.open(client.domainLink, "_blank");
 
-                      {/* )} */}
+                                // Copy the link to the clipboard
+                                navigator.clipboard
+                                  .writeText(client.domainLink)
+                                  .then(() => {
+                                    toast.success(
+                                      "Domain link copied to clipboard!"
+                                    );
+                                  })
+                                  .catch((err) => {
+                                    toast.error("Failed to copy domain link.");
+                                    console.error("Clipboard copy failed:", err);
+                                  });
+                              }}
+                              className="text-blue-500 cursor-pointer h-5 w-5"
+                            />
+                          ) : null}
+                          {/* </Table.Cell> */}
 
-                      {/*Clients Panel Enhancement with Status Attribute */}
+                          {/* )} */}
 
-                      {/*Clients Panel Enhancement with QR Attribute */}
-                      {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"> */}
-                        {client.domainLink ? (
-                          <>
+                          {/*Clients Panel Enhancement with Status Attribute */}
+
+                          {/*Clients Panel Enhancement with QR Attribute */}
+                          {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"> */}
+                          {client.domainLink ? (
+                            <>
                               <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
-                              onClick={() => setOpenModal(client.institutionid)}
-                               />
-                            <Modal
-                              show={openModal === client.institutionid}
-                              position={modalPlacement}
-                              onClose={() => setOpenModal(false)}
-                            >
-                              <Modal.Header>Attendance QR</Modal.Header>
-                              <Modal.Body>
-                                <div className="flex flex-col items-center space-y-4">
-                                  <figure className="w-fit flex flex-col items-center">
-                                    <QR
-                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                      download={`${client.companyName}Attendance QR Code.png`}
-                                      size={300}
-                                    />
-                                    {/* {console.log("domain link" + client.domainLink)} */}
-                                  </figure>
-                                  <h1 className="text-center font-semibold">
-                                    Institution Name: {client.companyName}
-                                  </h1>
-                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                    This is the attendance QR for the{" "}
-                                    {client.companyName} institution. Please tap
-                                    on the QR code to download it.
-                                  </p>
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <a
-                                  href={client.domainLink + "/put-attendance"}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => {
-                                    const linkToCopy =
-                                      client.domainLink + "/put-attendance";
+                                onClick={() => setOpenModal(client.institutionid)}
+                              />
+                              <Modal
+                                show={openModal === client.institutionid}
+                                position={modalPlacement}
+                                onClose={() => setOpenModal(false)}
+                              >
+                                <Modal.Header>Attendance QR</Modal.Header>
+                                <Modal.Body>
+                                  <div className="flex flex-col items-center space-y-4">
+                                    <figure className="w-fit flex flex-col items-center">
+                                      <QR
+                                        url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                        download={`${client.companyName}Attendance QR Code.png`}
+                                        size={300}
+                                      />
+                                      {/* {console.log("domain link" + client.domainLink)} */}
+                                    </figure>
+                                    <h1 className="text-center font-semibold">
+                                      Institution Name: {client.companyName}
+                                    </h1>
+                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                      This is the attendance QR for the{" "}
+                                      {client.companyName} institution. Please tap
+                                      on the QR code to download it.
+                                    </p>
+                                  </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <a
+                                    href={client.domainLink + "/put-attendance"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => {
+                                      const linkToCopy =
+                                        client.domainLink + "/put-attendance";
 
-                                    // Copy the link to the clipboard
-                                    navigator.clipboard
-                                      .writeText(linkToCopy)
-                                      .then(() => {
-                                        toast.success(
-                                          "Link copied to clipboard!"
-                                        );
-                                      })
-                                      .catch((err) => {
-                                        toast.error("Failed to copy link.");
-                                        console.error(
-                                          "Clipboard copy failed:",
-                                          err
-                                        );
-                                      });
-                                  }}
-                                >
-                                    <RiExternalLinkLine 
-                                    className="text-blue-500 cursor-pointer h-5 w-5"/>
-                                </a>
-                              </Modal.Footer>
-                            </Modal>
-                          </>
-                        ) : null}
+                                      // Copy the link to the clipboard
+                                      navigator.clipboard
+                                        .writeText(linkToCopy)
+                                        .then(() => {
+                                          toast.success(
+                                            "Link copied to clipboard!"
+                                          );
+                                        })
+                                        .catch((err) => {
+                                          toast.error("Failed to copy link.");
+                                          console.error(
+                                            "Clipboard copy failed:",
+                                            err
+                                          );
+                                        });
+                                    }}
+                                  >
+                                    <RiExternalLinkLine
+                                      className="text-blue-500 cursor-pointer h-5 w-5" />
+                                  </a>
+                                </Modal.Footer>
+                              </Modal>
+                            </>
+                          ) : null}
                         </div>
                       </Table.Cell>
 
@@ -988,7 +1072,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                        // onClick={handleMoreClick}
+                      // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
@@ -1190,10 +1274,14 @@ const Panel = () => {
           </div>
         </div>
       ) : (
-        <Index
-          tempInstitution={tempInstitution}
-          setShowMemberList={setShowMemberList}
-        />
+        Ctx.userData.userType === "admin" ? (
+          <Index
+            tempInstitution={tempInstitution}
+            setShowMemberList={setShowMemberList}
+          />
+        ) : (
+          !payment && handlePayment()
+        )
       )}
     </>
   );
