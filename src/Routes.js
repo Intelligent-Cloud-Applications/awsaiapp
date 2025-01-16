@@ -10,7 +10,7 @@ import MemberList from "./components/Dashboard/MemberList/MembersList";
 import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
 import Pricing from "./pages/Pricing";
 import Aboutus from "./pages/Aboutus";
-import Team from "./pages/Team";
+// import Team from "./pages/Team";
 import Query from "./pages/Query";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import User from "./services/User_Interface";
@@ -86,7 +86,7 @@ const RoutesContainer = () => {
       />
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
-      <Route path="/team" element={<Team />} />
+      {/* <Route path="/team" element={<Team />} /> */}
       <Route path="/query" element={<Query />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/User_interface" element={<User />} />

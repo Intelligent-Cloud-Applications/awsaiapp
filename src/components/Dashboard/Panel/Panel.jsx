@@ -629,9 +629,9 @@ const Panel = () => {
 
                   {/* {Ctx.userData.role !== "sales" && ( */}
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Domain Link
+                    Links
                   </Table.HeadCell>
-                  {/* )}  */}
+                   {/* )}   */}
 
                   {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     QR
@@ -682,7 +682,7 @@ const Panel = () => {
                         )}
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.institutionType}
+                        {splitandjoin(client.institutionType)}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -821,7 +821,8 @@ const Panel = () => {
                         )}
                       </Table.Cell>
                       {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex gap-2 items-center">
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
+                          <div className="flex items-center gap-2">
                           <TextInput
                             id="domain"
                             value={domainLinks[client.institutionid] || ""}
@@ -836,7 +837,7 @@ const Panel = () => {
                                 "Completed" &&
                               client.deliverable !== "Completed"
                             }
-                            className="w-[150px]"
+                            className="w-[160px]"
                             onChange={(e) =>
                               setDomainLinks((prev) => ({
                                 ...prev,
@@ -844,17 +845,17 @@ const Panel = () => {
                               }))
                             }
                           />
-                          {selectedStatuses[client.institutionid] ===
-                            "Completed" && (
+                          {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
                             <Button
                               onClick={() =>
                                 handleDomainLinkSubmit(client.institutionid)
                               }
-                              className="flex items-center h-[25px] w-[40px]"
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
                             >
                               <FaCheck />
                             </Button>
                           )}
+                          </div>
                         </Table.Cell>
                       )}
 
@@ -871,7 +872,9 @@ const Panel = () => {
                       )} */}
 
                       {/* {Ctx.userData.role === "sales" && ( */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
+                        
+                      <div className="flex items-center gap-2">
                         {client.domainLink ? (
                           <RiExternalLinkLine
                             onClick={() => {
@@ -894,21 +897,19 @@ const Panel = () => {
                             className="text-blue-500 cursor-pointer h-5 w-5"
                           />
                         ) : null}
-                      </Table.Cell>
+                      {/* </Table.Cell> */}
 
                       {/* )} */}
 
                       {/*Clients Panel Enhancement with Status Attribute */}
 
                       {/*Clients Panel Enhancement with QR Attribute */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"> */}
                         {client.domainLink ? (
                           <>
-                            <Button
+                              <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
                               onClick={() => setOpenModal(client.institutionid)}
-                            >
-                              <BsQrCodeScan className="cursor-pointer h-5 w-5" />
-                            </Button>
+                               />
                             <Modal
                               show={openModal === client.institutionid}
                               position={modalPlacement}
@@ -920,12 +921,13 @@ const Panel = () => {
                                   <figure className="w-fit flex flex-col items-center">
                                     <QR
                                       url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                      download={`${client.companyName} Attendance QR Code.png`}
                                       size={300}
                                     />
                                     {/* {console.log("domain link" + client.domainLink)} */}
                                   </figure>
                                   <h1 className="text-center font-semibold">
-                                    Institution ID: {client.companyName}
+                                    Institution Name: {client.companyName}
                                   </h1>
                                   <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
                                     This is the attendance QR for the{" "}
@@ -939,7 +941,6 @@ const Panel = () => {
                                   href={client.domainLink + "/put-attendance"}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  download={`QR_${client.institutionid}.png`}
                                   onClick={(e) => {
                                     const linkToCopy =
                                       client.domainLink + "/put-attendance";
@@ -961,14 +962,14 @@ const Panel = () => {
                                       });
                                   }}
                                 >
-                                  <Button>
-                                    <RiExternalLinkLine />
-                                  </Button>
+                                    <RiExternalLinkLine 
+                                    className="text-blue-500 cursor-pointer h-5 w-5"/>
                                 </a>
                               </Modal.Footer>
                             </Modal>
                           </>
                         ) : null}
+                        </div>
                       </Table.Cell>
 
                       {/*Clients Panel Enhancement with QR Attribute */}

@@ -8,7 +8,7 @@ import LeadsList from "../LeadsList/LeadsList";
 import InstitutionRevenue from "../InstitutionRevenue";
 import { IoCaretBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
+import BatchJobs from "../BatchJobs/BatchJobs";
 const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstitutionType }) => {
   const { user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
@@ -27,9 +27,11 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
       case 'leads':
         return <LeadsList />;
       case 'client':
-        return <ClientsProfile institution={institution} />;
+        return <ClientsProfile institution={institution} />;  
       case 'economy':
         return <InstitutionRevenue institution={userData.tempinstitutionName} />
+      case 'batch':
+        return <BatchJobs />
       default:
         return null;
     }
@@ -54,7 +56,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
             </div>
             <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType}/>
           </div>
-          <div className="mt-[11rem] w-full ">
+          <div className="mt-[11rem] w-full">
             {renderContent()}
           </div>
         </div>

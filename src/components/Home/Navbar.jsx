@@ -14,9 +14,9 @@ const Navbar = () => {
 
   let Links = [
     { name: "Home", link: "/" },
-    { name: "About Us", link: "/aboutus" },
+    { name: "About", link: "/aboutus" },
     { name: "Pricing", link: "/Pricing" },
-    { name: "Team", link: "/team" },
+    // { name: "Team", link: "/team" },
     // {name:"C",link:"/"},
   ];
   let [open, setOpen] = useState(false);
@@ -27,11 +27,14 @@ const Navbar = () => {
           className="font-bold lg:text-2xl text-lg cursor-pointer flex items-center font-[Poppins] 
       text-gray-800"
         >
+          <Link 
+          to="/">
           <img
             className="h-[3.5rem]"
             src={logo}
             alt=""
           />
+          </Link>
         </div>
 
         <div
