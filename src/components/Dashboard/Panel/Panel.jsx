@@ -921,7 +921,7 @@ const Panel = () => {
                                   <figure className="w-fit flex flex-col items-center">
                                     <QR
                                       url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                      download={`${client.companyName}Attendance QR Code.png`}
+                                      download={`${client.companyName} Attendance QR Code.png`}
                                       size={300}
                                     />
                                     {/* {console.log("domain link" + client.domainLink)} */}
