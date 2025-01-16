@@ -36,7 +36,7 @@ export default function AboutUs() {
               <div
                 className="pl-[4rem] max800:pt-[7rem] max800:w-full text-[48px] md:text-[84px] font-family-[Rubik_Mono_One] text-[#30afbc] font-bold max800:text-[3rem]"
               >
-                ABOUT <span className="text-white contents">US</span>
+                ABOUT
               </div>
               <img
                 src={arrow}

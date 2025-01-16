@@ -14,7 +14,7 @@ const Navbar = () => {
 
   let Links = [
     { name: "Home", link: "/" },
-    { name: "About Us", link: "/aboutus" },
+    { name: "About", link: "/aboutus" },
     { name: "Pricing", link: "/Pricing" },
     { name: "Team", link: "/team" },
     // {name:"C",link:"/"},
