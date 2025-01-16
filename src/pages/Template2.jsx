@@ -38,6 +38,7 @@ const Template2 = () => {
   const [values, setValues] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isFormFilled, setIsFormFilled] = useState(true);
   const { userData } = useContext(Context)
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -158,7 +159,7 @@ const Template2 = () => {
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo['UPI Id'] || null,
         testimonials: testimonials || [],
-        isFormFilled: true,
+        isFormFilled: isFormFilled,
         cognitoId: userData.cognitoId,
       };
       console.log("Data requesting for PUT", body);
@@ -311,6 +312,7 @@ const Template2 = () => {
   };
   const [showModal, setShowModal] = useState(false);
   const handleSaveDraft = () => {
+    setIsFormFilled(false);
     handleSubmitForm();
     Navigate('/dashboard', { state: { section: 'institution-draft' } });
   };

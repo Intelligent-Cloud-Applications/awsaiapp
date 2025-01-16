@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Button } from 'flowbite-react';
-import { IoMdCash, IoMdPerson } from 'react-icons/io';
-import { HiUserGroup, HiUserAdd } from 'react-icons/hi';
-import { MdEdit } from 'react-icons/md';
+import React, { useState, useContext } from "react";
+import { Button } from "flowbite-react";
+import { IoMdCash, IoMdPerson } from "react-icons/io";
+import { HiUserGroup, HiUserAdd } from "react-icons/hi";
+import { MdEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
+import { RiContactsBookUploadFill } from "react-icons/ri";
+import Context from "../../context/Context";
 const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
-  const [activeTab, setActiveTab] = useState('members');
+  const [activeTab, setActiveTab] = useState("members");
   const navigate = useNavigate();
-
+  const { userData } = useContext(Context);
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     onTabChange(tab);
@@ -19,11 +20,11 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
       <Button.Group className="flex h-12">
         <Button
           style={{
-            backgroundColor: activeTab === 'members' ? '#30afbc' : '#fff',
-            color: activeTab === 'members' ? '#fff' : '#000',
-            borderColor: activeTab === 'members' ? '#30afbc' : '#ccc',
+            backgroundColor: activeTab === "members" ? "#30afbc" : "#fff",
+            color: activeTab === "members" ? "#fff" : "#000",
+            borderColor: activeTab === "members" ? "#30afbc" : "#ccc",
           }}
-          onClick={() => handleTabChange('members')}
+          onClick={() => handleTabChange("members")}
           className="items-center hover:bg-[#30afbc] hover:text-white border rounded-l-md"
         >
           <HiUserGroup className="mr-3 h-4 w-4" />
@@ -31,11 +32,11 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
         </Button>
         <Button
           style={{
-            backgroundColor: activeTab === 'economy' ? '#30afbc' : '#fff',
-            color: activeTab === 'economy' ? '#fff' : '#000',
-            borderColor: activeTab === 'economy' ? '#30afbc' : '#ccc',
+            backgroundColor: activeTab === "economy" ? "#30afbc" : "#fff",
+            color: activeTab === "economy" ? "#fff" : "#000",
+            borderColor: activeTab === "economy" ? "#30afbc" : "#ccc",
           }}
-          onClick={() => handleTabChange('economy')}
+          onClick={() => handleTabChange("economy")}
           className="items-center hover:bg-[#30afbc] hover:text-white border"
         >
           <IoMdCash className="mr-3 h-4 w-4 mt-0.5" />
@@ -43,23 +44,38 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
         </Button>
         <Button
           style={{
-            backgroundColor: activeTab === 'leads' ? '#30afbc' : '#fff',
-            color: activeTab === 'leads' ? '#fff' : '#000',
-            borderColor: activeTab === 'leads' ? '#30afbc' : '#ccc',
+            backgroundColor: activeTab === "leads" ? "#30afbc" : "#fff",
+            color: activeTab === "leads" ? "#fff" : "#000",
+            borderColor: activeTab === "leads" ? "#30afbc" : "#ccc",
           }}
-          onClick={() => handleTabChange('leads')}
+          onClick={() => handleTabChange("leads")}
           className="items-center hover:bg-[#30afbc] hover:text-white border"
         >
           <HiUserAdd className="mr-3 h-4 w-4" />
           Leads
         </Button>
+        {(userData.role === "operation" || userData.role === "owner") && (
+          <Button
+            style={{
+              backgroundColor: activeTab === "batch" ? "#30afbc" : "#fff",
+              color: activeTab === "batch" ? "#fff" : "#000",
+              borderColor: activeTab === "batch" ? "#30afbc" : "#ccc",
+            }}
+            onClick={() => handleTabChange("batch")}
+            className="items-center hover:bg-[#30afbc] hover:text-white border"
+          >
+            <RiContactsBookUploadFill className="mr-3 h-4 w-4 mt-0.5" />
+            Batch Jobs
+          </Button>
+        )}
+
         <Button
           style={{
-            backgroundColor: activeTab === 'client' ? '#30afbc' : '#fff',
-            color: activeTab === 'client' ? '#fff' : '#000',
-            borderColor: activeTab === 'client' ? '#30afbc' : '#ccc',
+            backgroundColor: activeTab === "client" ? "#30afbc" : "#fff",
+            color: activeTab === "client" ? "#fff" : "#000",
+            borderColor: activeTab === "client" ? "#30afbc" : "#ccc",
           }}
-          onClick={() => handleTabChange('client')}
+          onClick={() => handleTabChange("client")}
           className="rounded-r-md items-center hover:bg-[#30afbc] hover:text-white border"
         >
           <IoMdPerson className="mr-3 h-4 w-4" />
@@ -69,12 +85,13 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
 
       <Button
         style={{
-          backgroundColor: '#30afbc',
-          color: '#fff',
+          backgroundColor: "#30afbc",
+          color: "#fff",
         }}
-        className="flex items-center rounded-md ml-[38rem]"
+        className="flex items-center rounded-md ml-[28rem]"
         onClick={() => {
-          const targetPath = institutionType === 'DanceStudio' ? '/full' : '/completeDraft';
+          const targetPath =
+            institutionType === "DanceStudio" ? "/full" : "/completeDraft";
           navigate({
             pathname: targetPath,
             search: `?institutionName=${institutionNames}`,
