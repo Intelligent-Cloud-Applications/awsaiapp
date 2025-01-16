@@ -631,7 +631,7 @@ const Panel = () => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Links
                   </Table.HeadCell>
-                  {/* )}  */}
+                   {/* )}   */}
 
                   {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     QR
@@ -837,7 +837,7 @@ const Panel = () => {
                                 "Completed" &&
                               client.deliverable !== "Completed"
                             }
-                            className="w-[150px]"
+                            className="w-[160px]"
                             onChange={(e) =>
                               setDomainLinks((prev) => ({
                                 ...prev,
@@ -921,7 +921,7 @@ const Panel = () => {
                                   <figure className="w-fit flex flex-col items-center">
                                     <QR
                                       url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                      download={`${client.companyName}Attendance QR Code.png`}
+                                      download={`${client.companyName} Attendance QR Code.png`}
                                       size={300}
                                     />
                                     {/* {console.log("domain link" + client.domainLink)} */}
