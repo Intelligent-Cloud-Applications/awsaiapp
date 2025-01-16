@@ -62,19 +62,19 @@ function Testimonials({ testimonials, setTestimonials }) {
   }, [testimonials, activeTestimonialIndex]);
 
   return (
-    <div className="mx-auto w-full overflow-y-auto mb-[2rem] px-4 sm:px-6 lg:px-8">
-      <h1 className="font-medium text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-center mb-4">TESTIMONIALS SECTION</h1>
-      <h5 className="text-center text-gray-500 text-sm sm:text-base mb-8">
+    <div className="mx-auto w-full overflow-y-auto mb-[2rem]">
+      <h1 className="font-medium text-7xl text-center">TESTIMONIALS SECTION</h1>
+      <h5 className="text-center text-gray-500">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
       <div className="flex justify-center">
-        <div className="w-full sm:w-[80%] md:w-[70%] lg:w-[60%] p-4 sm:p-6 lg:p-8">
+        <div className="w-[60%] p-8">
           <div ref={testimonialsContainerRef} className="pb-6">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="mt-6 bg-white rounded-lg p-4 sm:p-6">
-                <h2 className="font-medium text-lg sm:text-xl mb-4">Testimonial {index + 1}</h2>
+              <div key={index} className="mt-6">
+                <h2 className="font-medium text-xl">Testimonial {index + 1}</h2>
 
-                <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4 my-4">
+                <div className="relative flex items-center my-4">
                   <FileInput
                     accept="image/*"
                     onChange={(e) => handleImageChange(index, e)}
@@ -84,7 +84,7 @@ function Testimonials({ testimonials, setTestimonials }) {
                   <label
                     htmlFor={`testimonialImgInput${index}`}
                     onClick={() => setActiveTestimonialIndex(index)}
-                    className="w-full sm:w-[30vh] h-[40px] border border-gray-300 flex items-center justify-center cursor-pointer relative bg-gray-200 rounded-lg"
+                    className={`w-[30vh] h-[25px] border border-gray-300 flex items-center justify-center cursor-pointer relative bg-gray-200`}
                   >
                     <span className={`text-black font-medium ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
                       Choose File
@@ -104,44 +104,42 @@ function Testimonials({ testimonials, setTestimonials }) {
                   {index >= 3 && (
                     <button
                       onClick={() => removeTestimonial(index)}
-                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full text-sm hover:bg-red-600"
+                      className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded-full"
                     >
                       ✕
                     </button>
                   )}
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <TextInput
-                      name="name"
-                      value={testimonial.name}
-                      onChange={(e) => handleTestimonialChange(index, 'name', e.target.value)}
-                      placeholder="Name"
-                      className="w-full"
-                      maxLength="20"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <TextInput
-                      name="feedback"
-                      value={testimonial.feedback}
-                      onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
-                      placeholder="Feedback"
-                      className="w-full"
-                      rows={1}
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </div>
+                <div className="my-4">
+                  <TextInput
+                    name="name"
+                    value={testimonial.name}
+                    onChange={(e) => handleTestimonialChange(index, 'name', e.target.value)}
+                    placeholder="Name"
+                    className="w-full"
+                    maxLength="20"
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+                <div>
+                  <TextInput
+                    name="feedback"
+                    value={testimonial.feedback}
+                    onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
+                    placeholder="Feedback"
+                    className="w-full"
+                    rows={1}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                  />
                 </div>
               </div>
             ))}
@@ -152,7 +150,7 @@ function Testimonials({ testimonials, setTestimonials }) {
               <button
                 type="button"
                 onClick={addNewTestimonial}
-                className="w-full sm:w-auto bg-[#30AFBC] text-white px-6 py-2 rounded-md hover:bg-[#2a9ca8] transition-colors"
+                className="bg-teal-500 text-white px-4 py-2 rounded-md"
               >
                 Add Testimonial
               </button>

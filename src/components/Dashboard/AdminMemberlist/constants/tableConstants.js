@@ -1,9 +1,9 @@
 export const ITEMS_PER_PAGE = 7;
 
 export const COLUMN_WIDTHS = {
-  userName: 180,
-  emailId: 180,
-  phoneNumber: 150,
+  userName: 130,
+  emailId: 130,
+  phoneNumber: 130,
   role: 120,
   joiningDate: 150,
   status: 100,
@@ -31,7 +31,6 @@ export const STATS_CONFIG = [
     label: 'Active Members',
     icon: 'FiCheckCircle',
     iconColor: 'text-green-600',
-    trend: '+5% from last month',
     sortConfig: { field: 'status', direction: 'asc', filterValue: 'Active' }
   },
   {
@@ -39,7 +38,6 @@ export const STATS_CONFIG = [
     label: 'Inactive Members',
     icon: 'FiClock',
     iconColor: 'text-red-600',
-    trend: '-2% from last month',
     sortConfig: { field: 'status', direction: 'desc', filterValue: 'Inactive' }
   },
   {
@@ -47,7 +45,6 @@ export const STATS_CONFIG = [
     label: 'Total Delivered',
     icon: 'FiTrendingUp',
     iconColor: 'text-blue-600',
-    trend: '+8% from last month',
     sortConfig: { field: 'delivered', direction: 'desc' }
   }
 ]; 

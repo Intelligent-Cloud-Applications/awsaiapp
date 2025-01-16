@@ -41,7 +41,7 @@ import Projects from "./internal/components/Projects";
 import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
-import Template2 from "./pages/Dental";
+import Template2 from "./pages/Template2";
 import Template3 from "./pages/Cafe";
 import CompleteDraft from "./pages/CompleteDraft";
 
@@ -98,7 +98,7 @@ const RoutesContainer = () => {
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
       <Route path="/dance-studio" element={<Template />} />
-      <Route path="/dental" element={<Template2 />} />
+      <Route path="/template2" element={<Template2 />} />
       <Route path="/cafe" element={<Template3 />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />

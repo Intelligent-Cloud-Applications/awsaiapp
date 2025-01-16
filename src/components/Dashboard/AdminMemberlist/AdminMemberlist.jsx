@@ -9,7 +9,7 @@ import StatsGrid from './components/StatsGrid';
 import SearchAndFilter from './components/SearchAndFilter';
 import TableHeader from './components/TableHeader';
 import MobileTableCard from './components/MobileTableCard';
-import { Dropdown } from 'flowbite-react';
+import CustomDropDown from './components/CustomDropDown';
 
 const AdminMemberlist = () => {
   const { util, userData } = useContext(Context);
@@ -98,233 +98,234 @@ const AdminMemberlist = () => {
           </div>
 
           {/* Table Container */}
-          <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 flex flex-col h-[calc(100vh-5rem)] sm:h-[calc(100vh-50rem)] md:h-[calc(100vh-15rem)]">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-16rem)]">
             {/* Header Section */}
-            <div className="p-3 sm:p-4 md:p-5 border-b border-gray-100 flex-shrink-0">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <SearchAndFilter
-                  searchQuery={searchQuery}
-                  onSearchChange={handleSearch}
-                  searchField={searchField}
-                  onSearchFieldChange={handleSearchFieldChange}
-                />
-              </div>
-            </div>
-
-            {/* Mobile View */}
-            <div className="block md:hidden overflow-y-auto flex-1 px-3 py-2">
-              <div className="space-y-3">
-                {currentData.map((member) => (
-                  <MobileTableCard
-                    key={member.cognitoId}
-                    member={member}
-                    expanded={expandedRow === member.cognitoId}
-                    onToggle={toggleExpandedRow}
-                    getRoleOptions={getRoleOptions}
-                    handleRoleChange={handleRoleChange}
-                    updatingRole={updatingRole}
-                    userData={userData}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex flex-col lg:flex-row justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-semibold text-gray-900">Member List</h1>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Manage and monitor member activities
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <SearchAndFilter
+                    searchQuery={searchQuery}
+                    onSearchChange={handleSearch}
+                    searchField={searchField}
+                    onSearchFieldChange={handleSearchFieldChange}
                   />
-                ))}
+                </div>
               </div>
             </div>
 
             {/* Desktop View */}
             <div className="hidden md:block flex-1 overflow-hidden">
-              <div className="overflow-y-auto h-full">
-                <div className="overflow-x-auto min-w-[1000px]">
-                  <Table className="w-full">
-                    <Table.Head className="sticky top-0 bg-white z-10">
-                      <TableHeader
-                        field="userName"
-                        width={columnWidths.userName}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                        onResize={startResizing}
-                        isResizable
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="emailId"
-                        width={columnWidths.emailId}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                        onResize={startResizing}
-                        isResizable
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Email Address</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="phoneNumber"
-                        width={columnWidths.phoneNumber}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                        onResize={startResizing}
-                        isResizable
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Phone Number</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="role"
-                        width={columnWidths.role}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Role</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="joiningDate"
-                        width={columnWidths.joiningDate}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Joining Date</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="status"
-                        width={columnWidths.status}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="delivered"
-                        width={columnWidths.delivered}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">Delivered</div>
-                      </TableHeader>
-                      <TableHeader
-                        field="inprogress"
-                        width={columnWidths.inprogress}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                        onSort={handleSort}
-                      >
-                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider text-center">Progress</div>
-                      </TableHeader>
-                    </Table.Head>
-                    <Table.Body className="divide-y divide-gray-100">
-                      {currentData.map((member) => (
-                        <Table.Row key={member.cognitoId} className="hover:bg-gray-50/50 transition-colors duration-150">
-                          <Table.Cell style={{ width: `${columnWidths.userName}px` }} className="!p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="flex-shrink-0 h-9 w-9 rounded-full bg-cyan-50 flex items-center justify-center">
-                                <span className="text-cyan-600 text-sm font-medium">
-                                  {member.userName.charAt(0).toUpperCase()}
-                                </span>
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="font-medium text-gray-900 text-[13px] truncate" title={member.userName}>
-                                  {member.userName}
+              {/* Table Wrapper */}
+              <div className="h-full flex flex-col">
+                {/* Vertical Scroll Container */}
+                <div className="flex-1 overflow-y-auto scrollbar scrollbar-w-3 scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                  {/* Horizontal Scroll Container */}
+                  <div className="min-w-[1000px]">
+                    <div className="overflow-x-auto scrollbar scrollbar-h-3 scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                      <Table className="w-full table-fixed">
+                        <Table.Head className="sticky top-0 bg-white z-10">
+                          <TableHeader
+                            field="userName"
+                            width={columnWidths.userName}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Name</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="emailId"
+                            width={columnWidths.emailId}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Email Address</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="phoneNumber"
+                            width={columnWidths.phoneNumber}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Phone Number</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="role"
+                            width={columnWidths.role}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Role</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="joiningDate"
+                            width={columnWidths.joiningDate}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Joining Date</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="status"
+                            width={columnWidths.status}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Status</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="delivered"
+                            width={columnWidths.delivered}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600 text-center">Delivered</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="inprogress"
+                            width={columnWidths.inprogress}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600 text-center">Progress</div>
+                          </TableHeader>
+                        </Table.Head>
+                        <Table.Body className="divide-y divide-gray-[2px]">
+                          {currentData.map((member) => (
+                            <Table.Row key={member.cognitoId} className="hover:bg-gray-50 transition-all duration-200">
+                              <Table.Cell style={{ width: `${columnWidths.userName}px` }} className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 h-9 w-9 rounded-lg bg-cyan-50 flex items-center justify-center">
+                                    <span className="text-cyan-600 text-sm font-medium">
+                                      {member.userName.charAt(0).toUpperCase()}
+                                    </span>
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-sm font-medium text-gray-900 truncate" title={member.userName}>
+                                      {member.userName}
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.emailId}px` }} className="!p-4">
-                            <div className="min-w-0">
-                              <div className="truncate text-[13px] text-gray-600" title={member.emailId}>
-                                {member.emailId}
-                              </div>
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.phoneNumber}px` }} className="!p-4">
-                            <div className="min-w-0">
-                              <div className="truncate text-[13px] text-gray-600" title={member.phoneNumber}>
-                                {member.phoneNumber}
-                              </div>
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.role}px` }} className="!p-4">
-                            {getRoleOptions(member.role, userData.role).length > 0 ? (
-                              <Dropdown
-                                label={
-                                  <span className="px-2.5 py-1 text-[13px] font-medium text-gray-700 hover:bg-gray-50 rounded-md border border-gray-200 truncate block max-w-[120px] focus:outline-none focus:ring-0">
-                                    {member.role === 'sales' ? 'Sales' : 
-                                     member.role === 'operation' ? 'Admin' : 
-                                     member.role === 'owner' ? 'Owner' : 'Set Role'}
-                                    {updatingRole === member.cognitoId && '...'}
-                                  </span>
-                                }
-                                dismissOnClick={true}
-                                disabled={updatingRole === member.cognitoId}
-                                inline={true}
-                                theme={{
-                                  floating: {
-                                    target: "w-fit focus:outline-none focus:ring-0",
-                                    base: "bg-white rounded-lg shadow-lg border border-gray-200 z-50",
-                                    item: {
-                                      base: "py-2 px-3 hover:bg-gray-50 focus:outline-none focus:ring-0 focus:bg-gray-50 text-sm text-gray-700 cursor-pointer w-full text-left",
-                                      icon: "h-3.5 w-3.5 text-gray-400"
-                                    }
-                                  }
-                                }}
-                              >
-                                {getRoleOptions(member.role, userData.role).map((role) => (
-                                  <Dropdown.Item 
-                                    key={role}
-                                    onClick={() => handleRoleChange(member.cognitoId, role, member)}
-                                    className={`${member.role === role ? 'bg-gray-50' : ''} 
-                                      ${role === 'owner' ? 'text-blue-600' : 
-                                        role === 'operation' ? 'text-green-600' : 
-                                        role === 'sales' ? 'text-orange-600' : 'text-gray-600'}
-                                      focus:outline-none focus:ring-0`}
-                                  >
-                                    {role === 'sales' ? 'Sales' : 
-                                     role === 'operation' ? 'Admin' : 
-                                     role === 'owner' ? 'Owner' : role}
-                                  </Dropdown.Item>
-                                ))}
-                              </Dropdown>
-                            ) : (
-                              <span className="px-2.5 py-1 text-[13px] text-gray-500 truncate block">
-                                {member.role === 'sales' ? 'Sales' : 
-                                 member.role === 'operation' ? 'Admin' : 
-                                 member.role === 'owner' ? 'Owner' : 'No Role'}
-                              </span>
-                            )}
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.joiningDate}px` }} className="!p-4">
-                            <div className="truncate text-[13px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
-                              {formatEpochToReadableDate(member.joiningDate)}
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.status}px` }} className="!p-4">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate
-                              ${member.status === "Active" 
-                                ? "bg-green-50 text-green-600" 
-                                : "bg-red-50 text-red-600"}`}
-                            >
-                              {member.status}
-                            </span>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.delivered}px` }} className="!p-4 text-center">
-                            <span className="text-[13px] font-medium text-gray-700">{member.delivered || '0'}</span>
-                          </Table.Cell>
-                          <Table.Cell style={{ width: `${columnWidths.inprogress}px` }} className="!p-4 text-center">
-                            <span className="text-[13px] font-medium text-gray-700">{member.inprogress || '0'}</span>
-                          </Table.Cell>
-                        </Table.Row>
-                      ))}
-                    </Table.Body>
-                  </Table>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.emailId}px` }} className="p-4">
+                                <div className="min-w-0">
+                                  <div className="truncate text-[13px] text-gray-600" title={member.emailId}>
+                                    {member.emailId}
+                                  </div>
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.phoneNumber}px` }} className="p-4">
+                                <div className="min-w-0">
+                                  <div className="truncate text-[13px] text-gray-600" title={member.phoneNumber}>
+                                    {member.phoneNumber}
+                                  </div>
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.role}px` }} className="p-4">
+                                <div className="flex items-center">
+                                  {getRoleOptions(member.role, userData.role).length > 0 ? (
+                                    <div className="flex-shrink-0">
+                                      <CustomDropDown
+                                        label={member.role === 'sales' ? 'Sales' : 
+                                               member.role === 'operation' ? 'Admin' : 
+                                               member.role === 'owner' ? 'Owner' : 'Set Role'}
+                                        disabled={updatingRole === member.cognitoId}
+                                        isLoading={updatingRole === member.cognitoId}
+                                        options={getRoleOptions(member.role, userData.role).map(role => ({
+                                          value: role,
+                                          label: role === 'sales' ? 'Sales' : 
+                                                 role === 'operation' ? 'Admin' : 
+                                                 role === 'owner' ? 'Owner' : role,
+                                          color: role === 'owner' ? 'text-blue-600' : 
+                                                 role === 'operation' ? 'text-green-600' : 
+                                                 role === 'sales' ? 'text-orange-600' : 'text-gray-600'
+                                        }))}
+                                        selectedValue={member.role}
+                                        onSelect={(option) => handleRoleChange(member.cognitoId, option.value, member)}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <span className="px-3 py-2 text-sm text-gray-500 truncate">
+                                      {member.role === 'sales' ? 'Sales' : 
+                                       member.role === 'operation' ? 'Admin' : 
+                                       member.role === 'owner' ? 'Owner' : 'No Role'}
+                                    </span>
+                                  )}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.joiningDate}px` }} className="p-4">
+                                <div className="truncate text-[13px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
+                                  {formatEpochToReadableDate(member.joiningDate)}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.status}px` }} className="p-4">
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate
+                                  ${member.status === "Active" 
+                                    ? "bg-green-50 text-green-600" 
+                                    : "bg-red-50 text-red-600"}`}
+                                >
+                                  {member.status}
+                                </span>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.delivered}px` }} className="p-4 text-center">
+                                <span className="text-[13px] font-medium text-gray-700">{member.delivered || '0'}</span>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.inprogress}px` }} className="p-4 text-center">
+                                <span className="text-[13px] font-medium text-gray-700">{member.inprogress || '0'}</span>
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Footer with Pagination */}
-            <div className="py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-center px-4 sm:px-5 w-full gap-3 sm:gap-4 border-t border-gray-100 flex-shrink-0 bg-white rounded-b-xl">
-              <div className="text-sm text-gray-600 bg-gray-50/50 px-4 py-2 rounded-lg order-2 sm:order-1">
+            {/* Mobile View */}
+            <div className="block md:hidden flex-1 overflow-hidden">
+              <div className="h-full overflow-y-auto">
+                <div className="px-4 divide-y divide-gray-200">
+                  {currentData.map((member) => (
+                    <div key={member.cognitoId} className="w-full">
+                      <MobileTableCard
+                        member={member}
+                        expanded={expandedRow === member.cognitoId}
+                        onToggle={toggleExpandedRow}
+                        getRoleOptions={getRoleOptions}
+                        handleRoleChange={handleRoleChange}
+                        updatingRole={updatingRole}
+                        userData={userData}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer with Pagination - Mobile Optimized */}
+            <div className="px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 border-t border-gray-200">
+              <div className="text-xs sm:text-sm text-gray-600 bg-gray-50 px-3 py-1.5 sm:py-2 rounded-lg order-2 sm:order-1 w-full sm:w-auto text-center sm:text-left">
                 Showing <span className="font-medium text-gray-900">{(currentPage - 1) * 7 + 1}-{Math.min(currentPage * 7, filteredAndSortedData.length)}</span> of <span className="font-medium text-gray-900">{filteredAndSortedData.length}</span>
               </div>
 

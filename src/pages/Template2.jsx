@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Home/Navbar';
-import Footer from '../components/Dental/Footer';
-import Company from '../components/Dental/Form/Company';
-import Home from '../components/Dental/Form/Home';
-import Policy from '../components/Dental/Form/Policy';
-import Contact from '../components/Dental/Form/Contact';
+import Footer from '../components/Template2/Footer';
+import Company from '../components/Template2/Form/Company';
+import Home from '../components/Template2/Form/Home';
+import Policy from '../components/Template2/Form/Policy';
+import Contact from '../components/Template2/Form/Contact';
 import { API, Storage } from "aws-amplify";
-import PrevSectionDraftHandler from '../components/Dental/Form/PrevSectionDraftHandler';
+import PrevSectionDraftHandler from '../components/Template2/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
-import Testimonials from '../components/Dental/Form/Testimonials';
-const Dental = () => {
+import Testimonials from '../components/Template2/Form/Testimonials';
+const Template2 = () => {
   const Navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
   const [savedData, setsavedData] = useState();
-  console.log("🚀 ~ file: Dental.jsx:21 ~ Dental ~ savedData:", savedData)
+  console.log("🚀 ~ file: Template2.jsx:21 ~ Template2 ~ savedData:", savedData)
   const [logo, setLogo] = useState(null);
   const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
   const [countBanner, setCountBanner] = useState(
@@ -38,6 +38,7 @@ const Dental = () => {
   const [values, setValues] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isFormFilled, setIsFormFilled] = useState(true);
   const { userData } = useContext(Context)
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
@@ -158,7 +159,7 @@ const Dental = () => {
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo['UPI Id'] || null,
         testimonials: testimonials || [],
-        isFormFilled: true,
+        isFormFilled: isFormFilled,
         cognitoId: userData.cognitoId,
       };
       console.log("Data requesting for PUT", body);
@@ -311,6 +312,7 @@ const Dental = () => {
   };
   const [showModal, setShowModal] = useState(false);
   const handleSaveDraft = () => {
+    setIsFormFilled(false);
     handleSubmitForm();
     Navigate('/dashboard', { state: { section: 'institution-draft' } });
   };
@@ -420,4 +422,4 @@ const Dental = () => {
   );
 };
 
-export default Dental;
+export default Template2;

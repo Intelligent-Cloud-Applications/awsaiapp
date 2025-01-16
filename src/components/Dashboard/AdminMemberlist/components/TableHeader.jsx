@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'flowbite-react';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -14,11 +14,64 @@ const TableHeader = ({
   onResize,
   isResizable = false
 }) => {
+  const headerRef = useRef(null);
+
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!headerRef.current) return;
+
+    // Store all necessary references and values at the start
+    const header = headerRef.current;
+    const table = header.closest('table');
+    const columnIndex = Array.from(header.parentElement.children).indexOf(header);
+    const cells = table.querySelectorAll(`td:nth-child(${columnIndex + 1})`);
+    const startX = e.clientX;
+    const startWidth = width;
+
+    const handleMouseMove = (e) => {
+      const movement = e.clientX - startX;
+      const newWidth = Math.max(150, Math.min(500, startWidth + movement));
+      
+      // Update header width
+      header.style.width = `${newWidth}px`;
+      header.style.minWidth = `${newWidth}px`;
+      header.style.borderRight = '2px solid rgb(6, 182, 212)';
+
+      // Update all cells in this column
+      cells.forEach(cell => {
+        cell.style.width = `${newWidth}px`;
+        cell.style.minWidth = `${newWidth}px`;
+      });
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+
+      // Reset border
+      header.style.borderRight = '';
+
+      // Get final width and update state
+      const finalWidth = parseInt(header.style.width);
+      onResize(field, finalWidth);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
   return (
     <Table.HeadCell 
-      className={`!p-3 cursor-pointer group bg-gray-50/80 relative ${className}`}
+      ref={headerRef}
+      className={`!p-3 cursor-pointer group bg-gray-50/80 relative select-none ${className}`}
       onClick={() => onSort(field)}
-      style={{ width: `${width}px` }}
+      style={{ width: `${width}px`, minWidth: `${width}px` }}
     >
       <div className="flex items-center gap-1.5 justify-between">
         {children}
@@ -42,13 +95,10 @@ const TableHeader = ({
 
       {isResizable && (
         <div
-          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize group/resizer hover:bg-cyan-500/20 transition-colors duration-200"
-          onMouseDown={(e) => onResize(field, e)}
-        >
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-8 opacity-0 group-hover/resizer:opacity-100 transition-opacity duration-200">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-4 bg-cyan-500/20 rounded-full" />
-          </div>
-        </div>
+          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-cyan-500/20 transition-colors duration-200"
+          onMouseDown={handleResizeStart}
+          onClick={(e) => e.stopPropagation()}
+        />
       )}
     </Table.HeadCell>
   );
