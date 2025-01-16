@@ -36,6 +36,8 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
   const handleBackClick = () => {
     Navigate("/dashboard");
   };
+  const SecondaryColor = "#0000";
+  const PrimaryColor = "#30afbc"
   const submitSections = async () => {
     // await nextSection();
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
@@ -43,7 +45,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     //   process.env.REACT_APP_STAGE === 'PROD'
     //     ? 'http://happyprancer.com'
     //     : 'http://beta.happyprancer.com';
-    const url = `http://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${institutionId}`;
+    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
     Navigate("/dashboard");
     window.open(url, '_blank');
     // window.location.href = url;
