@@ -12,16 +12,19 @@ import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
 import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
-import { Select } from "flowbite-react";
 import Index from "../MemberList/Index";
-import { TextInput, Dropdown, Button } from "flowbite-react";
+import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
 import { FaCheck } from "react-icons/fa";
 import { RiExternalLinkLine } from "react-icons/ri";
+import { BsQrCodeScan } from "react-icons/bs";
+// import { FiDownload } from "react-icons/fi";
+// import QR from "../../../img/Qr.jpeg";
+import QR from "../../../Common/Qr";
 
 const Panel = () => {
   const itemsPerPage = 5;
   const [status, setStatus] = useState();
-  // const [memberCount, setMemberCount] = useState();
+  const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   // const [selectedRow, setSelectedRow] = useState([]);
@@ -50,12 +53,11 @@ const Panel = () => {
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
-  const [selectedInstitutionType, setSelectedInstitutionType] = useState("");
   const Ctx = useContext(Context);
   const type = ["Dance Studio", "Dentist", "Cafe"];
-  // eslint-disable-next-line
-  // const [memberCounts, setMemberCounts] = useState({});
+  const [memberCounts, setMemberCounts] = useState({});
 
+  // Clients pannel enhancement
   const [domainLinks, setDomainLinks] = useState({});
 
   const handleDeliverableUpdate = async (institutionid, deliverable) => {
@@ -93,7 +95,7 @@ const Panel = () => {
     }
   };
   const handleDomainLinkSubmit = async (institutionid) => {
-    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+    const domainLink = domainLinks[institutionid];
 
     if (!domainLink) {
       toast.error("Domain link cannot be empty for Completed deliverables.");
@@ -121,6 +123,16 @@ const Panel = () => {
     }
   };
 
+  const [openModal, setOpenModal] = useState(false);
+  const [modalPlacement] = useState("center");
+
+  // const links = [
+  //   {
+  //     url: window.location.href.split("/")[0] + "/put-attendance",
+  //     label: "Attendance",
+  //   },
+  // ];
+
   const customTheme = {
     pages: {
       base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -146,23 +158,23 @@ const Panel = () => {
     if (!searchQuery) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            .filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        return institution.includes(query);
-      })
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          return institution.includes(query);
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -246,7 +258,7 @@ const Panel = () => {
     setTotalLeads(0);
     setTotalAttendance(0);
     setTotalIncome(0);
-    // setMemberCount(0);
+    setMemberCount(0);
     isMonthlyReport.toUpperCase();
     Revenue.toUpperCase();
     userCheck === 0 && setUserCheck(1);
@@ -283,36 +295,36 @@ const Panel = () => {
     }
   });
 
-  // const fetchMemberCounts = useCallback(async () => {
-  //   try {
-  //     const response = await API.get("clients", "/user/list-all-members");
+  const fetchMemberCounts = useCallback(async () => {
+    try {
+      const response = await API.get("clients", "/user/list-all-members");
 
-  //     const counts = response.reduce((acc, user) => {
-  //       if (user.userType === "member") {
-  //         acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
-  //       }
-  //       return acc;
-  //     }, {});
+      const counts = response.reduce((acc, user) => {
+        if (user.userType === "member") {
+          acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
+        }
+        return acc;
+      }, {});
 
-  //     setMemberCounts(counts);
-  //   } catch (error) {
-  //     console.error("Error fetching member counts:", error);
-  //     const defaultCounts = clientsToDisplay.reduce((acc, client) => {
-  //       acc[client.institutionid] = 0;
-  //       return acc;
-  //     }, {});
-  //     setMemberCounts(defaultCounts);
-  //   }
-  // }, [clientsToDisplay]); // Dependency for fetchMemberCounts
+      setMemberCounts(counts);
+    } catch (error) {
+      console.error("Error fetching member counts:", error);
+      const defaultCounts = clientsToDisplay.reduce((acc, client) => {
+        acc[client.institutionid] = 0;
+        return acc;
+      }, {});
+      setMemberCounts(defaultCounts);
+    }
+  }, [clientsToDisplay]); // Dependency for fetchMemberCounts
 
-  // const [shouldFetch, setShouldFetch] = useState(true);
+  const [shouldFetch, setShouldFetch] = useState(true);
 
-  // useEffect(() => {
-  //   if (shouldFetch) {
-  //     fetchMemberCounts();
-  //     setShouldFetch(false);
-  //   }
-  // }, [shouldFetch, fetchMemberCounts]);
+  useEffect(() => {
+    if (shouldFetch) {
+      fetchMemberCounts();
+      setShouldFetch(false);
+    }
+  }, [shouldFetch, fetchMemberCounts]);
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -440,7 +452,6 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
-    setSelectedInstitutionType(client.institutionType);
     setShowMemberList(true); // Toggle view to MemberList
   };
 
@@ -590,11 +601,11 @@ const Panel = () => {
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  {/* {Ctx.userData.role !== "operation" && (
+                  {Ctx.userData.role !== "operation" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Members
                     </Table.HeadCell>
-                  )} */}
+                  )}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -603,8 +614,9 @@ const Panel = () => {
                 Attendance
               </Table.HeadCell> */}
                   <Table.HeadCell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                    className={`${
+                      showHiddenContent ? "" : "max1008:hidden"
+                    } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                   >
                     Created By
                   </Table.HeadCell>
@@ -615,11 +627,15 @@ const Panel = () => {
                     Deliverable
                   </Table.HeadCell>
 
-                  {Ctx.userData.role !== "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Domain Link
-                    </Table.HeadCell>
-                  )}
+                  {/* {Ctx.userData.role !== "sales" && ( */}
+                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    Links
+                  </Table.HeadCell>
+                  {/* )}  */}
+
+                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    QR
+                  </Table.HeadCell> */}
                   {/* {Ctx.userData.role === "sales" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Domain Link
@@ -666,7 +682,7 @@ const Panel = () => {
                         )}
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {client.institutionType}
+                        {splitandjoin(client.institutionType)}
                       </Table.Cell>
 
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -724,14 +740,15 @@ const Panel = () => {
                           {client.payment ? "Paid" : "Not Paid"}
                         </Table.Cell>
                       )}
-                      {/* {Ctx.userData.role !== "operation" && (
+                      {Ctx.userData.role !== "operation" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                           {memberCounts[client.institutionid] || 0}
                         </Table.Cell>
-                      )} */}
+                      )}
                       <Table.Cell
-                        className={`${showHiddenContent ? "" : "max1008:hidden"
-                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                        className={`${
+                          showHiddenContent ? "" : "max1008:hidden"
+                        } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                       >
                         {/* {client.createdBy} */}
                         {client.createdBy
@@ -745,9 +762,9 @@ const Panel = () => {
                         {Ctx.userData.role !== "sales" ? (
                           <Dropdown
                             label={
-                              (selectedStatuses[client.institutionid] ||
-                                client.deliverable ||
-                                "Pending")
+                              selectedStatuses[client.institutionid] ||
+                              client.deliverable ||
+                              "Pending"
                             }
                             inline
                           >
@@ -804,7 +821,8 @@ const Panel = () => {
                         )}
                       </Table.Cell>
                       {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white flex gap-2 items-center">
+                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
+                          <div className="flex items-center gap-2">
                           <TextInput
                             id="domain"
                             value={domainLinks[client.institutionid] || ""}
@@ -815,8 +833,9 @@ const Panel = () => {
                             }
                             required
                             disabled={
-                              (selectedStatuses[client.institutionid] !==
-                                "Completed") && (client.deliverable !== "Completed")
+                              selectedStatuses[client.institutionid] !==
+                                "Completed" &&
+                              client.deliverable !== "Completed"
                             }
                             className="w-[150px]"
                             onChange={(e) =>
@@ -826,17 +845,17 @@ const Panel = () => {
                               }))
                             }
                           />
-                          {selectedStatuses[client.institutionid] ===
-                            "Completed" && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
+                          {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
+                          </div>
                         </Table.Cell>
                       )}
 
@@ -853,19 +872,107 @@ const Panel = () => {
                       )} */}
 
                       {/* {Ctx.userData.role === "sales" && ( */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 test-center bg-white">
+                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
+                        
+                      <div className="flex items-center gap-2">
                         {client.domainLink ? (
                           <RiExternalLinkLine
-                            onClick={() =>
-                              window.open(client.domainLink, "_blank")
-                            }
-                            className="text-blue-500 cursor-pointer h-[50px] w-[20px]"
+                            onClick={() => {
+                              // Open the link in a new tab
+                              window.open(client.domainLink, "_blank");
+
+                              // Copy the link to the clipboard
+                              navigator.clipboard
+                                .writeText(client.domainLink)
+                                .then(() => {
+                                  toast.success(
+                                    "Domain link copied to clipboard!"
+                                  );
+                                })
+                                .catch((err) => {
+                                  toast.error("Failed to copy domain link.");
+                                  console.error("Clipboard copy failed:", err);
+                                });
+                            }}
+                            className="text-blue-500 cursor-pointer h-5 w-5"
                           />
                         ) : null}
-                      </Table.Cell>
+                      {/* </Table.Cell> */}
+
                       {/* )} */}
 
                       {/*Clients Panel Enhancement with Status Attribute */}
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
+                      {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"> */}
+                        {client.domainLink ? (
+                          <>
+                              <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
+                              onClick={() => setOpenModal(client.institutionid)}
+                               />
+                            <Modal
+                              show={openModal === client.institutionid}
+                              position={modalPlacement}
+                              onClose={() => setOpenModal(false)}
+                            >
+                              <Modal.Header>Attendance QR</Modal.Header>
+                              <Modal.Body>
+                                <div className="flex flex-col items-center space-y-4">
+                                  <figure className="w-fit flex flex-col items-center">
+                                    <QR
+                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                      download={`${client.companyName}Attendance QR Code.png`}
+                                      size={300}
+                                    />
+                                    {/* {console.log("domain link" + client.domainLink)} */}
+                                  </figure>
+                                  <h1 className="text-center font-semibold">
+                                    Institution Name: {client.companyName}
+                                  </h1>
+                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                    This is the attendance QR for the{" "}
+                                    {client.companyName} institution. Please tap
+                                    on the QR code to download it.
+                                  </p>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <a
+                                  href={client.domainLink + "/put-attendance"}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => {
+                                    const linkToCopy =
+                                      client.domainLink + "/put-attendance";
+
+                                    // Copy the link to the clipboard
+                                    navigator.clipboard
+                                      .writeText(linkToCopy)
+                                      .then(() => {
+                                        toast.success(
+                                          "Link copied to clipboard!"
+                                        );
+                                      })
+                                      .catch((err) => {
+                                        toast.error("Failed to copy link.");
+                                        console.error(
+                                          "Clipboard copy failed:",
+                                          err
+                                        );
+                                      });
+                                  }}
+                                >
+                                    <RiExternalLinkLine 
+                                    className="text-blue-500 cursor-pointer h-5 w-5"/>
+                                </a>
+                              </Modal.Footer>
+                            </Modal>
+                          </>
+                        ) : null}
+                        </div>
+                      </Table.Cell>
+
+                      {/*Clients Panel Enhancement with QR Attribute */}
 
                       <Link
                         onClick={() => handleInstitutionClick(client)}
@@ -881,7 +988,7 @@ const Panel = () => {
                   </div> */}
                       <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                      // onClick={handleMoreClick}
+                        // onClick={handleMoreClick}
                       >
                         <Link onClick={() => handleInstitutionClick(client)}>
                           {isMoreVisible ? <FaChevronRight /> : ""}
@@ -937,12 +1044,12 @@ const Panel = () => {
                   <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {TotalIncome}
                   </div>
-                  {/* <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
                     Members:
                   </div>
                   <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {memberCount}
-                  </div> */}
+                  </div>
                   <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
                     Attendance:
                   </div>
@@ -1083,15 +1190,10 @@ const Panel = () => {
           </div>
         </div>
       ) : (
-        Ctx.userData.userType === "admin" ? (
-          <Index
-            tempInstitution={tempInstitution}
-            setShowMemberList={setShowMemberList}
-            selectedInstitutionType={selectedInstitutionType}
-          />) :
-          (
-            setShowMemberList(false)
-          )
+        <Index
+          tempInstitution={tempInstitution}
+          setShowMemberList={setShowMemberList}
+        />
       )}
     </>
   );
