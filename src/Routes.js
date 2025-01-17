@@ -44,6 +44,7 @@ import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import Template2 from "./pages/Template2";
 import Template3 from "./pages/Template3";
 import CompleteDraft from "./pages/CompleteDraft";
+import Error from "./pages/Error";
 
 
 const RoutesContainer = () => {
@@ -118,6 +119,7 @@ const RoutesContainer = () => {
       </Route>
       <Route path="/error" element={<UnauthorizedUser />} />
       <Route path="/callback" element={<Callback />} />
+      <Route path="*" element={<Error/>} />
     </Routes>
   );
 };
