@@ -20,6 +20,7 @@ import { BsQrCodeScan } from "react-icons/bs";
 // import { FiDownload } from "react-icons/fi";
 // import QR from "../../../img/Qr.jpeg";
 import QR from "../../../Common/Qr";
+import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 
 const Panel = () => {
   const itemsPerPage = 5;
@@ -59,6 +60,13 @@ const Panel = () => {
   // const [memberCounts, setMemberCounts] = useState({});
   const [payment, setPayment] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
+  const [activeMenu, setActiveMenu] = useState(null); // Tracks which submenu is active
+  const [activeSubMenu, setActiveSubMenu] = useState(null); // Tracks which submenu is active
+  const isDeliveredOptions = ["Delivered", "Not Delivered"]; // Example delivery options
+
+  const handleMenuToggle = (menu) => {
+    setActiveSubMenu((prev) => (prev === menu ? null : menu));
+  };
 
   // Clients pannel enhancement
   const [domainLinks, setDomainLinks] = useState({});
@@ -159,12 +167,20 @@ const Panel = () => {
   const handleTypeFilter = (typeSelected) => {
     setFilterStatus(null);
     setSelectedType(typeSelected);
+    setActiveMenu(null);
+    setActiveSubMenu(null);
   };
 
   const handleDeliverFilter = (value) => {
     setSelectedType(null);
-    setFilterStatus(value);
-  }
+    if (value === "Delivered") {
+      setFilterStatus(true);
+    } else {
+      setFilterStatus(false);
+    }
+    setActiveMenu(null);
+    setActiveSubMenu(null);
+  };
 
   const navigate = useNavigate();
   const filterClients = useCallback(() => {
@@ -554,65 +570,73 @@ const Panel = () => {
             </div>
           </div>
           <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-            <div className="flex flex-row justify-end w-[95%] items-center  mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center">
-              {/*Filter by Type*/}
-              <div className="left-0 mr-[8vw]">
-                <Dropdown
-                  label="Filter by Type"
-                  style={{
-                    backgroundColor: "#0891b2",
-                    height: "2.5rem",
-                  }}
+            <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
+              <div className="relative inline-block ml-5">
+                <button
+                  className=" flex flex-row bg-[#0891b2] text-white px-4 py-2 rounded-md"
+                  onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                 >
-                  <Dropdown.Item
-                    key="All"
-                    onClick={() => handleTypeFilter(null)}
-                    className="hover:bg-gray-200 focus:bg-gray-200"
-                  >
-                    All
-                  </Dropdown.Item>
-                  {type.map((typeValue) => (
-                    <Dropdown.Item
-                      key={typeValue}
-                      onClick={() => handleTypeFilter(typeValue)}
-                      className="hover:bg-gray-200 focus:bg-gray-200"
-                    >
-                      {typeValue}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown>
-              </div>
-              {/*Filter by isDelivered*/}
-              <div className="mr-[15vw]">
-                <Dropdown
-                  label="Filter by Delivery Status"
-                  style={{
-                    backgroundColor: "#0891b2",
-                    height: "2.5rem",
-                  }}
-                >
-                  <Dropdown.Item
-                    key="All"
-                    onClick={() => handleDeliverFilter(null)}
-                    className="hover:bg-gray-200 focus:bg-gray-200"
-                  >
-                    All
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    key="Delivered"
-                    onClick={() => handleDeliverFilter(true)}
-                    className="hover:bg-gray-200 focus:bg-gray-200"
-                  >
-                    Delivered
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    key="Not Delivered"
-                    onClick={() => handleDeliverFilter(false)}
-                    className="hover:bg-gray-200 focus:bg-gray-200"
-                  >
-                    Not Delivered
-                  </Dropdown.Item>
-                </Dropdown>
+                  Filter by
+                  {activeMenu ? (
+                    <HiChevronUp className="ml-2" />
+                  ) : (
+                    <HiChevronDown className="ml-2" />
+                  )}
+                </button>
+
+                {activeMenu && (
+                  <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
+                    {/* Main Dropdown Menu */}
+                    {activeMenu === "main" && (
+                      <div>
+                        <div
+                          onClick={() => handleMenuToggle("type")}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          <span>Type</span>
+                          <HiChevronRight />
+                        </div>
+                        <div
+                          onClick={() => handleMenuToggle("isDelivered")}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          <span>Is Delivered</span>
+                          <HiChevronRight />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Type Submenu */}
+                    {activeSubMenu === "type" && (
+                      <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                        {type.map((type) => (
+                          <div
+                            key={type}
+                            onClick={() => handleTypeFilter(type)}
+                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                          >
+                            {type}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Is Delivered Submenu */}
+                    {activeSubMenu === "isDelivered" && (
+                      <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                        {isDeliveredOptions.map((option) => (
+                          <div
+                            key={option}
+                            onClick={() => handleDeliverFilter(option)}
+                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                          >
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               {/* Search Bar */}
               <form class="w-full min800:w-[30%] rounded-sm my-3">
@@ -651,6 +675,7 @@ const Panel = () => {
                   />
                 </div>
               </form>
+
             </div>
             {/* Headings */}
             <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
@@ -716,7 +741,7 @@ const Panel = () => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Links
                   </Table.HeadCell>
-                   {/* )}   */}
+                  {/* )}   */}
 
                   {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     QR
@@ -919,26 +944,26 @@ const Panel = () => {
                               disabled={
                                 selectedStatuses[client.institutionid] !==
                                 "Completed" &&
-                              client.deliverable !== "Completed"
-                            }
-                            className="w-[160px]"
-                            onChange={(e) =>
-                              setDomainLinks((prev) => ({
-                                ...prev,
-                                [client.institutionid]: e.target.value,
-                              }))
-                            }
-                          />
-                          {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
-                            <Button
-                              onClick={() =>
-                                handleDomainLinkSubmit(client.institutionid)
+                                client.deliverable !== "Completed"
                               }
-                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                            >
-                              <FaCheck />
-                            </Button>
-                          )}
+                              className="w-[160px]"
+                              onChange={(e) =>
+                                setDomainLinks((prev) => ({
+                                  ...prev,
+                                  [client.institutionid]: e.target.value,
+                                }))
+                              }
+                            />
+                            {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
+                              <Button
+                                onClick={() =>
+                                  handleDomainLinkSubmit(client.institutionid)
+                                }
+                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                              >
+                                <FaCheck />
+                              </Button>
+                            )}
                           </div>
                         </Table.Cell>
                       )}
@@ -992,42 +1017,42 @@ const Panel = () => {
                           {client.domainLink ? (
                             <>
                               <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
-                              onClick={() => setOpenModal(client.institutionid)}
+                                onClick={() => setOpenModal(client.institutionid)}
                               />
-                            <Modal
-                              show={openModal === client.institutionid}
-                              position={modalPlacement}
-                              onClose={() => setOpenModal(false)}
-                            >
-                              <Modal.Header>Attendance QR</Modal.Header>
-                              <Modal.Body>
-                                <div className="flex flex-col items-center space-y-4">
-                                  <figure className="w-fit flex flex-col items-center">
-                                    <QR
-                                      url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                      download={`${client.companyName} Attendance QR Code.png`}
-                                      size={300}
-                                    />
-                                    {/* {console.log("domain link" + client.domainLink)} */}
-                                  </figure>
-                                  <h1 className="text-center font-semibold">
-                                    Institution Name: {client.companyName}
-                                  </h1>
-                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                    This is the attendance QR for the{" "}
-                                    {client.companyName} institution. Please tap
-                                    on the QR code to download it.
-                                  </p>
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <a
-                                  href={client.domainLink + "/put-attendance"}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => {
-                                    const linkToCopy =
-                                      client.domainLink + "/put-attendance";
+                              <Modal
+                                show={openModal === client.institutionid}
+                                position={modalPlacement}
+                                onClose={() => setOpenModal(false)}
+                              >
+                                <Modal.Header>Attendance QR</Modal.Header>
+                                <Modal.Body>
+                                  <div className="flex flex-col items-center space-y-4">
+                                    <figure className="w-fit flex flex-col items-center">
+                                      <QR
+                                        url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                        download={`${client.companyName} Attendance QR Code.png`}
+                                        size={300}
+                                      />
+                                      {/* {console.log("domain link" + client.domainLink)} */}
+                                    </figure>
+                                    <h1 className="text-center font-semibold">
+                                      Institution Name: {client.companyName}
+                                    </h1>
+                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                      This is the attendance QR for the{" "}
+                                      {client.companyName} institution. Please tap
+                                      on the QR code to download it.
+                                    </p>
+                                  </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                  <a
+                                    href={client.domainLink + "/put-attendance"}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => {
+                                      const linkToCopy =
+                                        client.domainLink + "/put-attendance";
 
                                       // Copy the link to the clipboard
                                       navigator.clipboard
@@ -1271,8 +1296,8 @@ const Panel = () => {
                 theme={customTheme}
               />
             </div>
-          </div>
-        </div>
+          </div >
+        </div >
       ) : (
         Ctx.userData.userType === "admin" ? (
           <Index
