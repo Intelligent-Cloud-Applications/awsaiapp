@@ -56,7 +56,7 @@ const Panel = () => {
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
   const type = ["DanceStudio", "Dentist", "Cafe"];
-  const [memberCounts, setMemberCounts] = useState({});
+  // const [memberCounts, setMemberCounts] = useState({});
   const [payment, setPayment] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -311,36 +311,36 @@ const Panel = () => {
     }
   });
 
-  const fetchMemberCounts = useCallback(async () => {
-    try {
-      const response = await API.get("clients", "/user/list-all-members");
+  // const fetchMemberCounts = useCallback(async () => {
+  //   try {
+  //     const response = await API.get("clients", "/user/list-all-members");
 
-      const counts = response.reduce((acc, user) => {
-        if (user.userType === "member") {
-          acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
-        }
-        return acc;
-      }, {});
+  //     const counts = response.reduce((acc, user) => {
+  //       if (user.userType === "member") {
+  //         acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
+  //       }
+  //       return acc;
+  //     }, {});
 
-      setMemberCounts(counts);
-    } catch (error) {
-      console.error("Error fetching member counts:", error);
-      const defaultCounts = clientsToDisplay.reduce((acc, client) => {
-        acc[client.institutionid] = 0;
-        return acc;
-      }, {});
-      setMemberCounts(defaultCounts);
-    }
-  }, [clientsToDisplay]); // Dependency for fetchMemberCounts
+  //     setMemberCounts(counts);
+  //   } catch (error) {
+  //     console.error("Error fetching member counts:", error);
+  //     const defaultCounts = clientsToDisplay.reduce((acc, client) => {
+  //       acc[client.institutionid] = 0;
+  //       return acc;
+  //     }, {});
+  //     setMemberCounts(defaultCounts);
+  //   }
+  // }, [clientsToDisplay]); // Dependency for fetchMemberCounts
 
-  const [shouldFetch, setShouldFetch] = useState(true);
+  // const [shouldFetch, setShouldFetch] = useState(true);
 
-  useEffect(() => {
-    if (shouldFetch) {
-      fetchMemberCounts();
-      setShouldFetch(false);
-    }
-  }, [shouldFetch, fetchMemberCounts]);
+  // useEffect(() => {
+  //   if (shouldFetch) {
+  //     fetchMemberCounts();
+  //     setShouldFetch(false);
+  //   }
+  // }, [shouldFetch, fetchMemberCounts]);
 
   const handleUpdateClient = async (e) => {
     setIsUpdateFormVisible(true);
@@ -687,11 +687,11 @@ const Panel = () => {
                   {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
                 Revenue
               </Table.HeadCell> */}
-                  {Ctx.userData.role !== "operation" && (
+                  {/* {Ctx.userData.role !== "operation" && (
                     <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                       Members
                     </Table.HeadCell>
-                  )}
+                  )} */}
                   {/* <Table.HeadCell
                 className={`${
                   showHiddenContent ? "" : "max1008:hidden"
@@ -825,11 +825,11 @@ const Panel = () => {
                           {client.payment ? "Paid" : "Not Paid"}
                         </Table.Cell>
                       )}
-                      {Ctx.userData.role !== "operation" && (
+                      {/* {Ctx.userData.role !== "operation" && (
                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                           {memberCounts[client.institutionid] || 0}
                         </Table.Cell>
-                      )}
+                      )} */}
                       <Table.Cell
                         className={`${showHiddenContent ? "" : "max1008:hidden"
                           } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
@@ -1128,9 +1128,9 @@ const Panel = () => {
                   <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {TotalIncome}
                   </div>
-                  <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
+                  {/* <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
                     Members:
-                  </div>
+                  </div> */}
                   <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
                     {memberCount}
                   </div>
