@@ -182,6 +182,13 @@ const Panel = () => {
     setActiveSubMenu(null);
   };
 
+  const handleAllFilter = () => {
+    setFilterStatus(null);
+    setSelectedType(null);
+    setActiveMenu(null);
+    setActiveSubMenu(null);
+  };
+
   const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery && !selectedType && filterStatus === null) {
@@ -589,6 +596,12 @@ const Panel = () => {
                     {/* Main Dropdown Menu */}
                     {activeMenu === "main" && (
                       <div>
+                        <div
+                          onClick={() => handleAllFilter()}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          All
+                        </div>
                         <div
                           onClick={() => handleMenuToggle("type")}
                           className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
