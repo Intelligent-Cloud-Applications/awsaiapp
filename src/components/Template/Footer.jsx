@@ -22,7 +22,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     'POLICY',
   ];
 
-  const progress = (currentSection / sections.length) * 100;
+  // const progress = (currentSection / sections.length) * 100;
 
   const handleNextClick = () => {
     saveData();
