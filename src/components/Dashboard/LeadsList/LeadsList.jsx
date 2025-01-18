@@ -714,10 +714,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   //   // eslint-disable-next-line
   // }, [location.pathname]);
 
-  console.log("additionalInfoTitle:", additionalInfoTitle);
-  console.log("additionalInfo:", additionalInfo);
-  console.log("selected data", selectedRow);
-  console.log("filtered data", filteredLeads);
+  // console.log("additionalInfoTitle:", additionalInfoTitle);
+  // console.log("additionalInfo:", additionalInfo);
+  // console.log("selected data", selectedRow);
+  // console.log("filtered data", filteredLeads);
   return (
     <div>
       {screenWidth > 1025 ? (
