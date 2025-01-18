@@ -7,6 +7,13 @@ function BatchJobs({ institution: tempInstitution }) {
   const [batchJobs, setBatchJobs] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
   const { util, userData } = useContext(Context);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const Ctx = useContext(Context);
   const [LoaderInitialized, setLoaderInitialized] = useState(false);
   useEffect(() => {
@@ -245,7 +252,9 @@ function BatchJobs({ institution: tempInstitution }) {
 
   return (
     <>
-      <div className="mt-5 w-[70rem]"></div>
+     {screenWidth > 1025 ? (
+      <>
+      <div className="mt-5 w-[70rem] max1250:w-[50rem]"></div>
       <div className="bg-white w-full max-w-[100%] rounded-b-md">
         <div className="overflow-x-auto">
           <Table className="w-full text-sm text-left text-gray-500 gap-10">
@@ -311,6 +320,62 @@ function BatchJobs({ institution: tempInstitution }) {
           />
         </div>
       </div>
+      </>
+       ) : (
+        <>
+       <div className="mt-5 w-full px-2">
+  <h2 className="text-lg font-semibold mb-4">Batch Jobs</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {jobMappings.map((job) => {
+      const status = batchJobs[`batch_${job.type}_status`] || "Failed";
+      const lastUpdate = batchJobs[`batch_${job.type}_lastupdate`] || "N/A";
+      const updatedBy = batchJobs[`batch_${job.type}_updatedby`] || "N/A";
+
+      return (
+        <div
+          key={job.type}
+          className="bg-white p-4 shadow-md rounded-md"
+        >
+          <p>
+            <strong>Function:</strong> {job.name}
+          </p>
+          <p>
+            <strong>Status:</strong> {status}
+          </p>
+          <p>
+            <strong>Last Update:</strong> {formatDate(lastUpdate)}
+          </p>
+          <p>
+            <strong>Updated By:</strong>{" "}
+            {updatedBy ? getUsernameByCognitoId(updatedBy) : "Unknown"}
+          </p>
+          <div className="mt-2">
+            <input
+              type="file"
+              id={`fileInput-${job.type}`}
+              style={{ display: "none" }}
+              onChange={(event) =>
+                handleFileChange(event, job.type, job.bucket)
+              }
+            />
+            <Button
+              onClick={() =>
+                document.getElementById(`fileInput-${job.type}`).click()
+              }
+              className="bg-[#30afbc]"
+            >
+              {status === "Successful" ? "Reupload" : "Upload"}
+            </Button>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+    </>
+       )
+    }
     </>
   );
 }

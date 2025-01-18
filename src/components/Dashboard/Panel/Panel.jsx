@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
+import { AiOutlineEye } from "react-icons/ai";
 import Context from "../../../context/Context";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API } from "aws-amplify";
-import Swal from "sweetalert2";
 import { FaChevronRight } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,77 +17,56 @@ import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
 import { FaCheck } from "react-icons/fa";
 import { RiExternalLinkLine } from "react-icons/ri";
 import { BsQrCodeScan } from "react-icons/bs";
-// import { FiDownload } from "react-icons/fi";
-// import QR from "../../../img/Qr.jpeg";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 
 const Panel = () => {
   const itemsPerPage = 5;
-  const [status, setStatus] = useState();
-  const [memberCount, setMemberCount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState(null);
-  // const [selectedRow, setSelectedRow] = useState([]);
-  // eslint-disable-next-line
   const [isMonthlyReport, setisMonthlyReport] = useState("");
-  const { clients, util, userData, setUserData } = useContext(Context);
+  const { clients, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
-  // const [isUserAdd, setIsUserAdd] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [Country, setCountry] = useState("");
-  const [TotalIncome, setTotalIncome] = useState("");
-  const [TotalAttendance, setTotalAttendance] = useState("");
-  const [TotalLeads, setTotalLeads] = useState("");
-  // eslint-disable-next-line
-  const [Revenue, setRevenue] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
-  // eslint-disable-next-line
-  const [JoiningDate, setJoiningDate] = useState("");
-  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
-  const [instituteTypes, setInstituteTypes] = useState([]);
-  const [instituteType, setInstituteType] = useState("");
-  const Ctx = useContext(Context);
-  const type = ["DanceStudio", "Dentist", "Cafe"];
-  // const [memberCounts, setMemberCounts] = useState({});
-  const [payment, setPayment] = useState(false);
-  const [filterStatus, setFilterStatus] = useState(null);
-  const [activeMenu, setActiveMenu] = useState(null); // Tracks which submenu is active
-  const [activeSubMenu, setActiveSubMenu] = useState(null); // Tracks which submenu is active
-  const isDeliveredOptions = ["Delivered", "Not Delivered"]; // Example delivery options
-
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null); 
+  const isDeliveredOptions = ["Delivered", "Not Delivered"]; 
   const handleMenuToggle = (menu) => {
     setActiveSubMenu((prev) => (prev === menu ? null : menu));
   };
 
-  // Clients pannel enhancement
+  const [instituteTypes, setInstituteTypes] = useState([]);
+  const [instituteType, setInstituteType] = useState("");
+  const Ctx = useContext(Context);
+  const type = ["DanceStudio", "Dentist", "Cafe"];
+  const [payment, setPayment] = useState(false);
+  const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const handleDeliverableUpdate = async (institutionid, deliverable) => {
-    const domainLink = domainLinks[institutionid]; // Get the domain link for the institution
+    const domainLink = domainLinks[institutionid];
 
     if (deliverable === "Completed" && !domainLink) {
-      // toast.error("Domain link cannot be empty for Completed deliverables.");
       return;
     }
 
     try {
-      // Construct the request body
       const body = {
         institutionid,
         deliverable,
-        ...(deliverable === "Completed" && { domainLink }), // Include domainLink only if deliverable is "Completed"
+        ...(deliverable === "Completed" && { domainLink }),
       };
 
-      // Make the API call
       await API.put("clients", `/admin/update-deliverable`, { body });
 
       if (deliverable === "Completed") {
@@ -97,7 +76,6 @@ const Panel = () => {
         toast.success("Deliverable updated successfully!");
       }
 
-      // Fetch updated clients data
       const response = await API.get("clients", "/admin/list-institution");
       clients.setClients(response);
     } catch (error) {
@@ -114,7 +92,6 @@ const Panel = () => {
     }
 
     try {
-      // Make the API call to update the domain link
       await API.put("clients", `/admin/update-deliverable`, {
         body: {
           institutionid,
@@ -123,7 +100,6 @@ const Panel = () => {
         },
       });
 
-      // Update the state
       setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
       const response = await API.get("clients", "/admin/list-institution");
       clients.setClients(response);
@@ -136,13 +112,6 @@ const Panel = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [modalPlacement] = useState("center");
-
-  // const links = [
-  //   {
-  //     url: window.location.href.split("/")[0] + "/put-attendance",
-  //     label: "Attendance",
-  //   },
-  // ];
 
   const customTheme = {
     pages: {
@@ -167,8 +136,6 @@ const Panel = () => {
   const handleTypeFilter = (typeSelected) => {
     setFilterStatus(null);
     setSelectedType(typeSelected);
-    setActiveMenu(null);
-    setActiveSubMenu(null);
   };
 
   const handleDeliverFilter = (value) => {
@@ -182,38 +149,33 @@ const Panel = () => {
     setActiveSubMenu(null);
   };
 
-  const handleAllFilter = () => {
-    setFilterStatus(null);
-    setSelectedType(null);
-    setActiveMenu(null);
-    setActiveSubMenu(null);
-  };
-
   const navigate = useNavigate();
   const filterClients = useCallback(() => {
     if (!searchQuery && !selectedType && filterStatus === null) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            .filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery?.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        const matchesQuery = !searchQuery || institution.includes(query);
-        const matchesType = !selectedType || client.institutionType === selectedType;
-        const matchesDelivery = filterStatus === null || client.isDelivered === filterStatus;
-        return matchesQuery && matchesType && matchesDelivery;
-      })
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          const matchesQuery = !searchQuery || institution.includes(query);
+          const matchesType =
+            !selectedType || client.institutionType === selectedType;
+          const matchesDelivery =
+            filterStatus === null || client.isDelivered === filterStatus;
+          return matchesQuery && matchesType && matchesDelivery;
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -294,12 +256,7 @@ const Panel = () => {
 
   if (1 < 0) {
     setShowHiddenContent(true);
-    setTotalLeads(0);
-    setTotalAttendance(0);
-    setTotalIncome(0);
-    setMemberCount(0);
     isMonthlyReport.toUpperCase();
-    Revenue.toUpperCase();
     userCheck === 0 && setUserCheck(1);
   }
 
@@ -309,7 +266,6 @@ const Panel = () => {
   const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
   const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
-  // const selectedRowCount = selectedRow.length;
   useEffect(() => {
     if (currentPage < 1 && totalPages > 0) {
       setCurrentPage(1);
@@ -318,114 +274,20 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  function formatEpochToReadableDate(epochDate) {
-    const date = new Date(epochDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-  const location = useLocation();
-  useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      util.setLoader(true);
-      util.setLoader(false);
-    }
-  });
-
-  // const fetchMemberCounts = useCallback(async () => {
-  //   try {
-  //     const response = await API.get("clients", "/user/list-all-members");
-
-  //     const counts = response.reduce((acc, user) => {
-  //       if (user.userType === "member") {
-  //         acc[user.institutionid] = (acc[user.institutionid] || 0) + 1;
-  //       }
-  //       return acc;
-  //     }, {});
-
-  //     setMemberCounts(counts);
-  //   } catch (error) {
-  //     console.error("Error fetching member counts:", error);
-  //     const defaultCounts = clientsToDisplay.reduce((acc, client) => {
-  //       acc[client.institutionid] = 0;
-  //       return acc;
-  //     }, {});
-  //     setMemberCounts(defaultCounts);
-  //   }
-  // }, [clientsToDisplay]); // Dependency for fetchMemberCounts
-
-  // const [shouldFetch, setShouldFetch] = useState(true);
-
-  // useEffect(() => {
-  //   if (shouldFetch) {
-  //     fetchMemberCounts();
-  //     setShouldFetch(false);
-  //   }
-  // }, [shouldFetch, fetchMemberCounts]);
-
-  const handleUpdateClient = async (e) => {
-    setIsUpdateFormVisible(true);
-    try {
-      const apiName = "clients";
-      const path = "/admin/update-clients";
-      const myInit = {
-        body: {
-          institution: name,
-          emailId: email,
-          phoneNumber: phoneNumber,
-          country: Country,
-          status: status,
-        },
-      };
-      console.log("my init", myInit);
-      const response = await API.put(apiName, path, myInit);
-      Swal.fire({
-        icon: "success",
-        title: "User Updated",
-      });
-      clients.onReload();
-      console.log("Client updated successfully:", response);
-      setIsUpdateFormVisible(false);
-      setSelectedUser(null);
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setCountry("");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while updating the user.",
-      });
-      console.error("Error updating client:", error);
-    }
-  };
-
-  const handleCancelUpdate = () => {
-    setIsUpdateFormVisible(false);
-    setSelectedUser(null);
-    setName("");
-    setEmail("");
-    setPhoneNumber("");
-    setStatus("");
-  };
-
   const getBadgeProps = (web, payment, delivered) => {
     let text, color;
 
     if (web) {
       if (payment && delivered) {
         text = "Active";
-        color = "success"; // Yellow color for Pending status
+        color = "success";
       } else {
         text = "Pending";
-        color = "warning"; // Green color for Active status
+        color = "warning";
       }
     } else {
       text = "InActive";
-      color = "failure"; // Red color for InActive status
+      color = "failure";
     }
 
     return { text, color };
@@ -435,7 +297,7 @@ const Panel = () => {
     if (typeof str !== "string") {
       return "";
     }
-    // if capital letter is found then split the string and join it with space
+
     if (typeof str !== "string") {
       return "";
     }
@@ -445,16 +307,15 @@ const Panel = () => {
         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
         .join(" ");
     } else {
-      // Handle cases where str is not a valid string
       console.error("Invalid input: The input is not a string or is empty.");
-      return ""; // or return str if you want to return the original input
+      return "";
     }
   };
 
   const handleRowClick = (institution, event) => {
     setPayment(institution.payment);
     setisMonthlyReport(institution.institutionid);
-    // Find the link within the clicked row and trigger a click on it
+
     const link = event.currentTarget.querySelector(".change-page");
     if (link) {
       link.click();
@@ -464,9 +325,9 @@ const Panel = () => {
   const handlePayment = () => {
     console.log("redirect to payment");
     const SecondaryColor = "#0000";
-    const PrimaryColor = "#30afbc"
+    const PrimaryColor = "#30afbc";
     const url = `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${tempInstitution}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
     setShowMemberList(false);
     navigate("/dashboard");
   };
@@ -492,17 +353,16 @@ const Panel = () => {
     },
     []
   );
-  const [tempInstitution, setTempInstitution] = useState(null); // Store tempInstitution
+  const [tempInstitution, setTempInstitution] = useState(null);
   const [showMemberList, setShowMemberList] = useState(false);
   const handleInstitutionClick = (client) => {
-    // Set the institutionid as tempInstitution and show the MemberList
     const updatedUserData = {
       ...userData,
       tempinstitutionName: client.institutionid,
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
-    setShowMemberList(true); // Toggle view to MemberList
+    setShowMemberList(true);
   };
 
   const getLinkPath = (instituteType) => {
@@ -522,86 +382,83 @@ const Panel = () => {
   return (
     <>
       {!showMemberList ? (
-        <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
-          <ToastContainer />
-          <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
-            <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
-              <Select
-                value={instituteType && splitandjoin(instituteType)}
-                onChange={(e) => setInstituteType(e.target.value)}
-                className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
-              >
-                {instituteType === "" && (
-                  <option value="" disabled hidden>
-                    Type
-                  </option>
-                )}
-                {type.map((type) => (
-                  <option
-                    key={type}
-                    value={type}
-                    className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
-                  >
-                    {splitandjoin(type)}
-                  </option>
-                ))}
-              </Select>
+        <>
+          {screenWidth > 1025 ? (
+            <>
+              <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+                <ToastContainer />
+                <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+                  <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
+                    <Select
+                      value={instituteType && splitandjoin(instituteType)}
+                      onChange={(e) => setInstituteType(e.target.value)}
+                      className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
+                    >
+                      {instituteType === "" && (
+                        <option value="" disabled hidden>
+                          Type
+                        </option>
+                      )}
+                      {type.map((type) => (
+                        <option
+                          key={type}
+                          value={type}
+                          className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
+                        >
+                          {splitandjoin(type)}
+                        </option>
+                      ))}
+                    </Select>
 
-              <Link
-                to={getLinkPath(instituteType)}
-                onClick={(e) => {
-                  if (instituteType === "") {
-                    e.stopPropagation();
-                    console.log("Showing toast message"); // Debug line
-                    toast.error("Please Select a type of Institution.", {
-                      position: "top-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      style: {
-                        backgroundColor: "#f8d7da",
-                        color: "#721c24",
-                      },
-                    });
-                  }
-                }}
-                className="hover:no-underline"
-              >
-                <button className="flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto">
-                  <p className="text-white">Create New Institution</p>
-                </button>
-              </Link>
-            </div>
-          </div>
-          <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-            <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
+                    <Link
+                      to={getLinkPath(instituteType)}
+                      onClick={(e) => {
+                        if (instituteType === "") {
+                          e.stopPropagation();
+                          console.log("Showing toast message"); // Debug line
+                          toast.error("Please Select a type of Institution.", {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            style: {
+                              backgroundColor: "#f8d7da",
+                              color: "#721c24",
+                            },
+                          });
+                        }
+                      }}
+                      className="hover:no-underline"
+                    >
+                      <button className="flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto">
+                        <p className="text-white">Create New Institution</p>
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
+                <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
               <div className="relative inline-block ml-5">
                 <button
                   className=" flex flex-row bg-[#0891b2] text-white px-4 py-2 rounded-md"
                   onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-                >
-                  Filter by
+
+                      >
+                                        Filter by
                   {activeMenu ? (
                     <HiChevronUp className="ml-2" />
                   ) : (
                     <HiChevronDown className="ml-2" />
                   )}
                 </button>
-
                 {activeMenu && (
                   <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
                     {/* Main Dropdown Menu */}
                     {activeMenu === "main" && (
                       <div>
-                        <div
-                          onClick={() => handleAllFilter()}
-                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          All
-                        </div>
                         <div
                           onClick={() => handleMenuToggle("type")}
                           className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
@@ -618,7 +475,6 @@ const Panel = () => {
                         </div>
                       </div>
                     )}
-
                     {/* Type Submenu */}
                     {activeSubMenu === "type" && (
                       <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
@@ -633,7 +489,6 @@ const Panel = () => {
                         ))}
                       </div>
                     )}
-
                     {/* Is Delivered Submenu */}
                     {activeSubMenu === "isDelivered" && (
                       <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
@@ -650,360 +505,792 @@ const Panel = () => {
                     )}
                   </div>
                 )}
-              </div>
-              {/* Search Bar */}
-              <form class="w-full min800:w-[30%] rounded-sm my-3">
-                <label
-                  for="default-search"
-                  class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                >
-                  Search
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    id="default-search"
-                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                    placeholder="Search"
-                    required
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </form>
-
-            </div>
-            {/* Headings */}
-            <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
-              <Table className="w-full text-sm text-left text-gray-500">
-                <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                  {/* <Table.HeadCell></Table.HeadCell> */}
-
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Institution Id
-                  </Table.HeadCell>
-
-                  {Ctx.userData.userType === "member" &&
-                    Ctx.userData.role === "operation" && (
-                      <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                        Institution Name
-                      </Table.HeadCell>
-                    )}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Type
-                  </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Status
-                  </Table.HeadCell>
-                  {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Is Delivered
-                    </Table.HeadCell>
-                  )}
-                  {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Payment
-                    </Table.HeadCell>
-                  )}
-                  {/* <Table.HeadCell className=" uppercase font-semibold text-[14px]">
-                Revenue
-              </Table.HeadCell> */}
-                  {/* {Ctx.userData.role !== "operation" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Members
-                    </Table.HeadCell>
-                  )} */}
-                  {/* <Table.HeadCell
-                className={`${
-                  showHiddenContent ? "" : "max1008:hidden"
-                } uppercase font-semibold text-[14px]`}
-              >
-                Attendance
-              </Table.HeadCell> */}
-                  <Table.HeadCell
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
-                  >
-                    Created By
-                  </Table.HeadCell>
-
-                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
-
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Deliverable
-                  </Table.HeadCell>
-
-                  {/* {Ctx.userData.role !== "sales" && ( */}
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    Links
-                  </Table.HeadCell>
-                  {/* )}   */}
-
-                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                    QR
-                  </Table.HeadCell> */}
-                  {/* {Ctx.userData.role === "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Domain Link
-                    </Table.HeadCell>
-                  )} */}
-
-                  {/* {Ctx.userData.role !== "sales" && (
-                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                      Submit
-                    </Table.HeadCell>
-                  )} */}
-
-                  {/* DEV - AWSAIAPP - Clients Panel Enhancement with Status Atribute */}
-                </Table.Head>
-
-                <Table.Body className="bg-white">
-                  {clientsToDisplay.map(([key, client], index) => (
-                    <Table.Row
-                      key={client.institutionid}
-                      className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
-                    >
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                        onClick={(e) => handleRowClick(client, e)}
+                    </div>
+                    {/* Search Bar */}
+                    <form class="w-full min800:w-[30%] rounded-sm my-3">
+                      <label
+                        for="default-search"
+                        class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
                       >
-                        <Link
-                          onClick={() => {
-                            if (Ctx.userData.role !== "operation") {
-                              handleInstitutionClick(client);
-                            }
-                          }}
-                        >
-                          <div className="email-hover uppercase font-semibold text-[#11192B]">
-                            {client.institutionid}
-                          </div>
-                        </Link>
-                      </Table.Cell>
+                        Search
+                      </label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                          <svg
+                            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                            />
+                          </svg>
+                        </div>
+                        <input
+                          type="search"
+                          id="default-search"
+                          class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+                          placeholder="Search"
+                          required
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                  {/* Headings */}
+                  <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
+                    <Table className="w-full text-sm text-left text-gray-500">
+                      <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+                        {/* <Table.HeadCell></Table.HeadCell> */}
 
-                      {Ctx.userData.userType === "member" &&
-                        Ctx.userData.role === "operation" && (
-                          <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
-                            {client.companyName}
-                          </Table.Cell>
+                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                          Institution Id
+                        </Table.HeadCell>
+
+                        {Ctx.userData.userType === "member" &&
+                          Ctx.userData.role === "operation" && (
+                            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                              Institution Name
+                            </Table.HeadCell>
+                          )}
+                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                          Type
+                        </Table.HeadCell>
+                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                          Status
+                        </Table.HeadCell>
+                        {Ctx.userData.role !== "operation" && (
+                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                            Is Delivered
+                          </Table.HeadCell>
+                        )}
+                        {Ctx.userData.role !== "operation" && (
+                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                            Payment
+                          </Table.HeadCell>
                         )}
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {splitandjoin(client.institutionType)}
-                      </Table.Cell>
+                        <Table.HeadCell
+                          className={`${
+                            showHiddenContent ? "" : "max1008:hidden"
+                          } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                        >
+                          Created By
+                        </Table.HeadCell>
 
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {(() => {
-                          const { text, color } = getBadgeProps(
-                            client.isFormFilled,
-                            client.payment,
-                            client.isDelivered
-                          );
-                          return (
-                            <Badge
-                              color={color}
-                              size="sm"
-                              className="flex justify-center items-center"
+                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                          Deliverable
+                        </Table.HeadCell>
+
+                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                          Links
+                        </Table.HeadCell>
+                      </Table.Head>
+
+                      <Table.Body className="bg-white">
+                        {clientsToDisplay.map(([key, client], index) => (
+                          <Table.Row
+                            key={client.institutionid}
+                            className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                          >
+                            <Table.Cell
+                              className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+                              onClick={(e) => handleRowClick(client, e)}
                             >
-                              {text}
-                            </Badge>
-                          );
-                        })()}
-                      </Table.Cell>
+                              <Link
+                                onClick={() => {
+                                  handleInstitutionClick(client);
+                                }}
+                              >
+                                <div className="email-hover uppercase font-semibold text-[#11192B]">
+                                  {client.institutionid}
+                                </div>
+                              </Link>
+                            </Table.Cell>
+
+                            {Ctx.userData.userType === "member" &&
+                              Ctx.userData.role === "operation" && (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
+                                  {client.companyName}
+                                </Table.Cell>
+                              )}
+
+                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                              {splitandjoin(client.institutionType)}
+                            </Table.Cell>
+
+                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                              {(() => {
+                                const { text, color } = getBadgeProps(
+                                  client.isFormFilled,
+                                  client.payment,
+                                  client.isDelivered
+                                );
+                                return (
+                                  <Badge
+                                    color={color}
+                                    size="sm"
+                                    className="flex justify-center items-center"
+                                  >
+                                    {text}
+                                  </Badge>
+                                );
+                              })()}
+                            </Table.Cell>
+                            {Ctx.userData.role !== "operation" && (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                {client.payment ? (
+                                  <select
+                                    value={
+                                      client.isDelivered
+                                        ? "Delivered"
+                                        : "Not Delivered"
+                                    }
+                                    onChange={(e) =>
+                                      handleDropdownChange(
+                                        client,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                                  >
+                                    <option value="Not Delivered">
+                                      Not Delivered
+                                    </option>
+                                    <option value="Delivered">Delivered</option>
+                                  </select>
+                                ) : (
+                                  <select
+                                    value="Not Delivered"
+                                    disabled
+                                    className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
+                                  >
+                                    <option value="Not Delivered">
+                                      Not Delivered
+                                    </option>
+                                  </select>
+                                )}
+                              </Table.Cell>
+                            )}
+                            {Ctx.userData.role !== "operation" && (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                {client.payment ? "Paid" : "Not Paid"}
+                              </Table.Cell>
+                            )}
+
+                            <Table.Cell
+                              className={`${
+                                showHiddenContent ? "" : "max1008:hidden"
+                              } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                            >
+                              {client.createdBy
+                                ? getUsernameByCognitoId(client.createdBy)
+                                : "Unknown"}{" "}
+                            </Table.Cell>
+
+                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                              {Ctx.userData.role !== "sales" ? (
+                                <Dropdown
+                                  label={
+                                    selectedStatuses[client.institutionid] ||
+                                    client.deliverable ||
+                                    "Pending"
+                                  }
+                                  inline
+                                >
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setSelectedStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Pending",
+                                      }));
+                                      handleDeliverableUpdate(
+                                        client.institutionid,
+                                        "Pending"
+                                      );
+                                    }}
+                                  >
+                                    Pending
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setSelectedStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "In-progress",
+                                      }));
+                                      handleDeliverableUpdate(
+                                        client.institutionid,
+                                        "In-progress"
+                                      );
+                                    }}
+                                  >
+                                    In-progress
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setSelectedStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Completed",
+                                      }));
+                                      handleDeliverableUpdate(
+                                        client.institutionid,
+                                        "Completed"
+                                      );
+                                    }}
+                                  >
+                                    Completed
+                                  </Dropdown.Item>
+                                </Dropdown>
+                              ) : (
+                                <span className="text-gray-500">
+                                  {client.deliverable || "Pending"}
+                                </span>
+                              )}
+                            </Table.Cell>
+                            {Ctx.userData.role !== "sales" && (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
+                                <div className="flex items-center gap-2">
+                                  <TextInput
+                                    id="domain"
+                                    value={
+                                      domainLinks[client.institutionid] || ""
+                                    }
+                                    placeholder={
+                                      client.domainLink
+                                        ? client.domainLink
+                                        : "Enter the Domain link"
+                                    }
+                                    required
+                                    disabled={
+                                      selectedStatuses[client.institutionid] !==
+                                        "Completed" &&
+                                      client.deliverable !== "Completed"
+                                    }
+                                    className="w-[160px]"
+                                    onChange={(e) =>
+                                      setDomainLinks((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: e.target.value,
+                                      }))
+                                    }
+                                  />
+                                  {(selectedStatuses[client.institutionid] ===
+                                    "Completed" ||
+                                    client.deliverable === "Completed") && (
+                                    <Button
+                                      onClick={() =>
+                                        handleDomainLinkSubmit(
+                                          client.institutionid
+                                        )
+                                      }
+                                      className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                                    >
+                                      <FaCheck />
+                                    </Button>
+                                  )}
+                                </div>
+                              </Table.Cell>
+                            )}
+
+                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
+                              <div className="flex items-center gap-2">
+                                {client.domainLink ? (
+                                  <RiExternalLinkLine
+                                    onClick={() => {
+                                      window.open(client.domainLink, "_blank");
+
+                                      navigator.clipboard
+                                        .writeText(client.domainLink)
+                                        .then(() => {
+                                          toast.success(
+                                            "Domain link copied to clipboard!"
+                                          );
+                                        })
+                                        .catch((err) => {
+                                          toast.error(
+                                            "Failed to copy domain link."
+                                          );
+                                          console.error(
+                                            "Clipboard copy failed:",
+                                            err
+                                          );
+                                        });
+                                    }}
+                                    className="text-blue-500 cursor-pointer h-5 w-5"
+                                  />
+                                ) : null}
+
+                                {client.domainLink ? (
+                                  <>
+                                    <BsQrCodeScan
+                                      className="text-blue-500 cursor-pointer h-5 w-5"
+                                      onClick={() =>
+                                        setOpenModal(client.institutionid)
+                                      }
+                                    />
+                                    <Modal
+                                      show={openModal === client.institutionid}
+                                      position={modalPlacement}
+                                      onClose={() => setOpenModal(false)}
+                                    >
+                                      <Modal.Header>Attendance QR</Modal.Header>
+                                      <Modal.Body>
+                                        <div className="flex flex-col items-center space-y-4">
+                                          <figure className="w-fit flex flex-col items-center">
+                                            <QR
+                                              url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                              download={`${client.companyName} Attendance QR Code.png`}
+                                              size={300}
+                                            />
+                                          </figure>
+                                          <h1 className="text-center font-semibold">
+                                            Institution Name:{" "}
+                                            {client.companyName}
+                                          </h1>
+                                          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                            This is the attendance QR for the{" "}
+                                            {client.companyName} institution.
+                                            Please tap on the QR code to
+                                            download it.
+                                          </p>
+                                        </div>
+                                      </Modal.Body>
+                                      <Modal.Footer>
+                                        <a
+                                          href={
+                                            client.domainLink +
+                                            "/put-attendance"
+                                          }
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          onClick={(e) => {
+                                            const linkToCopy =
+                                              client.domainLink +
+                                              "/put-attendance";
+
+                                            navigator.clipboard
+                                              .writeText(linkToCopy)
+                                              .then(() => {
+                                                toast.success(
+                                                  "Link copied to clipboard!"
+                                                );
+                                              })
+                                              .catch((err) => {
+                                                toast.error(
+                                                  "Failed to copy link."
+                                                );
+                                                console.error(
+                                                  "Clipboard copy failed:",
+                                                  err
+                                                );
+                                              });
+                                          }}
+                                        >
+                                          <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
+                                        </a>
+                                      </Modal.Footer>
+                                    </Modal>
+                                  </>
+                                ) : null}
+                              </div>
+                            </Table.Cell>
+
+                            <Link
+                              onClick={() => handleInstitutionClick(client)}
+                              className="hidden change-page"
+                            ></Link>
+
+                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                              <Link
+                                onClick={() => handleInstitutionClick(client)}
+                              >
+                                {isMoreVisible ? <FaChevronRight /> : ""}
+                              </Link>
+                            </Table.Cell>
+                          </Table.Row>
+                        ))}
+                      </Table.Body>
+                    </Table>
+                  </div>
+
+                  {clientsToDisplay.map(([key, client], index) => (
+                    <div key={client.institutionid}></div>
+                  ))}
+
+                  <div className="py-2 flex justify-between items-center px-4">
+                    <div className="text-sm text-gray-600">
+                      Showing{" "}
+                      <strong>
+                        {startIndex + 1}-{startIndex + clientsToDisplay.length}
+                      </strong>{" "}
+                      of <strong>{filteredClients.length}</strong>
+                    </div>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                      className="flex justify-end"
+                      showIcons
+                      theme={customTheme}
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+       
+    <Select
+      value={instituteType && splitandjoin(instituteType)}
+      onChange={(e) => setInstituteType(e.target.value)}
+      className=" font-semibold w-full border rounded-md  px-3 focus:outline-none focus:ring-2  mt-14"
+    >
+      {instituteType === "" && (
+        <option value="" disabled hidden>
+          Type
+        </option>
+      )}
+      {type.map((type) => (
+        <option key={type} value={type} className=" hover:text-white">
+          {splitandjoin(type)}
+        </option>
+      ))}
+    </Select>
+
+    <Link
+      to={getLinkPath(instituteType)}
+      onClick={(e) => {
+        if (instituteType === "") {
+          e.stopPropagation();
+          toast.error("Please Select a type of Institution.", {
+            position: "top-right",
+            autoClose: 5000,
+            style: {
+              backgroundColor: "#f8d7da",
+              color: "#721c24",
+            },
+          });
+        }
+      }}
+      className="mt-3 block"
+    >
+      <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
+        Create New Institution
+      </button>
+    </Link>
+    <div className="relative mt-4">
+      <button
+        className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
+        onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
+      >
+        Filter by
+        {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
+      </button>
+      {activeMenu && (
+        <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
+          {activeMenu === "main" && (
+            <div>
+              <div
+                onClick={() => handleMenuToggle("type")}
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              >
+                Type
+              </div>
+              <div
+                onClick={() => handleMenuToggle("isDelivered")}
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              >
+                Is Delivered
+              </div>
+            </div>
+          )}
+          {activeSubMenu === "type" && (
+            <div className="mt-2">
+              {type.map((type) => (
+                <div
+                  key={type}
+                  onClick={() => handleTypeFilter(type)}
+                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                >
+                  {type}
+                </div>
+              ))}
+            </div>
+          )}
+          {activeSubMenu === "isDelivered" && (
+            <div className="mt-2">
+              {isDeliveredOptions.map((option) => (
+                <div
+                  key={option}
+                  onClick={() => handleDeliverFilter(option)}
+                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+    <form className="mt-5">
+      <div className="relative">
+        <input
+          type="search"
+          className="w-full border rounded-md py-2 px-10 bg-[#F9FAFB] text-gray-700 shadow-md focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <div className="absolute inset-y-0 left-3 flex items-center">
+          <svg
+            className="w-5 h-5 text-gray-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+      </div>
+    </form>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
+                {clientsToDisplay.map(([key, client], index) => (
+                  <div
+                    key={client.institutionid}
+                    className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
+                  >
+                    <div className="flex flex-col gap-2">
+                      
+                      <div
+                        className="flex justify-between items-center text-center"
+                        onClick={(e) => handleRowClick(client, e)}
+                      >
+                        <div className="uppercase font-semibold text-[#11192B]">
+                          {client.institutionid}
+                        </div>
+                        <Link
+  onClick={() => {
+    handleInstitutionClick(client);
+  }}
+>
+  <div className="text-[#30AFBC] text-sm">
+    <AiOutlineEye size={20} />
+  </div>
+</Link>
+                      </div>
+
+                      {/* Company Name */}
+                      {Ctx.userData.userType === "member" &&
+                        Ctx.userData.role === "operation" && (
+                          <div className="flex flex-row gap-2">
+                            <h5>Institution Name:</h5>
+                            <div>{client.companyName}</div>
+                          </div>
+                        )}
+
+                      <div className="flex flex-row gap-2">
+                        <h5>Institution Type:</h5>
+                        <div>{splitandjoin(client.institutionType)}</div>
+                      </div>
+                      <div className="flex flex-row gap-2">
+                        <h5>Status:</h5>
+                        <div className="flex justify-center items-center">
+                          <Badge
+                            color={
+                              getBadgeProps(
+                                client.isFormFilled,
+                                client.payment,
+                                client.isDelivered
+                              ).color
+                            }
+                            size="sm"
+                          >
+                            {
+                              getBadgeProps(
+                                client.isFormFilled,
+                                client.payment,
+                                client.isDelivered
+                              ).text
+                            }
+                          </Badge>
+                        </div>
+                      </div>
+                      {/* Delivery Status */}
                       {Ctx.userData.role !== "operation" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {client.payment ? (
+                        <div className="flex flex-row gap-2">
+                          <h5 className="mt-1">Is Delivered:</h5>
+                          <div className="text-md">
                             <select
                               value={
-                                client.isDelivered
-                                  ? "Delivered"
+                                client.payment
+                                  ? client.isDelivered
+                                    ? "Delivered"
+                                    : "Not Delivered"
                                   : "Not Delivered"
                               }
                               onChange={(e) =>
                                 handleDropdownChange(client, e.target.value)
                               }
-                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900 "
+                              disabled={!client.payment}
                             >
                               <option value="Not Delivered">
                                 Not Delivered
                               </option>
                               <option value="Delivered">Delivered</option>
                             </select>
-                          ) : (
-                            <select
-                              value="Not Delivered"
-                              disabled
-                              className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
-                            >
-                              <option value="Not Delivered">
-                                Not Delivered
-                              </option>
-                            </select>
-                          )}
-                        </Table.Cell>
+                          </div>
+                        </div>
                       )}
-                      {Ctx.userData.role !== "operation" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {client.payment ? "Paid" : "Not Paid"}
-                        </Table.Cell>
-                      )}
-                      {/* {Ctx.userData.role !== "operation" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                          {memberCounts[client.institutionid] || 0}
-                        </Table.Cell>
-                      )} */}
-                      <Table.Cell
-                        className={`${showHiddenContent ? "" : "max1008:hidden"
-                          } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                      >
-                        {/* {client.createdBy} */}
-                        {client.createdBy
-                          ? getUsernameByCognitoId(client.createdBy)
-                          : "Unknown"}{" "}
-                        {/* Fallback for undefined createdBy */}
-                      </Table.Cell>
 
-                      {/*Clients Panel Enhancement with Status Attribute */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {Ctx.userData.role !== "sales" ? (
-                          <Dropdown
-                            label={
-                              selectedStatuses[client.institutionid] ||
-                              client.deliverable ||
-                              "Pending"
-                            }
-                            inline
-                          >
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "Pending",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "Pending"
-                                );
-                              }}
+                      {/* Payment Status */}
+                      {Ctx.userData.role !== "operation" && (
+                        <div className="flex flex-row gap-2">
+                          <h5>Payment:</h5>
+                          <div className="">
+                            {client.payment ? "Paid" : "Not Paid"}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex flex-row gap-2">
+                        <h5>Created By:</h5>
+
+                        <div>
+                          {client.createdBy
+                            ? getUsernameByCognitoId(client.createdBy)
+                            : "Unknown"}
+                        </div>
+                      </div>
+
+                      {/* Delivery Status Update */}
+                      {Ctx.userData.role !== "sales" ? (
+                        <div className="flex flex-row gap-2">
+                          <h5>Deliverable:</h5>
+                          <div className="flex flex-col gap-2">
+                            <Dropdown
+                              label={
+                                selectedStatuses[client.institutionid] ||
+                                client.deliverable ||
+                                "Pending"
+                              }
+                              inline
                             >
-                              Pending
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "In-progress",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "In-progress"
-                                );
-                              }}
-                            >
-                              In-progress
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              className="hover:bg-gray-200 focus:bg-gray-200"
-                              onClick={() => {
-                                setSelectedStatuses((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: "Completed",
-                                }));
-                                handleDeliverableUpdate(
-                                  client.institutionid,
-                                  "Completed"
-                                );
-                              }}
-                            >
-                              Completed
-                            </Dropdown.Item>
-                          </Dropdown>
-                        ) : (
+                              <Dropdown.Item
+                                onClick={() => {
+                                  setSelectedStatuses((prev) => ({
+                                    ...prev,
+                                    [client.institutionid]: "Pending",
+                                  }));
+                                  handleDeliverableUpdate(
+                                    client.institutionid,
+                                    "Pending"
+                                  );
+                                }}
+                              >
+                                Pending
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={() => {
+                                  setSelectedStatuses((prev) => ({
+                                    ...prev,
+                                    [client.institutionid]: "In-progress",
+                                  }));
+                                  handleDeliverableUpdate(
+                                    client.institutionid,
+                                    "In-progress"
+                                  );
+                                }}
+                              >
+                                In-progress
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={() => {
+                                  setSelectedStatuses((prev) => ({
+                                    ...prev,
+                                    [client.institutionid]: "Completed",
+                                  }));
+                                  handleDeliverableUpdate(
+                                    client.institutionid,
+                                    "Completed"
+                                  );
+                                }}
+                              >
+                                Completed
+                              </Dropdown.Item>
+                            </Dropdown>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-row gap-2">
+                          <h5>Deliverable:</h5>
                           <span className="text-gray-500">
                             {client.deliverable || "Pending"}
                           </span>
-                        )}
-                      </Table.Cell>
-                      {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
-                          <div className="flex items-center gap-2">
-                            <TextInput
-                              id="domain"
-                              value={domainLinks[client.institutionid] || ""}
-                              placeholder={
-                                client.domainLink
-                                  ? client.domainLink
-                                  : "Enter the Domain link"
-                              }
-                              required
-                              disabled={
-                                selectedStatuses[client.institutionid] !==
-                                "Completed" &&
-                                client.deliverable !== "Completed"
-                              }
-                              className="w-[160px]"
-                              onChange={(e) =>
-                                setDomainLinks((prev) => ({
-                                  ...prev,
-                                  [client.institutionid]: e.target.value,
-                                }))
-                              }
-                            />
-                            {(selectedStatuses[client.institutionid] === "Completed" || client.deliverable === "Completed") && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
-                          </div>
-                        </Table.Cell>
+                        </div>
                       )}
 
-                      {/* {Ctx.userData.role !== "sales" && (
-                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                      {/* Domain Link */}
+                      {Ctx.userData.role !== "sales" && (
+                        <div className="flex items-center justify-between gap-2 mt-2">
                           <TextInput
-                            id="domain"
-                            value={client.domainLink}
-                            placeholder="Enter the Domain link"
+                            value={domainLinks[client.institutionid] || ""}
+                            placeholder={
+                              client.domainLink || "Enter the Domain link"
+                            }
                             required
-                            disabled={selectedDeliverable !== "Completed"}
+                            disabled={
+                              selectedStatuses[client.institutionid] !==
+                                "Completed" &&
+                              client.deliverable !== "Completed"
+                            }
+                            className="w-[160px]"
+                            onChange={(e) =>
+                              setDomainLinks((prev) => ({
+                                ...prev,
+                                [client.institutionid]: e.target.value,
+                              }))
+                            }
                           />
-                        </Table.Cell>
-                      )} */}
+                          {(selectedStatuses[client.institutionid] ===
+                            "Completed" ||
+                            client.deliverable === "Completed") && (
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
+                        </div>
+                      )}
 
-                      {/* {Ctx.userData.role === "sales" && ( */}
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
-
-                        <div className="flex items-center gap-2">
-                          {client.domainLink ? (
+                      {/* QR Code and External Link */}
+                      <div className="flex justify-between items-center gap-4 mt-2">
+                        {client.domainLink && (
+                          <>
                             <RiExternalLinkLine
+                              className="text-blue-500 cursor-pointer h-5 w-5"
                               onClick={() => {
-                                // Open the link in a new tab
                                 window.open(client.domainLink, "_blank");
-
-                                // Copy the link to the clipboard
                                 navigator.clipboard
                                   .writeText(client.domainLink)
                                   .then(() => {
@@ -1013,313 +1300,124 @@ const Panel = () => {
                                   })
                                   .catch((err) => {
                                     toast.error("Failed to copy domain link.");
-                                    console.error("Clipboard copy failed:", err);
+                                    console.error(
+                                      "Clipboard copy failed:",
+                                      err
+                                    );
                                   });
                               }}
-                              className="text-blue-500 cursor-pointer h-5 w-5"
                             />
-                          ) : null}
-                          {/* </Table.Cell> */}
-
-                          {/* )} */}
-
-                          {/*Clients Panel Enhancement with Status Attribute */}
-
-                          {/*Clients Panel Enhancement with QR Attribute */}
-                          {/* <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"> */}
-                          {client.domainLink ? (
-                            <>
-                              <BsQrCodeScan className="text-blue-500 cursor-pointer h-5 w-5"
-                                onClick={() => setOpenModal(client.institutionid)}
-                              />
-                              <Modal
-                                show={openModal === client.institutionid}
-                                position={modalPlacement}
-                                onClose={() => setOpenModal(false)}
-                              >
-                                <Modal.Header>Attendance QR</Modal.Header>
-                                <Modal.Body>
-                                  <div className="flex flex-col items-center space-y-4">
-                                    <figure className="w-fit flex flex-col items-center">
-                                      <QR
-                                        url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                        download={`${client.companyName} Attendance QR Code.png`}
-                                        size={300}
-                                      />
-                                      {/* {console.log("domain link" + client.domainLink)} */}
-                                    </figure>
-                                    <h1 className="text-center font-semibold">
-                                      Institution Name: {client.companyName}
-                                    </h1>
-                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                      This is the attendance QR for the{" "}
-                                      {client.companyName} institution. Please tap
-                                      on the QR code to download it.
-                                    </p>
-                                  </div>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <a
-                                    href={client.domainLink + "/put-attendance"}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => {
-                                      const linkToCopy =
-                                        client.domainLink + "/put-attendance";
-
-                                      // Copy the link to the clipboard
-                                      navigator.clipboard
-                                        .writeText(linkToCopy)
-                                        .then(() => {
-                                          toast.success(
-                                            "Link copied to clipboard!"
-                                          );
-                                        })
-                                        .catch((err) => {
-                                          toast.error("Failed to copy link.");
-                                          console.error(
-                                            "Clipboard copy failed:",
-                                            err
-                                          );
-                                        });
-                                    }}
-                                  >
-                                    <RiExternalLinkLine
-                                      className="text-blue-500 cursor-pointer h-5 w-5" />
-                                  </a>
-                                </Modal.Footer>
-                              </Modal>
-                            </>
-                          ) : null}
-                        </div>
-                      </Table.Cell>
-
-                      {/*Clients Panel Enhancement with QR Attribute */}
-
-                      <Link
-                        onClick={() => handleInstitutionClick(client)}
-                        className="hidden change-page"
-                      ></Link>
-                      {/* <div
-                    className={`${showHiddenContent ? "" : "max1008:hidden"
-                      } h-full p-2 flex space-x-2 justify-center items-center lg:justify-start `}
-                  >
-                    <Table.Cell className="px-2 py-2 font-semibold text-gray-900 text-center">
-                      {client.recentMonthLeads}
-                    </Table.Cell>
-                  </div> */}
-                      <Table.Cell
-                        className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"
-                      // onClick={handleMoreClick}
-                      >
-                        <Link onClick={() => handleInstitutionClick(client)}>
-                          {isMoreVisible ? <FaChevronRight /> : ""}
-                        </Link>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-
-            {clientsToDisplay.map(([key, client], index) => (
-              <div key={client.institutionid}></div>
-            ))}
-
-            {showDetails && selectedUser && (
-              <div
-                class="flex justify-center items-center mt-[-55vh] rounded-lg w-[22rem] h-[40rem] relative bg-white z-50"
-                style={{
-                  boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-                }}
-              >
-                <div class="w-[340px] h-[595px] relative bg-white rounded-[18px]">
-                  <div class="w-[242px] h-[488px] left-[41px] top-[69px] absolute">
-                    <div class="w-[79px] h-7 left-[-21px] top-[16px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Email Id:
-                    </div>
-                    <div class="w-[129px] h-[35px] left-[68px] top-[16px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {email}
-                    </div>
-                    <div class="w-[79px] h-[27px] left-[-21px] top-[67px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Country:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[68px] top-[68px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {Country}
-                    </div>
-                    <div class="w-[79px] h-7 left-[-21px] top-[173px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Status:
-                    </div>
-                    <div class="w-[120px] h-[34px] left-[68px] top-[175px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {status}
-                    </div>
-                    <div class="w-[114px] h-7 left-[-21px] top-[120px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                      Joining Date:
-                    </div>
-                    <div class="w-[134px] h-[35px] left-[96px] top-[122px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                      {formatEpochToReadableDate(JoiningDate)}
+                            <BsQrCodeScan
+                              className="text-blue-500 cursor-pointer h-5 w-5"
+                              onClick={() => setOpenModal(client.institutionid)}
+                            />
+                            <Modal
+                              show={openModal === client.institutionid}
+                              position={modalPlacement}
+                              onClose={() => setOpenModal(false)}
+                            >
+                              <Modal.Header>Attendance QR</Modal.Header>
+                              <Modal.Body>
+                                <div className="flex flex-col items-center space-y-4">
+                                  <QR
+                                    url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                    download={`${client.companyName} Attendance QR Code.png`}
+                                    size={300}
+                                  />
+                                  <h1 className="text-center font-semibold">
+                                    Institution Name: {client.companyName}
+                                  </h1>
+                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                    This is the attendance QR for the{" "}
+                                    {client.companyName} institution. Please tap
+                                    on the QR code to download it.
+                                  </p>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <a
+                                  href={client.domainLink + "/put-attendance"}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => {
+                                    const linkToCopy =
+                                      client.domainLink + "/put-attendance";
+                                    navigator.clipboard
+                                      .writeText(linkToCopy)
+                                      .then(() => {
+                                        toast.success(
+                                          "Link copied to clipboard!"
+                                        );
+                                      })
+                                      .catch((err) => {
+                                        toast.error("Failed to copy link.");
+                                        console.error(
+                                          "Clipboard copy failed:",
+                                          err
+                                        );
+                                      });
+                                  }}
+                                >
+                                  <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
+                                </a>
+                              </Modal.Footer>
+                            </Modal>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div class="w-[89px] h-[29px] left-[20px] top-[298px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Revenue:
-                  </div>
-                  <div class="w-[169px] h-[35px] left-[109px] top-[298px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalIncome}
-                  </div>
-                  {/* <div class="w-[89px] h-7 left-[20px] top-[365px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Members:
-                  </div> */}
-                  <div class="w-[185px] h-[34px] left-[109px] top-[366px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {memberCount}
-                  </div>
-                  <div class="w-[114px] h-[27px] left-[20px] top-[432px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Attendance:
-                  </div>
-                  <div class="w-[204px] h-[34px] left-[127px] top-[434px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalAttendance}
-                  </div>
-                  <div class="w-[66px] h-7 left-[20px] top-[489px] absolute text-black text-base font-semibold font-['Inter'] tracking-wide">
-                    Leads:
-                  </div>
-                  <div class="w-[158px] h-[35px] left-[109px] top-[499px] absolute text-zinc-800 text-[13px] font-semibold font-['Inter'] tracking-tight">
-                    {TotalLeads}
-                  </div>
-                  <div class="w-[340px] h-[17px] left-0 top-[13px] absolute text-center text-black text-[23px] font-semibold font-['Inter'] tracking-wide">
-                    {name}
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="absolute right-0 bottom-0 rounded-b-lg bg-[#13838d] text-white p-3 w-[22rem]"
-                    onClick={() => setShowDetails(false)}
-                  >
-                    Close
-                  </button>
-                </div>
+                ))}
               </div>
-            )}
 
-            {isUpdateFormVisible && selectedUser && (
-              <div className="absolute top-[21%] flex w-[78vw] h-[75vh] bg-[#ffffff60] backdrop-blur-sm z-[10] max1050:w-[85vw]">
-                <form className="relative h-[38rem] m-auto flex flex-col justify-between p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center w-[22rem]  max900:w-[auto] Poppins bg-[#ffffff] z-[1]">
-                  {/* Include form fields for updating user details */}
-                  <input
-                    required
-                    placeholder="Name"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Email Address"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Phone Number"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus-border-opacity-20"
-                    type="number"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <input
-                    required
-                    placeholder="Country"
-                    className="bg-[#f0f0f0] text-[#000] K2D px-4 py-2 rounded-[6px] w-full focus:border-opacity-20  "
-                    type="text"
-                    value={Country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
-                    }}
-                  />
-                  <div className="flex items-baseline mt-[-1.5rem] mb-[-1rem]">
-                    <label>Status:</label>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="Active"
-                      className="ml-3"
-                      checked={status === "Active"}
-                      onChange={() => setStatus("Active")}
-                    />{" "}
-                    <p className="ml-1 text-[#85e758]"> Active</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="InActive"
-                      className="ml-3"
-                      checked={status === "InActive"}
-                      onChange={() => setStatus("InActive")}
-                    />{" "}
-                    <p className="ml-1 text-[#ff1010d9]">InActive</p>
-                    <input
-                      type="radio"
-                      name="memberStatus"
-                      value="comingSoon"
-                      className="ml-3"
-                      checked={status === "comingSoon"}
-                      onChange={() => setStatus("comingSoon")}
-                    />{" "}
-                    <p className="ml-1 text-[#5521B5]">Coming Soon</p>
-                  </div>
-
-                  {/* Add other fields for updating user details */}
-                  <div className="flex flex-col gap-3 w-full justify-center items-center">
+              {setShowMemberList && (
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-sm text-gray-600">
+                    Page <strong>{currentPage}</strong> of{" "}
+                    <strong>{totalPages}</strong>
+                  </span>
+                  <div className="flex gap-2">
                     <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#2297a7] text-white w-full rounded-[4px] py-2 border-[2px] border-[#2297a7] hover:bg-[#ffffff] hover:text-[#2297a7]"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUpdateClient(selectedUser);
-                      }}
+                      onClick={() =>
+                        currentPage > 1 && setCurrentPage(currentPage - 1)
+                      }
+                      disabled={currentPage === 1}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === 1
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
-                      Update
+                      Previous
                     </button>
                     <button
-                      className="K2D font-[600] tracking-[1.2px] bg-[#333333] text-white w-full rounded-[4px] py-2 border-[2px] border-[#222222] hover:bg-[#ffffff] hover:text-[#222222]"
-                      onClick={() => handleCancelUpdate()}
+                      onClick={() =>
+                        currentPage < totalPages &&
+                        setCurrentPage(currentPage + 1)
+                      }
+                      disabled={currentPage === totalPages}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === totalPages
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
-                      Cancel
+                      Next
                     </button>
                   </div>
-                </form>
-              </div>
-            )}
-
-            {/* Pagination */}
-            <div className="py-2 flex justify-between items-center px-4">
-              {/* Dynamic "Showing X-Y of Z" */}
-              <div className="text-sm text-gray-600">
-                Showing{" "}
-                <strong>
-                  {startIndex + 1}-{startIndex + clientsToDisplay.length}
-                </strong>{" "}
-                of <strong>{filteredClients.length}</strong>
-              </div>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                className="flex justify-end"
-                showIcons
-                theme={customTheme}
-              />
-            </div>
-          </div >
-        </div >
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ) : Ctx.userData.userType === "admin" ||
+        Ctx.userData.role === "operation" ? (
+        <Index
+          tempInstitution={tempInstitution}
+          setShowMemberList={setShowMemberList}
+        />
       ) : (
-        Ctx.userData.userType === "admin" ? (
-          <Index
-            tempInstitution={tempInstitution}
-            setShowMemberList={setShowMemberList}
-          />
-        ) : (
-          !payment && handlePayment()
-        )
+        !payment && handlePayment()
       )}
     </>
   );

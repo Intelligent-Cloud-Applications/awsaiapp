@@ -22,12 +22,16 @@ const ClientsProfile = ({ institution }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
+  const [LoaderInitialized, setLoaderInitialized] = useState(false);
   const fetchClientAndOwnerDetails = useCallback(async () => {
     if (!institution) return; // Ensure institution is defined
 
     try {
+      if (LoaderInitialized) {
+        return;
+      }
       util.setLoader(true);
+      setLoaderInitialized(true);
 
       // Call all APIs in parallel
       const [templateResponse, response] = await Promise.all([
@@ -75,8 +79,10 @@ const ClientsProfile = ({ institution }) => {
     } catch (error) {
       console.error("Error fetching details:", error);
     }
-    util.setLoader(false);
-  }, [institution, util]);
+    finally {
+      util.setLoader(false);
+    }
+  }, [institution, util,LoaderInitialized]);
 
   useEffect(() => {
     fetchClientAndOwnerDetails();
@@ -166,7 +172,7 @@ const ClientsProfile = ({ institution }) => {
 
 
   return (
-    <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw]">
+    <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw] max1008:h-auto">
       <div className="sm:w-1/3 bg-gradient-to-br from-[#30afbc] to-[#64d5db] p-10 flex flex-col items-center justify-center">
         <div className="h-40 w-40 rounded-full border-4 border-white bg-white flex items-center justify-center shadow-lg relative">
           <img
@@ -254,7 +260,7 @@ const ClientsProfile = ({ institution }) => {
               <span className="font-semibold">Membership:</span>
               <span className="text-gray-900">Premium</span>
             </div>
-            <div className="flex justify-between text-gray-700">
+            <div className="flex justify-between text-gray-700 overflow-auto">
               <span className="font-semibold">Website:</span>
               <a href={`https://${generateWebsiteLink(clientData.institutionid)}`} className="text-teal-600 hover:underline">
                 {generateWebsiteLink(clientData.institutionid)}
