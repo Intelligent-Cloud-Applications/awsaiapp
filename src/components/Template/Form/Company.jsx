@@ -92,7 +92,7 @@ function Company({
   // };
 
   return (
-    <div className="mx-auto company max-h-screen overflow-y-auto">
+    <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -128,7 +128,7 @@ function Company({
       </div> */}
 
       <div className="flex justify-center">
-        <div className="w-[50%] p-8 ml-[10%]">
+        <div className="w-[50%] p-8 ">
           <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
             <div className="mb-2 block">
               <Label

@@ -98,12 +98,12 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
   };
 
   return (
-    <div className="home h-[115vh]">
+    <div className="mx-[2%]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">TESTIMONIALS SECTION</h1>
-      <h5 className="text-[#939393] text-center mx-[20%]">
+      <h5 className="text-[#939393] text-center">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
-      <div className="flex justify-center ml-[8%]">
+      <div className="flex justify-center">
         <div className="w-[60%] p-8">
           <div className="relative flex items-center mt-4">
             <h2 className="font-medium text-xl">TestimonialBg</h2>
@@ -148,7 +148,7 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
               </div>
             </label>
           </div>
-          <div className="max-h-[480px]">
+          <div >
             <div ref={testimonialsContainerRef} className="pb-6">
               {testimonials.map((testimonial, index) => (
                 <div key={index} className="mt-3">

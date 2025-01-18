@@ -2,7 +2,7 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - dev # Replace 'beta' with the branch you want to deploy
+      - beta # Replace 'beta' with the branch you want to deploy
 
 jobs:
   deploy:

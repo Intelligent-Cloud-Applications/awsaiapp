@@ -25,9 +25,9 @@ function FAQs({ faqs, setFaqs }) {
   };
 
   return (
-    <div className="home h-[138vh] w-[100%]">
+    <div className="mx-[2%] mb-[5%]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">FAQs SECTION</h1>
-      <h5 className="text-[#939393] text-center mx-[10%]">
+      <h5 className="text-[#939393] text-center">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
       <div className="flex justify-center ml-[8%]">
