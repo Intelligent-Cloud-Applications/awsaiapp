@@ -1,20 +1,48 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCoffee, FiPhone, FiHome, FiShield, FiStar } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
 import Home from '../components/Cafe/Form/Home';
-// import Testimonials from '../components/Cafe/Form/Testimonials';
-// import Subscription from '../components/Cafe/Form/Subscription';
-// import FAQs from '../components/Cafe/Form/FAQs';
 import Policy from '../components/Cafe/Form/Policy';
 import Contact from '../components/Cafe/Form/Contact';
+import Testimonials from '../components/Cafe/Form/Testimonials';
 import { API, Storage } from "aws-amplify";
 import PrevSectionDraftHandler from '../components/Cafe/Form/PrevSectionDraftHandler';
-import "./Template.css";
 import Context from "../context/Context";
-import Testimonials from '../components/Cafe/Form/Testimonials';
-// import {CSVUpload} from '../components/UploadFile/CSVUpload';
+import "./Template.css";
+
+// Form section titles and descriptions
+const FORM_SECTIONS = [
+  {
+    title: "Company Details",
+    description: "Build your brand identity with essential company details",
+    icon: FiCoffee
+  },
+  {
+    title: "Contact Information",
+    description: "Help customers reach you through various channels",
+    icon: FiPhone
+  },
+  {
+    title: "Homepage Content",
+    description: "Create an engaging landing page for your visitors",
+    icon: FiHome
+  },
+  {
+    title: "Policies & Values",
+    description: "Share your café's story and commitment to excellence",
+    icon: FiShield
+  },
+  {
+    title: "Testimonials",
+    description: "Showcase what your customers say about your café",
+    icon: FiStar
+  }
+];
+
 const Cafe = () => {
     const Navigate = useNavigate();
     const [currentSection, setCurrentSection] = useState(0);
@@ -156,11 +184,14 @@ const Cafe = () => {
         const updatedTestimonials = await Promise.all(
             testimonials.map(async (testimonial, index) => {
                 if (testimonial.uploadedFile) {
-                    // Upload the file to S3
+                    // Upload the file to S3 with public read access
                     const response = await Storage.put(
-                        `institution-utils/${institutionId}/images/Testimonial/${testimonial.uploadedFile.name}`,
+                        `${institutionId}/images/Testimonial/${testimonial.uploadedFile.name}`,
                         testimonial.actualFile,
-                        { contentType: testimonial.actualFile.type }
+                        { 
+                            contentType: testimonial.actualFile.type,
+                            acl: 'public-read'
+                        }
                     );
 
                     // Get the URL of the uploaded file
@@ -170,7 +201,7 @@ const Cafe = () => {
                     // Update the testimonial with the image URL
                     return { ...testimonial, imgSrc: imageUrl };
                 }
-                return testimonial; // If no file, return the original testimonial
+                return testimonial;
             })
         );
 
@@ -179,91 +210,98 @@ const Cafe = () => {
 
     const handleSubmitForm = async () => {
         try {
-            // Upload the logo image
             util.setLoader(true);
-            const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
-                contentType: logo.type,
-            });
 
-            // Get the URL of the uploaded logo
-            let imageUrl = await Storage.get(response1.key);
-            imageUrl = imageUrl.split("?")[0];
-            setSelectedFile(imageUrl);
-
-            // Upload the video
-            const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
-                contentType: video.type,
-            });
-            let videoUrl = await Storage.get(response2.key);
-            videoUrl = videoUrl.split("?")[0];
-            setVideo(videoUrl);
-
-            // Upload "About Us" images and fetch URLs concurrently
-            const aboutImagesUrls = await Promise.all(
-                aboutImage.map(async (file) => {
-                    const response = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
-                        contentType: file.type,
-                    });
-                    let aboutImageUrl = await Storage.get(response.key);
-                    return aboutImageUrl.split("?")[0];
-                })
+            // Upload logo
+            const logoResponse = await Storage.put(
+                `${institutionId}/images/${logo.name}`,
+                logo,
+                { 
+                    contentType: logo.type,
+                    acl: 'public-read'  // Make file publicly readable
+                }
             );
+            const logoUrl = (await Storage.get(logoResponse.key)).split('?')[0];
 
-            // Prepare social media links
-            const socials = {
-                facebook: contactInfo.facebook || null,
-                instagram: contactInfo.instagram || null,
-                youTube: contactInfo.youTube || null,
-            };
+            // Upload video as hero image
+            const videoResponse = await Storage.put(
+                `${institutionId}/videos/${video.name}`,
+                video,
+                { 
+                    contentType: video.type,
+                    acl: 'public-read'  // Make file publicly readable
+                }
+            );
+            const heroImage = (await Storage.get(videoResponse.key)).split('?')[0];
 
-            // Prepare the request body
-            const body = {
+            // Prepare request body according to the Lambda function schema
+            const requestBody = {
                 institutionid: institutionId,
-                index: "0", // Example index value, replace as needed
-                companyName: companyName || null,
-                PrimaryColor: PrimaryColor || null,
-                SecondaryColor: SecondaryColor || null,
-                logoUrl: imageUrl,
-                LightPrimaryColor: LightPrimaryColor || null,
-                LightestPrimaryColor: LightestPrimaryColor || null,
-                TagLine: TagLine || null,
-                TagLine1: TagLine1 || null,
-                TagLine2: TagLine2 || null,
-                TagLine3: TagLine3 || null,
-                videoUrl: videoUrl,
-                aboutParagraphs: policies['About Us'] || [],
-                aboutImages: aboutImagesUrls,
-                address: contactInfo.address || null,
-                countBanner: countBanner || [],
-                description: companyDescription || null,
-                email: contactInfo.email || null,
-                ownerName: contactInfo.owner_name || null,
-                phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}` || null,
-                privacyPolicy: policies['Privacy Policy'] || [],
-                socials: socials,
-                cognitoIdentityId: userData.cognitoId,
-                ourValues: values || [],
-                estYear: contactInfo['Establishment Year of Company'] || null,
-                UpiId: contactInfo.upiId || null,
-                testimonials: testimonials || [],
-            };
-            console.log("cognito id passing", userData.cognitoId);
-            console.log("Data requesting for PUT", body);
-
-            // Call the API
-            const response = await API.post("clients", "/user/dentalWebDevForm", {
-                body,
-                headers: {
-                    "Content-Type": "application/json",
+                index: "0",  // Added index as required by Lambda
+                companyName,
+                PrimaryColor,
+                SecondaryColor,
+                logoUrl,
+                LightPrimaryColor,
+                LightestPrimaryColor,
+                PrivacyPolicy: policies['Privacy Policy'],
+                heroImage,
+                mission: companyDescription,
+                productTagline: TagLine,
+                qrURL: null,
+                socialMediaLinks: {
+                    facebook: contactInfo?.facebook || null,
+                    instagram: contactInfo?.instagram || null,
+                    youtube: contactInfo?.youTube || null
                 },
+                tagLine1: TagLine1,
+                tagLine2: TagLine2,
+                testimonials: testimonials.map(t => ({
+                    name: t.name,
+                    feedback: t.feedback,
+                    image: t.imgSrc
+                })),
+                usefulLinks: values,
+                isFormFilled: true  // Added as required by Lambda
+            };
+
+            console.log("Submitting form with data:", requestBody);
+
+            // Make API call with proper headers
+            const response = await API.put("clients", "/user/cafewebDevForm", {
+                body: requestBody,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+                }
             });
 
-            console.log("API response:", response);
-            util.setLoader(false);
+            console.log("Form submitted successfully:", response);
+            
+            // Show success message and navigate
+            Navigate('/dashboard', { 
+                state: { 
+                    success: true, 
+                    message: 'Form submitted successfully!' 
+                }
+            });
+
+            return response;
         } catch (error) {
+            console.error("Error submitting form:", error);
+            let errorMessage = "Error submitting form. Please try again.";
+            
+            if (error.response) {
+                console.log("Error response:", error.response);
+                errorMessage = error.response.data?.message || errorMessage;
+            }
+            
+            alert(errorMessage);
+            throw error;
+        } finally {
             util.setLoader(false);
-            console.error("Error on completing the form:", error.message, error.stack);
-            alert("There was an error submitting the form. Please try again.");
         }
     };
 
@@ -287,163 +325,172 @@ const Cafe = () => {
     // }, []);
 
 
-    const handleNextSection = () => {
-        let institutionCheckInProgress = false;
-        setCurrentSection((prevSection) => {
-            const nextSection = Math.min(prevSection + 1, 8);
-            //      console.log(currentSection);
+    const handleNextSection = async () => {
+        try {
+            util.setLoader(true);
+            let canProceed = true;
 
             switch (currentSection) {
-                case 0:
-                    if (!institutionId) {
-                        alert("Please enter the institutionId.");
-
-                        return prevSection;
-                    }
-                    if (!companyName) {
-                        alert("Please enter the institution Name.");
-
-                        return prevSection;
-                    }
-                    if (!logo) {
-                        alert("Please upload a company logo before proceeding.");
-                        return prevSection;
-                    }
-                    if (!institutionCheckInProgress) {
-                        util.setLoader(true);
-                        institutionCheckInProgress = true;
-                        API.get("clients", `/user/check-dental?institutionid=${institutionId}`)
-                            .then(response => {
-                                institutionCheckInProgress = false;
-                                if (response && response.exists) {
-                                    alert("This institution already exists. Please use a different name.");
-                                    setCurrentSection(prevSection);
-                                } else if (response) {
-                                    // handleCompanyUpload();
-                                    setCurrentSection(nextSection);
-                                } else {
-                                    throw new Error("Error checking institution. Please try again.");
-                                }
-                            })
-                            .catch(error => {
-                                institutionCheckInProgress = false;
-                                alert(error.message);
-                                setCurrentSection(prevSection);
-                            });
-                        util.setLoader(false);
-                        // Exit early to prevent automatic section change
-                        return prevSection; // Prevent automatic section change
-                    }
-                    return prevSection;
-                // handleCompanyUpload();
-                // break;
-                case 1:
-                    if (!contactInfo.phoneNumber || !contactInfo.email) {
-                        if (!contactInfo.phoneNumber) {
-                            alert("Please enter a valid phone number before proceeding.");
-                        }
-                        if (!contactInfo.email) {
-                            alert("Please enter a valid email address before proceeding.");
-                        }
-                        if (!contactInfo.owner_name) {
-                            alert("Please enter a valid ownername before proceeding.");
-                        }
-                        return prevSection;
-                    }
-                    const phoneRegex = /^[0-9]+$/;
-                    if (!phoneRegex.test(contactInfo.phoneNumber)) {
-                        alert("Please enter a valid phone number.");
-                        return prevSection;
+                case 0: // Company Info
+                    if (!companyName || !institutionId || !logo || !companyDescription) {
+                        alert("Please fill in all required fields in Company Info");
+                        canProceed = false;
+                        break;
                     }
 
-                    // Validate email address
+                    // Check if institution exists
+                    try {
+                        // First, validate institution ID format
+                        if (!/^[a-zA-Z0-9-_]+$/.test(institutionId)) {
+                            alert("Institution ID can only contain letters, numbers, hyphens, and underscores");
+                            canProceed = false;
+                            break;
+                        }
+
+                        const checkResponse = await API.get("clients", "/user/check-cafe", {
+                            queryStringParameters: {
+                                institutionid: institutionId,
+                                index: "0"
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Access-Control-Allow-Origin': '*',
+                                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+                            }
+                        });
+                        
+                        console.log("Institution check response:", checkResponse);
+                        
+                        if (checkResponse && checkResponse.exists) {
+                            alert("This institution ID already exists. Please use a different ID.");
+                            canProceed = false;
+                        }
+                    } catch (error) {
+                        console.error("Error checking institution:", error);
+                        let errorMessage = "Error checking institution. Please try again.";
+                        
+                        if (error.response) {
+                            console.log("Error response:", error.response);
+                            errorMessage = error.response.data?.message || errorMessage;
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+                        
+                        alert(errorMessage);
+                        canProceed = false;
+                    }
+                    break;
+
+                case 1: // Contact Info
+                    if (!contactInfo.phoneNumber || !contactInfo.email || !contactInfo.owner_name) {
+                        alert("Please fill in all required contact information");
+                        canProceed = false;
+                        break;
+                    }
+
+                    // Validate phone number and email
+                    const phoneRegex = /^[0-9]{10}$/;
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                    if (!phoneRegex.test(contactInfo.phoneNumber)) {
+                        alert("Please enter a valid 10-digit phone number");
+                        canProceed = false;
+                        break;
+                    }
+
                     if (!emailRegex.test(contactInfo.email)) {
-                        alert("Please enter a valid email address.");
-                        return prevSection;
-                    }
-                    // handleContactUpload();
-                    break;
-                case 2:
-                    if (!video || !TagLine) {
-                        if (!video) {
-                            alert("Please upload a video before proceeding.");
-                        }
-                        if (!TagLine) {
-                            alert("Please provide a tagline before proceeding.");
-                        }
-                        return prevSection;
+                        alert("Please enter a valid email address");
+                        canProceed = false;
+                        break;
                     }
                     break;
-                // case 4:
-                //   const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
-                //   if (!isTestimonialsFilled) {
-                //     alert("Please fill three testimonials before proceeding.");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.1");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[1].name || !testimonials[1].feedback || !testimonials[1].actualFile) {
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.2");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
-                //     //            console.log("HELLO: ");
-                //     //            console.log(testimonials);
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.");
-                //     return prevSection;
-                //   }
-                //   handleTestimonialsUpload();
-                //   break;
-                // case 4:
-                //   const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-                //   if (invalidPriceIndex !== -1) {
-                //     alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
-                //     return prevSection;
-                //   }
-                //   break;
-                // case 6:
-                //   const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
-                //   // Check if both title and answer are filled for each FAQ
-                //   const allFAQsFilled = filledFAQs.length === faqs.length;
-
-                //   if (!allFAQsFilled) {
-                //     alert("Please fill both the question and answer for each FAQ before proceeding.");
-                //     return prevSection;
-                //   }
-                //   handleFAQsUpload();
-                //   break;
-                // case 7:
-                //   const incompleteIndex = instructors.findIndex(instructor => {
-                //     return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-                //   });
-
-                //   // If incompleteIndex is not -1, it means there's at least one incomplete instructor
-                //   if (incompleteIndex !== -1) {
-                //     // Check if all fields for the incomplete instructor are filled
-                //     const incompleteInstructor = instructors[incompleteIndex];
-                //     if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
-                //       alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
-                //       return prevSection;
-                //     }
-                //   }
-                //   handleInstructorsUpload();
-                //   break;
-                case 4:
-                    uploadTestimonials();
-                    console.log("the form will submit now")
-                    handleSubmitForm();
+                case 2: // Home Content
+                    if (!TagLine || !video) {
+                        alert("Please provide both tagline and video");
+                        canProceed = false;
+                    }
                     break;
+
+                case 3: // Policy
+                    // Validate count banner
+                    if (countBanner.some(item => !item.count)) {
+                        alert("Please fill in all count banner values");
+                        canProceed = false;
+                        break;
+                    }
+
+                    // Validate policies
+                    if (!policies['Privacy Policy'].length || !policies['About Us'].length) {
+                        alert("Please add at least one point to each policy section");
+                        canProceed = false;
+                        break;
+                    }
+
+                    // Validate values
+                    if (!values.length) {
+                        alert("Please add at least one company value");
+                        canProceed = false;
+                    }
+                    break;
+
+                case 4: // Testimonials & Final Submit
+                    // Validate testimonials
+                    const validTestimonials = testimonials.filter(
+                        t => t.name && t.feedback && t.uploadedFile
+                    );
+                    if (validTestimonials.length < 3) {
+                        alert("Please complete all three testimonials with name, feedback, and image");
+                        canProceed = false;
+                        break;
+                    }
+
+                    if (canProceed) {
+                        try {
+                            // Upload files first
+                            await uploadTestimonials();
+                            
+                            // Submit the form
+                            await handleSubmitForm();
+                            
+                            // Navigate to success page or dashboard
+                            Navigate('/dashboard', { 
+                                state: { 
+                                    success: true, 
+                                    message: 'Form submitted successfully!' 
+                                }
+                            });
+                            return;
+                        } catch (error) {
+                            console.error("Error submitting form:", error);
+                            alert("Error submitting form. Please try again.");
+                            canProceed = false;
+                        }
+                    }
+                    break;
+
                 default:
                     break;
             }
 
-            //      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
-            return nextSection;
-        });
+            if (canProceed) {
+                setCurrentSection(prev => Math.min(prev + 1, 4));
+            }
+        } catch (error) {
+            console.error("Error in handleNextSection:", error);
+            let errorMessage = "An error occurred. Please try again.";
+            
+            if (error.response) {
+                errorMessage = error.response.data?.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            alert(errorMessage);
+        } finally {
+            util.setLoader(false);
+        }
     };
 
     const saveData = () => {
@@ -464,7 +511,7 @@ const Cafe = () => {
             util.setLoader(true);
             await API.del(
                 "clients",
-                `/user/development-form/delete-all/${institutionId}`);
+                `/user/cafewebDevForm/delete-all/${institutionId}`);
             alert('All Data deleted successfully');
             util.setLoader(false);
             Navigate('/dashboard');
@@ -480,106 +527,192 @@ const Cafe = () => {
         setShowModal(false);
     };
     return (
-        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
-        <div className="flex-grow flex">
-          <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
-            {currentSection === 0 &&
-                        <Company
-                            // clients={Companydata}
-                            companyName={companyName}
-                            setCompanyName={setCompanyName}
-                            institutionId={institutionId}
-                            setinstitutionId={setinstitutionId}
-                            PrimaryColor={PrimaryColor}
-                            setPrimaryColor={setPrimaryColor}
-                            SecondaryColor={SecondaryColor}
-                            setSecondaryColor={setSecondaryColor}
-                            logo={logo}
-                            setLogo={setLogo}
-                            LightestPrimaryColor={LightestPrimaryColor}
-                            setLightestPrimaryColor={setLightestPrimaryColor}
-                            LightPrimaryColor={LightPrimaryColor}
-                            setLightPrimaryColor={setLightPrimaryColor}
-                            selectedFile={selectedFile}
-                            setSelectedFile={setSelectedFile}
-                            companyDescription={companyDescription}
-                            setCompanyDescription={setCompanyDescription}
-                        />}
-                    {currentSection === 1 &&
-                        <Contact
-                            contactInfo={contactInfo}
-                            setContactInfo={setContactInfo}
-                        />}
-                    {currentSection === 2 &&
-                        <Home
-                            TagLine={TagLine}
-                            setTagLine={setTagLine}
-                            TagLine1={TagLine1}
-                            setTagLine1={setTagLine1}
-                            video={video}
-                            setVideo={setVideo}
-                            selectedMedia={selectedMedia}
-                            setSelectedMedia={setSelectedMedia}
-                            mediaType={mediaType}
-                            setMediaType={setMediaType}
-                            TagLine2={TagLine2}
-                            setTagLine2={setTagLine2}
-                            TagLine3={TagLine3}
-                            setTagLine3={setTagLine3}
-                        />}
-                    {/* {currentSection === 4 &&
-            <Testimonials
-              testimonials={testimonials}
-              setTestimonials={setTestimonials}
-              TestimonialBg={TestimonialBg}
-              setTestimonialBg={setTestimonialBg}
-            />} */}
+        <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
+            {/* Navbar - Fixed at top */}
+            <Navbar className="fixed top-0 w-full z-50" />
 
-                    {/* {currentSection === 4 &&
-            <Subscription
-              subscriptions={subscriptions}
-              setSubscriptions={setSubscriptions}
-              country={country}
-              setCountry={setCountry}
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-            />} */}
-
-                    {/* {currentSection === 6 &&
-            <FAQs
-              faqs={faqs}
-              setFaqs={setFaqs}
-            />} */}
-                    {currentSection === 3 &&
-                        <Policy
-                            countBanner={countBanner}
-                            setCountBanner={setCountBanner}
-                            titleOfCountBanner={titleOfCountBanner}
-                            values={values}
-                            setValues={setValues}
-                            policies={policies}
-                            setPolicies={setPolicies}
-                            aboutImage={aboutImage}
-                            setAboutImage={setAboutImage}
-                        />}
-                    {currentSection === 4 &&
-                        <Testimonials
-                            testimonials={testimonials}
-                            setTestimonials={setTestimonials}
-                        />}
-                </div>
-                <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
-                    <Footer
-                        saveData={saveData}
-                        currentSection={currentSection}
-                        nextSection={handleNextSection}
-                        prevSection={handlePrevSectionDraft}
-                        showModal={() => setShowModal(true)}
-                    />
-                </div>
-
+            {/* Progress Bar - Fixed below navbar */}
+            <div className="fixed top-[64px] left-0 w-full h-1 bg-gray-100 z-40">
+                <motion.div 
+                    className="h-full bg-gradient-to-r from-teal-600 to-teal-500"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${(currentSection / 4) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                />
             </div>
+
+            {/* Main Content Area */}
+            <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto w-full">
+                    {/* Section Header */}
+                    <motion.div
+                        className="text-center mb-8 md:mb-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <div className="inline-flex items-center justify-center p-2 mb-4 rounded-full bg-teal-50">
+                            {React.createElement(FORM_SECTIONS[currentSection].icon, {
+                                className: "w-6 h-6 text-teal-600"
+                            })}
+                        </div>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                            {FORM_SECTIONS[currentSection].title}
+                        </h1>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            {FORM_SECTIONS[currentSection].description}
+                        </p>
+                    </motion.div>
+
+                    {/* Form Content */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentSection}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 lg:p-10"
+                        >
+                            {currentSection === 0 && (
+                                <Company
+                                    companyName={companyName}
+                                    setCompanyName={setCompanyName}
+                                    institutionId={institutionId}
+                                    setinstitutionId={setinstitutionId}
+                                    PrimaryColor={PrimaryColor}
+                                    setPrimaryColor={setPrimaryColor}
+                                    SecondaryColor={SecondaryColor}
+                                    setSecondaryColor={setSecondaryColor}
+                                    logo={logo}
+                                    setLogo={setLogo}
+                                    LightestPrimaryColor={LightestPrimaryColor}
+                                    setLightestPrimaryColor={setLightestPrimaryColor}
+                                    LightPrimaryColor={LightPrimaryColor}
+                                    setLightPrimaryColor={setLightPrimaryColor}
+                                    selectedFile={selectedFile}
+                                    setSelectedFile={setSelectedFile}
+                                    companyDescription={companyDescription}
+                                    setCompanyDescription={setCompanyDescription}
+                                />
+                            )}
+                            {currentSection === 1 && (
+                                <Contact
+                                    contactInfo={contactInfo}
+                                    setContactInfo={setContactInfo}
+                                />
+                            )}
+                            {currentSection === 2 && (
+                                <Home
+                                    TagLine={TagLine}
+                                    setTagLine={setTagLine}
+                                    TagLine1={TagLine1}
+                                    setTagLine1={setTagLine1}
+                                    video={video}
+                                    setVideo={setVideo}
+                                    selectedMedia={selectedMedia}
+                                    setSelectedMedia={setSelectedMedia}
+                                    mediaType={mediaType}
+                                    setMediaType={setMediaType}
+                                    TagLine2={TagLine2}
+                                    setTagLine2={setTagLine2}
+                                    TagLine3={TagLine3}
+                                    setTagLine3={setTagLine3}
+                                />
+                            )}
+                            {currentSection === 3 && (
+                                <Policy
+                                    countBanner={countBanner}
+                                    setCountBanner={setCountBanner}
+                                    titleOfCountBanner={titleOfCountBanner}
+                                    values={values}
+                                    setValues={setValues}
+                                    policies={policies}
+                                    setPolicies={setPolicies}
+                                    aboutImage={aboutImage}
+                                    setAboutImage={setAboutImage}
+                                />
+                            )}
+                            {currentSection === 4 && (
+                                <Testimonials
+                                    testimonials={testimonials}
+                                    setTestimonials={setTestimonials}
+                                />
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </main>
+
+            {/* Footer Navigation - Fixed at bottom */}
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 py-4 z-40">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+                    {/* Timeline */}
+                    <div className="relative mb-4">
+                        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2"></div>
+                        <div className="relative flex justify-between">
+                            {['COMPANY INFO', 'CONTACT INFO', 'HOME', 'ABOUT', 'TESTIMONIAL'].map((label, index) => (
+                                <div key={index} className="flex flex-col items-center">
+                                    <div 
+                                        className={`w-4 h-4 rounded-full mb-2 transition-colors relative z-10 
+                                        ${index <= currentSection ? 'bg-teal-600' : 'bg-gray-300'}`}
+                                    >
+                                        {index <= currentSection && (
+                                            <div className="absolute inset-0 rounded-full bg-teal-600/20 animate-ping"></div>
+                                        )}
+                                    </div>
+                                    <span className={`text-xs font-medium ${
+                                        index === currentSection 
+                                            ? 'text-teal-600' 
+                                            : index < currentSection 
+                                                ? 'text-gray-600' 
+                                                : 'text-gray-400'
+                                    }`}>
+                                        {label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex items-center justify-between mt-4">
+                        <button
+                            onClick={handlePrevSectionDraft}
+                            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => setShowModal(true)}
+                                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                </svg>
+                                Save Draft
+                            </button>
+
+                            <button
+                                onClick={handleNextSection}
+                                className="flex items-center gap-2 px-6 py-2 text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors"
+                            >
+                                {currentSection === 4 ? 'Submit' : 'Next'}
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal */}
             <PrevSectionDraftHandler
                 isOpen={showModal}
                 onClose={handleCloseModal}

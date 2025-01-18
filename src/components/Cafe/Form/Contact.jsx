@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import Country from '../../Auth/Country';
 import { Label, TextInput } from 'flowbite-react';
+import { FiPhone, FiMail, FiMapPin, FiUser, FiInstagram, FiFacebook, FiYoutube, FiDollarSign, FiCalendar } from 'react-icons/fi';
+import Country from '../../../utils/Country';
 
 function Contact({ contactInfo, setContactInfo }) {
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
@@ -21,87 +22,121 @@ function Contact({ contactInfo, setContactInfo }) {
     setSelectedCountryCode(selectedCountryCode);
   };
 
-  return (
-    <div className="w-full min-h-screen p-4 md:px-6 lg:px-8 py-4 md:py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="font-medium text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center mb-2 md:mb-4">
-          Contact Information
-        </h1>
-        <p className="text-[#939393] text-center text-xs sm:text-sm md:text-base mb-4 md:mb-8 px-2 md:px-4">
-          Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
-        </p>
+  const getIcon = (key) => {
+    switch(key) {
+      case 'phoneNumber': return FiPhone;
+      case 'email': return FiMail;
+      case 'address': return FiMapPin;
+      case 'owner_name': return FiUser;
+      case 'instagram': return FiInstagram;
+      case 'facebook': return FiFacebook;
+      case 'youTube': return FiYoutube;
+      case 'upiId': return FiDollarSign;
+      case 'Establishment Year of Company': return FiCalendar;
+      default: return null;
+    }
+  };
 
-        <div className="bg-white shadow-sm rounded-lg p-3 sm:p-4 md:p-6 lg:p-8">
-          <div className="space-y-4 md:space-y-6">
+  const getFieldLabel = (key) => {
+    switch(key) {
+      case 'upiId': return 'UPI ID';
+      case 'owner_name': return 'Owner Name';
+      case 'phoneNumber': return 'Phone Number';
+      case 'youTube': return 'YouTube';
+      case 'Establishment Year of Company': return 'Establishment Year';
+      default: return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+    }
+  };
+
+  const getPlaceholder = (key) => {
+    switch(key) {
+      case 'facebook': return 'Enter Facebook profile URL';
+      case 'instagram': return 'Enter Instagram profile URL';
+      case 'youTube': return 'Enter YouTube channel URL';
+      case 'upiId': return 'Enter UPI ID';
+      case 'owner_name': return 'Enter owner name';
+      case 'phoneNumber': return 'Enter 10-digit phone number';
+      case 'Establishment Year of Company': return 'Enter establishment year';
+      case 'email': return 'Enter email address';
+      case 'address': return 'Enter complete address';
+      default: return `Enter ${key.toLowerCase()}`;
+    }
+  };
+
+  return (
+    <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 text-gray-900">
+            Contact Information
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+            Provide your contact details to help customers reach you through various platforms.
+          </p>
+        </div>
+
+        {/* Main Form Section */}
+        <div className="bg-white shadow-sm rounded-lg p-6 md:p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Object.keys(contactInfo)
-              .filter((key) => key !== 'country' && key !== 'countryCode')
+              .filter(key => key !== 'country' && key !== 'countryCode')
               .map((key, index) => {
-                const placeholderText = (() => {
-                  switch (key) {
-                    case 'facebook':
-                      return 'Enter Facebook profile link';
-                    case 'instagram':
-                      return 'Enter Instagram profile link';
-                    case 'youTube':
-                      return 'Enter YouTube channel link';
-                    case 'upiId':
-                      return 'Enter UPI ID';
-                    case 'owner_name':
-                      return 'Enter owner name';
-                    case 'phoneNumber':
-                      return 'Enter 10-digit phone number';
-                    case 'Establishment Year of Company':
-                      return 'Enter establishment year';
-                    default:
-                      return `Enter ${key.toLowerCase()}`;
-                  }
-                })();
+                const Icon = getIcon(key);
+                const isRequired = !(key === 'facebook' || key === 'instagram' || key === 'youTube' || key === 'upiId');
 
                 return (
-                  <div key={index} className="space-y-1.5 md:space-y-2">
+                  <div key={index} className="space-y-2">
                     <Label 
                       htmlFor={key}
-                      className="block text-xs sm:text-sm md:text-base font-medium text-gray-700"
+                      className="text-sm font-medium text-gray-700 flex items-center gap-2"
                     >
-                      {key === 'upiId' ? 'UPI ID' : 
-                       key === 'owner_name' ? 'Owner Name' :
-                       key === 'phoneNumber' ? 'Phone Number' :
-                       key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
-                      {!(key === 'facebook' || key === 'instagram' || key === 'youTube' || key === 'upiId') && (
-                        <span className="text-red-500 ml-1">*</span>
-                      )}
+                      {Icon && <Icon className="w-4 h-4 text-gray-500" />}
+                      {getFieldLabel(key)}
+                      {isRequired && <span className="text-red-500">*</span>}
                     </Label>
 
                     {key === 'phoneNumber' ? (
-                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                      <div className="flex gap-2">
                         <select
                           value={selectedCountryCode}
                           onChange={handleCountryChange}
-                          className="w-full sm:w-[20%] px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[#30AFBC] focus:border-[#30AFBC] transition-all duration-200"
+                          className="w-[30%] rounded-lg border-gray-300 focus:border-cyan-500 focus:ring-cyan-500/20"
                         >
                           <Country />
                         </select>
-                        <input
+                        <TextInput
+                          id={key}
                           type="tel"
                           name={key}
                           value={contactInfo[key]}
                           onChange={handleContactChange}
-                          placeholder={placeholderText}
-                          required
-                          maxLength="10"
-                          className="w-full sm:w-[80%] px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-[#30AFBC] focus:border-[#30AFBC] transition-all duration-200"
+                          placeholder={getPlaceholder(key)}
+                          className="w-[70%]"
+                          required={isRequired}
                         />
                       </div>
-                    ) : (
-                      <TextInput
+                    ) : key === 'address' ? (
+                      <textarea
                         id={key}
                         name={key}
                         value={contactInfo[key]}
                         onChange={handleContactChange}
-                        placeholder={placeholderText}
-                        required={!(key === 'facebook' || key === 'instagram' || key === 'youTube' || key === 'upiId')}
-                        className="w-full text-xs sm:text-sm transition-all duration-200"
-                        sizing="sm"
+                        placeholder={getPlaceholder(key)}
+                        rows={3}
+                        className="w-full rounded-lg border-gray-300 focus:border-cyan-500 focus:ring-cyan-500/20 resize-none"
+                        required={isRequired}
+                      />
+                    ) : (
+                      <TextInput
+                        id={key}
+                        type={key === 'email' ? 'email' : 'text'}
+                        name={key}
+                        value={contactInfo[key]}
+                        onChange={handleContactChange}
+                        placeholder={getPlaceholder(key)}
+                        className="w-full"
+                        required={isRequired}
                       />
                     )}
                   </div>
