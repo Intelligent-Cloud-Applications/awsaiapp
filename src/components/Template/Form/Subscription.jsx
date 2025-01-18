@@ -188,7 +188,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     localStorage.setItem('provides', JSON.stringify(provides));
   }, [subscriptionTypes, countryCodes, provides]);
   return (
-    <div className="home h-[185vh] w-[100%]">
+    <div className="mx-[2%]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">SUBSCRIPTION PLANS</h1>
       <h5 className="text-[#939393] text-center mx-[10%]">
         Clearly outline your subscription options, highlighting key features and benefits to help users make informed decisions.</h5>

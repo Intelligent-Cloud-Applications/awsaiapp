@@ -60,14 +60,14 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div className="home h-[185vh]">
+    <div className="home h-[185vh]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
-      <h5 className="text-[#939393] text-center mx-[20%]">
+      <h5 className="text-[#939393] text-center">
         <strong>Introduce Your Brand:</strong><br />
         Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
       </h5>
-      <div className="flex justify-center ml-[10%]">
-        <div className="w-[50%] p-8">
+      <div className="flex justify-center ml-[20%]">
+        <div className="w-[80%] p-8">
           <div className="relative mt-2">
             <h5
               className="w-[28rem] text-[#939393] relative cursor-pointer py-2"

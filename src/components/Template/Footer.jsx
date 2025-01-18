@@ -22,7 +22,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     'POLICY',
   ];
 
-  const progress = (currentSection / sections.length) * 100;
+  // const progress = (currentSection / sections.length) * 100;
 
   const handleNextClick = () => {
     saveData();
@@ -79,7 +79,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
             </button>
           )}
         </div>
-        <div>
+        {/* <div>
           <div className='flex flex-row gap-[7em] max1320:gap-4 max1320:left-[4rem] absolute left-[14rem] right-0 top-4 max1250:hidden'>
             {sections.map((section, index) => (
               <div
@@ -101,7 +101,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
               }}
             />
           </div>
-        </div>
+        </div> */}
         <div className="absolute right-8 bottom-4 flex gap-4">
           {currentSection < sections.length - 1 && (
             <button
