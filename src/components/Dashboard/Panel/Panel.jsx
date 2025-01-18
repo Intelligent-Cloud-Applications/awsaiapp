@@ -136,7 +136,7 @@ const Panel = () => {
 
   const handleTypeFilter = (typeSelected) => {
     setFilterStatus(null);
-    if (type === "Dance Studio") {
+    if (typeSelected === "Dance Studio") {
       setSelectedType("DanceStudio");
     } else {
       setSelectedType(typeSelected);
@@ -385,7 +385,6 @@ const Panel = () => {
         return "";
     }
   };
-  console.log("the sale payment info", payment);
 
   return (
     <>
