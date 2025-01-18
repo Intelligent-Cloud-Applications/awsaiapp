@@ -136,8 +136,15 @@ const Panel = () => {
   const handleTypeFilter = (typeSelected) => {
     setFilterStatus(null);
     setSelectedType(typeSelected);
+    setActiveMenu(null);
+    setActiveSubMenu(null);
   };
-
+  const handleAllFilter = () => {
+    setFilterStatus(null);
+    setSelectedType(null);
+    setActiveMenu(null);
+    setActiveSubMenu(null);
+  };
   const handleDeliverFilter = (value) => {
     setSelectedType(null);
     if (value === "Delivered") {
@@ -459,6 +466,12 @@ const Panel = () => {
                     {/* Main Dropdown Menu */}
                     {activeMenu === "main" && (
                       <div>
+                          <div
+                          onClick={() => handleAllFilter()}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          All
+                        </div>
                         <div
                           onClick={() => handleMenuToggle("type")}
                           className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
@@ -1000,6 +1013,12 @@ const Panel = () => {
         <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
           {activeMenu === "main" && (
             <div>
+                <div
+                          onClick={() => handleAllFilter()}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          All
+                        </div>
               <div
                 onClick={() => handleMenuToggle("type")}
                 className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
