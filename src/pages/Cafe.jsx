@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Home/Navbar';
-import Footer from '../components/Template3/Footer';
-import Company from '../components/Template3/Form/Company';
-import Home from '../components/Template3/Form/Home';
-// import Testimonials from '../components/Template3/Form/Testimonials';
-// import Subscription from '../components/Template3/Form/Subscription';
-// import FAQs from '../components/Template3/Form/FAQs';
-import Policy from '../components/Template3/Form/Policy';
-import Contact from '../components/Template3/Form/Contact';
+import Footer from '../components/Cafe/Footer';
+import Company from '../components/Cafe/Form/Company';
+import Home from '../components/Cafe/Form/Home';
+// import Testimonials from '../components/Cafe/Form/Testimonials';
+// import Subscription from '../components/Cafe/Form/Subscription';
+// import FAQs from '../components/Cafe/Form/FAQs';
+import Policy from '../components/Cafe/Form/Policy';
+import Contact from '../components/Cafe/Form/Contact';
 import { API, Storage } from "aws-amplify";
-import PrevSectionDraftHandler from '../components/Template3/Form/PrevSectionDraftHandler';
+import PrevSectionDraftHandler from '../components/Cafe/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
-import Testimonials from '../components/Template3/Form/Testimonials';
+import Testimonials from '../components/Cafe/Form/Testimonials';
 // import {CSVUpload} from '../components/UploadFile/CSVUpload';
-const Template3 = () => {
+const Cafe = () => {
     const Navigate = useNavigate();
     const [currentSection, setCurrentSection] = useState(0);
     const [savedData, setsavedData] = useState();
 
-    console.log("🚀 ~ file: Template3.jsx:21 ~ Template3 ~ savedData:", savedData)
+    console.log("🚀 ~ file: Cafe.jsx:21 ~ Cafe ~ savedData:", savedData)
     // const [Companydata, setCompanydata] = useState([]);
     const [logo, setLogo] = useState(null);
     const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
@@ -481,10 +481,10 @@ const Template3 = () => {
     };
     return (
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-            <Navbar />
-            <div className="flex-grow flex">
-                <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
-                    {currentSection === 0 &&
+        <Navbar />
+        <div className="flex-grow flex">
+          <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
+            {currentSection === 0 &&
                         <Company
                             // clients={Companydata}
                             companyName={companyName}
@@ -590,4 +590,4 @@ const Template3 = () => {
     );
 };
 
-export default Template3;
+export default Cafe;
