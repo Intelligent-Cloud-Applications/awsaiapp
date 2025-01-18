@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import NewMemberList from './NewMemberList';
 import ButtonGroup from '../../../Common/DashboardNav/ButtonGroup';
 import Navbar from '../../Home/Navbar';
@@ -13,7 +13,13 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   const { user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
   const navigate = useNavigate();
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   let institution;
   if (user.profile.tempinstitutionName === "awsaiapp") {
     institution = userData.tempinstitutionName;
@@ -43,6 +49,9 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
+    <>
+     {screenWidth > 1025 ? (
+    <>
     <div className="w-[97vw] flex flex-col items-center h-[120vh] ml-[220px] bg-[#e6e4e4]">
       <div className="">
         <Navbar />
@@ -62,6 +71,30 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
         </div>
       </div>
     </div>
+</>
+    ):(
+      <>
+      <div className="w-full gap-2">
+        <div className="mt-10">
+        <div
+              onClick={goBack}
+           className="border  bg-[#30afbc]  rounded cursor-pointer w-[36px]  text-[30px] "
+            >
+              <IoCaretBack />
+              </div>
+ 
+        </div>
+        
+            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType} />
+        
+          <div>
+            {renderContent()}
+          </div>
+      </div>
+      </>
+    )
+  }
+</>
   );
 };
 

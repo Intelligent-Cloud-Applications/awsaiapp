@@ -8,18 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { API } from "aws-amplify";
 import Context from "../context/Context";
 
-
 const Query = ({ activeComponent }) => {
-  // //Get the action url by inspecting the form
-  // const FORMS_ACTION_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSfHDTu8rT_7o8-IHLuLrrigrBmDPjk6DeO8hxZelCLSBc_CxQ/formResponse";
-
-  // //Get the rest from a prefilled link
-  // const FORMS_FULL_NAME = "entry.1659643296";
-  // const FORMS_COMPANY_NAME = "entry.1521075864";
-  // const FORMS_EMAIL = "entry.792093172";
-  // const FORMS_ADDRESS = "entry.727108387";
-  // const FORMS_PROJECT_DETAILS = "entry.218886769";
-
   const util = useContext(Context).util;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -31,12 +20,39 @@ const Query = ({ activeComponent }) => {
     projectDetails: "",
   });
 
-  // const [captchaValue] = useState(null);
+  const [errors, setErrors] = useState({
+    email: "",
+    phoneNumber: "",
+  });
 
   const recaptchaRef = useRef();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "email") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setErrors({
+        ...errors,
+        email: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
+      });
+    }
+
+    if (name === "phoneNumber") {
+      const phonePattern = /^\d{0,10}$/;
+      if (!phonePattern.test(value)) {
+        setErrors({
+          ...errors,
+          phoneNumber: "Phone number must be numeric and up to 10 digits only.",
+        });
+        return;
+      }
+      setErrors({
+        ...errors,
+        phoneNumber: "",
+      });
+    }
+
     setFormData({ ...formData, [name]: value });
   };
 
@@ -65,22 +81,6 @@ const Query = ({ activeComponent }) => {
         return;
       }
 
-      // const bodyData = new FormData();
-      // bodyData.append(FORMS_FULL_NAME, formData.fullName);
-      // bodyData.append(FORMS_COMPANY_NAME, formData.companyName);
-      // bodyData.append(FORMS_EMAIL, formData.email);
-      // bodyData.append(FORMS_ADDRESS, formData.address);
-      // bodyData.append(FORMS_PROJECT_DETAILS, formData.projectDetails);
-
-      // await fetch(FORMS_ACTION_URL, {
-      //   mode: 'no-cors',
-      //   method: "POST",
-      //   body: bodyData,
-      //   headers: {
-      //     'Content-type': 'application/json; charset=UTF-8'
-      //   }
-      // });
-
       const apiName = "clients";
       const path = "/any/create-query";
       const myInit = {
@@ -97,7 +97,6 @@ const Query = ({ activeComponent }) => {
       await API.post(apiName, path, myInit);
 
       alert("Submitted Successfully");
-
 
       setFormData({
         fullName: "",
@@ -117,18 +116,15 @@ const Query = ({ activeComponent }) => {
       util.setLoader(false);
     }
     util.setLoader(false);
-
   };
 
   return (
     <>
       {activeComponent !== 'contact' ? <Navbar /> : ""}
-      {/* new contact us page */}
       <div
         className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
       max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
       >
-        {/* card */}
         <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
             <motion.div
@@ -210,6 +206,7 @@ const Query = ({ activeComponent }) => {
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                   required
                 />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
               <div>
                 <label
@@ -227,6 +224,7 @@ const Query = ({ activeComponent }) => {
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
                   required
                 />
+                {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
               </div>
               <div>
                 <label
