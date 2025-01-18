@@ -33,8 +33,8 @@ const Panel = () => {
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
-  const [activeSubMenu, setActiveSubMenu] = useState(null); 
-  const isDeliveredOptions = ["Delivered", "Not Delivered"]; 
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const isDeliveredOptions = ["Delivered", "Not Delivered"];
   const handleMenuToggle = (menu) => {
     setActiveSubMenu((prev) => (prev === menu ? null : menu));
   };
@@ -135,12 +135,12 @@ const Panel = () => {
   };
 
   const handleTypeFilter = (typeSelected) => {
-    let value;
-    if(type === "Dance Studio"){
-      value = "DanceStudio";
-    }
     setFilterStatus(null);
-    setSelectedType(value);
+    if (type === "Dance Studio") {
+      setSelectedType("DanceStudio");
+    }else{
+      setSelectedType(typeSelected);
+    }
     setActiveMenu(null);
     setActiveSubMenu(null);
   };
@@ -166,28 +166,28 @@ const Panel = () => {
     if (!searchQuery && !selectedType && filterStatus === null) {
       return Array.isArray(clientsData)
         ? clientsData
-            .filter(([key, client]) => client?.isFormFilled || false)
-            .sort((a, b) => {
-              const dateA = a[1].date || -Infinity;
-              const dateB = b[1].date || -Infinity;
-              return dateB - dateA;
-            })
+          .filter(([key, client]) => client?.isFormFilled || false)
+          .sort((a, b) => {
+            const dateA = a[1].date || -Infinity;
+            const dateB = b[1].date || -Infinity;
+            return dateB - dateA;
+          })
         : [];
     }
     const query = searchQuery?.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-          const institution = client?.institutionid
-            ? String(client.institutionid).toLowerCase()
-            : "";
-          const matchesQuery = !searchQuery || institution.includes(query);
-          const matchesType =
-            !selectedType || client.institutionType === selectedType;
-          const matchesDelivery =
-            filterStatus === null || client.isDelivered === filterStatus;
-          return matchesQuery && matchesType && matchesDelivery;
-        })
+        const institution = client?.institutionid
+          ? String(client.institutionid).toLowerCase()
+          : "";
+        const matchesQuery = !searchQuery || institution.includes(query);
+        const matchesType =
+          !selectedType || client.institutionType === selectedType;
+        const matchesDelivery =
+          filterStatus === null || client.isDelivered === filterStatus;
+        return matchesQuery && matchesType && matchesDelivery;
+      })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -253,8 +253,8 @@ const Panel = () => {
   const useDataForSales = Ctx.saleData || [];
 
   const getUsernameByCognitoId = (cognitoId) => {
-    console.log("cognitoid:", cognitoId);
-    console.log("data:", useDataForSales.userName);
+    // console.log("cognitoid:", cognitoId);
+    // console.log("data:", useDataForSales.userName);
     // Normalize the input ID
     const trimmedInputId = String(cognitoId).trim();
 
@@ -452,77 +452,76 @@ const Panel = () => {
                   </div>
                 </div>
                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-                <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
-              <div className="relative inline-block ml-5">
-                <button
-                  className=" flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md"
-                  onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-
+                  <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
+                    <div className="relative inline-block ml-5">
+                      <button
+                        className={`flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md ${clientsToDisplay.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#48d6e0] text-white"}`}
+                        onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                       >
-                                        Filter by
-                  {activeMenu ? (
-                    <HiChevronUp className="ml-2" />
-                  ) : (
-                    <HiChevronDown className="ml-2" />
-                  )}
-                </button>
-                {activeMenu && (
-                  <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
-                    {/* Main Dropdown Menu */}
-                    {activeMenu === "main" && (
-                      <div>
-                          <div
-                          onClick={() => handleAllFilter()}
-                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          All
+                        Filter by
+                        {activeMenu ? (
+                          <HiChevronUp className="ml-2" />
+                        ) : (
+                          <HiChevronDown className="ml-2" />
+                        )}
+                      </button>
+                      {activeMenu && (
+                        <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
+                          {/* Main Dropdown Menu */}
+                          {activeMenu === "main" && (
+                            <div>
+                              <div
+                                onClick={() => handleAllFilter()}
+                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                              >
+                                All
+                              </div>
+                              <div
+                                onClick={() => handleMenuToggle("type")}
+                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                              >
+                                <span>Type</span>
+                                <HiChevronRight />
+                              </div>
+                              <div
+                                onClick={() => handleMenuToggle("isDelivered")}
+                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                              >
+                                <span>Delivered</span>
+                                <HiChevronRight />
+                              </div>
+                            </div>
+                          )}
+                          {/* Type Submenu */}
+                          {activeSubMenu === "type" && (
+                            <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                              {type.map((type) => (
+                                <div
+                                  key={type}
+                                  onClick={() => handleTypeFilter(type)}
+                                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                >
+                                  {type}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {/* Is Delivered Submenu */}
+                          {activeSubMenu === "isDelivered" && (
+                            <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                              {isDeliveredOptions.map((option) => (
+                                <div
+                                  key={option}
+                                  onClick={() => handleDeliverFilter(option)}
+                                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                >
+                                  {option}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div
-                          onClick={() => handleMenuToggle("type")}
-                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          <span>Type</span>
-                          <HiChevronRight />
-                        </div>
-                        <div
-                          onClick={() => handleMenuToggle("isDelivered")}
-                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          <span>Delivered</span>
-                          <HiChevronRight />
-                        </div>
-                      </div>
-                    )}
-                    {/* Type Submenu */}
-                    {activeSubMenu === "type" && (
-                      <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
-                        {type.map((type) => (
-                          <div
-                            key={type}
-                            onClick={() => handleTypeFilter(type)}
-                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                          >
-                            {type}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {/* Is Delivered Submenu */}
-                    {activeSubMenu === "isDelivered" && (
-                      <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
-                        {isDeliveredOptions.map((option) => (
-                          <div
-                            key={option}
-                            onClick={() => handleDeliverFilter(option)}
-                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                          >
-                            {option}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
+                      )}
                     </div>
                     {/* Search Bar */}
                     <form class="w-full min800:w-[30%] rounded-sm my-3">
@@ -596,9 +595,8 @@ const Panel = () => {
                         )}
 
                         <Table.HeadCell
-                          className={`${
-                            showHiddenContent ? "" : "max1008:hidden"
-                          } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                          className={`${showHiddenContent ? "" : "max1008:hidden"
+                            } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                         >
                           Created By
                         </Table.HeadCell>
@@ -704,9 +702,8 @@ const Panel = () => {
                             )}
 
                             <Table.Cell
-                              className={`${
-                                showHiddenContent ? "" : "max1008:hidden"
-                              } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                              className={`${showHiddenContent ? "" : "max1008:hidden"
+                                } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                             >
                               {client.createdBy
                                 ? getUsernameByCognitoId(client.createdBy)
@@ -791,7 +788,7 @@ const Panel = () => {
                                     required
                                     disabled={
                                       selectedStatuses[client.institutionid] !==
-                                        "Completed" &&
+                                      "Completed" &&
                                       client.deliverable !== "Completed"
                                     }
                                     className="w-[160px]"
@@ -805,17 +802,17 @@ const Panel = () => {
                                   {(selectedStatuses[client.institutionid] ===
                                     "Completed" ||
                                     client.deliverable === "Completed") && (
-                                    <Button
-                                      onClick={() =>
-                                        handleDomainLinkSubmit(
-                                          client.institutionid
-                                        )
-                                      }
-                                      className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                                    >
-                                      <FaCheck />
-                                    </Button>
-                                  )}
+                                      <Button
+                                        onClick={() =>
+                                          handleDomainLinkSubmit(
+                                            client.institutionid
+                                          )
+                                        }
+                                        className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                                      >
+                                        <FaCheck />
+                                      </Button>
+                                    )}
                                 </div>
                               </Table.Cell>
                             )}
@@ -967,133 +964,133 @@ const Panel = () => {
             </>
           ) : (
             <>
-       
-    <Select
-      value={instituteType && splitandjoin(instituteType)}
-      onChange={(e) => setInstituteType(e.target.value)}
-      className=" font-semibold w-full border rounded-md  px-3 focus:outline-none focus:ring-2  mt-14"
-    >
-      {instituteType === "" && (
-        <option value="" disabled hidden>
-          Type
-        </option>
-      )}
-      {type.map((type) => (
-        <option key={type} value={type} className=" hover:text-white">
-          {splitandjoin(type)}
-        </option>
-      ))}
-    </Select>
 
-    <Link
-      to={getLinkPath(instituteType)}
-      onClick={(e) => {
-        if (instituteType === "") {
-          e.stopPropagation();
-          toast.error("Please Select a type of Institution.", {
-            position: "top-right",
-            autoClose: 5000,
-            style: {
-              backgroundColor: "#f8d7da",
-              color: "#721c24",
-            },
-          });
-        }
-      }}
-      className="mt-3 block"
-    >
-      <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
-        Create New Institution
-      </button>
-    </Link>
-    <div className="relative mt-4">
-      <button
-        className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
-        onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-      >
-        Filter by
-        {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
-      </button>
-      {activeMenu && (
-        <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
-          {activeMenu === "main" && (
-            <div>
-                <div
+              <Select
+                value={instituteType && splitandjoin(instituteType)}
+                onChange={(e) => setInstituteType(e.target.value)}
+                className=" font-semibold w-full border rounded-md  px-3 focus:outline-none focus:ring-2  mt-14"
+              >
+                {instituteType === "" && (
+                  <option value="" disabled hidden>
+                    Type
+                  </option>
+                )}
+                {type.map((type) => (
+                  <option key={type} value={type} className=" hover:text-white">
+                    {splitandjoin(type)}
+                  </option>
+                ))}
+              </Select>
+
+              <Link
+                to={getLinkPath(instituteType)}
+                onClick={(e) => {
+                  if (instituteType === "") {
+                    e.stopPropagation();
+                    toast.error("Please Select a type of Institution.", {
+                      position: "top-right",
+                      autoClose: 5000,
+                      style: {
+                        backgroundColor: "#f8d7da",
+                        color: "#721c24",
+                      },
+                    });
+                  }
+                }}
+                className="mt-3 block"
+              >
+                <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
+                  Create New Institution
+                </button>
+              </Link>
+              <div className="relative mt-4">
+                <button
+                  className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
+                  onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
+                >
+                  Filter by
+                  {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
+                </button>
+                {activeMenu && (
+                  <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
+                    {activeMenu === "main" && (
+                      <div>
+                        <div
                           onClick={() => handleAllFilter()}
                           className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
                           All
                         </div>
-              <div
-                onClick={() => handleMenuToggle("type")}
-                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-              >
-                Type
+                        <div
+                          onClick={() => handleMenuToggle("type")}
+                          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          Type
+                        </div>
+                        <div
+                          onClick={() => handleMenuToggle("isDelivered")}
+                          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                        >
+                          Is Delivered
+                        </div>
+                      </div>
+                    )}
+                    {activeSubMenu === "type" && (
+                      <div className="mt-2">
+                        {type.map((type) => (
+                          <div
+                            key={type}
+                            onClick={() => handleTypeFilter(type)}
+                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                          >
+                            {type}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {activeSubMenu === "isDelivered" && (
+                      <div className="mt-2">
+                        {isDeliveredOptions.map((option) => (
+                          <div
+                            key={option}
+                            onClick={() => handleDeliverFilter(option)}
+                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                          >
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div
-                onClick={() => handleMenuToggle("isDelivered")}
-                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-              >
-                Is Delivered
-              </div>
-            </div>
-          )}
-          {activeSubMenu === "type" && (
-            <div className="mt-2">
-              {type.map((type) => (
-                <div
-                  key={type}
-                  onClick={() => handleTypeFilter(type)}
-                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                >
-                  {type}
+              <form className="mt-5">
+                <div className="relative">
+                  <input
+                    type="search"
+                    className="w-full border rounded-md py-2 px-10 bg-[#F9FAFB] text-gray-700 shadow-md focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <div className="absolute inset-y-0 left-3 flex items-center">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-          {activeSubMenu === "isDelivered" && (
-            <div className="mt-2">
-              {isDeliveredOptions.map((option) => (
-                <div
-                  key={option}
-                  onClick={() => handleDeliverFilter(option)}
-                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-    <form className="mt-5">
-      <div className="relative">
-        <input
-          type="search"
-          className="w-full border rounded-md py-2 px-10 bg-[#F9FAFB] text-gray-700 shadow-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div className="absolute inset-y-0 left-3 flex items-center">
-          <svg
-            className="w-5 h-5 text-gray-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
-      </div>
-    </form>
+              </form>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
                 {clientsToDisplay.map(([key, client], index) => (
                   <div
@@ -1101,7 +1098,7 @@ const Panel = () => {
                     className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
                   >
                     <div className="flex flex-col gap-2">
-                      
+
                       <div
                         className="flex justify-between items-center text-center"
                         onClick={(e) => handleRowClick(client, e)}
@@ -1110,14 +1107,14 @@ const Panel = () => {
                           {client.institutionid}
                         </div>
                         <Link
-  onClick={() => {
-    handleInstitutionClick(client);
-  }}
->
-  <div className="text-[#30AFBC] text-sm">
-    <AiOutlineEye size={20} />
-  </div>
-</Link>
+                          onClick={() => {
+                            handleInstitutionClick(client);
+                          }}
+                        >
+                          <div className="text-[#30AFBC] text-sm">
+                            <AiOutlineEye size={20} />
+                          </div>
+                        </Link>
                       </div>
 
                       {/* Company Name */}
@@ -1281,7 +1278,7 @@ const Panel = () => {
                             required
                             disabled={
                               selectedStatuses[client.institutionid] !==
-                                "Completed" &&
+                              "Completed" &&
                               client.deliverable !== "Completed"
                             }
                             className="w-[160px]"
@@ -1295,15 +1292,15 @@ const Panel = () => {
                           {(selectedStatuses[client.institutionid] ===
                             "Completed" ||
                             client.deliverable === "Completed") && (
-                            <Button
-                              onClick={() =>
-                                handleDomainLinkSubmit(client.institutionid)
-                              }
-                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                            >
-                              <FaCheck />
-                            </Button>
-                          )}
+                              <Button
+                                onClick={() =>
+                                  handleDomainLinkSubmit(client.institutionid)
+                                }
+                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                              >
+                                <FaCheck />
+                              </Button>
+                            )}
                         </div>
                       )}
 
@@ -1406,11 +1403,10 @@ const Panel = () => {
                         currentPage > 1 && setCurrentPage(currentPage - 1)
                       }
                       disabled={currentPage === 1}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === 1
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
+                        ? "bg-gray-200 text-gray-500"
+                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                        }`}
                     >
                       Previous
                     </button>
@@ -1420,11 +1416,10 @@ const Panel = () => {
                         setCurrentPage(currentPage + 1)
                       }
                       disabled={currentPage === totalPages}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === totalPages
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
+                        ? "bg-gray-200 text-gray-500"
+                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                        }`}
                     >
                       Next
                     </button>
@@ -1442,7 +1437,8 @@ const Panel = () => {
         />
       ) : (
         !payment && handlePayment()
-      )}
+      )
+      }
     </>
   );
 };
