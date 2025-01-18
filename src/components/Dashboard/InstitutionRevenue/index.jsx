@@ -110,7 +110,7 @@ function InstitutionRevenue({ institution }) {
 
         <div className="flex justify-center gap-[4rem] w-[70vw] items-center flex-wrap-reverse max600:w-full">
           {/* Bar Chart */}
-          <div className='mt-6 w-[40vw] min-w-[40rem] max600:min-w-[95vw]'>
+          <div className='mt-6 w-[40vw] min-w-[40rem] max600:min-w-[95vw] mb-20'>
             <h3 className='text-xl font-semibold text-center'>Monthly Revenue</h3>
             <ChartComponent2 data={barChartData} type="bar" />
           </div>

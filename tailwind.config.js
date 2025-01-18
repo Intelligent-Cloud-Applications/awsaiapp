@@ -88,6 +88,17 @@ module.exports = {
         "3xl": "22px",
         "112xl": "131px",
       },
+      scrollbar: {
+        DEFAULT: '12px',
+        thin: '8px',
+        thumb: {
+          color: '#94a3b8',
+          hover: '#64748b'
+        },
+        track: {
+          color: '#f1f5f9'
+        }
+      }
     },
     fontSize: {
       xs: "0.75rem",
@@ -129,6 +140,22 @@ module.exports = {
   plugins: [
     require("@tailwindcss/container-queries"),
     flowbite.plugin(),
-
+    require('tailwind-scrollbar')({ 
+      nocompatible: true,
+      themePreferences: {
+        scrollbarWidth: '12px',
+        scrollbarColor: '#94a3b8',
+        scrollbarTrackColor: '#f1f5f9',
+        scrollbarThumbColor: '#94a3b8',
+        scrollbarThumbHoverColor: '#64748b',
+        
+        scrollbarThinWidth: '8px',
+        scrollbarThinColor: '#94a3b8',
+        scrollbarThinTrackColor: '#f1f5f9',
+        scrollbarThinThumbColor: '#94a3b8',
+        scrollbarThinThumbHoverColor: '#64748b',
+      },
+      variants: ['responsive', 'hover', 'dark'],
+    }),
   ],
 };
