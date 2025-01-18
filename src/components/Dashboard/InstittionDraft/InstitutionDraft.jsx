@@ -141,7 +141,7 @@ const InstitutionDraft = () => {
         break;
       case "cafe":
         console.log("Navigating to cafe");
-        navigate('/template3');
+        navigate('/cafe');
         break;
       default:
         console.log("Default case reached");

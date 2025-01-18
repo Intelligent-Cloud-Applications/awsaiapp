@@ -317,7 +317,7 @@ const SignUp = () => {
         if (userdata.status === "Active") {
           Navigate("/dashboard");
         }
-        Navigate("/template");
+        Navigate("/dance-studio");
       } else {
         UtilCtx.setLoader(false);
       }
