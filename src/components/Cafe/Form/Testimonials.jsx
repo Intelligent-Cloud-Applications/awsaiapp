@@ -62,19 +62,37 @@ function Testimonials({ testimonials, setTestimonials }) {
   }, [testimonials, activeTestimonialIndex]);
 
   return (
-    <div className="mx-auto w-full overflow-y-auto mb-[2rem]">
-      <h1 className="font-medium text-7xl text-center">TESTIMONIALS SECTION</h1>
-      <h5 className="text-center text-gray-500">
-        Showcase real customer feedback to build trust and credibility with authentic positive experiences.
-      </h5>
-      <div className="flex justify-center">
-        <div className="w-[60%] p-8">
-          <div ref={testimonialsContainerRef} className="pb-6">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="mt-6">
-                <h2 className="font-medium text-xl">Testimonial {index + 1}</h2>
+    <div className="w-full">
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <h1 className="font-medium text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-3">
+          TESTIMONIALS SECTION
+        </h1>
+        <p className="text-[#939393] text-sm sm:text-base px-4">
+          Showcase real customer feedback to build trust and credibility with authentic positive experiences.
+        </p>
+      </div>
 
-                <div className="relative flex items-center my-4">
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div ref={testimonialsContainerRef} className="space-y-6">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+              <h2 className="font-medium text-lg sm:text-xl mb-4">
+                Testimonial {index + 1}
+                {index >= 3 && (
+                  <button
+                    onClick={() => removeTestimonial(index)}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                    aria-label="Remove testimonial"
+                  >
+                    ×
+                  </button>
+                )}
+              </h2>
+
+              <div className="space-y-4">
+                <div className="relative">
                   <FileInput
                     accept="image/*"
                     onChange={(e) => handleImageChange(index, e)}
@@ -84,79 +102,55 @@ function Testimonials({ testimonials, setTestimonials }) {
                   <label
                     htmlFor={`testimonialImgInput${index}`}
                     onClick={() => setActiveTestimonialIndex(index)}
-                    className={`w-[30vh] h-[25px] border border-gray-300 flex items-center justify-center cursor-pointer relative bg-gray-200`}
+                    className="block w-full p-2.5 text-sm border border-gray-300 rounded-lg cursor-pointer hover:border-[#30AFBC] transition-colors"
                   >
-                    <span className={`text-black font-medium ${testimonial.uploadedFile ? 'hidden' : 'block'}`}>
-                      Choose File
-                    </span>
-                    {testimonial.uploadedFile && (
-                      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate">
-                        <span className="text-gray-600">{shortenFileName(testimonial.uploadedFile)}</span>
-                        <span
-                          onClick={() => handleImageChange(index, { target: { files: [null] } })}
-                          className="text-green-500 cursor-pointer"
-                        >
-                          Change
-                        </span>
+                    {!testimonial.uploadedFile ? (
+                      <span className="text-gray-500">Choose profile image</span>
+                    ) : (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">{shortenFileName(testimonial.uploadedFile)}</span>
+                        <span className="text-[#30AFBC] hover:text-[#2a9ca8]">Change</span>
                       </div>
                     )}
                   </label>
-                  {index >= 3 && (
-                    <button
-                      onClick={() => removeTestimonial(index)}
-                      className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded-full"
-                    >
-                      ✕
-                    </button>
-                  )}
                 </div>
 
-                <div className="my-4">
+                <div>
                   <TextInput
                     name="name"
                     value={testimonial.name}
                     onChange={(e) => handleTestimonialChange(index, 'name', e.target.value)}
-                    placeholder="Name"
+                    placeholder="Enter reviewer's name"
                     className="w-full"
                     maxLength="20"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
                   />
                 </div>
+
                 <div>
                   <TextInput
                     name="feedback"
                     value={testimonial.feedback}
                     onChange={(e) => handleTestimonialChange(index, 'feedback', e.target.value)}
-                    placeholder="Feedback"
+                    placeholder="Enter reviewer's feedback"
                     className="w-full"
-                    rows={1}
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
                   />
                 </div>
               </div>
-            ))}
-          </div>
-
-          {testimonials.length < 5 && (
-            <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                onClick={addNewTestimonial}
-                className="bg-teal-500 text-white px-4 py-2 rounded-md"
-              >
-                Add Testimonial
-              </button>
             </div>
-          )}
+          ))}
         </div>
+
+        {testimonials.length < 5 && (
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={addNewTestimonial}
+              className="bg-[#30AFBC] text-white px-4 py-2 rounded-md hover:bg-[#2a9ca8] transition-colors"
+            >
+              Add Testimonial
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
