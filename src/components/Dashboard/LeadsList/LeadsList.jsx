@@ -1,17 +1,18 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { API } from "aws-amplify";
 import Context from "../../../context/Context";
-import EditImage from "../../../utils/Assets/Dashboard/images/PNG/Edit.png";
+// import EditImage from "../../../utils/Assets/Dashboard/images/PNG/Edit.png";
 import { FiSearch } from "react-icons/fi";
 import { FaFileExport, FaFileImport } from "react-icons/fa";
 import { Button, Checkbox, Pagination, Table } from "flowbite-react";
-import PhoneImg from "../../../utils/Assets/Dashboard/images/PNG/smartphone.png";
-import TabletImg from "../../../utils/Assets/Dashboard/images/PNG/Tablet.png";
-import LaptopImg from "../../../utils/Assets/Dashboard/images/PNG/laptop.png";
-import Swal from "sweetalert2";
+// import PhoneImg from "../../../utils/Assets/Dashboard/images/PNG/smartphone.png";
+// import TabletImg from "../../../utils/Assets/Dashboard/images/PNG/Tablet.png";
+// import LaptopImg from "../../../utils/Assets/Dashboard/images/PNG/laptop.png";
+// import Swal from "sweetalert2";
 import "./LeadsList.css";
 // import { useLocation } from "react-router-dom";
 import { CSVUpload } from "../../UploadFile/CSVUpload";
+import EditLead from "./EditLead";
 
 const LeadsList = ({ institution: tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
@@ -28,14 +29,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const [selectedRow, setSelectedRow] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   // const membersPerPage = 7;
-  const [name, setName] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [emailId2, setEmailId2] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [phoneNumber2, setPhoneNumber2] = useState("");
-  const [age, setAge] = useState("");
-  const [device, setDevice] = useState([]);
-  const [date, setdate] = useState("");
+  // const [name, setName] = useState("");
+  // const [emailId, setEmailId] = useState("");
+  // const [emailId2, setEmailId2] = useState("");
+  // const [phoneNumber, setPhoneNumber] = useState("");
+  // const [phoneNumber2, setPhoneNumber2] = useState("");
+  // const [age, setAge] = useState("");
+  // const [device, setDevice] = useState([]);
+  // const [date, setdate] = useState("");
   const [isEditUser, setIsEditUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -53,16 +54,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const newName = `${institution}_${templateName}`;
   const [templateDetails, setTemplateDetails] = useState({});
   const [addNewValue, setAddNewValue] = useState(false);
-  const [category, setCategory] = useState("Gold");
-  const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
-  const [additionalInfo, setAdditionalInfo] = useState("");
-  const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
+  // const [category, setCategory] = useState("Gold");
+  // const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
+  // const [additionalInfo, setAdditionalInfo] = useState("");
+  // const [isAddingMoreInfo, setIsAddingMoreInfo] = useState(false);
 
   const [isAllSelected, setisAllSelected] =
     useState(false); /*to check wheather all the leads data is selected or not*/
-  const [additionalInfoArray, setAdditionalInfoArray] = useState([
-    { title: "", info: "" },
-  ]);
+  // const [additionalInfoArray, setAdditionalInfoArray] = useState([
+  //   { title: "", info: "" },
+  // ]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -70,11 +71,11 @@ const LeadsList = ({ institution: tempInstitution }) => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const [selectedDevices, setSelectedDevices] = useState({
-    SmartPhone: false,
-    Tablet: false,
-    Laptop: false,
-  });
+  // const [selectedDevices, setSelectedDevices] = useState({
+  //   SmartPhone: false,
+  //   Tablet: false,
+  //   Laptop: false,
+  // });
   const [id, setId] = useState("");
 
   const customTheme = {
@@ -456,103 +457,103 @@ const LeadsList = ({ institution: tempInstitution }) => {
     setEditUser(user);
     setIsEditUser(true);
   };
-  const handleCancelEdit = () => {
-    setIsEditUser(false);
-    setEditUser(null);
-    setIsAddingMoreInfo(false);
-  };
+  // const handleCancelEdit = () => {
+  //   setIsEditUser(false);
+  //   setEditUser(null);
+  //   setIsAddingMoreInfo(false);
+  // };
 
-  const handleEdit = async (e) => {
-    e.preventDefault();
-    const apiName = "clients";
-    const path = `/user/update-Leads/awsaiapp`;
-    const myInit = {
-      body: {
-        institution: institution,
-        name: name,
-        emailId: emailId,
-        emailId2: emailId2,
-        phoneNumber: phoneNumber,
-        phoneNumber2: phoneNumber2,
-        age: age,
-        device: device,
-        date: new Date(date).getTime(),
-        category: category, // Include the category field
-        other: {
-          ...editUser.other,
-        },
-        type: "lead",
-      },
-    };
+  // const handleEdit = async (e) => {
+  //   e.preventDefault();
+  //   const apiName = "clients";
+  //   const path = `/user/update-Leads/awsaiapp`;
+  //   const myInit = {
+  //     body: {
+  //       institution: institution,
+  //       name: name,
+  //       emailId: emailId,
+  //       emailId2: emailId2,
+  //       phoneNumber: phoneNumber,
+  //       phoneNumber2: phoneNumber2,
+  //       age: age,
+  //       device: device,
+  //       date: new Date(date).getTime(),
+  //       category: category, // Include the category field
+  //       other: {
+  //         ...editUser.other,
+  //       },
+  //       type: "lead",
+  //     },
+  //   };
 
-    // Include additionalInfoTitle and additionalInfo if available
-    if (additionalInfoArray.length > 0) {
-      additionalInfoArray.forEach((info) => {
-        if (info.title && info.info) {
-          myInit.body.other[info.title] = info.info;
-        }
-      });
-    }
+  //   // Include additionalInfoTitle and additionalInfo if available
+  //   if (additionalInfoArray.length > 0) {
+  //     additionalInfoArray.forEach((info) => {
+  //       if (info.title && info.info) {
+  //         myInit.body.other[info.title] = info.info;
+  //       }
+  //     });
+  //   }
 
-    try {
-      const update = await API.put(apiName, path, myInit);
-      await fetchLeads(institution);
-      console.log(update);
-      Swal.fire({
-        icon: "success",
-        title: "User Updated",
-      });
-      util.setLoader(false);
-    } catch (e) {
-      console.log(e);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while updating the user.",
-      });
-      util.setLoader(false);
-    } finally {
-      setIsAddingMoreInfo(false);
-      setSelectedDevices({
-        SmartPhone: false,
-        Tablet: false,
-        Laptop: false,
-      });
-    }
-  };
+  //   try {
+  //     const update = await API.put(apiName, path, myInit);
+  //     await fetchLeads(institution);
+  //     console.log(update);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "User Updated",
+  //     });
+  //     util.setLoader(false);
+  //   } catch (e) {
+  //     console.log(e);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "An error occurred while updating the user.",
+  //     });
+  //     util.setLoader(false);
+  //   } finally {
+  //     setIsAddingMoreInfo(false);
+  //     setSelectedDevices({
+  //       SmartPhone: false,
+  //       Tablet: false,
+  //       Laptop: false,
+  //     });
+  //   }
+  // };
 
-  useEffect(() => {
-    if (editUser) {
-      setName(editUser.name || "");
-      setEmailId(editUser.emailId || "");
-      setEmailId2(editUser.emailId2 || "");
-      setPhoneNumber(editUser.phoneNumber || "");
-      setPhoneNumber2(editUser.phoneNumber2 || "");
-      setAge(editUser.age || "");
-      setdate(editUser.date || "");
-      setDevice(editUser.device || []);
-      setCategory(editUser.category || "");
-      // Destructure the additional data fields from the other object
-      const { additionalInfoTitle = "", additionalInfo = "" } =
-        editUser.other || {};
-      setAdditionalInfoTitle(additionalInfoTitle);
-      setAdditionalInfo(additionalInfo);
-    }
-  }, [editUser]);
+  // useEffect(() => {
+  //   if (editUser) {
+  //     setName(editUser.name || "");
+  //     setEmailId(editUser.emailId || "");
+  //     setEmailId2(editUser.emailId2 || "");
+  //     setPhoneNumber(editUser.phoneNumber || "");
+  //     setPhoneNumber2(editUser.phoneNumber2 || "");
+  //     setAge(editUser.age || "");
+  //     setdate(editUser.date || "");
+  //     setDevice(editUser.device || []);
+  //     setCategory(editUser.category || "");
+  //     // Destructure the additional data fields from the other object
+  //     const { additionalInfoTitle = "", additionalInfo = "" } =
+  //       editUser.other || {};
+  //     setAdditionalInfoTitle(additionalInfoTitle);
+  //     setAdditionalInfo(additionalInfo);
+  //   }
+  // }, [editUser]);
 
-  const handleDeviceSelect = (deviceType) => {
-    setSelectedDevices((prevDevices) => ({
-      ...prevDevices,
-      [deviceType]: !prevDevices[deviceType],
-    }));
-  };
+  // const handleDeviceSelect = (deviceType) => {
+  //   setSelectedDevices((prevDevices) => ({
+  //     ...prevDevices,
+  //     [deviceType]: !prevDevices[deviceType],
+  //   }));
+  // };
 
-  useEffect(() => {
-    const updatedDevices = Object.keys(selectedDevices).filter(
-      (device) => selectedDevices[device]
-    );
-    setDevice(updatedDevices);
-  }, [selectedDevices]);
+  // useEffect(() => {
+  //   const updatedDevices = Object.keys(selectedDevices).filter(
+  //     (device) => selectedDevices[device]
+  //   );
+  //   setDevice(updatedDevices);
+  // }, [selectedDevices]);
 
   // const indexOfLastLead = currentPage * itemsPerPage;
   // const indexOfFirstLead = indexOfLastLead - itemsPerPage;
@@ -570,44 +571,44 @@ const LeadsList = ({ institution: tempInstitution }) => {
     startIndex,
     startIndex + itemsPerPage
   );
-  const handleAddMoreInfo = () => {
-    setAdditionalInfoArray((prevArray) => [
-      ...prevArray,
-      { title: "", info: "" },
-    ]);
-    setIsAddingMoreInfo(true);
-  };
+  // const handleAddMoreInfo = () => {
+  //   setAdditionalInfoArray((prevArray) => [
+  //     ...prevArray,
+  //     { title: "", info: "" },
+  //   ]);
+  //   setIsAddingMoreInfo(true);
+  // };
 
-  const handleRemoveMoreInfo = (index) => {
-    const updatedInfoArray = [...additionalInfoArray];
-    updatedInfoArray.splice(index, 1);
-    setAdditionalInfoArray(updatedInfoArray);
-  };
+  // const handleRemoveMoreInfo = (index) => {
+  //   const updatedInfoArray = [...additionalInfoArray];
+  //   updatedInfoArray.splice(index, 1);
+  //   setAdditionalInfoArray(updatedInfoArray);
+  // };
 
-  const handleInfoTitleChange = (e, index) => {
-    const updatedInfoArray = [...additionalInfoArray];
-    updatedInfoArray[index].title = e.target.value;
-    setAdditionalInfoArray(updatedInfoArray);
-  };
+  // const handleInfoTitleChange = (e, index) => {
+  //   const updatedInfoArray = [...additionalInfoArray];
+  //   updatedInfoArray[index].title = e.target.value;
+  //   setAdditionalInfoArray(updatedInfoArray);
+  // };
 
-  const handleInfoChange = (e, index) => {
-    const updatedInfoArray = [...additionalInfoArray];
-    updatedInfoArray[index].info = e.target.value;
-    setAdditionalInfoArray(updatedInfoArray);
-  };
+  // const handleInfoChange = (e, index) => {
+  //   const updatedInfoArray = [...additionalInfoArray];
+  //   updatedInfoArray[index].info = e.target.value;
+  //   setAdditionalInfoArray(updatedInfoArray);
+  // };
 
-  const getCategoryColor = () => {
-    switch (category) {
-      case "Gold":
-        return "#DAA520";
-      case "Silver":
-        return "#808080";
-      case "Bronze":
-        return "#a25b15";
-      default:
-        return "#DAA520";
-    }
-  };
+  // const getCategoryColor = () => {
+  //   switch (category) {
+  //     case "Gold":
+  //       return "#DAA520";
+  //     case "Silver":
+  //       return "#808080";
+  //     case "Bronze":
+  //       return "#a25b15";
+  //     default:
+  //       return "#DAA520";
+  //   }
+  // };
 
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
@@ -824,9 +825,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                           Select
                         </Table.HeadCell>
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                        {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                           Edit
-                        </Table.HeadCell>
+                        </Table.HeadCell> */}
                       </Table.Head>
                       <Table.Body className="divide-y divide-gray-200">
                         {templateData.length > 0 ? (
@@ -835,7 +836,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
                               key={index}
                               className="hover:bg-gray-200 cursor-pointer"
                             >
-                              <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center">
+                              <Table.Cell
+                                className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center"
+                                onClick={() =>
+                                  handleEditTemplate(templateDataA)
+                                }
+                              >
                                 {templateDataA}
                               </Table.Cell>
                               <Table.Cell className="text-center text-sm text-gray-900">
@@ -848,7 +854,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                                   }
                                 />
                               </Table.Cell>
-                              <Table.Cell
+                              {/* <Table.Cell
                                 className="whitespace-nowrap text-gray-500 text-right "
                                 style={{ width: "14px" }}
                                 onClick={() =>
@@ -860,7 +866,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                                   alt="Edit"
                                   style={{ height: "40px" }}
                                 />
-                              </Table.Cell>
+                              </Table.Cell> */}
                             </Table.Row>
                           ))
                         ) : (
@@ -1008,9 +1014,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     Age
                   </Table.HeadCell>
-                  <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  {/* <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     View
-                  </Table.HeadCell>
+                  </Table.HeadCell> */}
                   <Table.HeadCell className="px-6 py-2 text-right text-xs font-medium text-gray-500 uppercase"></Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
@@ -1030,7 +1036,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={() => handleCheckboxChange(lead)}
                         />
                       </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
+                      <Table.Cell
+                        className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+                        onClick={() => handleEditUser(lead)}
+                      >
                         {lead.name}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -1050,13 +1059,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {lead.age}
                       </Table.Cell>
-                      <Table.Cell
+                      {/* <Table.Cell
                         className="whitespace-nowrap text-sm text-gray-500 text-right bg-white"
                         style={{ width: "18px" }}
                         onClick={() => handleEditUser(lead)}
                       >
                         <img src={EditImage} alt="Edit" height={"30px"} />
-                      </Table.Cell>
+                      </Table.Cell> */}
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -1081,8 +1090,19 @@ const LeadsList = ({ institution: tempInstitution }) => {
               </div>
             </div>
           )}
-          {isEditUser && (
-            <div className=" absolute top-[12%] flex justify-center items-center w-[85vw] h-[auto] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
+          {isEditUser &&
+            <EditLead
+              institution={institution}
+              leadsData={leadsData}
+              id={id}
+              editUser={editUser}
+              setEditUser={setEditUser}
+              isEditUser={isEditUser}
+              setIsEditUser={setIsEditUser}
+              fetchLeads={fetchLeads}
+            />
+          }
+          {/*(<div className=" absolute top-[12%] flex justify-center items-center w-[85vw] h-[auto] bg-[#ffffff60] backdrop-blur-sm z-[100] max1050:w-[90vw] max1050:mb-[6rem] max600:top-[0%]">
               <form className=" m-auto flex flex-col gap-8 p-6 border-[0.118rem] border-x-[#404040] border-y-[1.2rem] border-[#2297a7] items-center justify-center w-[40rem] h-[auto] max900:w-[auto] max850:w-[22rem] Poppins bg-[#ffffff] z-[50] max600:mr-[1rem]">
                 <div
                   className={` ${
@@ -1326,7 +1346,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                 </div>
               </form>
             </div>
-          )}
+          )} */}
         </main>
       ) : (
         <>
@@ -1394,7 +1414,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   <div className="popup-overlay  px-4">
                     <div className="p-4 w-full bg-white  rounded-lg shadow-lg">
                       <button
-                        className="close-button text-gray-500 text-lg mb-2"
+                        className="close-button text-[white] text-lg mb-2"
                         onClick={handleCloseMember}
                       >
                         ×
@@ -1424,7 +1444,12 @@ const LeadsList = ({ institution: tempInstitution }) => {
                               className="p-4 mb-3 bg-white border border-gray-200 rounded-md shadow-sm hover:shadow-md transition-shadow"
                             >
                               <div className="flex justify-between items-center mb-2">
-                                <h3 className="text-sm font-medium text-gray-800">
+                                <h3
+                                  className="text-sm font-medium text-gray-800"
+                                  onClick={() =>
+                                    handleEditTemplate(templateDataA)
+                                  }
+                                >
                                   {templateDataA}
                                 </h3>
                                 <input
@@ -1436,7 +1461,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                                   }
                                 />
                               </div>
-                              <button
+                              {/* <button
                                 className="text-sm text-blue-600 hover:underline flex items-center justify-center mt-2"
                                 onClick={() =>
                                   handleEditTemplate(templateDataA)
@@ -1448,7 +1473,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                                   className="h-5 w-5 mr-2"
                                 />
                                 Edit Template
-                              </button>
+                              </button> */}
                             </div>
                           ))
                         ) : (
@@ -1463,7 +1488,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     <div className="popup-overlay w-screen">
                       <div className=" w-full max-w-md bg-white p-4 rounded-lg shadow-lg">
                         <button
-                          className="close-button text-gray-500 text-lg mb-4"
+                          className="close-button text-[white] text-lg mb-4"
                           onClick={handleCloseTemplateUpdate}
                         >
                           ×
@@ -1566,7 +1591,9 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           onChange={() => handleCheckboxChange(lead)}
                         />
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-gray-900"
+                            onClick={() => handleEditUser(lead)}
+                          >
                             {lead.name}
                           </span>
                           <span className="text-xs text-gray-500">
@@ -1590,14 +1617,14 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           {lead.age}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      {/* <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEditUser(lead)}
                           className="p-2  text-gray-600 rounded-lg hover:bg-gray-300"
                         >
                           <img src={EditImage} alt="Edit" className="h-6 w-6" />
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   ))}
                 </div>
@@ -1612,11 +1639,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         currentPage > 1 && setCurrentPage(currentPage - 1)
                       }
                       disabled={currentPage === 1}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === 1
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
+                        ? "bg-gray-200 text-gray-500"
+                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                        }`}
                     >
                       Previous
                     </button>
@@ -1626,11 +1652,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         setCurrentPage(currentPage + 1)
                       }
                       disabled={currentPage === totalPages}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === totalPages
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
+                        ? "bg-gray-200 text-gray-500"
+                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                        }`}
                     >
                       Next
                     </button>
@@ -1639,10 +1664,21 @@ const LeadsList = ({ institution: tempInstitution }) => {
               </div>
             )}
 
-            {isEditUser && (
+            {isEditUser &&
+              <EditLead
+                institution={institution}
+                leadsData={leadsData}
+                id={id}
+                editUser={editUser}
+                setEditUser={setEditUser}
+                isEditUser={isEditUser}
+                setIsEditUser={setIsEditUser}
+                fetchLeads={fetchLeads}
+              />
+            }
+            {/* {isEditUser && (
               <div className="absolute top-[12%] flex justify-center items-center w-[90vw] h-auto bg-[#ffffff60] backdrop-blur-sm z-[100] max600:top-0 max600:w-[100vw]">
                 <form className="m-auto flex flex-col gap-6 p-4 border border-[#2297a7] rounded-lg items-center justify-center w-[85vw] max-w-[28rem] bg-white shadow-lg max600:w-[95vw]">
-                  {/* Name and Age Section */}
                   <div className="flex flex-col gap-4 w-full">
                     <input
                       required
@@ -1662,7 +1698,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     />
                   </div>
 
-                  {/* Email Section */}
                   <div className="flex flex-col gap-4 w-full">
                     <div className="bg-[#f0f0f0] text-[#000] px-4 py-2 rounded-md w-full text-sm">
                       {emailId}
@@ -1677,7 +1712,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     />
                   </div>
 
-                  {/* Phone Number Section */}
                   <div className="flex flex-col gap-4 w-full">
                     <input
                       required
@@ -1697,7 +1731,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     />
                   </div>
 
-                  {/* Category and Date Section */}
                   <div className="flex gap-4 w-full items-center">
                     <select
                       className="bg-[#f0f0f0] h-10 text-[#000] px-4 py-2 rounded-md w-full text-sm"
@@ -1713,7 +1746,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   </div>
 
-                  {/* Device Selection */}
                   <div className="flex justify-center items-center gap-4 flex-wrap">
                     {[
                       {
@@ -1749,7 +1781,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                           key={index}
                           className="flex flex-col gap-3 w-full max-w-[28rem] bg-white p-4 rounded-lg shadow-md"
                         >
-                          {/* Title Input */}
                           <input
                             placeholder="Title"
                             className="w-full text-[1rem] text-[#257d8d] border border-[#5a5a5a] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#257d8d]"
@@ -1758,7 +1789,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             onChange={(e) => handleInfoTitleChange(e, index)}
                           />
 
-                          {/* Info Textarea */}
                           <textarea
                             placeholder="Info"
                             className="w-full h-[6rem] text-[1rem] text-[#257d8d] border border-[#5a5a5a] rounded-md px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-[#257d8d]"
@@ -1766,7 +1796,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             onChange={(e) => handleInfoChange(e, index)}
                           />
 
-                          {/* Remove Button */}
                           <button
                             className="w-full bg-[#a72222] text-white py-2 rounded-md hover:bg-[#8b1c1c] transition-colors"
                             onClick={() => handleRemoveMoreInfo(index)}
@@ -1777,8 +1806,6 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       ))}
                     </div>
                   )}
-
-                  {/* Buttons */}
                   <div className="flex flex-col gap-3 w-full mt-4">
                     <button
                       className="bg-[#1d1d1d] text-white rounded-md py-2 w-full text-center"
@@ -1801,7 +1828,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                   </div>
                 </form>
               </div>
-            )}
+            )} */}
           </main>
         </>
       )}
