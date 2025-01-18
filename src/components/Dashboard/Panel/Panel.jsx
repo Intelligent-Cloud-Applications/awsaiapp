@@ -56,7 +56,7 @@ const Panel = () => {
   const [instituteTypes, setInstituteTypes] = useState([]);
   const [instituteType, setInstituteType] = useState("");
   const Ctx = useContext(Context);
-  const type = ["DanceStudio", "Dentist", "Cafe"];
+  const type = ["Dance Studio", "Dentist", "Cafe"];
   // const [memberCounts, setMemberCounts] = useState({});
   const [payment, setPayment] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
@@ -165,8 +165,12 @@ const Panel = () => {
   };
 
   const handleTypeFilter = (typeSelected) => {
+    let value;
+    if(type === "Dance Studio"){
+      value = "DanceStudio";
+    }
     setFilterStatus(null);
-    setSelectedType(typeSelected);
+    setSelectedType(value);
     setActiveMenu(null);
     setActiveSubMenu(null);
   };
@@ -580,7 +584,7 @@ const Panel = () => {
             <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
               <div className="relative inline-block ml-5">
                 <button
-                  className=" flex flex-row bg-[#0891b2] text-white px-4 py-2 rounded-md"
+                  className=" flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md"
                   onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                 >
                   Filter by
@@ -613,7 +617,7 @@ const Panel = () => {
                           onClick={() => handleMenuToggle("isDelivered")}
                           className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          <span>Is Delivered</span>
+                          <span>Delivered</span>
                           <HiChevronRight />
                         </div>
                       </div>
