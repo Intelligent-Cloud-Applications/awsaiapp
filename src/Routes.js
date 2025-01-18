@@ -99,7 +99,7 @@ const RoutesContainer = () => {
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
       <Route path="/dance-studio" element={<Template />} />
-      <Route path="/template2" element={<Template2 />} />
+      <Route path="/dentist" element={<Template2 />} />
       <Route path="/cafe" element={<Template3 />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />

@@ -1,4 +1,4 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import NewMemberList from './NewMemberList';
 import ButtonGroup from '../../../Common/DashboardNav/ButtonGroup';
 import Navbar from '../../Home/Navbar';
@@ -33,7 +33,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
       case 'leads':
         return <LeadsList />;
       case 'client':
-        return <ClientsProfile institution={institution} />;  
+        return <ClientsProfile institution={institution} />;
       case 'economy':
         return <InstitutionRevenue institution={userData.tempinstitutionName} />
       case 'batch':
@@ -49,52 +49,49 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
-    <>
-     {screenWidth > 1025 ? (
-    <>
-    <div className="w-[97vw] flex flex-col items-center h-[120vh] ml-[220px] bg-[#e6e4e4]">
-      <div className="">
-        <Navbar />
-        <div className="flex flex-col items-center w-full">
-          <div className="fixed mt-20 ml-[19.4rem] z-10 w-full flex flex-col items-start">
-            <div
-              onClick={goBack}
-              className="border  bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
-            >
-              <IoCaretBack />
-            </div>
-            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType}/>
-          </div>
-          <div className="mt-[11rem] w-full">
-            {renderContent()}
-          </div>
-        </div>
-      </div>
-    </div>
-</>
-    ):(
-      <>
-      <div className="w-full gap-2">
-        <div className="mt-10">
-        <div
-              onClick={goBack}
-           className="border  bg-[#30afbc]  rounded cursor-pointer w-[36px]  text-[30px] "
-            >
-              <IoCaretBack />
+    <div className=" h-[97vh] bg-[#e6e4e4]">
+      {screenWidth > 1025 ? (
+        <>
+          <div className="w-[97vw] flex flex-col items-center ml-[220px]">
+            <div>
+              <Navbar />
+              <div className="flex flex-col items-center w-full">
+                <div className="fixed mt-20 ml-[19.4rem] z-10 w-full flex flex-col items-start">
+                  <div
+                    onClick={goBack}
+                    className="border  bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
+                  >
+                    <IoCaretBack />
+                  </div>
+                  <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType} />
+                </div>
+                <div className="mt-[11rem] w-full">
+                  {renderContent()}
+                </div>
               </div>
- 
-        </div>
-        
-            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType} />
-        
-          <div>
-            {renderContent()}
+            </div>
           </div>
-      </div>
-      </>
-    )
-  }
-</>
+        </>
+      ) : (
+        <>
+          <div className="w-full gap-2">
+            <div className="mt-10">
+              <div
+                onClick={goBack}
+                className="border  bg-[#30afbc]  rounded cursor-pointer w-[36px]  text-[30px] "
+              >
+                <IoCaretBack />
+              </div>
+            </div>
+            <ButtonGroup onTabChange={setActiveTab} institutionNames={institution} institutionType={selectedInstitutionType} />
+            <div>
+              {renderContent()}
+            </div>
+          </div>
+        </>
+      )
+      }
+    </div>
   );
 };
 

@@ -138,7 +138,7 @@ const Panel = () => {
     setFilterStatus(null);
     if (type === "Dance Studio") {
       setSelectedType("DanceStudio");
-    }else{
+    } else {
       setSelectedType(typeSelected);
     }
     setActiveMenu(null);
@@ -309,10 +309,6 @@ const Panel = () => {
     if (typeof str !== "string") {
       return "";
     }
-
-    if (typeof str !== "string") {
-      return "";
-    }
     if (str.match(/[A-Z]/) !== null) {
       return str
         .split(/(?=[A-Z])/)
@@ -380,11 +376,11 @@ const Panel = () => {
   const getLinkPath = (instituteType) => {
     switch (instituteType) {
       case "Dance Studio":
-        return "/template";
+        return "/dance-studio";
       case "Dentist":
-        return "/template2";
+        return "/dentist";
       case "Cafe":
-        return "/template3";
+        return "/cafe";
       default:
         return "";
     }
@@ -417,7 +413,7 @@ const Panel = () => {
                           value={type}
                           className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
                         >
-                          {splitandjoin(type)}
+                          {type}
                         </option>
                       ))}
                     </Select>
@@ -455,7 +451,7 @@ const Panel = () => {
                   <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
                     <div className="relative inline-block ml-5">
                       <button
-                        className={`flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md ${clientsToDisplay.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#48d6e0] text-white"}`}
+                        className={`flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md ${filteredClients.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#48d6e0] text-white"}`}
                         onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                       >
                         Filter by
@@ -684,12 +680,15 @@ const Panel = () => {
                                   </select>
                                 ) : (
                                   <select
-                                    value="Not Delivered"
                                     disabled
                                     className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
                                   >
-                                    <option value="Not Delivered">
-                                      Not Delivered
+                                    <option>
+                                      {
+                                        client.isDelivered
+                                          ? "Delivered"
+                                          : "Not Delivered"
+                                      }
                                     </option>
                                   </select>
                                 )}
