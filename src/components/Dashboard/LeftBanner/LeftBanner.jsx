@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Sidebar, Flowbite } from "flowbite-react";
 import Context from "../../../context/Context";
-import { HiChartPie, HiInbox, HiCash } from "react-icons/hi";
+import { HiChartPie, HiInbox, HiCash, HiUserGroup } from "react-icons/hi";
 import { MdInsertPageBreak } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const [click, setClick] = useState(0);
   const Ctx = useContext(Context);
   const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
-  const isOperation=Ctx.userData.role ==="operation" && Ctx.userData.userType === "member";
+  const isOperation = Ctx.userData.role === "operation" && Ctx.userData.userType === "member";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
   const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
   const location = useLocation();
@@ -86,7 +86,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Client Panel
+                        Clients
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
@@ -99,11 +99,11 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Institute Draft
+                        Draft Forms
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
-                      icon={FaUser}
+                      icon={HiUserGroup}
                       onClick={() => {
                         setClick(4); // Set click to 3 for "Institute Draft"
                         displayAfterClick(4); // Redirect to Institute Draft
@@ -117,21 +117,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
-                        icon={HiInbox}
-                        onClick={() => {
-                          setClick(2);
-                          displayAfterClick(2);
-                        }}
-                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
-                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
-                      >
-                        <span className="hidden md:inline text-base font-[Poppins]">
-                          Profile
-                        </span>
-                      </Sidebar.Item>
-                    </Link>
-                    <Link to={`/dashboard`} className="hover:no-underline">
-                      <Sidebar.Item
                         icon={HiCash}
                         onClick={() => {
                           setClick(5); // Set click to 1 for "Revenue"
@@ -142,7 +127,22 @@ const LeftBanner = ({ displayAfterClick }) => {
                           } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                       >
                         <span className="hidden md:inline font-[Poppins] text-base">
-                          Revenue Report
+                          Revenue
+                        </span>
+                      </Sidebar.Item>
+                    </Link>
+                    <Link to={`/dashboard`} className="hover:no-underline">
+                      <Sidebar.Item
+                        icon={FaUser}
+                        onClick={() => {
+                          setClick(2);
+                          displayAfterClick(2);
+                        }}
+                        className={`custom-sidebar-item ${click === 2 ? "active bg-white" : ""
+                          } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
+                      >
+                        <span className="hidden md:inline text-base font-[Poppins]">
+                          Profile
                         </span>
                       </Sidebar.Item>
                     </Link>
@@ -235,8 +235,8 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Client Panel
                       </span>
                     </Sidebar.Item>
-                   
-                    
+
+
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         icon={HiInbox}
@@ -252,12 +252,12 @@ const LeftBanner = ({ displayAfterClick }) => {
                         </span>
                       </Sidebar.Item>
                     </Link>
-                   
+
                   </>
                 )}
                 {isNotSuperAdmin && (
                   <>
-                    
+
                   </>
                 )}
               </Sidebar.ItemGroup>

@@ -740,7 +740,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     value={searchInput}
                     onChange={handleSearchInputChange}
                     className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Quick search for anything"
+                    placeholder="Quick search for Leads"
                     required
                   />
                 </div>
@@ -812,6 +812,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                       className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
                       style={{ minWidth: "70px" }}
                       onClick={handleSendMail}
+                      disabled={templateData.length === 0} // Disable the button if templateData is empty
                     >
                       Send
                     </Button>

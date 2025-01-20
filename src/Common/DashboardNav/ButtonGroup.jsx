@@ -31,7 +31,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
   return (
     <div>
       {screenWidth > 1025 ? (
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-between ml-[2rem]">
           <Button.Group className="flex h-12">
             <Button
               style={{
@@ -55,7 +55,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
               className="items-center hover:bg-[#30afbc] hover:text-white border"
             >
               <IoMdCash className="mr-3 h-4 w-4 mt-0.5" />
-              Economy
+              Revenue
             </Button>
             <Button
               style={{
@@ -102,7 +102,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
               backgroundColor: "#30afbc",
               color: "#fff",
             }}
-            className="flex items-center rounded-md ml-[28rem]"
+            className="flex items-center position-relative rounded-md ml-[32rem]"
             onClick={() => {
               const targetPath =
                 institutionType === "DanceStudio" ? "/full" : "/completeDraft";
