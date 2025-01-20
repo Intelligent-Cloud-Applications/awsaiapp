@@ -37,7 +37,6 @@ const ClientsProfile = ({ institution }) => {
       //   month: 'long',
       //   day: 'numeric',
       // })
-      console.log("Date", templateResponse);
       // Update state with merged data
       setClientData({
         institutionid: templateResponse.institutionid || 'Institution ID',
@@ -164,7 +163,6 @@ const ClientsProfile = ({ institution }) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
     const day = String(date.getDate()).padStart(2, '0');
-    console.log("update", day, month, year);
     return `${day}/${month}/${year}`;
   };
 
@@ -208,18 +206,36 @@ const ClientsProfile = ({ institution }) => {
       </div>
       <div className="sm:w-2/3 p-10 flex flex-col justify-center bg-[#fafafa]">
         <button
-          onClick={isEditing ? handleSaveChanges : () => setIsEditing(true)}
-          className={`absolute top-3 right-3 ${isSaving ? 'bg-gray-400' : 'bg-[#30afbc]'} text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all`}
-          disabled={isSaving}
+          onClick={() => setIsEditing(true)}
+          className="absolute top-3 right-3 bg-[#30afbc] text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all"
+          disabled={isSaving} // Optional, if you want to disable the Edit button while saving
         >
-          {isSaving ? 'Saving...' : isEditing ? 'Save' : 'Edit'}
+          Edit
         </button>
+        {isEditing && (
+          <div className='flex flex-row gap-5'>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="absolute top-3 right-15 bg-[#30afbc] text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all"
+              disabled={isSaving} // Optional, if you want to disable the Edit button while saving
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSaveChanges}
+              className={`absolute top-3 right-3 ${isSaving ? 'bg-gray-400' : 'bg-[#30afbc]'} text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all`}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        )}
         <div className="mb-6">
           <h3 className="text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2">Owner Details</h3>
           <div className="mt-8 space-y-6">
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Phone:</span>
-              <span className="text-gray-900">{clientData.phoneNumber}</span>
+              <span className="text-gray-900">{clientData.Query_PhoneNumber || clientData.phoneNumber}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Email:</span>

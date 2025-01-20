@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { AiOutlineEye } from "react-icons/ai";
@@ -29,6 +29,7 @@ const Panel = () => {
   const { clients, userData, setUserData } = useContext(Context);
   const clientsData = Object.entries(clients.data);
   const [selectedStatuses, setSelectedStatuses] = useState({});
+  const [deliveryStatuses, setDeliveryStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
@@ -48,6 +49,27 @@ const Panel = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const menuRef = useRef(null); // Reference for the dropdown menu container
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      console.log("Click detected outside dropdown");
+      setActiveMenu(null);
+      setActiveSubMenu(null);
+    } else {
+      console.log("Click inside dropdown or target element:", event.target);
+    }
+  };
+
+  useEffect(() => {
+    // Attach event listener to detect clicks outside
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -135,7 +157,6 @@ const Panel = () => {
   };
 
   const handleTypeFilter = (typeSelected) => {
-    setFilterStatus(null);
     if (typeSelected === "Dance Studio") {
       setSelectedType("DanceStudio");
     } else {
@@ -151,7 +172,6 @@ const Panel = () => {
     setActiveSubMenu(null);
   };
   const handleDeliverFilter = (value) => {
-    setSelectedType(null);
     if (value === "Delivered") {
       setFilterStatus(true);
     } else {
@@ -210,7 +230,7 @@ const Panel = () => {
     const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
     const newInstituteTypes = Array.from(
-      new Set(clientsToDisplay.map(() => userData.institutionType))
+      new Set(clientsToDisplay.map((client) => client[1].institutionType))
     );
 
     setInstituteTypes((prevTypes) => {
@@ -223,7 +243,7 @@ const Panel = () => {
         return prevTypes;
       }
     });
-  }, [currentPage, itemsPerPage, filteredClients, userData.institutionType]);
+  }, [currentPage, itemsPerPage, filteredClients]);
 
   useEffect(() => {
     const newInstituteType = userData.institutionType;
@@ -355,8 +375,10 @@ const Panel = () => {
           headers: { "Content-Type": "application/json" },
         });
         console.log("API response:", response);
+        toast.success("The Delivery status Updated Successfully");
       } catch (error) {
         console.error("Error updating delivery status:", error);
+        toast.error("Error updating delivery status:");
       }
     },
     []
@@ -392,7 +414,7 @@ const Panel = () => {
         <>
           {screenWidth > 1025 ? (
             <>
-              <div className="w-screen h-screen flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+              <div className="w-screen h-[95vh] flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
                 <ToastContainer />
                 <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
                   <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
@@ -450,10 +472,13 @@ const Panel = () => {
                   <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
                     <div className="relative inline-block ml-5">
                       <button
-                        className={`flex flex-row bg-[#48d6e0] text-white px-4 py-2  font-semibold text-sm rounded-md ${filteredClients.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#48d6e0] text-white"}`}
+                        className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
                         onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                       >
-                        Filter by
+                        {(selectedType !== null || filterStatus !== null) &&
+                            <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                        }
+                        Filter
                         {activeMenu ? (
                           <HiChevronUp className="ml-2" />
                         ) : (
@@ -475,14 +500,14 @@ const Panel = () => {
                                 onClick={() => handleMenuToggle("type")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>Type</span>
+                                <span>{selectedType !== null ? selectedType : "Type"}</span>
                                 <HiChevronRight />
                               </div>
                               <div
                                 onClick={() => handleMenuToggle("isDelivered")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>Delivered</span>
+                                <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
                                 <HiChevronRight />
                               </div>
                             </div>
@@ -580,7 +605,7 @@ const Panel = () => {
                         </Table.HeadCell>
                         {Ctx.userData.role !== "operation" && (
                           <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                            Is Delivered
+                            Delivered
                           </Table.HeadCell>
                         )}
                         {Ctx.userData.role !== "operation" && (
@@ -609,7 +634,7 @@ const Panel = () => {
                         {clientsToDisplay.map(([key, client], index) => (
                           <Table.Row
                             key={client.institutionid}
-                            className="clients-data-table border-b hover:bg-gray-100 hover:cursor-pointer"
+                            className="clients-data-table border-b hover:cursor-pointer hover:bg-white"
                           >
                             <Table.Cell
                               className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
@@ -658,29 +683,42 @@ const Panel = () => {
                             {Ctx.userData.role !== "operation" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 {client.payment ? (
-                                  <select
-                                    value={
-                                      client.isDelivered
-                                        ? "Delivered"
-                                        : "Not Delivered"
+                                  <Dropdown
+                                    label={
+                                      deliveryStatuses[client.institutionid] ??
+                                      (client.isDelivered ? "Delivered" : "Not Delivered")
                                     }
-                                    onChange={(e) =>
-                                      handleDropdownChange(
-                                        client,
-                                        e.target.value
-                                      )
-                                    }
-                                    className="bg-white border border-gray-300 rounded-md p-1 text-gray-900"
+                                    inline
                                   >
-                                    <option value="Not Delivered">
+                                    <Dropdown.Item
+                                      className="hover:bg-gray-200 focus:bg-gray-200"
+                                      onClick={() => {
+                                        setDeliveryStatuses((prev) => ({
+                                          ...prev,
+                                          [client.institutionid]: "Not Delivered",
+                                        }));
+                                        handleDropdownChange(client, "Not Delivered");
+                                      }}
+                                    >
                                       Not Delivered
-                                    </option>
-                                    <option value="Delivered">Delivered</option>
-                                  </select>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      className="hover:bg-gray-200 focus:bg-gray-200"
+                                      onClick={() => {
+                                        setDeliveryStatuses((prev) => ({
+                                          ...prev,
+                                          [client.institutionid]: "Delivered",
+                                        }));
+                                        handleDropdownChange(client, "Delivered");
+                                      }}
+                                    >
+                                      Delivered
+                                    </Dropdown.Item>
+                                  </Dropdown>
                                 ) : (
                                   <select
                                     disabled
-                                    className="bg-gray-200 border border-gray-300 rounded-md p-1 text-gray-500"
+                                    className="bg-gray-200 border border-none rounded-md"
                                   >
                                     <option>
                                       {
@@ -1006,7 +1044,7 @@ const Panel = () => {
                   className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
                   onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                 >
-                  Filter by
+                  Filter
                   {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
                 </button>
                 {activeMenu && (
