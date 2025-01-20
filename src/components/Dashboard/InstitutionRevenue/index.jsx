@@ -93,8 +93,8 @@ function InstitutionRevenue({ institution }) {
   };
 
   return (
-    <div className='w-[70vw] bg-white mt-[5rem] max600:ml-0'>
-      <div className='w-full'>
+    <div className='w-[75vw] bg-white mt-[5rem] max600:ml-0'>
+      <div className='w-full m-3'>
         <h2 className='text-2xl font-bold text-center Poppins'>Payment Details</h2>
         {/* Dropdown for Year Selection */}
         <div className='Poppins border flex gap-2 items-center justify-center w-[8rem] py-1 rounded-md max600:w-full'>

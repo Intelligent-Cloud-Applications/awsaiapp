@@ -225,6 +225,7 @@ const EditLead = ({ institution, leadsData, id, editUser, setEditUser, isEditUse
                                 <p className="text-lg leading-relaxed text-gray-700 mt-2">
                                     <strong className="font-semibold">Phone Numer :</strong>
                                     <input
+                                        readonly
                                         required
                                         type="number"
                                         value={phoneNumber}
@@ -293,6 +294,7 @@ const EditLead = ({ institution, leadsData, id, editUser, setEditUser, isEditUse
                                             setPhoneNumber2(e.target.value);
                                         }}
                                         className="block w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                        maxLength={13}
                                     />
                                 </p>
                                 <div className="flex gap-8 justify-around w-full mt-6">
