@@ -82,13 +82,13 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
     return fileName;
   };
   return (
-    <div className="mx-auto max-h-screen w-[50%]">
+    <div className="mx-[2%]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">CONTACT INFORMATION</h1>
       <h5 className="text-[#939393] text-center">
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
       <div className="flex min-h-screen">
-        <div className="w-[70%] p-8 ml-[10%]">
+        <div className="w-[70%] p-8 ml-[20%]">
           <div className="mb-8">
             {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
               <div key={index} className="mt-1">

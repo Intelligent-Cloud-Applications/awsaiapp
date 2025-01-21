@@ -436,33 +436,30 @@ function NewMemberList({ institution: tempInstitution }) {
               <div className="flex gap-4">
                 <Button
                   onClick={() => setFilter("All")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${
-                    filter === "All"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "All"
                       ? "bg-[#30afbc] text-white"
                       : "bg-white border border-gray-200 text-gray-700"
-                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
                   All ({members.length})
                 </Button>
                 <Button
                   onClick={() => setFilter("Active")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${
-                    filter === "Active"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Active"
                       ? "bg-[#30afbc] text-white"
                       : "bg-white border border-gray-200 text-gray-700"
-                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
                   Active ({members.filter((m) => m.status === "Active").length})
                 </Button>
                 <Button
                   onClick={() => setFilter("Inactive")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${
-                    filter === "Inactive"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Inactive"
                       ? "bg-[#30afbc] text-white"
                       : "bg-white border border-gray-200 text-gray-700"
-                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
                   Inactive (
@@ -594,11 +591,10 @@ function NewMemberList({ institution: tempInstitution }) {
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            member.status === "Active"
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active"
                               ? "bg-green-100 text-green-600"
                               : "bg-red-100 text-red-600"
-                          } `}
+                            } `}
                         >
                           {member.status}
                         </span>
@@ -633,7 +629,7 @@ function NewMemberList({ institution: tempInstitution }) {
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
                 className="flex justify-end"
-             
+
                 theme={customTheme}
               />
             </div>
@@ -641,9 +637,9 @@ function NewMemberList({ institution: tempInstitution }) {
         </>
       ) : (
         <>
-       
+
           <div className="mt-5 px-4">
-       
+
             <div className="flex flex-col gap-3">
               <form className="flex items-center border border-gray rounded-md">
                 <div className="relative w-full">
@@ -669,11 +665,10 @@ function NewMemberList({ institution: tempInstitution }) {
                   <Button
                     key={status}
                     onClick={() => setFilter(status)}
-                    className={`flex items-center justify-center py-1 px-2 text-xs rounded-md ${
-                      filter === status
+                    className={`flex items-center justify-center py-1 px-2 text-xs rounded-md ${filter === status
                         ? "bg-[#30afbc] text-white"
                         : "bg-white border border-gray-200 text-gray-700"
-                    }`}
+                      }`}
                   >
                     {status} (
                     {status === "All"
@@ -684,7 +679,7 @@ function NewMemberList({ institution: tempInstitution }) {
                 ))}
               </div>
             </div>
-        
+
             <div className="bg-white max-w-full mx-auto rounded-md p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {selectedMembers.map((member) => (
@@ -694,12 +689,12 @@ function NewMemberList({ institution: tempInstitution }) {
                     onClick={() => handleNameClick(member)}
                   >
                     <div className="flex flex-col gap-2">
-             
+
                       <div className="text-lg font-semibold text-gray-800 text-center hover:underline">
                         {member.userName}
                       </div>
 
-       
+
                       <div className="text-sm text-gray-600">
                         <strong>Email:</strong>{" "}
                         {member.emailId ? censorEmail(member.emailId) : "None"}
@@ -712,7 +707,7 @@ function NewMemberList({ institution: tempInstitution }) {
                           : "None"}
                       </div>
 
-    
+
                       <div className="text-sm text-gray-600">
                         <strong>Joining Date:</strong>{" "}
                         {member.joiningDate
@@ -723,11 +718,10 @@ function NewMemberList({ institution: tempInstitution }) {
                       <div className="text-sm">
                         <strong>Status:</strong>{" "}
                         <span
-                          className={`px-2 py-1 inline-block text-xs font-medium rounded-full ${
-                            member.status === "Active"
+                          className={`px-2 py-1 inline-block text-xs font-medium rounded-full ${member.status === "Active"
                               ? "bg-green-100 text-green-600"
                               : "bg-red-100 text-red-600"
-                          }`}
+                            }`}
                         >
                           {member.status}
                         </span>
@@ -746,7 +740,7 @@ function NewMemberList({ institution: tempInstitution }) {
               </div>
             </div>
 
-           
+
             <div className="flex justify-between items-center mt-4">
               <span className="text-sm text-gray-600">
                 Page <strong>{currentPage}</strong> of{" "}
@@ -758,11 +752,10 @@ function NewMemberList({ institution: tempInstitution }) {
                     currentPage > 1 && setCurrentPage(currentPage - 1)
                   }
                   disabled={currentPage === 1}
-                  className={`px-2 py-1 text-xs font-medium rounded ${
-                    currentPage === 1
+                  className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
                       ? "bg-gray-200 text-gray-500"
                       : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                  }`}
+                    }`}
                 >
                   Previous
                 </button>
@@ -771,11 +764,10 @@ function NewMemberList({ institution: tempInstitution }) {
                     currentPage < totalPages && setCurrentPage(currentPage + 1)
                   }
                   disabled={currentPage === totalPages}
-                  className={`px-2 py-1 text-xs font-medium rounded ${
-                    currentPage === totalPages
+                  className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
                       ? "bg-gray-200 text-gray-500"
                       : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                  }`}
+                    }`}
                 >
                   Next
                 </button>
