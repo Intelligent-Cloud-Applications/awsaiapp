@@ -60,17 +60,17 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
 
 
   return (
-    <div className="home h-[185vh]" style={{ overflowY: 'auto' }}>
+    <div className="h-[185vh] [@media(max-width:1024px)]:h-screen [@media(max-width:1024px)]:mb-[10rem]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
       <h5 className="text-[#939393] text-center">
         <strong>Introduce Your Brand:</strong><br />
         Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
       </h5>
-      <div className="flex justify-center ml-[20%]">
-        <div className="w-[80%] p-8">
+      <div className="flex justify-center ml-[20%] [@media(max-width:1024px)]:ml-0">
+        <div className="w-[80%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
           <div className="relative mt-2">
             <h5
-              className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
+              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
             >
               <TextInput
                 type="text"
@@ -92,7 +92,7 @@ function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelected
           </div>
           <div className="relative mt-2">
             <h5
-              className="w-[28rem] text-[#939393] relative cursor-pointer py-2"
+              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
             >
               <TextInput
                 type="text"

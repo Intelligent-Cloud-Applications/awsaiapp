@@ -92,7 +92,7 @@ function Company({
   // };
 
   return (
-    <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
+    <div className=" w-full h-[auto] mb-[2rem]">
       <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
       <h5 className="text-[#939393] text-center">
         Company profile, design preferences, and essential details for creating a tailored website experience.
@@ -127,8 +127,8 @@ function Company({
 
       </div> */}
 
-      <div className="flex justify-center">
-        <div className="w-[50%] p-8 ">
+      <div className="flex justify-center [@media(max-width:1024px)]:flex-none [@media(max-width:1024px)]:justify-start">
+        <div className="w-[50%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:mb-5">
           <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
             <div className="mb-2 block">
               <Label
@@ -151,6 +151,9 @@ function Company({
                 backgroundColor: "#F9FAFB",
                 borderRadius: "8px",
                 width: "30rem",
+                ...(window.matchMedia("(max-width: 1024px)").matches && {
+                  width: "100%",
+                }),
               }}
             />
           </div>
@@ -214,7 +217,7 @@ function Company({
             <select
               value={institutionFormat}
               onChange={handleInstitutionFormatChange}
-              className="w-[30rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2"
+              className="w-[30rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2 [@media(max-width:1024px)]:w-full"
             >
               <option value="Online_Classes">Online Classes</option>
               <option value="Inperson_Classes">Inperson Classes</option>
@@ -239,7 +242,10 @@ function Company({
                 borderColor: "#D1D5DB",
                 backgroundColor: "#F9FAFB",
                 borderRadius: "8px",
-                width: "30rem"
+                width: "30rem",
+                ...(window.matchMedia("(max-width: 1024px)").matches && {
+                  width: "100%",
+                }),
               }}
             />
 

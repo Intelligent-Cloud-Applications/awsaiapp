@@ -49,7 +49,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
-    <div className=" h-[97vh] bg-[#e6e4e4]">
+    <div className="h-screen bg-[#e6e4e4]">
       {screenWidth > 1025 ? (
         <>
           <div className="w-[97vw] flex flex-col items-center ml-[220px]">

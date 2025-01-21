@@ -1065,7 +1065,7 @@ const Template = () => {
           break;
       }
 
-      //      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
+      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
       return nextSection;
     });
   };
