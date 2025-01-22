@@ -365,7 +365,10 @@ function NewMemberList({ institution: tempInstitution }) {
     if (file) {
       try {
         util.setLoader(true); // Set loader to true before uploading
-        const fileNameForBucket = "memberlist";
+        const isProd = process.env.REACT_APP_STAGE === "PROD";
+        const fileNameForBucket = isProd
+        ? "member-creation-with-cognito-id-and-default-password"
+        : "institution-utils";
         await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -639,7 +642,40 @@ function NewMemberList({ institution: tempInstitution }) {
         <>
 
           <div className="mt-5 px-4">
-
+          <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0">
+                         <Button
+                           onClick={handleButtonClick}
+                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+                         >
+                           <FaFileImport className="mr-2 mt-[0.20rem]" />
+                           Upload CSV
+                           <input
+                             type="file"
+                             accept=".csv"
+                             onChange={handleCSVFile}
+                             className="hidden"
+                             ref={fileInputRef}
+                             id="CSVFileInput"
+                           />
+                         </Button>
+                         <Button
+                         onClick={() =>
+                          handleExportExcel(
+                            user,
+                            userData,
+                            tempInstitution,
+                            members,
+                            filter
+                          )
+                        }
+                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+                         >
+                           <FaFileExport className="mr-2 mt-[0.20rem]" />
+                           Export CSV
+                         </Button>
+                       
+                  
+                     </div>
             <div className="flex flex-col gap-3">
               <form className="flex items-center border border-gray rounded-md">
                 <div className="relative w-full">
