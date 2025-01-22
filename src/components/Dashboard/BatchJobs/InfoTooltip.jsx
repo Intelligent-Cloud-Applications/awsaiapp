@@ -72,7 +72,7 @@ const InfoTooltip = ({ type }) => {
     {activeTooltip === type && (
       <div
         className={`absolute z-10 w-64 p-4 bg-white border rounded-lg shadow-lg 
-          md:-left-8 md:top-8 
+          md:left-12 md:top-8 
           left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2`}
       >
         <p className="text-sm text-gray-600 mb-2">{descriptions[type]?.text}</p>
