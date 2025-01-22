@@ -365,7 +365,10 @@ function NewMemberList({ institution: tempInstitution }) {
     if (file) {
       try {
         util.setLoader(true); // Set loader to true before uploading
-        const fileNameForBucket = "memberlist";
+        const isProd = process.env.REACT_APP_STAGE === "PROD";
+        const fileNameForBucket = isProd
+        ? "member-creation-with-cognito-id-and-default-password"
+        : "institution-utils";
         await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
       } catch (error) {
         console.error("Error uploading file:", error);

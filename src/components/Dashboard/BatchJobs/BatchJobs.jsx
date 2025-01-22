@@ -249,7 +249,7 @@ function BatchJobs({ institution: tempInstitution }) {
       {
         name: "TimeTable",
         type: "timetable",
-        bucket: isProd ? "timetable-s3" : "beta-time-table-upload-to-dynamodb",
+        bucket: isProd ? "timetable-s3" : "institution-utils",
       },
       {
         name: "Attendance",
@@ -281,7 +281,7 @@ function BatchJobs({ institution: tempInstitution }) {
       {
         name: "Add items",
         type: "additems",
-        bucket: isProd ? "institution-cafe-items-data-csv-upload" : "beta-cafe-items-csv-upload",
+        bucket: isProd ? "institution-cafe-items-data-csv-upload" : "institution-utils",
       }
     ];
   }
