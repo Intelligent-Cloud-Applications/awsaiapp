@@ -43,14 +43,14 @@ function Policy({ policies, setPolicies, AboutUsBg, setAboutUsBg }) {
     return fileName;
   };
   return (
-    <div className="mx-[2%] mb-[5%]">
+    <div className="mx-[2%] mb-[5%] [@media(max-width:1024px)]:mb-10">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">POLICY AND TERMS</h1>
       <h5 className="text-[#939393] text-center">
         Establish transparent guidelines, sharing policies and terms for clarity and understanding.
       </h5>
-      <div className="flex justify-center ml-[8%]">
-        <div className="w-[60%] p-8">
-          <div className="relative flex items-center mt-4">
+      <div className="flex justify-center ml-[8%] [@media(max-width:1024px)]:ml-0">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-2">
+          <div className="relative flex items-center mt-4 [@media(max-width:1024px)]:flex-col">
             <h2 className="font-medium text-xl">AboutUsBg</h2>
             <div className='mr-10'></div>
             <TextInput

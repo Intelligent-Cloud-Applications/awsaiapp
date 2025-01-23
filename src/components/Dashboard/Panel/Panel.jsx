@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { AiOutlineEye } from "react-icons/ai";
@@ -30,6 +30,7 @@ const Panel = () => {
   const clientsData = Object.entries(clients.data);
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [deliveryStatuses, setDeliveryStatuses] = useState({});
+  const [planStatuses, setPlanStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
@@ -49,27 +50,27 @@ const Panel = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const menuRef = useRef(null); // Reference for the dropdown menu container
+  // const menuRef = useRef(null); // Reference for the dropdown menu container
 
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      console.log("Click detected outside dropdown");
-      setActiveMenu(null);
-      setActiveSubMenu(null);
-    } else {
-      console.log("Click inside dropdown or target element:", event.target);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //     console.log("Click detected outside dropdown");
+  //     setActiveMenu(null);
+  //     setActiveSubMenu(null);
+  //   } else {
+  //     console.log("Click inside dropdown or target element:", event.target);
+  //   }
+  // };
 
-  useEffect(() => {
-    // Attach event listener to detect clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
+  // useEffect(() => {
+  //   // Attach event listener to detect clicks outside
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   // Clean up listener on component unmount
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -154,6 +155,27 @@ const Panel = () => {
         disabled: "cursor-not-allowed opacity-50",
       },
     },
+  };
+
+  const handlePlanChange = async (data, plan) => {
+    // Store the previous state before making the API call
+    const previousPlanStatus = { ...planStatuses };
+
+    try {
+      const body = {
+        institution: data.institutionid,
+        plan,
+      };
+
+      await API.put("clients", `/admin/updatePlan`, { body });
+      toast.success("Plan updated successfully!");
+    } catch (error) {
+      console.error("Error Updating Plan:", error);
+      toast.error("An error occurred while updating the plan.");
+
+      // Reset to the previous state if an error occurs
+      setPlanStatuses(previousPlanStatus);
+    }
   };
 
   const handleTypeFilter = (typeSelected) => {
@@ -408,6 +430,8 @@ const Panel = () => {
     }
   };
 
+  console.log("the data display", clientsToDisplay);
+
   return (
     <>
       {!showMemberList ? (
@@ -476,7 +500,7 @@ const Panel = () => {
                         onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                       >
                         {(selectedType !== null || filterStatus !== null) &&
-                            <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                         }
                         Filter
                         {activeMenu ? (
@@ -613,7 +637,11 @@ const Panel = () => {
                             Payment
                           </Table.HeadCell>
                         )}
-
+                        {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                            Plan
+                          </Table.HeadCell>
+                        )}
                         <Table.HeadCell
                           className={`${showHiddenContent ? "" : "max1008:hidden"
                             } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
@@ -681,8 +709,8 @@ const Panel = () => {
                               })()}
                             </Table.Cell>
                             {Ctx.userData.role !== "operation" && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                {client.payment ? (
+                              client.payment ? (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                   <Dropdown
                                     label={
                                       deliveryStatuses[client.institutionid] ??
@@ -715,28 +743,67 @@ const Panel = () => {
                                       Delivered
                                     </Dropdown.Item>
                                   </Dropdown>
-                                ) : (
-                                  <select
-                                    disabled
-                                    className="bg-gray-200 border border-none rounded-md"
-                                  >
-                                    <option>
-                                      {
-                                        client.isDelivered
-                                          ? "Delivered"
-                                          : "Not Delivered"
-                                      }
-                                    </option>
-                                  </select>
-                                )}
-                              </Table.Cell>
+                                </Table.Cell>
+                              ) : (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                  {client.isDelivered ? "Delivered" : "Not Delivered"}
+                                </Table.Cell>
+                              )
                             )}
                             {Ctx.userData.role !== "operation" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 {client.payment ? "Paid" : "Not Paid"}
                               </Table.Cell>
                             )}
-
+                            {client.payment ? (Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                <Dropdown
+                                  label={planStatuses[client.institutionid] || client.plan}
+                                  inline
+                                >
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Basics",
+                                      }));
+                                      handlePlanChange(client, "Basic");
+                                    }}
+                                  >
+                                    Basics
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Standard",
+                                      }));
+                                      handlePlanChange(client, "Standard");
+                                    }}
+                                  >
+                                    Standard
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Advance",
+                                      }));
+                                      handlePlanChange(client, "Advance");
+                                    }}
+                                  >
+                                    Advance
+                                  </Dropdown.Item>
+                                </Dropdown>
+                              </Table.Cell>
+                            ) : (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                No Plan
+                              </Table.Cell>
+                            )}
                             <Table.Cell
                               className={`${showHiddenContent ? "" : "max1008:hidden"
                                 } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
@@ -1044,6 +1111,9 @@ const Panel = () => {
                   className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
                   onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                 >
+                  {(selectedType !== null || filterStatus !== null) &&
+                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                  }
                   Filter
                   {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
                 </button>
@@ -1061,13 +1131,13 @@ const Panel = () => {
                           onClick={() => handleMenuToggle("type")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          Type
+                          <span>{selectedType !== null ? selectedType : "Type"}</span>
                         </div>
                         <div
                           onClick={() => handleMenuToggle("isDelivered")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          Is Delivered
+                          <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
                         </div>
                       </div>
                     )}
@@ -1216,7 +1286,57 @@ const Panel = () => {
                           </div>
                         </div>
                       )}
-
+                      {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                        <div className="flex flex-row gap-2">
+                          <h5>Plan:</h5>
+                          <div className="flex flex-col gap-2">
+                            {client.payment ? (
+                              <Dropdown
+                                label={planStatuses[client.institutionid] || client.plan || "None"}
+                                inline
+                              >
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Basics",
+                                    }));
+                                    handlePlanChange(client, "Basic");
+                                  }}
+                                >
+                                  Basics
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Standard",
+                                    }));
+                                    handlePlanChange(client, "Standard");
+                                  }}
+                                >
+                                  Standard
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Advance",
+                                    }));
+                                    handlePlanChange(client, "Advance");
+                                  }}
+                                >
+                                  Advance
+                                </Dropdown.Item>
+                              </Dropdown>
+                            ) : (
+                              <div>
+                                No Plan
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       {/* Payment Status */}
                       {Ctx.userData.role !== "operation" && (
                         <div className="flex flex-row gap-2">
@@ -1465,14 +1585,14 @@ const Panel = () => {
             </>
           )}
         </>
-      ) : Ctx.userData.userType === "admin" ||
-        Ctx.userData.role === "operation" ? (
+      ) : (Ctx.userData.userType === "admin" ||
+        Ctx.userData.role === "operation") && payment ? (
         <Index
           tempInstitution={tempInstitution}
           setShowMemberList={setShowMemberList}
         />
       ) : (
-        !payment && handlePayment()
+        handlePayment()
       )
       }
     </>
