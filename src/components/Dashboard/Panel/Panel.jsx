@@ -407,6 +407,7 @@ const Panel = () => {
   );
   const [tempInstitution, setTempInstitution] = useState(null);
   const [showMemberList, setShowMemberList] = useState(false);
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
   const handleInstitutionClick = (client) => {
     const updatedUserData = {
       ...userData,
@@ -414,6 +415,7 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
+    setSelectedInstitutionType(client.institutionType)
     setShowMemberList(true);
   };
 
@@ -766,7 +768,7 @@ const Panel = () => {
                                     onClick={() => {
                                       setPlanStatuses((prev) => ({
                                         ...prev,
-                                        [client.institutionid]: "Basics",
+                                        [client.institutionid]: "Basic",
                                       }));
                                       handlePlanChange(client, "Basic");
                                     }}
@@ -1590,6 +1592,7 @@ const Panel = () => {
         <Index
           tempInstitution={tempInstitution}
           setShowMemberList={setShowMemberList}
+          selectedInstitutionType={selectedInstitutionType}
         />
       ) : (
         handlePayment()
