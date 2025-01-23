@@ -98,10 +98,10 @@ const New_Full = () => {
             Services: services,
             FAQ: templateResponse.FAQ && templateResponse.FAQ.length > 0 ? templateResponse.FAQ : defaultFAQ,
             ClassTypes: templateResponse.ClassTypes || [""],
-            AboutUs: templateResponse.AboutUs && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
-            PrivacyPolicy: templateResponse.PrivacyPolicy && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
-            Refund: templateResponse.Refund && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
-            TermsData: templateResponse.TermsData && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
+            AboutUs: Array.isArray(templateResponse.AboutUs) && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
+            PrivacyPolicy: Array.isArray(templateResponse.PrivacyPolicy) && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
+            Refund: Array.isArray(templateResponse.Refund) && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
+            TermsData: Array.isArray(templateResponse.TermsData) && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
             institutionFormat
           };
 
@@ -127,7 +127,7 @@ const New_Full = () => {
             country: "India",
             currency: "INR",
             duration: 365 * 24 * 60 * 60 * 1000,
-            provides: [],
+            provides: [""],
             // classType: [""]
           }
         ]);
@@ -929,7 +929,7 @@ const New_Full = () => {
           subscription.heading &&
           subscription.amount > 0 &&
           subscription.heading.trim() !== "" &&
-          subscription.provides &&
+          Array.isArray(subscription.provides) &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "")
       );
@@ -938,25 +938,17 @@ const New_Full = () => {
           subscription.heading && subscription.heading.trim() !== "";
         const hasValidAmount = subscription.amount && subscription.amount > 0;
         const hasValidProvides =
-          subscription.provides &&
+          Array.isArray(subscription.provides) &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "");
-        const provides = subscription.provides || [];
-
         if (!hasValidHeading) {
           updateInvalidSubscriptionIndex(index, "heading");
         }
         if (hasValidAmount === undefined || hasValidAmount <= 0) {
           updateInvalidSubscriptionIndex(index, "amount");
         }
-        if (hasValidProvides.length === 0) {
+        if (!hasValidProvides) {
           updateInvalidSubscriptionIndex(index, "provides");
-        } else {
-          provides.forEach((hasValidProvides, itemIndex) => {
-            if (!hasValidProvides?.trim()) {
-              updateInvalidSubscriptionIndex(index, "provides", itemIndex);
-            }
-          });
         }
         if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
           invalidSubscriptions.push(
@@ -1079,10 +1071,7 @@ const New_Full = () => {
     }
 
     // Validate PrivacyPolicy
-    if (
-      !templateDetails.PrivacyPolicy ||
-      templateDetails.PrivacyPolicy.length === 0
-    ) {
+    if (!templateDetails.PrivacyPolicy || templateDetails.PrivacyPolicy.length === 0) {
       invalidPrivacyPolicy.push("PrivacyPolicy");
     } else {
       templateDetails.PrivacyPolicy.forEach((policy, index) => {
@@ -2961,7 +2950,7 @@ const New_Full = () => {
               </div>
             </div>
 
-            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
+            {/* <hr className="w-full border-t border-[#D1D5DB] mt-10" /> */}
             {/* <div className="relative p-4">
               <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Instructor Section</h1>
 
