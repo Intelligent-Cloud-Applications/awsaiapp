@@ -112,7 +112,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Members
+                        Staffs
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">

@@ -112,15 +112,15 @@ function Services({ services, setServices, danceTypes, setDanceTypes, servicesBg
 
 
   return (
-    <div className="mx-[2%]" style={{ overflowY: 'auto' }}>
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0 [@media(max-width:1024px)]:mb-[5rem]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">SERVICE HIGHLIGHT</h1>
       <h5 className="text-[#939393] text-center">
         Effectively highlight your services by showcasing their unique benefits and value propositions. Make it clear how each service meets your audience’s needs and stands out from the competition.
       </h5>
 
       {/* Service Background Image Upload */}
-      <div className="flex justify-center ml-[10%]">
-        <div className="w-[60%] p-8">
+      <div className="flex justify-center ml-[10%] [@media(max-width:1024px)]:ml-0">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
           <div className="relative flex items-center mt-4">
             <h2 className='font-bold'>Services Bg</h2>
             <div className='mr-20'></div>

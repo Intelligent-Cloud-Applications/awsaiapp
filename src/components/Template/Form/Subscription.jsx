@@ -188,12 +188,12 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     localStorage.setItem('provides', JSON.stringify(provides));
   }, [subscriptionTypes, countryCodes, provides]);
   return (
-    <div className="mx-[2%]">
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">SUBSCRIPTION PLANS</h1>
       <h5 className="text-[#939393] text-center mx-[10%]">
         Clearly outline your subscription options, highlighting key features and benefits to help users make informed decisions.</h5>
-      <div className="flex justify-center ml-[8%]">
-        <div className="w-[60%] p-8">
+      <div className="flex justify-center ml-[8%] [@media(max-width:1024px)]:ml-0">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0">
           <div className="mt-4">
             {subscriptions.map((subscription, index) => (
               <div key={index} className="mt-2">

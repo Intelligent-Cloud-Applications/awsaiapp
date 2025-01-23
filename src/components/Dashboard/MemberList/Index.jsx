@@ -49,7 +49,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
-    <div className=" h-[97vh] bg-[#e6e4e4]">
+    <div className="h-screen bg-[#e6e4e4]">
       {screenWidth > 1025 ? (
         <>
           <div className="w-[97vw] flex flex-col items-center ml-[220px]">
@@ -59,7 +59,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
                 <div className="fixed mt-20 ml-[19.4rem] z-10 w-full flex flex-col items-start">
                   <div
                     onClick={goBack}
-                    className="border  bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
+                    className="border bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
                   >
                     <IoCaretBack />
                   </div>
@@ -78,7 +78,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
             <div className="mt-10">
               <div
                 onClick={goBack}
-                className="border  bg-[#30afbc]  rounded cursor-pointer w-[36px]  text-[30px] "
+                className="border bg-[#30afbc] rounded cursor-pointer w-[36px] text-[30px] "
               >
                 <IoCaretBack />
               </div>
