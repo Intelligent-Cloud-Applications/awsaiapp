@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { AiOutlineEye } from "react-icons/ai";
@@ -50,27 +50,27 @@ const Panel = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const menuRef = useRef(null); // Reference for the dropdown menu container
+  // const menuRef = useRef(null); // Reference for the dropdown menu container
 
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      console.log("Click detected outside dropdown");
-      setActiveMenu(null);
-      setActiveSubMenu(null);
-    } else {
-      console.log("Click inside dropdown or target element:", event.target);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //     console.log("Click detected outside dropdown");
+  //     setActiveMenu(null);
+  //     setActiveSubMenu(null);
+  //   } else {
+  //     console.log("Click inside dropdown or target element:", event.target);
+  //   }
+  // };
 
-  useEffect(() => {
-    // Attach event listener to detect clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
+  // useEffect(() => {
+  //   // Attach event listener to detect clicks outside
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   // Clean up listener on component unmount
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -157,8 +157,25 @@ const Panel = () => {
     },
   };
 
-  const handlePlanChange = async (institution, plan) => {
+  const handlePlanChange = async (data, plan) => {
+    // Store the previous state before making the API call
+    const previousPlanStatus = { ...planStatuses };
 
+    try {
+      const body = {
+        institution: data.institutionid,
+        plan,
+      };
+
+      await API.put("clients", `/admin/updatePlan`, { body });
+      toast.success("Plan updated successfully!");
+    } catch (error) {
+      console.error("Error Updating Plan:", error);
+      toast.error("An error occurred while updating the plan.");
+
+      // Reset to the previous state if an error occurs
+      setPlanStatuses(previousPlanStatus);
+    }
   };
 
   const handleTypeFilter = (typeSelected) => {
@@ -412,6 +429,8 @@ const Panel = () => {
         return "";
     }
   };
+
+  console.log("the data display", clientsToDisplay);
 
   return (
     <>
@@ -690,8 +709,8 @@ const Panel = () => {
                               })()}
                             </Table.Cell>
                             {Ctx.userData.role !== "operation" && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                {client.payment ? (
+                              client.payment ? (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                   <Dropdown
                                     label={
                                       deliveryStatuses[client.institutionid] ??
@@ -724,31 +743,22 @@ const Panel = () => {
                                       Delivered
                                     </Dropdown.Item>
                                   </Dropdown>
-                                ) : (
-                                  <select
-                                    disabled
-                                    className="bg-gray-200 border border-none rounded-md"
-                                  >
-                                    <option>
-                                      {
-                                        client.isDelivered
-                                          ? "Delivered"
-                                          : "Not Delivered"
-                                      }
-                                    </option>
-                                  </select>
-                                )}
-                              </Table.Cell>
+                                </Table.Cell>
+                              ) : (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                  {client.isDelivered ? "Delivered" : "Not Delivered"}
+                                </Table.Cell>
+                              )
                             )}
                             {Ctx.userData.role !== "operation" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 {client.payment ? "Paid" : "Not Paid"}
                               </Table.Cell>
                             )}
-                            {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                            {client.payment ? (Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 <Dropdown
-                                  label={planStatuses[client.institutionid]}
+                                  label={planStatuses[client.institutionid] || client.plan}
                                   inline
                                 >
                                   <Dropdown.Item
@@ -788,6 +798,10 @@ const Panel = () => {
                                     Advance
                                   </Dropdown.Item>
                                 </Dropdown>
+                              </Table.Cell>
+                            ) : (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                No Plan
                               </Table.Cell>
                             )}
                             <Table.Cell
@@ -1273,48 +1287,53 @@ const Panel = () => {
                         </div>
                       )}
                       {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
-
                         <div className="flex flex-row gap-2">
                           <h5>Plan:</h5>
                           <div className="flex flex-col gap-2">
-                            <Dropdown
-                              label={planStatuses[client.institutionid]}
-                              inline
-                            >
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setPlanStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "Basics",
-                                  }));
-                                  handlePlanChange(client, "Basic");
-                                }}
+                            {client.payment ? (
+                              <Dropdown
+                                label={planStatuses[client.institutionid] || client.plan || "None"}
+                                inline
                               >
-                                Basics
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setPlanStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "Standard",
-                                  }));
-                                  handlePlanChange(client, "Standard");
-                                }}
-                              >
-                                Standard
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setPlanStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "Advance",
-                                  }));
-                                  handlePlanChange(client, "Advance");
-                                }}
-                              >
-                                Advance
-                              </Dropdown.Item>
-                            </Dropdown>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Basics",
+                                    }));
+                                    handlePlanChange(client, "Basic");
+                                  }}
+                                >
+                                  Basics
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Standard",
+                                    }));
+                                    handlePlanChange(client, "Standard");
+                                  }}
+                                >
+                                  Standard
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Advance",
+                                    }));
+                                    handlePlanChange(client, "Advance");
+                                  }}
+                                >
+                                  Advance
+                                </Dropdown.Item>
+                              </Dropdown>
+                            ) : (
+                              <div>
+                                No Plan
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}

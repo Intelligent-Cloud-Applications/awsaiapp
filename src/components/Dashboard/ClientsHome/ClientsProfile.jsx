@@ -38,17 +38,17 @@ const ClientsProfile = ({ institution }) => {
       //   day: 'numeric',
       // })
       // Update state with merged data
+      console.log("the template Responce",templateResponse);
       setClientData({
-        institutionid: templateResponse.institutionid || 'Institution ID',
-        Query_Address: templateResponse.Query_Address || 'Address',
-        Query_WebLink: templateResponse.Query_WebLink || 'Website URL',
-        Query_EmailId: templateResponse.Query_EmailId || 'Email',
+        institutionid: templateResponse.institutionid,
+        Query_Address: templateResponse.Query_Address || templateResponse.address,
+        Query_EmailId: templateResponse.Query_EmailId || templateResponse.email,
         logoUrl: templateResponse.logoUrl || 'https://via.placeholder.com/150',
         PrimaryColor: templateResponse.PrimaryColor,
         SecondaryColor: templateResponse.SecondaryColor,
         LightPrimaryColor: templateResponse.LightPrimaryColor,
         LightestPrimaryColor: templateResponse.LightestPrimaryColor,
-        Query_PhoneNumber: templateResponse.Query_PhoneNumber,
+        Query_PhoneNumber: templateResponse.Query_PhoneNumber || templateResponse.phone,
         Facebook: templateResponse.Facebook,
         Instagram: templateResponse.Instagram,
         YTLink: templateResponse.YTLink,
@@ -61,7 +61,8 @@ const ClientsProfile = ({ institution }) => {
         country: templateResponse.country || "",
         cognitoId: owner?.cognitoId || '',
         phoneNumber: owner?.phoneNumber || '',
-        date: templateResponse.date
+        date: templateResponse.date,
+        heading : templateResponse.heading,
       });
 
       setTypeOfInstitution(templateResponse.institutionType);
@@ -165,6 +166,8 @@ const ClientsProfile = ({ institution }) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${day}/${month}/${year}`;
   };
+
+  console.log("data to profile",clientData);
 
   return (
     <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw] max1008:h-auto">
@@ -271,7 +274,7 @@ const ClientsProfile = ({ institution }) => {
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Membership:</span>
-              <span className="text-gray-900">Premium</span>
+              <span className="text-gray-900">{clientData.heading}</span>
             </div>
             <div className="flex justify-between text-gray-700 overflow-auto">
               <span className="font-semibold">Website:</span>

@@ -54,6 +54,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const newName = `${institution}_${templateName}`;
   const [templateDetails, setTemplateDetails] = useState({});
   const [addNewValue, setAddNewValue] = useState(false);
+  const Ctx = useContext(Context);
   // const [category, setCategory] = useState("Gold");
   // const [additionalInfoTitle, setAdditionalInfoTitle] = useState("");
   // const [additionalInfo, setAdditionalInfo] = useState("");
@@ -1044,11 +1045,13 @@ const LeadsList = ({ institution: tempInstitution }) => {
                         {lead.name}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {lead.emailId ? censorEmail(lead.emailId) : "None"}
+                        {lead.emailId ?
+                          Ctx.userData.role === "operation" ? censorEmail(lead.emailId) : lead.emailId
+                          : "None"}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {lead.phoneNumber
-                          ? censorPhoneNumber(lead.phoneNumber)
+                          ? Ctx.userData.role === "operation" ? censorPhoneNumber(lead.phoneNumber) : lead.phoneNumber
                           : "None"}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -1598,14 +1601,16 @@ const LeadsList = ({ institution: tempInstitution }) => {
                             {lead.name}
                           </span>
                           <span className="text-xs text-gray-500">
-                            {lead.emailId ? censorEmail(lead.emailId) : "None"}
+                            {lead.emailId ?
+                              Ctx.userData.role === "operation" ? censorEmail(lead.emailId) : lead.emailId
+                              : "None"}
                           </span>
                         </div>
                       </div>
                       <div className="flex flex-col items-center space-y-1">
                         <span className="text-xs text-gray-500">
                           {lead.phoneNumber
-                            ? censorPhoneNumber(lead.phoneNumber)
+                            ? Ctx.userData.role === "operation" ? censorPhoneNumber(lead.phoneNumber) : lead.phoneNumber
                             : "None"}
                         </span>
                         <span className="text-xs text-gray-500">
