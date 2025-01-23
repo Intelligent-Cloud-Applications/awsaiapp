@@ -6,7 +6,7 @@ import about4 from "../utils/about4.jpg";
 import about2 from "../utils/about2.png";
 import about3 from "../utils/about3.png";
 import cloud from "../utils/cloud.png";
-import value from "../utils/ourValues.gif";
+import value from "../utils/Our Value.png";
 import right from "../utils/right.png";
 import left from "../utils/left.png";
 import full from "../utils/full.png";
@@ -172,7 +172,7 @@ export default function AboutUs() {
           <div class="flex justify-center items-center lg:items-end w-full max1050:w-[18rem] max1050:flex-col ">
             <img
               src={value}
-              className="self-end mt-4 lg:mt-[160px] lg:ml-[17rem]  md:mt-[28rem] w-[0rem] "
+              className="self-end mt-4 lg:mt-[160px] lg:ml-[17rem]  md:mt-[28rem] "
               alt="Value"
             />
           </div>
