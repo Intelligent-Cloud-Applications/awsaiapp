@@ -24,7 +24,7 @@ const New_Full = () => {
 
   const [templateDetails, setTemplateDetails] = useState(null);
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
-  const [instructorDetails, setInstructorDetails] = useState(null);
+  // const [instructorDetails, setInstructorDetails] = useState(null);
   const [loader, setLoader] = useState(true);
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
@@ -98,10 +98,10 @@ const New_Full = () => {
             Services: services,
             FAQ: templateResponse.FAQ && templateResponse.FAQ.length > 0 ? templateResponse.FAQ : defaultFAQ,
             ClassTypes: templateResponse.ClassTypes || [""],
-            AboutUs: templateResponse.AboutUs && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
-            PrivacyPolicy: templateResponse.PrivacyPolicy && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
-            Refund: templateResponse.Refund && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
-            TermsData: templateResponse.TermsData && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
+            AboutUs: Array.isArray(templateResponse.AboutUs) && templateResponse.AboutUs.length > 0 ? templateResponse.AboutUs : defaultAboutUs,
+            PrivacyPolicy: Array.isArray(templateResponse.PrivacyPolicy) && templateResponse.PrivacyPolicy.length > 0 ? templateResponse.PrivacyPolicy : defaultPrivacyPolicy,
+            Refund: Array.isArray(templateResponse.Refund) && templateResponse.Refund.length > 0 ? templateResponse.Refund : defaultRefund,
+            TermsData: Array.isArray(templateResponse.TermsData) && templateResponse.TermsData.length > 0 ? templateResponse.TermsData : defaultTermsData,
             institutionFormat
           };
 
@@ -132,13 +132,13 @@ const New_Full = () => {
           }
         ]);
 
-        const instructorResponse = await API.get(
-          "clients",
-          `/user/development-form/get-instructor/${institutionNames}`
-        );
-        await setInstructorDetails(instructorResponse.length > 0 ? instructorResponse : [
-          { name: "", position: "", emailId: "", image: "" }
-        ]);
+        // const instructorResponse = await API.get(
+        //   "clients",
+        //   `/user/development-form/get-instructor/${institutionNames}`
+        // );
+        // await setInstructorDetails(instructorResponse.length > 0 ? instructorResponse : [
+        //   { name: "", position: "", emailId: "", image: "" }
+        // ]);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
@@ -161,7 +161,7 @@ const New_Full = () => {
   const classTypeOptions = ClassTypes.map((classType) => ({
     value: classType,
     label: classType,
-}));
+  }));
 
 
   useEffect(() => {
@@ -423,52 +423,52 @@ const New_Full = () => {
       }
     };
   };
-  const handleFileChange3 = async (event, index) => {
-    const file = event.target.files[0];
-    const allowedTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/svg+xml",
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
-      event.target.value = "";
-      return;
-    }
+  // const handleFileChange3 = async (event, index) => {
+  //   const file = event.target.files[0];
+  //   const allowedTypes = [
+  //     "image/jpeg",
+  //     "image/jpg",
+  //     "image/png",
+  //     "image/svg+xml",
+  //   ];
+  //   if (!allowedTypes.includes(file.type)) {
+  //     alert("Only JPG, JPEG, PNG, and SVG files are allowed.");
+  //     event.target.value = "";
+  //     return;
+  //   }
 
-    // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
-    const maxSize = 4 * 1024 * 1024;
-    if (file.size > maxSize) {
-      alert("File size must be within 4 MB.");
-      event.target.value = "";
-      return;
-    }
-    try {
-      const uploadedFile = await Storage.put(
-        `institution-utils/${institutionNames}/images/Instructor/${file.name}`,
-        file,
-        {
-          contentType: file.type,
-        }
-      );
+  //   // Validate file size (4 MB = 4 * 1024 * 1024 bytes)
+  //   const maxSize = 4 * 1024 * 1024;
+  //   if (file.size > maxSize) {
+  //     alert("File size must be within 4 MB.");
+  //     event.target.value = "";
+  //     return;
+  //   }
+  // try {
+  //   const uploadedFile = await Storage.put(
+  //     `institution-utils/${institutionNames}/images/Instructor/${file.name}`,
+  //     file,
+  //     {
+  //       contentType: file.type,
+  //     }
+  //   );
 
-      console.log("File uploaded successfully:", uploadedFile);
+  //   console.log("File uploaded successfully:", uploadedFile);
 
-      let imageUrl = await Storage.get(uploadedFile.key);
-      imageUrl = imageUrl.split("?")[0];
+  //   let imageUrl = await Storage.get(uploadedFile.key);
+  //   imageUrl = imageUrl.split("?")[0];
 
-      setInstructorDetails((prevState) => {
-        const updatedInstructors = [...prevState];
-        updatedInstructors[index].image = imageUrl;
-        return updatedInstructors;
-      });
+  //   setInstructorDetails((prevState) => {
+  //     const updatedInstructors = [...prevState];
+  //     updatedInstructors[index].image = imageUrl;
+  //     return updatedInstructors;
+  //   });
 
-      console.log("File URL:", imageUrl);
-    } catch (error) {
-      console.error("Error uploading file: ", error);
-    }
-  };
+  //   console.log("File URL:", imageUrl);
+  // } catch (error) {
+  //   console.error("Error uploading file: ", error);
+  // }
+  // };
 
   const durationInMilliseconds = (subscriptionType, durationText) => {
     let durationInMillis = 0;
@@ -524,7 +524,7 @@ const New_Full = () => {
         currency: "INR",
         duration: 365 * 24 * 60 * 60 * 1000,
         provides: [""],
-        classType:[""]
+        classType: [""]
       },
     ]);
   };
@@ -564,7 +564,7 @@ const New_Full = () => {
     PrivacyPolicy: useRef(null),
     TermsData: useRef(null),
     Refund: useRef(null),
-    Instructors: useRef(null),
+    // Instructors: useRef(null),
   };
   const [errors, setErrors] = useState({});
 
@@ -669,21 +669,23 @@ const New_Full = () => {
         });
         setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
       }
-    } else if (fieldName === "Instructors") {
-      const element = refs.Instructors.current;
-      if (element) {
-        const elementRect = element.getBoundingClientRect();
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        const offset = 100;
+    }
+    // else if (fieldName === "Instructors") {
+    //   const element = refs.Instructors.current;
+    //   if (element) {
+    //     const elementRect = element.getBoundingClientRect();
+    //     const scrollTop =
+    //       window.pageYOffset || document.documentElement.scrollTop;
+    //     const offset = 100;
 
-        window.scrollTo({
-          top: scrollTop + elementRect.top - offset,
-          behavior: "smooth",
-        });
-        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
-      }
-    } else if (refs[fieldName] && refs[fieldName].current) {
+    //     window.scrollTo({
+    //       top: scrollTop + elementRect.top - offset,
+    //       behavior: "smooth",
+    //     });
+    //     setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: true }));
+    //   }
+    // } 
+    else if (refs[fieldName] && refs[fieldName].current) {
       const element = refs[fieldName].current;
       const elementRect = element.getBoundingClientRect();
       const scrollTop =
@@ -775,11 +777,11 @@ const New_Full = () => {
   };
 
 
-  const [invalidInstructors, setInvalidInstructors] = useState([]);
+  // const [invalidInstructors, setInvalidInstructors] = useState([]);
 
-  const updateInvalidInstructorIndex = (index, field) => {
-    setInvalidInstructors(prev => [...prev, { index, field }]);
-  };
+  // const updateInvalidInstructorIndex = (index, field) => {
+  //   setInvalidInstructors(prev => [...prev, { index, field }]);
+  // };
   const [invalidServices, setInvalidServices] = useState([]);
 
   const updateInvalidServiceIndex = (serviceIndex, itemIndex, field) => {
@@ -796,7 +798,7 @@ const New_Full = () => {
     setInvalidPrivacyPolicy([]);
     setInvalidTermsData([]);
     setInvalidRefund([]);
-    setInvalidInstructors([]);
+    // setInvalidInstructors([]);
     setInvalidServices([]);
     const requiredFields = [
       { value: templateDetails.PrimaryColor, name: "PrimaryColor" },
@@ -829,7 +831,7 @@ const New_Full = () => {
     const invalidPrivacyPolicy = [];
     const invalidTermsData = [];
     const invalidRefund = [];
-    const invalidInstructors = [];
+    // const invalidInstructors = [];
     const serviceErrors = [];
 
     // if (!templateDetails.Services || templateDetails.Services.length === 0) {
@@ -927,7 +929,7 @@ const New_Full = () => {
           subscription.heading &&
           subscription.amount > 0 &&
           subscription.heading.trim() !== "" &&
-          subscription.provides &&
+          Array.isArray(subscription.provides) &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "")
       );
@@ -936,25 +938,17 @@ const New_Full = () => {
           subscription.heading && subscription.heading.trim() !== "";
         const hasValidAmount = subscription.amount && subscription.amount > 0;
         const hasValidProvides =
-          subscription.provides &&
+          Array.isArray(subscription.provides) &&
           subscription.provides.length > 0 &&
           subscription.provides.some((provide) => provide.trim() !== "");
-        const provides = subscription.provides || [];
-
         if (!hasValidHeading) {
           updateInvalidSubscriptionIndex(index, "heading");
         }
         if (hasValidAmount === undefined || hasValidAmount <= 0) {
           updateInvalidSubscriptionIndex(index, "amount");
         }
-        if (hasValidProvides.length === 0) {
+        if (!hasValidProvides) {
           updateInvalidSubscriptionIndex(index, "provides");
-        } else {
-          provides.forEach((hasValidProvides, itemIndex) => {
-            if (!hasValidProvides?.trim()) {
-              updateInvalidSubscriptionIndex(index, "provides", itemIndex);
-            }
-          });
         }
         if (!hasValidHeading || !hasValidAmount || !hasValidProvides) {
           invalidSubscriptions.push(
@@ -994,66 +988,66 @@ const New_Full = () => {
         }
       });
     }
-    if (instructorDetails && instructorDetails.length > 0) {
-      const hasValidInstructor = instructorDetails.some(
-        (instructor) =>
-          instructor.image &&
-          instructor.name &&
-          instructor.position &&
-          instructor.emailId &&
-          instructor.emailId.trim() !== "" &&
-          instructor.name.trim() !== "" &&
-          instructor.image.trim() !== "" &&
-          instructor.position.trim() !== ""
-      );
-      instructorDetails.forEach((instructor, index) => {
-        if (!instructor.name || instructor.name.trim() === "") {
-          updateInvalidInstructorIndex(index, "name");
-        }
-        if (!instructor.emailId || instructor.emailId.trim() === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
-          updateInvalidInstructorIndex(index, "emailId");
-        }
-        if (!instructor.image || instructor.image.trim() === "") {
-          updateInvalidInstructorIndex(index, "image");
-        }
-        if (!instructor.position || instructor.position.trim() === "") {
-          updateInvalidInstructorIndex(index, "position");
-        }
-        const hasValidImage =
-          instructor.image && instructor.image.trim() !== "";
-        const hasValidPosition =
-          instructor.position && instructor.position.trim() !== "";
-        const hasValidName = instructor.name && instructor.name.trim() !== "";
-        const hasValidemail =
-          instructor.emailId && instructor.emailId.trim() !== "";
-        if (
-          !hasValidemail ||
-          !hasValidName ||
-          !hasValidImage ||
-          !hasValidPosition
-        ) {
-          invalidInstructors.push(
-            `Instructor ${index + 1
-            } must have a non-empty name,image,position and emailId.`
-          );
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
-          invalidInstructors.push(
-            `Instructor ${index + 1} has an invalid email address`
-          );
-        }
-      });
+    // if (instructorDetails && instructorDetails.length > 0) {
+    //   const hasValidInstructor = instructorDetails.some(
+    //     (instructor) =>
+    //       instructor.image &&
+    //       instructor.name &&
+    //       instructor.position &&
+    //       instructor.emailId &&
+    //       instructor.emailId.trim() !== "" &&
+    //       instructor.name.trim() !== "" &&
+    //       instructor.image.trim() !== "" &&
+    //       instructor.position.trim() !== ""
+    //   );
+    //   instructorDetails.forEach((instructor, index) => {
+    //     if (!instructor.name || instructor.name.trim() === "") {
+    //       updateInvalidInstructorIndex(index, "name");
+    //     }
+    //     if (!instructor.emailId || instructor.emailId.trim() === "" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
+    //       updateInvalidInstructorIndex(index, "emailId");
+    //     }
+    //     if (!instructor.image || instructor.image.trim() === "") {
+    //       updateInvalidInstructorIndex(index, "image");
+    //     }
+    //     if (!instructor.position || instructor.position.trim() === "") {
+    //       updateInvalidInstructorIndex(index, "position");
+    //     }
+    //     const hasValidImage =
+    //       instructor.image && instructor.image.trim() !== "";
+    //     const hasValidPosition =
+    //       instructor.position && instructor.position.trim() !== "";
+    //     const hasValidName = instructor.name && instructor.name.trim() !== "";
+    //     const hasValidemail =
+    //       instructor.emailId && instructor.emailId.trim() !== "";
+    //     if (
+    //       !hasValidemail ||
+    //       !hasValidName ||
+    //       !hasValidImage ||
+    //       !hasValidPosition
+    //     ) {
+    //       invalidInstructors.push(
+    //         `Instructor ${index + 1
+    //         } must have a non-empty name,image,position and emailId.`
+    //       );
+    //     }
+    //     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(instructor.emailId)) {
+    //       invalidInstructors.push(
+    //         `Instructor ${index + 1} has an invalid email address`
+    //       );
+    //     }
+    //   });
 
-      if (!hasValidInstructor) {
-        invalidInstructors.push(
-          "At least one Instructor must have non-empty name,image,position and emailId."
-        );
-      }
-    } else {
-      invalidInstructors.push(
-        "At least one Instructor must have non-empty name,image,position and emailId."
-      );
-    }
+    //   if (!hasValidInstructor) {
+    //     invalidInstructors.push(
+    //       "At least one Instructor must have non-empty name,image,position and emailId."
+    //     );
+    //   }
+    // } else {
+    //   invalidInstructors.push(
+    //     "At least one Instructor must have non-empty name,image,position and emailId."
+    //   );
+    // }
     if (!templateDetails.AboutUs || templateDetails.AboutUs.length === 0) {
       invalidAboutUs.push("AboutUs");
     } else {
@@ -1077,10 +1071,7 @@ const New_Full = () => {
     }
 
     // Validate PrivacyPolicy
-    if (
-      !templateDetails.PrivacyPolicy ||
-      templateDetails.PrivacyPolicy.length === 0
-    ) {
+    if (!templateDetails.PrivacyPolicy || templateDetails.PrivacyPolicy.length === 0) {
       invalidPrivacyPolicy.push("PrivacyPolicy");
     } else {
       templateDetails.PrivacyPolicy.forEach((policy, index) => {
@@ -1223,7 +1214,7 @@ const New_Full = () => {
       invalidPrivacyPolicy.length > 0 ||
       invalidTermsData.length > 0 ||
       invalidRefund.length > 0 ||
-      invalidInstructors.length > 0 ||
+      // invalidInstructors.length > 0 ||
       invalidFields.length > 0 ||
       serviceErrors.length > 0
     ) {
@@ -1328,14 +1319,14 @@ const New_Full = () => {
         scrollToError("Refund");
         return;
       }
-      if (invalidInstructors.length > 0) {
-        alertMessage += `The following instructors are invalid: ${invalidInstructors.join(
-          ", "
-        )}.\n`;
-        alert(alertMessage);
-        scrollToError("Instructors");
-        return;
-      }
+      // if (invalidInstructors.length > 0) {
+      //   alertMessage += `The following instructors are invalid: ${invalidInstructors.join(
+      //     ", "
+      //   )}.\n`;
+      //   alert(alertMessage);
+      //   scrollToError("Instructors");
+      //   return;
+      // }
       alert(alertMessage);
       // scrollToError("Instructors");
       return;
@@ -1343,50 +1334,50 @@ const New_Full = () => {
 
     util.setLoader(true);
     try {
-      if (instructorDetails && instructorDetails.length > 0) {
-        const instructorPromises = [];
-        instructorDetails.forEach((instructor) => {
-          // Check if instructor already has an ID
-          if (instructor.instructorId) {
-            instructorPromises.push(
-              API.put("clients", `/user/development-form/update-instructor`, {
-                body: {
-                  instructorId: instructor.instructorId,
-                  institution: institutionNames,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: instructor.image,
-                  position: instructor.position,
-                },
-              })
-            );
-          } else {
-            const imageUrl = instructor.image;
-            instructorPromises.push(
-              API.put("clients", `/user/development-form/instructor`, {
-                body: {
-                  institution: institutionNames,
-                  name: instructor.name,
-                  emailId: instructor.emailId,
-                  image: imageUrl,
-                  position: instructor.position,
-                },
-              })
-            );
-          }
-        });
+      // if (instructorDetails && instructorDetails.length > 0) {
+      //   const instructorPromises = [];
+      //   instructorDetails.forEach((instructor) => {
+      //     // Check if instructor already has an ID
+      //     if (instructor.instructorId) {
+      //       instructorPromises.push(
+      //         API.put("clients", `/user/development-form/update-instructor`, {
+      //           body: {
+      //             instructorId: instructor.instructorId,
+      //             institution: institutionNames,
+      //             name: instructor.name,
+      //             emailId: instructor.emailId,
+      //             image: instructor.image,
+      //             position: instructor.position,
+      //           },
+      //         })
+      //       );
+      //     } else {
+      //       const imageUrl = instructor.image;
+      //       instructorPromises.push(
+      //         API.put("clients", `/user/development-form/instructor`, {
+      //           body: {
+      //             institution: institutionNames,
+      //             name: instructor.name,
+      //             emailId: instructor.emailId,
+      //             image: imageUrl,
+      //             position: instructor.position,
+      //           },
+      //         })
+      //       );
+      //     }
+      //   });
 
-        await Promise.all(instructorPromises);
-      }
+      //   await Promise.all(instructorPromises);
+      // }
       if (subscriptionDetails && subscriptionDetails.length > 0) {
         const subscriptionPromises = [];
 
-        subscriptionDetails.forEach((subscription,index) => {
+        subscriptionDetails.forEach((subscription, index) => {
           const amountInPaisa = subscription.amount * 100;
           const normalizedClassTypes = selectedClassTypes[index]
-          ?.filter(item => item.value.trim() !== "") // Exclude empty values
-          .map(item => item.value) || [];
-      
+            ?.filter(item => item.value.trim() !== "") // Exclude empty values
+            .map(item => item.value) || [];
+
 
           if (subscription.productId) {
             subscriptionPromises.push(
@@ -1406,7 +1397,7 @@ const New_Full = () => {
                   subscriptionType: subscription.subscriptionType,
                   classType: normalizedClassTypes
 
-                  
+
                 },
               })
             );
@@ -1505,7 +1496,7 @@ const New_Full = () => {
             country: templateDetails.country,
             Footer_Link_1: templateDetails.Footer_Link_1,
             Footer_Link_2: templateDetails.Footer_Link_2,
-            InstructorBg: templateDetails.InstructorBg || null,
+            // InstructorBg: templateDetails.InstructorBg || null,
             SubscriptionBg: templateDetails.SubscriptionBg || null,
           },
         }),
@@ -1561,43 +1552,43 @@ const New_Full = () => {
       return { ...prevState, Testimonial: updatedTestimonials };
     });
   };
-  const removeInstructor = async (instructorId) => {
-    if (instructorId) {
-      const confirmed = window.confirm(
-        "Are you sure you want to delete this instructor?"
-      );
-      if (!confirmed) return;
+  // const removeInstructor = async (instructorId) => {
+  //   if (instructorId) {
+  //     const confirmed = window.confirm(
+  //       "Are you sure you want to delete this instructor?"
+  //     );
+  //     if (!confirmed) return;
 
-      try {
-        util.setLoader(true);
-        // Make the API call to delete the instructor
-        await API.del(
-          "clients",
-          `/user/development-form/delete-instructor/${institutionNames}`,
-          {
-            body: {
-              instructorId: instructorId,
-            },
-          }
-        );
+  //     try {
+  //       util.setLoader(true);
+  //       // Make the API call to delete the instructor
+  //       await API.del(
+  //         "clients",
+  //         `/user/development-form/delete-instructor/${institutionNames}`,
+  //         {
+  //           body: {
+  //             instructorId: instructorId,
+  //           },
+  //         }
+  //       );
 
-        alert("Instructor removed successfully!");
-      } catch (error) {
-        console.error("Error removing instructor:", error);
-        alert("Failed to remove instructor. Please try again.");
-      } finally {
-        util.setLoader(false);
-      }
-    }
-    setInstructorDetails((prevState) => {
-      return prevState.filter(
-        (instructor) => instructor.instructorId !== instructorId
-      );
-    });
-  };
-  const removeInstructorByIndex = (index) => {
-    setInstructorDetails((prev) => prev.filter((_, i) => i !== index));
-  };
+  //       alert("Instructor removed successfully!");
+  //     } catch (error) {
+  //       console.error("Error removing instructor:", error);
+  //       alert("Failed to remove instructor. Please try again.");
+  //     } finally {
+  //       util.setLoader(false);
+  //     }
+  //   }
+  //   setInstructorDetails((prevState) => {
+  //     return prevState.filter(
+  //       (instructor) => instructor.instructorId !== instructorId
+  //     );
+  //   });
+  // };
+  // const removeInstructorByIndex = (index) => {
+  //   setInstructorDetails((prev) => prev.filter((_, i) => i !== index));
+  // };
 
   const removeSubscription = async (productId) => {
     if (productId) {
@@ -1772,25 +1763,25 @@ const New_Full = () => {
     });
   };
 
-  const addInstructor = () => {
-    const newInstructor = {
-      name: "",
-      emailId: "",
-      image: "",
-      position: "",
-    };
+  // const addInstructor = () => {
+  //   const newInstructor = {
+  //     name: "",
+  //     emailId: "",
+  //     image: "",
+  //     position: "",
+  //   };
 
-    setInstructorDetails([...instructorDetails, newInstructor]);
-  };
+  //   setInstructorDetails([...instructorDetails, newInstructor]);
+  // };
 
-  const handleInstructorChange = (event, field, index) => {
-    const { value } = event.target;
-    setInstructorDetails((prevState) => {
-      const updatedInstructors = [...prevState];
-      updatedInstructors[index][field] = value;
-      return updatedInstructors;
-    });
-  };
+  // const handleInstructorChange = (event, field, index) => {
+  //   const { value } = event.target;
+  //   setInstructorDetails((prevState) => {
+  //     const updatedInstructors = [...prevState];
+  //     updatedInstructors[index][field] = value;
+  //     return updatedInstructors;
+  //   });
+  // };
 
   const [newProvides, setNewProvides] = useState([]);
 
@@ -1880,8 +1871,8 @@ const New_Full = () => {
   if (
     util.loader ||
     !templateDetails ||
-    !subscriptionDetails ||
-    !instructorDetails
+    !subscriptionDetails
+    // || !instructorDetails
   ) {
     return (
       <div>
@@ -2792,43 +2783,43 @@ const New_Full = () => {
                           <Label htmlFor={`classTypes-${index}`} value="Select Class Types" />
                         </div>
                         <MultiSelect
-  options={classTypeOptions}
-  value={selectedClassTypes[index] || []}
-  onChange={(selected) => {
-    console.log('Selected Class Types:', selected);  // This logs the selected options
-    setSelectedClassTypes((prev) => {
-      const updated = [...prev];
-      updated[index] = selected; // Store the selected class types at the corresponding index
-      return updated;
-  });
-  
-  }}
-  labelledBy="Select Class Types"
-  className="w-full z-10"
-  styles={{
-    multiselectContainer: (provided) => ({
-      ...provided,
-      backgroundColor: "#fff", // White background
-      opacity: 1, // Fully opaque
-    }),
-    searchBox: (provided) => ({
-      ...provided,
-      backgroundColor: "#fff", // White background for search box
-    }),
-    option: (provided) => ({
-      ...provided,
-      backgroundColor: "#fff", // White background for options
-      color: "#000", // Black text
-      ':hover': {
-        backgroundColor: "#f3f3f3", // Light grey on hover
-      },
-    }),
-    optionContainer: (provided) => ({
-      ...provided,
-      backgroundColor: "#fff", // White background for option container
-    }),
-  }}
-/>
+                          options={classTypeOptions}
+                          value={selectedClassTypes[index] || []}
+                          onChange={(selected) => {
+                            console.log('Selected Class Types:', selected);  // This logs the selected options
+                            setSelectedClassTypes((prev) => {
+                              const updated = [...prev];
+                              updated[index] = selected; // Store the selected class types at the corresponding index
+                              return updated;
+                            });
+
+                          }}
+                          labelledBy="Select Class Types"
+                          className="w-full z-10"
+                          styles={{
+                            multiselectContainer: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#fff", // White background
+                              opacity: 1, // Fully opaque
+                            }),
+                            searchBox: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#fff", // White background for search box
+                            }),
+                            option: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#fff", // White background for options
+                              color: "#000", // Black text
+                              ':hover': {
+                                backgroundColor: "#f3f3f3", // Light grey on hover
+                              },
+                            }),
+                            optionContainer: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#fff", // White background for option container
+                            }),
+                          }}
+                        />
 
                       </div>
 
@@ -2904,7 +2895,7 @@ const New_Full = () => {
                       </fieldset>
 
                       <h2 className="text-lg font-bold mt-4">Provides:</h2>
-                      {subscription.provides.map((provide, idx) => (
+                      {Array.isArray(subscription.provides) && subscription.provides.map((provide, idx) => (
                         <div key={idx} className="relative mt-2">
                           <FloatingLabel
                             variant="filled"
@@ -2959,8 +2950,8 @@ const New_Full = () => {
               </div>
             </div>
 
-            <hr className="w-full border-t border-[#D1D5DB] mt-10" />
-            <div className="relative p-4">
+            {/* <hr className="w-full border-t border-[#D1D5DB] mt-10" /> */}
+            {/* <div className="relative p-4">
               <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">Instructor Section</h1>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
@@ -3114,7 +3105,7 @@ const New_Full = () => {
                   <MdOutlineAddCircle />
                 </button>
               </div>
-            </div>
+            </div> */}
             <hr className="w-full border-t border-[#D1D5DB] mt-10" />
             <div className="relative p-4">
               <h1 className="font-bold text-black mt-8 lg:ml-12 md:ml-6 sm:ml-0">FAQ Section</h1>
@@ -3245,7 +3236,7 @@ const New_Full = () => {
                   className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 lg:mt-10"
                   ref={refs.AboutUs}
                 >
-                  {templateDetails.AboutUs.map((item, index) => (
+                  {Array.isArray(templateDetails.AboutUs) && templateDetails.AboutUs.map((item, index) => (
                     <div key={index} className="px-2 lg:px-[170px]">
                       <div className="flex justify-between items-center">
                         <h2 className="text-[18px] font-bold">
