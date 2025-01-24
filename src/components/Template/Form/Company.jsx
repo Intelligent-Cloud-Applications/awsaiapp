@@ -83,6 +83,15 @@ function Company({
     }
   };
 
+  const handleSecondarycolor = (e) => {
+    setSecondaryColor(e.target.value);
+  };
+  const handleLightcolor = (e) => {
+    setLightPrimaryColor(e.target.value);
+  };
+  const handleLitestcolor = (e) => {
+    setLightestPrimaryColor(e.target.value);
+  };
 
   // const handleCSVFlie = (e) => {
   //   const file = e.target.files[0];
@@ -212,16 +221,19 @@ function Company({
               <input
                 type="color"
                 value={SecondaryColor}
+                onChange={handleSecondarycolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
                 value={LightPrimaryColor}
+                onChange={handleLightcolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
                 value={LightestPrimaryColor}
+                onChange={handleLitestcolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
             </div>
