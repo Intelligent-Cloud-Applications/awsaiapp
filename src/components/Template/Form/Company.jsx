@@ -7,6 +7,8 @@ function Company({
   clients,
   companyName,
   setCompanyName,
+  companyDescription,
+  setCompanyDescription,
   institutionId,
   setinstitutionId,
   PrimaryColor,
@@ -45,6 +47,11 @@ function Company({
 
   };
 
+  const handleCompanyDescriptionChange = (e) => {
+    const inputValue = e.target.value; // Get the value from the event
+    setCompanyDescription(inputValue);  // Set the state with the input value    
+  };
+
   const handleColorChange1 = (e) => {
     setPrimaryColor(e.target.value);
     const generatedTheme = theme(PrimaryColor);
@@ -76,6 +83,15 @@ function Company({
     }
   };
 
+  const handleSecondarycolor = (e) => {
+    setSecondaryColor(e.target.value);
+  };
+  const handleLightcolor = (e) => {
+    setLightPrimaryColor(e.target.value);
+  };
+  const handleLitestcolor = (e) => {
+    setLightestPrimaryColor(e.target.value);
+  };
 
   // const handleCSVFlie = (e) => {
   //   const file = e.target.files[0];
@@ -157,7 +173,34 @@ function Company({
               }}
             />
           </div>
-
+          <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
+            <div className="mb-2 block">
+              <Label
+                htmlFor="companyDescription"
+                color="gray"
+                value="Company Description"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <TextInput
+              id="companyDescription"
+              placeholder="Enter company Description"
+              required
+              value={companyDescription}
+              sizing="sm"
+              onChange={handleCompanyDescriptionChange}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+                width: "30rem",
+                ...(window.matchMedia("(max-width: 1024px)").matches && {
+                  width: "100%",
+                }),
+              }}
+            />
+          </div>
           <div className="mt-2">
             <div className="mb-2 block">
               <Label
@@ -178,16 +221,19 @@ function Company({
               <input
                 type="color"
                 value={SecondaryColor}
+                onChange={handleSecondarycolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
                 value={LightPrimaryColor}
+                onChange={handleLightcolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
                 value={LightestPrimaryColor}
+                onChange={handleLitestcolor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
             </div>

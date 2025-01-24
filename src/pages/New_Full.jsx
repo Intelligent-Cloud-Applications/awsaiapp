@@ -36,12 +36,13 @@ const New_Full = () => {
   useEffect(() => {
     const fetchData = async () => {
       // if (institutionNames && Ctx.userData.institutionName === "awsaiapp") {
+      if (!institutionNames || loaderInitialized) return;
       try {
-        if (!loaderInitialized) {
-          // Check if loader is false and not initialized
-          util.setLoader(true);
-          setLoaderInitialized(true);
-        }
+        // if (!loaderInitialized) {
+        // Check if loader is false and not initialized
+        util.setLoader(true);
+        setLoaderInitialized(true);
+        // }
 
         const templateResponse = await API.get(
           "clients",
@@ -151,10 +152,10 @@ const New_Full = () => {
     fetchData();
   }, [
     institutionNames,
-    loader,
+    // loader,
     loaderInitialized,
     util,
-    Ctx.userData.institutionName,
+    // Ctx.userData.institutionName,
   ]);
   const [selectedClassTypes, setSelectedClassTypes] = useState([]);
   const ClassTypes = templateDetails?.ClassTypes || [];
