@@ -41,6 +41,7 @@ const Template = () => {
   const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const [companyName, setCompanyName] = useState(null);
+  const [companyDescription, setCompanyDescription] = useState(null);
   const [institutionId, setinstitutionId] = useState(null);
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
@@ -1117,6 +1118,8 @@ const Template = () => {
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
+              companyDescription={companyDescription}
+              setCompanyDescription={setCompanyDescription}
               institutionId={institutionId}
               setinstitutionId={setinstitutionId}
               PrimaryColor={PrimaryColor}

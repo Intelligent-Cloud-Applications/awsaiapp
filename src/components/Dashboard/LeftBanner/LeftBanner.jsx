@@ -174,7 +174,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Client Panel
+                        Clients
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
@@ -232,7 +232,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Client Panel
+                        Clients
                       </span>
                     </Sidebar.Item>
 

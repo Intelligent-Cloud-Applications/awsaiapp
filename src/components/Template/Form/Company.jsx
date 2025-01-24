@@ -7,6 +7,8 @@ function Company({
   clients,
   companyName,
   setCompanyName,
+  companyDescription,
+  setCompanyDescription,
   institutionId,
   setinstitutionId,
   PrimaryColor,
@@ -43,6 +45,11 @@ function Company({
     setinstitutionId(newid);  // Update the institution ID state
     console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
 
+  };
+
+  const handleCompanyDescriptionChange = (e) => {
+    const inputValue = e.target.value; // Get the value from the event
+    setCompanyDescription(inputValue);  // Set the state with the input value    
   };
 
   const handleColorChange1 = (e) => {
@@ -157,7 +164,34 @@ function Company({
               }}
             />
           </div>
-
+          <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
+            <div className="mb-2 block">
+              <Label
+                htmlFor="companyDescription"
+                color="gray"
+                value="Company Description"
+                className="font-medium text-xl"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <TextInput
+              id="companyDescription"
+              placeholder="Enter company Description"
+              required
+              value={companyDescription}
+              sizing="sm"
+              onChange={handleCompanyDescriptionChange}
+              style={{
+                borderColor: "#D1D5DB",
+                backgroundColor: "#F9FAFB",
+                borderRadius: "8px",
+                width: "30rem",
+                ...(window.matchMedia("(max-width: 1024px)").matches && {
+                  width: "100%",
+                }),
+              }}
+            />
+          </div>
           <div className="mt-2">
             <div className="mb-2 block">
               <Label
