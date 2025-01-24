@@ -52,7 +52,7 @@ const Template = () => {
   //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
-  const [institutionType, setInstitutionType] = useState("DanceStudio");
+  // const [institutionType, setInstitutionType] = useState("DanceStudio");
   const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
@@ -478,9 +478,10 @@ const Template = () => {
         body: {
           institutionid: institutionId,
           companyName: companyName,
+          description: companyDescription,
           PrimaryColor,
           institutionFormat,
-          institutionType,
+          // institutionType,
           SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
@@ -1127,8 +1128,8 @@ const Template = () => {
               SecondaryColor={SecondaryColor}
               setSecondaryColor={setSecondaryColor}
               logo={logo}
-              institutionType={institutionType}
-              setInstitutionType={setInstitutionType}
+              // institutionType={institutionType}
+              // setInstitutionType={setInstitutionType}
               institutionFormat={institutionFormat}
               setInstitutionFormat={setInstitutionFormat}
               setLogo={setLogo}

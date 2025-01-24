@@ -1294,7 +1294,7 @@ const Panel = () => {
                           <div className="flex flex-col gap-2">
                             {client.payment ? (
                               <Dropdown
-                                label={planStatuses[client.institutionid] || client.plan || "None"}
+                                label={planStatuses[client.institutionid] || client.plan}
                                 inline
                               >
                                 <Dropdown.Item
