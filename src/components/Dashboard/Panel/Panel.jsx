@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import { AiOutlineEye } from "react-icons/ai";
@@ -50,6 +50,7 @@ const Panel = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const menuRef = useRef(null);
   // const menuRef = useRef(null); // Reference for the dropdown menu container
 
   // const handleClickOutside = (event) => {
@@ -432,7 +433,20 @@ const Panel = () => {
     }
   };
 
-  console.log("the data display", clientsToDisplay);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenu(null);
+        setActiveSubMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -496,7 +510,7 @@ const Panel = () => {
                 </div>
                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
                   <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
-                    <div className="relative inline-block ml-5">
+                    <div className="relative inline-block ml-5" ref={menuRef}>
                       <button
                         className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
                         onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
