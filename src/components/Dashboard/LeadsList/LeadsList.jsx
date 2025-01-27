@@ -727,7 +727,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     <div>
       {screenWidth > 1025 ? (
         <main>
-          <div className="mt-5">
+          <div className="">
             <div className="flex items-center justify-between bg-white px-5 rounded-t-md">
               {/* Center: Search Bar */}
               <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md m-1">
@@ -1637,7 +1637,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-between items-center mt-4">
+                <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
                   <span className="text-sm text-gray-600">
                     Page <strong>{currentPage}</strong> of{" "}
                     <strong>{totalPages}</strong>

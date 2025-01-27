@@ -1564,7 +1564,7 @@ const Panel = () => {
               </div>
 
               {setShowMemberList && (
-                <div className="flex justify-between items-center mt-4">
+                <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
                   <span className="text-sm text-gray-600">
                     Page <strong>{currentPage}</strong> of{" "}
                     <strong>{totalPages}</strong>
