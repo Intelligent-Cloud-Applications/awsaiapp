@@ -4,6 +4,7 @@ import ChartComponent2 from "../../MonthlyReport/ChartComponents/ChartComponent2
 import PieChartComponent from "../../MonthlyReport/ChartComponents/PieChartComponent";
 
 function RevenueTab({ institution }) {
+  // eslint-disable-next-line
   const [payments, setPayments] = useState([]);
   const [monthlyRevenue, setMonthlyRevenue] = useState([]);
   const [paymentModeDistribution, setPaymentModeDistribution] = useState({
@@ -136,7 +137,7 @@ function RevenueTab({ institution }) {
       </div>
 
       <div className="flex justify-center gap-[4rem] w-full items-center flex-wrap-reverse">
-        <div className="mt-6 w-[40vw] min-w-[40rem] max-w-full mb-20">
+        <div className="mt-6 w-[40vw] max-w-full mb-20 max600:w-[95vw]">
           <h3 className="text-xl font-semibold text-center">
             Monthly Revenue
           </h3>
