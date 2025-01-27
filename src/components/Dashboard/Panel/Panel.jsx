@@ -329,21 +329,21 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  const getBadgeProps = (web, payment, delivered) => {
+  const getBadgeProps = (payment, delivered) => {
     let text, color;
 
-    if (web) {
-      if (payment && delivered) {
-        text = "Active";
-        color = "success";
-      } else {
-        text = "Pending";
-        color = "warning";
-      }
+    // if (web) {
+    if (payment && delivered) {
+      text = "Active";
+      color = "success";
     } else {
-      text = "InActive";
-      color = "failure";
+      text = "Pending";
+      color = "warning";
     }
+    // } else {
+    //   text = "InActive";
+    //   color = "failure";
+    // }
 
     return { text, color };
   };
@@ -709,7 +709,7 @@ const Panel = () => {
                             <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                               {(() => {
                                 const { text, color } = getBadgeProps(
-                                  client.isFormFilled,
+                                  // client.isFormFilled,
                                   client.payment,
                                   client.isDelivered
                                 );
@@ -1258,7 +1258,7 @@ const Panel = () => {
                           <Badge
                             color={
                               getBadgeProps(
-                                client.isFormFilled,
+                                // client.isFormFilled,
                                 client.payment,
                                 client.isDelivered
                               ).color
