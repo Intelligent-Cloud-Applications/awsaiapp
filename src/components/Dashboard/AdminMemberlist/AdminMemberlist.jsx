@@ -283,9 +283,8 @@ const AdminMemberlist = () => {
                                   </div>                                  
                                   ) : (
                                     <span className="px-3 py-2 text-sm text-gray-500 truncate">
-                                      {member.role === 'sales' ? 'Sales' : 
-                                       member.role === 'operation' ? 'Admin' : 
-                                       member.role === 'owner' ? 'Owner' : 'No Role'}
+                                      {member.role === 'sale' ? 'Sale' : 
+                                       member.role === 'operation' ? 'Admin' : 'No Role'}
                                     </span>
                                   )}
                                 </div>

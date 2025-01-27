@@ -623,7 +623,10 @@ const LeadsList = ({ institution: tempInstitution }) => {
   const handleCSVFile = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const fileNameForBucket = "leadList";
+      const isProd = process.env.REACT_APP_STAGE === "PROD";
+      const fileNameForBucket = isProd
+      ? "leads-data-production-upload-to-dynamodb"
+      : "institution-utils";
       CSVUpload(file, institution, fileNameForBucket);
     } else {
       console.error("No file selected.");

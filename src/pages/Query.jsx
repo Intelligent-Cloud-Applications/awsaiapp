@@ -112,7 +112,7 @@ const Query = ({ activeComponent }) => {
     } catch (error) {
       alert("Error sending message: " + error.message);
       console.error("reCAPTCHA error:", error);
-    } finally {
+    } finally { 
       util.setLoader(false);
     }
     util.setLoader(false);
@@ -125,7 +125,7 @@ const Query = ({ activeComponent }) => {
         className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
       max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
       >
-        <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg">
+        <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg md:h-[80vh] md:w-[100vh]">
           <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -151,7 +151,8 @@ const Query = ({ activeComponent }) => {
             </motion.div>
           </div>
 
-          <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white">
+          <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white"
+          >
             <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
               Send us a message
             </h2>
@@ -236,7 +237,7 @@ const Query = ({ activeComponent }) => {
                 <textarea
                   id="address"
                   name="address"
-                  rows="2"
+                  rows="1"
                   value={formData.address}
                   onChange={handleChange}
                   className="mt-1 p-1 border border-gray-600 rounded-md w-full"
