@@ -48,7 +48,7 @@ function BatchJobs({ institution: tempInstitution }) {
         if (jobMappings.length === 0) {
           console.log("No jobs to process. Exiting.");
           return;
-        } 
+        }
         for (const job of jobMappings) {
           const lastUpdate = response[`batch_${job.type}_lastupdate`];
           const cognitoId = response[`batch_${job.type}_updatedby`];
@@ -102,26 +102,25 @@ function BatchJobs({ institution: tempInstitution }) {
 
   const useDataForSales = Ctx.saleData || [];
   const getUsernameByCognitoId = (cognitoId) => {
-
     const trimmedInputId = String(cognitoId).trim();
 
     const user = useDataForSales.find((user) => {
       return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
     });
     console.log("user Name:", user);
-    return user?user.userName : "" ;
+    return user ? user.userName : "";
   };
   const getConsistentColor = (cognitoId) => {
     const colors = [
-      "#FF5733", 
-      "#33FF57", 
-      "#3357FF", 
-      "#FFC300", 
-      "#C70039", 
-      "#900C3F", 
-      "#581845", 
+      "#FF5733",
+      "#33FF57",
+      "#3357FF",
+      "#FFC300",
+      "#C70039",
+      "#900C3F",
+      "#581845",
     ];
-   
+
     let hash = 0;
     for (let i = 0; i < cognitoId.length; i++) {
       hash = cognitoId.charCodeAt(i) + ((hash << 5) - hash);
@@ -130,23 +129,24 @@ function BatchJobs({ institution: tempInstitution }) {
     return colors[colorIndex];
   };
   const getInitials = (name) => {
-    const names = name.split(' ')
-    const initials = names.map(name => name.charAt(0).toUpperCase()).join('')
-    return initials
-  }
+    const names = name.split(" ");
+    const initials = names.map((name) => name.charAt(0).toUpperCase()).join("");
+    return initials;
+  };
   const getUserImageByCognitoId = (cognitoId) => {
     const trimmedInputId = String(cognitoId || "").trim();
-  
+
     if (!trimmedInputId) {
       return getInitials(userData?.userName || "");
     }
-    const user = useDataForSales.find((user) => 
-      user?.cognitoId && String(user.cognitoId).trim() === trimmedInputId
+    const user = useDataForSales.find(
+      (user) =>
+        user?.cognitoId && String(user.cognitoId).trim() === trimmedInputId
     );
- 
-    return user?.imgUrl ;
+
+    return user?.imgUrl;
   };
-  
+
   const handleFileChange = async (event, type, bucketName) => {
     const file = event.target.files[0];
     if (!file) {
@@ -240,7 +240,7 @@ function BatchJobs({ institution: tempInstitution }) {
       },
     },
   };
- 
+
   let jobMappings = [];
   const isProd = process.env.REACT_APP_STAGE === "PROD";
 
@@ -276,53 +276,211 @@ function BatchJobs({ institution: tempInstitution }) {
           : "institution-utils",
       },
     ];
-  } else if(batchJobs.institutionType === "Cafe"){
+  } else if (batchJobs.institutionType === "Cafe") {
     jobMappings = [
       {
         name: "Add items",
         type: "additems",
-        bucket: isProd ? "institution-cafe-items-data-csv-upload" : "institution-utils",
-      }
+        bucket: isProd
+          ? "institution-cafe-items-data-csv-upload"
+          : "institution-utils",
+      },
     ];
-  }
-  else {
+  } else {
     jobMappings = [];
   }
-  
-
 
   return (
     <>
-     {screenWidth > 1025 ? (
-      <>
-      <div className="mt-5 w-[70rem] max1250:w-[50rem]"></div>
-      <div className="bg-white w-full max-w-[100%] rounded-b-md">
-        <div className="overflow-x-auto">
-          <Table className="w-full text-sm text-left text-gray-500 gap-10">
-            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB] gap-x-10">
-              <Table.HeadCell>Function</Table.HeadCell>
-              <Table.HeadCell>Upload</Table.HeadCell>
-              <Table.HeadCell>Status</Table.HeadCell>
-              <Table.HeadCell>Last Update</Table.HeadCell>
-              <Table.HeadCell>Updated By</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="bg-white">
+      {screenWidth > 1025 ? (
+        <>
+          <div className="mt-5 w-[70rem] max1250:w-[50rem]"></div>
+          <div className="bg-white w-full max-w-[100%] rounded-b-md">
+            <div className="overflow-x-auto">
+              <Table className="w-full text-sm text-left text-gray-500 gap-10">
+                <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB] gap-x-10">
+                  <Table.HeadCell>Function</Table.HeadCell>
+                  <Table.HeadCell>Upload</Table.HeadCell>
+                  <Table.HeadCell>Status</Table.HeadCell>
+                  <Table.HeadCell>Last Update</Table.HeadCell>
+                  <Table.HeadCell>Updated By</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="bg-white">
+                  {jobMappings.map((job) => {
+                    const status = batchJobs[`batch_${job.type}_status`] || "";
+                    const lastUpdate =
+                      batchJobs[`batch_${job.type}_lastupdate`] || "";
+                    const updatedBy =
+                      batchJobs[`batch_${job.type}_updatedby`] || "";
+
+                    return (
+                      <Table.Row key={job.type} className="gap-x-">
+                        <Table.Cell className="font-bold">
+                          {job.name}
+                          <InfoTooltip type={job.type} />
+                        </Table.Cell>
+
+                        <Table.Cell>
+                          <input
+                            type="file"
+                            id={`fileInput-${job.type}`}
+                            style={{ display: "none" }}
+                            onChange={(event) =>
+                              handleFileChange(event, job.type, job.bucket)
+                            }
+                          />
+                          <button
+                            onClick={() =>
+                              document
+                                .getElementById(`fileInput-${job.type}`)
+                                .click()
+                            }
+                            className="text-md text-gray-500 hover:text-gray-700"
+                          >
+                            {status === "Successful"
+                              ? "🔄Reupload"
+                              : "⬆️ Upload"}
+                          </button>
+                        </Table.Cell>
+                        <Table.Cell>{status}</Table.Cell>
+                        <Table.Cell>{formatDate(lastUpdate)}</Table.Cell>
+                        <Table.Cell>
+                          <div className="font-bold flex space-x-2 pb-3 items-center">
+                            {updatedBy && getUserImageByCognitoId(updatedBy) ? (
+                              <>
+                                <img
+                                  src={getUserImageByCognitoId(updatedBy)}
+                                  alt="profile"
+                                  className="w-10 h-10 rounded-full"
+                                />
+                                {getUsernameByCognitoId(updatedBy) && (
+                                  <div className="text-sm font-normal">
+                                    {getUsernameByCognitoId(updatedBy)}
+                                  </div>
+                                )}
+                              </>
+                            ) : updatedBy &&
+                              getUsernameByCognitoId(updatedBy) !== "" ? (
+                              <div className="flex items-center space-x-2">
+                                <div
+                                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                                  style={{
+                                    backgroundColor:
+                                      getConsistentColor(updatedBy),
+                                  }}
+                                >
+                                  <span className="text-sm font-bold text-white">
+                                    {getInitials(
+                                      getUsernameByCognitoId(updatedBy)
+                                    )}
+                                  </span>
+                                </div>
+                                {getUsernameByCognitoId(updatedBy) && (
+                                  <div className="text-sm font-normal">
+                                    {getUsernameByCognitoId(updatedBy)}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                            )}
+                          </div>
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table>
+            </div>
+            <div className="py-2 flex justify-between items-center px-4">
+              <Pagination
+                currentPage={1}
+                totalPages={1}
+                onPageChange={1}
+                className="flex justify-end"
+                theme={customTheme}
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mt-5 w-full px-2 max600:mb-[5rem]">
+            <h2 className="text-lg font-semibold mb-4">Batch Jobs</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {jobMappings.map((job) => {
-                const status =
-                  batchJobs[`batch_${job.type}_status`] || "";
+                const status = batchJobs[`batch_${job.type}_status`] || "";
                 const lastUpdate =
                   batchJobs[`batch_${job.type}_lastupdate`] || "";
                 const updatedBy =
                   batchJobs[`batch_${job.type}_updatedby`] || "";
 
                 return (
-                  <Table.Row key={job.type} className="gap-x-">
-                    <Table.Cell className="font-bold">{job.name}<InfoTooltip type={job.type} /></Table.Cell>
-                 
-                    
-                
-            
-                    <Table.Cell>
+                  <div
+                    key={job.type}
+                    className="bg-white p-4 shadow-md rounded-md"
+                  >
+                    <p className="font-bold">
+                      <strong>Function:</strong> {job.name}{" "}
+                      <InfoTooltip type={job.type} />
+                    </p>
+
+                    {status && (
+                      <p>
+                        <strong>Status:</strong> {status}
+                      </p>
+                    )}
+                    {lastUpdate && (
+                      <p>
+                        <strong>Last Update:</strong> {formatDate(lastUpdate)}
+                      </p>
+                    )}
+                    {updatedBy && (
+                      <p className="flex flex-row gap-1">
+                        <strong>Updated By:</strong>{" "}
+                        <div className="font-bold flex space-x-2 pb-3 items-center">
+                          {updatedBy && getUserImageByCognitoId(updatedBy) ? (
+                            <>
+                              <img
+                                src={getUserImageByCognitoId(updatedBy)}
+                                alt="profile"
+                                className="w-6 h-6 rounded-full"
+                              />
+                              {getUsernameByCognitoId(updatedBy) && (
+                                <div className="text-sm font-normal">
+                                  {getUsernameByCognitoId(updatedBy)}
+                                </div>
+                              )}
+                            </>
+                          ) : updatedBy &&
+                            getUsernameByCognitoId(updatedBy) !== "" ? (
+                            <div className="flex items-center space-x-2">
+                              <div
+                                className="w-6 h-6 rounded-full flex items-center justify-center"
+                                style={{
+                                  backgroundColor:
+                                    getConsistentColor(updatedBy),
+                                }}
+                              >
+                                <span className="text-sm font-bold text-white">
+                                  {getInitials(
+                                    getUsernameByCognitoId(updatedBy)
+                                  )}
+                                </span>
+                              </div>
+                              {getUsernameByCognitoId(updatedBy) && (
+                                <div className="text-sm font-normal">
+                                  {getUsernameByCognitoId(updatedBy)}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                          )}
+                        </div>
+                      </p>
+                    )}
+                    <div className="mt-2">
                       <input
                         type="file"
                         id={`fileInput-${job.type}`}
@@ -331,149 +489,24 @@ function BatchJobs({ institution: tempInstitution }) {
                           handleFileChange(event, job.type, job.bucket)
                         }
                       />
-                                 <button
-                  onClick={() => document.getElementById(`fileInput-${job.type}`).click()}
-                  className="text-md text-gray-500 hover:text-gray-700"
-                >
-                  {status === "Successful" ? "🔄Reupload" : "⬆️ Upload"}
-                </button>
-
-                    </Table.Cell>
-                    <Table.Cell>{status}</Table.Cell>
-                    <Table.Cell>{formatDate(lastUpdate)}</Table.Cell>
-                    <Table.Cell>
-                    <div className="font-bold flex space-x-2 pb-3 items-center">
-      {updatedBy && getUserImageByCognitoId(updatedBy) ? (
-        <>
-          <img
-            src={getUserImageByCognitoId(updatedBy)}
-            alt="profile"
-            className="w-10 h-10 rounded-full"
-          />
-          {getUsernameByCognitoId(updatedBy) && <div className="text-sm font-normal">{getUsernameByCognitoId(updatedBy)}</div>}
-        </>
-      ) : updatedBy && getUsernameByCognitoId(updatedBy) !=="" ? (
-        <div className="flex items-center space-x-2">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center"
-            style={{ backgroundColor:  getConsistentColor(updatedBy) }}
-          >
-            <span className="text-sm font-bold text-white">
-              {getInitials(getUsernameByCognitoId(updatedBy))}
-            </span>
-          </div>
-          {getUsernameByCognitoId(updatedBy) &&  <div className="text-sm font-normal">{getUsernameByCognitoId(updatedBy)}</div>}
-        </div>
-      ) : (
-        <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-      )}
-    </div>
-
-
-
-                      
-                    </Table.Cell>
-                  </Table.Row>
+                      <button
+                        onClick={() =>
+                          document
+                            .getElementById(`fileInput-${job.type}`)
+                            .click()
+                        }
+                        className="text-md text-gray-500 hover:text-gray-700"
+                      >
+                        {status === "Successful" ? "🔄Reupload" : "⬆️ Upload"}
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
-            </Table.Body>
-          </Table>
-        </div>
-        <div className="py-2 flex justify-between items-center px-4">
-          <Pagination
-            currentPage={1}
-            totalPages={1}
-            onPageChange={1}
-            className="flex justify-end"
-            theme={customTheme}
-          />
-        </div>
-      </div>
-      </>
-       ) : (
-        <>
-       <div className="mt-5 w-full px-2">
-  <h2 className="text-lg font-semibold mb-4">Batch Jobs</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {jobMappings.map((job) => {
-      const status = batchJobs[`batch_${job.type}_status`] || "";
-      const lastUpdate = batchJobs[`batch_${job.type}_lastupdate`] || "";
-      const updatedBy = batchJobs[`batch_${job.type}_updatedby`] || "";
-
-      return (
-        <div
-          key={job.type}
-          className="bg-white p-4 shadow-md rounded-md"
-        >
-          <p className="font-bold">
-            <strong>Function:</strong> {job.name} <InfoTooltip type={job.type} />
-          </p>
-         
-         { status &&<p>
-            <strong>Status:</strong> {status}
-          </p>}
-         {lastUpdate &&
-          <p>
-            <strong>Last Update:</strong> {formatDate(lastUpdate)}
-          </p>
-    }
-    {updatedBy&&
-          <p className="flex flex-row gap-1">
-            <strong>Updated By:</strong>{" "}
-            <div className="font-bold flex space-x-2 pb-3 items-center">
-      {updatedBy && getUserImageByCognitoId(updatedBy) ? (
-        <>
-          <img
-            src={getUserImageByCognitoId(updatedBy)}
-            alt="profile"
-            className="w-6 h-6 rounded-full"
-          />
-          {getUsernameByCognitoId(updatedBy) && <div className="text-sm font-normal">{getUsernameByCognitoId(updatedBy)}</div>}
+            </div>
+          </div>
         </>
-      ) : updatedBy && getUsernameByCognitoId(updatedBy) !=="" ? (
-        <div className="flex items-center space-x-2">
-          <div
-            className="w-6 h-6 rounded-full flex items-center justify-center"
-            style={{ backgroundColor:  getConsistentColor(updatedBy) }}
-          >
-            <span className="text-sm font-bold text-white">
-              {getInitials(getUsernameByCognitoId(updatedBy))}
-            </span>
-          </div>
-          {getUsernameByCognitoId(updatedBy) &&  <div className="text-sm font-normal">{getUsernameByCognitoId(updatedBy)}</div>}
-        </div>
-      ) : (
-        <div className="w-10 h-10 rounded-full bg-gray-300"></div>
       )}
-    </div>
-          </p>
-          }
-          <div className="mt-2">
-            <input
-              type="file"
-              id={`fileInput-${job.type}`}
-              style={{ display: "none" }}
-              onChange={(event) =>
-                handleFileChange(event, job.type, job.bucket)
-              }
-            />
-             <button
-                  onClick={() => document.getElementById(`fileInput-${job.type}`).click()}
-                  className="text-md text-gray-500 hover:text-gray-700"
-                >
-                  {status === "Successful" ? "🔄Reupload" : "⬆️ Upload"}
-                </button>
-
-          </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
-
-    </>
-       )
-    }
     </>
   );
 }
