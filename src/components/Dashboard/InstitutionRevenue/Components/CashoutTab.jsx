@@ -9,6 +9,13 @@ function CashoutTab({ institution }) {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newLog, setNewLog] = useState({
+    transactionId: "",
+    amount: "",
+    currency: "INR",
+    date: "",
+    status: "Transferred",
+  });
   const itemsPerPage = 4;
   const totalPages = Math.ceil(
     (cashoutData?.client[0]?.cashoutLogs.length || 0) / itemsPerPage
@@ -91,7 +98,7 @@ function CashoutTab({ institution }) {
     <div className="p-2 sm:p-4 md:p-6 relative bg-white shadow-md max600:mb-10">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="absolute right-2 sm:right-4 -top-8 z-50 bg-green-100 flex px-2 items-center rounded-lg justify-center text-green-700"
+        className="absolute right-2 sm:right-4 -top-8 z-40 bg-green-100 flex px-2 items-center rounded-lg justify-center text-green-700"
       >
         <svg
           className="w-4"
@@ -239,6 +246,8 @@ function CashoutTab({ institution }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleUpdatePayment}
+        newLog={newLog}
+        setNewLog={setNewLog}
       />
     </div>
   );

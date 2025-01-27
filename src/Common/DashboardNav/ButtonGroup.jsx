@@ -102,7 +102,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
               backgroundColor: "#30afbc",
               color: "#fff",
             }}
-            className="flex items-center rounded-md ml-[10rem]"
+            className="relative z-[100] flex items-center rounded-md ml-[10rem]"
             onClick={() => {
               const targetPath =
                 institutionType === "DanceStudio" ? "/full" : "/completeDraft";
