@@ -11,7 +11,7 @@ function PaymentUpdateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
-      <div className="relative w-full max-w-md mx-auto my-6">
+      <div className="relative w-full max-w-md mx-auto my-6 max600:w-[92vw]">
         <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-2xl">
           {/* Modal Header */}
           <div className="flex items-start justify-between p-5 border-b border-solid rounded-t border-gray-300">
