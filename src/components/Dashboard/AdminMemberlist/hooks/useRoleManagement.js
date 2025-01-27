@@ -4,9 +4,8 @@ import Swal from 'sweetalert2';
 
 // Single mapping object for frontend display and backend values
 const roleMapping = {
-  Sales: 'sales', // Frontend: Sales -> Backend: sales
+  Sales: 'sale', // Frontend: Sales -> Backend: sales
   Admin: 'operation', // Frontend: Admin -> Backend: operation
-  Owner: 'owner' // Frontend: Owner -> Backend: owner
 };
 
 export const useRoleManagement = (onRoleUpdateSuccess) => {
@@ -17,7 +16,7 @@ export const useRoleManagement = (onRoleUpdateSuccess) => {
     (currentRole, userRole) => {
       let roles = [];
       if (userRole === 'owner') {
-        roles = ['Sales', 'Admin', 'Owner']; // Frontend display values
+        roles = ['Sale', 'Admin']; // Frontend display values
       } else if (userRole === 'operation') {
         roles = ['Sales'];
       }
@@ -57,7 +56,7 @@ export const useRoleManagement = (onRoleUpdateSuccess) => {
               country: currentMember.country || '',
               balance: currentMember.balance || '',
               status: currentMember.status,
-              role: newRoleBackend, // Use the backend value here
+              role: newRoleBackend || 'sale', // Use the backend value here
               userType: currentMember.userType || 'member'
             }
           };
