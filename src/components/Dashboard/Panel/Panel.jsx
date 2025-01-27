@@ -689,7 +689,7 @@ const Panel = () => {
                                   handleInstitutionClick(client);
                                 }}
                               >
-                                <div className="email-hover uppercase font-semibold text-[#11192B]">
+                                <div className="email-hover font-semibold text-[#11192B]">
                                   {client.institutionid}
                                 </div>
                               </Link>
@@ -1225,7 +1225,7 @@ const Panel = () => {
                         className="flex justify-between items-center text-center"
                         onClick={(e) => handleRowClick(client, e)}
                       >
-                        <div className="uppercase font-semibold text-[#11192B]">
+                        <div className="font-semibold text-[#11192B]">
                           {client.institutionid}
                         </div>
                         <Link
