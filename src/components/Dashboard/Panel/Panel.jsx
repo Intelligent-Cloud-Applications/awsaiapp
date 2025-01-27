@@ -168,7 +168,7 @@ const Panel = () => {
         plan,
       };
 
-      await API.put("clients", `/admin/updatePlan`, { body });
+      await API.put("clients", `/admin/update-plan`, { body });
       toast.success("Plan updated successfully!");
     } catch (error) {
       console.error("Error Updating Plan:", error);
