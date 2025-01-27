@@ -24,7 +24,8 @@ const New_Full = () => {
 
   const [templateDetails, setTemplateDetails] = useState(null);
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
-  // const [instructorDetails, setInstructorDetails] = useState(null);
+  // const [instructorDetails, setInstructorDetails] = useState(null);\
+// eslint-disable-next-line
   const [loader, setLoader] = useState(true);
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
