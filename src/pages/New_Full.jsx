@@ -25,7 +25,7 @@ const New_Full = () => {
   const [templateDetails, setTemplateDetails] = useState(null);
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   // const [instructorDetails, setInstructorDetails] = useState(null);\
-// eslint-disable-next-line
+  // eslint-disable-next-line
   const [loader, setLoader] = useState(true);
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
@@ -812,6 +812,7 @@ const New_Full = () => {
       },
       { value: templateDetails.logoUrl, name: "logoUrl" },
       { value: templateDetails.companyName, name: "companyName" },
+      { value: templateDetails.description, name: "companyDescription" },
       { value: templateDetails.videoUrl, name: "videoUrl" },
       { value: templateDetails.TagLine, name: "TagLine" },
       { value: templateDetails.Query_Address, name: "Query_Address" },
@@ -1434,6 +1435,7 @@ const New_Full = () => {
           body: {
             institutionid: institutionNames,
             companyName: templateDetails.companyName,
+            description: templateDetails.description,
             institutionType: templateDetails.institutionType,
             institutionFormat: templateDetails.institutionFormat,
             PrimaryColor: templateDetails.PrimaryColor,
@@ -2226,7 +2228,33 @@ const New_Full = () => {
                         }}
                       />
                     </div>
-
+                    <div className="relative mt-4 mr-16">
+                      <div className="mb-2 block">
+                        <Label
+                          htmlFor="companyDescription"
+                          color="gray"
+                          value="companyDescription"
+                        />
+                        <span className="text-red-500 ml-1">*</span>
+                      </div>
+                      <TextInput
+                        id="companyDescription"
+                        placeholder="companyDescription"
+                        required
+                        value={templateDetails.description}
+                        helperText="It’s the companyDescription"
+                        sizing="sm"
+                        onChange={(event) => handleChange(event, "companyDescription")}
+                        ref={refs.companyDescription}
+                        color={errors.companyDescription ? "failure" : "gray"}
+                        style={{
+                          border: errors.companyDescription
+                            ? "1px solid red"
+                            : "1px solid #ccc",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </div>
 
                     <div className="mt-4">
                       <label className="block text-gray-700 mb-2 font-bold">Select Institution Format</label>
