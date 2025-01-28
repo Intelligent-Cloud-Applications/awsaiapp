@@ -56,7 +56,7 @@ const Header = () => {
       </motion.p>
       <motion.button
       onClick={() => {
-        Navigate("/query");
+        Navigate("/Pricing");
       }}
         className="w-[37%] text-sm sm:text-base md:text-[1rem] lg:text-xl font-semibold rounded-full responsive-button button-2 bg-white hover:bg-gray-300"
         initial={{ opacity: 0, scale: 0.5 }}

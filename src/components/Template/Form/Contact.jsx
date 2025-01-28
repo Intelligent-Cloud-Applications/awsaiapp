@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
 import Country from '../../Auth/Country';
+import { Label, TextInput } from 'flowbite-react';
 function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg }) {
-  // const [contactInfo, setContactInfo] = useState({
-  //   address: '',
-  //   phoneNumber: '',
-  //   email: '',
-  //   upiId: '',
-  //   instagram: '',
-  //   youtube: '',
-  //   facebook: '',
-  // });
-  
 
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91'); // Default country code
 
@@ -91,143 +82,167 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
     return fileName;
   };
   return (
-    <div className="mx-auto max-w-[800px] max-h-screen overflow-y-auto">
-      <h1 className="font-medium text-7xl">CONTACT INFORMATION</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-        ** The Footer shown is just an example how your given data will look like for the Footer it will not change on giving your input.**
-      </h5>
-      <h5 class="w-[28rem] max950:w-[17rem] text-[#939393]">
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0" style={{ overflowY: 'auto' }}>
+      <h1 className="font-medium text-7xl comphead text-center">CONTACT INFORMATION</h1>
+      <h5 className="text-[#939393] text-center">
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
-      <div className="mb-8">
-        {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
-          <div key={index} className="mt-1">
-            <h2 className="font-medium text-[20px]">{key.charAt(0).toUpperCase() + key.slice(1)}</h2>
-            <div className="relative">
-              {key === 'phoneNumber' ? (
-                <div className="flex items-center">
-                  <select
-                    value={selectedCountryCode}
-                    onChange={handleCountryChange}
-                    className="border w-[9rem] border-gray-300 rounded-l px-2 py-1"
-                  >
-                  
-              <Country />
-                  </select>
-                  <input
-                    type="text"
-                    name={key}
-                    value={contactInfo[key]}
-                    onChange={handlePhoneNumberChange}
-                    placeholder="Phone Number"
-                    className="w-full max-w-[28rem] text-black border border-gray-300 rounded-r outline-none bg-transparent mt-2"
+      <div className="flex min-h-screen">
+        <div className="w-[70%] p-8 ml-[20%] [@media(max-width:1024px)]:ml-0 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
+          <div className="mb-8">
+            {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
+              <div key={index} className="mt-1">
+                <div className="mb-2 block">
+                  <Label
+                    color="gray"
+                    value={key.charAt(0).toUpperCase() + key.slice(1)}
+                    className="font-medium text-xl"
                   />
+                  {(key === 'facebook' || key === 'instagram' || key === 'youtube') ? (
+                    <></>
+                  ) : (
+                    <span className="text-red-500 ml-1">*</span>
+                  )
+                  }
                 </div>
-              ) : (
-                <input
-                  type="text"
-                  name={key}
-                  value={contactInfo[key]}
-                  onChange={handleContactChange}
-                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                  className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent mt-2"
-                  onFocus={() => toggleActiveContact(index)}
-                  onBlur={() => toggleActiveContact(null)}
-                />
-              )}
-              <div
-                className={`absolute left-0 right-0 bottom-0 h-[1px] ${activeContactIndex === index ? 'bg-black' : 'bg-[#939393]'
+                <div className="relative">
+                  {key === 'phoneNumber' ? (
+                    <div className="flex items-center gap-4">
+                      <select
+                        value={selectedCountryCode}
+                        onChange={handleCountryChange}
+                        className="w-[20%]"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        <Country />
+                      </select>
+                      <TextInput
+                        type="text"
+                        name={key}
+                        value={contactInfo[key]}
+                        onChange={handlePhoneNumberChange}
+                        placeholder="Phone Number"
+                        style={{
+                          borderColor: "#D1D5DB",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "8px",
+                          font: "sm"
+                        }}
+                        className='w-[80%]'
+                      />
+                    </div>
+                  ) : (
+                    <TextInput
+                      type="text"
+                      name={key}
+                      value={contactInfo[key]}
+                      onChange={handleContactChange}
+                      placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                      className='w-[100%]'
+                      style={{
+                        borderColor: "#D1D5DB",
+                        backgroundColor: "#F9FAFB",
+                        borderRadius: "8px",
+                      }}
+                      onFocus={() => toggleActiveContact(index)}
+                      onBlur={() => toggleActiveContact(null)}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="relative flex items-center [@media(max-width:1024px)]:flex-col">
+            <h2 className="font-medium text-xl">Subscription Bg</h2>
+            <div className='mr-10'></div>
+            <input
+              type="file"
+              accept="image/*"
+              // onChange={(e) => handleImageChange(setSubscriptionBg, e)}
+              onChange={handleBgImageChange3}
+              className="hidden"
+              id="SubscriptionBgInput"
+            />
+            <label
+              htmlFor="SubscriptionBgInput"
+              className="w-[250px] h-[35px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+              style={{
+                borderColor: 'cement',
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                backgroundColor: '#D9D9D9',
+              }}
+            >
+              <span
+                className={`block text-[#000000] font-inter text-[14px] ${SubscriptionBg ? 'hidden' : 'block'
                   }`}
-              ></div>
-            </div>
+              >
+                Choose File
+              </span>
+              <div
+                className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${SubscriptionBg ? 'block' : 'hidden'
+                  }`}
+              >
+                <span className="text-[#636262]">
+                  {shortenFileName1(SubscriptionBg)}
+                </span>
+                <span
+                  onClick={() => setSubscriptionBg(null)}
+                  className="text-[#3b9d33] cursor-pointer"
+                >
+                  Change
+                </span>
+              </div>
+            </label>
           </div>
-        ))}
-      </div>
-      <div className="relative flex items-center">
-        <h2 className='font-bold'>Subscription Bg</h2>
-        <div className='mr-10'></div>
-        <input
-          type="file"
-          accept="image/*"
-          // onChange={(e) => handleImageChange(setSubscriptionBg, e)}
-          onChange={handleBgImageChange3}
-          className="hidden"
-          id="SubscriptionBgInput"
-        />
-        <label
-          htmlFor="SubscriptionBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-          style={{
-            borderColor: 'cement',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            backgroundColor: '#D9D9D9',
-          }}
-        >
-          <span
-            className={`block text-[#000000] font-inter text-[14px] ${SubscriptionBg ? 'hidden' : 'block'
-              }`}
-          >
-            Choose File
-          </span>
-          <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${SubscriptionBg ? 'block' : 'hidden'
-              }`}
-          >
-            <span className="text-[#636262]">
-              {shortenFileName1(SubscriptionBg)}
-            </span>
-            <span
-              onClick={() => setSubscriptionBg(null)}
-              className="text-[#3b9d33] cursor-pointer"
+          <div className="relative flex items-center mt-4 [@media(max-width:1024px)]:flex-col">
+            <h2 className="font-medium text-xl" >Instructor Bg</h2>
+            <div className='mr-[4.1rem]'></div>
+            <input
+              type="file"
+              accept="image/*"
+              // onChange={(e) => handleImageChange(setSubscriptionBg, e)}
+              onChange={handleBgImageChange4}
+              className="hidden"
+              id="InstructorBgInput"
+            />
+            <label
+              htmlFor="InstructorBgInput"
+              className="w-[250px] h-[35px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
+              style={{
+                borderColor: 'cement',
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                backgroundColor: '#D9D9D9',
+              }}
             >
-              Change
-            </span>
+              <span
+                className={`block text-[#000000] font-inter text-[14px] ${InstructorBg ? 'hidden' : 'block'
+                  }`}
+              >
+                Choose File
+              </span>
+              <div
+                className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${InstructorBg ? 'block' : 'hidden'
+                  }`}
+              >
+                <span className="text-[#636262]">
+                  {shortenFileName1(InstructorBg)}
+                </span>
+                <span
+                  onClick={() => setInstructorBg(null)}
+                  className="text-[#3b9d33] cursor-pointer"
+                >
+                  Change
+                </span>
+              </div>
+            </label>
           </div>
-        </label>
-      </div>
-      <div className="relative flex items-center mt-4">
-        <h2 className='font-bold'>Instructor Bg</h2>
-        <div className='mr-16'></div>
-        <input
-          type="file"
-          accept="image/*"
-          // onChange={(e) => handleImageChange(setSubscriptionBg, e)}
-          onChange={handleBgImageChange4}
-          className="hidden"
-          id="InstructorBgInput"
-        />
-        <label
-          htmlFor="InstructorBgInput"
-          className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-          style={{
-            borderColor: 'cement',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            backgroundColor: '#D9D9D9',
-          }}
-        >
-          <span
-            className={`block text-[#000000] font-inter text-[14px] ${InstructorBg ? 'hidden' : 'block'
-              }`}
-          >
-            Choose File
-          </span>
-          <div
-            className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${InstructorBg ? 'block' : 'hidden'
-              }`}
-          >
-            <span className="text-[#636262]">
-              {shortenFileName1(InstructorBg)}
-            </span>
-            <span
-              onClick={() => setInstructorBg(null)}
-              className="text-[#3b9d33] cursor-pointer"
-            >
-              Change
-            </span>
-          </div>
-        </label>
+        </div>
       </div>
       {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>

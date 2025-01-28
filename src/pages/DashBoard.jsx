@@ -109,7 +109,7 @@ const DashBoard = () => {
 
   return (
     <div className="flex flex-col items-center w-full h-screen">
-      <div className="w-[100vw]">
+      <div className="">
         <NavBar />
       </div>
 
@@ -129,7 +129,7 @@ const DashBoard = () => {
             </>
           )}
       </div>
-      <div className="flex flex-row rounded-3xl items-center max1300:flex-col-reverse lg:ml-28">
+      <div className="flex flex-row rounded-3xl items-center lg:ml-28">
         <div className="bg-[#ffffff] mt-[8rem] ml-[-4rem] max600:ml-0 ">
           <LeftBanner
             displayAfterClick={(data) => {

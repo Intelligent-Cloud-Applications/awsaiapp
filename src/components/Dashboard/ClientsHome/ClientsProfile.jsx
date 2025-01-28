@@ -9,76 +9,71 @@ const ClientsProfile = ({ institution }) => {
   const [selectedFile, setSelectedFile] = useState(null); // URL for preview purposes
   const { util } = useContext(Context);
   const [typeOfInstitution, setTypeOfInstitution] = useState("");
-  const [clientData, setClientData] = useState({
-    institutionid: '',
-    Query_Address: '',
-    Query_WebLink: '',
-    Query_EmailId: '',
-    logoUrl: '',
-    userName: '',
-    phoneNumber: '',
-    joiningDate: '',
-  });
+  const [clientData, setClientData] = useState({});
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
+  const [LoaderInitialized, setLoaderInitialized] = useState(false);
   const fetchClientAndOwnerDetails = useCallback(async () => {
     if (!institution) return; // Ensure institution is defined
 
     try {
+      if (LoaderInitialized) {
+        return;
+      }
       util.setLoader(true);
+      setLoaderInitialized(true);
 
       // Call all APIs in parallel
-      const [templateResponse, response, companyData] = await Promise.all([
+      const [templateResponse, response] = await Promise.all([
         API.get("clients", `/user/development-form/get-user/${institution}`),
         API.get("clients", `/user/list-members/${institution}`),
-        API.get("clients", `/user/get-companyData/${institution}`)  // New API call
       ]);
 
-      const mergedData = { ...templateResponse, ...companyData };
 
       const owner = response.find(member => member.role === 'owner');
-      const formattedDate = new Date(mergedData.joiningDate || mergedData.date).toLocaleDateString("en-US", {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-
+      // const formattedDate = new Date(templateResponse.date).toLocaleDateString("en-US", {
+      //   year: 'numeric',
+      //   month: 'long',
+      //   day: 'numeric',
+      // })
       // Update state with merged data
+      console.log("the template Responce",templateResponse);
       setClientData({
-        institutionid: mergedData.institutionid || 'Institution ID',
-        Query_Address: mergedData.Query_Address || mergedData.address || 'Address',
-        Query_WebLink: mergedData.Query_WebLink || 'Website URL',
-        Query_EmailId: mergedData.Query_EmailId || mergedData.email || 'Email',
-        logoUrl: mergedData.logoUrl || 'https://via.placeholder.com/150',
-        PrimaryColor: mergedData.PrimaryColor,
-        SecondaryColor: mergedData.SecondaryColor,
-        LightPrimaryColor: mergedData.LightPrimaryColor,
-        LightestPrimaryColor: mergedData.LightestPrimaryColor,
-        Query_PhoneNumber: mergedData.Query_PhoneNumber,
-        Facebook: mergedData.Facebook,
-        Instagram: mergedData.Instagram,
-        YTLink: mergedData.YTLink,
-        UpiId: mergedData.UpiId,
-        Footer_Link_1: mergedData.Footer_Link_1,
-        Footer_Link_2: mergedData.Footer_Link_2,
-        InstructorBg: mergedData.InstructorBg,
-        SubscriptionBg: mergedData.SubscriptionBg,
-        userName: mergedData.userName || mergedData.ownerName || "Owner Name",
-        country: mergedData.country || "India",
+        institutionid: templateResponse.institutionid,
+        Query_Address: templateResponse.Query_Address || templateResponse.address,
+        Query_EmailId: templateResponse.Query_EmailId || templateResponse.email,
+        logoUrl: templateResponse.logoUrl || 'https://via.placeholder.com/150',
+        PrimaryColor: templateResponse.PrimaryColor,
+        SecondaryColor: templateResponse.SecondaryColor,
+        LightPrimaryColor: templateResponse.LightPrimaryColor,
+        LightestPrimaryColor: templateResponse.LightestPrimaryColor,
+        Query_PhoneNumber: templateResponse.Query_PhoneNumber || templateResponse.phone,
+        Facebook: templateResponse.Facebook,
+        Instagram: templateResponse.Instagram,
+        YTLink: templateResponse.YTLink,
+        UpiId: templateResponse.UpiId,
+        Footer_Link_1: templateResponse.Footer_Link_1,
+        Footer_Link_2: templateResponse.Footer_Link_2,
+        InstructorBg: templateResponse.InstructorBg,
+        SubscriptionBg: templateResponse.SubscriptionBg,
+        userName: templateResponse.userName || "",
+        country: templateResponse.country || "",
         cognitoId: owner?.cognitoId || '',
-        phoneNumber: owner?.phoneNumber || mergedData.phone || 'Phone Number',
-        joiningDate: formattedDate
+        phoneNumber: owner?.phoneNumber || '',
+        date: templateResponse.date,
+        heading : templateResponse.heading,
       });
 
-      setTypeOfInstitution(mergedData.institutionType);
-      setSelectedFile(mergedData.logoUrl); // Set logo preview
+      setTypeOfInstitution(templateResponse.institutionType);
+      setSelectedFile(templateResponse.logoUrl); // Set logo preview
     } catch (error) {
       console.error("Error fetching details:", error);
     }
-    util.setLoader(false);
-  }, [institution, util]);
+    finally {
+      util.setLoader(false);
+    }
+  }, [institution, util, LoaderInitialized]);
 
   useEffect(() => {
     fetchClientAndOwnerDetails();
@@ -120,8 +115,6 @@ const ClientsProfile = ({ institution }) => {
         logoUrl = logoUrl.split('?')[0];
       }
 
-      console.log("institution type we need :",typeOfInstitution);
-
       if (typeOfInstitution === "DanceStudio") {
         await API.put("clients", "/admin/update-owner-dance", {
           body: {
@@ -133,7 +126,7 @@ const ClientsProfile = ({ institution }) => {
           },
         });
       };
-      if(typeOfInstitution === "Dentist"){
+      if (typeOfInstitution === "Dentist") {
         await API.put("clients", "/admin/update-owner", {
           body: {
             institutionid: institution,
@@ -166,9 +159,18 @@ const ClientsProfile = ({ institution }) => {
     }
   };
 
+  const timeConvert = (epochTime) => {
+    const date = new Date(Number(epochTime));
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+  };
+
+  console.log("data to profile",clientData);
 
   return (
-    <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw]">
+    <div className="relative mt-8 bg-white rounded-md shadow-2xl overflow-hidden sm:flex max-w-4xl mx-auto h-[32rem] hover:shadow-xl w-[70vw] max1008:h-auto">
       <div className="sm:w-1/3 bg-gradient-to-br from-[#30afbc] to-[#64d5db] p-10 flex flex-col items-center justify-center">
         <div className="h-40 w-40 rounded-full border-4 border-white bg-white flex items-center justify-center shadow-lg relative">
           <img
@@ -207,18 +209,36 @@ const ClientsProfile = ({ institution }) => {
       </div>
       <div className="sm:w-2/3 p-10 flex flex-col justify-center bg-[#fafafa]">
         <button
-          onClick={isEditing ? handleSaveChanges : () => setIsEditing(true)}
-          className={`absolute top-3 right-3 ${isSaving ? 'bg-gray-400' : 'bg-[#30afbc]'} text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all`}
-          disabled={isSaving}
+          onClick={() => setIsEditing(true)}
+          className="absolute top-3 right-3 bg-[#30afbc] text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all"
+          disabled={isSaving} // Optional, if you want to disable the Edit button while saving
         >
-          {isSaving ? 'Saving...' : isEditing ? 'Save' : 'Edit'}
+          Edit
         </button>
+        {isEditing && (
+          <div className='flex flex-row gap-5'>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="absolute top-3 right-15 bg-[#30afbc] text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all"
+              disabled={isSaving} // Optional, if you want to disable the Edit button while saving
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSaveChanges}
+              className={`absolute top-3 right-3 ${isSaving ? 'bg-gray-400' : 'bg-[#30afbc]'} text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all`}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        )}
         <div className="mb-6">
           <h3 className="text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2">Owner Details</h3>
           <div className="mt-8 space-y-6">
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Phone:</span>
-              <span className="text-gray-900">{clientData.phoneNumber}</span>
+              <span className="text-gray-900">{clientData.Query_PhoneNumber || clientData.phoneNumber}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Email:</span>
@@ -250,13 +270,13 @@ const ClientsProfile = ({ institution }) => {
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Date of Join:</span>
-              <span className="text-gray-900">{clientData.joiningDate}</span>
+              <span className="text-gray-900">{timeConvert(clientData.date)}</span>
             </div>
             <div className="flex justify-between text-gray-700">
               <span className="font-semibold">Membership:</span>
-              <span className="text-gray-900">Premium</span>
+              <span className="text-gray-900">{clientData.heading}</span>
             </div>
-            <div className="flex justify-between text-gray-700">
+            <div className="flex justify-between text-gray-700 overflow-auto">
               <span className="font-semibold">Website:</span>
               <a href={`https://${generateWebsiteLink(clientData.institutionid)}`} className="text-teal-600 hover:underline">
                 {generateWebsiteLink(clientData.institutionid)}

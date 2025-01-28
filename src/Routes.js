@@ -10,7 +10,7 @@ import MemberList from "./components/Dashboard/MemberList/MembersList";
 import MonthlyReport from "./components/Dashboard/MonthlyReport/MonthlyReport";
 import Pricing from "./pages/Pricing";
 import Aboutus from "./pages/Aboutus";
-import Team from "./pages/Team";
+// import Team from "./pages/Team";
 import Query from "./pages/Query";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import User from "./services/User_Interface";
@@ -42,8 +42,9 @@ import TaskDetails from "./internal/components/TaskDetails";
 import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import Template2 from "./pages/Template2";
-import Template3 from "./pages/Template3";
+import Template3 from "./pages/Cafe";
 import CompleteDraft from "./pages/CompleteDraft";
+import Error from "./pages/Error";
 
 
 const RoutesContainer = () => {
@@ -86,7 +87,7 @@ const RoutesContainer = () => {
       />
       <Route path="/Pricing" element={<Pricing />} />
       <Route path="/aboutus" element={<Aboutus />} />
-      <Route path="/team" element={<Team />} />
+      {/* <Route path="/team" element={<Team />} /> */}
       <Route path="/query" element={<Query />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/User_interface" element={<User />} />
@@ -97,9 +98,9 @@ const RoutesContainer = () => {
       <Route path="/payment" element={<Payment />} />
       <Route path="/term" element={<Terms />} />
       <Route path="/refund" element={<Refund />} />
-      <Route path="/template" element={<Template />} />
-      <Route path="/template2" element={<Template2 />} />
-      <Route path="/template3" element={<Template3 />} />
+      <Route path="/dance-studio" element={<Template />} />
+      <Route path="/dentist" element={<Template2 />} />
+      <Route path="/cafe" element={<Template3 />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
@@ -118,6 +119,7 @@ const RoutesContainer = () => {
       </Route>
       <Route path="/error" element={<UnauthorizedUser />} />
       <Route path="/callback" element={<Callback />} />
+      <Route path="*" element={<Error/>} />
     </Routes>
   );
 };

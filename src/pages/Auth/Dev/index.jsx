@@ -11,6 +11,7 @@ const AuthPage = () => {
   const options = [
     { userType: 'owner', email: 'admin@tester.com' },
     { userType: 'sales', email: 'user@tester.com' },
+    { userType: 'admin', email: 'operation@tester.com' },
   ]
 
   const { util, setUserData, setIsAuth } = useContext(Context);
@@ -29,12 +30,12 @@ const AuthPage = () => {
         {}
       );
       setUserData(userdata);
+      navigate(`/dashboard`);
       setIsAuth(true);
       util.setLoader(false);
 
       toast.info('Logged in');
 
-      navigate(`/dashboard`);
     } catch (e) {
       console.log(e);
       toast.error('Unknown error occurred');

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
-import Preview from '../components/Template/Preview';
+// import Preview from '../components/Template/Preview';
 import Company from '../components/Template/Form/Company';
 import Home from '../components/Template/Form/Home';
 import Services from '../components/Template/Form/Services';
@@ -41,6 +41,7 @@ const Template = () => {
   const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const [companyName, setCompanyName] = useState(null);
+  const [companyDescription, setCompanyDescription] = useState(null);
   const [institutionId, setinstitutionId] = useState(null);
 
   const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
@@ -51,7 +52,7 @@ const Template = () => {
   //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
   const [countryCode, setCountryCode] = useState("INR");
   const [country, setCountry] = useState("India");
-  const [institutionType, setInstitutionType] = useState("DanceStudio");
+  // const [institutionType, setInstitutionType] = useState("DanceStudio");
   const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
   const [TagLine, setTagLine] = useState("");
   const [TagLine1, setTagLine1] = useState("");
@@ -105,10 +106,10 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      cognitoId:Ctx.userData.cognitoId,
+      cognitoId: Ctx.userData.cognitoId,
     },
     {
-      heading:'',
+      heading: '',
       amount: '',
       currency: 'INR',
       country: 'INDIA',
@@ -118,7 +119,7 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      cognitoId:Ctx.userData.cognitoId,
+      cognitoId: Ctx.userData.cognitoId,
     },
     {
       heading: '',
@@ -131,7 +132,7 @@ const Template = () => {
       duration: calculateDuration('monthly'),
       durationText: 'Monthly',
       india: true,
-      cognitoId:Ctx.userData.cognitoId,
+      cognitoId: Ctx.userData.cognitoId,
     },
   ]);
 
@@ -159,13 +160,13 @@ const Template = () => {
     },
   ]);
 
-  const [instructors, setInstructors] = useState([
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-    { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
-  ]);
+  // const [instructors, setInstructors] = useState([
+  //   { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  //   { imgSrc: '', name: '', emailId: '', position: '', uploadedFile: null },
+  // ]);
 
   //  const [policies, setPolicies] = useState([
   //    { title: 'Privacy Policy', content: '' },
@@ -185,7 +186,7 @@ const Template = () => {
     address: '',
     country: 'India',
     countryCode: '91',
-    owner_name:'',
+    "Owner Name": '',
     phoneNumber: '',
     email: '',
     upiId: '',
@@ -471,21 +472,22 @@ const Template = () => {
         LightestPrimaryColor: LightestPrimaryColor !== undefined ? LightestPrimaryColor : null,
       };
 
-        // const fileNameForBucket = "memberList";
-        // CSVUpload(CSVFile,institutionId,fileNameForBucket);
+      // const fileNameForBucket = "memberList";
+      // CSVUpload(CSVFile,institutionId,fileNameForBucket);
       await API.put("clients", "/user/development-form/company", {
         body: {
           institutionid: institutionId,
           companyName: companyName,
+          description: companyDescription,
           PrimaryColor,
           institutionFormat,
-          institutionType,
+          // institutionType,
           SecondaryColor,
           logoUrl: imageUrl,
           ...additionalAttributes,
         },
       });
-     
+
     } catch (error) {
       console.error("Error uploading logo: ", error);
     }
@@ -556,8 +558,8 @@ const Template = () => {
       const nonEmptyDanceTypes = paddedDanceTypes.filter(type => type.trim() !== '');
       localStorage.removeItem('classTypes');
 
-    // Save the nonEmptyDanceTypes array in local storage
-    localStorage.setItem('classTypes', JSON.stringify(nonEmptyDanceTypes));
+      // Save the nonEmptyDanceTypes array in local storage
+      localStorage.setItem('classTypes', JSON.stringify(nonEmptyDanceTypes));
       await API.put("clients", "/user/development-form/why-choose", {
         body: {
           institutionid: institutionId,
@@ -860,10 +862,10 @@ const Template = () => {
         body: {
           institutionid: institutionId,
           Query_Address: contactInfo.address,
-          Query_PhoneNumber: '+' +contactInfo.countryCode + contactInfo.phoneNumber,
+          Query_PhoneNumber: '+' + contactInfo.countryCode + contactInfo.phoneNumber,
           Query_EmailId: contactInfo.email,
           Facebook: contactInfo.facebook,
-          userName:contactInfo.owner_name,
+          userName: contactInfo["Owner Name"],
           country: contactInfo.country,
           Instagram: contactInfo.instagram,
           YTLink: contactInfo.youtube,
@@ -906,15 +908,10 @@ const Template = () => {
 
       switch (currentSection) {
         case 0:
-          if (!institutionId) {
-            alert("Please enter the institutionId.");
-            
-           return prevSection;
-          }
           if (!companyName) {
-            alert("Please enter the institution Name.");
-            
-           return prevSection;
+            alert("Please enter the Company Name.");
+
+            return prevSection;
           }
           if (!logo) {
             alert("Please upload a company logo before proceeding.");
@@ -931,7 +928,7 @@ const Template = () => {
                 institutionCheckInProgress = false;
                 if (response && response.exists) {
                   alert("This institution already exists. Please use a different name.");
-                  setCurrentSection(prevSection); 
+                  setCurrentSection(prevSection);
                 } else if (response) {
                   handleCompanyUpload();
                   setCurrentSection(nextSection);
@@ -944,40 +941,40 @@ const Template = () => {
                 alert(error.message);
                 setCurrentSection(prevSection);
               });
-  
+
             // Exit early to prevent automatic section change
             return prevSection; // Prevent automatic section change
           }
-          return prevSection; 
-          // handleCompanyUpload();
-          // break;
+          return prevSection;
+        // handleCompanyUpload();
+        // break;
         case 1:
-            if (!contactInfo.phoneNumber || !contactInfo.email) {
-              if (!contactInfo.phoneNumber) {
-                alert("Please enter a valid phone number before proceeding.");
-              }
-              if (!contactInfo.email) {
-                alert("Please enter a valid email address before proceeding.");
-              }
-              if (!contactInfo.owner_name) {
-                alert("Please enter a valid ownername before proceeding.");
-              }
-              return prevSection;
+          if (!contactInfo.phoneNumber || !contactInfo.email) {
+            if (!contactInfo.phoneNumber) {
+              alert("Please enter a valid phone number before proceeding.");
             }
-            const phoneRegex = /^[0-9]+$/;
-            if (!phoneRegex.test(contactInfo.phoneNumber)) {
-              alert("Please enter a valid phone number.");
-              return prevSection;
+            if (!contactInfo.email) {
+              alert("Please enter a valid email address before proceeding.");
             }
-        
-            // Validate email address
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(contactInfo.email)) {
-              alert("Please enter a valid email address.");
-              return prevSection;
+            if (!contactInfo["Owner Name"]) {
+              alert("Please enter a valid Owner Name before proceeding.");
             }
-            handleContactUpload();
-            break;
+            return prevSection;
+          }
+          const phoneRegex = /^[0-9]+$/;
+          if (!phoneRegex.test(contactInfo.phoneNumber)) {
+            alert("Please enter a valid phone number.");
+            return prevSection;
+          }
+
+          // Validate email address
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(contactInfo.email)) {
+            alert("Please enter a valid email address.");
+            return prevSection;
+          }
+          handleContactUpload();
+          break;
         case 2:
           if (!video || !TagLine) {
             if (!video) {
@@ -997,7 +994,7 @@ const Template = () => {
             return prevSection;
           }
           const hasDanceType = danceTypes.some(danceType => danceType.trim() !== '');
-  
+
           if (!hasDanceType) {
             alert("Please add at least one dance type before saving.");
             return prevSection;
@@ -1065,12 +1062,12 @@ const Template = () => {
         case 7:
           handlePolicyUpload();
           break;
-       
+
         default:
           break;
       }
 
-      //      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
+      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
       return nextSection;
     });
   };
@@ -1087,20 +1084,20 @@ const Template = () => {
   const handleSaveDraft = () => {
     Navigate('/dashboard', { state: { section: 'institution-draft' } });
   };
-  
+
   const handleClearData = async () => {
     try {
       util.setLoader(true);
-        await API.del(
-         "clients", 
-          `/user/development-form/delete-all/${institutionId}`);
-        alert('All Data deleted successfully');
-        util.setLoader(false); 
-        Navigate('/dashboard');
-      } catch (error) {
-       alert('No matching data found', error);
-       util.setLoader(false); 
-      }
+      await API.del(
+        "clients",
+        `/user/development-form/delete-all/${institutionId}`);
+      alert('All Data deleted successfully');
+      util.setLoader(false);
+      Navigate('/dashboard');
+    } catch (error) {
+      alert('No matching data found', error);
+      util.setLoader(false);
+    }
   };
   const handlePrevSectionDraft = () => {
     setShowModal(true);
@@ -1110,18 +1107,20 @@ const Template = () => {
   };
   //  console.log("Logo in Template:", logo);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <div className="flex-grow flex">
-        <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
+        {/* <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
           <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
-        </div>
-        <div className=" w-[33%] h-full pt-[6rem] pb-[10rem] no-scrollbar max950:mb-10 max950:w-screen max950:px-14 max600:px-0 right-0 fixed respo" style={{ overflow: 'auto' }}>
+        </div> */}
+        <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}
+              companyDescription={companyDescription}
+              setCompanyDescription={setCompanyDescription}
               institutionId={institutionId}
               setinstitutionId={setinstitutionId}
               PrimaryColor={PrimaryColor}
@@ -1129,8 +1128,8 @@ const Template = () => {
               SecondaryColor={SecondaryColor}
               setSecondaryColor={setSecondaryColor}
               logo={logo}
-              institutionType={institutionType}
-              setInstitutionType={setInstitutionType}
+              // institutionType={institutionType}
+              // setInstitutionType={setInstitutionType}
               institutionFormat={institutionFormat}
               setInstitutionFormat={setInstitutionFormat}
               setLogo={setLogo}
@@ -1142,7 +1141,7 @@ const Template = () => {
               CSVFile={CSVFile}
               setCSVFile={setCSVFile}
             />}
-  {currentSection === 1 &&
+          {currentSection === 1 &&
             <Contact
               contactInfo={contactInfo}
               setContactInfo={setContactInfo}
@@ -1215,7 +1214,7 @@ const Template = () => {
               setAboutUsBg={setAboutUsBg}
             />}
 
-        
+
         </div>
         <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
           <Footer
@@ -1227,7 +1226,7 @@ const Template = () => {
             institutionId={institutionId}
           />
         </div>
-        
+
       </div>
       <PrevSectionDraftHandler
         isOpen={showModal}

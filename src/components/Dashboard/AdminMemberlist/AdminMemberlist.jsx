@@ -1,252 +1,346 @@
-import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from "../../../context/Context";
-import { Table, Pagination, Button } from 'flowbite-react';
-import { API } from 'aws-amplify';
-import { FiSearch } from 'react-icons/fi';
+import { Table, Pagination } from 'flowbite-react';
+import { formatEpochToReadableDate } from './utils/dateUtils';
+import { useRoleManagement } from './hooks/useRoleManagement';
+import { useTableManagement } from './hooks/useTableManagement';
+import { useDataFetching } from './hooks/useDataFetching';
+import StatsGrid from './components/StatsGrid';
+import SearchAndFilter from './components/SearchAndFilter';
+import TableHeader from './components/TableHeader';
+import MobileTableCard from './components/MobileTableCard';
+import CustomDropDown from './components/CustomDropDown';
 
 const AdminMemberlist = () => {
-  const { util } = useContext(Context);
-  const utilRef = useRef(util);  // Reference to util to avoid infinite loading
+  const { util, userData } = useContext(Context);
+  const [expandedRow, setExpandedRow] = useState(null);
 
-  const [members, setMembers] = useState([]);
-  const [memberData, setMemberData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7); // Items per page
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All'); // New state for status filter
+  // Custom hooks
+  const { fetchData } = useDataFetching(util.setLoader);
+  const { updatingRole, getRoleOptions, handleRoleChange } = useRoleManagement(() => {
+    fetchData().then(members => setData(members));
+  });
+  const {
+    currentPage,
+    searchQuery,
+    searchField,
+    sortField,
+    sortDirection,
+    columnWidths,
+    activeSort,
+    totalPages,
+    currentData,
+    filteredAndSortedData,
+    setCurrentPage,
+    handleSort,
+    handleSearch,
+    handleSearchFieldChange,
+    handleStatClick,
+    startResizing,
+    setData
+  } = useTableManagement([]);
 
+  // Initial data fetch
   useEffect(() => {
-    utilRef.current = util; // Keep util updated in the ref
-  }, [util]);
+    const loadData = async () => {
+      const members = await fetchData();
+      setData(members);
+    };
+    loadData();
+  }, [fetchData, setData]);
 
-  // Fetching data function
-  const fetchData = useCallback(async (institution = 'awsaiapp') => {
-    try {
-      utilRef.current.setLoader(true);  // Use the ref instead of util
-      const memberResponse = await API.get('clients', `/user/list-members/${institution}`);
-      const filteredData = memberResponse
-        .filter(
-          (member) => member.userType === 'member' || member.userType === 'admin'
-        ).sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate));  // Sort by joiningDate
-
-
-      const institutionResponse = await API.get('clients', '/admin/list-institution');
-      const institutionData = institutionResponse;
-
-      const statusCount = institutionData.reduce((acc, item) => {
-        const { createdBy, isDelivered, isFormFilled } = item;
-
-        if (createdBy) {
-          if (!acc[createdBy]) {
-            acc[createdBy] = { delivered: 0, inprogress: 0 };
-          }
-
-          if (isDelivered) {
-            acc[createdBy].delivered += 1;
-          } else if (isFormFilled && !isDelivered) {
-            acc[createdBy].inprogress += 1;
-          }
-        }
-        return acc;
-      }, {});
-
-      const updatedMembers = filteredData.map((member) => {
-        const { delivered = 0, inprogress = 0 } = statusCount[member.cognitoId] || {};
-        return { ...member, delivered, inprogress };
-      });
-
-      setMembers(updatedMembers);
-      setMemberData(updatedMembers);
-    } catch (error) {
-      console.error('Error fetching the members or institution data:', error);
-    }
-    utilRef.current.setLoader(false);  // Use the ref
-  }, []);
-
-  useEffect(() => {
-    fetchData();  // Call fetchData on component mount
-  }, [fetchData]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  // Calculate stats
+  const stats = {
+    total_members: filteredAndSortedData.length,
+    active_members: filteredAndSortedData.filter(m => m.status === 'Active').length,
+    inactive_members: filteredAndSortedData.filter(m => m.status !== 'Active').length,
+    total_delivered: filteredAndSortedData.reduce((acc, curr) => acc + (parseInt(curr.delivered) || 0), 0)
   };
 
-  function formatEpochToReadableDate(epochDate) {
-    const date = isNaN(epochDate) ? new Date(parseFloat(epochDate)) : new Date(epochDate);
-    if (!isNaN(date.getTime())) {
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      return `${day}-${month}-${year}`;
-    }
-    return '';
-  }
-
-  // Filter the member data based on the selected status
-  const handleFilterStatus = (status) => {
-    setFilterStatus(status);
-
-    if (status === 'All') {
-      setMemberData(members);
-    } else if (status === 'Active') {
-      const activeMembers = members.filter((member) => member.status === 'Active');
-      setMemberData(activeMembers);
-    } else if (status === 'Inactive') {
-      // Show all members whose status is not 'Active'
-      const inactiveMembers = members.filter((member) => member.status !== 'Active');
-      setMemberData(inactiveMembers);
-    }
-
-    setCurrentPage(1); // Reset pagination to page 1 after filtering
+  // Toggle expanded row for mobile view
+  const toggleExpandedRow = (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
   };
 
-
-  const handleSearch = useCallback(() => {
-    const filteredData = members.filter((member) =>
-      member.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.emailId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setMemberData(filteredData);
-    setCurrentPage(1);
-  }, [members, searchQuery]);
-
-  useEffect(() => {
-    handleSearch();  // Call handleSearch whenever searchQuery changes
-  }, [searchQuery, handleSearch]);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMembers = memberData.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Custom theme for pagination
-  const customTheme = {
+  // Updated pagination theme
+  const paginationTheme = {
     pages: {
-      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px rounded-md shadow-sm",
       showIcon: "inline-flex",
       previous: {
-        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white"
+        base: "ml-0 relative inline-flex items-center rounded-l-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-cyan-50 hover:text-cyan-600 focus:z-20 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-colors duration-150",
+        icon: "h-4 w-4"
       },
       next: {
-        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white"
+        base: "relative inline-flex items-center rounded-r-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-cyan-50 hover:text-cyan-600 focus:z-20 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-colors duration-150",
+        icon: "h-4 w-4"
       },
       selector: {
-        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
-        disabled: "cursor-not-allowed opacity-50"
+        base: "relative inline-flex items-center border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-cyan-50 hover:text-cyan-600 focus:z-20 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-colors duration-150",
+        active: "z-10 bg-cyan-50 border-cyan-500 text-cyan-600 hover:bg-cyan-100",
+        disabled: "opacity-50 cursor-not-allowed hover:bg-white hover:text-gray-500"
       }
     }
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-4rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%]">
-      {/* Table container with reduced width */}
-      <div className="w-full max-w-6xl shadow-lg rounded-md overflow-hidden bg-white">
-        <div className="flex justify-between items-center p-4">
-          {/* Filter buttons */}
-          <div className="flex gap-4">
-            <Button
-              onClick={() => handleFilterStatus('All')}
-              className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filterStatus === 'All' ? 'bg-[#30afbc] text-white' : 'bg-white border border-gray-200 text-gray-700'} hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-              style={{ minWidth: '70px' }}
-            >
-              All ({members.length})
-            </Button>
-            <Button
-              onClick={() => handleFilterStatus('Active')}
-              className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filterStatus === 'Active' ? 'bg-[#30afbc] text-white' : 'bg-white border border-gray-200 text-gray-700'} hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-              style={{ minWidth: '70px' }}
-            >
-              Active ({members.filter(m => m.status === 'Active').length})
-            </Button>
-            <Button
-              onClick={() => handleFilterStatus('Inactive')}
-              className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filterStatus === 'Inactive' ? 'bg-[#30afbc] text-white' : 'bg-white border border-gray-200 text-gray-700'} hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-              style={{ minWidth: '70px' }}
-            >
-              Inactive ({members.filter(m => m.status !== 'Active').length})
-            </Button>
+    <div className="fixed inset-0 lg:ml-64 bg-gray-50/50 overflow-hidden">
+      <div className="flex flex-col h-full max-h-screen">
+        {/* Main Container */}
+        <div className="flex-1 p-2 sm:p-4 md:p-6 pt-16 sm:pt-20 md:pt-24 overflow-y-auto">
+          {/* Stats Grid */}
+          <div className="mb-4 md:mb-6">
+            <StatsGrid
+              stats={stats}
+              onStatClick={handleStatClick}
+              activeSort={activeSort}
+            />
           </div>
-          {/* Search bar */}
-          <form className="flex items-center w-[30rem] border border-gray rounded-md">
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <FiSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+
+          {/* Table Container */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-16rem)]">
+            {/* Header Section */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex flex-col lg:flex-row justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-semibold text-gray-900">Member List</h1>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Manage and monitor member activities
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <SearchAndFilter
+                    searchQuery={searchQuery}
+                    onSearchChange={handleSearch}
+                    searchField={searchField}
+                    onSearchFieldChange={handleSearchFieldChange}
+                  />
+                </div>
               </div>
-              <input
-                type="search"
-                id="default-search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Quick search Members"
-                required
-              />
             </div>
-          </form>
-        </div>
-        <Table striped>
-          <Table.Head className="border-t border-b border-gray rounded-none">
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase" style={{ borderRadius: 0 }}>
-              Name
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Email Address
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Phone Number
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Role
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Date of Joining
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Status
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              Delivered
-            </Table.HeadCell>
-            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-black uppercase rounded-none">
-              In Progress
-            </Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {currentMembers.map((member) => (
-              <Table.Row key={member.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white">
-                  {member.userName}
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.emailId}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.phoneNumber}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.role}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.joiningDate ? formatEpochToReadableDate(member.joiningDate) : ''}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white"><span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} `}
-                >
-                  {member.status}
-                </span></Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.delivered}</Table.Cell>
-                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">{member.inprogress}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-3 bg-gray-50">
-          <span className="text-sm text-gray-700">
-            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, memberData.length)} of {memberData.length} results
-          </span>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(memberData.length / itemsPerPage)}
-            onPageChange={handlePageChange}
-            theme={customTheme}
-          />
+
+            {/* Desktop View */}
+            <div className="hidden md:block flex-1 overflow-hidden">
+              {/* Table Wrapper */}
+              <div className="h-full flex flex-col">
+                {/* Vertical Scroll Container */}
+                <div className="flex-1 overflow-y-auto scrollbar scrollbar-w-3 scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                  {/* Horizontal Scroll Container */}
+                  <div className="min-w-[1000px]">
+                    <div className="overflow-x-auto scrollbar scrollbar-h-3 scrollbar-thumb-rounded-full scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                      <Table className="w-full table-fixed">
+                        <Table.Head className="sticky top-0 bg-white z-10">
+                          <TableHeader
+                            field="userName"
+                            width={columnWidths.userName}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Name</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="emailId"
+                            width={columnWidths.emailId}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Email Address</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="phoneNumber"
+                            width={columnWidths.phoneNumber}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onResize={startResizing}
+                            isResizable
+                          >
+                            <div className="text-sm font-medium text-gray-600">Phone Number</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="role"
+                            width={columnWidths.role}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Role</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="joiningDate"
+                            width={columnWidths.joiningDate}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Joining Date</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="status"
+                            width={columnWidths.status}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600">Status</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="delivered"
+                            width={columnWidths.delivered}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600 text-center">Delivered</div>
+                          </TableHeader>
+                          <TableHeader
+                            field="inprogress"
+                            width={columnWidths.inprogress}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                          >
+                            <div className="text-sm font-medium text-gray-600 text-center">Progress</div>
+                          </TableHeader>
+                        </Table.Head>
+                        <Table.Body className="divide-y divide-gray-[2px]">
+                          {currentData.map((member) => (
+                            <Table.Row key={member.cognitoId} className="hover:bg-gray-50 transition-all duration-200">
+                              <Table.Cell style={{ width: `${columnWidths.userName}px` }} className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-shrink-0 h-9 w-9 rounded-lg bg-cyan-50 flex items-center justify-center">
+                                    <span className="text-cyan-600 text-sm font-medium">
+                                      {member.userName.charAt(0).toUpperCase()}
+                                    </span>
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-sm font-medium text-gray-900 truncate" title={member.userName}>
+                                      {member.userName}
+                                    </div>
+                                  </div>
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.emailId}px` }} className="p-4">
+                                <div className="min-w-0">
+                                  <div className="truncate text-[13px] text-gray-600" title={member.emailId}>
+                                    {member.emailId}
+                                  </div>
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.phoneNumber}px` }} className="p-4">
+                                <div className="min-w-0">
+                                  <div className="truncate text-[13px] text-gray-600" title={member.phoneNumber}>
+                                    {member.phoneNumber}
+                                  </div>
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.role}px` }} className="p-4">
+                                <div className="flex items-center">
+                                  {getRoleOptions(member.role, userData.role).length > 0 ? (
+                                    <div className="flex-shrink-0">
+                                      <CustomDropDown
+                                        label={member.role === 'sales' ? 'Sale' : 
+                                               member.role === 'operation' ? 'Admin' :
+                                               member.role === 'owner' ? 'Owner' : 'Set Role'}
+                                        disabled={updatingRole === member.cognitoId || member.role === 'owner'}
+                                        isLoading={updatingRole === member.cognitoId}
+                                        options={getRoleOptions(member.role, userData.role).map(role => ({
+                                          value: role,
+                                          label: role,
+                                          color: role === 'Admin' ? 'text-green-600' : 'text-orange-600'
+                                        }))}
+                                        selectedValue={member.role === 'sales' ? 'Sale' : 
+                                                      member.role === 'operation' ? 'Admin' : ''}
+                                        onSelect={(option) => {
+                                          console.log('Selected option:', option); // Debug log
+                                          handleRoleChange(member.cognitoId, option.value, member);
+                                        }}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <span className="px-3 py-2 text-sm text-gray-500 truncate">
+                                      {member.role === 'sales' ? 'Sale' : 
+                                       member.role === 'operation' ? 'Admin' :
+                                       member.role === 'owner' ? 'Owner' : 'No Role'}
+                                    </span>
+                                  )}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.joiningDate}px` }} className="p-4">
+                                <div className="truncate text-[13px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
+                                  {formatEpochToReadableDate(member.joiningDate)}
+                                </div>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.status}px` }} className="p-4">
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate
+                                  ${member.status === "Active" 
+                                    ? "bg-green-50 text-green-600" 
+                                    : "bg-red-50 text-red-600"}`}
+                                >
+                                  {member.status}
+                                </span>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.delivered}px` }} className="p-4 text-center">
+                                <span className="text-[13px] font-medium text-gray-700">{member.delivered || '0'}</span>
+                              </Table.Cell>
+                              <Table.Cell style={{ width: `${columnWidths.inprogress}px` }} className="p-4 text-center">
+                                <span className="text-[13px] font-medium text-gray-700">{member.inprogress || '0'}</span>
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile View */}
+            <div className="block md:hidden flex-1 overflow-hidden">
+              <div className="h-full overflow-y-auto">
+                <div className="px-4 divide-y divide-gray-200">
+                  {currentData.map((member) => (
+                    <div key={member.cognitoId} className="w-full">
+                      <MobileTableCard
+                        member={member}
+                        expanded={expandedRow === member.cognitoId}
+                        onToggle={toggleExpandedRow}
+                        getRoleOptions={getRoleOptions}
+                        handleRoleChange={handleRoleChange}
+                        updatingRole={updatingRole}
+                        userData={userData}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer with Pagination - Mobile Optimized */}
+            <div className="px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 border-t border-gray-200">
+              <div className="text-xs sm:text-sm text-gray-600 bg-gray-50 px-3 py-1.5 sm:py-2 rounded-lg order-2 sm:order-1 w-full sm:w-auto text-center sm:text-left">
+                Showing <span className="font-medium text-gray-900">{(currentPage - 1) * 7 + 1}-{Math.min(currentPage * 7, filteredAndSortedData.length)}</span> of <span className="font-medium text-gray-900">{filteredAndSortedData.length}</span>
+              </div>
+
+              <div className="flex-shrink-0 order-1 sm:order-2 w-full sm:w-auto">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  showIcons
+                  theme={paginationTheme}
+                  className="flex justify-center sm:justify-end"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -44,28 +44,18 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       let response;
-      if (userProfile.role === "owner") {
-        const response1 = await API.get("clients", "/admin/list-institution");
-        const response2 = await API.get("clients", "/admin/list-dentist");
-        const validResponse1 = Array.isArray(response1) ? response1 : [];
-        const validResponse2 = Array.isArray(response2.records) ? response2.records : (Array.isArray(response2) ? response2 : []);
-        console.log("Valid response 1 (Dance Studio)", validResponse1);
-        console.log("Valid response 2 (Clinic)", validResponse2);
-        // Combine the valid responses into one array
-        response = [...validResponse1, ...validResponse2];
-        console.log("the clinic and dance", response);
-        // Log the combined response for debugging purposes
+     
+      if (userProfile.role === "owner" || userProfile.role === "operation") {
+        try {
+        response = await API.get("clients", "/admin/list-institution");
+      } catch (error) {
+        // Log the error if there is an issue with the API calls
+        console.error("Error fetching data:", error);
+      }
       } else {
         try {
           // Fetch data from both APIs
-          const response1 = await API.get("clients", "/admin/list-institutionForSales");
-          const response2 = await API.get("clients", "/admin/list-clinicForSales");
-          // Validate that response1 is an array and response2 has 'records' as an array
-          const validResponse1 = Array.isArray(response1) ? response1 : [];
-          const validResponse2 = response2 && Array.isArray(response2.records) ? response2.records : [];
-          // Combine the valid responses into one array
-          response = [...validResponse1, ...validResponse2];
-          // Log the combined response for debugging purposes
+          response = await API.get("clients", "/admin/list-institutionForSales");
         } catch (error) {
           // Log the error if there is an issue with the API calls
           console.error("Error fetching data:", error);
@@ -111,7 +101,7 @@ const ContextProvider = (props) => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await API.get("clients", `/user/development-form/get-subscription/${institutionId}`);
+      const response = await API.get("clients", `/user/development-form/get-product/${institutionId}`);
       setSubscriptionDetails(response)
     } catch (error) {
       console.error("Error fetching product details:", error);
@@ -187,6 +177,7 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
       onReload: fetchClients,
+      setClients:setClients,
     },
     products: products,
     fetchProducts: () => { },

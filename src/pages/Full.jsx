@@ -40,7 +40,7 @@ const Full = () => {
 
           const productResponse = await API.get(
             "clients",
-            `/user/development-form/get-subscription/${institutionNames}`
+            `/user/development-form/get-product/${institutionNames}`
           );
           // Convert the subscription amount to rupee
           const convertedProductResponse = productResponse.map(product => ({

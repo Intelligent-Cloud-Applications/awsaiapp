@@ -38,13 +38,14 @@ const Template2 = () => {
   const [values, setValues] = useState([]);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isFormFilled, setIsFormFilled] = useState(true);
   const { userData } = useContext(Context)
   const [testimonials, setTestimonials] = useState([
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
     { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
   ]);
-  const [isFormedFilled, setisFormedFilled] = useState(false);
+  // const [isFormedFilled, setisFormedFilled] = useState(false);
 
   const [policies, setPolicies] = useState({
     'Privacy Policy': [""],
@@ -103,15 +104,14 @@ const Template2 = () => {
       let imageUrl = await Storage.get(response1.key);
       imageUrl = imageUrl.split("?")[0];
       setSelectedFile(imageUrl);
-
+      let videoUrl;
       if (video) {
         // Upload the video
         const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
           contentType: video.type,
         });
-        let videoUrl = await Storage.get(response2.key);
+        videoUrl = await Storage.get(response2.key);
         videoUrl = videoUrl.split("?")[0];
-        setVideo(videoUrl);
       }
 
       // Upload "About Us" images and fetch URLs concurrently
@@ -132,12 +132,8 @@ const Template2 = () => {
         youTube: contactInfo.youTube || null,
       };
 
-      if (policies['About Us'] || testimonials) {
-        setisFormedFilled(true);
-      }
       const body = {
         institutionid: institutionId,
-        index: "0", // Example index value, replace as needed
         companyName: companyName || null,
         PrimaryColor: PrimaryColor || null,
         SecondaryColor: SecondaryColor || null,
@@ -148,7 +144,7 @@ const Template2 = () => {
         TagLine1: TagLine1 || null,
         TagLine2: TagLine2 || null,
         TagLine3: TagLine3 || null,
-        videoUrl: video || null,
+        videoUrl: videoUrl || null,
         aboutParagraphs: policies['About Us'] || [],
         aboutImages: aboutImagesUrls,
         address: contactInfo.address || null,
@@ -163,13 +159,12 @@ const Template2 = () => {
         estYear: contactInfo['Establishment Year of Company'] || null,
         UpiId: contactInfo['UPI Id'] || null,
         testimonials: testimonials || [],
-        isFormFilled: isFormedFilled,
+        isFormFilled: isFormFilled,
+        cognitoId: userData.cognitoId,
       };
-      console.log("cognito id passing", userData.cognitoId);
       console.log("Data requesting for PUT", body);
-
       // Call the API
-      const response = await API.post("clients", "/user/dentalWebDevForm", {
+      const response = await API.put("clients", "/user/dentalWebDevForm", {
         body,
         headers: {
           "Content-Type": "application/json",
@@ -297,7 +292,9 @@ const Template2 = () => {
           break;
 
         case 4:
-          uploadTestimonials();
+          if (testimonials && testimonials.some(item => item.name || item.feedback || item.imgSrc || item.uploadedFile || item.type)) {
+            uploadTestimonials();
+          }
           console.log("The form will submit now");
           handleSubmitForm();
           break;
@@ -314,11 +311,18 @@ const Template2 = () => {
     //    console.log("Saved Trigger")
   };
   const [showModal, setShowModal] = useState(false);
-  const handleSaveDraft = () => {
-    handleSubmitForm();
-    Navigate('/dashboard', { state: { section: 'institution-draft' } });
+  useEffect(() => {
+    if (!isFormFilled) {
+      console.log("Form filled:", isFormFilled);
+      handleSubmitForm();
+      Navigate('/dashboard', { state: { section: 'institution-draft' } });
+    }
+  });
+  
+  const handleSaveDraft = async () => {
+    setIsFormFilled(false); // Trigger state update
   };
-
+  
   const handleClearData = async () => {
     try {
       Navigate('/dashboard');

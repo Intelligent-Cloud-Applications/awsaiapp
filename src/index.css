@@ -150,6 +150,7 @@ body {
 }
 ::-webkit-scrollbar {
   width: 9px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-track {
@@ -218,4 +219,12 @@ body {
 .scrollbar-none {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */
   scrollbar-width: none;     /* Firefox */
+}
+
+/* Utility class to prevent text selection during resizing */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
