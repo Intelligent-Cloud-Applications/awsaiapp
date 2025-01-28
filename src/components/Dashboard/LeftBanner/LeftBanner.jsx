@@ -23,7 +23,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
   const isOperation = Ctx.userData.role === "operation" && Ctx.userData.userType === "member";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
-  const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
+  const isSalesUser = Ctx.userData.role === "sale" && Ctx.userData.userType === "member";
   const location = useLocation();
 
   useEffect(() => {

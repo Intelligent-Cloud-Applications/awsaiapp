@@ -830,7 +830,7 @@ const Panel = () => {
                             </Table.Cell>
 
                             <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              {Ctx.userData.role !== "sales" ? (
+                              {Ctx.userData.role !== "sale" ? (
                                 <Dropdown
                                   label={
                                     selectedStatuses[client.institutionid] ||
@@ -891,7 +891,7 @@ const Panel = () => {
                                 </span>
                               )}
                             </Table.Cell>
-                            {Ctx.userData.role !== "sales" && (
+                            {Ctx.userData.role !== "sale" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
                                 <div className="flex items-center gap-2">
                                   <TextInput
@@ -1373,7 +1373,7 @@ const Panel = () => {
                       </div>
 
                       {/* Delivery Status Update */}
-                      {Ctx.userData.role !== "sales" ? (
+                      {Ctx.userData.role !== "sale" ? (
                         <div className="flex flex-row gap-2">
                           <h5>Deliverable:</h5>
                           <div className="flex flex-col gap-2">
@@ -1440,7 +1440,7 @@ const Panel = () => {
                       )}
 
                       {/* Domain Link */}
-                      {Ctx.userData.role !== "sales" && (
+                      {Ctx.userData.role !== "sale" && (
                         <div className="flex items-center justify-between gap-2 mt-2">
                           <TextInput
                             value={domainLinks[client.institutionid] || ""}
