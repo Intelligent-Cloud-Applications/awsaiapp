@@ -246,8 +246,8 @@ const AdminMemberlist = () => {
                                     <div className="flex-shrink-0">
                                     <CustomDropDown
                                       label={
-                                        member.role === 'sales'
-                                          ? 'Sales'
+                                        member.role === 'sale'
+                                          ? 'Sale'
                                           : member.role === 'operation'
                                           ? 'Admin'
                                           : member.role === 'owner'
@@ -259,8 +259,8 @@ const AdminMemberlist = () => {
                                       options={getRoleOptions(member.role, userData.role).map((role) => ({
                                         value: role,
                                         label:
-                                          role === 'sales'
-                                            ? 'Sales'
+                                          role === 'sale'
+                                            ? 'Sale'
                                             : role === 'operation'
                                             ? 'Admin'
                                             : role === 'owner'
@@ -271,7 +271,7 @@ const AdminMemberlist = () => {
                                             ? 'text-blue-600'
                                             : role === 'operation'
                                             ? 'text-green-600'
-                                            : role === 'sales'
+                                            : role === 'sale'
                                             ? 'text-orange-600'
                                             : 'text-gray-600',
                                       }))}
