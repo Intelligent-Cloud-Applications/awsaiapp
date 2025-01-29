@@ -187,7 +187,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Institute Draft
+                      Draft Forms
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
@@ -235,8 +235,6 @@ const LeftBanner = ({ displayAfterClick }) => {
                         Clients
                       </span>
                     </Sidebar.Item>
-
-
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         icon={HiInbox}
