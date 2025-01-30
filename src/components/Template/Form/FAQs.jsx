@@ -25,13 +25,13 @@ function FAQs({ faqs, setFaqs }) {
   };
 
   return (
-    <div className="mx-[2%] mb-[5%]">
+    <div className="mx-[2%] mb-[5%] [@media(max-width:1024px)]:mb-10">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">FAQs SECTION</h1>
       <h5 className="text-[#939393] text-center">
         Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
       </h5>
-      <div className="flex justify-center ml-[8%]">
-        <div className="w-[60%] p-8">
+      <div className="flex justify-center ml-[8%] ">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0">
           <div className="mt-4 pb-4  " ref={faqsContainerRef}>
             {faqs.map((faq, index) => (
               <div key={index} className="mt-4 relative">

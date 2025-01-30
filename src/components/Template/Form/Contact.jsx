@@ -82,13 +82,13 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
     return fileName;
   };
   return (
-    <div className="mx-[2%]" style={{ overflowY: 'auto' }}>
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">CONTACT INFORMATION</h1>
       <h5 className="text-[#939393] text-center">
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
       <div className="flex min-h-screen">
-        <div className="w-[70%] p-8 ml-[20%]">
+        <div className="w-[70%] p-8 ml-[20%] [@media(max-width:1024px)]:ml-0 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
           <div className="mb-8">
             {Object.keys(contactInfo).filter(key => key !== 'country' && key !== 'countryCode').map((key, index) => (
               <div key={index} className="mt-1">
@@ -156,7 +156,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
               </div>
             ))}
           </div>
-          <div className="relative flex items-center">
+          <div className="relative flex items-center [@media(max-width:1024px)]:flex-col">
             <h2 className="font-medium text-xl">Subscription Bg</h2>
             <div className='mr-10'></div>
             <input
@@ -199,7 +199,7 @@ function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionB
               </div>
             </label>
           </div>
-          <div className="relative flex items-center mt-4">
+          <div className="relative flex items-center mt-4 [@media(max-width:1024px)]:flex-col">
             <h2 className="font-medium text-xl" >Instructor Bg</h2>
             <div className='mr-[4.1rem]'></div>
             <input

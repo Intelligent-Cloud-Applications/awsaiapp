@@ -76,6 +76,16 @@ function Company({
     }
   };
 
+  const handleSecondarycolor = (e) => {
+    setSecondaryColor(e.target.value);
+  };
+  const handleLightcolor = (e) => {
+    setLightPrimaryColor(e.target.value);
+  };
+  const handleLitestcolor = (e) => {
+    setLightestPrimaryColor(e.target.value);
+  };
+
   return (
     <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
@@ -110,7 +120,7 @@ function Company({
         <div className="w-[60%] p-8">
           <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
             <div className="mb-2 block">
-              <Label htmlFor="companyName" color="gray" value="Company Name" className='font-medium text-xl'/>
+              <Label htmlFor="companyName" color="gray" value="Company Name" className='font-medium text-xl' />
               <span className="text-red-500 ml-1">*</span>
             </div>
             <TextInput
@@ -162,19 +172,19 @@ function Company({
 
               <input
                 type="color"
-                readOnly
+                onChange={handleSecondarycolor}
                 value={SecondaryColor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
-                readOnly
+                onChange={handleLightcolor}
                 value={LightPrimaryColor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
               <input
                 type="color"
-                readOnly
+                onChange={handleLitestcolor}
                 value={LightestPrimaryColor}
                 className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
               />
@@ -183,7 +193,7 @@ function Company({
 
           <div className="max-w-md relative mt-4">
             <div className="mb-2 block">
-              <Label htmlFor="fileInput" value="Logo Upload File" className='font-medium text-xl'/>
+              <Label htmlFor="fileInput" value="Logo Upload File" className='font-medium text-xl' />
               <span className="text-red-500 ml-1">*</span>
             </div>
             <FileInput

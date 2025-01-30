@@ -311,12 +311,18 @@ const Template2 = () => {
     //    console.log("Saved Trigger")
   };
   const [showModal, setShowModal] = useState(false);
-  const handleSaveDraft = () => {
-    setIsFormFilled(false);
-    handleSubmitForm();
-    Navigate('/dashboard', { state: { section: 'institution-draft' } });
+  useEffect(() => {
+    if (!isFormFilled) {
+      console.log("Form filled:", isFormFilled);
+      handleSubmitForm();
+      Navigate('/dashboard', { state: { section: 'institution-draft' } });
+    }
+  });
+  
+  const handleSaveDraft = async () => {
+    setIsFormFilled(false); // Trigger state update
   };
-
+  
   const handleClearData = async () => {
     try {
       Navigate('/dashboard');

@@ -30,6 +30,7 @@ const Panel = () => {
   const clientsData = Object.entries(clients.data);
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [deliveryStatuses, setDeliveryStatuses] = useState({});
+  const [planStatuses, setPlanStatuses] = useState({});
   const [userCheck, setUserCheck] = useState(0);
   const [isMoreVisible, setIsMoreVisible] = useState(false);
   const [showHiddenContent, setShowHiddenContent] = useState(false);
@@ -49,27 +50,28 @@ const Panel = () => {
   const [filterStatus, setFilterStatus] = useState(null);
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const menuRef = useRef(null); // Reference for the dropdown menu container
+  const menuRef = useRef(null);
+  // const menuRef = useRef(null); // Reference for the dropdown menu container
 
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      console.log("Click detected outside dropdown");
-      setActiveMenu(null);
-      setActiveSubMenu(null);
-    } else {
-      console.log("Click inside dropdown or target element:", event.target);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //     console.log("Click detected outside dropdown");
+  //     setActiveMenu(null);
+  //     setActiveSubMenu(null);
+  //   } else {
+  //     console.log("Click inside dropdown or target element:", event.target);
+  //   }
+  // };
 
-  useEffect(() => {
-    // Attach event listener to detect clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
+  // useEffect(() => {
+  //   // Attach event listener to detect clicks outside
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   // Clean up listener on component unmount
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -154,6 +156,27 @@ const Panel = () => {
         disabled: "cursor-not-allowed opacity-50",
       },
     },
+  };
+
+  const handlePlanChange = async (data, plan) => {
+    // Store the previous state before making the API call
+    const previousPlanStatus = { ...planStatuses };
+
+    try {
+      const body = {
+        institution: data.institutionid,
+        plan,
+      };
+
+      await API.put("clients", `/admin/update-plan`, { body });
+      toast.success("Plan updated successfully!");
+    } catch (error) {
+      console.error("Error Updating Plan:", error);
+      toast.error("An error occurred while updating the plan.");
+
+      // Reset to the previous state if an error occurs
+      setPlanStatuses(previousPlanStatus);
+    }
   };
 
   const handleTypeFilter = (typeSelected) => {
@@ -306,21 +329,21 @@ const Panel = () => {
     }
   }, [currentPage, totalPages]);
 
-  const getBadgeProps = (web, payment, delivered) => {
+  const getBadgeProps = (payment, delivered) => {
     let text, color;
 
-    if (web) {
-      if (payment && delivered) {
-        text = "Active";
-        color = "success";
-      } else {
-        text = "Pending";
-        color = "warning";
-      }
+    // if (web) {
+    if (payment && delivered) {
+      text = "Active";
+      color = "success";
     } else {
-      text = "InActive";
-      color = "failure";
+      text = "Pending";
+      color = "warning";
     }
+    // } else {
+    //   text = "InActive";
+    //   color = "failure";
+    // }
 
     return { text, color };
   };
@@ -385,6 +408,7 @@ const Panel = () => {
   );
   const [tempInstitution, setTempInstitution] = useState(null);
   const [showMemberList, setShowMemberList] = useState(false);
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
   const handleInstitutionClick = (client) => {
     const updatedUserData = {
       ...userData,
@@ -392,6 +416,7 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
+    setSelectedInstitutionType(client.institutionType)
     setShowMemberList(true);
   };
 
@@ -407,6 +432,21 @@ const Panel = () => {
         return "";
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenu(null);
+        setActiveSubMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -470,13 +510,13 @@ const Panel = () => {
                 </div>
                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
                   <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
-                    <div className="relative inline-block ml-5">
+                    <div className="relative inline-block ml-5" ref={menuRef}>
                       <button
                         className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
                         onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                       >
                         {(selectedType !== null || filterStatus !== null) &&
-                            <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                         }
                         Filter
                         {activeMenu ? (
@@ -613,7 +653,11 @@ const Panel = () => {
                             Payment
                           </Table.HeadCell>
                         )}
-
+                        {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                            Plan
+                          </Table.HeadCell>
+                        )}
                         <Table.HeadCell
                           className={`${showHiddenContent ? "" : "max1008:hidden"
                             } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
@@ -645,7 +689,7 @@ const Panel = () => {
                                   handleInstitutionClick(client);
                                 }}
                               >
-                                <div className="email-hover uppercase font-semibold text-[#11192B]">
+                                <div className="email-hover font-semibold text-[#11192B]">
                                   {client.institutionid}
                                 </div>
                               </Link>
@@ -665,7 +709,7 @@ const Panel = () => {
                             <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                               {(() => {
                                 const { text, color } = getBadgeProps(
-                                  client.isFormFilled,
+                                  // client.isFormFilled,
                                   client.payment,
                                   client.isDelivered
                                 );
@@ -681,8 +725,8 @@ const Panel = () => {
                               })()}
                             </Table.Cell>
                             {Ctx.userData.role !== "operation" && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                {client.payment ? (
+                              client.payment ? (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                   <Dropdown
                                     label={
                                       deliveryStatuses[client.institutionid] ??
@@ -715,28 +759,67 @@ const Panel = () => {
                                       Delivered
                                     </Dropdown.Item>
                                   </Dropdown>
-                                ) : (
-                                  <select
-                                    disabled
-                                    className="bg-gray-200 border border-none rounded-md"
-                                  >
-                                    <option>
-                                      {
-                                        client.isDelivered
-                                          ? "Delivered"
-                                          : "Not Delivered"
-                                      }
-                                    </option>
-                                  </select>
-                                )}
-                              </Table.Cell>
+                                </Table.Cell>
+                              ) : (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                  {client.isDelivered ? "Delivered" : "Not Delivered"}
+                                </Table.Cell>
+                              )
                             )}
                             {Ctx.userData.role !== "operation" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 {client.payment ? "Paid" : "Not Paid"}
                               </Table.Cell>
                             )}
-
+                            {client.payment ? (Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                <Dropdown
+                                  label={planStatuses[client.institutionid] || client.plan}
+                                  inline
+                                >
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Basic",
+                                      }));
+                                      handlePlanChange(client, "Basic");
+                                    }}
+                                  >
+                                    Basics
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Standard",
+                                      }));
+                                      handlePlanChange(client, "Standard");
+                                    }}
+                                  >
+                                    Standard
+                                  </Dropdown.Item>
+                                  <Dropdown.Item
+                                    className="hover:bg-gray-200 focus:bg-gray-200"
+                                    onClick={() => {
+                                      setPlanStatuses((prev) => ({
+                                        ...prev,
+                                        [client.institutionid]: "Advance",
+                                      }));
+                                      handlePlanChange(client, "Advance");
+                                    }}
+                                  >
+                                    Advance
+                                  </Dropdown.Item>
+                                </Dropdown>
+                              </Table.Cell>
+                            ) : (
+                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                No Plan
+                              </Table.Cell>
+                            )}
                             <Table.Cell
                               className={`${showHiddenContent ? "" : "max1008:hidden"
                                 } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
@@ -747,7 +830,7 @@ const Panel = () => {
                             </Table.Cell>
 
                             <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              {Ctx.userData.role !== "sales" ? (
+                              {Ctx.userData.role !== "sale" ? (
                                 <Dropdown
                                   label={
                                     selectedStatuses[client.institutionid] ||
@@ -808,7 +891,7 @@ const Panel = () => {
                                 </span>
                               )}
                             </Table.Cell>
-                            {Ctx.userData.role !== "sales" && (
+                            {Ctx.userData.role !== "sale" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
                                 <div className="flex items-center gap-2">
                                   <TextInput
@@ -1044,6 +1127,9 @@ const Panel = () => {
                   className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
                   onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
                 >
+                  {(selectedType !== null || filterStatus !== null) &&
+                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                  }
                   Filter
                   {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
                 </button>
@@ -1061,13 +1147,13 @@ const Panel = () => {
                           onClick={() => handleMenuToggle("type")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          Type
+                          <span>{selectedType !== null ? selectedType : "Type"}</span>
                         </div>
                         <div
                           onClick={() => handleMenuToggle("isDelivered")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          Is Delivered
+                          <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
                         </div>
                       </div>
                     )}
@@ -1139,7 +1225,7 @@ const Panel = () => {
                         className="flex justify-between items-center text-center"
                         onClick={(e) => handleRowClick(client, e)}
                       >
-                        <div className="uppercase font-semibold text-[#11192B]">
+                        <div className="font-semibold text-[#11192B]">
                           {client.institutionid}
                         </div>
                         <Link
@@ -1172,7 +1258,7 @@ const Panel = () => {
                           <Badge
                             color={
                               getBadgeProps(
-                                client.isFormFilled,
+                                // client.isFormFilled,
                                 client.payment,
                                 client.isDelivered
                               ).color
@@ -1216,7 +1302,57 @@ const Panel = () => {
                           </div>
                         </div>
                       )}
-
+                      {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                        <div className="flex flex-row gap-2">
+                          <h5>Plan:</h5>
+                          <div className="flex flex-col gap-2">
+                            {client.payment ? (
+                              <Dropdown
+                                label={planStatuses[client.institutionid] || client.plan}
+                                inline
+                              >
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Basics",
+                                    }));
+                                    handlePlanChange(client, "Basic");
+                                  }}
+                                >
+                                  Basics
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Standard",
+                                    }));
+                                    handlePlanChange(client, "Standard");
+                                  }}
+                                >
+                                  Standard
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setPlanStatuses((prev) => ({
+                                      ...prev,
+                                      [client.institutionid]: "Advance",
+                                    }));
+                                    handlePlanChange(client, "Advance");
+                                  }}
+                                >
+                                  Advance
+                                </Dropdown.Item>
+                              </Dropdown>
+                            ) : (
+                              <div>
+                                No Plan
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       {/* Payment Status */}
                       {Ctx.userData.role !== "operation" && (
                         <div className="flex flex-row gap-2">
@@ -1237,7 +1373,7 @@ const Panel = () => {
                       </div>
 
                       {/* Delivery Status Update */}
-                      {Ctx.userData.role !== "sales" ? (
+                      {Ctx.userData.role !== "sale" ? (
                         <div className="flex flex-row gap-2">
                           <h5>Deliverable:</h5>
                           <div className="flex flex-col gap-2">
@@ -1304,7 +1440,7 @@ const Panel = () => {
                       )}
 
                       {/* Domain Link */}
-                      {Ctx.userData.role !== "sales" && (
+                      {Ctx.userData.role !== "sale" && (
                         <div className="flex items-center justify-between gap-2 mt-2">
                           <TextInput
                             value={domainLinks[client.institutionid] || ""}
@@ -1428,7 +1564,7 @@ const Panel = () => {
               </div>
 
               {setShowMemberList && (
-                <div className="flex justify-between items-center mt-4">
+                <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
                   <span className="text-sm text-gray-600">
                     Page <strong>{currentPage}</strong> of{" "}
                     <strong>{totalPages}</strong>
@@ -1465,14 +1601,15 @@ const Panel = () => {
             </>
           )}
         </>
-      ) : Ctx.userData.userType === "admin" ||
-        Ctx.userData.role === "operation" ? (
+      ) : (Ctx.userData.userType === "admin" ||
+        Ctx.userData.role === "operation") && payment ? (
         <Index
           tempInstitution={tempInstitution}
           setShowMemberList={setShowMemberList}
+          selectedInstitutionType={selectedInstitutionType}
         />
       ) : (
-        !payment && handlePayment()
+        handlePayment()
       )
       }
     </>

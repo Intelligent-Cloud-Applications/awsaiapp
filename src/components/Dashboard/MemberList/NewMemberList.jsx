@@ -28,6 +28,7 @@ function NewMemberList({ institution: tempInstitution }) {
   const [selectedMemberDetails, setSelectedMemberDetails] = useState(null);
   const [isLoader, setisLoader] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const Ctx = useContext(Context);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -580,11 +581,11 @@ function NewMemberList({ institution: tempInstitution }) {
                         {member.userName}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        {member.emailId ? censorEmail(member.emailId) : "None"}
+                        {member.emailId ? Ctx.userData.role === "operation" ? censorEmail(member.emailId) : member.emailId : "None"}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         {member.phoneNumber
-                          ? censorPhoneNumber(member.phoneNumber)
+                          ? Ctx.userData.role === "operation" ? censorPhoneNumber(member.phoneNumber) : member.phoneNumber
                           : "None"}
                       </Table.Cell>
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
@@ -733,13 +734,13 @@ function NewMemberList({ institution: tempInstitution }) {
 
                       <div className="text-sm text-gray-600">
                         <strong>Email:</strong>{" "}
-                        {member.emailId ? censorEmail(member.emailId) : "None"}
+                        {member.emailId ? Ctx.userData.role === "operation" ? censorEmail(member.emailId) : member.emailId : "None"}
                       </div>
 
                       <div className="text-sm text-gray-600">
                         <strong>Phone:</strong>{" "}
                         {member.phoneNumber
-                          ? censorPhoneNumber(member.phoneNumber)
+                          ? Ctx.userData.role === "operation" ? censorPhoneNumber(member.phoneNumber) : member.phoneNumber
                           : "None"}
                       </div>
 
@@ -777,7 +778,7 @@ function NewMemberList({ institution: tempInstitution }) {
             </div>
 
 
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
               <span className="text-sm text-gray-600">
                 Page <strong>{currentPage}</strong> of{" "}
                 <strong>{totalPages}</strong>

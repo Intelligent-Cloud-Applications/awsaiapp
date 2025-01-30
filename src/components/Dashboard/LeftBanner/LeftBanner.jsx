@@ -23,7 +23,7 @@ const LeftBanner = ({ displayAfterClick }) => {
   const isSuperAdmin = Ctx.userData.role === "owner" && Ctx.userData.userType === "admin";
   const isOperation = Ctx.userData.role === "operation" && Ctx.userData.userType === "member";
   const isNotSuperAdmin = Ctx.userData.institutionName !== "awsaiapp";
-  const isSalesUser = Ctx.userData.role === "sales" && Ctx.userData.userType === "member";
+  const isSalesUser = Ctx.userData.role === "sale" && Ctx.userData.userType === "member";
   const location = useLocation();
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Members
+                        Staffs
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
@@ -174,7 +174,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Client Panel
+                        Clients
                       </span>
                     </Sidebar.Item>
                     <Sidebar.Item
@@ -187,7 +187,7 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Institute Draft
+                      Draft Forms
                       </span>
                     </Sidebar.Item>
                     <Link to={`/dashboard`} className="hover:no-underline">
@@ -232,11 +232,9 @@ const LeftBanner = ({ displayAfterClick }) => {
                         } hover:text-black hover:bg-[#3c919b] hover:no-underline hover:cursor-pointer`}
                     >
                       <span className="hidden md:inline font-[Poppins] text-base">
-                        Client Panel
+                        Clients
                       </span>
                     </Sidebar.Item>
-
-
                     <Link to={`/dashboard`} className="hover:no-underline">
                       <Sidebar.Item
                         icon={HiInbox}

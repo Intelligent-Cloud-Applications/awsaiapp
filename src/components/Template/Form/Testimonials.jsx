@@ -98,14 +98,14 @@ function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimo
   };
 
   return (
-    <div className="mx-[2%]">
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0 [@media(max-width:1024px)]:mb-[5rem]">
       <h1 className="font-medium text-7xl pb-[1rem] text-center">TESTIMONIALS SECTION</h1>
       <h5 className="text-[#939393] text-center">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
       <div className="flex justify-center">
-        <div className="w-[60%] p-8">
-          <div className="relative flex items-center mt-4">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
+          <div className="relative flex items-center mt-4 [@media(max-width:1024px)]:flex-col">
             <h2 className="font-medium text-xl">TestimonialBg</h2>
             <div className='mr-10'></div>
             <input
