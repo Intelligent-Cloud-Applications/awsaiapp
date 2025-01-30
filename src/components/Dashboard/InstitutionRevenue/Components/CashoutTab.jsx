@@ -1,8 +1,9 @@
+// CashoutTab.jsx
 import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
-import PaymentUpdateModal from "./SubComponents/paymentUpdateModal";
 import TransactionsTable from "./SubComponents/TransactionsTable";
 import CurrencyCard from "./SubComponents/CurrencyCard";
+import PaymentUpdateModal from "./SubComponents/paymentUpdateModal";
 
 function CashoutTab({ institution }) {
   const [cashoutData, setCashoutData] = useState(null);
@@ -16,17 +17,29 @@ function CashoutTab({ institution }) {
     date: "",
     status: "Transferred",
   });
+  
   const itemsPerPage = 4;
   const totalPages = Math.ceil(
     (cashoutData?.client[0]?.cashoutLogs.length || 0) / itemsPerPage
   );
 
   useEffect(() => {
-    API.get("clients", `/fetch-cashout-payment-data?clientId=${institution}`)
-      .then((response) => setCashoutData(response))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    fetchCashoutData();
   }, [institution]);
+
+  const fetchCashoutData = async () => {
+    try {
+      const response = await API.get(
+        "clients", 
+        `/fetch-cashout-payment-data?clientId=${institution}`
+      );
+      setCashoutData(response);
+    } catch (error) {
+      console.error("Error fetching cashout data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) return <div className="p-4 text-center">Loading...</div>;
   if (!cashoutData) return null;
@@ -75,6 +88,8 @@ function CashoutTab({ institution }) {
       };
 
       await API.put("clients", "/cashout-payment-update", { body: payload });
+      
+      // Update local state after successful API call
       setCashoutData((prev) => ({
         ...prev,
         client: [
@@ -88,9 +103,19 @@ function CashoutTab({ institution }) {
           },
         ],
       }));
+      
+      // Reset form and close modal
+      setNewLog({
+        transactionId: "",
+        amount: "",
+        currency: "INR",
+        date: "",
+        status: "Transferred",
+      });
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error updating payment:", error);
+      alert("Failed to update payment. Please try again.");
     }
   };
 
@@ -131,7 +156,8 @@ function CashoutTab({ institution }) {
             />
           );
         })}
-        {/* Contact Details - Responsive */}
+        
+        {/* Contact Details Card */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-md p-3 sm:p-5 transform transition-all hover:scale-104 hover:shadow-xl">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
@@ -228,8 +254,7 @@ function CashoutTab({ institution }) {
                 />
               </svg>
               <span className="break-all">
-                Last Updated:{" "}
-                {new Date(clientData.lastUpdated).toLocaleString()}
+                Last Updated: {new Date(clientData.lastUpdated).toLocaleString()}
               </span>
             </div>
           </div>
@@ -242,6 +267,7 @@ function CashoutTab({ institution }) {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+      
       <PaymentUpdateModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
