@@ -4,6 +4,8 @@ import timetable from "../../../utils/batch_sample/timetable.csv"
 import membercreation from "../../../utils/batch_sample/member_creation.csv"
 import additem from "../../../utils/batch_sample/AddItemsCafeTest.csv"
 import attendance from "../../../utils/batch_sample/attendance.csv"
+import createDentistTest from "../../../utils/batch_sample/createDentistTest.csv"
+import dentistScheduleTest from "../../../utils/batch_sample/dentistScheduleTest.csv"
 const InfoTooltip = ({ type }) => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const tooltipRef = useRef(null);
@@ -31,7 +33,15 @@ const InfoTooltip = ({ type }) => {
     additems: {
       text: "Add cafe items to dynamodb through csv trigger",
       sample: additem
-    }
+    },
+    createdentist: {
+      text: "Create a new dentist entry by uploading a CSV file. This file should contain dentist details such as name, specialization, contact information, and availability.",
+      sample: createDentistTest,
+    },
+    appointmentadd: {
+      text: "Upload appointment scheduling data for dentists. This helps in managing patient appointments and scheduling availability for dentists.",
+      sample: dentistScheduleTest,
+    },
   };
   const handleSampleDownload = (type) => {
     const sample = descriptions[type]?.sample;
