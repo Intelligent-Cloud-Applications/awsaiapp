@@ -17,7 +17,7 @@ function CashoutTab({ institution }) {
     date: "",
     status: "Transferred",
   });
-  
+
   const itemsPerPage = 4;
   const totalPages = Math.ceil(
     (cashoutData?.client[0]?.cashoutLogs.length || 0) / itemsPerPage
@@ -30,7 +30,7 @@ function CashoutTab({ institution }) {
   const fetchCashoutData = async () => {
     try {
       const response = await API.get(
-        "clients", 
+        "clients",
         `/fetch-cashout-payment-data?clientId=${institution}`
       );
       setCashoutData(response);
@@ -46,10 +46,11 @@ function CashoutTab({ institution }) {
 
   const { client, payments } = cashoutData;
   const clientData = client[0];
-  const currentItems = clientData?.cashoutLogs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+
+  // Sort the cashoutLogs by date in descending order and paginate
+  const currentItems = clientData?.cashoutLogs
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date in descending order
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); // Paginate the sorted array
 
   const currencyBreakdown = payments.items.reduce((acc, payment) => {
     if (!acc[payment.currency]) {
@@ -88,7 +89,7 @@ function CashoutTab({ institution }) {
       };
 
       await API.put("clients", "/cashout-payment-update", { body: payload });
-      
+
       // Update local state after successful API call
       setCashoutData((prev) => ({
         ...prev,
@@ -103,7 +104,7 @@ function CashoutTab({ institution }) {
           },
         ],
       }));
-      
+
       // Reset form and close modal
       setNewLog({
         transactionId: "",
@@ -156,7 +157,7 @@ function CashoutTab({ institution }) {
             />
           );
         })}
-        
+
         {/* Contact Details Card */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-md p-3 sm:p-5 transform transition-all hover:scale-104 hover:shadow-xl">
           <div className="flex justify-between items-center mb-4">
@@ -267,7 +268,7 @@ function CashoutTab({ institution }) {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
-      
+
       <PaymentUpdateModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

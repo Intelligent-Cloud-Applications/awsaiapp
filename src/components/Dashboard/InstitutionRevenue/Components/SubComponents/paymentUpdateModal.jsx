@@ -102,6 +102,7 @@ function PaymentUpdateModal({ isOpen, onClose, onSubmit, newLog, setNewLog }) {
                   onChange={(e) =>
                     setNewLog({ ...newLog, date: e.target.value })
                   }
+                  max={new Date().toISOString().split("T")[0]} // Set max date to today
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
