@@ -19,7 +19,7 @@ function PaymentUpdateModal({ isOpen, onClose, onSubmit, newLog, setNewLog }) {
         <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-2xl">
           <div className="flex items-start justify-between p-5 border-b border-solid rounded-t border-gray-300">
             <h3 className="text-xl font-semibold text-gray-800">
-              Update Payment Details
+              Upload Transaction Detail
             </h3>
             <button
               onClick={onClose}
@@ -73,6 +73,11 @@ function PaymentUpdateModal({ isOpen, onClose, onSubmit, newLog, setNewLog }) {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter Amount"
                   required
+                  style={{
+                    MozAppearance: "textfield",
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  }}
                 />
               </div>
 
@@ -102,26 +107,10 @@ function PaymentUpdateModal({ isOpen, onClose, onSubmit, newLog, setNewLog }) {
                   onChange={(e) =>
                     setNewLog({ ...newLog, date: e.target.value })
                   }
+                  max={new Date().toISOString().split("T")[0]} // Set max date to today
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              </div>
-
-              <div>
-                <label className="block mb-2 ml-2 text-sm font-medium text-gray-700">
-                  Status
-                </label>
-                <select
-                  value={newLog.status}
-                  onChange={(e) =>
-                    setNewLog({ ...newLog, status: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="Transferred">Transferred</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Failed">Failed</option>
-                </select>
               </div>
             </div>
 
