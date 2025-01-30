@@ -18,7 +18,7 @@ function CashoutTab({ institution }) {
     status: "Transferred",
   });
 
-  const itemsPerPage = 4;
+  const itemsPerPage = 2;
   const totalPages = Math.ceil(
     (cashoutData?.client[0]?.cashoutLogs.length || 0) / itemsPerPage
   );
