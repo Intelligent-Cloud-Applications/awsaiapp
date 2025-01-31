@@ -9,7 +9,7 @@ import App from "./App";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1": "us-east-2",
+    region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
     userPoolId:
       process.env.REACT_APP_STAGE === "PROD"
         ? process.env.REACT_APP_PROD_USER_POOL_ID
@@ -36,9 +36,9 @@ Amplify.configure({
       process.env.REACT_APP_STAGE === "PROD"
         ? "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6"
         : "us-east-1:a68cac30-d7f7-4f73-9b1f-ca6a4f86eba6",
-    additionalIdentityPoolId: "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d"
+    additionalIdentityPoolId: "us-east-2:9b1fda39-3231-4606-b32f-7ba24edcb53d",
   },
-  
+
   API: {
     endpoints: [
       {
@@ -47,15 +47,20 @@ Amplify.configure({
           process.env.REACT_APP_STAGE === "PROD"
             ? "https://er9zh7i7md.execute-api.us-east-1.amazonaws.com/dev"
             : "https://gn41h453j1.execute-api.us-east-2.amazonaws.com/dev",
-        region: process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
+        region:
+          process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
       },
       {
-        name: 'beta_dance',
-        endpoint: ' https://ikticbkaxh.execute-api.us-east-2.amazonaws.com/dev',
-        region: 'us-east-2',
-    },
+        name: "beta_dance",
+        endpoint:
+          process.env.REACT_APP_STAGE === "PROD"
+            ? "https://ozmwa310vk.execute-api.us-east-1.amazonaws.com/dev"
+            : "https://ikticbkaxh.execute-api.us-east-2.amazonaws.com/dev",
+        region:
+          process.env.REACT_APP_STAGE === "PROD" ? "us-east-1" : "us-east-2",
+      },
     ],
-  },  
+  },
 });
 
 // ReactDOM.render(<App />, document.getElementById('root'));
