@@ -10,7 +10,7 @@ import Header from "../../../components/Home/Navbar";
 const AuthPage = () => {
   const options = [
     { userType: 'owner', email: 'admin@tester.com' },
-    { userType: 'sales', email: 'user@tester.com' },
+    { userType: 'sale', email: 'user@tester.com' },
     { userType: 'admin', email: 'operation@tester.com' },
   ]
 
