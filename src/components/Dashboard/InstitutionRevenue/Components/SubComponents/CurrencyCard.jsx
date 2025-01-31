@@ -1,4 +1,8 @@
-const CurrencyCard = ({ currency, data, paidAmount }) => (
+const CurrencyCard = ({ currency, data, paidAmount }) => {
+  const remainingAmount = data.total - paidAmount;
+  const currencySymbol = currency === "USD" ? "$" : "₹";
+
+  return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-md p-3 sm:p-5 transform transition-all hover:scale-104 hover:shadow-xl">
       <div className="flex items-center mb-4">
         <div className="bg-blue-100 p-2 rounded-full mr-3">
@@ -13,13 +17,13 @@ const CurrencyCard = ({ currency, data, paidAmount }) => (
           <div>
             <div className="text-xs sm:text-sm text-gray-500 mb-1">Total Collected</div>
             <div className="text-lg sm:text-2xl font-bold text-blue-600">
-              {currency === "USD" ? "$" : "₹"}{data.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {currencySymbol}{data.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
           </div>
           <div>
             <div className="text-xs sm:text-sm text-gray-500 mb-1">Total Paid</div>
             <div className="text-lg sm:text-2xl font-bold text-green-600">
-              {currency === "USD" ? "$" : "₹"}{paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {currencySymbol}{paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
           </div>
         </div>
@@ -29,14 +33,15 @@ const CurrencyCard = ({ currency, data, paidAmount }) => (
             <div>Transactions</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-blue-600">
-              {currency === "USD" ? "$" : "₹"}{data.minAmount.toFixed(2)} - {currency === "USD" ? "$" : "₹"}{data.maxAmount.toFixed(2)}
+            <div className="font-bold text-orange-600">
+              {currencySymbol}{remainingAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
-            <div>Amount Range</div>
+            <div>Remaining Amount</div>
           </div>
         </div>
       </div>
     </div>
   );
+};
 
-  export default CurrencyCard;
+export default CurrencyCard;
