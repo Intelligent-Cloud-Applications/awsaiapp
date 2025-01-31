@@ -56,7 +56,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
             <div>
               <Navbar />
               <div className="flex flex-col items-center">
-                <div className="fixed mt-14 z-50 bg-[#f1f1f1] w-[calc(90vw-100px)] flex justify-evenly items-center">
+                <div className="fixed mt-20 z-50 bg-[#f1f1f1] flex justify-evenly items-center">
                   <div
                     onClick={goBack}
                     className="border bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
