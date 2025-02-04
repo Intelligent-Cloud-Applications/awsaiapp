@@ -8,7 +8,7 @@ import Context from "../context/Context";
 // import { API } from "aws-amplify";
 const Pricing = () => {
   // const Navigate = useNavigate();
-  // const UserCtx = useContext(Context);
+  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   // const UtilCtx = useContext(Context).util;
 
@@ -80,9 +80,9 @@ const Pricing = () => {
   //         verify();
   //       },
   //       prefill: {
-  //         name: UserCtx.userName,
-  //         email: UserCtx.emailId,
-  //         contact: UserCtx.phoneNumber,
+  //         name: Ctx.userName,
+  //         email: Ctx.emailId,
+  //         contact: Ctx.phoneNumber,
   //       },
   //       theme: {
   //         color: "#00b4bb",
@@ -112,8 +112,8 @@ const Pricing = () => {
   //   }
   // };
 
-    const SecondaryColor = "#0000";
-    const PrimaryColor = "#30afbc"
+    const SecondaryColor = "0000";
+    const PrimaryColor = "30afbc"
 
   return (
     <div className="flex flex-col">
@@ -159,7 +159,9 @@ const Pricing = () => {
                 </ul>
                 <button
                   onClick={() => {
-                    window.open(`https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}`, '_blank', 'noopener,noreferrer');
+                    window.open(
+                      `const url = https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}&institutionId=${encodeURIComponent(institutionId)}`, '_blank', 'noopener,noreferrer'
+                    );
                   }}
                   className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg"
                 >
