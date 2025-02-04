@@ -43,9 +43,9 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     //   process.env.REACT_APP_STAGE === 'PROD'
     //     ? 'http://happyprancer.com'
     //     : 'http://beta.happyprancer.com';
-    const SecondaryColor = "#0000";
-    const PrimaryColor = "#30afbc"
-    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
+    const SecondaryColor = "0000";
+    const PrimaryColor = "30afbc"
+    const url = `const url = https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}&institutionId=${encodeURIComponent(institutionId)}`;
     Navigate("/dashboard");
     window.open(url, '_blank');
     // window.location.href = url;
