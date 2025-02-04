@@ -9,12 +9,11 @@ const Pay = () => {
   const Ctx = useContext(Context);
 
   // const UtilCtx = useContext(Context).util;
-  // const UserCtx = useContext(Context).user;
+  // const Ctx = useContext(Context).user;
   // const Navigate = useNavigate();
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);
   };
-
 
   // const handleSubscribe = async (productId) => {
   //   UtilCtx.setLoader(true);
@@ -85,9 +84,9 @@ const Pay = () => {
   //         verify();
   //       },
   //       prefill: {
-  //         name: UserCtx.userName,
-  //         email: UserCtx.emailId,
-  //         contact: UserCtx.phoneNumber,
+  //         name: Ctx.userName,
+  //         email: Ctx.emailId,
+  //         contact: Ctx.phoneNumber,
   //       },
   //       theme: {
   //         color: "#00b4bb",
@@ -116,7 +115,8 @@ const Pay = () => {
   //     UtilCtx.setLoader(false);
   //   }
   // };
-
+  const SecondaryColor = "#0000";
+  const PrimaryColor = "#30afbc";
   return (
     <div className="flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full">
@@ -140,7 +140,17 @@ const Pay = () => {
         <div className="flex justify-center mt-6">
           <button
             onClick={() => {
-              window.open(`https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}`, '_blank', 'noopener,noreferrer');
+              window.open(
+                `const url = https://happyprancer.com/allpayment/awsaiapp/${
+                  Ctx.userData.cognitoId
+                }/${Ctx.userData.emailId}?primary=${encodeURIComponent(
+                  PrimaryColor
+                )}&secondary=${encodeURIComponent(
+                  SecondaryColor
+                )}&institutionId=${encodeURIComponent(institutionId)}`,
+                "_blank",
+                "noopener,noreferrer"
+              );
             }}
             className="bg-[#30AFBC] hover:bg-slate-900 text-white py-2 px-6 rounded duration-300 hover:scale-105 shadow-lg"
           >
