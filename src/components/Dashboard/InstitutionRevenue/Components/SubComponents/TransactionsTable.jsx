@@ -12,7 +12,7 @@ const TransactionsTable = ({ currentItems, currentPage, totalPages, onPageChange
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((log, index) => (
+          {currentItems?.map((log, index) => (
             <tr key={index} className="border-b border-[#ebebeb] hover:bg-gray-50">
               <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-none">
                 {log.transactionId}
