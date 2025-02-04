@@ -1,4 +1,3 @@
-// CashoutTab.jsx
 import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
 import TransactionsTable from "./SubComponents/TransactionsTable";
@@ -20,11 +19,12 @@ function CashoutTab({ institution }) {
 
   const itemsPerPage = 2;
   const totalPages = Math.ceil(
-    (cashoutData?.client[0]?.cashoutLogs.length || 0) / itemsPerPage
+    (cashoutData?.client[0]?.cashoutLogs?.length || 0) / itemsPerPage
   );
 
   useEffect(() => {
     fetchCashoutData();
+    // eslint-disable-next-line
   }, [institution]);
 
   const fetchCashoutData = async () => {
@@ -42,14 +42,22 @@ function CashoutTab({ institution }) {
   };
 
   if (loading) return <div className="p-4 text-center">Loading...</div>;
-  if (!cashoutData) return null;
+
+  // If no data is available, show a message
+  if (!cashoutData || !cashoutData.client || cashoutData.client.length === 0) {
+    return (
+      <div className="p-4 text-center text-gray-600">
+        No data available.
+      </div>
+    );
+  }
 
   const { client, payments } = cashoutData;
   const clientData = client[0];
 
   // Sort the cashoutLogs by date in descending order and paginate
   const currentItems = clientData?.cashoutLogs
-    .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date in descending order
+    ?.sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date in descending order
     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); // Paginate the sorted array
 
   const currencyBreakdown = payments.items.reduce((acc, payment) => {
@@ -83,6 +91,7 @@ function CashoutTab({ institution }) {
             ...newPayment,
             amount: parseFloat(newPayment.amount),
             date: new Date(newPayment.date).toISOString(),
+            status: "Transferred",
           },
         ],
         lastUpdated: new Date().toISOString(),
@@ -144,9 +153,7 @@ function CashoutTab({ institution }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         {Object.entries(currencyBreakdown).map(([currency, data]) => {
           const paidAmount = clientData.cashoutLogs
-            .filter(
-              (log) => log.currency === currency && log.status === "Transferred"
-            )
+            ?.filter((log) => log.currency === currency && log.status === "Transferred")
             .reduce((total, log) => total + log.amount, 0);
           return (
             <CurrencyCard

@@ -1,5 +1,11 @@
 const CurrencyCard = ({ currency, data, paidAmount }) => {
-  const remainingAmount = data.total - paidAmount;
+  // Ensure paidAmount is a number, default to 0 if undefined or null
+  const paidAmountNumber = Number(paidAmount) || 0;
+
+  // Calculate remaining amount
+  const remainingAmount = data.total - paidAmountNumber;
+
+  // Determine currency symbol
   const currencySymbol = currency === "USD" ? "$" : "₹";
 
   return (
@@ -23,7 +29,7 @@ const CurrencyCard = ({ currency, data, paidAmount }) => {
           <div>
             <div className="text-xs sm:text-sm text-gray-500 mb-1">Total Paid</div>
             <div className="text-lg sm:text-2xl font-bold text-green-600">
-              {currencySymbol}{paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {currencySymbol}{paidAmountNumber.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </div>
           </div>
         </div>
