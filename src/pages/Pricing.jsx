@@ -112,9 +112,7 @@ const Pricing = () => {
   //     UtilCtx.setLoader(false);
   //   }
   // };
-
-    const SecondaryColor = "0000";
-    const PrimaryColor = "30afbc"
+  
     const SecondaryColor = "0000";
     const PrimaryColor = "30afbc"
 
