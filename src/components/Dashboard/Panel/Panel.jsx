@@ -355,8 +355,8 @@ const Panel = () => {
 
   const handlePayment = () => {
     console.log("redirect to payment");
-    const SecondaryColor = "#0000";
-    const PrimaryColor = "#30afbc";
+    const SecondaryColor = "0000";
+    const PrimaryColor = "30afbc";
     const url = `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${tempInstitution}`;
     window.open(url, "_blank");
     setShowMemberList(false);
