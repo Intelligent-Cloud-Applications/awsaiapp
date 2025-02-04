@@ -27,7 +27,7 @@ const Panel = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [isMonthlyReport, setisMonthlyReport] = useState("");
   const { clients, userData, setUserData } = useContext(Context);
-  const clientsData = Object.entries(clients.data);
+  const clientsData = Object.entries(clients?.data || {});
   const [selectedStatuses, setSelectedStatuses] = useState({});
   const [deliveryStatuses, setDeliveryStatuses] = useState({});
   const [planStatuses, setPlanStatuses] = useState({});
@@ -51,27 +51,7 @@ const Panel = () => {
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const menuRef = useRef(null);
-  // const menuRef = useRef(null); // Reference for the dropdown menu container
 
-  // const handleClickOutside = (event) => {
-  //   if (menuRef.current && !menuRef.current.contains(event.target)) {
-  //     console.log("Click detected outside dropdown");
-  //     setActiveMenu(null);
-  //     setActiveSubMenu(null);
-  //   } else {
-  //     console.log("Click inside dropdown or target element:", event.target);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   // Attach event listener to detect clicks outside
-  //   document.addEventListener("mousedown", handleClickOutside);
-
-  //   // Clean up listener on component unmount
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -209,28 +189,28 @@ const Panel = () => {
     if (!searchQuery && !selectedType && filterStatus === null) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            ?.filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery?.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
-      ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        const matchesQuery = !searchQuery || institution.includes(query);
-        const matchesType =
-          !selectedType || client.institutionType === selectedType;
-        const matchesDelivery =
-          filterStatus === null || client.isDelivered === filterStatus;
-        return matchesQuery && matchesType && matchesDelivery;
-      })
+      ? clientsData?.filter(([key, client]) => {
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          const matchesQuery = !searchQuery || institution.includes(query);
+          const matchesType =
+            !selectedType || client.institutionType === selectedType;
+          const matchesDelivery =
+            filterStatus === null || client.isDelivered === filterStatus;
+          return matchesQuery && matchesType && matchesDelivery;
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -416,7 +396,7 @@ const Panel = () => {
     };
     setUserData(updatedUserData);
     setTempInstitution(client.institutionid);
-    setSelectedInstitutionType(client.institutionType)
+    setSelectedInstitutionType(client.institutionType);
     setShowMemberList(true);
   };
 
@@ -513,11 +493,13 @@ const Panel = () => {
                     <div className="relative inline-block ml-5" ref={menuRef}>
                       <button
                         className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
-                        onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-                      >
-                        {(selectedType !== null || filterStatus !== null) &&
-                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                        onClick={() =>
+                          setActiveMenu((prev) => (prev ? null : "main"))
                         }
+                      >
+                        {(selectedType !== null || filterStatus !== null) && (
+                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                        )}
                         Filter
                         {activeMenu ? (
                           <HiChevronUp className="ml-2" />
@@ -540,14 +522,22 @@ const Panel = () => {
                                 onClick={() => handleMenuToggle("type")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>{selectedType !== null ? selectedType : "Type"}</span>
+                                <span>
+                                  {selectedType !== null
+                                    ? selectedType
+                                    : "Type"}
+                                </span>
                                 <HiChevronRight />
                               </div>
                               <div
                                 onClick={() => handleMenuToggle("isDelivered")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
+                                <span>
+                                  {filterStatus === false
+                                    ? "Not Delivered"
+                                    : "Delivered"}
+                                </span>
                                 <HiChevronRight />
                               </div>
                             </div>
@@ -653,14 +643,16 @@ const Panel = () => {
                             Payment
                           </Table.HeadCell>
                         )}
-                        {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                        {(Ctx.userData.role === "owner" ||
+                          Ctx.userData.role === "sale") && (
                           <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                             Plan
                           </Table.HeadCell>
                         )}
                         <Table.HeadCell
-                          className={`${showHiddenContent ? "" : "max1008:hidden"
-                            } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                          className={`${
+                            showHiddenContent ? "" : "max1008:hidden"
+                          } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                         >
                           Created By
                         </Table.HeadCell>
@@ -724,13 +716,15 @@ const Panel = () => {
                                 );
                               })()}
                             </Table.Cell>
-                            {Ctx.userData.role !== "operation" && (
-                              client.payment ? (
+                            {Ctx.userData.role !== "operation" &&
+                              (client.payment ? (
                                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                   <Dropdown
                                     label={
                                       deliveryStatuses[client.institutionid] ??
-                                      (client.isDelivered ? "Delivered" : "Not Delivered")
+                                      (client.isDelivered
+                                        ? "Delivered"
+                                        : "Not Delivered")
                                     }
                                     inline
                                   >
@@ -739,9 +733,13 @@ const Panel = () => {
                                       onClick={() => {
                                         setDeliveryStatuses((prev) => ({
                                           ...prev,
-                                          [client.institutionid]: "Not Delivered",
+                                          [client.institutionid]:
+                                            "Not Delivered",
                                         }));
-                                        handleDropdownChange(client, "Not Delivered");
+                                        handleDropdownChange(
+                                          client,
+                                          "Not Delivered"
+                                        );
                                       }}
                                     >
                                       Not Delivered
@@ -753,7 +751,10 @@ const Panel = () => {
                                           ...prev,
                                           [client.institutionid]: "Delivered",
                                         }));
-                                        handleDropdownChange(client, "Delivered");
+                                        handleDropdownChange(
+                                          client,
+                                          "Delivered"
+                                        );
                                       }}
                                     >
                                       Delivered
@@ -762,67 +763,75 @@ const Panel = () => {
                                 </Table.Cell>
                               ) : (
                                 <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                  {client.isDelivered ? "Delivered" : "Not Delivered"}
+                                  {client.isDelivered
+                                    ? "Delivered"
+                                    : "Not Delivered"}
                                 </Table.Cell>
-                              )
-                            )}
+                              ))}
                             {Ctx.userData.role !== "operation" && (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 {client.payment ? "Paid" : "Not Paid"}
                               </Table.Cell>
                             )}
-                            {client.payment ? (Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                <Dropdown
-                                  label={planStatuses[client.institutionid] || client.plan}
-                                  inline
-                                >
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Basic",
-                                      }));
-                                      handlePlanChange(client, "Basic");
-                                    }}
+                            {client.payment ? (
+                              (Ctx.userData.role === "owner" ||
+                                Ctx.userData.role === "sale") && (
+                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                  <Dropdown
+                                    label={
+                                      planStatuses[client.institutionid] ||
+                                      client.plan
+                                    }
+                                    inline
                                   >
-                                    Basics
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Standard",
-                                      }));
-                                      handlePlanChange(client, "Standard");
-                                    }}
-                                  >
-                                    Standard
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Advance",
-                                      }));
-                                      handlePlanChange(client, "Advance");
-                                    }}
-                                  >
-                                    Advance
-                                  </Dropdown.Item>
-                                </Dropdown>
-                              </Table.Cell>
+                                    <Dropdown.Item
+                                      className="hover:bg-gray-200 focus:bg-gray-200"
+                                      onClick={() => {
+                                        setPlanStatuses((prev) => ({
+                                          ...prev,
+                                          [client.institutionid]: "Basic",
+                                        }));
+                                        handlePlanChange(client, "Basic");
+                                      }}
+                                    >
+                                      Basics
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      className="hover:bg-gray-200 focus:bg-gray-200"
+                                      onClick={() => {
+                                        setPlanStatuses((prev) => ({
+                                          ...prev,
+                                          [client.institutionid]: "Standard",
+                                        }));
+                                        handlePlanChange(client, "Standard");
+                                      }}
+                                    >
+                                      Standard
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      className="hover:bg-gray-200 focus:bg-gray-200"
+                                      onClick={() => {
+                                        setPlanStatuses((prev) => ({
+                                          ...prev,
+                                          [client.institutionid]: "Advance",
+                                        }));
+                                        handlePlanChange(client, "Advance");
+                                      }}
+                                    >
+                                      Advance
+                                    </Dropdown.Item>
+                                  </Dropdown>
+                                </Table.Cell>
+                              )
                             ) : (
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                 No Plan
                               </Table.Cell>
                             )}
                             <Table.Cell
-                              className={`${showHiddenContent ? "" : "max1008:hidden"
-                                } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                              className={`${
+                                showHiddenContent ? "" : "max1008:hidden"
+                              } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                             >
                               {client.createdBy
                                 ? getUsernameByCognitoId(client.createdBy)
@@ -907,7 +916,7 @@ const Panel = () => {
                                     required
                                     disabled={
                                       selectedStatuses[client.institutionid] !==
-                                      "Completed" &&
+                                        "Completed" &&
                                       client.deliverable !== "Completed"
                                     }
                                     className="w-[160px]"
@@ -921,17 +930,17 @@ const Panel = () => {
                                   {(selectedStatuses[client.institutionid] ===
                                     "Completed" ||
                                     client.deliverable === "Completed") && (
-                                      <Button
-                                        onClick={() =>
-                                          handleDomainLinkSubmit(
-                                            client.institutionid
-                                          )
-                                        }
-                                        className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                                      >
-                                        <FaCheck />
-                                      </Button>
-                                    )}
+                                    <Button
+                                      onClick={() =>
+                                        handleDomainLinkSubmit(
+                                          client.institutionid
+                                        )
+                                      }
+                                      className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                                    >
+                                      <FaCheck />
+                                    </Button>
+                                  )}
                                 </div>
                               </Table.Cell>
                             )}
@@ -1083,7 +1092,6 @@ const Panel = () => {
             </>
           ) : (
             <>
-
               <Select
                 value={instituteType && splitandjoin(instituteType)}
                 onChange={(e) => setInstituteType(e.target.value)}
@@ -1125,11 +1133,13 @@ const Panel = () => {
               <div className="relative mt-4">
                 <button
                   className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
-                  onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-                >
-                  {(selectedType !== null || filterStatus !== null) &&
-                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                  onClick={() =>
+                    setActiveMenu((prev) => (prev ? null : "main"))
                   }
+                >
+                  {(selectedType !== null || filterStatus !== null) && (
+                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
                   Filter
                   {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
                 </button>
@@ -1147,13 +1157,19 @@ const Panel = () => {
                           onClick={() => handleMenuToggle("type")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          <span>{selectedType !== null ? selectedType : "Type"}</span>
+                          <span>
+                            {selectedType !== null ? selectedType : "Type"}
+                          </span>
                         </div>
                         <div
                           onClick={() => handleMenuToggle("isDelivered")}
                           className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         >
-                          <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
+                          <span>
+                            {filterStatus === false
+                              ? "Not Delivered"
+                              : "Delivered"}
+                          </span>
                         </div>
                       </div>
                     )}
@@ -1220,7 +1236,6 @@ const Panel = () => {
                     className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
                   >
                     <div className="flex flex-col gap-2">
-
                       <div
                         className="flex justify-between items-center text-center"
                         onClick={(e) => handleRowClick(client, e)}
@@ -1302,13 +1317,17 @@ const Panel = () => {
                           </div>
                         </div>
                       )}
-                      {(Ctx.userData.role === "owner" || Ctx.userData.role === "sale") && (
+                      {(Ctx.userData.role === "owner" ||
+                        Ctx.userData.role === "sale") && (
                         <div className="flex flex-row gap-2">
                           <h5>Plan:</h5>
                           <div className="flex flex-col gap-2">
                             {client.payment ? (
                               <Dropdown
-                                label={planStatuses[client.institutionid] || client.plan}
+                                label={
+                                  planStatuses[client.institutionid] ||
+                                  client.plan
+                                }
                                 inline
                               >
                                 <Dropdown.Item
@@ -1346,9 +1365,7 @@ const Panel = () => {
                                 </Dropdown.Item>
                               </Dropdown>
                             ) : (
-                              <div>
-                                No Plan
-                              </div>
+                              <div>No Plan</div>
                             )}
                           </div>
                         </div>
@@ -1450,7 +1467,7 @@ const Panel = () => {
                             required
                             disabled={
                               selectedStatuses[client.institutionid] !==
-                              "Completed" &&
+                                "Completed" &&
                               client.deliverable !== "Completed"
                             }
                             className="w-[160px]"
@@ -1464,15 +1481,15 @@ const Panel = () => {
                           {(selectedStatuses[client.institutionid] ===
                             "Completed" ||
                             client.deliverable === "Completed") && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
                         </div>
                       )}
 
@@ -1575,10 +1592,11 @@ const Panel = () => {
                         currentPage > 1 && setCurrentPage(currentPage - 1)
                       }
                       disabled={currentPage === 1}
-                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                        ? "bg-gray-200 text-gray-500"
-                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                        }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === 1
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
                       Previous
                     </button>
@@ -1588,10 +1606,11 @@ const Panel = () => {
                         setCurrentPage(currentPage + 1)
                       }
                       disabled={currentPage === totalPages}
-                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                        ? "bg-gray-200 text-gray-500"
-                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                        }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === totalPages
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
                       Next
                     </button>
@@ -1602,7 +1621,8 @@ const Panel = () => {
           )}
         </>
       ) : (Ctx.userData.userType === "admin" ||
-        Ctx.userData.role === "operation") && payment ? (
+          Ctx.userData.role === "operation") &&
+        payment ? (
         <Index
           tempInstitution={tempInstitution}
           setShowMemberList={setShowMemberList}
@@ -1610,8 +1630,7 @@ const Panel = () => {
         />
       ) : (
         handlePayment()
-      )
-      }
+      )}
     </>
   );
 };
