@@ -10,6 +10,7 @@ const Pay = () => {
 
   // const UtilCtx = useContext(Context).util;
   // const Ctx = useContext(Context).user;
+  // const Ctx = useContext(Context).user;
   // const Navigate = useNavigate();
   const handleLearnMoreClick = (plan) => {
     setSelectedPlan(plan);

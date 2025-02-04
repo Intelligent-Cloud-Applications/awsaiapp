@@ -9,6 +9,7 @@ import Context from "../context/Context";
 const Pricing = () => {
   // const Navigate = useNavigate();
   // const Ctx = useContext(Context);
+  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   // const UtilCtx = useContext(Context).util;
 
@@ -112,6 +113,8 @@ const Pricing = () => {
   //   }
   // };
 
+    const SecondaryColor = "0000";
+    const PrimaryColor = "30afbc"
     const SecondaryColor = "0000";
     const PrimaryColor = "30afbc"
 
