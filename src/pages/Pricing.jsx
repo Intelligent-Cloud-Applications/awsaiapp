@@ -10,6 +10,7 @@ const Pricing = () => {
   // const Navigate = useNavigate();
   // const Ctx = useContext(Context);
   // const Ctx = useContext(Context);
+  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   // const UtilCtx = useContext(Context).util;
 
@@ -112,6 +113,7 @@ const Pricing = () => {
   //     UtilCtx.setLoader(false);
   //   }
   // };
+  
   
     const SecondaryColor = "0000";
     const PrimaryColor = "30afbc"
