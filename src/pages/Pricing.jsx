@@ -10,6 +10,7 @@ const Pricing = () => {
   // const Navigate = useNavigate();
   // const Ctx = useContext(Context);
   // const Ctx = useContext(Context);
+  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   // const UtilCtx = useContext(Context).util;
 
@@ -113,6 +114,7 @@ const Pricing = () => {
   //   }
   // };
   
+  
     const SecondaryColor = "0000";
     const PrimaryColor = "30afbc"
 
@@ -161,7 +163,7 @@ const Pricing = () => {
                 <button
                   onClick={() => {
                     window.open(
-                      `const url = https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}`, '_blank', 'noopener,noreferrer'
+                      `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}`, '_blank', 'noopener,noreferrer'
                     );
                   }}
                   className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg"
