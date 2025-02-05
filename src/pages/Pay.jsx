@@ -42,7 +42,7 @@ const Pay = () => {
           <button
             onClick={() => {
               window.open(
-                `const url = https://happyprancer.com/allpayment/awsaiapp/${
+                `https://happyprancer.com/allpayment/awsaiapp/${
                   Ctx.userData.cognitoId
                 }/${Ctx.userData.emailId}?primary=${encodeURIComponent(
                   PrimaryColor
