@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCoffee, FiPhone, FiHome, FiShield, FiStar } from 'react-icons/fi';
+import { FiCoffee, FiPhone, FiHome, FiStar, FiHeart } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
-import Home from '../components/Cafe/Form/Home';
-import Policy from '../components/Cafe/Form/Policy';
 import Contact from '../components/Cafe/Form/Contact';
+import Home from '../components/Cafe/Form/Home';
 import Testimonials from '../components/Cafe/Form/Testimonials';
+import Values from '../components/Cafe/Form/Values';
 import { API, Storage } from "aws-amplify";
 import PrevSectionDraftHandler from '../components/Cafe/Form/PrevSectionDraftHandler';
 import Context from "../context/Context";
@@ -17,534 +17,571 @@ import "./Template.css";
 // Form section titles and descriptions
 const FORM_SECTIONS = [
   {
-    title: "Company Details",
+    title: "Company Info",
     description: "Build your brand identity with essential company details",
     icon: FiCoffee
   },
   {
-    title: "Contact Information",
-    description: "Help customers reach you through various channels",
+    title: "Contact Details",
+    description: "Add your contact information and social media links",
     icon: FiPhone
   },
   {
     title: "Homepage Content",
-    description: "Create an engaging landing page for your visitors",
+    description: "Create engaging content for your website's homepage",
     icon: FiHome
   },
   {
-    title: "Policies & Values",
-    description: "Share your café's story and commitment to excellence",
-    icon: FiShield
+    title: "Testimonials",
+    description: "Share what your customers say about you",
+    icon: FiStar
   },
   {
-    title: "Testimonials",
-    description: "Showcase what your customers say about your café",
-    icon: FiStar
+    title: "Our Values",
+    description: "Share your company's core values",
+    icon: FiHeart
   }
 ];
 
 const Cafe = () => {
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const [currentSection, setCurrentSection] = useState(0);
-    const [savedData, setsavedData] = useState();
-
-    console.log("🚀 ~ file: Cafe.jsx:21 ~ Cafe ~ savedData:", savedData)
-    // const [Companydata, setCompanydata] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const { userData, company } = useContext(Context);
+    const util = useContext(Context).util;
+    
+    // Company state
+    const [institutionId, setInstitutionId] = useState('');
+    const [companyName, setCompanyName] = useState('');
     const [logo, setLogo] = useState(null);
-    const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
-    const [countBanner, setCountBanner] = useState(
-        titleOfCountBanner.map(title => ({ count: '', title }))
-    );
-    const [LightPrimaryColor, setLightPrimaryColor] = useState("#225c59");
-    const [LightestPrimaryColor, setLightestPrimaryColor] = useState("#c3f3f1");
-    // const [logo, setLogo] = useState(null);
-    const [companyName, setCompanyName] = useState(null);
-    const [companyDescription, setCompanyDescription] = useState(null);
-    const [institutionId, setinstitutionId] = useState(null);
-    const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
-    const [SecondaryColor, setSecondaryColor] = useState("#000000");
-    // const [countryCode, setCountryCode] = useState("INR");
-    // const [country, setCountry] = useState("India");
-    const [TagLine, setTagLine] = useState("");
-    const [TagLine1, setTagLine1] = useState("");
-    const [TagLine2, setTagLine2] = useState("");
-    const [TagLine3, setTagLine3] = useState("");
-    const [video, setVideo] = useState(null);
-    const [aboutImage, setAboutImage] = useState([]);
-    const [selectedMedia, setSelectedMedia] = useState(null);
-    const [values, setValues] = useState([]);
-    const [mediaType, setMediaType] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const { userData } = useContext(Context)
-    const [testimonials, setTestimonials] = useState([
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-    ]);
-
-    // const calculateDuration = (subscriptionType) => {
-    //   const daysInMonth = 30; // assuming 30 days in a month
-
-    //   if (subscriptionType === 'monthly') {
-    //     return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   } else if (subscriptionType === 'weekly') {
-    //     return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   } else if (subscriptionType === 'yearly') {
-    //     return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   }
-
-    //   return 0;
-    // };
-    // const [subscriptions, setSubscriptions] = useState([
-
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    // ]);
-
-
-    // const [faqs, setFaqs] = useState([
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    // ]);
-
-    const [policies, setPolicies] = useState({
-        'Privacy Policy': [""],
-        'About Us': [""],
-    });
-
+    const [selectedLogo, setSelectedLogo] = useState(null);
+    const [PrimaryColor, setPrimaryColor] = useState('#30afbc');
+    const [SecondaryColor, setSecondaryColor] = useState('#2b9ea9');
+    const [LightPrimaryColor, setLightPrimaryColor] = useState('#e6f7f9');
+    const [LightestPrimaryColor, setLightestPrimaryColor] = useState('#f3fbfc');
+    const [TagLine, setTagLine] = useState('');
+    const [TagLine1, setTagLine1] = useState('');
+    const [TagLine2, setTagLine2] = useState('');
+    const [values, setValues] = useState(['', '', '']);
     const [contactInfo, setContactInfo] = useState({
-        address: '',
-        country: 'India',
-        countryCode: '91',
-        owner_name: '',
-        phoneNumber: '',
-        email: '',
-        upiId: '',
         instagram: '',
         facebook: '',
-        youTube: '',
-        'Establishment Year of Company': '',
+        youTube: ''
     });
 
-    const util = useContext(Context).util;
-    useEffect(() => {
-        console.log(policies);
-    }, [policies]);
+    // Testimonials state
+    const [testimonials, setTestimonials] = useState([
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+    ]);
+
+    // Add new states for Home component
+    const [TagLine3, setTagLine3] = useState('');
+    const [heroImage, setHeroImage] = useState(null);
+    const [selectedMedia, setSelectedMedia] = useState(null);
+
+    // Add states for Values component
+    const [valueTitle, setValueTitle] = useState('');
+    const [valueDescription, setValueDescription] = useState('');
+    const [valueContent, setValueContent] = useState('');
 
     const uploadTestimonials = async () => {
-        const updatedTestimonials = await Promise.all(
-            testimonials.map(async (testimonial, index) => {
-                if (testimonial.uploadedFile) {
-                    // Upload the file to S3 with public read access
-                    const response = await Storage.put(
-                        `${institutionId}/images/Testimonial/${testimonial.uploadedFile.name}`,
-                        testimonial.actualFile,
-                        { 
-                            contentType: testimonial.actualFile.type,
-                            acl: 'public-read'
-                        }
-                    );
+        try {
+            const updatedTestimonials = await Promise.all(
+                testimonials.filter(t => t.name && t.feedback).map(async (testimonial, index) => {
+                    if (testimonial.uploadedFile) {
+                        const fileName = `testimonial_${index + 1}_${Date.now()}.${testimonial.uploadedFile.name.split('.').pop()}`;
+                        const response = await Storage.put(
+                            `${institutionId}/images/testimonials/${fileName}`,
+                            testimonial.uploadedFile,
+                            { 
+                                contentType: testimonial.uploadedFile.type,
+                                acl: 'public-read'
+                            }
+                        );
 
-                    // Get the URL of the uploaded file
-                    let imageUrl = await Storage.get(response.key);
-                    imageUrl = imageUrl.split("?")[0];
+                        let imageUrl = await Storage.get(response.key);
+                        imageUrl = imageUrl.split("?")[0];
 
-                    // Update the testimonial with the image URL
-                    return { ...testimonial, imgSrc: imageUrl };
-                }
-                return testimonial;
-            })
-        );
+                        return {
+                            image: imageUrl,
+                            name: testimonial.name,
+                            rating: testimonial.rating || 5,
+                            text: testimonial.feedback
+                        };
+                    }
+                    return testimonial;
+                })
+            );
 
-        setTestimonials(updatedTestimonials);
+            return updatedTestimonials.filter(t => t.name && t.feedback);
+        } catch (error) {
+            console.error("Error uploading testimonials:", error);
+            throw error;
+        }
     };
 
     const handleSubmitForm = async () => {
         try {
             util.setLoader(true);
-
-            // Upload logo
-            const logoResponse = await Storage.put(
-                `${institutionId}/images/${logo.name}`,
-                logo,
-                { 
-                    contentType: logo.type,
-                    acl: 'public-read'  // Make file publicly readable
+            console.log("Starting form submission...");
+    
+            // Upload logo if exists
+            let logoUrl = null;
+            if (selectedLogo && selectedLogo.name) {
+                try {
+                    const fileExtension = selectedLogo.name.includes('.') ? selectedLogo.name.split('.').pop() : 'png';
+                    const fileName = `logo_${Date.now()}.${fileExtension}`;
+                    console.log("Uploading logo with filename:", fileName);
+    
+                    const uploadResponse = await Storage.put(fileName, logo, {
+                        contentType: logo.type,
+                    });
+    
+                    if (uploadResponse && uploadResponse.key) {
+                        logoUrl = await Storage.get(uploadResponse.key);
+                        if (logoUrl) {
+                            logoUrl = logoUrl.split("?")[0]; // Ensure URL is clean
+                            console.log("Logo uploaded successfully:", logoUrl);
+                        } else {
+                            console.error("Logo URL retrieval failed.");
+                            throw new Error("Failed to retrieve uploaded logo URL.");
+                        }
+                    } else {
+                        console.error("Storage.put response is invalid:", uploadResponse);
+                        throw new Error("Logo upload failed.");
+                    }
+                } catch (logoError) {
+                    console.error("Error uploading logo:", logoError);
+                    alert("Logo upload failed. Please try again.");
+                    throw logoError;
                 }
-            );
-            const logoUrl = (await Storage.get(logoResponse.key)).split('?')[0];
-
-            // Upload video as hero image
-            const videoResponse = await Storage.put(
-                `${institutionId}/videos/${video.name}`,
-                video,
-                { 
-                    contentType: video.type,
-                    acl: 'public-read'  // Make file publicly readable
-                }
-            );
-            const heroImage = (await Storage.get(videoResponse.key)).split('?')[0];
-
-            // Prepare request body according to the Lambda function schema
+            } else {
+                console.warn("No logo selected, proceeding without uploading.");
+            }
+    
+            // Upload testimonials
+            const processedTestimonials = await uploadTestimonials();
+    
+            // Prepare request body
             const requestBody = {
-                institutionid: institutionId,
-                index: "0",  // Added index as required by Lambda
+                institutionid: institutionId ,
+                index: "0",
                 companyName,
-                PrimaryColor,
-                SecondaryColor,
-                logoUrl,
+                institutionType: "cafe",
+                isDelivered: false,
+                isFormFilled: true,
                 LightPrimaryColor,
-                LightestPrimaryColor,
-                PrivacyPolicy: policies['Privacy Policy'],
-                heroImage,
-                mission: companyDescription,
-                productTagline: TagLine,
-                qrURL: null,
-                socialMediaLinks: {
-                    facebook: contactInfo?.facebook || null,
-                    instagram: contactInfo?.instagram || null,
-                    youtube: contactInfo?.youTube || null
+                LightSecondaryColor: LightestPrimaryColor,
+                logoUrl,
+                mission: {
+                    description1: TagLine1,
+                    description2: TagLine2,
+                    highlights: values.filter(Boolean)
                 },
+                PrimaryColor,
+                productTagline: TagLine,
+                SecondaryColor,
+                socialMediaLinks: [
+                    contactInfo?.instagram && {
+                        icon: "instagram-icon-url",
+                        platform: "Instagram",
+                        url: contactInfo.instagram
+                    },
+                    contactInfo?.facebook && {
+                        icon: "facebook-icon-url",
+                        platform: "Facebook",
+                        url: contactInfo.facebook
+                    },
+                    contactInfo?.youTube && {
+                        icon: "youtube-icon-url",
+                        platform: "YouTube",
+                        url: contactInfo.youTube
+                    }
+                ].filter(Boolean), // Ensure valid links
+    
+                Table: null,
                 tagLine1: TagLine1,
                 tagLine2: TagLine2,
-                testimonials: testimonials.map(t => ({
-                    name: t.name,
-                    feedback: t.feedback,
-                    image: t.imgSrc
-                })),
-                usefulLinks: values,
-                isFormFilled: true  // Added as required by Lambda
+                testimonials: processedTestimonials,
+                usefulLinks: [
+                    {
+                        style: { color: "white", textDecoration: "none" },
+                        title: "Awsaiapp",
+                        url: "https://awsaiapp.com"
+                    },
+                    {
+                        onClick: "Navigate => Navigate('/product')",
+                        style: { color: "white", textDecoration: "none" },
+                        title: "Product"
+                    },
+                    contactInfo?.instagram && {
+                        style: { color: "white", textDecoration: "none" },
+                        title: "Instagram",
+                        url: contactInfo.instagram
+                    }
+                ].filter(Boolean), // Ensure valid links
+    
+                date: new Date().toISOString(),
+                createdBy: userData?.cognitoId || null
             };
-
-            console.log("Submitting form with data:", requestBody);
-
-            // Make API call with proper headers
-            const response = await API.put("clients", "/user/cafewebDevForm", {
+    
+            console.log("Submitting form with payload:", requestBody);
+    
+            // Send API request
+            const response = await API.put("clients", '/user/cafewebDevForm', {
                 body: requestBody,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-                }
             });
-
+    
             console.log("Form submitted successfully:", response);
-            
-            // Show success message and navigate
-            Navigate('/dashboard', { 
-                state: { 
-                    success: true, 
-                    message: 'Form submitted successfully!' 
+            localStorage.removeItem('cafeFormDraft');
+    
+            // Navigate to dashboard on success
+            navigate('/dashboard', {
+                state: {
+                    success: true,
+                    message: 'Form submitted successfully!'
                 }
             });
-
+    
             return response;
         } catch (error) {
             console.error("Error submitting form:", error);
             let errorMessage = "Error submitting form. Please try again.";
-            
+    
             if (error.response) {
-                console.log("Error response:", error.response);
+                console.log("Error response details:", error.response);
                 errorMessage = error.response.data?.message || errorMessage;
+            } else if (error.message) {
+                errorMessage = error.message;
             }
-            
+    
             alert(errorMessage);
             throw error;
         } finally {
             util.setLoader(false);
+            console.log("Form submission process completed.");
         }
     };
-
-
-    // const fetchClients = async (institution) => {
-    //   try {
-    //     //      setLoader(true);
-    //     const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
-    //     //      console.log(response)
-    //     setCompanydata(response);
-    //   } catch (error) {
-    //     console.error("Error fetching clients:", error);
-    //   } finally {
-    //     //      setLoader(false);
-    //   }
-    // };
-
-    // useEffect(() => {
-    //   fetchClients();
-    //   //    console.log("The daTa are fetching!");
-    // }, []);
-
+    
 
     const handleNextSection = async () => {
         try {
             util.setLoader(true);
-            let canProceed = true;
-
+            
             switch (currentSection) {
-                case 0: // Company Info
-                    if (!companyName || !institutionId || !logo || !companyDescription) {
-                        alert("Please fill in all required fields in Company Info");
-                        canProceed = false;
-                        break;
-                    }
-
-                    // Check if institution exists
-                    try {
-                        // First, validate institution ID format
-                        if (!/^[a-zA-Z0-9-_]+$/.test(institutionId)) {
-                            alert("Institution ID can only contain letters, numbers, hyphens, and underscores");
-                            canProceed = false;
-                            break;
-                        }
-
-                        const checkResponse = await API.get("clients", "/user/check-cafe", {
-                            queryStringParameters: {
-                                institutionid: institutionId,
-                                index: "0"
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'Access-Control-Allow-Origin': '*',
-                                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
-                            }
-                        });
-                        
-                        console.log("Institution check response:", checkResponse);
-                        
-                        if (checkResponse && checkResponse.exists) {
-                            alert("This institution ID already exists. Please use a different ID.");
-                            canProceed = false;
-                        }
-                    } catch (error) {
-                        console.error("Error checking institution:", error);
-                        let errorMessage = "Error checking institution. Please try again.";
-                        
-                        if (error.response) {
-                            console.log("Error response:", error.response);
-                            errorMessage = error.response.data?.message || errorMessage;
-                        } else if (error.message) {
-                            errorMessage = error.message;
-                        }
-                        
-                        alert(errorMessage);
-                        canProceed = false;
+                case 0: // Company
+                    if (!institutionId || !companyName || !selectedLogo) {
+                        alert('Please fill in all required fields');
+                        return;
                     }
                     break;
 
-                case 1: // Contact Info
-                    if (!contactInfo.phoneNumber || !contactInfo.email || !contactInfo.owner_name) {
-                        alert("Please fill in all required contact information");
-                        canProceed = false;
-                        break;
-                    }
-
-                    // Validate phone number and email
-                    const phoneRegex = /^[0-9]{10}$/;
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                    if (!phoneRegex.test(contactInfo.phoneNumber)) {
-                        alert("Please enter a valid 10-digit phone number");
-                        canProceed = false;
-                        break;
-                    }
-
-                    if (!emailRegex.test(contactInfo.email)) {
-                        alert("Please enter a valid email address");
-                        canProceed = false;
-                        break;
+                case 1: // Contact
+                    if (!contactInfo.email || !contactInfo.phone) {
+                        alert('Please fill in required contact information');
+                        return;
                     }
                     break;
 
-                case 2: // Home Content
-                    if (!TagLine || !video) {
-                        alert("Please provide both tagline and video");
-                        canProceed = false;
+                case 2: // Home
+                    if (!TagLine || !heroImage) {
+                        alert('Please fill in homepage content');
+                        return;
                     }
                     break;
 
-                case 3: // Policy
-                    // Validate count banner
-                    if (countBanner.some(item => !item.count)) {
-                        alert("Please fill in all count banner values");
-                        canProceed = false;
-                        break;
-                    }
-
-                    // Validate policies
-                    if (!policies['Privacy Policy'].length || !policies['About Us'].length) {
-                        alert("Please add at least one point to each policy section");
-                        canProceed = false;
-                        break;
-                    }
-
-                    // Validate values
-                    if (!values.length) {
-                        alert("Please add at least one company value");
-                        canProceed = false;
+                case 3: // Testimonials
+                    const validTestimonials = testimonials.filter(t => 
+                        t.name && t.feedback && t.uploadedFile
+                    ).length;
+                    if (validTestimonials < 3) {
+                        alert('Please add at least 3 testimonials');
+                        return;
                     }
                     break;
 
-                case 4: // Testimonials & Final Submit
-                    // Validate testimonials
-                    const validTestimonials = testimonials.filter(
-                        t => t.name && t.feedback && t.uploadedFile
-                    );
-                    if (validTestimonials.length < 3) {
-                        alert("Please complete all three testimonials with name, feedback, and image");
-                        canProceed = false;
-                        break;
+                case 4: // Values
+                    if (!valueTitle || !valueContent) {
+                        alert('Please fill in your company values');
+                        return;
                     }
-
-                    if (canProceed) {
-                        try {
-                            // Upload files first
-                            await uploadTestimonials();
-                            
-                            // Submit the form
-                            await handleSubmitForm();
-                            
-                            // Navigate to success page or dashboard
-                            Navigate('/dashboard', { 
-                                state: { 
-                                    success: true, 
-                                    message: 'Form submitted successfully!' 
-                                }
-                            });
-                            return;
-                        } catch (error) {
-                            console.error("Error submitting form:", error);
-                            alert("Error submitting form. Please try again.");
-                            canProceed = false;
-                        }
-                    }
-                    break;
+                    await handleSubmitForm();
+                    return;
 
                 default:
                     break;
             }
 
-            if (canProceed) {
-                setCurrentSection(prev => Math.min(prev + 1, 4));
-            }
+            setCurrentSection(prev => prev + 1);
         } catch (error) {
-            console.error("Error in handleNextSection:", error);
-            let errorMessage = "An error occurred. Please try again.";
-            
-            if (error.response) {
-                errorMessage = error.response.data?.message || errorMessage;
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-            
-            alert(errorMessage);
+            console.error("Error in section submission:", error);
         } finally {
             util.setLoader(false);
         }
     };
 
     const saveData = () => {
-        setsavedData({});
-        //    console.log("Saved Trigger")
+        const formData = {
+            companyName,
+            institutionId,
+            PrimaryColor,
+            SecondaryColor,
+            logo,
+            selectedLogo,
+            LightPrimaryColor,
+            LightestPrimaryColor,
+            TagLine,
+            TagLine1,
+            TagLine2,
+            values,
+            contactInfo,
+            testimonials
+        };
+        
+        localStorage.setItem('cafeFormDraft', JSON.stringify(formData));
+        alert('Draft saved successfully!');
     };
 
-    // const handlePrevSection = () => {
-    //   setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
-    // };
-    const [showModal, setShowModal] = useState(false);
     const handleSaveDraft = () => {
-        Navigate('/dashboard', { state: { section: 'institution-draft' } });
+        saveData();
+        navigate('/dashboard', { state: { section: 'institution-draft' } });
     };
 
     const handleClearData = async () => {
         try {
             util.setLoader(true);
-            await API.del(
-                "clients",
-                `/user/cafewebDevForm/delete-all/${institutionId}`);
-            alert('All Data deleted successfully');
-            util.setLoader(false);
-            Navigate('/dashboard');
+            if (institutionId) {
+                await API.del(
+                    "clients",
+                    `/user/cafewebDevForm/delete-all/${institutionId}`
+                );
+            }
+            
+            localStorage.removeItem('cafeFormDraft');
+            setInstitutionId('');
+            setCompanyName('');
+            setLogo(null);
+            setSelectedLogo(null);
+            setPrimaryColor('#30afbc');
+            setSecondaryColor('#2b9ea9');
+            setLightPrimaryColor('#e6f7f9');
+            setLightestPrimaryColor('#f3fbfc');
+            setTagLine('');
+            setTagLine1('');
+            setTagLine2('');
+            setValues(['', '', '']);
+            setContactInfo({
+                instagram: '',
+                facebook: '',
+                youTube: ''
+            });
+            setTestimonials([
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+            ]);
+            
+            alert('All data cleared successfully');
+            navigate('/dashboard');
         } catch (error) {
-            alert('No matching data found', error);
+            console.error("Error clearing data:", error);
+            alert('Error clearing data. Please try again.');
+        } finally {
             util.setLoader(false);
         }
     };
-    const handlePrevSectionDraft = () => {
-        setShowModal(true);
+
+    useEffect(() => {
+        const fetchCompanyData = async () => {
+            try {
+                util.setLoader(true);
+                if (company?.details) {
+                    const details = company.details;
+                    
+                    // Set company details from context
+                    setCompanyName(details.companyName || '');
+                    setInstitutionId(details.institutionid || '');
+                    setPrimaryColor(details.PrimaryColor || '#30afbc');
+                    setSecondaryColor(details.SecondaryColor || '#2b9ea9');
+                    setLightPrimaryColor(details.LightPrimaryColor || '#e6f7f9');
+                    setLightestPrimaryColor(details.LightestPrimaryColor || '#f3fbfc');
+                    
+                    // Handle logo
+                    if (details.logoUrl) {
+                        setLogo(details.logoUrl);
+                        // You might need to fetch the actual file if needed
+                        try {
+                            const response = await fetch(details.logoUrl);
+                            const blob = await response.blob();
+                            const file = new File([blob], 'logo.png', { type: blob.type });
+                            setSelectedLogo(file);
+                        } catch (error) {
+                            console.error("Error fetching logo file:", error);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching company data:", error);
+            } finally {
+                util.setLoader(false);
+            }
+        };
+
+        fetchCompanyData();
+    }, [company?.details, util]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            // First try to load from company details
+            if (company?.details) {
+                // ... existing company data loading ...
+                
+                // Load additional data
+                if (company.details.tagLine3) setTagLine3(company.details.tagLine3);
+                if (company.details.heroImage) setHeroImage(company.details.heroImage);
+                if (company.details.values) {
+                    setValueTitle(company.details.values.title || '');
+                    setValueDescription(company.details.values.description || '');
+                    setValueContent(company.details.values.content || '');
+                }
+                return; // Skip loading from draft if we have company details
+            }
+
+            // Then try to load from draft
+            const savedDraft = localStorage.getItem('cafeFormDraft');
+            if (savedDraft) {
+                try {
+                    const parsedData = JSON.parse(savedDraft);
+                    setCompanyName(parsedData.companyName || '');
+                    setInstitutionId(parsedData.institutionId || '');
+                    setPrimaryColor(parsedData.PrimaryColor || '#30afbc');
+                    setSecondaryColor(parsedData.SecondaryColor || '#2b9ea9');
+                    setLogo(parsedData.logo || null);
+                    setSelectedLogo(parsedData.selectedLogo || null);
+                    setLightPrimaryColor(parsedData.LightPrimaryColor || '#e6f7f9');
+                    setLightestPrimaryColor(parsedData.LightestPrimaryColor || '#f3fbfc');
+                    setTagLine(parsedData.TagLine || '');
+                    setTagLine1(parsedData.TagLine1 || '');
+                    setTagLine2(parsedData.TagLine2 || '');
+                    setValues(parsedData.values || ['', '', '']);
+                    setContactInfo(parsedData.contactInfo || {
+                        instagram: '',
+                        facebook: '',
+                        youTube: ''
+                    });
+                    setTestimonials(parsedData.testimonials || [
+                        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+                    ]);
+                } catch (error) {
+                    console.error("Error loading draft:", error);
+                    localStorage.removeItem('cafeFormDraft');
+                }
+            }
+        };
+
+        loadData();
+    }, [company?.details]);
+
+    const renderSection = () => {
+        switch (currentSection) {
+            case 0:
+                return (
+                    <Company
+                        companyName={companyName}
+                        setCompanyName={setCompanyName}
+                        institutionId={institutionId}
+                        setInstitutionId={setInstitutionId}
+                        PrimaryColor={PrimaryColor}
+                        setPrimaryColor={setPrimaryColor}
+                        SecondaryColor={SecondaryColor}
+                        setSecondaryColor={setSecondaryColor}
+                        LightPrimaryColor={LightPrimaryColor}
+                        setLightPrimaryColor={setLightPrimaryColor}
+                        LightestPrimaryColor={LightestPrimaryColor}
+                        setLightestPrimaryColor={setLightestPrimaryColor}
+                        logo={logo}
+                        setLogo={setLogo}
+                        selectedLogo={selectedLogo}
+                        setSelectedLogo={setSelectedLogo}
+                    />
+                );
+            
+            case 1:
+                return (
+                    <Contact
+                        contactInfo={contactInfo}
+                        setContactInfo={setContactInfo}
+                        instagram={contactInfo.instagram}
+                        setInstagram={(value) => setContactInfo(prev => ({ ...prev, instagram: value }))}
+                        facebook={contactInfo.facebook}
+                        setFacebook={(value) => setContactInfo(prev => ({ ...prev, facebook: value }))}
+                        youTube={contactInfo.youTube}
+                        setYouTube={(value) => setContactInfo(prev => ({ ...prev, youTube: value }))}
+                    />
+                );
+
+            case 2:
+                return (
+                    <Home
+                        TagLine={TagLine}
+                        setTagLine={setTagLine}
+                        TagLine1={TagLine1}
+                        setTagLine1={setTagLine1}
+                        TagLine2={TagLine2}
+                        setTagLine2={setTagLine2}
+                        TagLine3={TagLine3}
+                        setTagLine3={setTagLine3}
+                        heroImage={heroImage}
+                        setHeroImage={setHeroImage}
+                        selectedMedia={selectedMedia}
+                        setSelectedMedia={setSelectedMedia}
+                    />
+                );
+
+            case 3:
+                return (
+                    <Testimonials
+                        testimonials={testimonials}
+                        setTestimonials={setTestimonials}
+                    />
+                );
+
+            case 4:
+                return (
+                    <Values
+                        title={valueTitle}
+                        setTitle={setValueTitle}
+                        description={valueDescription}
+                        setDescription={setValueDescription}
+                        content={valueContent}
+                        setContent={setValueContent}
+                    />
+                );
+
+            default:
+                return null;
+        }
     };
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
+
     return (
         <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
-            {/* Navbar - Fixed at top */}
             <Navbar className="fixed top-0 w-full z-50" />
 
-            {/* Progress Bar - Fixed below navbar */}
             <div className="fixed top-[64px] left-0 w-full h-1 bg-gray-100 z-40">
                 <motion.div 
                     className="h-full bg-gradient-to-r from-teal-600 to-teal-500"
                     initial={{ width: "0%" }}
-                    animate={{ width: `${(currentSection / 4) * 100}%` }}
+                    animate={{ width: "100%" }}
                     transition={{ duration: 0.5 }}
                 />
             </div>
 
-            {/* Main Content Area */}
             <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto w-full">
-                    {/* Section Header */}
                     <motion.div
                         className="text-center mb-8 md:mb-12"
                         initial={{ opacity: 0, y: 20 }}
@@ -564,7 +601,6 @@ const Cafe = () => {
                         </p>
                     </motion.div>
 
-                    {/* Form Content */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentSection}
@@ -574,148 +610,23 @@ const Cafe = () => {
                             transition={{ duration: 0.3 }}
                             className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 lg:p-10"
                         >
-                            {currentSection === 0 && (
-                                <Company
-                                    companyName={companyName}
-                                    setCompanyName={setCompanyName}
-                                    institutionId={institutionId}
-                                    setinstitutionId={setinstitutionId}
-                                    PrimaryColor={PrimaryColor}
-                                    setPrimaryColor={setPrimaryColor}
-                                    SecondaryColor={SecondaryColor}
-                                    setSecondaryColor={setSecondaryColor}
-                                    logo={logo}
-                                    setLogo={setLogo}
-                                    LightestPrimaryColor={LightestPrimaryColor}
-                                    setLightestPrimaryColor={setLightestPrimaryColor}
-                                    LightPrimaryColor={LightPrimaryColor}
-                                    setLightPrimaryColor={setLightPrimaryColor}
-                                    selectedFile={selectedFile}
-                                    setSelectedFile={setSelectedFile}
-                                    companyDescription={companyDescription}
-                                    setCompanyDescription={setCompanyDescription}
-                                />
-                            )}
-                            {currentSection === 1 && (
-                                <Contact
-                                    contactInfo={contactInfo}
-                                    setContactInfo={setContactInfo}
-                                />
-                            )}
-                            {currentSection === 2 && (
-                                <Home
-                                    TagLine={TagLine}
-                                    setTagLine={setTagLine}
-                                    TagLine1={TagLine1}
-                                    setTagLine1={setTagLine1}
-                                    video={video}
-                                    setVideo={setVideo}
-                                    selectedMedia={selectedMedia}
-                                    setSelectedMedia={setSelectedMedia}
-                                    mediaType={mediaType}
-                                    setMediaType={setMediaType}
-                                    TagLine2={TagLine2}
-                                    setTagLine2={setTagLine2}
-                                    TagLine3={TagLine3}
-                                    setTagLine3={setTagLine3}
-                                />
-                            )}
-                            {currentSection === 3 && (
-                                <Policy
-                                    countBanner={countBanner}
-                                    setCountBanner={setCountBanner}
-                                    titleOfCountBanner={titleOfCountBanner}
-                                    values={values}
-                                    setValues={setValues}
-                                    policies={policies}
-                                    setPolicies={setPolicies}
-                                    aboutImage={aboutImage}
-                                    setAboutImage={setAboutImage}
-                                />
-                            )}
-                            {currentSection === 4 && (
-                                <Testimonials
-                                    testimonials={testimonials}
-                                    setTestimonials={setTestimonials}
-                                />
-                            )}
+                            {renderSection()}
                         </motion.div>
                     </AnimatePresence>
                 </div>
             </main>
 
-            {/* Footer Navigation - Fixed at bottom */}
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 py-4 z-40">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-                    {/* Timeline */}
-                    <div className="relative mb-4">
-                        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2"></div>
-                        <div className="relative flex justify-between">
-                            {['COMPANY INFO', 'CONTACT INFO', 'HOME', 'ABOUT', 'TESTIMONIAL'].map((label, index) => (
-                                <div key={index} className="flex flex-col items-center">
-                                    <div 
-                                        className={`w-4 h-4 rounded-full mb-2 transition-colors relative z-10 
-                                        ${index <= currentSection ? 'bg-teal-600' : 'bg-gray-300'}`}
-                                    >
-                                        {index <= currentSection && (
-                                            <div className="absolute inset-0 rounded-full bg-teal-600/20 animate-ping"></div>
-                                        )}
-                                    </div>
-                                    <span className={`text-xs font-medium ${
-                                        index === currentSection 
-                                            ? 'text-teal-600' 
-                                            : index < currentSection 
-                                                ? 'text-gray-600' 
-                                                : 'text-gray-400'
-                                    }`}>
-                                        {label}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+            <Footer 
+                currentSection={currentSection}
+                nextSection={handleNextSection}
+                prevSection={() => navigate(-1)}
+                saveData={saveData}
+                showModal={() => setShowModal(true)}
+            />
 
-                    {/* Navigation Buttons */}
-                    <div className="flex items-center justify-between mt-4">
-                        <button
-                            onClick={handlePrevSectionDraft}
-                            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Back
-                        </button>
-
-                        <div className="flex gap-4">
-                            <button
-                                onClick={() => setShowModal(true)}
-                                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                </svg>
-                                Save Draft
-                            </button>
-
-                            <button
-                                onClick={handleNextSection}
-                                className="flex items-center gap-2 px-6 py-2 text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors"
-                            >
-                                {currentSection === 4 ? 'Submit' : 'Next'}
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Modal */}
             <PrevSectionDraftHandler
                 isOpen={showModal}
-                onClose={handleCloseModal}
+                onClose={() => setShowModal(false)}
                 onClear={handleClearData}
                 onSaveDraft={handleSaveDraft}
             />

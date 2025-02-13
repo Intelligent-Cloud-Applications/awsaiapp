@@ -245,28 +245,28 @@ const AdminMemberlist = () => {
                                   {getRoleOptions(member.role, userData.role).length > 0 ? (
                                     <div className="flex-shrink-0">
                                       <CustomDropDown
-                                        label={member.role === 'sales' ? 'Sales' : 
-                                               member.role === 'operation' ? 'Admin' : 
+                                        label={member.role === 'sales' ? 'Sale' : 
+                                               member.role === 'operation' ? 'Admin' :
                                                member.role === 'owner' ? 'Owner' : 'Set Role'}
-                                        disabled={updatingRole === member.cognitoId}
+                                        disabled={updatingRole === member.cognitoId || member.role === 'owner'}
                                         isLoading={updatingRole === member.cognitoId}
                                         options={getRoleOptions(member.role, userData.role).map(role => ({
                                           value: role,
-                                          label: role === 'sales' ? 'Sales' : 
-                                                 role === 'operation' ? 'Admin' : 
-                                                 role === 'owner' ? 'Owner' : role,
-                                          color: role === 'owner' ? 'text-blue-600' : 
-                                                 role === 'operation' ? 'text-green-600' : 
-                                                 role === 'sales' ? 'text-orange-600' : 'text-gray-600'
+                                          label: role,
+                                          color: role === 'Admin' ? 'text-green-600' : 'text-orange-600'
                                         }))}
-                                        selectedValue={member.role}
-                                        onSelect={(option) => handleRoleChange(member.cognitoId, option.value, member)}
+                                        selectedValue={member.role === 'sales' ? 'Sale' : 
+                                                      member.role === 'operation' ? 'Admin' : ''}
+                                        onSelect={(option) => {
+                                          console.log('Selected option:', option); // Debug log
+                                          handleRoleChange(member.cognitoId, option.value, member);
+                                        }}
                                       />
                                     </div>
                                   ) : (
                                     <span className="px-3 py-2 text-sm text-gray-500 truncate">
-                                      {member.role === 'sales' ? 'Sales' : 
-                                       member.role === 'operation' ? 'Admin' : 
+                                      {member.role === 'sales' ? 'Sale' : 
+                                       member.role === 'operation' ? 'Admin' :
                                        member.role === 'owner' ? 'Owner' : 'No Role'}
                                     </span>
                                   )}

@@ -131,6 +131,37 @@ const ContextProvider = (props) => {
     }
   };
 
+  // Add new function to update company info
+  const cafecompanyinfo = useCallback(async (companyData) => {
+    try {
+      setLoader(true);
+      const response = await API.put("clients", `/user/get-companyData/${companyData.institutionid}`, {
+        body: {
+          institutionid: companyData.institutionid,
+          companyName: companyData.companyName,
+          PrimaryColor: companyData.PrimaryColor,
+          SecondaryColor: companyData.SecondaryColor,
+          logoUrl: companyData.logoUrl,
+          LightPrimaryColor: companyData.LightPrimaryColor,
+          LightestPrimaryColor: companyData.LightestPrimaryColor,
+          institutionFormat: companyData.institutionFormat,
+          description: companyData.description,
+          index: "0"
+        }
+      });
+
+      // Update template details after successful update
+      await fetchTemplateDetails();
+      
+      return response;
+    } catch (error) {
+      console.error("Error updating company info:", error);
+      throw error;
+    } finally {
+      setLoader(false);
+    }
+  }, [fetchTemplateDetails]);
+
   useEffect(() => {
     fetchUserProfile();
     fetchProducts();
@@ -196,6 +227,10 @@ const ContextProvider = (props) => {
     saleData: saleData,
     setSaleData: setSaleData,
     payments: payments,
+    company: {
+      cafecompanyinfo,
+      details: templateDetails
+    },
   };
 
   return (
