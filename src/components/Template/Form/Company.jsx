@@ -2,6 +2,7 @@ import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import theme from "../../../theme";
+import Currency from "../../Auth/Currency";
 
 function Company({
   clients,
@@ -27,10 +28,11 @@ function Company({
   setCSVFile,
   setInstitutionFormat,
   institutionFormat,
-
+  courseBasedCG,
+  setCourseBasedCG,
+  courseBasedCGCountry,
+  setcourseBasedCGCountry
 }) {
-
-
 
   const handleInstitutionFormatChange = (e) => {
     setInstitutionFormat(e.target.value);
@@ -295,6 +297,46 @@ function Company({
               }}
             />
 
+          </div>
+          <div>
+            <h2 className="font-medium text-xl">Is Your Institution is Course Based</h2>
+            <div className="mt-2">
+              <label className="mr-4">
+                <input
+                  type="radio"
+                  name="courseBased"
+                  value="true"
+                  checked={courseBasedCG === true}
+                  onChange={() => setCourseBasedCG(true)}
+                  className="mr-2"
+                />
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="courseBased"
+                  value="false"
+                  checked={courseBasedCG === false}
+                  onChange={() => setCourseBasedCG(false)}
+                  className="mr-2"
+                />
+                No
+              </label>
+            </div>
+            {courseBasedCG && (
+              <div className="mt-2">
+                <h2 className="font-medium text-xl">Country It is Based</h2>
+                <select
+                  value={courseBasedCGCountry}
+                  onChange={(e) => setcourseBasedCGCountry(e.target.value)}
+                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
+                >
+                  <option value="">Select Country</option>
+                  {<Currency />}
+                </select>
+              </div>
+            )}
           </div>
           {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
