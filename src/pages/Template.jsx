@@ -66,7 +66,7 @@ const Template = () => {
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [courseBasedCG, setCourseBasedCG] = useState(false);
-  const [courseBasedCGCountry, setcourseBasedCGCountry] = useState(false);
+  const [courseBasedCGCountry, setcourseBasedCGCountry] = useState(null);
   const [services, setServices] = useState([
     { title: '', items: [''] },
     { title: '', items: [''] },
