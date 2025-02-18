@@ -2,6 +2,7 @@ import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import theme from "../../../theme";
+import Currency from "../../Auth/Currency";
 
 function Company({
   clients,
@@ -27,6 +28,8 @@ function Company({
   setCSVFile,
   setInstitutionFormat,
   institutionFormat,
+  courseBasedCGCountry,
+  setcourseBasedCGCountry
 }) {
 
   const handleInstitutionFormatChange = (e) => {
@@ -318,21 +321,19 @@ function Company({
                 />
                 No
               </label>
-            </div>
-            {courseBasedCG && (
-              <div className="mt-2">
-                <h2 className="font-medium text-xl">Country It is Based</h2>
-                <select
-                  value={courseBasedCGCountry}
-                  onChange={(e) => setcourseBasedCGCountry(e.target.value)}
-                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
-                >
-                  <option value="">Select Country</option>
-                  {<Currency />}
-                </select>
-              </div>
-            )}
-          </div> */}
+            </div> */}
+          <div className="mt-2">
+            <h2 className="font-medium text-xl">Country It is Based</h2>
+            <select
+              value={courseBasedCGCountry}
+              onChange={(e) => setcourseBasedCGCountry(e.target.value)}
+              className="w-[30rem] max950:w-[17rem] bg-white border border-[#939393] rounded-md p-2 [@media(max-width:1024px)]:w-full"
+            >
+              <option value="">Select Country</option>
+              {<Currency />}
+            </select>
+          </div>
+          {/* </div> */}
           {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
