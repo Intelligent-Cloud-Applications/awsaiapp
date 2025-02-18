@@ -65,6 +65,8 @@ const Template = () => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [courseBasedCG, setCourseBasedCG] = useState(false);
+  const [courseBasedCGCountry, setcourseBasedCGCountry] = useState(null);
   const [services, setServices] = useState([
     { title: '', items: [''] },
     { title: '', items: [''] },
@@ -1118,6 +1120,10 @@ const Template = () => {
         <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
           {currentSection === 0 &&
             <Company
+            courseBasedCG={courseBasedCG}
+            setCourseBasedCG={setCourseBasedCG}
+            courseBasedCGCountry={courseBasedCGCountry}
+            setcourseBasedCGCountry={setcourseBasedCGCountry}
               clients={Companydata}
               companyName={companyName}
               setCompanyName={setCompanyName}

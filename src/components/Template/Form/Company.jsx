@@ -2,6 +2,7 @@ import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import theme from "../../../theme";
+import Currency from "../../Auth/Currency";
 
 function Company({
   clients,
