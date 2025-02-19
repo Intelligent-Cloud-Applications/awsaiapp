@@ -1,0 +1,180 @@
+import React, { useState } from "react";
+import vupload from "../../../utils/png/vupload.png";
+import "../../../pages/Template.css";
+import { TextInput } from "flowbite-react";
+
+function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType }) {
+  // const [TagLineName, setTagLineName] = useState("");
+  const [charTag, setCharTag] = useState(0);
+  const [charTag2, setCharTag2] = useState(0);
+  // const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
+
+  const handleTagLineInputChange = (e) => {
+    setTagLine(e.target.value);
+    setCharTag(e.target.value.length);
+  };
+  const handleTagLineInputChange1 = (e) => {
+    setTagLine1(e.target.value);
+    setCharTag2(e.target.value.length);
+  };
+
+  //  const [selectedMedia, setSelectedMedia] = useState(null);
+  //  const [mediaType, setMediaType] = useState(null);
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 4) {
+        alert("File size exceeds 4MB. Please choose a smaller file.");
+        return;
+      }
+    }
+    setVideo(file);
+    setSelectedMedia(URL.createObjectURL(file));
+
+    // Determine the type of media selected (image or video)
+    if (file.type.includes("video")) {
+      setMediaType("video");
+    } else if (file.type.includes("image")) {
+      setMediaType("image");
+    }
+  };
+
+  //  const handleMediaClick = () => {
+  //    document.getElementById("fileInput").click();
+  //  };
+
+  const handleMediaMouseEnter = () => {
+    if (selectedMedia) {
+      setFileOptionVisible(true);
+    }
+  };
+
+  const handleMediaMouseLeave = () => {
+    if (selectedMedia) {
+      setFileOptionVisible(false);
+    }
+  };
+
+
+  return (
+    <div className="h-[185vh] [@media(max-width:1024px)]:h-screen [@media(max-width:1024px)]:mb-[10rem]">
+      <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
+      <h5 className="text-[#939393] text-center">
+        <strong>Introduce Your Brand:</strong><br />
+        Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
+      </h5>
+      <div className="flex justify-center ml-[20%] [@media(max-width:1024px)]:ml-0">
+        <div className="w-[80%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
+          <div className="relative mt-2">
+            <h5
+              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
+            >
+              <TextInput
+                type="text"
+                id="inputField"
+                value={TagLine}
+                onChange={handleTagLineInputChange}
+                className="w-full"
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+                placeholder="Enter Short Description TagLine "
+                autoFocus
+                maxlength="40"
+              />
+            </h5>
+            <p>{charTag}/40</p>
+          </div>
+          <div className="relative mt-2">
+            <h5
+              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
+            >
+              <TextInput
+                type="text"
+                value={TagLine1}
+                onChange={handleTagLineInputChange1}
+                className="w-full"
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+                placeholder="Enter Short Description TagLine1"
+                maxlength="60"
+              />
+            </h5>
+            <p>{charTag2}/60</p>
+          </div>
+          <div className="border border-black w-[16rem] h-[10rem] mt-[2rem] relative boxtoselect">
+            <label
+              htmlFor="fileInput"
+              className="cursor-pointer"
+              onMouseEnter={handleMediaMouseEnter}
+              onMouseLeave={handleMediaMouseLeave}
+            >
+              {!selectedMedia ? (
+                <>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
+                  />
+                  <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
+                    <img
+                      src={vupload}
+                      alt="Upload"
+                      className="w-[5rem] cursor-pointer"
+                    //                  onClick={handleMediaClick}
+                    />
+                    <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {mediaType === "video" ? (
+                    <video
+                      controls
+                      src={selectedMedia}
+                      className="w-full h-full object-cover"
+                    //                  onClick={handleMediaClick}
+                    />
+                  ) : (
+                    <img
+                      src={selectedMedia}
+                      alt="Uploaded media"
+                      className="w-full h-full object-cover"
+                      //                  onClick={handleMediaClick}
+                      onError={(e) => {
+                        e.target.src = vupload; // Display default image if image fails to load
+                      }}
+                    />
+                  )}
+                  {isFileOptionVisible && (
+                    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
+                      <input
+                        type="file"
+                        id="fileInput"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      <h4 className="text-white">Choose your file</h4>
+                    </div>
+                  )}
+                </>
+              )}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Home;

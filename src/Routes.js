@@ -43,6 +43,7 @@ import Tasks from "./internal/components/Tasks";
 import UnauthorizedUser from "./internal/components/UnauthorizedUser";
 import Template2 from "./pages/Template2";
 import Template3 from "./pages/Cafe";
+import CourseBasedCG from "./pages/CourseBasedCG";
 import CompleteDraft from "./pages/CompleteDraft";
 import Error from "./pages/Error";
 
@@ -101,6 +102,7 @@ const RoutesContainer = () => {
       <Route path="/dance-studio" element={<Template />} />
       <Route path="/dentist" element={<Template2 />} />
       <Route path="/cafe" element={<Template3 />} />
+      <Route path="/course-based" element={<CourseBasedCG />} />
       <Route path="/complete" element={<Complete />} />
       <Route path="/pay" element={<Pay />} />
       {/* <Route path="/full?institutionName=${}{" element={<Full />} /> */}
