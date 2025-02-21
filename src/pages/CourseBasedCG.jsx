@@ -8,7 +8,7 @@ import Company from '../components/CourseBasedCG/Form/Company';
 import Home from '../components/CourseBasedCG/Form/Home';
 import Services from '../components/CourseBasedCG/Form/Services';
 import Testimonials from '../components/CourseBasedCG/Form/Testimonials';
-// import Subscription from '../components/CourseBasedCG/Form/Subscription';
+import Subscription from '../components/CourseBasedCG/Form/Subscription';
 import FAQs from '../components/CourseBasedCG/Form/FAQs';
 // import Instructors from '../components/Template/Form/Instructors';
 import Policy from '../components/CourseBasedCG/Form/Policy';
@@ -50,8 +50,8 @@ const CourseBasedCG = () => {
     //  console.log("🚀 ~ file: Template.jsx:26 ~ Template ~ error:", error)
     //  console.log("🚀 ~ file: Template.jsx:29 ~ Template ~ setLogo:", setLogo)
     //  console.log("🚀 ~ file: Template.jsx:28 ~ Template ~ logo:", logo)
-    // const [countryCode, setCountryCode] = useState("INR");
-    // const [country, setCountry] = useState("India");
+    const [countryCode, setCountryCode] = useState("INR");
+    const [country, setCountry] = useState("India");
     // const [institutionType, setInstitutionType] = useState("DanceStudio");
     const [institutionFormat, setInstitutionFormat] = useState("Online_Classes");
     const [TagLine, setTagLine] = useState("");
@@ -72,7 +72,7 @@ const CourseBasedCG = () => {
         { title: '', items: [''] },
         { title: '', items: [''] },
     ]);
-    // const Ctx = useContext(Context);
+    const Ctx = useContext(Context);
     const util = useContext(Context).util;
 
     const [testimonials, setTestimonials] = useState([
@@ -94,48 +94,48 @@ const CourseBasedCG = () => {
 
     //     return 0;
     // };
-    // const [subscriptions, setSubscriptions] = useState([
+    const [subscriptions, setSubscriptions] = useState([
 
-    //     {
-    //         heading: '',
-    //         amount: '',
-    //         currency: 'INR',
-    //         country: 'INDIA',
-    //         subscriptionType: 'monthly',
-    //         provides: [''],
-    //         classType: [''],
-    //         duration: calculateDuration('monthly'),
-    //         durationText: 'Monthly',
-    //         india: true,
-    //         cognitoId: Ctx.userData.cognitoId,
-    //     },
-    //     {
-    //         heading: '',
-    //         amount: '',
-    //         currency: 'INR',
-    //         country: 'INDIA',
-    //         subscriptionType: 'monthly',
-    //         provides: [''],
-    //         classType: [],
-    //         duration: calculateDuration('monthly'),
-    //         durationText: 'Monthly',
-    //         india: true,
-    //         cognitoId: Ctx.userData.cognitoId,
-    //     },
-    //     {
-    //         heading: '',
-    //         amount: '',
-    //         classType: [],
-    //         currency: 'INR',
-    //         country: 'INDIA',
-    //         subscriptionType: 'monthly',
-    //         provides: [''],
-    //         duration: calculateDuration('monthly'),
-    //         durationText: 'Monthly',
-    //         india: true,
-    //         cognitoId: Ctx.userData.cognitoId,
-    //     },
-    // ]);
+        {
+            heading: '',
+            amount: '',
+            currency: 'INR',
+            country: 'INDIA',
+            subscriptionType: 'monthly',
+            provides: [''],
+            classType: [''],
+            duration: 0,//calculateDuration('monthly'),
+            durationText: "",//'Monthly',
+            india: true,
+            cognitoId: Ctx.userData.cognitoId,
+        },
+        {
+            heading: '',
+            amount: '',
+            currency: 'INR',
+            country: 'INDIA',
+            subscriptionType: 'monthly',
+            provides: [''],
+            classType: [],
+            duration: 0,//calculateDuration('monthly'),
+            durationText: "",//'Monthly',
+            india: true,
+            cognitoId: Ctx.userData.cognitoId,
+        },
+        {
+            heading: '',
+            amount: '',
+            classType: [],
+            currency: 'INR',
+            country: 'INDIA',
+            subscriptionType: 'monthly',
+            provides: [''],
+            duration: 0,//calculateDuration('monthly'),
+            durationText: "",//'Monthly',
+            india: true,
+            cognitoId: Ctx.userData.cognitoId,
+        },
+    ]);
 
 
     const [faqs, setFaqs] = useState([
@@ -649,47 +649,48 @@ const CourseBasedCG = () => {
         }
     };
 
-    // const handleSubscriptionUpload = async () => {
-    //     try {
-    //         // Create an array of promises, filtering out invalid subscriptions
-    //         const uploadPromises = subscriptions
-    //             .filter(subscription => subscription.amount && subscription.heading) // Filter subscriptions
-    //             .map(async (subscription, i) => {
-    //                 // Multiply the amount by 100
-    //                 const updatedSubscription = {
-    //                     ...subscription,
-    //                     amount: subscription.amount * 100,
+    const handleSubscriptionUpload = async () => {
+        try {
+            // Create an array of promises, filtering out invalid subscriptions
+            const uploadPromises = subscriptions
+                .filter(subscription => subscription.amount && subscription.heading) // Filter subscriptions
+                .map(async (subscription, i) => {
+                    // Multiply the amount by 100
+                    const updatedSubscription = {
+                        ...subscription,
+                        amount: subscription.amount * 100,
 
-    //                 };
+                    };
 
-    //                 if (updatedSubscription.productId) {
-    //                     await API.put("clients", "/user/development-form/update-subscription", {
-    //                         body: { ...updatedSubscription, cognitoId: Ctx.userData.cognitoId }
-    //                     });
-    //                 } else {
-    //                     // Make API call for each subscription
-    //                     const response = await API.put("clients", "/user/development-form/subscriptions", {
-    //                         body: {
-    //                             cognitoId: Ctx.userData.cognitoId,
-    //                             institution: institutionId,
-    //                             ...updatedSubscription
-    //                         }
-    //                     });
-    //                     const sub = [...subscriptions];
-    //                     sub[i].institution = response.Attributes.institution;
-    //                     sub[i].productId = response.Attributes.productId;
-    //                     setSubscriptions(sub);
-    //                 }
-    //             });
+                    if (updatedSubscription.productId) {
+                        await API.put("clients", "/user/development-form/update-subscription", {
+                            body: { ...updatedSubscription, cognitoId: Ctx.userData.cognitoId }
+                        });
+                    } else {
+                        // Make API call for each subscription
+                        const response = await API.put("clients", "/user/development-form/subscriptions", {
+                            body: {
+                                cognitoId: Ctx.userData.cognitoId,
+                                institution: institutionId,
+                                institutionType:"CourseBased",
+                                ...updatedSubscription
+                            }
+                        });
+                        const sub = [...subscriptions];
+                        sub[i].institution = response.Attributes.institution;
+                        sub[i].productId = response.Attributes.productId;
+                        setSubscriptions(sub);
+                    }
+                });
 
-    //         // Wait for all promises to complete
-    //         await Promise.all(uploadPromises);
+            // Wait for all promises to complete
+            await Promise.all(uploadPromises);
 
-    //         console.log("All subscriptions uploaded successfully");
-    //     } catch (error) {
-    //         console.error("Error uploading subscriptions:", error);
-    //     }
-    // };
+            console.log("All subscriptions uploaded successfully");
+        } catch (error) {
+            console.error("Error uploading subscriptions:", error);
+        }
+    };
 
     const handleFAQsUpload = async () => {
         try {
@@ -836,19 +837,19 @@ const CourseBasedCG = () => {
 
     const handleContactUpload = async () => {
         try {
-            //      console.log("LOG +++++ " + contactInfo.address);
-            // let SubscriptionBgUrl = null;
-            // if (SubscriptionBg) {
-            //     const response = await Storage.put(`${institutionId}/${SubscriptionBg.name}`, SubscriptionBg, {
-            //         contentType: SubscriptionBg.type,
-            //     });
+            console.log("LOG +++++ " + contactInfo.address);
+            let SubscriptionBgUrl = null;
+            if (SubscriptionBg) {
+                const response = await Storage.put(`${institutionId}/${SubscriptionBg.name}`, SubscriptionBg, {
+                    contentType: SubscriptionBg.type,
+                });
 
-            //     if (response && response.key) {
-            //         SubscriptionBgUrl = await Storage.get(response.key);
-            //         SubscriptionBgUrl = SubscriptionBgUrl.split("?")[0];
-            //     }
-            // }
-            // setSubscriptionBg(SubscriptionBgUrl);
+                if (response && response.key) {
+                    SubscriptionBgUrl = await Storage.get(response.key);
+                    SubscriptionBgUrl = SubscriptionBgUrl.split("?")[0];
+                }
+            }
+            setSubscriptionBg(SubscriptionBgUrl);
             let InstructorBgUrl = null;
             if (InstructorBg) {
                 const response = await Storage.put(`${institutionId}/${InstructorBg.name}`, InstructorBg, {
@@ -875,7 +876,7 @@ const CourseBasedCG = () => {
                     UpiId: contactInfo.upiId,
                     Footer_Link_1,
                     Footer_Link_2,
-                    SubscriptionBg: null,//SubscriptionBgUrl ,
+                    SubscriptionBg: SubscriptionBgUrl,
                     InstructorBg: InstructorBgUrl,
                 },
             });
@@ -1026,15 +1027,15 @@ const CourseBasedCG = () => {
                     }
                     handleTestimonialsUpload();
                     break;
-                // case 5:
-                //     const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-                //     if (invalidPriceIndex !== -1) {
-                //         alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
-                //         return prevSection;
-                //     }
-                //     handleSubscriptionUpload();
-                //     break;
                 case 5:
+                    const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
+                    if (invalidPriceIndex !== -1) {
+                        alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
+                        return prevSection;
+                    }
+                    handleSubscriptionUpload();
+                    break;
+                case 6:
                     const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
                     // Check if both title and answer are filled for each FAQ
@@ -1062,7 +1063,7 @@ const CourseBasedCG = () => {
                 //   }
                 //   handleInstructorsUpload();
                 //   break;
-                case 6:
+                case 7:
                     handlePolicyUpload();
                     break;
 
@@ -1189,7 +1190,7 @@ const CourseBasedCG = () => {
                             setTestimonialBg={setTestimonialBg}
                         />}
 
-                    {/* {currentSection === 5 &&
+                    {currentSection === 5 &&
                         <Subscription
                             subscriptions={subscriptions}
                             setSubscriptions={setSubscriptions}
@@ -1197,9 +1198,9 @@ const CourseBasedCG = () => {
                             setCountry={setCountry}
                             countryCode={countryCode}
                             setCountryCode={setCountryCode}
-                        />} */}
+                        />}
 
-                    {currentSection === 5 &&
+                    {currentSection === 6 &&
                         <FAQs
                             faqs={faqs}
                             setFaqs={setFaqs}
@@ -1211,7 +1212,7 @@ const CourseBasedCG = () => {
               setInstructors={setInstructors}
             />} */}
 
-                    {currentSection === 6 &&
+                    {currentSection === 7 &&
                         <Policy
                             policies={policies}
                             setPolicies={setPolicies}
