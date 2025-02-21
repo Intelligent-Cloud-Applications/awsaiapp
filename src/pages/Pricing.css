@@ -50,6 +50,11 @@
         background-color: #000;
         background-image: none;
     }
+    .background div h1{
+        color: white;
+        margin-bottom: 0%;
+        padding-bottom: 0%;
+    }
     .pos {
         margin-top: -6rem; /* Use "margin-top" to adjust position */
     }
