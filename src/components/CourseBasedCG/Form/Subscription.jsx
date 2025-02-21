@@ -74,13 +74,10 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
         return newSubscriptionTypes;
       });
 
-      const duration = calculateDuration(value);
 
       updatedSubscriptions[subscriptionIndex] = {
         ...updatedSubscriptions[subscriptionIndex],
         subscriptionType: value,
-        durationText: value.charAt(0).toUpperCase() + value.slice(1), // capitalize first letter
-        duration,
       };
     } else if (name.includes('provides')) {
       const [, serviceIndex] = name.split('.');
@@ -105,21 +102,21 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     setSubscriptions(updatedSubscriptions);
   };
 
-  const calculateDuration = (subscriptionType) => {
-    const daysInMonth = 30;
-    if (subscriptionType === 'monthly') {
-      return daysInMonth * 24 * 60 * 60 * 1000;
-    } else if (subscriptionType === 'weekly') {
-      return 7 * 24 * 60 * 60 * 1000;
-    } else if (subscriptionType === 'yearly') {
-      return 365 * 24 * 60 * 60 * 1000;
-    }
-    else if (subscriptionType === 'quarterly') {
-      return 3 * daysInMonth * 24 * 60 * 60 * 1000;
-    }
+  // const calculateDuration = (subscriptionType) => {
+  //   const daysInMonth = 30;
+  //   if (subscriptionType === 'monthly') {
+  //     return daysInMonth * 24 * 60 * 60 * 1000;
+  //   } else if (subscriptionType === 'weekly') {
+  //     return 7 * 24 * 60 * 60 * 1000;
+  //   } else if (subscriptionType === 'yearly') {
+  //     return 365 * 24 * 60 * 60 * 1000;
+  //   }
+  //   else if (subscriptionType === 'quarterly') {
+  //     return 3 * daysInMonth * 24 * 60 * 60 * 1000;
+  //   }
 
-    return 0;
-  };
+  //   return 0;
+  // };
 
   const addService = (index) => {
     const updatedSubscriptions = [...subscriptions];
@@ -151,8 +148,8 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
       subscriptionType: 'monthly',
       provides: [''],
       classType: [''],
-      duration: calculateDuration('monthly'),
-      durationText: 'Monthly',
+      duration: 0,//calculateDuration('monthly'),
+      durationText: "",//'Monthly',
       india: true,
       cognitoId: Ctx.userData.cognitoId,
     };
@@ -245,7 +242,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                     className="w-[19.5rem] mr-[1.5rem] border-[2px] border-[#9d9d9d78] max500:w-[80vw] mt-6"
                   />
                 </div>
-                <div className="relative">
+                {/* <div className="relative">
                   <select
                     value={subscriptionTypes[index]}
                     name="subscriptionType"
@@ -260,7 +257,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                     <option value="yearly">Yearly</option>
                     <option value="quarterly">Quarterly</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="relative">
                   <li className="flex gap-20 max500:flex-col max500:gap-2 max500:items-start relative ">
                     <select
@@ -288,7 +285,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
                       borderRadius: "8px",
-                    }} 
+                    }}
                     rows={index === activeSubscriptionIndex ? 3 : 1}
                     onFocus={() => setActiveSubscriptionIndex(index)}
                     onBlur={() => setActiveSubscriptionIndex(null)}
@@ -335,7 +332,7 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                           borderColor: "#D1D5DB",
                           backgroundColor: "#F9FAFB",
                           borderRadius: "8px",
-                        }}    
+                        }}
                         rows={1}
                         onFocus={() => setActiveSubscriptionIndex(index)}
                         onBlur={() => setActiveSubscriptionIndex(null)}

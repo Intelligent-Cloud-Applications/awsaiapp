@@ -673,6 +673,7 @@ const Template = () => {
               body: {
                 cognitoId: Ctx.userData.cognitoId,
                 institution: institutionId,
+                institutionType:"DanceStudio",
                 ...updatedSubscription
               }
             });
