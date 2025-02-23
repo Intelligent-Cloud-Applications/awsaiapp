@@ -81,14 +81,14 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage, countBanner,
   };
 
   return (
-    <div className="mx-auto" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
+    <div className="mx-auto [@media(max-width:1024px)]:mb-10" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
       <h1 className="font-medium text-7xl text-center">ABOUT COMPANY</h1>
       <h5 className="text-center text-[#939393]">
         Establish transparent guidelines, sharing policies and terms for clarity and understanding and also your count banner.
       </h5>
-      <div className="flex justify-center">
-        <div className="w-[60%] p-8">
-          <div className="relative mt-4">
+      <div className="flex justify-center [@media(max-width:1024px)]:ml-0">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-2">
+          <div className="relative mt-4 [@media(max-width:1024px)]:flex-col">
             <div className="pb-6">
               {titleOfCountBanner.map((title, index) => (
                 <div key={index} className="mt-2">
