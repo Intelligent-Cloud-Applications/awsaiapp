@@ -271,7 +271,7 @@ const Profile = () => {
 
   return (
     <div
-      className={`relative w-[calc(100vw-16rem)] max1050:w-screen flex flex-col items-center `}
+      className={`relative w-[calc(100vw-16rem)] max1050:w-screen flex flex-col items-center [@media(max-width:500px)]:mb-[5rem]`}
     >
       <div
         className={`w-[75%] max1050:w-[100%] max-w-[36rem] rounded-3xl p-3 flex flex-col items-center max536:w-[90%] relative bg-[#eceaeac7]`}
