@@ -1,588 +1,836 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCoffee, FiPhone, FiHome, FiStar, FiHeart } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
-import Home from '../components/Cafe/Form/Home';
-// import Testimonials from '../components/Cafe/Form/Testimonials';
-// import Subscription from '../components/Cafe/Form/Subscription';
-// import FAQs from '../components/Cafe/Form/FAQs';
-import Policy from '../components/Cafe/Form/Policy';
 import Contact from '../components/Cafe/Form/Contact';
+import Home from '../components/Cafe/Form/Home';
+import Testimonials from '../components/Cafe/Form/Testimonials';
 import { API, Storage } from "aws-amplify";
 import PrevSectionDraftHandler from '../components/Cafe/Form/PrevSectionDraftHandler';
-import "./Template.css";
 import Context from "../context/Context";
-import Testimonials from '../components/Cafe/Form/Testimonials';
-// import {CSVUpload} from '../components/UploadFile/CSVUpload';
+import "./Template.css";
+import ErrorBoundary from '../components/ErrorBoundary';
+import { convertFileToBase64, base64ToFile } from '../utils/imageUtils';
+
+// Form section titles and descriptions
+const FORM_SECTIONS = [
+  {
+    title: "Company Info",
+    description: "Build your brand identity with essential company details",
+    icon: FiCoffee
+  },
+  {
+    title: "Contact Details",
+    description: "Add your contact information and social media links",
+    icon: FiPhone
+  },
+  {
+    title: "Homepage Content",
+    description: "Create engaging content for your website's homepage",
+    icon: FiHome
+  },
+  {
+    title: "Testimonials",
+    description: "Share what your customers say about you",
+    icon: FiStar
+  }
+];
+
 const Cafe = () => {
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const [currentSection, setCurrentSection] = useState(0);
-    const [savedData, setsavedData] = useState();
-
-    console.log("🚀 ~ file: Cafe.jsx:21 ~ Cafe ~ savedData:", savedData)
-    // const [Companydata, setCompanydata] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const { userData, company } = useContext(Context);
+    const util = useContext(Context).util;
+    
+    // Company state
+    const [institutionid, setinstitutionid] = useState('');
+    const [companyName, setCompanyName] = useState('');
     const [logo, setLogo] = useState(null);
-    const titleOfCountBanner = ["Patients", "Dentists", "Appointments"];
-    const [countBanner, setCountBanner] = useState(
-        titleOfCountBanner.map(title => ({ count: '', title }))
-    );
-    const [LightPrimaryColor, setLightPrimaryColor] = useState("#225c59");
-    const [LightestPrimaryColor, setLightestPrimaryColor] = useState("#c3f3f1");
-    // const [logo, setLogo] = useState(null);
-    const [companyName, setCompanyName] = useState(null);
-    const [companyDescription, setCompanyDescription] = useState(null);
-    const [institutionId, setinstitutionId] = useState(null);
-    const [PrimaryColor, setPrimaryColor] = useState("#1B7571");
-    const [SecondaryColor, setSecondaryColor] = useState("#000000");
-    // const [countryCode, setCountryCode] = useState("INR");
-    // const [country, setCountry] = useState("India");
-    const [TagLine, setTagLine] = useState("");
-    const [TagLine1, setTagLine1] = useState("");
-    const [TagLine2, setTagLine2] = useState("");
-    const [TagLine3, setTagLine3] = useState("");
-    const [video, setVideo] = useState(null);
-    const [aboutImage, setAboutImage] = useState([]);
-    const [selectedMedia, setSelectedMedia] = useState(null);
-    const [values, setValues] = useState([]);
-    const [mediaType, setMediaType] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const { userData } = useContext(Context)
-    const [testimonials, setTestimonials] = useState([
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-        { imgSrc: '', name: '', feedback: '', uploadedFile: null, type: '' },
-    ]);
-
-    // const calculateDuration = (subscriptionType) => {
-    //   const daysInMonth = 30; // assuming 30 days in a month
-
-    //   if (subscriptionType === 'monthly') {
-    //     return daysInMonth * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   } else if (subscriptionType === 'weekly') {
-    //     return 7 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   } else if (subscriptionType === 'yearly') {
-    //     return 365 * 24 * 60 * 60 * 1000; // convert days to milliseconds
-    //   }
-
-    //   return 0;
-    // };
-    // const [subscriptions, setSubscriptions] = useState([
-
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    //   {
-    //     heading: '',
-    //     amount: '',
-    //     currency: 'INR',
-    //     country: 'INDIA',
-    //     subscriptionType: 'monthly',
-    //     provides: [''],
-    //     duration: calculateDuration('monthly'),
-    //     durationText: 'Monthly',
-    //     india: true,
-    //   },
-    // ]);
-
-
-    // const [faqs, setFaqs] = useState([
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    //   {
-    //     question: '',
-    //     answer: '',
-    //   },
-    // ]);
-
-    const [policies, setPolicies] = useState({
-        'Privacy Policy': [""],
-        'About Us': [""],
-    });
-
+    const [selectedLogo, setSelectedLogo] = useState(null);
+    const [PrimaryColor, setPrimaryColor] = useState('#30afbc');
+    const [SecondaryColor, setSecondaryColor] = useState('#2b9ea9');
+    const [LightPrimaryColor, setLightPrimaryColor] = useState('#e6f7f9');
+    const [LightestPrimaryColor, setLightestPrimaryColor] = useState('#f3fbfc');
+    const [TagLine, setTagLine] = useState('');
+    const [TagLine1, setTagLine1] = useState('');
+    const [TagLine2, setTagLine2] = useState('');
+    const [values, setValues] = useState(['', '', '']);
     const [contactInfo, setContactInfo] = useState({
-        address: '',
-        country: 'India',
-        countryCode: '91',
-        owner_name: '',
-        phoneNumber: '',
-        email: '',
-        upiId: '',
         instagram: '',
         facebook: '',
-        youTube: '',
-        'Establishment Year of Company': '',
+        youTube: ''
     });
 
-    const util = useContext(Context).util;
-    useEffect(() => {
-        console.log(policies);
-    }, [policies]);
+    // Testimonials state
+    const [testimonials, setTestimonials] = useState([
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+        { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+    ]);
 
-    const uploadTestimonials = async () => {
-        const updatedTestimonials = await Promise.all(
-            testimonials.map(async (testimonial, index) => {
-                if (testimonial.uploadedFile) {
-                    // Upload the file to S3
-                    const response = await Storage.put(
-                        `institution-utils/${institutionId}/images/Testimonial/${testimonial.uploadedFile.name}`,
-                        testimonial.actualFile,
-                        { contentType: testimonial.actualFile.type }
-                    );
+    // Add new states for Home component
+    const [TagLine3, setTagLine3] = useState('');
+    const [heroImage, setHeroImage] = useState(null);
+    const [selectedMedia, setSelectedMedia] = useState(null);
 
-                    // Get the URL of the uploaded file
-                    let imageUrl = await Storage.get(response.key);
-                    imageUrl = imageUrl.split("?")[0];
+    // Add these new states at the top with other states
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [socialMediaLinks, setSocialMediaLinks] = useState({
+        facebook: '',
+        instagram: '',
+        youtube: ''
+    });
+    const [usefulLinks, setUsefulLinks] = useState([]);
 
-                    // Update the testimonial with the image URL
-                    return { ...testimonial, imgSrc: imageUrl };
-                }
-                return testimonial; // If no file, return the original testimonial
-            })
-        );
-
-        setTestimonials(updatedTestimonials);
+    const validateLogoFile = (file) => {
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+        
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+        }
+        
+        if (file.size > MAX_SIZE) {
+            throw new Error('File is too large. Maximum size is 5MB.');
+        }
+        
+        return true;
     };
 
-    const handleSubmitForm = async () => {
+    const uploadTestimonials = async () => {
         try {
-            // Upload the logo image
-            util.setLoader(true);
-            const response1 = await Storage.put(`${institutionId}/images/${logo.name}`, logo, {
-                contentType: logo.type,
-            });
+            const updatedTestimonials = await Promise.all(
+                testimonials.filter(t => t.name && t.feedback).map(async (testimonial, index) => {
+                    if (testimonial.uploadedFile) {
+                        const fileName = `testimonial_${index + 1}_${Date.now()}.${testimonial.uploadedFile.name.split('.').pop()}`;
+                        const response = await Storage.put(
+                            `${institutionid}/images/testimonials/${fileName}`,
+                            testimonial.uploadedFile,
+                            { 
+                                contentType: testimonial.uploadedFile.type,
+                                acl: 'public-read'
+                            }
+                        );
 
-            // Get the URL of the uploaded logo
-            let imageUrl = await Storage.get(response1.key);
-            imageUrl = imageUrl.split("?")[0];
-            setSelectedFile(imageUrl);
+                        let imageUrl = await Storage.get(response.key);
+                        imageUrl = imageUrl.split("?")[0];
 
-            // Upload the video
-            const response2 = await Storage.put(`${institutionId}/videos/${video.name}`, video, {
-                contentType: video.type,
-            });
-            let videoUrl = await Storage.get(response2.key);
-            videoUrl = videoUrl.split("?")[0];
-            setVideo(videoUrl);
-
-            // Upload "About Us" images and fetch URLs concurrently
-            const aboutImagesUrls = await Promise.all(
-                aboutImage.map(async (file) => {
-                    const response = await Storage.put(`${institutionId}/AboutUsImage/${file.name}`, file, {
-                        contentType: file.type,
-                    });
-                    let aboutImageUrl = await Storage.get(response.key);
-                    return aboutImageUrl.split("?")[0];
+                        return {
+                            image: imageUrl,
+                            name: testimonial.name,
+                            rating: testimonial.rating || 5,
+                            text: testimonial.feedback
+                        };
+                    }
+                    return testimonial;
                 })
             );
 
-            // Prepare social media links
-            const socials = {
-                facebook: contactInfo.facebook || null,
-                instagram: contactInfo.instagram || null,
-                youTube: contactInfo.youTube || null,
-            };
-
-            // Prepare the request body
-            const body = {
-                institutionid: institutionId,
-                index: "0", // Example index value, replace as needed
-                companyName: companyName || null,
-                PrimaryColor: PrimaryColor || null,
-                SecondaryColor: SecondaryColor || null,
-                logoUrl: imageUrl,
-                LightPrimaryColor: LightPrimaryColor || null,
-                LightestPrimaryColor: LightestPrimaryColor || null,
-                TagLine: TagLine || null,
-                TagLine1: TagLine1 || null,
-                TagLine2: TagLine2 || null,
-                TagLine3: TagLine3 || null,
-                videoUrl: videoUrl,
-                aboutParagraphs: policies['About Us'] || [],
-                aboutImages: aboutImagesUrls,
-                address: contactInfo.address || null,
-                countBanner: countBanner || [],
-                description: companyDescription || null,
-                email: contactInfo.email || null,
-                ownerName: contactInfo.owner_name || null,
-                phone: `+${contactInfo.countryCode}${contactInfo.phoneNumber}` || null,
-                privacyPolicy: policies['Privacy Policy'] || [],
-                socials: socials,
-                cognitoIdentityId: userData.cognitoId,
-                ourValues: values || [],
-                estYear: contactInfo['Establishment Year of Company'] || null,
-                UpiId: contactInfo.upiId || null,
-                testimonials: testimonials || [],
-            };
-            console.log("cognito id passing", userData.cognitoId);
-            console.log("Data requesting for PUT", body);
-
-            // Call the API
-            const response = await API.post("clients", "/user/dentalWebDevForm", {
-                body,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            console.log("API response:", response);
-            util.setLoader(false);
+            return updatedTestimonials.filter(t => t.name && t.feedback);
         } catch (error) {
-            util.setLoader(false);
-            console.error("Error on completing the form:", error.message, error.stack);
-            alert("There was an error submitting the form. Please try again.");
+            console.error("Error uploading testimonials:", error);
+            throw error;
         }
     };
 
-
-    // const fetchClients = async (institution) => {
-    //   try {
-    //     //      setLoader(true);
-    //     const response = await API.get("clients", "/user/development-form/get-time/awsaiapp");
-    //     //      console.log(response)
-    //     setCompanydata(response);
-    //   } catch (error) {
-    //     console.error("Error fetching clients:", error);
-    //   } finally {
-    //     //      setLoader(false);
-    //   }
-    // };
-
-    // useEffect(() => {
-    //   fetchClients();
-    //   //    console.log("The daTa are fetching!");
-    // }, []);
-
-
-    const handleNextSection = () => {
-        let institutionCheckInProgress = false;
-        setCurrentSection((prevSection) => {
-            const nextSection = Math.min(prevSection + 1, 8);
-            //      console.log(currentSection);
+    const handleNextSection = async () => {
+        try {
+            util.setLoader(true);
 
             switch (currentSection) {
-                case 0:
-                    if (!institutionId) {
-                        alert("Please enter the institutionId.");
-
-                        return prevSection;
-                    }
-                    if (!companyName) {
-                        alert("Please enter the institution Name.");
-
-                        return prevSection;
-                    }
-                    if (!logo) {
-                        alert("Please upload a company logo before proceeding.");
-                        return prevSection;
-                    }
-                    if (!institutionCheckInProgress) {
-                        util.setLoader(true);
-                        institutionCheckInProgress = true;
-                        API.get("clients", `/user/check-dental?institutionid=${institutionId}`)
-                            .then(response => {
-                                institutionCheckInProgress = false;
-                                if (response && response.exists) {
-                                    alert("This institution already exists. Please use a different name.");
-                                    setCurrentSection(prevSection);
-                                } else if (response) {
-                                    // handleCompanyUpload();
-                                    setCurrentSection(nextSection);
-                                } else {
-                                    throw new Error("Error checking institution. Please try again.");
-                                }
-                            })
-                            .catch(error => {
-                                institutionCheckInProgress = false;
-                                alert(error.message);
-                                setCurrentSection(prevSection);
-                            });
+                case 0: // Company
+                    if (!institutionid?.trim() || !companyName?.trim() || (!selectedLogo && !logo)) {
+                        alert('Please fill in all required fields: Institution ID, Company Name, and Logo');
                         util.setLoader(false);
-                        // Exit early to prevent automatic section change
-                        return prevSection; // Prevent automatic section change
+                        return;
                     }
-                    return prevSection;
-                // handleCompanyUpload();
-                // break;
-                case 1:
-                    if (!contactInfo.phoneNumber || !contactInfo.email) {
-                        if (!contactInfo.phoneNumber) {
-                            alert("Please enter a valid phone number before proceeding.");
-                        }
-                        if (!contactInfo.email) {
-                            alert("Please enter a valid email address before proceeding.");
-                        }
-                        if (!contactInfo.owner_name) {
-                            alert("Please enter a valid ownername before proceeding.");
-                        }
-                        return prevSection;
-                    }
-                    const phoneRegex = /^[0-9]+$/;
-                    if (!phoneRegex.test(contactInfo.phoneNumber)) {
-                        alert("Please enter a valid phone number.");
-                        return prevSection;
+                    
+                    if (!userData?.cognitoId) {
+                        alert('Please login to continue');
+                        navigate('/login');
+                        util.setLoader(false);
+                        return;
                     }
 
-                    // Validate email address
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(contactInfo.email)) {
-                        alert("Please enter a valid email address.");
-                        return prevSection;
+                    try {
+                        // If we have a logo but no selectedLogo (loaded from localStorage)
+                        let imageUrl;
+                        if (selectedLogo) {
+                            // Upload new logo
+                            const fileName = `${userData.cognitoId}/${institutionid}/images/${selectedLogo.name}`;
+                            const response = await Storage.put(fileName, selectedLogo, {
+                                contentType: selectedLogo.type,
+                                metadata: {
+                                    cognitoId: userData.cognitoId,
+                                    institutionid: institutionid
+                                }
+                            });
+                            imageUrl = await Storage.get(response.key);
+                            imageUrl = imageUrl.split("?")[0];
+                        } else if (logo) {
+                            // Use existing logo URL
+                            imageUrl = logo;
+                        }
+
+                        // API call
+                        await API.put("clients", '/user/cafewebDevForm', {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: {
+                                institutionid: institutionid.trim(),
+                                index: "0",
+                                companyName: companyName.trim(),
+                                PrimaryColor,
+                                SecondaryColor,
+                                logoUrl: imageUrl,
+                                LightPrimaryColor,
+                                LightestPrimaryColor,
+                                institutionType: "development",
+                                createdBy: userData.cognitoId,
+                                date: Date.now(),
+                                PrivacyPolicy: [],
+                                heroImage: null,
+                                mission: {
+                                    description1: "",
+                                    description2: "",
+                                    highlights: []
+                                },
+                                productTagline: "",
+                                qrURL: null,
+                                socialMediaLinks: {},
+                                tagLine1: "",
+                                tagLine2: "",
+                                testimonials: [],
+                                usefulLinks: [],
+                                isFormFilled: true
+                            }
+                        });
+                    } catch (error) {
+                        console.error("Error in company section:", error);
+                        alert('Error saving company information. Please try again.');
+                        util.setLoader(false);
+                        return;
                     }
-                    // handleContactUpload();
                     break;
-                case 2:
-                    if (!video || !TagLine) {
-                        if (!video) {
-                            alert("Please upload a video before proceeding.");
+
+                case 1: // Contact
+                    if (!contactInfo) {
+                        alert('Please fill in contact information');
+                        return false;
+                    }
+
+                    try {
+                        const response = await API.put("clients", '/user/cafewebDevForm', {
+                            body: {
+                                institutionid,
+                                contactInfo,
+                                usefulLinks,
+                                createdBy: userData?.cognitoId,
+                                lastUpdated: Date.now()
+                            }
+                        });
+
+                        if (response) {
+                            // Save to localStorage
+                            await saveData();
+                            // Move to next section
+                            setCurrentSection(prev => prev + 1);
+                            return true;
                         }
-                        if (!TagLine) {
-                            alert("Please provide a tagline before proceeding.");
-                        }
-                        return prevSection;
+                    } catch (error) {
+                        throw new Error(`Error saving contact info: ${error.message}`);
                     }
                     break;
-                // case 4:
-                //   const isTestimonialsFilled = testimonials.filter(testimonial => testimonial.name && testimonial.feedback).length >= 3;
-                //   if (!isTestimonialsFilled) {
-                //     alert("Please fill three testimonials before proceeding.");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[0].name || !testimonials[0].feedback || !testimonials[0].actualFile) {
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.1");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[1].name || !testimonials[1].feedback || !testimonials[1].actualFile) {
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.2");
-                //     return prevSection;
-                //   }
-                //   if (!testimonials[2].name || !testimonials[2].feedback || !testimonials[2].actualFile) {
-                //     //            console.log("HELLO: ");
-                //     //            console.log(testimonials);
-                //     alert("Please fill up all fields for testimonial 3 before proceeding.");
-                //     return prevSection;
-                //   }
-                //   handleTestimonialsUpload();
-                //   break;
-                // case 4:
-                //   const invalidPriceIndex = subscriptions.findIndex(subscription => isNaN(Number(subscription.amount)));
-                //   if (invalidPriceIndex !== -1) {
-                //     alert(`Please enter a valid price number for subscription ${invalidPriceIndex + 1}.`);
-                //     return prevSection;
-                //   }
-                //   break;
-                // case 6:
-                //   const filledFAQs = faqs.filter(faq => (faq.question && faq.answer) || (!faq.question && !faq.answer));
 
-                //   // Check if both title and answer are filled for each FAQ
-                //   const allFAQsFilled = filledFAQs.length === faqs.length;
+                case 2: // Home
+                    if (!TagLine || !TagLine1 || !TagLine2) {
+                        alert('Please fill in all taglines');
+                        return;
+                    }
 
-                //   if (!allFAQsFilled) {
-                //     alert("Please fill both the question and answer for each FAQ before proceeding.");
-                //     return prevSection;
-                //   }
-                //   handleFAQsUpload();
-                //   break;
-                // case 7:
-                //   const incompleteIndex = instructors.findIndex(instructor => {
-                //     return instructor.name || instructor.emailId || instructor.position || instructor.actualFile;
-                //   });
+                    try {
+                        // Get existing data
+                        const existingData = company?.details || {};
+                        
+                        let heroImageUrl = null;
+                        if (heroImage) {
+                            const fileName = `${institutionid}/images/hero/hero_${Date.now()}.${heroImage.name.split('.').pop()}`;
+                            const uploadResponse = await Storage.put(fileName, heroImage, {
+                                contentType: heroImage.type
+                            });
+                            heroImageUrl = await Storage.get(uploadResponse.key);
+                            heroImageUrl = heroImageUrl.split("?")[0];
+                        }
 
-                //   // If incompleteIndex is not -1, it means there's at least one incomplete instructor
-                //   if (incompleteIndex !== -1) {
-                //     // Check if all fields for the incomplete instructor are filled
-                //     const incompleteInstructor = instructors[incompleteIndex];
-                //     if (!incompleteInstructor.name || !incompleteInstructor.emailId || !incompleteInstructor.position || !incompleteInstructor.actualFile) {
-                //       alert(`Please fill all fields for instructor ${incompleteIndex + 1} before proceeding.`);
-                //       return prevSection;
-                //     }
-                //   }
-                //   handleInstructorsUpload();
-                //   break;
-                case 4:
-                    uploadTestimonials();
-                    console.log("the form will submit now")
-                    handleSubmitForm();
+                        const updatedData = {
+                            ...existingData,
+                            institutionid,
+                            TagLine,
+                            TagLine1,
+                            TagLine2,
+                            TagLine3,
+                            heroImageUrl,
+                            createdBy: userData?.cognitoId,
+                            isFormFilled: true,
+                            lastUpdated: Date.now()
+                        };
+
+                        // Update API
+                        await API.put("clients", '/user/cafewebDevForm', {
+                            body: updatedData
+                        });
+
+                        // Update localStorage
+                        const localData = loadFromLocalStorage() || {};
+                        localStorage.setItem('cafeFormData', JSON.stringify({
+                            ...localData,
+                            ...updatedData
+                        }));
+
+                    } catch (error) {
+                        console.error("Error in home section:", error);
+                        alert('Error saving home information. Please try again.');
+                        util.setLoader(false);
+                        return;
+                    }
                     break;
-                default:
+
+                case 3: // Testimonials
+                    try {
+                        util.setLoader(true);
+
+                        // First validate all testimonials are filled
+                        const incompleteTestimonials = testimonials.filter((t, index) => {
+                            const missing = [];
+                            
+                            if (!t.customerName?.trim()) {
+                                missing.push('Customer Name');
+                            }
+                            if (!t.text?.trim()) {
+                                missing.push('Testimonial Text');
+                            }
+                            if (!t.imgSrc) {
+                                missing.push('Customer Image');
+                            }
+
+                            if (missing.length > 0) {
+                                alert(`Testimonial #${index + 1} is missing:\n${missing.join('\n')}\n\nPlease complete all required fields.`);
+                                return true;
+                            }
+                            return false;
+                        });
+
+                        if (incompleteTestimonials.length > 0) {
+                            util.setLoader(false);
+                            return; // Stop here if any testimonial is incomplete
+                        }
+
+                        // All testimonials are valid, proceed with API submission
+                        try {
+                            // Process testimonials for API
+                            const processedTestimonials = await Promise.all(
+                                testimonials.map(async (t, index) => {
+                                    let imageUrl = t.imgSrc;
+
+                                    if (t.uploadedFile) {
+                                        const fileName = `${institutionid}/images/testimonials/testimonial_${index + 1}_${Date.now()}.${t.uploadedFile.name.split('.').pop()}`;
+                                        const response = await Storage.put(fileName, t.uploadedFile, {
+                                            contentType: t.uploadedFile.type
+                                        });
+                                        imageUrl = await Storage.get(response.key);
+                                        imageUrl = imageUrl.split("?")[0];
+                                    }
+
+                                    return {
+                                        image: imageUrl,
+                                        customerName: t.customerName.trim(),
+                                        text: t.text.trim(),
+                                        rating: t.rating || 5
+                                    };
+                                })
+                            );
+
+                            // API call
+                            const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
+                                body: {
+                                    institutionid,
+                                    testimonials: processedTestimonials,
+                                    createdBy: userData?.cognitoId,
+                                    isFormFilled: true,
+                                    lastUpdated: Date.now()
+                                }
+                            });
+
+                            if (!apiResponse) {
+                                throw new Error('Failed to submit testimonials');
+                            }
+
+                            // Success! Save to localStorage and proceed
+                            await saveData();
+                            setCurrentSection(prev => prev + 1);
+                            return true;
+
+                        } catch (error) {
+                            throw new Error(`Error processing testimonials: ${error.message}`);
+                        }
+
+                    } catch (error) {
+                        console.error("Error in testimonials section:", error);
+                        alert('Error: ' + (error.message || 'Failed to save testimonials. Please try again.'));
+                        return false;
+                    } finally {
+                        util.setLoader(false);
+                    }
                     break;
             }
 
-            //      console.log(`Current Section: ${prevSection}, Next Section: ${nextSection}`);
-            return nextSection;
-        });
+            await saveData();
+            setCurrentSection(prev => prev + 1);
+
+        } catch (error) {
+            console.error("Error in section submission:", error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            util.setLoader(false);
+        }
     };
 
-    const saveData = () => {
-        setsavedData({});
-        //    console.log("Saved Trigger")
+    const saveData = async () => {
+        try {
+            // Wait for all testimonial image conversions to complete
+            const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
+                let imageBase64 = '';
+                if (t.uploadedFile) {
+                    imageBase64 = await convertFileToBase64(t.uploadedFile);
+                } else if (t.imgSrc && t.imgSrc.startsWith('data:image')) {
+                    imageBase64 = t.imgSrc;
+                }
+                
+                return {
+                    customerName: t.customerName || t.name || '',
+                    text: t.text || t.feedback || '',
+                    rating: t.rating || 5,
+                    imgSrc: t.imgSrc || '',
+                    imageBase64
+                };
+            }));
+
+            const dataToSave = {
+                currentSection,
+                companyName,
+                institutionid,
+                PrimaryColor,
+                SecondaryColor,
+                LightPrimaryColor,
+                LightestPrimaryColor,
+                contactInfo,
+                usefulLinks,
+                TagLine,
+                TagLine1,
+                TagLine2,
+                TagLine3,
+                selectedMedia,
+                logo,
+                testimonials: processedTestimonials,
+                lastUpdated: Date.now()
+            };
+
+            localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+        } catch (error) {
+            console.error('Error saving data:', error);
+        }
     };
 
-    // const handlePrevSection = () => {
-    //   setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
-    // };
-    const [showModal, setShowModal] = useState(false);
     const handleSaveDraft = () => {
-        Navigate('/dashboard', { state: { section: 'institution-draft' } });
+        saveData();
+        navigate('/dashboard', { state: { section: 'institution-draft' } });
     };
 
     const handleClearData = async () => {
         try {
-            util.setLoader(true);
-            await API.del(
-                "clients",
-                `/user/development-form/delete-all/${institutionId}`);
-            alert('All Data deleted successfully');
-            util.setLoader(false);
-            Navigate('/dashboard');
+            if (institutionid) {
+                await API.del(
+                    "clients",
+                    `/user/cafewebDevForm/delete-all/${institutionid}`
+                );
+            }
+            
+            localStorage.removeItem('cafeFormDraft');
+            localStorage.removeItem('cafeFormData');
+            setinstitutionid('');
+            setCompanyName('');
+            setLogo(null);
+            setSelectedLogo(null);
+            setPrimaryColor('#30afbc');
+            setSecondaryColor('#2b9ea9');
+            setLightPrimaryColor('#e6f7f9');
+            setLightestPrimaryColor('#f3fbfc');
+            setTagLine('');
+            setTagLine1('');
+            setTagLine2('');
+            setValues(['', '', '']);
+            setContactInfo({
+                instagram: '',
+                facebook: '',
+                youTube: ''
+            });
+            setTestimonials([
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+                { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+            ]);
+            
+            alert('All data cleared successfully');
+            navigate('/dashboard');
         } catch (error) {
-            alert('No matching data found', error);
-            util.setLoader(false);
+            console.error("Error clearing data:", error);
+            alert('Error clearing data. Please try again.');
         }
     };
-    const handlePrevSectionDraft = () => {
-        setShowModal(true);
+
+    const loadFromLocalStorage = async () => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            
+            // Load all saved data
+            if (savedData) {
+                // Company Info
+                if (savedData.companyName) setCompanyName(savedData.companyName);
+                if (savedData.institutionid) setinstitutionid(savedData.institutionid);
+                if (savedData.PrimaryColor) setPrimaryColor(savedData.PrimaryColor);
+                if (savedData.SecondaryColor) setSecondaryColor(savedData.SecondaryColor);
+                if (savedData.LightPrimaryColor) setLightPrimaryColor(savedData.LightPrimaryColor);
+                if (savedData.LightestPrimaryColor) setLightestPrimaryColor(savedData.LightestPrimaryColor);
+                if (savedData.logo) setLogo(savedData.logo);
+
+                // Contact Info
+                if (savedData.contactInfo) {
+                    setContactInfo(savedData.contactInfo);
+                    setEmail(savedData.contactInfo.email || '');
+                    setPhone(savedData.contactInfo.phone || '');
+                }
+                if (savedData.usefulLinks) setUsefulLinks(savedData.usefulLinks);
+                if (savedData.socialMediaLinks) setSocialMediaLinks(savedData.socialMediaLinks);
+
+                // Home Content
+                if (savedData.TagLine) setTagLine(savedData.TagLine);
+                if (savedData.TagLine1) setTagLine1(savedData.TagLine1);
+                if (savedData.TagLine2) setTagLine2(savedData.TagLine2);
+                if (savedData.TagLine3) setTagLine3(savedData.TagLine3);
+                if (savedData.selectedMedia) setSelectedMedia(savedData.selectedMedia);
+
+                // Testimonials
+                if (savedData.testimonials?.length > 0) {
+                    const loadedTestimonials = savedData.testimonials.map(t => ({
+                        imgSrc: t.imgSrc || t.image || '',
+                        customerName: t.customerName || t.name || '',
+                        text: t.text || t.feedback || '',
+                        rating: t.rating || 5,
+                        uploadedFile: null,
+                        ...(t.imageBase64 && {
+                            imgSrc: t.imageBase64,
+                            uploadedFile: base64ToFile(
+                                t.imageBase64,
+                                `testimonial_${Date.now()}.jpg`,
+                                'image/jpeg'
+                            )
+                        })
+                    }));
+                    setTestimonials(loadedTestimonials);
+                }
+
+                // Current Section
+                if (typeof savedData.currentSection === 'number') {
+                    setCurrentSection(savedData.currentSection);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading from localStorage:', error);
+        }
     };
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-    return (
-        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
-        <div className="flex-grow flex">
-          <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
-            {currentSection === 0 &&
+
+    useEffect(() => {
+        loadFromLocalStorage();
+    }, []); // Run only on mount
+
+    useEffect(() => {
+        const dataToSave = {
+            companyName,
+            institutionid,
+            PrimaryColor,
+            SecondaryColor,
+            LightPrimaryColor,
+            LightestPrimaryColor,
+            email,
+            phone,
+            contactInfo,
+            socialMediaLinks,
+            usefulLinks,
+            TagLine,
+            TagLine1,
+            TagLine2,
+            TagLine3,
+            selectedMedia,
+            logoData: logo,
+            currentSection,
+            lastUpdated: Date.now()
+        };
+
+        localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+    }, [
+        companyName,
+        institutionid,
+        PrimaryColor,
+        SecondaryColor,
+        LightPrimaryColor,
+        LightestPrimaryColor,
+        email,
+        phone,
+        contactInfo,
+        socialMediaLinks,
+        usefulLinks,
+        TagLine,
+        TagLine1,
+        TagLine2,
+        TagLine3,
+        selectedMedia,
+        logo,
+        currentSection
+    ]);
+
+    // Add cleanup for object URLs
+    useEffect(() => {
+        return () => {
+            if (logo && logo.startsWith('blob:')) {
+                URL.revokeObjectURL(logo);
+            }
+            if (selectedMedia && selectedMedia.startsWith('blob:')) {
+                URL.revokeObjectURL(selectedMedia);
+            }
+            testimonials.forEach(t => {
+                if (t.imgSrc && t.imgSrc.startsWith('blob:')) {
+                    URL.revokeObjectURL(t.imgSrc);
+                }
+            });
+        };
+    }, []);
+
+    // Add cleanup effect
+    useEffect(() => {
+        return () => {
+            // Clear localStorage when component unmounts
+            if (currentSection === FORM_SECTIONS.length - 1) {
+                localStorage.removeItem('cafeFormData');
+            }
+        };
+    }, [currentSection]);
+
+    // Add function to reset form
+    const resetForm = useCallback(() => {
+        // Reset all state to initial values
+        setCurrentSection(0);
+        setinstitutionid('');
+        setCompanyName('');
+        setLogo(null);
+        setSelectedLogo(null);
+        setPrimaryColor('#30afbc');
+        setSecondaryColor('#2b9ea9');
+        setLightPrimaryColor('#e6f7f9');
+        setLightestPrimaryColor('#f3fbfc');
+        setTagLine('');
+        setTagLine1('');
+        setTagLine2('');
+        setValues(['', '', '']);
+        setContactInfo({
+            instagram: '',
+            facebook: '',
+            youTube: ''
+        });
+        setTestimonials([
+            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+        ]);
+        setTagLine3('');
+        setHeroImage(null);
+        setSelectedMedia(null);
+        setEmail('');
+        setPhone('');
+        setSocialMediaLinks({
+            facebook: '',
+            instagram: '',
+            youtube: ''
+        });
+        setUsefulLinks([]);
+
+        // Clear localStorage
+        localStorage.removeItem('cafeFormData');
+    }, []);
+
+    const renderSection = () => {
+        switch (currentSection) {
+            case 0:
+                return (
+                    <ErrorBoundary>
                         <Company
-                            // clients={Companydata}
-                            companyName={companyName}
+                            companyName={companyName || ''}
                             setCompanyName={setCompanyName}
-                            institutionId={institutionId}
-                            setinstitutionId={setinstitutionId}
+                            institutionid={institutionid || ''}
+                            setinstitutionid={setinstitutionid}
                             PrimaryColor={PrimaryColor}
                             setPrimaryColor={setPrimaryColor}
                             SecondaryColor={SecondaryColor}
                             setSecondaryColor={setSecondaryColor}
-                            logo={logo}
-                            setLogo={setLogo}
-                            LightestPrimaryColor={LightestPrimaryColor}
-                            setLightestPrimaryColor={setLightestPrimaryColor}
                             LightPrimaryColor={LightPrimaryColor}
                             setLightPrimaryColor={setLightPrimaryColor}
-                            selectedFile={selectedFile}
-                            setSelectedFile={setSelectedFile}
-                            companyDescription={companyDescription}
-                            setCompanyDescription={setCompanyDescription}
-                        />}
-                    {currentSection === 1 &&
+                            LightestPrimaryColor={LightestPrimaryColor}
+                            setLightestPrimaryColor={setLightestPrimaryColor}
+                            logo={logo}
+                            setLogo={setLogo}
+                            selectedLogo={selectedLogo}
+                            setSelectedLogo={setSelectedLogo}
+                        />
+                    </ErrorBoundary>
+                );
+            
+            case 1:
+                return (
+                    <ErrorBoundary>
                         <Contact
+                            email={email || ''}
+                            setEmail={setEmail}
+                            phone={phone || ''}
+                            setPhone={setPhone}
+                            socialMediaLinks={socialMediaLinks}
+                            setSocialMediaLinks={setSocialMediaLinks}
+                            usefulLinks={usefulLinks}
+                            setUsefulLinks={setUsefulLinks}
                             contactInfo={contactInfo}
                             setContactInfo={setContactInfo}
-                        />}
-                    {currentSection === 2 &&
-                        <Home
-                            TagLine={TagLine}
-                            setTagLine={setTagLine}
-                            TagLine1={TagLine1}
-                            setTagLine1={setTagLine1}
-                            video={video}
-                            setVideo={setVideo}
-                            selectedMedia={selectedMedia}
-                            setSelectedMedia={setSelectedMedia}
-                            mediaType={mediaType}
-                            setMediaType={setMediaType}
-                            TagLine2={TagLine2}
-                            setTagLine2={setTagLine2}
-                            TagLine3={TagLine3}
-                            setTagLine3={setTagLine3}
-                        />}
-                    {/* {currentSection === 4 &&
-            <Testimonials
-              testimonials={testimonials}
-              setTestimonials={setTestimonials}
-              TestimonialBg={TestimonialBg}
-              setTestimonialBg={setTestimonialBg}
-            />} */}
+                            instagram={contactInfo?.instagram || ''}
+                            setInstagram={(value) => setContactInfo(prev => ({ ...prev, instagram: value }))}
+                            facebook={contactInfo?.facebook || ''}
+                            setFacebook={(value) => setContactInfo(prev => ({ ...prev, facebook: value }))}
+                            youTube={contactInfo?.youTube || ''}
+                            setYouTube={(value) => setContactInfo(prev => ({ ...prev, youTube: value }))}
+                        />
+                    </ErrorBoundary>
+                );
 
-                    {/* {currentSection === 4 &&
-            <Subscription
-              subscriptions={subscriptions}
-              setSubscriptions={setSubscriptions}
-              country={country}
-              setCountry={setCountry}
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-            />} */}
-
-                    {/* {currentSection === 6 &&
-            <FAQs
-              faqs={faqs}
-              setFaqs={setFaqs}
-            />} */}
-                    {currentSection === 3 &&
-                        <Policy
-                            countBanner={countBanner}
-                            setCountBanner={setCountBanner}
-                            titleOfCountBanner={titleOfCountBanner}
-                            values={values}
-                            setValues={setValues}
-                            policies={policies}
-                            setPolicies={setPolicies}
-                            aboutImage={aboutImage}
-                            setAboutImage={setAboutImage}
-                        />}
-                    {currentSection === 4 &&
-                        <Testimonials
-                            testimonials={testimonials}
-                            setTestimonials={setTestimonials}
-                        />}
-                </div>
-                <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
-                    <Footer
-                        saveData={saveData}
-                        currentSection={currentSection}
-                        nextSection={handleNextSection}
-                        prevSection={handlePrevSectionDraft}
-                        showModal={() => setShowModal(true)}
+            case 2:
+                return (
+                    <Home
+                        TagLine={TagLine}
+                        setTagLine={setTagLine}
+                        TagLine1={TagLine1}
+                        setTagLine1={setTagLine1}
+                        TagLine2={TagLine2}
+                        setTagLine2={setTagLine2}
+                        TagLine3={TagLine3}
+                        setTagLine3={setTagLine3}
+                        heroImage={heroImage}
+                        setHeroImage={setHeroImage}
+                        selectedMedia={selectedMedia}
+                        setSelectedMedia={setSelectedMedia}
                     />
-                </div>
+                );
 
+            case 3:
+                return (
+                    <Testimonials
+                        testimonials={testimonials}
+                        setTestimonials={setTestimonials}
+                    />
+                );
+
+            default:
+                return null;
+        }
+    };
+
+    const handlePrevSection = () => {
+        try {
+            if (currentSection > 0) {
+                saveData();
+                setCurrentSection(prev => prev - 1);
+            } else {
+                navigate('/dashboard');
+            }
+        } catch (error) {
+            console.error("Error navigating back:", error);
+        }
+    };
+
+    return (
+        <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
+            <Navbar className="fixed top-0 w-full z-50" />
+
+            <div className="fixed top-[64px] left-0 w-full h-1 bg-gray-100 z-40">
+                <motion.div 
+                    className="h-full bg-gradient-to-r from-teal-600 to-teal-500"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.5 }}
+                />
             </div>
+
+            <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto w-full">
+                    <motion.div
+                        className="text-center mb-8 md:mb-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <div className="inline-flex items-center justify-center p-2 mb-4 rounded-full bg-teal-50">
+                            {React.createElement(FORM_SECTIONS[currentSection].icon, {
+                                className: "w-6 h-6 text-teal-600"
+                            })}
+                        </div>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                            {FORM_SECTIONS[currentSection].title}
+                        </h1>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            {FORM_SECTIONS[currentSection].description}
+                        </p>
+                    </motion.div>
+
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentSection}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 lg:p-10"
+                        >
+                            {renderSection()}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </main>
+
+            <Footer 
+                currentSection={currentSection}
+                nextSection={handleNextSection}
+                prevSection={handlePrevSection}
+                saveData={saveData}
+                showModal={() => setShowModal(true)}
+                institutionId={institutionid}
+                openModal={() => setShowModal(true)}
+                testimonials={testimonials}
+                sections={FORM_SECTIONS}
+            />
+
             <PrevSectionDraftHandler
                 isOpen={showModal}
-                onClose={handleCloseModal}
+                onClose={() => setShowModal(false)}
                 onClear={handleClearData}
                 onSaveDraft={handleSaveDraft}
             />
