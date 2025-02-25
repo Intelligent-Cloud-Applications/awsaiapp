@@ -259,6 +259,42 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
                   </select>
                 </div> */}
                 <div className="relative">
+                  <TextInput
+                    type="number"
+                    name="duration"
+                    value={subscription.duration}
+                    onChange={(e) => handleSubscriptionChange(index, e)}
+                    placeholder="Put the Duration of the course in months (ex - 1,2,3...)"
+                    className={`w-full text-black border-none outline-none bg-transparent mt-6 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'}`}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                    rows={index === activeSubscriptionIndex ? 3 : 1}
+                    onFocus={() => setActiveSubscriptionIndex(index)}
+                    onBlur={() => setActiveSubscriptionIndex(null)}
+                  />
+                </div>
+                <div className="relative">
+                  <TextInput
+                    type="text"
+                    name="durationText"
+                    value={subscription.durationText}
+                    onChange={(e) => handleSubscriptionChange(index, e)}
+                    placeholder="Put the Duration of the course (ex - January- April...)"
+                    className={`w-full text-black border-none outline-none bg-transparent mt-6 ${index === activeSubscriptionIndex ? 'resize-none' : 'resize-y'}`}
+                    style={{
+                      borderColor: "#D1D5DB",
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: "8px",
+                    }}
+                    rows={index === activeSubscriptionIndex ? 3 : 1}
+                    onFocus={() => setActiveSubscriptionIndex(index)}
+                    onBlur={() => setActiveSubscriptionIndex(null)}
+                  />
+                </div>
+                <div className="relative">
                   <li className="flex gap-20 max500:flex-col max500:gap-2 max500:items-start relative ">
                     <select
                       value={countryCodes[index]}
