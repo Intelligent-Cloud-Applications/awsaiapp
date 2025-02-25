@@ -6,6 +6,7 @@ import { API } from "aws-amplify";
 import Navbar from "../components/Home/Navbar";
 import Context from "../context/Context";
 import Pic from "../utils/contactusPic.png";
+import FOOTER from "../components/Home/Footer";
 
 const Query = ({ activeComponent }) => {
   const util = useContext(Context).util;
@@ -106,6 +107,7 @@ const Query = ({ activeComponent }) => {
           </div>
         </div>
       </div>
+      <FOOTER />
     </>
   );
 };
