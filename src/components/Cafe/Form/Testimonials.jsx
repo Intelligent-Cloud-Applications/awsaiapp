@@ -10,6 +10,66 @@ const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const MAX_NAME_LENGTH = 50;
 const MAX_TEXT_LENGTH = 500;
 
+const compressImage = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set maximum dimensions
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+
+        let width = img.width;
+        let height = img.height;
+
+        // Calculate new dimensions
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        // Set canvas dimensions
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and compress
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convert to JPEG with 0.7 quality
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+        
+        // Verify the size is under 1MB
+        const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
+        if (sizeInMB > 1) {
+          // If still too large, compress more
+          resolve(canvas.toDataURL('image/jpeg', 0.5));
+        } else {
+          resolve(compressedBase64);
+        }
+      };
+
+      img.onerror = reject;
+    };
+
+    reader.onerror = reject;
+  });
+};
+
 const Testimonials = ({ testimonials, setTestimonials }) => {
     const [errors, setErrors] = useState({});
 
@@ -165,32 +225,33 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
     const handleImageChange = useCallback(async (index, file) => {
         if (!file) return;
 
-        if (file.size > MAX_FILE_SIZE) {
-            setErrors(prev => ({
-                ...prev,
-                [`testimonial${index}Image`]: 'File size must be less than 4MB'
-            }));
-            return;
-        }
-
-        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-            setErrors(prev => ({
-                ...prev,
-                [`testimonial${index}Image`]: 'Please upload a JPG or PNG file'
-            }));
-            return;
-        }
-
         try {
-            // Create a blob URL for preview
-            const previewUrl = URL.createObjectURL(file);
-            
+            // Show loading state
+            setTestimonials(prev => {
+                const updated = [...prev];
+                updated[index] = {
+                    ...updated[index],
+                    imgSrc: 'loading'
+                };
+                return updated;
+            });
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                throw new Error('Please upload an image file');
+            }
+
+            // Compress the image
+            const compressedBase64 = await compressImage(file);
+            console.log('Image compressed successfully');
+
+            // Create preview URL
             setTestimonials(prev => {
                 const updated = [...prev];
                 updated[index] = {
                     ...updated[index],
                     uploadedFile: file,
-                    imgSrc: previewUrl
+                    imgSrc: compressedBase64
                 };
                 return updated;
             });
@@ -201,14 +262,68 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                 delete newErrors[`testimonial${index}Image`];
                 return newErrors;
             });
+
         } catch (error) {
             console.error('Error handling image:', error);
             setErrors(prev => ({
                 ...prev,
-                [`testimonial${index}Image`]: 'Error processing image. Please try again.'
+                [`testimonial${index}Image`]: error.message || 'Error processing image. Please try again.'
             }));
+            
+            // Reset image on error
+            setTestimonials(prev => {
+                const updated = [...prev];
+                updated[index] = {
+                    ...updated[index],
+                    imgSrc: ''
+                };
+                return updated;
+            });
         }
     }, [setTestimonials]);
+
+    // Add renderImagePreview function
+    const renderImagePreview = (testimonial, index) => {
+        if (!testimonial.imgSrc) {
+            return (
+                <div className="flex flex-col items-center justify-center space-y-2 w-32 h-32 border-[2.5px] border-dashed border-gray-300 rounded-lg hover:border-[#30afbc] transition-all duration-300">
+                    <FiUpload className={`w-6 h-6 ${errors[`testimonial${index}Image`] ? 'text-red-400' : 'text-[#30afbc]'}`} />
+                    <p className="text-xs text-gray-500 text-center">
+                        Click to upload
+                    </p>
+                </div>
+            );
+        }
+
+        if (testimonial.imgSrc === 'loading') {
+            return (
+                <div className="w-32 h-32 border-[2.5px] border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#30afbc]"></div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="relative w-32 h-32">
+                <img
+                    src={testimonial.imgSrc}
+                    alt="Customer"
+                    className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                        console.error('Error loading image:', e);
+                        e.target.src = '';
+                    }}
+                />
+                <div className="absolute inset-0 bg-[#30afbc]/10 opacity-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center rounded-lg">
+                    <div className="bg-white/95 px-3 py-1.5 rounded-md shadow-lg">
+                        <p className="text-[#30afbc] text-xs font-medium">
+                            Change Image
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     // Add cleanup for blob URLs
     useEffect(() => {
@@ -292,26 +407,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                                 htmlFor={`image-${index}`}
                                 className="cursor-pointer block"
                             >
-                                {testimonial.imgSrc ? (
-                                    <div className="relative w-32 h-32">
-                                        <img
-                                            src={testimonial.imgSrc}
-                                            alt="Preview"
-                                            className="w-full h-full object-cover rounded-lg"
-                                            onError={(e) => {
-                                                console.error('Error loading image:', e);
-                                                e.target.src = ''; // Clear the broken image
-                                            }}
-                                        />
-                                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-lg">
-                                            <p className="text-white text-sm">Change Image</p>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-gray-400 transition-colors">
-                                        <FiUpload className="w-6 h-6 text-gray-400" />
-                                    </div>
-                                )}
+                                {renderImagePreview(testimonial, index)}
                             </label>
                             {errors[`testimonial${index}Image`] && (
                                 <p className="mt-1 text-sm text-red-500">

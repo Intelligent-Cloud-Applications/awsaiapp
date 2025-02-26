@@ -51,12 +51,8 @@ function Footer({
     };
 
     const handlePrevClick = () => {
-        if (currentSection === 0) {
-            showModal();
-        } else {
-            prevSection();
-            scrollToTop();
-        }
+        // Always show modal when clicking previous, regardless of section
+        showModal();
     };
 
     const validateTestimonials = () => {
@@ -95,8 +91,11 @@ function Footer({
                     const PrimaryColor = "#30afbc";
                     const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
                     
-                    // Clear localStorage
+                    // Clear all form data from localStorage
                     localStorage.removeItem('cafeFormData');
+                    localStorage.removeItem('cafeFormLogo');
+                    localStorage.removeItem('heroImageData');
+                    localStorage.removeItem('testimonialImages');
                     
                     // Navigate to dashboard and open payment URL
                     Navigate("/dashboard");

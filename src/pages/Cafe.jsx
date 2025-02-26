@@ -393,9 +393,17 @@ const Cafe = () => {
             await saveData();
             setCurrentSection(prev => prev + 1);
 
+            // If it's the final section and submission is successful
+            if (currentSection === FORM_SECTIONS.length - 1) {
+                // Clear all form data after successful submission
+                clearAllFormData();
+            }
+
+            return true;
         } catch (error) {
             console.error("Error in section submission:", error);
             alert('An error occurred. Please try again.');
+            return false;
         } finally {
             util.setLoader(false);
         }
@@ -457,7 +465,7 @@ const Cafe = () => {
             if (institutionid) {
                 await API.del(
                     "clients",
-                    `/user/cafewebDevForm/delete-all/${institutionid}`
+                    `/user/development-form/delete-all/${institutionid}`
                 );
             }
             
@@ -673,6 +681,51 @@ const Cafe = () => {
         localStorage.removeItem('cafeFormData');
     }, []);
 
+    // Add a function to clear all form data
+    const clearAllFormData = () => {
+        // Clear all form states
+        setCompanyName('');
+        setinstitutionid('');
+        setPrimaryColor('');
+        setSecondaryColor('');
+        setLightPrimaryColor('');
+        setLightestPrimaryColor('');
+        setLogo(null);
+        setSelectedLogo(null);
+        setTagLine('');
+        setTagLine1('');
+        setTagLine2('');
+        setTagLine3('');
+        setHeroImage(null);
+        setSelectedMedia(null);
+        setTestimonials(Array(5).fill({
+            customerName: '',
+            text: '',
+            rating: 5,
+            imgSrc: '',
+            uploadedFile: null
+        }));
+
+        // Clear all localStorage data
+        localStorage.removeItem('cafeFormData');
+        localStorage.removeItem('cafeFormLogo');
+        localStorage.removeItem('heroImageData');
+        localStorage.removeItem('testimonialImages');
+
+        // Clear any blob URLs
+        if (selectedLogo && selectedLogo.startsWith('blob:')) {
+            URL.revokeObjectURL(selectedLogo);
+        }
+        if (selectedMedia && selectedMedia.startsWith('blob:')) {
+            URL.revokeObjectURL(selectedMedia);
+        }
+        testimonials.forEach(testimonial => {
+            if (testimonial.imgSrc && testimonial.imgSrc.startsWith('blob:')) {
+                URL.revokeObjectURL(testimonial.imgSrc);
+            }
+        });
+    };
+
     const renderSection = () => {
         switch (currentSection) {
             case 0:
@@ -756,14 +809,19 @@ const Cafe = () => {
 
     const handlePrevSection = () => {
         try {
-            if (currentSection > 0) {
-                saveData();
-                setCurrentSection(prev => prev - 1);
-            } else {
+            // Save current data before showing modal
+            saveData();
+            
+            // If we're on first section, navigate to dashboard
+            if (currentSection === 0) {
                 navigate('/dashboard');
+            } else {
+                // Move to previous section
+                setCurrentSection(prev => prev - 1);
             }
         } catch (error) {
             console.error("Error navigating back:", error);
+            alert("Error: Unable to navigate back. Please try again.");
         }
     };
 
@@ -833,6 +891,16 @@ const Cafe = () => {
                 onClose={() => setShowModal(false)}
                 onClear={handleClearData}
                 onSaveDraft={handleSaveDraft}
+                onContinue={() => {
+                    // If we're on first section, navigate to dashboard
+                    if (currentSection === 0) {
+                        navigate('/dashboard');
+                    } else {
+                        // Move to previous section
+                        setCurrentSection(prev => prev - 1);
+                        setShowModal(false);
+                    }
+                }}
             />
         </div>
     );

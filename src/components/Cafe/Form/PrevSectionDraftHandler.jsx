@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiSave, FiTrash2, FiX } from 'react-icons/fi';
 
-const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft }) => {
+const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, onContinue }) => {
   if (!isOpen) return null;
 
   return (
@@ -10,10 +10,10 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft }) => {
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            Save Progress
+            Go Back
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Please choose what you'd like to do with your current progress
+            Would you like to save your progress before going back?
           </p>
         </div>
 
@@ -28,13 +28,22 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft }) => {
             Save as Draft & Exit
           </button>
 
-          {/* Continue Editing Button */}
+          {/* Go Back Without Saving Button */}
           <button
-            onClick={onClose}
+            onClick={onContinue}
             className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-[#30afbc] bg-white rounded-lg hover:bg-gray-50 border border-[#30afbc] transition-colors"
           >
             <FiX className="w-4 h-4" />
-            Continue Editing
+            Go Back Without Saving
+          </button>
+
+          {/* Cancel Button */}
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-gray-600 hover:text-white bg-gray-50 hover:bg-gray-600 rounded-lg transition-colors"
+          >
+            <FiX className="w-4 h-4" />
+            Cancel
           </button>
 
           {/* Clear Data Button */}

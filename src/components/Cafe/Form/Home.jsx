@@ -74,43 +74,152 @@ const Home = ({
         setErrors(prev => ({ ...prev, [field.toLowerCase()]: error }));
     };
 
+    const compressImage = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Set maximum dimensions
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Calculate new dimensions
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height = Math.round((height * MAX_WIDTH) / width);
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width = Math.round((width * MAX_HEIGHT) / height);
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(compressedBase64);
+                };
+
+                img.onerror = reject;
+            };
+
+            reader.onerror = reject;
+        });
+    };
+
     const handleHeroImageChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validate file size (4MB)
-        if (file.size > 4 * 1024 * 1024) {
-            setErrors(prev => ({ ...prev, heroImage: 'File size should be less than 4MB' }));
-            return;
-        }
-
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            setErrors(prev => ({ ...prev, heroImage: 'Please upload a valid image file' }));
-            return;
-        }
-
         try {
-            // Convert to base64
-            const base64Image = await convertFileToBase64(file);
-            
-            // Update state
-            setHeroImage(file);
-            setSelectedMedia(base64Image);
+            // Show loading state
+            setSelectedMedia('loading');
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                throw new Error('Please upload an image file');
+            }
+
+            // Compress the image
+            const compressedBase64 = await compressImage(file);
+            console.log('Image compressed successfully');
 
             // Save to localStorage
-            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            localStorage.setItem('cafeFormData', JSON.stringify({
-                ...currentData,
-                heroImageData: base64Image
-            }));
+            const storageData = {
+                heroImage: compressedBase64,
+                fileName: file.name,
+                timestamp: Date.now()
+            };
 
-            // Clear errors
-            setErrors(prev => ({ ...prev, heroImage: null }));
+            try {
+                const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+                localStorage.setItem('cafeFormData', JSON.stringify({
+                    ...currentData,
+                    heroImageData: storageData
+                }));
+
+                // Update states
+                setSelectedMedia(compressedBase64);
+                setHeroImage(file); // Keep original for S3
+                setErrors(prev => ({ ...prev, heroImage: null }));
+            } catch (storageError) {
+                console.error('Failed to save to localStorage:', storageError);
+                throw new Error('Failed to save image');
+            }
+
         } catch (error) {
             console.error('Error handling hero image:', error);
-            setErrors(prev => ({ ...prev, heroImage: 'Error uploading image' }));
+            setErrors(prev => ({
+                ...prev,
+                heroImage: error.message || 'Error processing image. Please try a different file.'
+            }));
+            setSelectedMedia(null);
         }
+    };
+
+    const renderHeroImagePreview = () => {
+        if (!selectedMedia) {
+            return (
+                <div className="flex flex-col items-center justify-center space-y-2">
+                    <FiImage className={`w-8 h-8 ${errors.heroImage ? 'text-red-400' : 'text-[#30afbc]'}`} />
+                    <p className={`text-sm ${errors.heroImage ? 'text-red-500' : 'text-gray-500'}`}>
+                        Click to upload hero image
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Maximum file size: 50MB
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Image will be compressed automatically
+                    </p>
+                </div>
+            );
+        }
+
+        if (selectedMedia === 'loading') {
+            return (
+                <div className="flex items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#30afbc]"></div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="relative w-full h-64 flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center p-4">
+                    <img
+                        src={selectedMedia}
+                        alt="Hero Preview"
+                        className="max-w-full max-h-full object-contain"
+                        onError={() => {
+                            console.error('Error loading image');
+                            setSelectedMedia(null);
+                        }}
+                    />
+                </div>
+                <div className="absolute inset-0 bg-[#30afbc]/10 opacity-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                    <div className="bg-white/95 px-4 py-2 rounded-md shadow-lg">
+                        <p className="text-[#30afbc] text-sm font-medium">
+                            Click to change image
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return (
@@ -178,7 +287,11 @@ const Home = ({
                         </Label>
                         <label
                             htmlFor="hero-image-upload"
-                            className={`${uploadAreaClasses} ${errors.heroImage ? 'border-red-500' : ''}`}
+                            className={`flex flex-col items-center justify-center w-full h-64 ${
+                                errors.heroImage 
+                                    ? 'border-red-500' 
+                                    : 'border-[#e5e7eb] hover:border-[#30afbc]'
+                            } border-[2.5px] border-dashed rounded-lg cursor-pointer bg-gray-50/50 transition-all duration-300`}
                         >
                             <input
                                 id="hero-image-upload"
@@ -187,28 +300,7 @@ const Home = ({
                                 onChange={handleHeroImageChange}
                                 className="hidden"
                             />
-                            {!selectedMedia ? (
-                                <div className="flex flex-col items-center justify-center space-y-2">
-                                    <FiImage className={`w-8 h-8 ${errors.heroImage ? 'text-red-400' : 'text-gray-400'}`} />
-                                    <p className={`text-sm ${errors.heroImage ? 'text-red-500' : 'text-gray-500'}`}>
-                                        Click to upload hero image
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        PNG, JPEG, or JPG (max. 4MB)
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className={imagePreviewClasses}>
-                                    <img
-                                        src={selectedMedia}
-                                        alt="Hero Preview"
-                                        className="w-full h-full object-contain"
-                                    />
-                                    <div className={imageHoverClasses}>
-                                        <p className="text-white text-sm">Click to change image</p>
-                                    </div>
-                                </div>
-                            )}
+                            {renderHeroImagePreview()}
                         </label>
                         {errors.heroImage && (
                             <p className="mt-2 text-sm text-red-500">{errors.heroImage}</p>
