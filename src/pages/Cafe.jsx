@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCoffee, FiPhone, FiHome, FiStar, FiHeart } from 'react-icons/fi';
+import { FiCoffee, FiPhone, FiHome, FiStar } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
@@ -43,7 +43,7 @@ const Cafe = () => {
     const navigate = useNavigate();
     const [currentSection, setCurrentSection] = useState(0);
     const [showModal, setShowModal] = useState(false);
-    const { userData, company } = useContext(Context);
+    const { userData } = useContext(Context);
     const util = useContext(Context).util;
     
     // Company state
@@ -58,7 +58,6 @@ const Cafe = () => {
     const [TagLine, setTagLine] = useState('');
     const [TagLine1, setTagLine1] = useState('');
     const [TagLine2, setTagLine2] = useState('');
-    const [values, setValues] = useState(['', '', '']);
     const [contactInfo, setContactInfo] = useState({
         instagram: '',
         facebook: '',
@@ -87,74 +86,75 @@ const Cafe = () => {
     });
     const [usefulLinks, setUsefulLinks] = useState([]);
 
-    const validateLogoFile = (file) => {
-        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+    // const validateLogoFile = (file) => {
+    //     const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    //     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
         
-        if (!ALLOWED_TYPES.includes(file.type)) {
-            throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
-        }
+    //     if (!ALLOWED_TYPES.includes(file.type)) {
+    //         throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+    //     }
         
-        if (file.size > MAX_SIZE) {
-            throw new Error('File is too large. Maximum size is 5MB.');
-        }
+    //     if (file.size > MAX_SIZE) {
+    //         throw new Error('File is too large. Maximum size is 5MB.');
+    //     }
         
-        return true;
-    };
+    //     return true;
+    // };
 
-    const uploadTestimonials = async () => {
-        try {
-            const updatedTestimonials = await Promise.all(
-                testimonials.filter(t => t.name && t.feedback).map(async (testimonial, index) => {
-                    if (testimonial.uploadedFile) {
-                        const fileName = `testimonial_${index + 1}_${Date.now()}.${testimonial.uploadedFile.name.split('.').pop()}`;
-                        const response = await Storage.put(
-                            `${institutionid}/images/testimonials/${fileName}`,
-                            testimonial.uploadedFile,
-                            { 
-                                contentType: testimonial.uploadedFile.type,
-                                acl: 'public-read'
-                            }
-                        );
+    // const uploadTestimonials = async () => {
+    //     try {
+    //         const updatedTestimonials = await Promise.all(
+    //             testimonials.filter(t => t.name && t.feedback).map(async (testimonial, index) => {
+    //                 if (testimonial.uploadedFile) {
+    //                     const fileName = `testimonial_${index + 1}_${Date.now()}.${testimonial.uploadedFile.name.split('.').pop()}`;
+    //                     const response = await Storage.put(
+    //                         `${institutionid}/images/testimonials/${fileName}`,
+    //                         testimonial.uploadedFile,
+    //                         { 
+    //                             contentType: testimonial.uploadedFile.type,
+    //                             acl: 'public-read'
+    //                         }
+    //                     );
 
-                        let imageUrl = await Storage.get(response.key);
-                        imageUrl = imageUrl.split("?")[0];
+    //                     let imageUrl = await Storage.get(response.key);
+    //                     imageUrl = imageUrl.split("?")[0];
 
-                        return {
-                            image: imageUrl,
-                            name: testimonial.name,
-                            rating: testimonial.rating || 5,
-                            text: testimonial.feedback
-                        };
-                    }
-                    return testimonial;
-                })
-            );
+    //                     return {
+    //                         image: imageUrl,
+    //                         name: testimonial.name,
+    //                         rating: testimonial.rating || 5,
+    //                         text: testimonial.feedback
+    //                     };
+    //                 }
+    //                 return testimonial;
+    //             })
+    //         );
 
-            return updatedTestimonials.filter(t => t.name && t.feedback);
-        } catch (error) {
-            console.error("Error uploading testimonials:", error);
-            throw error;
-        }
-    };
+    //         return updatedTestimonials.filter(t => t.name && t.feedback);
+    //     } catch (error) {
+    //         console.error("Error uploading testimonials:", error);
+    //         throw error;
+    //     }
+    // };
 
     const handleNextSection = async () => {
         try {
             util.setLoader(true);
+            let success = true;
 
             switch (currentSection) {
                 case 0: // Company
                     if (!institutionid?.trim() || !companyName?.trim() || (!selectedLogo && !logo)) {
                         alert('Please fill in all required fields: Institution ID, Company Name, and Logo');
-                        util.setLoader(false);
-                        return;
+                        success = false;
+                        break;
                     }
                     
                     if (!userData?.cognitoId) {
                         alert('Please login to continue');
                         navigate('/login');
-                        util.setLoader(false);
-                        return;
+                        success = false;
+                        break;
                     }
 
                     try {
@@ -213,16 +213,16 @@ const Cafe = () => {
                         });
                     } catch (error) {
                         console.error("Error in company section:", error);
-                        alert('Error saving company information. Please try again.');
-                        util.setLoader(false);
-                        return;
+                        alert('Error: ' + (error.message || 'Failed to save company info. Please try again.'));
+                        success = false;
                     }
                     break;
 
                 case 1: // Contact
                     if (!contactInfo) {
                         alert('Please fill in contact information');
-                        return false;
+                        success = false;
+                        break;
                     }
 
                     try {
@@ -236,28 +236,25 @@ const Cafe = () => {
                             }
                         });
 
-                        if (response) {
-                            // Save to localStorage
-                            await saveData();
-                            // Move to next section
-                            setCurrentSection(prev => prev + 1);
-                            return true;
+                        if (!response) {
+                            throw new Error('Failed to save contact information');
                         }
                     } catch (error) {
-                        throw new Error(`Error saving contact info: ${error.message}`);
+                        console.error("Error in contact section:", error);
+                        alert('Error saving contact information. Please try again.');
+                        success = false;
                     }
                     break;
 
                 case 2: // Home
                     if (!TagLine || !TagLine1 || !TagLine2) {
                         alert('Please fill in all taglines');
-                        return;
+                        success = false;
+                        break;
                     }
 
                     try {
-                        // Get existing data
-                        const existingData = company?.details || {};
-                        
+                        // Upload hero image if exists
                         let heroImageUrl = null;
                         if (heroImage) {
                             const fileName = `${institutionid}/images/hero/hero_${Date.now()}.${heroImage.name.split('.').pop()}`;
@@ -268,36 +265,24 @@ const Cafe = () => {
                             heroImageUrl = heroImageUrl.split("?")[0];
                         }
 
-                        const updatedData = {
-                            ...existingData,
-                            institutionid,
-                            TagLine,
-                            TagLine1,
-                            TagLine2,
-                            TagLine3,
-                            heroImageUrl,
-                            createdBy: userData?.cognitoId,
-                            isFormFilled: true,
-                            lastUpdated: Date.now()
-                        };
-
                         // Update API
                         await API.put("clients", '/user/cafewebDevForm', {
-                            body: updatedData
+                            body: {
+                                institutionid,
+                                TagLine,
+                                TagLine1,
+                                TagLine2,
+                                TagLine3,
+                                heroImageUrl,
+                                createdBy: userData?.cognitoId,
+                                isFormFilled: true,
+                                lastUpdated: Date.now()
+                            }
                         });
-
-                        // Update localStorage
-                        const localData = loadFromLocalStorage() || {};
-                        localStorage.setItem('cafeFormData', JSON.stringify({
-                            ...localData,
-                            ...updatedData
-                        }));
-
                     } catch (error) {
                         console.error("Error in home section:", error);
                         alert('Error saving home information. Please try again.');
-                        util.setLoader(false);
-                        return;
+                        success = false;
                     }
                     break;
 
@@ -328,6 +313,7 @@ const Cafe = () => {
 
                         if (incompleteTestimonials.length > 0) {
                             util.setLoader(false);
+                            success = false;
                             return; // Stop here if any testimonial is incomplete
                         }
 
@@ -383,23 +369,29 @@ const Cafe = () => {
                     } catch (error) {
                         console.error("Error in testimonials section:", error);
                         alert('Error: ' + (error.message || 'Failed to save testimonials. Please try again.'));
-                        return false;
+                        success = false;
                     } finally {
                         util.setLoader(false);
                     }
                     break;
+
+                default:
+                    console.log('Unknown section');
+                    break;
             }
 
-            await saveData();
-            setCurrentSection(prev => prev + 1);
+            if (success) {
+                await saveData();
+                setCurrentSection(prev => prev + 1);
 
-            // If it's the final section and submission is successful
-            if (currentSection === FORM_SECTIONS.length - 1) {
-                // Clear all form data after successful submission
-                clearAllFormData();
+                // If it's the final section and submission is successful
+                if (currentSection === FORM_SECTIONS.length - 1) {
+                    clearAllFormData();
+                }
+                return true;
             }
+            return false;
 
-            return true;
         } catch (error) {
             console.error("Error in section submission:", error);
             alert('An error occurred. Please try again.');
@@ -411,7 +403,7 @@ const Cafe = () => {
 
     const saveData = async () => {
         try {
-            // Wait for all testimonial image conversions to complete
+            // Process testimonials first
             const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
                 let imageBase64 = '';
                 if (t.uploadedFile) {
@@ -429,6 +421,7 @@ const Cafe = () => {
                 };
             }));
 
+            // Prepare data
             const dataToSave = {
                 currentSection,
                 companyName,
@@ -449,9 +442,17 @@ const Cafe = () => {
                 lastUpdated: Date.now()
             };
 
-            localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            // Save to localStorage and return result
+            try {
+                await localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+                return true;
+            } catch (storageError) {
+                console.error('Error saving to localStorage:', storageError);
+                return false;
+            }
         } catch (error) {
-            console.error('Error saving data:', error);
+            console.error('Error processing data:', error);
+            return false;
         }
     };
 
@@ -482,7 +483,6 @@ const Cafe = () => {
             setTagLine('');
             setTagLine1('');
             setTagLine2('');
-            setValues(['', '', '']);
             setContactInfo({
                 instagram: '',
                 facebook: '',
@@ -504,58 +504,51 @@ const Cafe = () => {
 
     const loadFromLocalStorage = async () => {
         try {
-            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            
-            // Load all saved data
+            const savedData = localStorage.getItem('cafeFormData');
             if (savedData) {
-                // Company Info
-                if (savedData.companyName) setCompanyName(savedData.companyName);
-                if (savedData.institutionid) setinstitutionid(savedData.institutionid);
-                if (savedData.PrimaryColor) setPrimaryColor(savedData.PrimaryColor);
-                if (savedData.SecondaryColor) setSecondaryColor(savedData.SecondaryColor);
-                if (savedData.LightPrimaryColor) setLightPrimaryColor(savedData.LightPrimaryColor);
-                if (savedData.LightestPrimaryColor) setLightestPrimaryColor(savedData.LightestPrimaryColor);
-                if (savedData.logo) setLogo(savedData.logo);
+                const parsedData = JSON.parse(savedData);
+                
+                // Load basic form data
+                setCompanyName(parsedData.companyName || '');
+                setinstitutionid(parsedData.institutionid || '');
+                setPrimaryColor(parsedData.PrimaryColor || '#30afbc');
+                setSecondaryColor(parsedData.SecondaryColor || '#2b9ea9');
+                setLightPrimaryColor(parsedData.LightPrimaryColor || '#e6f7f9');
+                setLightestPrimaryColor(parsedData.LightestPrimaryColor || '#f3fbfc');
+                setEmail(parsedData.email || '');
+                setPhone(parsedData.phone || '');
+                setContactInfo(parsedData.contactInfo || {});
+                setSocialMediaLinks(parsedData.socialMediaLinks || {});
+                setUsefulLinks(parsedData.usefulLinks || []);
+                setTagLine(parsedData.TagLine || '');
+                setTagLine1(parsedData.TagLine1 || '');
+                setTagLine2(parsedData.TagLine2 || '');
+                setTagLine3(parsedData.TagLine3 || '');
+                setSelectedMedia(parsedData.selectedMedia || null);
+                setLogo(parsedData.logoData || null);
+                setCurrentSection(parsedData.currentSection || 0);
 
-                // Contact Info
-                if (savedData.contactInfo) {
-                    setContactInfo(savedData.contactInfo);
-                    setEmail(savedData.contactInfo.email || '');
-                    setPhone(savedData.contactInfo.phone || '');
-                }
-                if (savedData.usefulLinks) setUsefulLinks(savedData.usefulLinks);
-                if (savedData.socialMediaLinks) setSocialMediaLinks(savedData.socialMediaLinks);
-
-                // Home Content
-                if (savedData.TagLine) setTagLine(savedData.TagLine);
-                if (savedData.TagLine1) setTagLine1(savedData.TagLine1);
-                if (savedData.TagLine2) setTagLine2(savedData.TagLine2);
-                if (savedData.TagLine3) setTagLine3(savedData.TagLine3);
-                if (savedData.selectedMedia) setSelectedMedia(savedData.selectedMedia);
-
-                // Testimonials
-                if (savedData.testimonials?.length > 0) {
-                    const loadedTestimonials = savedData.testimonials.map(t => ({
-                        imgSrc: t.imgSrc || t.image || '',
-                        customerName: t.customerName || t.name || '',
-                        text: t.text || t.feedback || '',
-                        rating: t.rating || 5,
-                        uploadedFile: null,
-                        ...(t.imageBase64 && {
-                            imgSrc: t.imageBase64,
-                            uploadedFile: base64ToFile(
+                // Load testimonials if they exist
+                if (parsedData.testimonials?.length > 0) {
+                    const loadedTestimonials = await Promise.all(parsedData.testimonials.map(async (t) => {
+                        let uploadedFile = null;
+                        if (t.imageBase64) {
+                            uploadedFile = await base64ToFile(
                                 t.imageBase64,
                                 `testimonial_${Date.now()}.jpg`,
                                 'image/jpeg'
-                            )
-                        })
+                            );
+                        }
+                        
+                        return {
+                            customerName: t.customerName || '',
+                            text: t.text || '',
+                            rating: t.rating || 5,
+                            imgSrc: t.imageBase64 || t.imgSrc || '',
+                            uploadedFile
+                        };
                     }));
                     setTestimonials(loadedTestimonials);
-                }
-
-                // Current Section
-                if (typeof savedData.currentSection === 'number') {
-                    setCurrentSection(savedData.currentSection);
                 }
             }
         } catch (error) {
@@ -568,29 +561,56 @@ const Cafe = () => {
     }, []); // Run only on mount
 
     useEffect(() => {
-        const dataToSave = {
-            companyName,
-            institutionid,
-            PrimaryColor,
-            SecondaryColor,
-            LightPrimaryColor,
-            LightestPrimaryColor,
-            email,
-            phone,
-            contactInfo,
-            socialMediaLinks,
-            usefulLinks,
-            TagLine,
-            TagLine1,
-            TagLine2,
-            TagLine3,
-            selectedMedia,
-            logoData: logo,
-            currentSection,
-            lastUpdated: Date.now()
+        const saveToLocalStorage = async () => {
+            try {
+                // Process testimonials for storage
+                const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
+                    let imageBase64 = '';
+                    if (t.uploadedFile) {
+                        imageBase64 = await convertFileToBase64(t.uploadedFile);
+                    } else if (t.imgSrc && t.imgSrc.startsWith('data:image')) {
+                        imageBase64 = t.imgSrc;
+                    }
+                    
+                    return {
+                        customerName: t.customerName || t.name || '',
+                        text: t.text || t.feedback || '',
+                        rating: t.rating || 5,
+                        imgSrc: t.imgSrc || '',
+                        imageBase64
+                    };
+                }));
+
+                const dataToSave = {
+                    companyName,
+                    institutionid,
+                    PrimaryColor,
+                    SecondaryColor,
+                    LightPrimaryColor,
+                    LightestPrimaryColor,
+                    email,
+                    phone,
+                    contactInfo,
+                    socialMediaLinks,
+                    usefulLinks,
+                    TagLine,
+                    TagLine1,
+                    TagLine2,
+                    TagLine3,
+                    selectedMedia,
+                    logoData: logo,
+                    testimonials: processedTestimonials,
+                    currentSection,
+                    lastUpdated: Date.now()
+                };
+
+                localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
         };
 
-        localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+        saveToLocalStorage();
     }, [
         companyName,
         institutionid,
@@ -609,25 +629,28 @@ const Cafe = () => {
         TagLine3,
         selectedMedia,
         logo,
-        currentSection
+        currentSection,
+        testimonials // Add testimonials to dependency array
     ]);
 
     // Add cleanup for object URLs
     useEffect(() => {
-        return () => {
-            if (logo && logo.startsWith('blob:')) {
+        const cleanup = () => {
+            if (logo && typeof logo === 'string' && logo.startsWith('blob:')) {
                 URL.revokeObjectURL(logo);
             }
             if (selectedMedia && selectedMedia.startsWith('blob:')) {
                 URL.revokeObjectURL(selectedMedia);
             }
-            testimonials.forEach(t => {
-                if (t.imgSrc && t.imgSrc.startsWith('blob:')) {
-                    URL.revokeObjectURL(t.imgSrc);
+            testimonials.forEach(testimonial => {
+                if (testimonial.imgSrc && testimonial.imgSrc.startsWith('blob:')) {
+                    URL.revokeObjectURL(testimonial.imgSrc);
                 }
             });
         };
-    }, []);
+
+        return cleanup;
+    }, [logo, selectedMedia, testimonials]);
 
     // Add cleanup effect
     useEffect(() => {
@@ -640,46 +663,45 @@ const Cafe = () => {
     }, [currentSection]);
 
     // Add function to reset form
-    const resetForm = useCallback(() => {
-        // Reset all state to initial values
-        setCurrentSection(0);
-        setinstitutionid('');
-        setCompanyName('');
-        setLogo(null);
-        setSelectedLogo(null);
-        setPrimaryColor('#30afbc');
-        setSecondaryColor('#2b9ea9');
-        setLightPrimaryColor('#e6f7f9');
-        setLightestPrimaryColor('#f3fbfc');
-        setTagLine('');
-        setTagLine1('');
-        setTagLine2('');
-        setValues(['', '', '']);
-        setContactInfo({
-            instagram: '',
-            facebook: '',
-            youTube: ''
-        });
-        setTestimonials([
-            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
-            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
-            { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
-        ]);
-        setTagLine3('');
-        setHeroImage(null);
-        setSelectedMedia(null);
-        setEmail('');
-        setPhone('');
-        setSocialMediaLinks({
-            facebook: '',
-            instagram: '',
-            youtube: ''
-        });
-        setUsefulLinks([]);
+    // const resetForm = useCallback(() => {
+    //     // Reset all state to initial values
+    //     setCurrentSection(0);
+    //     setinstitutionid('');
+    //     setCompanyName('');
+    //     setLogo(null);
+    //     setSelectedLogo(null);
+    //     setPrimaryColor('#30afbc');
+    //     setSecondaryColor('#2b9ea9');
+    //     setLightPrimaryColor('#e6f7f9');
+    //     setLightestPrimaryColor('#f3fbfc');
+    //     setTagLine('');
+    //     setTagLine1('');
+    //     setTagLine2('');
+    //     setContactInfo({
+    //         instagram: '',
+    //         facebook: '',
+    //         youTube: ''
+    //     });
+    //     setTestimonials([
+    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
+    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
+    //     ]);
+    //     setTagLine3('');
+    //     setHeroImage(null);
+    //     setSelectedMedia(null);
+    //     setEmail('');
+    //     setPhone('');
+    //     setSocialMediaLinks({
+    //         facebook: '',
+    //         instagram: '',
+    //         youtube: ''
+    //     });
+    //     setUsefulLinks([]);
 
-        // Clear localStorage
-        localStorage.removeItem('cafeFormData');
-    }, []);
+    //     // Clear localStorage
+    //     localStorage.removeItem('cafeFormData');
+    // }, []);
 
     // Add a function to clear all form data
     const clearAllFormData = () => {
