@@ -41,6 +41,7 @@ const CourseBasedCG = () => {
     const [servicesPortrait, setServicesPortrait] = useState(null);
 
     const [companyName, setCompanyName] = useState(null);
+    const [registrationFee, setRegistrationFee] = useState("");
     const [companyDescription, setCompanyDescription] = useState(null);
     const [institutionId, setinstitutionId] = useState(null);
 
@@ -66,6 +67,8 @@ const CourseBasedCG = () => {
     const [mediaType, setMediaType] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [courseBasedCGCountry, setcourseBasedCGCountry] = useState(null);
+    const [registrationFeeCurrency, setRegistrationFeeCurrency] = useState(null);
+
     const [services, setServices] = useState([
         { title: '', items: [''] },
         { title: '', items: [''] },
@@ -487,6 +490,8 @@ const CourseBasedCG = () => {
                     institutionType: "CourseBased",
                     SecondaryColor,
                     logoUrl: imageUrl,
+                    registrationFee,
+                    registrationFeeCurrency,
                     ...additionalAttributes,
                 },
             });
@@ -1146,6 +1151,10 @@ const CourseBasedCG = () => {
                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                             CSVFile={CSVFile}
                             setCSVFile={setCSVFile}
+                            registrationFee={registrationFee}
+                            setRegistrationFee={setRegistrationFee}
+                            registrationFeeCurrency={registrationFeeCurrency}
+                            setRegistrationFeeCurrency={setRegistrationFeeCurrency}
                         />}
                     {currentSection === 1 &&
                         <Contact
