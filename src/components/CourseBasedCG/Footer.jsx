@@ -61,11 +61,11 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
   return (
     <div className='footer-wrapper relative'>
       <div className="bg-white h-[4rem] footer flex justify-end items-center relative mt-10">
-        <div className="absolute left-8 bottom-4 flex gap-4">
+        <div className="absolute left-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:left-1">
           {currentSection === 0 && (
             <button
               onClick={handleBackClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px]"
+              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               BACK
             </button>
@@ -73,7 +73,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
           {currentSection > 0 && (
             <button
               onClick={handlePrevClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px]"
+              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               BACK
             </button>
@@ -102,11 +102,11 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
             />
           </div>
         </div> */}
-        <div className="absolute right-8 bottom-4 flex gap-4">
+        <div className="absolute right-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:right-1">
           {currentSection < sections.length - 1 && (
             <button
               onClick={handleNextClick}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px]"
+              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               NEXT
             </button>
@@ -114,7 +114,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
           {currentSection === sections.length - 1 && (
             <button
               onClick={submitSections}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px]"
+              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               SUBMIT
             </button>

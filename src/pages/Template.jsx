@@ -481,8 +481,6 @@ const Template = () => {
           institutionid: institutionId,
           companyName: companyName,
           description: companyDescription,
-          courseBasedCG: false,
-          courseBasedCGCountry: null,
           PrimaryColor,
           institutionFormat,
           institutionType: "DanceStudio",
