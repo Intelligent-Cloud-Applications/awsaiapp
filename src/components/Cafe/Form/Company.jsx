@@ -130,20 +130,39 @@ const Company = ({
               console.error('Error converting saved logo to File:', error);
             });
         }
+      } else {
+        // Reset logo states if no saved logo
+        setLocalLogo(null);
+        setLogo(null);
+        setSelectedLogo(null);
       }
     } catch (error) {
       console.error('Error loading saved logo:', error);
     }
-  }, []);
 
-  useEffect(() => {
+    // Cleanup function
     return () => {
-        // Cleanup object URLs when component unmounts
-        if (localLogo && typeof localLogo === 'string' && localLogo.startsWith('blob:')) {
-            URL.revokeObjectURL(localLogo);
-        }
+      if (localLogo && typeof localLogo === 'string' && localLogo.startsWith('blob:')) {
+        URL.revokeObjectURL(localLogo);
+      }
     };
-  }, [localLogo]);
+  }, []); // Empty dependency array to run only on mount
+
+  // Add effect to clear logo on form submission
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'cafeFormData' && !e.newValue) {
+        // Form was submitted and storage was cleared
+        localStorage.removeItem('cafeFormLogo');
+        setLocalLogo(null);
+        setLogo(null);
+        setSelectedLogo(null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [setLogo, setSelectedLogo]);
 
   const validateCompanyData = () => {
     const newErrors = {};
@@ -190,7 +209,7 @@ const Company = ({
 
         // Update states
         setLocalLogo(compressedBase64);
-        setLogo(file); // Keep original for S3
+        setLogo(file);
         setSelectedLogo(file);
         setErrors(prev => ({ ...prev, logo: null }));
       } catch (storageError) {

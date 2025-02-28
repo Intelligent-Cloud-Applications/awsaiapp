@@ -11,53 +11,121 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
 const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
+// Move validateContactData outside the component and update validation
+const validateContactData = (contactData) => {
+  console.log('Validating contact data:', contactData);
+  
+  if (!contactData) {
+    console.log('Contact data is null or undefined');
+    return false;
+  }
+  
+  // Check all required fields
+  const requiredFields = {
+    firstName: contactData.firstName?.trim(),
+    lastName: contactData.lastName?.trim(),
+    emailId: contactData.emailId?.trim(),  // Changed from email
+    phoneNumber: contactData.phoneNumber?.trim(),  // Changed from phone
+    address: contactData.address?.trim()
+  };
+
+  // Check if any required field is empty
+  const missingFields = Object.entries(requiredFields).filter(([_, value]) => !value);
+  if (missingFields.length > 0) {
+    return false;
+  }
+
+  // Validate email format
+  if (!EMAIL_REGEX.test(contactData.emailId)) {
+    return false;
+  }
+
+  // Validate phone format
+  if (!PHONE_REGEX.test(contactData.phoneNumber)) {
+    return false;
+  }
+
+  // Validate location map if provided
+  if (contactData.visitUs?.locatemap && !URL_REGEX.test(contactData.visitUs.locatemap)) {
+    return false;
+  }
+
+  const isValid = true; // All validations passed
+  console.log('Validation result:', isValid);
+  return isValid;
+};
+
 const Contact = ({
-  email,
-  setEmail,
-  phone,
-  setPhone,
-  socialMediaLinks,
-  setSocialMediaLinks,
-  usefulLinks = [],
-  setUsefulLinks,
-  instagram,
-  setInstagram,
-  facebook,
-  setFacebook,
-  youTube,
-  setYouTube,
   contactInfo,
   setContactInfo
 }) => {
+  const [address, setAddress] = useState('');
+  const [locationMap, setLocationMap] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [errors, setErrors] = useState({});
 
-  // Load data from localStorage on mount
+  // Function to update username when first or last name changes
+  const updateUsername = (firstName, lastName) => {
+    const username = `${firstName} ${lastName}`.trim();
+    setContactInfo(prev => ({
+      ...prev,
+      username,
+      firstName,
+      lastName
+    }));
+  };
+
+  // Modified first name handler
+  const handleFirstNameChange = (e) => {
+    const value = e.target.value;
+    updateUsername(value, lastName);
+    const error = validateField('firstName', value);
+    setErrors(prev => ({ ...prev, firstName: error }));
+  };
+
+  // Modified last name handler
+  const handleLastNameChange = (e) => {
+    const value = e.target.value;
+    updateUsername(firstName, value);
+    const error = validateField('lastName', value);
+    setErrors(prev => ({ ...prev, lastName: error }));
+  };
+
+  // Modified useEffect to load data with new social media format
   useEffect(() => {
     try {
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
       
-      // Load contact info
       if (savedData.contactInfo) {
-        setContactInfo(savedData.contactInfo);
-        setEmail(savedData.contactInfo.email || '');
-        setPhone(savedData.contactInfo.phone || '');
+        const contactData = savedData.contactInfo;
+        setContactInfo({
+          ...contactData,
+          username: `${contactData.firstName || ''} ${contactData.lastName || ''}`.trim()
+        });
+        setFirstName(contactData.firstName || '');
+        setLastName(contactData.lastName || '');
+        setAddress(contactData.address || '');
+        setLocationMap(contactData.visitUs?.locatemap || '');
       }
 
-      // Load social media links
+      // Load social media links in array format
       if (savedData.socialMediaLinks) {
-        setSocialMediaLinks(savedData.socialMediaLinks);
-      }
-
-      // Load useful links
-      if (savedData.usefulLinks) {
-        setUsefulLinks(savedData.usefulLinks);
+        setContactInfo(prev => ({
+          ...prev,
+          socialMediaLinks: savedData.socialMediaLinks || [
+            { platform: 'Instagram', url: '' },
+            { platform: 'Facebook', url: '' },
+            { platform: 'YouTube', url: '' }
+          ]
+        }));
       }
     } catch (error) {
       console.error('Error loading contact data:', error);
     }
-  }, []); // Run only on mount
+  }, [setContactInfo]);
 
-  // Save to localStorage whenever data changes
+  // Modified useEffect to save data with username
   useEffect(() => {
     try {
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
@@ -66,121 +134,90 @@ const Contact = ({
         ...savedData,
         contactInfo: {
           ...contactInfo,
-          email,
-          phone
-        },
-        socialMediaLinks,
-        usefulLinks
+          username: `${contactInfo.firstName || ''} ${contactInfo.lastName || ''}`.trim(),
+          visitUs: {
+            locatemap: contactInfo.visitUs?.locatemap || ''
+          }
+        }
       };
 
       localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
     } catch (error) {
       console.error('Error saving contact data:', error);
     }
-  }, [contactInfo, email, phone, socialMediaLinks, usefulLinks]);
+  }, [contactInfo]);
 
-  // Validation function
+  // Validation function for all fields
   const validateField = (field, value) => {
-    let error = '';
     switch (field) {
+      case 'firstName':
+        return !value?.trim() ? 'First name is required' : '';
+      case 'lastName':
+        return !value?.trim() ? 'Last name is required' : '';
       case 'email':
         if (!value?.trim()) {
-          error = 'Email is required';
+          return 'Email is required';
         } else if (!EMAIL_REGEX.test(value.trim())) {
-          error = 'Invalid email format';
+          return 'Invalid email format';
         }
-        break;
+        return '';
       case 'phone':
         if (!value?.trim()) {
-          error = 'Phone number is required';
+          return 'Phone number is required';
         } else if (!PHONE_REGEX.test(value.trim())) {
-          error = 'Invalid phone number format';
+          return 'Invalid phone number format';
         }
-        break;
+        return '';
+      case 'address':
+        return !value?.trim() ? 'Address is required' : '';
+      case 'locationMap':
+        if (!value?.trim()) {
+          return 'Location map URL is required';
+        } else if (!URL_REGEX.test(value.trim())) {
+          return 'Invalid URL format';
+        }
+        return '';
       default:
-        break;
-    }
-    return error;
-  };
-
-  // Handle email change with validation
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    setContactInfo(prev => ({ ...prev, email: value }));
-    const error = validateField('email', value);
-    setErrors(prev => ({ ...prev, email: error }));
-  };
-
-  // Handle phone change with validation
-  const handlePhoneChange = (e) => {
-    const value = e.target.value;
-    setPhone(value);
-    setContactInfo(prev => ({ ...prev, phone: value }));
-    const error = validateField('phone', value);
-    setErrors(prev => ({ ...prev, phone: error }));
-  };
-
-  const handleSocialMediaChange = (platform, value) => {
-    const error = validateField('url', value);
-    setErrors(prev => ({ ...prev, [platform]: error }));
-    
-    // Update both socialMediaLinks and individual platform states
-    setSocialMediaLinks(prev => ({
-      ...prev,
-      [platform]: value
-    }));
-
-    // Update individual platform states
-    switch(platform) {
-      case 'instagram':
-        setInstagram(value);
-        break;
-      case 'facebook':
-        setFacebook(value);
-        break;
-      case 'youtube':
-        setYouTube(value);
-        break;
-      default:
-        break;
+        return '';
     }
   };
 
-  const handleUsefulLinkChange = (index, field, value) => {
-    const newLinks = [...(usefulLinks || [])];
-    newLinks[index] = { 
-      ...newLinks[index], 
-      [field]: value,
-      style: {
-        color: "white",
-        textDecoration: "none"
+  // Update handleInputChange to maintain proper data structure
+  const handleInputChange = (field, value) => {
+    const error = validateField(field, value);
+    setErrors(prev => ({ ...prev, [field]: error }));
+
+    setContactInfo(prev => {
+      const updated = { ...prev };
+      
+      if (field === 'locationMap') {
+        updated.visitUs = {
+          ...prev.visitUs,
+          locatemap: value
+        };
+      } else if (field.startsWith('social_')) {
+        const platform = field.split('_')[1];
+        updated.socialMediaLinks = {
+          ...prev.socialMediaLinks,
+          [platform]: value
+        };
+      } else {
+        updated[field] = value;
       }
-    };
-    
-    if (field === 'url') {
-      const error = validateField('url', value);
-      setErrors(prev => ({ ...prev, [`usefulLink${index}`]: error }));
-    }
-    
-    setUsefulLinks(newLinks);
+
+      // Always update userName when firstName or lastName changes
+      if (field === 'firstName' || field === 'lastName') {
+        const firstName = field === 'firstName' ? value : prev.firstName;
+        const lastName = field === 'lastName' ? value : prev.lastName;
+        updated.userName = `${firstName || ''} ${lastName || ''}`.trim();
+      }
+      
+      return updated;
+    });
   };
 
-  const removeUsefulLink = (index) => {
-    setUsefulLinks(prev => (prev || []).filter((_, i) => i !== index));
-  };
-
-  const validateContactData = () => {
-    const newErrors = {};
-    if (!email) {
-      newErrors.email = "Email is required.";
-    }
-    if (!phone) {
-      newErrors.phone = "Phone number is required.";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Export both the component and the validation function
+  Contact.validateContactData = validateContactData;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -192,147 +229,177 @@ const Contact = ({
       </div>
 
       <div className="space-y-8">
-        {/* Basic Contact Details */}
-        <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Basic Contact Details</h2>
+        {/* Name Fields */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Personal Information
+          </h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* First Name */}
+            <div>
+              <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="firstName"
+                value={contactInfo.firstName || ''}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                placeholder="Enter your first name"
+                required
+                className={`w-full ${errors.firstName ? 'border-red-500' : ''}`}
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="lastName"
+                value={contactInfo.lastName || ''}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                placeholder="Enter your last name"
+                required
+                className={`w-full ${errors.lastName ? 'border-red-500' : ''}`}
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Basic Contact Details */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Basic Contact Details
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Email */}
             <div>
               <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email <span className="text-red-500">*</span>
               </Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
-                </div>
-                <TextInput
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Enter your email"
-                  required
-                  className="pl-10"
-                />
-                {errors.email && <p className="text-red-500">{errors.email}</p>}
-              </div>
+              <TextInput
+                id="email"
+                type="email"
+                value={contactInfo.emailId || ''}
+                onChange={(e) => handleInputChange('emailId', e.target.value)}
+                placeholder="Enter your email"
+                required
+                className={`w-full ${errors.emailId ? 'border-red-500' : ''}`}
+              />
+              {errors.emailId && (
+                <p className="mt-1 text-sm text-red-500">{errors.emailId}</p>
+              )}
             </div>
 
+            {/* Phone */}
             <div>
               <Label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                 Phone <span className="text-red-500">*</span>
               </Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiPhone className="h-5 w-5 text-gray-400" />
-                </div>
-                <TextInput
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  placeholder="Enter your phone number"
-                  required
-                  className="pl-10"
-                />
-                {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-              </div>
+              <TextInput
+                id="phone"
+                type="tel"
+                value={contactInfo.phoneNumber || ''}
+                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                placeholder="Enter your phone number"
+                required
+                className={`w-full ${errors.phoneNumber ? 'border-red-500' : ''}`}
+              />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Address Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Address
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Address */}
+            <div>
+              <Label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Address <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="address"
+                type="text"
+                value={contactInfo.address || ''}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder="Enter your business address"
+                required
+                className={`w-full ${errors.address ? 'border-red-500' : ''}`}
+              />
+              {errors.address && (
+                <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Location Map URL */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Location Map URL
+          </h2>
+          
+          <div className="grid grid-cols-1 gap-6">
+            <div>
+              <Label htmlFor="locationMap" className="block text-sm font-medium text-gray-700 mb-1">
+                Location Map URL <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="locationMap"
+                type="url"
+                value={contactInfo.visitUs?.locatemap || ''}
+                onChange={(e) => handleInputChange('locationMap', e.target.value)}
+                placeholder="Enter Google Maps or location URL"
+                required
+                className={`w-full ${errors.locationMap ? 'border-red-500' : ''}`}
+              />
+              {errors.locationMap && (
+                <p className="mt-1 text-sm text-red-500">{errors.locationMap}</p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Social Media Links */}
-        <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Social Media Links</h2>
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Social Media Links
+          </h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label htmlFor="facebook" className="block text-sm font-medium text-gray-700 mb-1">
-                Facebook
-              </Label>
-              <TextInput
-                id="facebook"
-                type="url"
-                value={socialMediaLinks.facebook || ''}
-                onChange={(e) => {
-                  setSocialMediaLinks(prev => ({ ...prev, facebook: e.target.value }));
-                  setFacebook(e.target.value);
-                }}
-                placeholder="Facebook profile URL"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="instagram" className="block text-sm font-medium text-gray-700 mb-1">
-                Instagram
-              </Label>
-              <TextInput
-                id="instagram"
-                type="url"
-                value={socialMediaLinks.instagram || ''}
-                onChange={(e) => {
-                  setSocialMediaLinks(prev => ({ ...prev, instagram: e.target.value }));
-                  setInstagram(e.target.value);
-                }}
-                placeholder="Instagram profile URL"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="youtube" className="block text-sm font-medium text-gray-700 mb-1">
-                YouTube
-              </Label>
-              <TextInput
-                id="youtube"
-                type="url"
-                value={socialMediaLinks.youtube || ''}
-                onChange={(e) => {
-                  setSocialMediaLinks(prev => ({ ...prev, youtube: e.target.value }));
-                  setYouTube(e.target.value);
-                }}
-                placeholder="YouTube profile URL"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Useful Links */}
-        <div>
-          <div className="space-y-4">
-            {(usefulLinks || []).map((link, index) => (
-              <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor={`link-title-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                    Link Title
-                  </Label>
-                  <TextInput
-                    id={`link-title-${index}`}
-                    type="text"
-                    value={link.title}
-                    onChange={(e) => handleUsefulLinkChange(index, 'title', e.target.value)}
-                    placeholder="Enter link title"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <Label htmlFor={`link-url-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                      URL
+            {[
+                { platform: 'instagram', label: 'Instagram' },
+                { platform: 'facebook', label: 'Facebook' },
+                { platform: 'youtube', label: 'YouTube' }
+            ].map(({ platform, label }) => (
+                <div key={platform}>
+                    <Label htmlFor={platform} className="block text-sm font-medium text-gray-700 mb-1">
+                        {label}
                     </Label>
                     <TextInput
-                      id={`link-url-${index}`}
-                      type="url"
-                      value={link.url}
-                      onChange={(e) => handleUsefulLinkChange(index, 'url', e.target.value)}
-                      placeholder="Enter URL"
+                        id={platform}
+                        type="url"
+                        value={contactInfo.socialMediaLinks?.[platform] || ''}
+                        onChange={(e) => handleInputChange(`social_${platform}`, e.target.value)}
+                        placeholder={`${label} profile URL`}
                     />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeUsefulLink(index)}
-                    className="mt-6 px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700"
-                  >
-                    Remove
-                  </button>
                 </div>
-              </div>
             ))}
           </div>
         </div>
@@ -342,25 +409,22 @@ const Contact = ({
 };
 
 Contact.propTypes = {
-  email: PropTypes.string.isRequired,
-  setEmail: PropTypes.func.isRequired,
-  phone: PropTypes.string.isRequired,
-  setPhone: PropTypes.func.isRequired,
-  socialMediaLinks: PropTypes.object,
-  setSocialMediaLinks: PropTypes.func.isRequired,
-  usefulLinks: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string,
-    url: PropTypes.string,
-    style: PropTypes.object
-  })),
-  setUsefulLinks: PropTypes.func.isRequired,
-  instagram: PropTypes.string,
-  setInstagram: PropTypes.func.isRequired,
-  facebook: PropTypes.string,
-  setFacebook: PropTypes.func.isRequired,
-  youTube: PropTypes.string,
-  setYouTube: PropTypes.func.isRequired,
-  contactInfo: PropTypes.object.isRequired,
+  contactInfo: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    emailId: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    address: PropTypes.string,
+    userName: PropTypes.string,
+    socialMediaLinks: PropTypes.shape({
+      instagram: PropTypes.string,
+      facebook: PropTypes.string,
+      youtube: PropTypes.string
+    }),
+    visitUs: PropTypes.shape({
+      locatemap: PropTypes.string
+    })
+  }).isRequired,
   setContactInfo: PropTypes.func.isRequired
 };
 

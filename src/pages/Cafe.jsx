@@ -14,29 +14,14 @@ import Context from "../context/Context";
 import "./Template.css";
 import ErrorBoundary from '../components/ErrorBoundary';
 import { convertFileToBase64, base64ToFile } from '../utils/imageUtils';
+import { compressImage } from '../utils/imageUtils';
 
-// Form section titles and descriptions
+// Define sections with icons
 const FORM_SECTIONS = [
-  {
-    title: "Company Info",
-    description: "Build your brand identity with essential company details",
-    icon: FiCoffee
-  },
-  {
-    title: "Contact Details",
-    description: "Add your contact information and social media links",
-    icon: FiPhone
-  },
-  {
-    title: "Homepage Content",
-    description: "Create engaging content for your website's homepage",
-    icon: FiHome
-  },
-  {
-    title: "Testimonials",
-    description: "Share what your customers say about you",
-    icon: FiStar
-  }
+    { id: 'company', title: 'Company', description: 'Tell us about your company', icon: FiCoffee },
+    { id: 'contact', title: 'Contact', description: 'How can customers reach you?', icon: FiPhone },
+    { id: 'home', title: 'Home', description: 'Design your homepage', icon: FiHome },
+    { id: 'testimonials', title: 'Testimonials', description: 'Share customer experiences', icon: FiStar }
 ];
 
 const Cafe = () => {
@@ -59,9 +44,20 @@ const Cafe = () => {
     const [TagLine1, setTagLine1] = useState('');
     const [TagLine2, setTagLine2] = useState('');
     const [contactInfo, setContactInfo] = useState({
-        instagram: '',
-        facebook: '',
-        youTube: ''
+        firstName: '',
+        lastName: '',
+        emailId: '',
+        phoneNumber: '',
+        address: '',
+        userName: '',
+        socialMediaLinks: {
+            instagram: '',
+            facebook: '',
+            youtube: ''
+        },
+        visitUs: {
+            locatemap: ''
+        }
     });
 
     // Testimonials state
@@ -77,14 +73,7 @@ const Cafe = () => {
     const [selectedMedia, setSelectedMedia] = useState(null);
 
     // Add these new states at the top with other states
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [socialMediaLinks, setSocialMediaLinks] = useState({
-        facebook: '',
-        instagram: '',
-        youtube: ''
-    });
-    const [usefulLinks, setUsefulLinks] = useState([]);
+    // const [socialMediaLinks, setSocialMediaLinks] = useState([...]);
 
     // const validateLogoFile = (file) => {
     //     const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -191,7 +180,7 @@ const Cafe = () => {
                                 logoUrl: imageUrl,
                                 LightPrimaryColor,
                                 LightestPrimaryColor,
-                                institutionType: "development",
+                                institutionType: "cafe",
                                 createdBy: userData.cognitoId,
                                 date: Date.now(),
                                 PrivacyPolicy: [],
@@ -208,7 +197,6 @@ const Cafe = () => {
                                 tagLine2: "",
                                 testimonials: [],
                                 usefulLinks: [],
-                                isFormFilled: true
                             }
                         });
                     } catch (error) {
@@ -226,11 +214,20 @@ const Cafe = () => {
                     }
 
                     try {
+                        // Format the contact payload for the API
+                        const contactPayload = {
+                            emailId: contactInfo.emailId,
+                            phoneNumber: contactInfo.phoneNumber,
+                            address: contactInfo.address,
+                            userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim(), // Combined name
+                            socialMediaLinks: contactInfo.socialMediaLinks,
+                            visitUs: contactInfo.visitUs
+                        };
+
                         const response = await API.put("clients", '/user/cafewebDevForm', {
                             body: {
                                 institutionid,
-                                contactInfo,
-                                usefulLinks,
+                                contactInfo: contactPayload, // Send formatted payload
                                 createdBy: userData?.cognitoId,
                                 lastUpdated: Date.now()
                             }
@@ -275,7 +272,7 @@ const Cafe = () => {
                                 TagLine3,
                                 heroImageUrl,
                                 createdBy: userData?.cognitoId,
-                                isFormFilled: true,
+                                isFormFilled: false,
                                 lastUpdated: Date.now()
                             }
                         });
@@ -348,7 +345,7 @@ const Cafe = () => {
                                     institutionid,
                                     testimonials: processedTestimonials,
                                     createdBy: userData?.cognitoId,
-                                    isFormFilled: true,
+                                    isFormFilled: false,
                                     lastUpdated: Date.now()
                                 }
                             });
@@ -421,6 +418,16 @@ const Cafe = () => {
                 };
             }));
 
+            // Format contact info for storage
+            const formattedContactInfo = {
+                emailId: contactInfo.emailId,
+                phoneNumber: contactInfo.phoneNumber,
+                address: contactInfo.address,
+                userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim(),
+                socialMediaLinks: contactInfo.socialMediaLinks,
+                visitUs: contactInfo.visitUs
+            };
+
             // Prepare data
             const dataToSave = {
                 currentSection,
@@ -430,8 +437,7 @@ const Cafe = () => {
                 SecondaryColor,
                 LightPrimaryColor,
                 LightestPrimaryColor,
-                contactInfo,
-                usefulLinks,
+                contactInfo: formattedContactInfo, // Use formatted contact info
                 TagLine,
                 TagLine1,
                 TagLine2,
@@ -451,7 +457,7 @@ const Cafe = () => {
                 return false;
             }
         } catch (error) {
-            console.error('Error processing data:', error);
+            console.error('Error saving data:', error);
             return false;
         }
     };
@@ -484,9 +490,20 @@ const Cafe = () => {
             setTagLine1('');
             setTagLine2('');
             setContactInfo({
-                instagram: '',
-                facebook: '',
-                youTube: ''
+                firstName: '',
+                lastName: '',
+                emailId: '',
+                phoneNumber: '',
+                address: '',
+                userName: '',
+                socialMediaLinks: {
+                    instagram: '',
+                    facebook: '',
+                    youtube: ''
+                },
+                visitUs: {
+                    locatemap: ''
+                }
             });
             setTestimonials([
                 { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
@@ -515,11 +532,25 @@ const Cafe = () => {
                 setSecondaryColor(parsedData.SecondaryColor || '#2b9ea9');
                 setLightPrimaryColor(parsedData.LightPrimaryColor || '#e6f7f9');
                 setLightestPrimaryColor(parsedData.LightestPrimaryColor || '#f3fbfc');
-                setEmail(parsedData.email || '');
-                setPhone(parsedData.phone || '');
-                setContactInfo(parsedData.contactInfo || {});
-                setSocialMediaLinks(parsedData.socialMediaLinks || {});
-                setUsefulLinks(parsedData.usefulLinks || []);
+                
+                // Load contact info
+                setContactInfo(parsedData.contactInfo || {
+                    firstName: '',
+                    lastName: '',
+                    emailId: '',
+                    phoneNumber: '',
+                    address: '',
+                    userName: '',
+                    socialMediaLinks: {
+                        instagram: '',
+                        facebook: '',
+                        youtube: ''
+                    },
+                    visitUs: {
+                        locatemap: ''
+                    }
+                });
+                
                 setTagLine(parsedData.TagLine || '');
                 setTagLine1(parsedData.TagLine1 || '');
                 setTagLine2(parsedData.TagLine2 || '');
@@ -563,11 +594,13 @@ const Cafe = () => {
     useEffect(() => {
         const saveToLocalStorage = async () => {
             try {
-                // Process testimonials for storage
+                // Process testimonials for storage with image compression
                 const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
                     let imageBase64 = '';
                     if (t.uploadedFile) {
-                        imageBase64 = await convertFileToBase64(t.uploadedFile);
+                        // Compress image before converting to base64
+                        const compressedImage = await compressImage(t.uploadedFile);
+                        imageBase64 = await convertFileToBase64(compressedImage);
                     } else if (t.imgSrc && t.imgSrc.startsWith('data:image')) {
                         imageBase64 = t.imgSrc;
                     }
@@ -581,6 +614,7 @@ const Cafe = () => {
                     };
                 }));
 
+                // Create a smaller payload
                 const dataToSave = {
                     companyName,
                     institutionid,
@@ -588,11 +622,7 @@ const Cafe = () => {
                     SecondaryColor,
                     LightPrimaryColor,
                     LightestPrimaryColor,
-                    email,
-                    phone,
                     contactInfo,
-                    socialMediaLinks,
-                    usefulLinks,
                     TagLine,
                     TagLine1,
                     TagLine2,
@@ -604,7 +634,22 @@ const Cafe = () => {
                     lastUpdated: Date.now()
                 };
 
-                localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+                // Try to save with error handling
+                try {
+                    localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+                } catch (storageError) {
+                    console.warn('Storage quota exceeded, removing testimonial images...');
+                    // Remove image data if storage is full
+                    const reducedData = {
+                        ...dataToSave,
+                        testimonials: processedTestimonials.map(t => ({
+                            ...t,
+                            imageBase64: '',
+                            imgSrc: ''
+                        }))
+                    };
+                    localStorage.setItem('cafeFormData', JSON.stringify(reducedData));
+                }
             } catch (error) {
                 console.error('Error saving to localStorage:', error);
             }
@@ -618,11 +663,7 @@ const Cafe = () => {
         SecondaryColor,
         LightPrimaryColor,
         LightestPrimaryColor,
-        email,
-        phone,
         contactInfo,
-        socialMediaLinks,
-        usefulLinks,
         TagLine,
         TagLine1,
         TagLine2,
@@ -748,6 +789,12 @@ const Cafe = () => {
         });
     };
 
+    const handlePrevSection = () => {
+        if (currentSection > 0) {
+            setCurrentSection(prev => prev - 1);
+        }
+    };
+
     const renderSection = () => {
         switch (currentSection) {
             case 0:
@@ -778,22 +825,8 @@ const Cafe = () => {
                 return (
                     <ErrorBoundary>
                         <Contact
-                            email={email || ''}
-                            setEmail={setEmail}
-                            phone={phone || ''}
-                            setPhone={setPhone}
-                            socialMediaLinks={socialMediaLinks}
-                            setSocialMediaLinks={setSocialMediaLinks}
-                            usefulLinks={usefulLinks}
-                            setUsefulLinks={setUsefulLinks}
                             contactInfo={contactInfo}
                             setContactInfo={setContactInfo}
-                            instagram={contactInfo?.instagram || ''}
-                            setInstagram={(value) => setContactInfo(prev => ({ ...prev, instagram: value }))}
-                            facebook={contactInfo?.facebook || ''}
-                            setFacebook={(value) => setContactInfo(prev => ({ ...prev, facebook: value }))}
-                            youTube={contactInfo?.youTube || ''}
-                            setYouTube={(value) => setContactInfo(prev => ({ ...prev, youTube: value }))}
                         />
                     </ErrorBoundary>
                 );
@@ -829,24 +862,6 @@ const Cafe = () => {
         }
     };
 
-    const handlePrevSection = () => {
-        try {
-            // Save current data before showing modal
-            saveData();
-            
-            // If we're on first section, navigate to dashboard
-            if (currentSection === 0) {
-                navigate('/dashboard');
-            } else {
-                // Move to previous section
-                setCurrentSection(prev => prev - 1);
-            }
-        } catch (error) {
-            console.error("Error navigating back:", error);
-            alert("Error: Unable to navigate back. Please try again.");
-        }
-    };
-
     return (
         <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
             <Navbar className="fixed top-0 w-full z-50" />
@@ -869,15 +884,15 @@ const Cafe = () => {
                         transition={{ duration: 0.5 }}
                     >
                         <div className="inline-flex items-center justify-center p-2 mb-4 rounded-full bg-teal-50">
-                            {React.createElement(FORM_SECTIONS[currentSection].icon, {
+                            {FORM_SECTIONS[currentSection]?.icon && React.createElement(FORM_SECTIONS[currentSection].icon, {
                                 className: "w-6 h-6 text-teal-600"
                             })}
                         </div>
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-                            {FORM_SECTIONS[currentSection].title}
+                            {FORM_SECTIONS[currentSection]?.title || ''}
                         </h1>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            {FORM_SECTIONS[currentSection].description}
+                            {FORM_SECTIONS[currentSection]?.description || ''}
                         </p>
                     </motion.div>
 
@@ -901,11 +916,12 @@ const Cafe = () => {
                 nextSection={handleNextSection}
                 prevSection={handlePrevSection}
                 saveData={saveData}
-                showModal={() => setShowModal(true)}
+                showModal={setShowModal}
                 institutionId={institutionid}
                 openModal={() => setShowModal(true)}
                 testimonials={testimonials}
                 sections={FORM_SECTIONS}
+                contactInfo={contactInfo}
             />
 
             <PrevSectionDraftHandler
@@ -914,14 +930,12 @@ const Cafe = () => {
                 onClear={handleClearData}
                 onSaveDraft={handleSaveDraft}
                 onContinue={() => {
-                    // If we're on first section, navigate to dashboard
                     if (currentSection === 0) {
                         navigate('/dashboard');
                     } else {
-                        // Move to previous section
-                        setCurrentSection(prev => prev - 1);
-                        setShowModal(false);
+                        handlePrevSection();
                     }
+                    setShowModal(false);
                 }}
             />
         </div>
