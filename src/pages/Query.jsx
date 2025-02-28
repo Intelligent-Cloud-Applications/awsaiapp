@@ -102,7 +102,7 @@ const Query = ({ activeComponent }) => {
                 </div>
               ))}
               <ReCAPTCHA ref={recaptchaRef} sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d" size="invisible" />
-              <button type="submit" className="w-full bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600">Send Message</button>
+              <button type="submit" className="w-full bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600 font-bold text-center">Send Message</button>
             </form>
           </div>
         </div>
