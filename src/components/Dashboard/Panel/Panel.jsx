@@ -21,26 +21,75 @@ import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 
 const Panel = () => {
-    const itemsPerPage = 5;
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedType, setSelectedType] = useState(null);
-    const [isMonthlyReport, setisMonthlyReport] = useState("");
-    const { clients, userData, setUserData } = useContext(Context);
-    const clientsData = Object.entries(clients?.data || {});
-    const [selectedStatuses, setSelectedStatuses] = useState({});
-    const [deliveryStatuses, setDeliveryStatuses] = useState({});
-    const [planStatuses, setPlanStatuses] = useState({});
-    const [userCheck, setUserCheck] = useState(0);
-    const [isMoreVisible, setIsMoreVisible] = useState(false);
-    const [showHiddenContent, setShowHiddenContent] = useState(false);
-    const [activeMenu, setActiveMenu] = useState(null);
-    const [activeSubMenu, setActiveSubMenu] = useState(null);
-    const isDeliveredOptions = ["Delivered", "Not Delivered"];
-    const handleMenuToggle = (menu) => {
-        setActiveSubMenu((prev) => (prev === menu ? null : menu));
-    };
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState(null);
+  const [isMonthlyReport, setisMonthlyReport] = useState("");
+  const { clients, userData, setUserData } = useContext(Context);
+  const clientsData = Object.entries(clients?.data || {});
+  const [selectedStatuses, setSelectedStatuses] = useState({});
+  const [deliveryStatuses, setDeliveryStatuses] = useState({});
+  const [planStatuses, setPlanStatuses] = useState({});
+  const [userCheck, setUserCheck] = useState(0);
+  const [isMoreVisible, setIsMoreVisible] = useState(false);
+  const [showHiddenContent, setShowHiddenContent] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const isDeliveredOptions = ["Delivered", "Not Delivered"];
+  const handleMenuToggle = (menu) => {
+    setActiveSubMenu((prev) => (prev === menu ? null : menu));
+  };
 
+  const [instituteTypes, setInstituteTypes] = useState([]);
+  const [instituteType, setInstituteType] = useState("");
+  const Ctx = useContext(Context);
+  const type = ["Dance Studio", "Dentist", "Cafe"];
+  // const [memberCounts, setMemberCounts] = useState({});
+  const [payment, setPayment] = useState(false);
+  const [filterStatus, setFilterStatus] = useState(null);
+  const [domainLinks, setDomainLinks] = useState({});
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const handleDeliverableUpdate = async (institutionid, deliverable) => {
+    const domainLink = domainLinks[institutionid];
+
+    if (deliverable === "Completed" && !domainLink) {
+      return;
+    }
+
+    try {
+      const body = {
+        institutionid,
+        deliverable,
+        ...(deliverable === "Completed" && { domainLink }),
+      };
+
+      await API.put("clients", `/admin/update-deliverable`, { body });
+
+      if (deliverable === "Completed") {
+        setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+        toast.success("Domain link and deliverable updated successfully!");
+      } else {
+        toast.success("Deliverable updated successfully!");
+      }
+
+      const response = await API.get("clients", "/admin/list-institution");
+      clients.setClients(response);
+    } catch (error) {
+      console.error("Error updating deliverable:", error);
+      toast.error("An error occurred while updating the deliverable.");
+    }
+  };
+  const handleDomainLinkSubmit = async (institutionid) => {
+    const domainLink = domainLinks[institutionid];
     const [instituteTypes, setInstituteTypes] = useState([]);
     const [instituteType, setInstituteType] = useState("");
     const Ctx = useContext(Context);
@@ -492,6 +541,7 @@ const Panel = () => {
                                             </button>
                                         </Link>
                                     </div>
+
                                 </div>
                                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
                                     <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
@@ -1128,6 +1178,7 @@ const Panel = () => {
                                     }
                                 }}
                                 className="mt-3 block"
+
                             >
                                 <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
                                     Create New Institution
@@ -1213,6 +1264,7 @@ const Panel = () => {
                                         placeholder="Search"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
+
                                     />
                                     <div className="absolute inset-y-0 left-3 flex items-center">
                                         <svg
