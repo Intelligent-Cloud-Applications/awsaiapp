@@ -1435,6 +1435,8 @@ const New_Full = () => {
           body: {
             institutionid: institutionNames,
             companyName: templateDetails.companyName,
+            courseBasedCG: false,
+            courseBasedCGCountry: null,
             description: templateDetails.description,
             institutionType: templateDetails.institutionType,
             institutionFormat: templateDetails.institutionFormat,

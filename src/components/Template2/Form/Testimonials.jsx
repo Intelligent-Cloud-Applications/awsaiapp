@@ -62,14 +62,14 @@ function Testimonials({ testimonials, setTestimonials }) {
   }, [testimonials, activeTestimonialIndex]);
 
   return (
-    <div className="mx-auto w-full overflow-y-auto mb-[2rem]">
+    <div className="mx-auto w-full overflow-y-auto mb-[2rem] [@media(max-width:1024px)]:m-0 [@media(max-width:1024px)]:mb-[5rem]">
       <h1 className="font-medium text-7xl text-center">TESTIMONIALS SECTION</h1>
       <h5 className="text-center text-gray-500">
         Showcase real customer feedback to build trust and credibility with authentic positive experiences.
       </h5>
       <div className="flex justify-center">
-        <div className="w-[60%] p-8">
-          <div ref={testimonialsContainerRef} className="pb-6">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
+          <div ref={testimonialsContainerRef} className="pb-6 [@media(max-width:1024px)]:flex-col">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="mt-6">
                 <h2 className="font-medium text-xl">Testimonial {index + 1}</h2>

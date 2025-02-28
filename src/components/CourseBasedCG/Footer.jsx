@@ -1,26 +1,28 @@
 import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
+import { API } from 'aws-amplify';
 import Context from '../../context/Context';
 
 function Footer({ currentSection, nextSection, prevSection, saveData, showModal, institutionId }) {
+  console.log(institutionId)
   // eslint-disable-next-line
+  const UserCtx = useContext(Context)
   // const { userData, setUserData } = useContext(Context)
-  const UserCtx = useContext(Context);
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
     'CONTACT INFO',
     'HOME',
-    // 'TESTIMONIALS',
-    // 'SUBSCRIPTION',
-    // 'FAQS',
+    'SERVICES',
+    'TESTIMONIALS',
+    'SUBSCRIPTION',
+    'FAQS',
     // 'INSTRUCTORS',
-    'ABOUT',
-    'TESTIMONIAL'
+    'POLICY',
   ];
 
-  const progress = (currentSection / sections.length) * 100;
+  // const progress = (currentSection / sections.length) * 100;
 
   const handleNextClick = () => {
     saveData();
@@ -37,7 +39,12 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     Navigate("/dashboard");
   };
   const submitSections = async () => {
-    await nextSection();
+    nextSection();
+    await API.put("clients", "/user/development-form/put-time/awsaiapp", {
+      body: {
+        submissiontime: new Date().getTime(),
+      },
+    });
     // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
     // const baseUrl =
     //   process.env.REACT_APP_STAGE === 'PROD'
@@ -54,11 +61,11 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
   return (
     <div className='footer-wrapper relative'>
       <div className="bg-white h-[4rem] footer flex justify-end items-center relative mt-10">
-        <div className="absolute left-8 bottom-4 flex gap-4">
+        <div className="absolute left-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:left-1">
           {currentSection === 0 && (
             <button
               onClick={handleBackClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px]"
+              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               BACK
             </button>
@@ -66,14 +73,14 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
           {currentSection > 0 && (
             <button
               onClick={handlePrevClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px]"
+              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               BACK
             </button>
           )}
         </div>
-        <div>
-          <div className='flex flex-row gap-[11em] max1320:gap-4 max1320:left-[4rem] absolute left-[14rem] right-0 top-4 max1250:hidden'>
+        {/* <div>
+          <div className='flex flex-row gap-[7em] max1320:gap-4 max1320:left-[4rem] absolute left-[14rem] right-0 top-4 max1250:hidden'>
             {sections.map((section, index) => (
               <div
                 key={index}
@@ -86,7 +93,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
             ))}
           </div>
 
-          <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[16rem] max1320:left-[4rem] w-[65%] h-[3px] z-40 max1250:hidden'>
+          <div className='absolute bg-[#CDC0C0] bottom-[2rem] left-[16rem] max1320:left-[4rem] w-[72%] h-[3px] z-40 max1250:hidden'>
             <div
               className='h-full bg-black rounded-lg'
               style={{
@@ -94,12 +101,12 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
               }}
             />
           </div>
-        </div>
-        <div className="absolute right-8 bottom-4 flex gap-4">
+        </div> */}
+        <div className="absolute right-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:right-1">
           {currentSection < sections.length - 1 && (
             <button
               onClick={handleNextClick}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px]"
+              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               NEXT
             </button>
@@ -107,7 +114,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
           {currentSection === sections.length - 1 && (
             <button
               onClick={submitSections}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px]"
+              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
             >
               SUBMIT
             </button>

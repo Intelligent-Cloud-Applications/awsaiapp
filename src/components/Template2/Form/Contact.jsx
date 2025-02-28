@@ -84,7 +84,7 @@ function Contact({ contactInfo, setContactInfo }) {
   //   return fileName;
   // };
   return (
-    <div className="mx-[2%]" style={{ overflowY: 'auto' }}>
+    <div className="mx-[2%] [@media(max-width:1024px)]:m-0" style={{ overflowY: 'auto' }}>
       <h1 className="font-medium text-7xl text-center">CONTACT INFORMATION</h1>
       {/* <h5 className="text-[#cc3f3f] text-[13px]">
         ** The Footer shown is just an example how your given data will look like for the Footer it will not change on giving your input.**
@@ -93,7 +93,7 @@ function Contact({ contactInfo, setContactInfo }) {
         Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
       </h5>
       <div className="flex justify-center min-h-screen">
-        <div className="w-[60%] p-8">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:ml-0 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
           <div className="mb-8">
             {Object.keys(contactInfo)
               .filter((key) => key !== 'country' && key !== 'countryCode')
