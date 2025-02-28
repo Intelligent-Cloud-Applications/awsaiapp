@@ -21,7 +21,10 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, onCont
         <div className="p-6 space-y-3">
           {/* Save Draft Button */}
           <button
-            onClick={onSaveDraft}
+            onClick={() => {
+              onSaveDraft();
+              onClose();
+            }}
             className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
           >
             <FiSave className="w-4 h-4" />
@@ -30,7 +33,10 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, onCont
 
           {/* Go Back Without Saving Button */}
           <button
-            onClick={onContinue}
+            onClick={() => {
+              onContinue();
+              onClose();
+            }}
             className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-[#30afbc] bg-white rounded-lg hover:bg-gray-50 border border-[#30afbc] transition-colors"
           >
             <FiX className="w-4 h-4" />
@@ -48,7 +54,10 @@ const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, onCont
 
           {/* Clear Data Button */}
           <button
-            onClick={onClear}
+            onClick={() => {
+              onClear();
+              onClose();
+            }}
             className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 rounded-lg border border-red-200 hover:border-red-600 transition-all duration-200"
           >
             <FiTrash2 className="w-4 h-4" />

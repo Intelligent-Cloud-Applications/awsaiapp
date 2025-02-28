@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
 import { FiChevronLeft, FiChevronRight, FiCheck } from 'react-icons/fi';
 import PropTypes from 'prop-types';
+import { API } from 'aws-amplify';
+import { createAdminAccounts } from './account';
 
 function Footer({ 
     currentSection, 
@@ -14,9 +16,11 @@ function Footer({
     institutionId, 
     openModal,
     testimonials,
-    sections
+    sections,
+    contactInfo
 }) {
     const UserCtx = useContext(Context);
+    const UserCtx2 = useContext(Context).userData;
     const Navigate = useNavigate();
     
     const progress = ((currentSection + 1) / sections.length) * 100;
@@ -51,8 +55,13 @@ function Footer({
     };
 
     const handlePrevClick = () => {
-        // Always show modal when clicking previous, regardless of section
-        showModal();
+        if (currentSection === 0) {
+            // If we're on the first section, just open the modal
+            openModal();
+        } else {
+            // For other sections, show the modal first
+            openModal();
+        }
     };
 
     const validateTestimonials = () => {
@@ -71,38 +80,44 @@ function Footer({
 
     const handleSubmit = async () => {
         try {
-            // Validate testimonials before submission
-            if (!validateTestimonials()) {
-                return;
-            }
+            if (!validateTestimonials()) return;
 
             UserCtx.util.setLoader(true);
-
-            // Save data before submission
-            saveData();
-
-            // Attempt submission
+            
             const success = await nextSection();
 
-            // If API call was successful, proceed
-            if (success) {
-                if (currentSection === sections.length - 1) {
-                    const SecondaryColor = "#0000";
-                    const PrimaryColor = "#30afbc";
-                    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
-                    
-                    // Clear all form data from localStorage
-                    localStorage.removeItem('cafeFormData');
-                    localStorage.removeItem('cafeFormLogo');
-                    localStorage.removeItem('heroImageData');
-                    localStorage.removeItem('testimonialImages');
-                    
-                    // Navigate to dashboard and open payment URL
-                    Navigate("/dashboard");
-                    window.open(url, '_blank');
-                } else {
-                    scrollToTop();
-                }
+            if (success && currentSection === sections.length - 1) {
+                // Create admin accounts after testimonial submission
+                await createAdminAccounts({
+                    institution: institutionId,
+                    country: 'default',
+                    admin1: {
+                        cognitoId: UserCtx.userData.cognitoId,
+                        emailId: UserCtx.userData.emailId,
+                        phoneNumber: UserCtx.userData.phoneNumber || '',
+                        userName: UserCtx.userData.userName
+                    },
+                    admin2: {
+                        emailId: contactInfo.emailId,
+                        phoneNumber: contactInfo.phoneNumber,
+                        userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
+                    }
+                });
+
+                const SecondaryColor = "#0000";
+                const PrimaryColor = "#30afbc";
+                const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
+                
+                // Clear form data
+                localStorage.removeItem('cafeFormData');
+                localStorage.removeItem('cafeFormLogo');
+                localStorage.removeItem('heroImageData');
+                localStorage.removeItem('testimonialImages');
+                
+                Navigate("/dashboard");
+                window.open(url, '_blank');
+            } else {
+                scrollToTop();
             }
         } catch (error) {
             console.error("Error submitting form:", error);
@@ -187,7 +202,8 @@ Footer.propTypes = {
         id: PropTypes.string,
         title: PropTypes.string.isRequired,
         icon: PropTypes.elementType
-    })).isRequired
+    })).isRequired,
+    contactInfo: PropTypes.object.isRequired
 };
 
 export default Footer;
