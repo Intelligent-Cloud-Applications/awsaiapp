@@ -160,6 +160,7 @@ const Panel = () => {
         }
     };
 
+
     const handleTypeFilter = (typeSelected) => {
         if (typeSelected === "Dance Studio") {
             setSelectedType("DanceStudio");
@@ -345,6 +346,7 @@ const Panel = () => {
             return "";
         }
     };
+
 
     const handleRowClick = (institution, event) => {
         setPayment(institution.payment);
@@ -1139,6 +1141,7 @@ const Panel = () => {
                                     onClick={() =>
                                         setActiveMenu((prev) => (prev ? null : "main"))
                                     }
+
                                 >
                                     {(selectedType !== null || filterStatus !== null) && (
                                         <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>

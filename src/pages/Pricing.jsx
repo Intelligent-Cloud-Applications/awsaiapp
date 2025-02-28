@@ -8,6 +8,9 @@ import Context from "../context/Context";
 // import { API } from "aws-amplify";
 
 const Pricing = () => {
+  // const Navigate = useNavigate();
+  // const Ctx = useContext(Context);
+  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   const SecondaryColor = "0000";
   const PrimaryColor = "30afbc";
