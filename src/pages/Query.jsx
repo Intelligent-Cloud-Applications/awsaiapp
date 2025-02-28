@@ -72,10 +72,10 @@ const Query = ({ activeComponent }) => {
       {activeComponent !== "contact" && <Navbar />}
       <div className="flex flex-col justify-center items-center min-h-screen py-10 px-4 bg-white mt-[5rem]">
         <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl">
-          <div className="bg-teal-600 text-white p-8 flex flex-col justify-center items-center w-full lg:w-1/2">
+          <div className="bg-[#0091A0] text-white p-8 flex flex-col justify-center items-center w-full lg:w-1/2">
             <motion.img src={Pic} alt="Contact" className="w-40 mb-4 hidden md:block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} />
-            <h2 className="text-2xl font-bold text-center">Let's Chat.<br />Tell Us About Your Project.</h2>
-            <p className="text-center mt-2">Let's maximize your business potential with us.</p>
+            <h2 className="text-2xl text-white font-bold text-center">Let's Chat.<br />Tell Us About Your Project.</h2>
+            <p className="text-center text-white mt-2">Let's maximize your business potential with us.</p>
           </div>
           <div className="p-8 w-full lg:w-2/3">
             <h2 className="text-2xl font-bold mb-4 text-center lg:text-left">Send us a message</h2>
