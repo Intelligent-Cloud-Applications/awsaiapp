@@ -20,6 +20,8 @@ const AdminMemberlist = () => {
   const { updatingRole, getRoleOptions, handleRoleChange } = useRoleManagement(() => {
     fetchData().then(members => setData(members));
   });
+  const [filterStatus, setFilterStatus] = useState(null);
+
   const {
     currentPage,
     searchQuery,
@@ -30,6 +32,7 @@ const AdminMemberlist = () => {
     activeSort,
     totalPages,
     currentData,
+    data,
     filteredAndSortedData,
     setCurrentPage,
     handleSort,
@@ -38,7 +41,21 @@ const AdminMemberlist = () => {
     handleStatClick,
     startResizing,
     setData
-  } = useTableManagement([]);
+  } = useTableManagement([], filterStatus);
+
+  // Update filter status when clicking stats
+  const handleStatClickWrapper = (sortConfig, index) => {
+    let newFilterStatus = null;
+    if (index === 1) { // Active members stat
+      newFilterStatus = filterStatus === 'Active' ? null : 'Active';
+    } else if (index === 2) { // Inactive members stat
+      newFilterStatus = filterStatus === 'Inactive' ? null : 'Inactive';
+    }
+    setFilterStatus(newFilterStatus);
+    handleStatClick(sortConfig, index);
+  };
+
+
 
   // Initial data fetch
   useEffect(() => {
@@ -49,13 +66,15 @@ const AdminMemberlist = () => {
     loadData();
   }, [fetchData, setData]);
 
-  // Calculate stats
+  // Calculate stats using original data
   const stats = {
-    total_members: filteredAndSortedData.length,
-    active_members: filteredAndSortedData.filter(m => m.status === 'Active').length,
-    inactive_members: filteredAndSortedData.filter(m => m.status !== 'Active').length,
-    total_delivered: filteredAndSortedData.reduce((acc, curr) => acc + (parseInt(curr.delivered) || 0), 0)
+    total_members: data?.length || 0,
+    active_members: data?.filter(m => m.status === 'Active').length || 0,
+    inactive_members: data?.filter(m => m.status !== 'Active').length || 0,
+    total_delivered: data?.reduce((acc, curr) => acc + (parseInt(curr.delivered) || 0), 0) || 0
   };
+
+
 
   // Toggle expanded row for mobile view
   const toggleExpandedRow = (id) => {
@@ -92,7 +111,9 @@ const AdminMemberlist = () => {
           <div className="mb-4 md:mb-6">
             <StatsGrid
               stats={stats}
-              onStatClick={handleStatClick}
+              onStatClick={handleStatClickWrapper}
+
+
               activeSort={activeSort}
             />
           </div>
@@ -245,9 +266,9 @@ const AdminMemberlist = () => {
                                   {getRoleOptions(member.role, userData.role).length > 0 ? (
                                     <div className="flex-shrink-0">
                                       <CustomDropDown
-                                        label={member.role === 'sales' ? 'Sale' : 
-                                               member.role === 'operation' ? 'Admin' :
-                                               member.role === 'owner' ? 'Owner' : 'Set Role'}
+                                        label={member.role === 'sales' ? 'Sale' :
+                                          member.role === 'operation' ? 'Admin' :
+                                            member.role === 'owner' ? 'Owner' : 'Set Role'}
                                         disabled={updatingRole === member.cognitoId || member.role === 'owner'}
                                         isLoading={updatingRole === member.cognitoId}
                                         options={getRoleOptions(member.role, userData.role).map(role => ({
@@ -255,8 +276,8 @@ const AdminMemberlist = () => {
                                           label: role,
                                           color: role === 'Admin' ? 'text-green-600' : 'text-orange-600'
                                         }))}
-                                        selectedValue={member.role === 'sales' ? 'Sale' : 
-                                                      member.role === 'operation' ? 'Admin' : ''}
+                                        selectedValue={member.role === 'sales' ? 'Sale' :
+                                          member.role === 'operation' ? 'Admin' : ''}
                                         onSelect={(option) => {
                                           console.log('Selected option:', option); // Debug log
                                           handleRoleChange(member.cognitoId, option.value, member);
@@ -265,9 +286,9 @@ const AdminMemberlist = () => {
                                     </div>
                                   ) : (
                                     <span className="px-3 py-2 text-sm text-gray-500 truncate">
-                                      {member.role === 'sales' ? 'Sale' : 
-                                       member.role === 'operation' ? 'Admin' :
-                                       member.role === 'owner' ? 'Owner' : 'No Role'}
+                                      {member.role === 'sales' ? 'Sale' :
+                                        member.role === 'operation' ? 'Admin' :
+                                          member.role === 'owner' ? 'Owner' : 'No Role'}
                                     </span>
                                   )}
                                 </div>
@@ -279,8 +300,8 @@ const AdminMemberlist = () => {
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.status}px` }} className="p-4">
                                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium truncate
-                                  ${member.status === "Active" 
-                                    ? "bg-green-50 text-green-600" 
+                                  ${member.status === "Active"
+                                    ? "bg-green-50 text-green-600"
                                     : "bg-red-50 text-red-600"}`}
                                 >
                                   {member.status}

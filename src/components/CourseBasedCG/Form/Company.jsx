@@ -2,6 +2,8 @@ import React from "react";
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import theme from "../../../theme";
+import CountryList from "../../Auth/CountryList";
+import Currency from "../../Auth/Currency";
 
 function Company({
   clients,
@@ -27,6 +29,12 @@ function Company({
   setCSVFile,
   setInstitutionFormat,
   institutionFormat,
+  registrationFee,
+  setRegistrationFee,
+  registrationFeeCurrency,
+  setRegistrationFeeCurrency,
+  courseBasedCGCountry,
+  setcourseBasedCGCountry
 }) {
 
   const handleInstitutionFormatChange = (e) => {
@@ -165,7 +173,7 @@ function Company({
                 borderRadius: "8px",
                 width: "30rem",
                 ...(window.matchMedia("(max-width: 1024px)").matches && {
-                  width: "100%",
+                width: "100%",
                 }),
               }}
             />
@@ -193,7 +201,7 @@ function Company({
                 borderRadius: "8px",
                 width: "30rem",
                 ...(window.matchMedia("(max-width: 1024px)").matches && {
-                  width: "100%",
+                width: "100%",
                 }),
               }}
             />
@@ -318,21 +326,57 @@ function Company({
                 />
                 No
               </label>
-            </div>
-            {courseBasedCG && (
-              <div className="mt-2">
-                <h2 className="font-medium text-xl">Country It is Based</h2>
+            </div> */}
+          <div className="mt-2">
+            <h2 className="font-medium text-xl">Country It is Based</h2>
+            <select
+              value={courseBasedCGCountry}
+              onChange={(e) => setcourseBasedCGCountry(e.target.value)}
+              className="w-full bg-white border border-[#939393] rounded-md p-2"
+            >
+              <option value="">Select Country</option>
+              {<CountryList />}
+            </select>
+          </div>
+
+          {courseBasedCGCountry && (
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="flex flex-col w-full">
+                <div className="mb-2 block">
+                  <Label
+                    color="gray"
+                    value="Select Currency"
+                    className="font-medium text-xl"
+                  />
+                  <span className="text-red-500 ml-1">*</span>
+                </div>
                 <select
-                  value={courseBasedCGCountry}
-                  onChange={(e) => setcourseBasedCGCountry(e.target.value)}
-                  className="w-[19.5rem] mr-[1.5rem] border-[2px] px-[1rem] py-2 border-[#9d9d9d78] max500:w-[80vw] mt-6"
+                  value={registrationFeeCurrency}
+                  name="currency"
+                  className="px-[1rem] py-2 bg-white border border-[#939393] rounded-md w-full"
+                  onChange={(e) => {
+                    setRegistrationFeeCurrency(e.target.value);
+                  }}
                 >
-                  <option value="">Select Country</option>
-                  {<Currency />}
+              {<Currency />}
                 </select>
               </div>
-            )}
-          </div> */}
+              <TextInput
+                type="number"
+                name="amount"
+                value={registrationFee}
+                onChange={(e) => setRegistrationFee(e.target.value)}
+                placeholder="Enter Registration Fee (e.g.100)"
+                className={`w-full text-black border-none outline-none bg-transparent`}
+                style={{
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  borderRadius: "8px",
+                }}
+              />
+            </div>
+          )}
+          {/* </div> */}
           {/* <div className="relative flex items-center mt-4 ">
         <h2 className='font-bold'>Member List</h2>
         <div className='mr-16'></div>
