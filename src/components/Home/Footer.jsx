@@ -18,11 +18,11 @@ export default function Footer(props) {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex flex-col h-[60vh] justify-center items-center gap-10 bg-black text-white py-6 px-6 md:px-3 text-center font-inter">
-        <h1 className="text-5xl max-w-7xl md:text-21xl lg:max-w-6xl">
+      <div className="flex flex-col min-h-[400px] sm:min-h-[500px] justify-center items-center gap-6 sm:gap-8 md:gap-10 bg-black text-white py-8 px-4 sm:px-6 md:px-8 text-center font-inter">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl max-w-[90%] sm:max-w-3xl md:max-w-5xl lg:max-w-6xl leading-tight sm:leading-snug">
           Let's explore what we can create collaboratively
         </h1>
-        <p className="text-lg max-w-7xl max670:text-sm">
+        <p className="text-base sm:text-lg max-w-[90%] sm:max-w-3xl md:max-w-5xl leading-relaxed sm:leading-loose px-2 sm:px-0">
           Discover your digital potential with us! From simple website design to
           complex web applications, e-commerce sites, mobile apps, and
           captivating branding, our platform offers tailored solutions for all
@@ -34,13 +34,12 @@ export default function Footer(props) {
             onClick={() => {
               Navigate("/query");
             }}
-            className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-6 py-3 rounded-full text-base md:text-xl lg:text-xl "
+            className="border-2 border-[#30AFBC] hover:bg-[#30AFBC] px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-full text-sm sm:text-base md:text-lg transition-all duration-300"
           >
             Contact us now
           </button>
         </div>
       </div>
-
       <div>
         <div className="bg-white gap-10 max670:text-xs md:text-base max450:text-[5px] py-5">
           <div className="flex justify-between max670:flex-col md:flex-row p-6 gap-6 max1358:justify-center overflow-hidden items-center md:text-5xl">
@@ -97,7 +96,7 @@ export default function Footer(props) {
                       className=" w-5 h-5 cursor-pointer"
                     />
                     <a
-                        className="cursor-pointer text-black text-decoration-none"
+                      className="cursor-pointer text-black text-decoration-none"
                       href="tel:+918249675567"
                       target="_blank"
                       rel="noreferrer"

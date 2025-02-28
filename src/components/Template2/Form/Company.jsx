@@ -116,8 +116,8 @@ function Company({
           }}
         />
       </div> */}
-      <div className="flex justify-center">
-        <div className="w-[60%] p-8">
+      <div className="flex justify-center [@media(max-width:1024px)]:flex-none [@media(max-width:1024px)]:justify-start">
+        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:mb-5">
           <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
             <div className="mb-2 block">
               <Label htmlFor="companyName" color="gray" value="Company Name" className='font-medium text-xl' />

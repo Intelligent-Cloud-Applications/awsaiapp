@@ -2,7 +2,10 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { COLUMN_WIDTHS, ITEMS_PER_PAGE } from '../constants/tableConstants';
 
 export const useTableManagement = (initialData = []) => {
+
   const [data, setData] = useState(initialData);
+  const [filterStatus, setFilterStatus] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchField, setSearchField] = useState('userName');
@@ -47,16 +50,39 @@ export const useTableManagement = (initialData = []) => {
 
   // Handle stat click
   const handleStatClick = useCallback((sortConfig, index) => {
-    if (sortConfig) {
-      setSortField(sortConfig.field);
-      setSortDirection(sortConfig.direction);
-      setActiveSort(index);
+    setActiveSort(index);
+    // Set filter status based on which stat was clicked
+    let newFilterStatus = null;
+    if (index === 1) { // Active members stat
+      newFilterStatus = filterStatus === 'Active' ? null : 'Active';
+    } else if (index === 2) { // Inactive members stat
+      newFilterStatus = filterStatus === 'Inactive' ? null : 'Inactive';
+    } else if (index === 3) { // Delivered stat
+      newFilterStatus = filterStatus === 'Delivered' ? null : 'Delivered';
     }
-  }, []);
+    setFilterStatus(newFilterStatus);
+  }, [filterStatus]);
+
+
 
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
     let result = [...data];
+
+    // Apply filters
+    if (filterStatus) {
+      if (filterStatus === 'Inactive') {
+        // Show all non-active statuses
+        result = result.filter(item => item.status !== 'Active');
+      } else if (filterStatus === 'Delivered') {
+        // Show members with delivered > 0
+        result = result.filter(item => (parseInt(item.delivered) || 0) > 0);
+      } else {
+        result = result.filter(item => item.status === filterStatus);
+      }
+    }
+
+
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -85,9 +111,9 @@ export const useTableManagement = (initialData = []) => {
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-
     return result;
-  }, [data, searchQuery, searchField, sortField, sortDirection]);
+  }, [data, searchQuery, searchField, sortField, sortDirection, filterStatus]);
+
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredAndSortedData.length / ITEMS_PER_PAGE);
@@ -115,6 +141,7 @@ export const useTableManagement = (initialData = []) => {
     handleSearchFieldChange,
     handleStatClick,
     startResizing,
-    setData
+    setData,
+    data
   };
 };

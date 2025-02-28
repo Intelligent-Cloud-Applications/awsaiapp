@@ -1,16 +1,18 @@
-import React from "react";
-import Navbar from "../components/Home/Navbar";
-import { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Pic from "../utils/contactusPic.png";
 import { motion } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
 import { API } from "aws-amplify";
+import Navbar from "../components/Home/Navbar";
 import Context from "../context/Context";
+import Pic from "../utils/contactusPic.png";
+import FOOTER from "../components/Home/Footer";
 
 const Query = ({ activeComponent }) => {
   const util = useContext(Context).util;
   const navigate = useNavigate();
+  const recaptchaRef = useRef();
+
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
@@ -19,17 +21,10 @@ const Query = ({ activeComponent }) => {
     address: "",
     projectDetails: "",
   });
-
-  const [errors, setErrors] = useState({
-    email: "",
-    phoneNumber: "",
-  });
-
-  const recaptchaRef = useRef();
+  const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "email") {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setErrors({
@@ -37,248 +32,82 @@ const Query = ({ activeComponent }) => {
         email: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
       });
     }
-
     if (name === "phoneNumber") {
       const phonePattern = /^\d{0,10}$/;
-      if (!phonePattern.test(value)) {
-        setErrors({
-          ...errors,
-          phoneNumber: "Phone number must be numeric and up to 10 digits only.",
-        });
-        return;
-      }
       setErrors({
         ...errors,
-        phoneNumber: "",
+        phoneNumber: phonePattern.test(value) ? "" : "Phone number must be numeric and up to 10 digits only.",
       });
     }
-
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       util.setLoader(true);
       const token = await recaptchaRef.current.executeAsync();
-
       if (!token) {
-        alert("Please fill out the CAPTCHA.");
+        alert("Please complete the CAPTCHA.");
         return;
       }
-
-      if (
-        formData.fullName === "" ||
-        formData.companyName === "" ||
-        formData.email === "" ||
-        formData.phoneNumber === "" ||
-        formData.address === "" ||
-        formData.projectDetails === ""
-      ) {
-        alert("Please fill out all form fields.");
+      if (Object.values(formData).some((value) => value === "")) {
+        alert("Please fill out all fields.");
         util.setLoader(false);
         return;
       }
-
-      const apiName = "clients";
-      const path = "/any/create-query";
-      const myInit = {
-        body: {
-          fullName: formData.fullName,
-          companyName: formData.companyName,
-          emailId: formData.email,
-          phoneNumber: formData.phoneNumber,
-          address: formData.address,
-          projectDetails: formData.projectDetails,
-        },
-      };
-
-      await API.post(apiName, path, myInit);
-
+      await API.post("clients", "/any/create-query", { body: formData });
       alert("Submitted Successfully");
-
-      setFormData({
-        fullName: "",
-        companyName: "",
-        email: "",
-        phoneNumber: "",
-        address: "",
-        projectDetails: "",
-      });
-
-      navigate('/');
-      console.log("reCAPTCHA Token:", token);
+      setFormData({ fullName: "", companyName: "", email: "", phoneNumber: "", address: "", projectDetails: "" });
+      navigate("/");
     } catch (error) {
       alert("Error sending message: " + error.message);
-      console.error("reCAPTCHA error:", error);
-    } finally { 
+    } finally {
       util.setLoader(false);
     }
-    util.setLoader(false);
   };
 
   return (
     <>
-      {activeComponent !== 'contact' ? <Navbar /> : ""}
-      <div
-        className="flex justify-center items-center md:pt-[10rem] md:pb-[5rem] bg-[#F0F0F0] h-[100vh] 
-      max670:h-[140vh] max670:pt-[5rem] max670:px-6 "
-      >
-        <div className="flex flex-col sm:flex-row m-5 max600:mx-5 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-lg md:h-[80vh] md:w-[100vh]">
-          <div className="bg-[#0091A0] text-white rounded-l shadow-md p-10 md:w-[40vw] mx-auto sm:w-[30vw]">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col items-center justify-around h-full"
-            >
-              <img
-                src={Pic}
-                alt=""
-                className="w-32 md:w-[80%] rounded-full mb-4 max450:hidden"
-              />
-              <div>
-                <h2 className="text-3xl font-semibold mb-2 w-full">
-                  Let's Chat.
-                  <br />
-                  Tell Us About Your Project.
-                </h2>
-                <p className="w-full">
-                  Let's Maximize Your business's Potential with Us
-                </p>
-              </div>
-            </motion.div>
+      {activeComponent !== "contact" && <Navbar />}
+      <div className="flex flex-col justify-center items-center min-h-screen py-10 px-4 bg-white mt-[5rem]">
+        <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl">
+          <div className="bg-teal-600 text-white p-8 flex flex-col justify-center items-center w-full lg:w-1/2">
+            <motion.img src={Pic} alt="Contact" className="w-40 mb-4 hidden md:block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} />
+            <h2 className="text-2xl font-bold text-center">Let's Chat.<br />Tell Us About Your Project.</h2>
+            <p className="text-center mt-2">Let's maximize your business potential with us.</p>
           </div>
-
-          <div className=" max-w-md w-full mx-auto px-10 py-4  border rounded-md bg-white"
-          >
-            <h2 className=" max406:text-3xl max670:text-9xl md:text-13xl font-semibold mb-4 w-full">
-              Send us a message
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder=""
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="companyName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                  required
-                />
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-              </div>
-              <div>
-                <label
-                  htmlFor="phoneNumber"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                  required
-                />
-                {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
-              </div>
-              <div>
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Address
-                </label>
-                <textarea
-                  id="address"
-                  name="address"
-                  rows="1"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                ></textarea>
-              </div>
-              <div>
-                <label
-                  htmlFor="projectDetails"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Tell us more about your project
-                </label>
-                <textarea
-                  id="projectDetails"
-                  name="projectDetails"
-                  rows="4"
-                  value={formData.projectDetails}
-                  onChange={handleChange}
-                  className="mt-1 p-1 border border-gray-600 rounded-md w-full"
-                ></textarea>
-              </div>
-              <div>
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d"
-                  size="invisible"
-                />
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  className="bg-[#30AFBC] text-white font-medium py-2 px-4 rounded-md hover:bg-[#4BBAC6] focus:outline-none mt-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
-                  onClick={handleSubmit}
-                >
-                  Send Message
-                </button>
-              </div>
+          <div className="p-8 w-full lg:w-2/3">
+            <h2 className="text-2xl font-bold mb-4 text-center lg:text-left">Send us a message</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {[
+                { label: "Full Name", name: "fullName", type: "text" },
+                { label: "Company Name", name: "companyName", type: "text" },
+                { label: "Email", name: "email", type: "email", error: errors.email },
+                { label: "Phone Number", name: "phoneNumber", type: "text", error: errors.phoneNumber },
+              ].map(({ label, name, type, error }) => (
+                <div key={name}>
+                  <label className="block text-gray-700">{label}</label>
+                  <input type={type} name={name} value={formData[name]} onChange={handleChange} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-400" required />
+                  {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                </div>
+              ))}
+              {[
+                { label: "Address", name: "address", rows: 2 },
+                { label: "Tell us more about your project", name: "projectDetails", rows: 4 },
+              ].map(({ label, name, rows }) => (
+                <div key={name}>
+                  <label className="block text-gray-700">{label}</label>
+                  <textarea name={name} rows={rows} value={formData[name]} onChange={handleChange} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-400" required></textarea>
+                </div>
+              ))}
+              <ReCAPTCHA ref={recaptchaRef} sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d" size="invisible" />
+              <button type="submit" className="w-full bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600">Send Message</button>
             </form>
           </div>
         </div>
       </div>
+      <FOOTER />
     </>
   );
 };

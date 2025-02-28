@@ -169,7 +169,7 @@ const InstitutionDraft = () => {
       <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
         {/* Search Bar */}
         <div className="w-full flex justify-end">
-          <form className="w-[30%] rounded-sm my-3">
+          <form className="w-[30%] rounded-sm my-3 [@media(max-width:500px)]:w-[100%]">
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
@@ -278,7 +278,7 @@ const InstitutionDraft = () => {
             </Table>
           )}
         </div>
-        <div className="py-2 flex justify-between items-center px-4 w-full">
+        <div className="py-2 flex justify-between items-center px-4 w-full [@media(max-width:500px)]:flex-col">
 
           <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
             <button className="focus:outline-none">
