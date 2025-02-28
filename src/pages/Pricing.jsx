@@ -8,10 +8,6 @@ import Context from "../context/Context";
 // import { API } from "aws-amplify";
 
 const Pricing = () => {
-  // const Navigate = useNavigate();
-  // const Ctx = useContext(Context);
-  // const Ctx = useContext(Context);
-  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
   const SecondaryColor = "0000";
   const PrimaryColor = "30afbc";
@@ -120,10 +116,6 @@ const Pricing = () => {
   //     UtilCtx.setLoader(false);
   //   }
   // };
-  
-  
-    const SecondaryColor = "0000";
-    const PrimaryColor = "30afbc"
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -167,36 +159,10 @@ const Pricing = () => {
                 }}
                 className="mt-auto text-white text-lg font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg w-full"
               >
-                <h3 className="font-semibold text-2xl xl:text-3xl pb-2">
-                  {product.heading}
-                </h3>
-                <p className="text-2xl xl:text-3xl font-semibold">
-                  ₹ {product.amount / 100}
-                </p>
-                <p className="text-sm xl:text-base pb-4">
-                  Per {product.durationText}
-                </p>
-                <h4 className="text-lg xl:text-xl font-semibold pb-2">
-                  Features
-                </h4>
-                <ul className="text-sm p-2">
-                  {product.provides.map((feature) => {
-                    return <li>{feature}</li>;
-                  })}
-                </ul>
-                <button
-                  onClick={() => {
-                    window.open(
-                      `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}`, '_blank', 'noopener,noreferrer'
-                    );
-                  }}
-                  className="text-white text-lg xl:text-xl font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg"
-                >
-                  Get Started
-                </button>
-              </Box>
-            );
-          })}
+                Get Started
+              </button>
+            </Box>
+          ))}
         </div>
       </div>
       <Footer />
