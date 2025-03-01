@@ -382,9 +382,7 @@ const Cafe = () => {
                 setCurrentSection(prev => prev + 1);
 
                 // If it's the final section and submission is successful
-                if (currentSection === FORM_SECTIONS.length - 1) {
-                    clearAllFormData();
-                }
+                
                 return true;
             }
             return false;
@@ -697,9 +695,7 @@ const Cafe = () => {
     useEffect(() => {
         return () => {
             // Clear localStorage when component unmounts
-            if (currentSection === FORM_SECTIONS.length - 1) {
-                localStorage.removeItem('cafeFormData');
-            }
+            
         };
     }, [currentSection]);
 
@@ -877,24 +873,7 @@ const Cafe = () => {
 
             <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto w-full">
-                    <motion.div
-                        className="text-center mb-8 md:mb-12"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <div className="inline-flex items-center justify-center p-2 mb-4 rounded-full bg-teal-50">
-                            {FORM_SECTIONS[currentSection]?.icon && React.createElement(FORM_SECTIONS[currentSection].icon, {
-                                className: "w-6 h-6 text-teal-600"
-                            })}
-                        </div>
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-                            {FORM_SECTIONS[currentSection]?.title || ''}
-                        </h1>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            {FORM_SECTIONS[currentSection]?.description || ''}
-                        </p>
-                    </motion.div>
+                    
 
                     <AnimatePresence mode="wait">
                         <motion.div

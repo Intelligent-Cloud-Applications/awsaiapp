@@ -198,11 +198,7 @@ Footer.propTypes = {
     institutionId: PropTypes.string,
     openModal: PropTypes.func,
     testimonials: PropTypes.array,
-    sections: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string,
-        title: PropTypes.string.isRequired,
-        icon: PropTypes.elementType
-    })).isRequired,
+    
     contactInfo: PropTypes.object.isRequired
 };
 
