@@ -222,7 +222,10 @@ const Contact = ({
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Stay Connected</h1>
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiPhone className="w-8 h-8 text-teal-600" />
+        </div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Stay Connected</h1>
         <p className="text-gray-600">
           Provide your contact details and social media links for better connectivity.
         </p>

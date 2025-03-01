@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
-import { FiUpload, FiAlertCircle } from 'react-icons/fi';
+import { FiUpload } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { convertFileToBase64, base64ToFile } from '../../../utils/imageUtils';
+import { FiStar } from 'react-icons/fi';
 
 // Constants
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
@@ -339,6 +340,9 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
     return (
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiStar className="w-8 h-8 text-teal-600" />
+        </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Customer Testimonials</h1>
                 <p className="text-gray-600">Share five testimonials from your satisfied customers</p>
                 <p className="text-sm text-red-500 mt-2">* All fields are required</p>

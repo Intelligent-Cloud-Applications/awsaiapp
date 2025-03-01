@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
 import { FiImage, FiAlertCircle } from 'react-icons/fi';
 import PropTypes from 'prop-types';
+import { FiHome } from 'react-icons/fi';
 import { convertFileToBase64 } from '../../../utils/imageUtils';
 
 // Constants
@@ -225,6 +226,9 @@ const Home = ({
     return (
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiHome className="w-8 h-8 text-teal-600" />
+        </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Journey Starts Here</h1>
                 <p className="text-gray-600">
                     Create engaging content for your website's homepage.
