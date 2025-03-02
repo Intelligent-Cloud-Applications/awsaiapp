@@ -6,8 +6,8 @@ import { convertFileToBase64, base64ToFile } from '../../../utils/imageUtils';
 import { FiStar } from 'react-icons/fi';
 
 // Constants
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
-const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+// const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+// const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const MAX_NAME_LENGTH = 50;
 const MAX_TEXT_LENGTH = 500;
 
@@ -163,9 +163,9 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
         };
 
         loadSavedTestimonials();
-    }, []); // Run only on mount
+    }, [setTestimonials]); // Add setTestimonials to dependency array
 
-    const validateTestimonial = (testimonial) => {
+    const validateTestimonial = useCallback((testimonial) => {
         const errors = {};
         
         if (!testimonial.customerName?.trim()) {
@@ -185,25 +185,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
         }
 
         return errors;
-    };
-
-    const validateAllTestimonials = () => {
-        let allErrors = {};
-        let isValid = true;
-
-        testimonials.forEach((testimonial, index) => {
-            const testimonialErrors = validateTestimonial(testimonial);
-            if (Object.keys(testimonialErrors).length > 0) {
-                isValid = false;
-                Object.keys(testimonialErrors).forEach(key => {
-                    allErrors[`testimonial${index}${key}`] = testimonialErrors[key];
-                });
-            }
-        });
-
-        setErrors(allErrors);
-        return isValid;
-    };
+    }, []);
 
     const handleChange = useCallback((index, field, value) => {
         setTestimonials(prev => {
@@ -215,13 +197,27 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
             return updated;
         });
 
-        // Clear errors for this field
+        // Validate the changed testimonial
+        const testimonial = testimonials[index];
+        const testimonialErrors = validateTestimonial({
+            ...testimonial,
+            [field]: value
+        });
+
+        // Update errors
         setErrors(prev => {
             const newErrors = { ...prev };
-            delete newErrors[`testimonial${index}${field}`];
+            // Clear existing errors for this testimonial
+            Object.keys(newErrors)
+                .filter(key => key.startsWith(`testimonial${index}`))
+                .forEach(key => delete newErrors[key]);
+            // Add new errors if any
+            Object.entries(testimonialErrors).forEach(([key, value]) => {
+                newErrors[`testimonial${index}${key}`] = value;
+            });
             return newErrors;
         });
-    }, [setTestimonials]);
+    }, [setTestimonials, testimonials, validateTestimonial]);
 
     const handleImageChange = useCallback(async (index, file) => {
         if (!file) return;

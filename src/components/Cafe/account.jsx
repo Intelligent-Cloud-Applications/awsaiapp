@@ -1,8 +1,8 @@
 import { API } from 'aws-amplify';
 
 // Add regex constants
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
+// const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
 
 /**
  * Creates admin accounts for the institution
