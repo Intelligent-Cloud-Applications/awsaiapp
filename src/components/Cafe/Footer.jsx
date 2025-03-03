@@ -111,6 +111,7 @@ function Footer({
                 localStorage.removeItem('cafeFormLogo');
                 localStorage.removeItem('heroImage');
                 localStorage.removeItem('testimonialImages');
+                localStorage.removeItem('cafeFormMissionBg');
                 
                 Navigate("/dashboard");
                 window.open(url, '_blank');
