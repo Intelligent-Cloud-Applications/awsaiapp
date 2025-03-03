@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCoffee, FiPhone, FiHome, FiStar } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
@@ -16,13 +15,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import { convertFileToBase64 } from '../utils/imageUtils';
 import { compressImage } from '../utils/imageUtils';
 
-// Define sections with icons
-const FORM_SECTIONS = [
-    { id: 'company', title: 'Company', description: 'Tell us about your company', icon: FiCoffee },
-    { id: 'contact', title: 'Contact', description: 'How can customers reach you?', icon: FiPhone },
-    { id: 'home', title: 'Home', description: 'Design your homepage', icon: FiHome },
-    { id: 'testimonials', title: 'Testimonials', description: 'Share customer experiences', icon: FiStar }
-];
+
 
 const Cafe = () => {
     const navigate = useNavigate();
@@ -957,7 +950,6 @@ const Cafe = () => {
                 institutionId={institutionid}
                 openModal={() => setShowModal(true)}
                 testimonials={testimonials}
-                sections={FORM_SECTIONS}
                 contactInfo={contactInfo}
             />
 
