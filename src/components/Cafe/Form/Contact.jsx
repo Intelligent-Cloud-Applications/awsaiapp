@@ -414,11 +414,214 @@ const Contact = ({
                 />
               </div>
             ))}
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiPhone className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Stay Connected</h1>
+        <p className="text-gray-600">
+          Provide your contact details and social media links for better connectivity.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* Name Fields */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Personal Information
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* First Name */}
+            <div>
+              <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="firstName"
+                type="text"
+                value={contactInfo?.firstName || ''}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                placeholder="Enter your first name"
+                required
+                className={`w-full ${errors.firstName ? 'border-red-500' : ''}`}
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="lastName"
+                type="text"
+                value={contactInfo?.lastName || ''}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                placeholder="Enter your last name"
+                required
+                className={`w-full ${errors.lastName ? 'border-red-500' : ''}`}
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Basic Contact Details */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Basic Contact Details
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Email */}
+            <div>
+              <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="email"
+                type="email"
+                value={contactInfo.emailId || ''}
+                onChange={(e) => handleInputChange('emailId', e.target.value)}
+                placeholder="Enter your email"
+                required
+                className={`w-full ${errors.emailId ? 'border-red-500' : ''}`}
+              />
+              {errors.emailId && (
+                <p className="mt-1 text-sm text-red-500">{errors.emailId}</p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <Label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="phone"
+                type="tel"
+                value={contactInfo.Query_PhoneNumber || ''}
+                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                placeholder="Enter your phone number"
+                required
+                className={`w-full ${errors.phoneNumber ? 'border-red-500' : ''}`}
+              />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Address Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Address
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Address */}
+            <div>
+              <Label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Address <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="address"
+                type="text"
+                value={contactInfo.Query_Address || ''}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder="Enter your business address"
+                required
+                className={`w-full ${errors.address ? 'border-red-500' : ''}`}
+              />
+              {errors.address && (
+                <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Location Map URL */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Location Map URL
+          </h2>
+          
+          <div className="grid grid-cols-1 gap-6">
+            <div>
+              <Label htmlFor="locationMap" className="block text-sm font-medium text-gray-700 mb-1">
+                Location Map URL <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="locationMap"
+                type="url"
+                value={contactInfo.visitUs?.locatemap || ''}
+                onChange={(e) => handleInputChange('locationMap', e.target.value)}
+                placeholder="Enter Google Maps or location URL"
+                required
+                className={`w-full ${errors.locationMap ? 'border-red-500' : ''}`}
+              />
+              {errors.locationMap && (
+                <p className="mt-1 text-sm text-red-500">{errors.locationMap}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Social Media Links */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Social Media Links
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { platform: 'instagram', label: 'Instagram' },
+              { platform: 'facebook', label: 'Facebook' },
+              { platform: 'youtube', label: 'YouTube' }
+            ].map(({ platform, label }) => (
+              <div key={platform}>
+                <Label htmlFor={platform} className="block text-sm font-medium text-gray-700 mb-1">
+                  {label}
+                </Label>
+                <TextInput
+                  id={platform}
+                  type="url"
+                  value={contactInfo.socialMediaLinks?.[platform] || ''}
+                  onChange={(e) => handleInputChange(`social_${platform}`, e.target.value)}
+                  placeholder={`${label} profile URL`}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
+};
+
+Contact.propTypes = {
+  contactInfo: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    userName: PropTypes.string,
+    emailId: PropTypes.string,
+    Query_PhoneNumber: PropTypes.string,
+    Query_Address: PropTypes.string,
+    socialMediaLinks: PropTypes.object,
+    visitUs: PropTypes.shape({
+      locatemap: PropTypes.string
+    })
+  }).isRequired,
+  setContactInfo: PropTypes.func.isRequired
+};
 };
 
 Contact.propTypes = {
