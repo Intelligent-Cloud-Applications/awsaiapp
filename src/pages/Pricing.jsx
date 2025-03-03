@@ -4,121 +4,18 @@ import "./Pricing.css";
 import Footer from "../components/Home/Footer";
 import { Box } from "@mui/system";
 import Context from "../context/Context";
-// import { useNavigate } from "react-router-dom";
-// import { API } from "aws-amplify";
+import { useLocation } from "react-router-dom";
 
 const Pricing = () => {
-  // const Navigate = useNavigate();
-  // const Ctx = useContext(Context);
-  // const Ctx = useContext(Context);
   const Ctx = useContext(Context);
-  const SecondaryColor = "0000";
-  const PrimaryColor = "30afbc";
-  // const Navigate = useNavigate();
-  // const Ctx = useContext(Context);
-  // const Ctx = useContext(Context);
+  const location = useLocation();
 
-  // const UtilCtx = useContext(Context).util;
-
-  // const handleSubscribe = async (productId) => {
-  //   UtilCtx.setLoader(true);
-  //   let response;
-  //   try {
-  //     console.log("before");
-  //     response = await API.put("clients", "/user/billing/subscription", {
-  //       body: {
-  //         productId: productId,
-  //       },
-  //     });
-  //     if (response.error) {
-  //       if (response.message === "Subscription already active") {
-  //         UtilCtx.setLoader(false);
-  //         alert("Subscription Already Active. Please Contact Support");
-  //         return;
-  //       }
-  //     }
-  //     console.log(response);
-  //   } catch (e) {
-  //     UtilCtx.setLoader(false);
-  //   }
-  //   console.log(response.paymentId);
-  //   console.log("started");
-  //   try {
-  //     const options = {
-  //       key: "rzp_test_1nTmB013tmcWZS",
-  //       subscription_id: response.paymentId,
-  //       name: "AWSAIAPP",
-  //       description: response.subscriptionType,
-  //       handler: function (r) {
-  //         console.log(r);
-  //         const verify = async () => {
-  //           console.log("EARLY");
-  //           UtilCtx.setLoader(true);
-  //           try {
-  //             const res = await API.put(
-  //               "clients",
-  //               "/user/billing/subscription/verify",
-  //               {
-  //                 body: {
-  //                   subscriptionId: response.paymentId,
-  //                 },
-  //               }
-  //             );
-  //             const tempUserdata = await API.get(
-  //               "clients",
-  //               "/self/read-self/awsaiapp"
-  //             );
-  //             Ctx.setUserData(tempUserdata);
-  //             console.log(res);
-  //             if (res.signatureIsValid) {
-  //               console.log(res.signatureIsValid);
-  //               Navigate("/dashboard", { state: { isReload: true } });
-  //             } else {
-  //               alert(
-  //                 "Transaction Failed If your Amount was Deducted then Contact us"
-  //               );
-  //             }
-  //             // alert(res);
-  //             UtilCtx.setLoader(false);
-  //           } catch (e) {
-  //             console.log(e);
-  //             UtilCtx.setLoader(false);
-  //           }
-  //         };
-  //         verify();
-  //       },
-  //       prefill: {
-  //         name: Ctx.userName,
-  //         email: Ctx.emailId,
-  //         contact: Ctx.phoneNumber,
-  //       },
-  //       theme: {
-  //         color: "#00b4bb",
-  //       },
-  //     };
-  //     console.log("started 2");
-  //     const rzp1 = new window.Razorpay(options);
-  //     console.log("started 3");
-  //     rzp1.on("payment.failed", function (response) {
-  //       // alert(response.error.code);
-  //       // alert(response.error.description);
-  //       // alert(response.error.source);
-  //       // alert(response.error.step);
-  //       // alert(response.error.reason);
-  //       // alert(response.error.metadata.order_id);
-  //       // alert(response.error.metadata.payment_id);
-  //       console.log(response);
-  //       UtilCtx.setLoader(false);
-  //     });
-  //     const fields = rzp1.open();
-  //     console.log(fields);
-  //     UtilCtx.setLoader(false);
-  //   } catch (e) {
-  //     console.log(e.message);
-  //     console.log(e);
-  //     UtilCtx.setLoader(false);
-  //   }
-  // };
+  // Get institutionId and cognitoId from navigation state or URL params
+  const { search } = location;
+  const params = new URLSearchParams(search);
+  const institutionIdFromUrl = params.get('institutionId');
+  const { institutionId: institutionIdFromState, cognitoId } = location.state || {};
+  const institutionId = institutionIdFromUrl || institutionIdFromState;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -154,8 +51,16 @@ const Pricing = () => {
               </ul>
               <button
                 onClick={() => {
+                  // Use the cognitoId from state if available, otherwise from context
+                  const userCognitoId = cognitoId || Ctx.userData.cognitoId;
+                  
+                  // Construct the URL with path parameters
+                  const url = process.env.REACT_APP_STAGE === "PROD"
+                    ? `https://payment.happyprancer.com/awsaiapp/${product.productId}/${userCognitoId}/${institutionId || ''}`
+                    : `https://betapayment.happyprancer.com/awsaiapp/${product.productId}/${userCognitoId}/${institutionId || ''}`;
+
                   window.open(
-                    `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}`,
+                    url,
                     "_blank",
                     "noopener,noreferrer"
                   );

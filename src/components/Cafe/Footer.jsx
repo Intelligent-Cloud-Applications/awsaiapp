@@ -34,13 +34,9 @@ function Footer({
         try {
             UserCtx.util.setLoader(true);
             
-            // Save current data
             saveData();
-
-            // Attempt to move to next section
             const success = await nextSection();
 
-            // If API call was successful, proceed to next section
             if (success) {
                 scrollToTop();
             }
@@ -54,10 +50,8 @@ function Footer({
 
     const handlePrevClick = () => {
         if (currentSection === 0) {
-            // If we're on the first section, just open the modal
             openModal();
         } else {
-            // For other sections, show the modal first
             openModal();
         }
     };
@@ -85,7 +79,6 @@ function Footer({
             const success = await nextSection();
 
             if (success && currentSection === sections.length - 1) {
-                // Create admin accounts after testimonial submission
                 await createAdminAccounts({
                     institution: institutionId,
                     country: 'default',
@@ -102,10 +95,6 @@ function Footer({
                     }
                 });
 
-                const SecondaryColor = "#0000";
-                const PrimaryColor = "#30afbc";
-                const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
-                
                 // Clear form data
                 localStorage.removeItem('cafeFormData');
                 localStorage.removeItem('cafeFormLogo');
@@ -113,8 +102,13 @@ function Footer({
                 localStorage.removeItem('testimonialImages');
                 localStorage.removeItem('cafeFormMissionBg');
                 
-                Navigate("/dashboard");
-                window.open(url, '_blank');
+                // Navigate to pricing with institutionId and cognitoId in state
+                Navigate(`/pricing?institutionId=${encodeURIComponent(institutionId)}`, {
+                    state: {
+                        institutionId: institutionId,
+                        cognitoId: UserCtx.userData.cognitoId
+                    }
+                });
             } else {
                 scrollToTop();
             }
@@ -197,7 +191,7 @@ Footer.propTypes = {
     institutionId: PropTypes.string,
     openModal: PropTypes.func,
     testimonials: PropTypes.array,
-    
+    sections: PropTypes.array.isRequired,
     contactInfo: PropTypes.object.isRequired
 };
 

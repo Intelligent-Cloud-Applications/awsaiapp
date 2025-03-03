@@ -4,18 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
 
 function Footer({ currentSection, nextSection, prevSection, saveData, showModal, institutionId }) {
-  // eslint-disable-next-line
-  // const { userData, setUserData } = useContext(Context)
   const UserCtx = useContext(Context);
   const Navigate = useNavigate();
   const sections = [
     'COMPANY INFO',
     'CONTACT INFO',
     'HOME',
-    // 'TESTIMONIALS',
-    // 'SUBSCRIPTION',
-    // 'FAQS',
-    // 'INSTRUCTORS',
     'ABOUT',
     'TESTIMONIAL'
   ];
@@ -27,28 +21,23 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
     nextSection();
   };
 
-  // eslint-disable-next-line
   const handlePrevClick = () => {
-    // Trigger the modal
     showModal();
   };
 
   const handleBackClick = () => {
     Navigate("/dashboard");
   };
+
   const submitSections = async () => {
     await nextSection();
-    // setUserData(userData => ({ ...userData, web: true, isVerified: false }));
-    // const baseUrl =
-    //   process.env.REACT_APP_STAGE === 'PROD'
-    //     ? 'http://happyprancer.com'
-    //     : 'http://beta.happyprancer.com';
-    const SecondaryColor = "0000";
-    const PrimaryColor = "30afbc"
-    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${encodeURIComponent(PrimaryColor)}&secondary=${encodeURIComponent(SecondaryColor)}&institutionId=${encodeURIComponent(institutionId)}`;
-    Navigate("/dashboard");
-    window.open(url, '_blank');
-    // window.location.href = url;
+    
+    Navigate(`/pricing?institutionId=${encodeURIComponent(institutionId)}`, {
+      state: {
+        institutionId: institutionId,
+        cognitoId: UserCtx.userData.cognitoId
+      }
+    });
   }
 
   return (
@@ -77,8 +66,7 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
             {sections.map((section, index) => (
               <div
                 key={index}
-                className={`text-xs relative ${index < currentSection ? 'text-black' : 'text-gray-400'
-                  }`}
+                className={`text-xs relative ${index < currentSection ? 'text-black' : 'text-gray-400'}`}
                 style={{ marginTop: '1.5rem' }}
               >
                 {section}
