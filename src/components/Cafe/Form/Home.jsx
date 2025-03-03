@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
-import { FiImage, FiAlertCircle } from 'react-icons/fi';
+import { FiImage, FiAlertCircle, FiHome } from 'react-icons/fi';
 import PropTypes from 'prop-types';
-import { FiHome } from 'react-icons/fi';
-import { convertFileToBase64 } from '../../../utils/imageUtils';
 
 // Constants
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const MAX_TAGLINE_LENGTH = 100;
-
-// Styles
-const uploadAreaClasses = "flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:border-[#30afbc] hover:bg-gray-50/80 transition-all duration-200";
-const imagePreviewClasses = "relative group aspect-square rounded-lg overflow-hidden bg-gray-50";
-const imageHoverClasses = "absolute inset-0 bg-[#30afbc]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center";
 
 const Home = ({
     TagLine,
@@ -29,7 +20,9 @@ const Home = ({
     selectedMedia,
     setSelectedMedia,
     OurMissionBg,
-    setOurMissionBg
+    setOurMissionBg,
+    selectedMissionBg,
+    setSelectedMissionBg
 }) => {
     const [errors, setErrors] = useState({});
     const [OurMission, setOurMission] = useState({
@@ -37,45 +30,9 @@ const Home = ({
         description: '',
         points: ['', '', '']
     });
-    const [selectedMissionBg, setSelectedMissionBg] = useState(null);
 
-    // Load initial data from localStorage
-    useEffect(() => {
-        const savedData = localStorage.getItem('cafeFormData');
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            setTagLine(parsedData.TagLine || '');
-            setTagLine1(parsedData.TagLine1 || '');
-            setTagLine2(parsedData.TagLine2 || '');
-            setTagLine3(parsedData.TagLine3 || '');
-            if (parsedData.heroImageData) {
-                setSelectedMedia(parsedData.heroImageData);
-            }
-            if (parsedData.OurMission) {
-                setOurMission(parsedData.OurMission);
-            }
-            if (parsedData.OurMissionBg) {
-                setSelectedMissionBg(parsedData.OurMissionBg);
-            }
-        }
-    }, []);
-
-    // Save data to localStorage whenever it changes
-    useEffect(() => {
-        const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-        localStorage.setItem('cafeFormData', JSON.stringify({
-            ...currentData,
-            TagLine,
-            TagLine1,
-            TagLine2,
-            TagLine3,
-            heroImageData: selectedMedia,
-            OurMission,
-            OurMissionBg: selectedMissionBg
-        }));
-    }, [TagLine, TagLine1, TagLine2, TagLine3, selectedMedia, OurMission, selectedMissionBg]);
-
-    const validateTagline = (value, field) => {
+    // Define validateTagline first since it has no dependencies
+    const validateTagline = useCallback((value, field) => {
         if (!value || value.trim() === '') {
             return `${field} is required`;
         }
@@ -83,15 +40,16 @@ const Home = ({
             return `${field} must be less than ${MAX_TAGLINE_LENGTH} characters`;
         }
         return '';
-    };
+    }, []);
 
-    const handleTaglineChange = (value, setter, field) => {
+    // Now handleTaglineChange can use validateTagline
+    const handleTaglineChange = useCallback((value, setter, field) => {
         setter(value);
         const error = validateTagline(value, field);
         setErrors(prev => ({ ...prev, [field.toLowerCase()]: error }));
-    };
+    }, [validateTagline]);
 
-    const compressImage = (file) => {
+    const compressImage = useCallback((file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -104,14 +62,12 @@ const Home = ({
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
 
-                    // Set maximum dimensions
                     const MAX_WIDTH = 800;
                     const MAX_HEIGHT = 800;
 
                     let width = img.width;
                     let height = img.height;
 
-                    // Calculate new dimensions
                     if (width > height) {
                         if (width > MAX_WIDTH) {
                             height = Math.round((height * MAX_WIDTH) / width);
@@ -137,26 +93,58 @@ const Home = ({
 
             reader.onerror = reject;
         });
-    };
+    }, []);
 
-    const handleHeroImageChange = async (e) => {
+    // Load initial data from localStorage
+    useEffect(() => {
+        const savedData = localStorage.getItem('cafeFormData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            setTagLine(parsedData.TagLine || '');
+            setTagLine1(parsedData.TagLine1 || '');
+            setTagLine2(parsedData.TagLine2 || '');
+            setTagLine3(parsedData.TagLine3 || '');
+            if (parsedData.heroImageData) {
+                setSelectedMedia(parsedData.heroImageData);
+            }
+            if (parsedData.OurMission) {
+                setOurMission(parsedData.OurMission);
+            }
+            if (parsedData.OurMissionBg) {
+                setSelectedMissionBg(parsedData.OurMissionBg);
+            }
+        }
+    }, [setTagLine, setTagLine1, setTagLine2, setTagLine3, setSelectedMedia, setOurMission, setSelectedMissionBg]);
+
+    // Save data to localStorage whenever it changes
+    useEffect(() => {
+        const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+        localStorage.setItem('cafeFormData', JSON.stringify({
+            ...currentData,
+            TagLine,
+            TagLine1,
+            TagLine2,
+            TagLine3,
+            heroImageData: selectedMedia,
+            OurMission,
+            OurMissionBg: selectedMissionBg
+        }));
+    }, [TagLine, TagLine1, TagLine2, TagLine3, selectedMedia, OurMission, selectedMissionBg]);
+
+    const handleHeroImageChange = useCallback(async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         try {
-            // Show loading state
             setSelectedMedia('loading');
 
-            // Validate file
             if (!file.type.startsWith('image/')) {
                 throw new Error('Please upload an image file');
             }
 
-            // Compress the image
             const compressedBase64 = await compressImage(file);
             console.log('Image compressed successfully');
 
-            // Save to localStorage
             const storageData = {
                 heroImage: compressedBase64,
                 fileName: file.name,
@@ -170,9 +158,8 @@ const Home = ({
                     heroImageData: storageData
                 }));
 
-                // Update states
                 setSelectedMedia(compressedBase64);
-                setHeroImage(file); // Keep original for S3
+                setHeroImage(file);
                 setErrors(prev => ({ ...prev, heroImage: null }));
             } catch (storageError) {
                 console.error('Failed to save to localStorage:', storageError);
@@ -187,22 +174,19 @@ const Home = ({
             }));
             setSelectedMedia(null);
         }
-    };
+    }, [compressImage, setHeroImage, setSelectedMedia]);
 
-    const handleMissionBgChange = async (e) => {
+    const handleMissionBgChange = useCallback(async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         try {
-            // Show loading state
             setSelectedMissionBg('loading');
 
-            // Validate file
             if (!file.type.startsWith('image/')) {
                 throw new Error('Please upload an image file');
             }
 
-            // Compress the image
             const compressedBase64 = await compressImage(file);
             console.log('Mission background image compressed successfully');
 
@@ -223,9 +207,9 @@ const Home = ({
             }));
             setSelectedMissionBg(null);
         }
-    };
+    }, [compressImage, setOurMissionBg, setSelectedMissionBg]);
 
-    const renderHeroImagePreview = () => {
+    const renderHeroImagePreview = useCallback(() => {
         if (!selectedMedia) {
             return (
                 <div className="flex flex-col items-center justify-center space-y-2">
@@ -273,9 +257,9 @@ const Home = ({
                 </div>
             </div>
         );
-    };
+    }, [selectedMedia, errors.heroImage, setSelectedMedia]);
 
-    const renderMissionBgPreview = () => {
+    const renderMissionBgPreview = useCallback(() => {
         if (!selectedMissionBg) {
             return (
                 <div className="flex flex-col items-center justify-center space-y-2">
@@ -323,7 +307,7 @@ const Home = ({
                 </div>
             </div>
         );
-    };
+    }, [selectedMissionBg, errors.missionBg, setSelectedMissionBg]);
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -526,7 +510,9 @@ Home.propTypes = {
     selectedMedia: PropTypes.string,
     setSelectedMedia: PropTypes.func.isRequired,
     OurMissionBg: PropTypes.object,
-    setOurMissionBg: PropTypes.func.isRequired
+    setOurMissionBg: PropTypes.func.isRequired,
+    selectedMissionBg: PropTypes.string,
+    setSelectedMissionBg: PropTypes.func.isRequired
 };
 
 export default Home;
