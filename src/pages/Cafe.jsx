@@ -13,7 +13,7 @@ import PrevSectionDraftHandler from '../components/Cafe/Form/PrevSectionDraftHan
 import Context from "../context/Context";
 import "./Template.css";
 import ErrorBoundary from '../components/ErrorBoundary';
-import { convertFileToBase64, base64ToFile } from '../utils/imageUtils';
+import { convertFileToBase64 } from '../utils/imageUtils';
 import { compressImage } from '../utils/imageUtils';
 
 // Define sections with icons
@@ -220,110 +220,32 @@ const Cafe = () => {
                                 logoUrl = await Storage.get(uploadResponse.key);
                                 logoUrl = logoUrl.split("?")[0];
 
-                                // Save logo to localStorage for persistence
+                                // Save both logo and logoUrl to localStorage
                                 const logoBase64 = await convertFileToBase64(compressedLogo);
                                 localStorage.setItem('cafeFormLogo', JSON.stringify({
                                     logo: logoBase64,
+                                    logoUrl: logoUrl, // Save the URL here
                                     fileName: selectedLogo.name
                                 }));
                             } catch (uploadError) {
                                 console.error("Error processing logo:", uploadError);
                                 throw new Error('Failed to process logo. Please try again.');
                             }
-                        } else if (logo) {
-                            logoUrl = logo;
                         }
 
-                        // Start with existing data from baseData (which includes localStorage data)
-                        const existingData = {
-                            index: baseData?.index || "0",
-                            socialMediaLinks: baseData?.socialMediaLinks || {
-                                instagram: '',
-                                facebook: '',
-                                youtube: ''
-                            },
-                            OurMissionBg: baseData?.OurMissionBg || '',
-                            Query_PhoneNumber: baseData?.Query_PhoneNumber || '',
-                            institutionid: baseData?.institutionid || institutionid.trim(),
-                            emailId: baseData?.emailId || '',
-                            isFormFilled: baseData?.isFormFilled || false,
-                            LightestPrimaryColor: baseData?.LightestPrimaryColor || LightestPrimaryColor || "#f3fbfc",
-                            createdBy: baseData?.createdBy || userData.cognitoId,
-                            qrURL: baseData?.qrURL || '',
-                            date: baseData?.date || Date.now(),
-                            OurMission: baseData?.OurMission || '',
-                            institutionType: baseData?.institutionType || "cafe",
-                            visitUs: baseData?.visitUs || {
-                                locatemap: ''
-                            },
-                            LightPrimaryColor: baseData?.LightPrimaryColor || LightPrimaryColor || "#e6f7f9",
-                            PrivacyPolicy: baseData?.PrivacyPolicy || [],
-                            SecondaryColor: baseData?.SecondaryColor || SecondaryColor || "#2b9ea9",
-                            companyName: baseData?.companyName || companyName.trim(),
-                            logoUrl: baseData?.logoUrl || '',
-                            tagLine1: baseData?.tagLine1 || '',
-                            userName: baseData?.userName || '',
-                            tagLine2: baseData?.tagLine2 || '',
-                            usefulLinks: baseData?.usefulLinks || [],
-                            PrimaryColor: baseData?.PrimaryColor || PrimaryColor || "#30afbc",
-                            heroImage: baseData?.heroImage || '',
-                            Query_Address: baseData?.Query_Address || '',
-                            productTagline: baseData?.productTagline || '',
-                            testimonials: baseData?.testimonials || [
-                                {
-                                    rating: 5,
-                                    imageBase64: "",
-                                    text: "",
-                                    imgSrc: "",
-                                    customerName: ""
-                                },
-                                {
-                                    rating: 5,
-                                    imageBase64: "",
-                                    text: "",
-                                    imgSrc: "",
-                                    customerName: ""
-                                },
-                                {
-                                    rating: 5,
-                                    imageBase64: "",
-                                    text: "",
-                                    imgSrc: "",
-                                    customerName: ""
-                                }
-                            ]
-                        };
-
-                        // Update with current changes
                         const payload = {
-                            index: existingData.index,
-                            socialMediaLinks: existingData.socialMediaLinks,
-                            OurMissionBg: existingData.OurMissionBg,
-                            Query_PhoneNumber: existingData.Query_PhoneNumber,
+                            ...baseData,
                             institutionid: institutionid.trim(),
-                            emailId: existingData.emailId,
-                            isFormFilled: false,
-                            LightestPrimaryColor: LightestPrimaryColor || existingData.LightestPrimaryColor,
-                            createdBy: userData.cognitoId,
-                            qrURL: existingData.qrURL,
-                            date: Date.now(),
-                            OurMission: existingData.OurMission,
-                            institutionType: "cafe",
-                            visitUs: existingData.visitUs,
-                            LightPrimaryColor: LightPrimaryColor || existingData.LightPrimaryColor,
-                            PrivacyPolicy: existingData.PrivacyPolicy,
-                            SecondaryColor: SecondaryColor || existingData.SecondaryColor,
                             companyName: companyName.trim(),
-                            logoUrl: logoUrl || existingData.logoUrl,
-                            tagLine1: existingData.tagLine1,
-                            userName: existingData.userName,
-                            tagLine2: existingData.tagLine2,
-                            usefulLinks: existingData.usefulLinks,
-                            PrimaryColor: PrimaryColor || existingData.PrimaryColor,
-                            heroImage: existingData.heroImage,
-                            Query_Address: existingData.Query_Address,
-                            productTagline: existingData.productTagline,
-                            testimonials: existingData.testimonials
+                            logoUrl: logoUrl || baseData.logoUrl || '',
+                            logo: logo || '',
+                            PrimaryColor: PrimaryColor || baseData.PrimaryColor || "#30afbc",
+                            SecondaryColor: SecondaryColor || baseData.SecondaryColor || "#2b9ea9",
+                            LightPrimaryColor: LightPrimaryColor || baseData.LightPrimaryColor || "#e6f7f9",
+                            LightestPrimaryColor: LightestPrimaryColor || baseData.LightestPrimaryColor || "#f3fbfc",
+                            createdBy: userData.cognitoId,
+                            isFormFilled: false,
+                            lastUpdated: Date.now()
                         };
 
                         // Save to API
@@ -338,7 +260,8 @@ const Cafe = () => {
                         // Update localStorage with merged data
                         localStorage.setItem('cafeFormData', JSON.stringify({
                             ...localStorageData,
-                            ...payload
+                            ...payload,
+                            logoUrl: logoUrl || baseData.logoUrl || '' // Ensure logoUrl is saved
                         }));
 
                     } catch (error) {
@@ -358,6 +281,12 @@ const Cafe = () => {
                     try {
                         // Get existing data from localStorage
                         const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+                        const logoData = JSON.parse(localStorage.getItem('cafeFormLogo') || '{}');
+                        const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+
+                        // Get the correct URLs
+                        const currentLogoUrl = logoData.logoUrl || existingData.logoUrl || baseData.logoUrl || '';
+                        const currentHeroImageUrl = heroImageData.heroImageUrl || existingData.heroImage || baseData.heroImage || '';
 
                         // Prepare contact data
                         const contactData = {
@@ -376,7 +305,12 @@ const Cafe = () => {
                             },
                             visitUs: {
                                 locatemap: contactInfo.visitUs?.locatemap || ''
-                            }
+                            },
+                            logoUrl: currentLogoUrl,
+                            logo: logoData.logo || existingData.logo || '',
+                            heroImage: currentHeroImageUrl,
+                            heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
+                            lastUpdated: Date.now()
                         };
 
                         // Make API call
@@ -389,7 +323,11 @@ const Cafe = () => {
                         }
 
                         // Save to localStorage
-                        localStorage.setItem('cafeFormData', JSON.stringify(contactData));
+                        localStorage.setItem('cafeFormData', JSON.stringify({
+                            ...contactData,
+                            logoUrl: currentLogoUrl,
+                            heroImage: currentHeroImageUrl
+                        }));
                         success = true;
 
                     } catch (error) {
@@ -409,16 +347,18 @@ const Cafe = () => {
                     }
 
                     try {
+                        // Get logo and hero data from storage
+                        const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+                        const logoData = JSON.parse(localStorage.getItem('cafeFormLogo') || '{}');
+                        const currentLogoUrl = logoData.logoUrl || existingData.logoUrl || baseData.logoUrl || '';
+
+                        // Process hero image if exists
                         let heroImageUrl = null;
+                        let heroImageBase64 = null;
                         if (heroImage && heroImage instanceof File) {
                             try {
-                                // Compress the hero image before uploading
                                 const compressedHeroImage = await compressImage(heroImage);
-                                
-                                // Generate a unique file name for the hero image
                                 const fileName = `${institutionid}/images/hero/hero_${Date.now()}.${heroImage.name.split('.').pop()}`;
-                                
-                                // Upload the hero image to AWS S3
                                 const uploadResponse = await Storage.put(fileName, compressedHeroImage, {
                                     contentType: compressedHeroImage.type,
                                     metadata: {
@@ -426,17 +366,26 @@ const Cafe = () => {
                                         institutionid: institutionid
                                     }
                                 });
-                                
-                                // Get the URL of the uploaded hero image
                                 heroImageUrl = await Storage.get(uploadResponse.key);
                                 heroImageUrl = heroImageUrl.split("?")[0];
+
+                                // Save hero image data to localStorage
+                                heroImageBase64 = await convertFileToBase64(compressedHeroImage);
+                                localStorage.setItem('cafeFormHeroImage', JSON.stringify({
+                                    heroImage: heroImageBase64,
+                                    heroImageUrl: heroImageUrl,
+                                    fileName: heroImage.name
+                                }));
                             } catch (uploadError) {
                                 console.error("Error uploading hero image:", uploadError);
                                 throw new Error('Failed to upload hero image. Please try again.');
                             }
                         }
 
-                        // Prepare home section data
+                        // Get hero image data from storage if not uploading new one
+                        const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+                        const currentHeroImageUrl = heroImageUrl || heroImageData.heroImageUrl || existingData.heroImage || '';
+
                         const homeData = {
                             ...baseData,
                             institutionid,
@@ -444,19 +393,17 @@ const Cafe = () => {
                             TagLine1: TagLine1.trim(),
                             TagLine2: TagLine2.trim(),
                             TagLine3: TagLine3?.trim() || '',
-                            heroImage: heroImageUrl, // Use the uploaded image URL
+                            heroImage: currentHeroImageUrl,
+                            heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
+                            logoUrl: currentLogoUrl,
+                            logo: logoData.logo || existingData.logo || '',
                             selectedMedia: selectedMedia || null,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now(),
-                            section: 'home'
+                            lastUpdated: Date.now()
                         };
 
-                        // Save to API
                         const response = await API.put("clients", '/user/cafewebDevForm', {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
                             body: homeData
                         });
 
@@ -464,18 +411,13 @@ const Cafe = () => {
                             throw new Error('Failed to save home section data');
                         }
 
-                        // Update localStorage with the latest data
-                        const updatedLocalStorage = {
+                        localStorage.setItem('cafeFormData', JSON.stringify({
                             ...localStorageData,
-                            TagLine,
-                            TagLine1,
-                            TagLine2,
-                            TagLine3,
-                            heroImage: heroImageUrl, // Save the hero image URL to localStorage
-                            selectedMedia,
-                            lastUpdated: Date.now()
-                        };
-                        localStorage.setItem('cafeFormData', JSON.stringify(updatedLocalStorage));
+                            ...homeData,
+                            heroImage: currentHeroImageUrl,
+                            heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
+                            logoUrl: currentLogoUrl
+                        }));
 
                     } catch (error) {
                         console.error("Error in home section:", error);
@@ -515,7 +457,6 @@ const Cafe = () => {
                         const processedTestimonials = await Promise.all(
                             testimonials.map(async (t, index) => {
                                 let imageUrl = t.imgSrc;
-
                                 if (t.uploadedFile) {
                                     const fileName = `${institutionid}/images/testimonials/testimonial_${index + 1}_${Date.now()}.${t.uploadedFile.name.split('.').pop()}`;
                                     const response = await Storage.put(fileName, t.uploadedFile, {
@@ -524,7 +465,6 @@ const Cafe = () => {
                                     imageUrl = await Storage.get(response.key);
                                     imageUrl = imageUrl.split("?")[0];
                                 }
-
                                 return {
                                     image: imageUrl,
                                     customerName: t.customerName.trim(),
@@ -534,14 +474,27 @@ const Cafe = () => {
                             })
                         );
 
-                        // Merge with base data
+                        // Get logo and hero data
+                        const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+                        const logoData = JSON.parse(localStorage.getItem('cafeFormLogo') || '{}');
+                        const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+
+                        // Get the correct URLs
+                        const currentLogoUrl = logoData.logoUrl || existingData.logoUrl || baseData.logoUrl || '';
+                        const currentHeroImageUrl = heroImageData.heroImageUrl || existingData.heroImage || baseData.heroImage || '';
+
                         const testimonialData = {
                             ...baseData,
                             institutionid,
                             testimonials: processedTestimonials,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now()
+                            lastUpdated: Date.now(),
+                            logoUrl: currentLogoUrl,
+                            logo: logoData.logo || existingData.logo || '',
+                            heroImage: currentHeroImageUrl,
+                            heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
+                            section: 'home'
                         };
 
                         const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
@@ -551,6 +504,13 @@ const Cafe = () => {
                         if (!apiResponse) {
                             throw new Error('Failed to submit testimonials');
                         }
+
+                        localStorage.setItem('cafeFormData', JSON.stringify({
+                            ...localStorageData,
+                            ...testimonialData,
+                            logoUrl: currentLogoUrl,
+                            heroImage: currentHeroImageUrl
+                        }));
 
                         await saveData();
                         setCurrentSection(prev => prev + 1);
@@ -893,6 +853,7 @@ const Cafe = () => {
         // Clear all localStorage data
         localStorage.removeItem('cafeFormData');
         localStorage.removeItem('cafeFormLogo');
+        localStorage.removeItem('cafeFormHeroImage');
         localStorage.removeItem('heroImageData');
         localStorage.removeItem('testimonialImages');
 
