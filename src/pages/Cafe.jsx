@@ -563,7 +563,6 @@ const Cafe = () => {
             
             const dataToSave = {
                 ...existingData,
-                // Company info
                 institutionid,
                 companyName,
                 PrimaryColor,
@@ -650,9 +649,13 @@ const Cafe = () => {
                     `/user/cafe-form/delete-all/${institutionid}`
                 );
             }
-            
-            localStorage.removeItem('cafeFormDraft');
-            localStorage.removeItem('cafeFormData');
+
+                localStorage.removeItem('cafeFormData');
+                localStorage.removeItem('cafeFormLogo');
+                localStorage.removeItem('heroImage');
+                localStorage.removeItem('testimonialImages');
+                localStorage.removeItem('cafeFormMissionBg');
+
             setinstitutionid('');
             setCompanyName('');
             setLogo(null);
