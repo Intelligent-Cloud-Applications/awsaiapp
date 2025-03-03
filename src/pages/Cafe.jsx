@@ -95,6 +95,11 @@ const Cafe = () => {
     const [OurMissionBg, setOurMissionBg] = useState(null);
     const [selectedMissionBg, setSelectedMissionBg] = useState(null);
 
+    // Wrap setContactInfo in useCallback
+    const handleSetContactInfo = useCallback((newContactInfo) => {
+        setContactInfo(newContactInfo);
+    }, []); // No dependencies needed since setContactInfo from useState is stable
+
     // Testimonials state
     const [testimonials, setTestimonials] = useState([
         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
@@ -876,7 +881,7 @@ const Cafe = () => {
                     <ErrorBoundary>
                         <Contact
                             contactInfo={contactInfo}
-                            setContactInfo={setContactInfo}
+                            setContactInfo={handleSetContactInfo}
                         />
                     </ErrorBoundary>
                 );

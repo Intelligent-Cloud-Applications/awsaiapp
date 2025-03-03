@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Label, TextInput } from 'flowbite-react';
-import { FiPhone, FiMail, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiPhone } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
 // Constants
-const MAX_USEFUL_LINKS = 5;
 
 // Validation
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -91,10 +90,10 @@ const Contact = ({
     } catch (error) {
       console.error('Error loading contact data:', error);
     }
-  }, []); // Run only once on component mount
+  }, [setContactInfo]); // Add setContactInfo to dependency array
 
-  // Modified handleInputChange to properly update state and storage
-  const handleInputChange = (field, value) => {
+  // Memoize handleInputChange to prevent unnecessary re-renders
+  const handleInputChange = useCallback((field, value) => {
     const error = validateField(field, value);
     setErrors(prev => ({ ...prev, [field]: error }));
 
@@ -188,7 +187,7 @@ const Contact = ({
       
       return updated;
     });
-  };
+  }, [setContactInfo]); // Add setContactInfo to dependency array
 
   // Validation function for all fields
   const validateField = (field, value) => {
