@@ -27,9 +27,17 @@ const Home = ({
     heroImage,
     setHeroImage,
     selectedMedia,
-    setSelectedMedia
+    setSelectedMedia,
+    OurMissionBg,
+    setOurMissionBg
 }) => {
     const [errors, setErrors] = useState({});
+    const [OurMission, setOurMission] = useState({
+        title: '',
+        description: '',
+        points: ['', '', '']
+    });
+    const [selectedMissionBg, setSelectedMissionBg] = useState(null);
 
     // Load initial data from localStorage
     useEffect(() => {
@@ -43,6 +51,12 @@ const Home = ({
             if (parsedData.heroImageData) {
                 setSelectedMedia(parsedData.heroImageData);
             }
+            if (parsedData.OurMission) {
+                setOurMission(parsedData.OurMission);
+            }
+            if (parsedData.OurMissionBg) {
+                setSelectedMissionBg(parsedData.OurMissionBg);
+            }
         }
     }, []);
 
@@ -55,9 +69,11 @@ const Home = ({
             TagLine1,
             TagLine2,
             TagLine3,
-            heroImageData: selectedMedia
+            heroImageData: selectedMedia,
+            OurMission,
+            OurMissionBg: selectedMissionBg
         }));
-    }, [TagLine, TagLine1, TagLine2, TagLine3, selectedMedia]);
+    }, [TagLine, TagLine1, TagLine2, TagLine3, selectedMedia, OurMission, selectedMissionBg]);
 
     const validateTagline = (value, field) => {
         if (!value || value.trim() === '') {
@@ -173,6 +189,42 @@ const Home = ({
         }
     };
 
+    const handleMissionBgChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            // Show loading state
+            setSelectedMissionBg('loading');
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                throw new Error('Please upload an image file');
+            }
+
+            // Compress the image
+            const compressedBase64 = await compressImage(file);
+            console.log('Mission background image compressed successfully');
+
+            try {
+                setSelectedMissionBg(compressedBase64);
+                setOurMissionBg(file);
+                setErrors(prev => ({ ...prev, missionBg: null }));
+            } catch (storageError) {
+                console.error('Failed to save mission background to localStorage:', storageError);
+                throw new Error('Failed to save image');
+            }
+
+        } catch (error) {
+            console.error('Error handling mission background image:', error);
+            setErrors(prev => ({
+                ...prev,
+                missionBg: error.message || 'Error processing image. Please try a different file.'
+            }));
+            setSelectedMissionBg(null);
+        }
+    };
+
     const renderHeroImagePreview = () => {
         if (!selectedMedia) {
             return (
@@ -209,6 +261,56 @@ const Home = ({
                         onError={() => {
                             console.error('Error loading image');
                             setSelectedMedia(null);
+                        }}
+                    />
+                </div>
+                <div className="absolute inset-0 bg-[#30afbc]/10 opacity-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                    <div className="bg-white/95 px-4 py-2 rounded-md shadow-lg">
+                        <p className="text-[#30afbc] text-sm font-medium">
+                            Click to change image
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const renderMissionBgPreview = () => {
+        if (!selectedMissionBg) {
+            return (
+                <div className="flex flex-col items-center justify-center space-y-2">
+                    <FiImage className={`w-8 h-8 ${errors.missionBg ? 'text-red-400' : 'text-[#30afbc]'}`} />
+                    <p className={`text-sm ${errors.missionBg ? 'text-red-500' : 'text-gray-500'}`}>
+                        Click to upload mission background
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Maximum file size: 50MB
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Image will be compressed automatically
+                    </p>
+                </div>
+            );
+        }
+
+        if (selectedMissionBg === 'loading') {
+            return (
+                <div className="flex items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#30afbc]"></div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="relative w-full h-64 flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center p-4">
+                    <img
+                        src={selectedMissionBg}
+                        alt="Mission Background Preview"
+                        className="max-w-full max-h-full object-contain"
+                        onError={() => {
+                            console.error('Error loading mission background image');
+                            setSelectedMissionBg(null);
                         }}
                     />
                 </div>
@@ -311,6 +413,100 @@ const Home = ({
                         )}
                     </div>
                 </div>
+
+                {/* Our Mission Section */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">Our Mission</h2>
+                    
+                    <div className="space-y-6">
+                        {/* Mission Background Image */}
+                        <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2">
+                                Mission Background Image <span className="text-red-500">*</span>
+                            </Label>
+                            <label
+                                htmlFor="mission-bg-upload"
+                                className={`flex flex-col items-center justify-center w-full h-64 ${
+                                    errors.missionBg 
+                                        ? 'border-red-500' 
+                                        : 'border-[#e5e7eb] hover:border-[#30afbc]'
+                                } border-[2.5px] border-dashed rounded-lg cursor-pointer bg-gray-50/50 transition-all duration-300`}
+                            >
+                                <input
+                                    id="mission-bg-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleMissionBgChange}
+                                    className="hidden"
+                                />
+                                {renderMissionBgPreview()}
+                            </label>
+                            {errors.missionBg && (
+                                <p className="mt-2 text-sm text-red-500">{errors.missionBg}</p>
+                            )}
+                        </div>
+
+                        {/* Mission Title */}
+                        <div>
+                            <Label htmlFor="mission-title" className="block text-sm font-medium text-gray-700 mb-1">
+                                Mission Title <span className="text-red-500">*</span>
+                            </Label>
+                            <TextInput
+                                id="mission-title"
+                                value={OurMission.title}
+                                onChange={(e) => setOurMission(prev => ({
+                                    ...prev,
+                                    title: e.target.value
+                                }))}
+                                placeholder="Enter mission title"
+                                required
+                            />
+                        </div>
+
+                        {/* Mission Description */}
+                        <div>
+                            <Label htmlFor="mission-description" className="block text-sm font-medium text-gray-700 mb-1">
+                                Mission Description <span className="text-red-500">*</span>
+                            </Label>
+                            <Textarea
+                                id="mission-description"
+                                value={OurMission.description}
+                                onChange={(e) => setOurMission(prev => ({
+                                    ...prev,
+                                    description: e.target.value
+                                }))}
+                                placeholder="Enter mission description"
+                                required
+                                rows={4}
+                            />
+                        </div>
+
+                        {/* Mission Points */}
+                        <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-3">
+                                Key Points <span className="text-red-500">*</span>
+                            </Label>
+                            <div className="space-y-3">
+                                {OurMission.points.map((point, index) => (
+                                    <TextInput
+                                        key={index}
+                                        value={point}
+                                        onChange={(e) => {
+                                            const newPoints = [...OurMission.points];
+                                            newPoints[index] = e.target.value;
+                                            setOurMission(prev => ({
+                                                ...prev,
+                                                points: newPoints
+                                            }));
+                                        }}
+                                        placeholder={`Enter point ${index + 1}`}
+                                        required
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -328,7 +524,9 @@ Home.propTypes = {
     heroImage: PropTypes.object,
     setHeroImage: PropTypes.func.isRequired,
     selectedMedia: PropTypes.string,
-    setSelectedMedia: PropTypes.func.isRequired
+    setSelectedMedia: PropTypes.func.isRequired,
+    OurMissionBg: PropTypes.object,
+    setOurMissionBg: PropTypes.func.isRequired
 };
 
 export default Home;

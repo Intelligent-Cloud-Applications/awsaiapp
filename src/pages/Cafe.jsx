@@ -90,7 +90,9 @@ const Cafe = () => {
     const [TagLine, setTagLine] = useState('');
     const [TagLine1, setTagLine1] = useState('');
     const [TagLine2, setTagLine2] = useState('');
+    const [TagLine3, setTagLine3] = useState('');
     const [contactInfo, setContactInfo] = useState(initializeContactInfo);
+    const [OurMissionBg, setOurMissionBg] = useState(null);
 
     // Testimonials state
     const [testimonials, setTestimonials] = useState([
@@ -100,63 +102,8 @@ const Cafe = () => {
     ]);
 
     // Add new states for Home component
-    const [TagLine3, setTagLine3] = useState('');
     const [heroImage, setHeroImage] = useState(null);
     const [selectedMedia, setSelectedMedia] = useState(null);
-
-    // Add these new states at the top with other states
-    // const [socialMediaLinks, setSocialMediaLinks] = useState([...]);
-
-    // const validateLogoFile = (file) => {
-    //     const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-    //     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-        
-    //     if (!ALLOWED_TYPES.includes(file.type)) {
-    //         throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
-    //     }
-        
-    //     if (file.size > MAX_SIZE) {
-    //         throw new Error('File is too large. Maximum size is 5MB.');
-    //     }
-        
-    //     return true;
-    // };
-
-    // const uploadTestimonials = async () => {
-    //     try {
-    //         const updatedTestimonials = await Promise.all(
-    //             testimonials.filter(t => t.name && t.feedback).map(async (testimonial, index) => {
-    //                 if (testimonial.uploadedFile) {
-    //                     const fileName = `testimonial_${index + 1}_${Date.now()}.${testimonial.uploadedFile.name.split('.').pop()}`;
-    //                     const response = await Storage.put(
-    //                         `${institutionid}/images/testimonials/${fileName}`,
-    //                         testimonial.uploadedFile,
-    //                         { 
-    //                             contentType: testimonial.uploadedFile.type,
-    //                             acl: 'public-read'
-    //                         }
-    //                     );
-
-    //                     let imageUrl = await Storage.get(response.key);
-    //                     imageUrl = imageUrl.split("?")[0];
-
-    //                     return {
-    //                         image: imageUrl,
-    //                         name: testimonial.name,
-    //                         rating: testimonial.rating || 5,
-    //                         text: testimonial.feedback
-    //                     };
-    //                 }
-    //                 return testimonial;
-    //             })
-    //         );
-
-    //         return updatedTestimonials.filter(t => t.name && t.feedback);
-    //     } catch (error) {
-    //         console.error("Error uploading testimonials:", error);
-    //         throw error;
-    //     }
-    // };
 
     // Add this new function to fetch existing data
     const fetchExistingData = async () => {
@@ -386,6 +333,66 @@ const Cafe = () => {
                         const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
                         const currentHeroImageUrl = heroImageUrl || heroImageData.heroImageUrl || existingData.heroImage || '';
 
+                        // Get OurMission data first
+                        const OurMissionData = existingData.OurMission || {};
+
+                        // Process mission background image if exists
+                        let missionBgUrl = null;
+                        let missionBgBase64 = null;
+                        if (OurMissionBg && OurMissionBg instanceof File) {
+                            try {
+                                const compressedMissionBg = await compressImage(OurMissionBg);
+                                const fileName = `${institutionid}/images/mission/mission_bg_${Date.now()}.${OurMissionBg.name.split('.').pop()}`;
+                                const uploadResponse = await Storage.put(fileName, compressedMissionBg, {
+                                    contentType: compressedMissionBg.type,
+                                    metadata: {
+                                        cognitoId: userData?.cognitoId,
+                                        institutionid: institutionid
+                                    }
+                                });
+                                missionBgUrl = await Storage.get(uploadResponse.key);
+                                missionBgUrl = missionBgUrl.split("?")[0];
+
+                                // Save mission bg data to localStorage
+                                missionBgBase64 = await convertFileToBase64(compressedMissionBg);
+                                localStorage.setItem('cafeFormMissionBg', JSON.stringify({
+                                    missionBg: missionBgBase64,
+                                    missionBgUrl: missionBgUrl,
+                                    fileName: OurMissionBg.name
+                                }));
+                            } catch (uploadError) {
+                                console.error("Error uploading mission background:", uploadError);
+                                throw new Error('Failed to upload mission background. Please try again.');
+                            }
+                        }
+
+                        // Get mission bg data from storage if not uploading new one
+                        const missionBgData = JSON.parse(localStorage.getItem('cafeFormMissionBg') || '{}');
+                        const currentMissionBgUrl = missionBgUrl || missionBgData.missionBgUrl || existingData.OurMissionBg || '';
+
+                        // Validate OurMission data
+                        const OurMission = existingData.OurMission || {};
+                        if (!OurMission.title?.trim()) {
+                            alert("Please enter the mission title");
+                            success = false;
+                            break;
+                        }
+                        if (!OurMission.description?.trim()) {
+                            alert("Please enter the mission description");
+                            success = false;
+                            break;
+                        }
+                        if (!OurMission.points?.every(point => point.trim())) {
+                            alert("Please fill in all mission points");
+                            success = false;
+                            break;
+                        }
+                        if (!currentMissionBgUrl) {
+                            alert("Please upload a mission background image");
+                            success = false;
+                            break;
+                        }
+
                         const homeData = {
                             ...baseData,
                             institutionid,
@@ -398,6 +405,12 @@ const Cafe = () => {
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
                             selectedMedia: selectedMedia || null,
+                            OurMission: {
+                                title: OurMission.title.trim(),
+                                description: OurMission.description.trim(),
+                                points: OurMission.points.map(point => point.trim())
+                            },
+                            OurMissionBg: currentMissionBgUrl,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
                             lastUpdated: Date.now()
@@ -416,7 +429,9 @@ const Cafe = () => {
                             ...homeData,
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
-                            logoUrl: currentLogoUrl
+                            logoUrl: currentLogoUrl,
+                            OurMission: homeData.OurMission,
+                            OurMissionBg: currentMissionBgUrl
                         }));
 
                     } catch (error) {
@@ -629,6 +644,7 @@ const Cafe = () => {
             setTagLine('');
             setTagLine1('');
             setTagLine2('');
+            setTagLine3('');
             setContactInfo({
                 firstName: '',
                 lastName: '',
@@ -928,6 +944,8 @@ const Cafe = () => {
                         setHeroImage={setHeroImage}
                         selectedMedia={selectedMedia}
                         setSelectedMedia={setSelectedMedia}
+                        OurMissionBg={OurMissionBg}
+                        setOurMissionBg={setOurMissionBg}
                     />
                 );
 
