@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
-import { FiShield, FiPlus, FiTrash2, FiList } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
-const Policy = ({
+const Values = ({
   title,
   setTitle,
   description,
@@ -27,7 +26,7 @@ const Policy = ({
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter policy title"
+            placeholder="Enter value title"
             required
           />
         </div>
@@ -40,7 +39,7 @@ const Policy = ({
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter policy description"
+            placeholder="Enter value description"
             required
             rows={3}
           />
@@ -54,7 +53,7 @@ const Policy = ({
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter policy content"
+            placeholder="Enter value content"
             required
             rows={6}
           />
@@ -64,7 +63,7 @@ const Policy = ({
   );
 };
 
-Policy.propTypes = {
+Values.propTypes = {
   title: PropTypes.string.isRequired,
   setTitle: PropTypes.func.isRequired,
   description: PropTypes.string.isRequired,
@@ -77,4 +76,4 @@ Policy.propTypes = {
   })
 };
 
-export default Policy;
+export default Values; 
