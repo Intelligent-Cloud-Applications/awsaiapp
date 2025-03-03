@@ -193,7 +193,17 @@ const Cafe = () => {
                             LightestPrimaryColor: LightestPrimaryColor || baseData.LightestPrimaryColor || "#f3fbfc",
                             createdBy: userData.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now()
+                            lastUpdated: Date.now(),
+                            usefulLinks: [
+                                {
+                                    style: {
+                                        color: "white",
+                                        textDecoration: "none"
+                                    },
+                                    title: "Awsaiapp",
+                                    url: "http://awsaiapp.com/"
+                                }
+                            ]
                         };
 
                         // Save to API
@@ -258,7 +268,17 @@ const Cafe = () => {
                             logo: logoData.logo || existingData.logo || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
-                            lastUpdated: Date.now()
+                            lastUpdated: Date.now(),
+                            usefulLinks: [
+                                {
+                                    style: {
+                                        color: "white",
+                                        textDecoration: "none"
+                                    },
+                                    title: "Awsaiapp",
+                                    url: "http://awsaiapp.com/"
+                                }
+                            ]
                         };
 
                         // Make API call
@@ -411,7 +431,17 @@ const Cafe = () => {
                             OurMissionBg: currentMissionBgUrl,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now()
+                            lastUpdated: Date.now(),
+                            usefulLinks: [
+                                {
+                                    style: {
+                                        color: "white",
+                                        textDecoration: "none"
+                                    },
+                                    title: "Awsaiapp",
+                                    url: "http://awsaiapp.com/"
+                                }
+                            ]
                         };
 
                         const response = await API.put("clients", '/user/cafewebDevForm', {
@@ -507,7 +537,17 @@ const Cafe = () => {
                             logo: logoData.logo || existingData.logo || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
-                            section: 'home'
+                            section: 'home',
+                            usefulLinks: [
+                                {
+                                    style: {
+                                        color: "white",
+                                        textDecoration: "none"
+                                    },
+                                    title: "Awsaiapp",
+                                    url: "http://awsaiapp.com/"
+                                }
+                            ]
                         };
 
                         const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
