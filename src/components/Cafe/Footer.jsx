@@ -111,7 +111,7 @@ function Footer({
                 // Clear form data
                 localStorage.removeItem('cafeFormData');
                 localStorage.removeItem('cafeFormLogo');
-                localStorage.removeItem('heroImageData');
+                localStorage.removeItem('heroImage');
                 localStorage.removeItem('testimonialImages');
                 
                 Navigate("/dashboard");

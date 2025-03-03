@@ -31,6 +31,53 @@ const Cafe = () => {
     const { userData } = useContext(Context);
     const util = useContext(Context).util;
     
+    // Initialize contact info from localStorage if available
+    const initializeContactInfo = () => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            console.log('Initializing contact info from saved data:', savedData);
+            
+            return {
+                firstName: savedData.firstName || '',
+                lastName: savedData.lastName || '',
+                userName: savedData.userName || '',
+                emailId: savedData.emailId || '',
+                phoneNumber: savedData.Query_PhoneNumber || '',
+                Query_PhoneNumber: savedData.Query_PhoneNumber || '',
+                address: savedData.Query_Address || '',
+                Query_Address: savedData.Query_Address || '',
+                socialMediaLinks: savedData.socialMediaLinks || {
+                    instagram: '',
+                    facebook: '',
+                    youtube: ''
+                },
+                visitUs: savedData.visitUs || {
+                    locatemap: ''
+                }
+            };
+        } catch (error) {
+            console.error('Error initializing contact info:', error);
+            return {
+                firstName: '',
+                lastName: '',
+                userName: '',
+                emailId: '',
+                phoneNumber: '',
+                Query_PhoneNumber: '',
+                address: '',
+                Query_Address: '',
+                socialMediaLinks: {
+                    instagram: '',
+                    facebook: '',
+                    youtube: ''
+                },
+                visitUs: {
+                    locatemap: ''
+                }
+            };
+        }
+    };
+
     // Company state
     const [institutionid, setinstitutionid] = useState('');
     const [companyName, setCompanyName] = useState('');
@@ -43,22 +90,7 @@ const Cafe = () => {
     const [TagLine, setTagLine] = useState('');
     const [TagLine1, setTagLine1] = useState('');
     const [TagLine2, setTagLine2] = useState('');
-    const [contactInfo, setContactInfo] = useState({
-        firstName: '',
-        lastName: '',
-        emailId: '',
-        phoneNumber: '',
-        address: '',
-        userName: '',
-        socialMediaLinks: {
-            instagram: '',
-            facebook: '',
-            youtube: ''
-        },
-        visitUs: {
-            locatemap: ''
-        }
-    });
+    const [contactInfo, setContactInfo] = useState(initializeContactInfo);
 
     // Testimonials state
     const [testimonials, setTestimonials] = useState([
@@ -126,19 +158,44 @@ const Cafe = () => {
     //     }
     // };
 
+    // Add this new function to fetch existing data
+    const fetchExistingData = async () => {
+        try {
+            const response = await API.get("clients", `/user/cafewebDevForm/${institutionid}`);
+            return response;
+        } catch (error) {
+            console.error("Error fetching existing data:", error);
+            return null;
+        }
+    };
+
     const handleNextSection = async () => {
         try {
             util.setLoader(true);
             let success = true;
 
+            // Load data from localStorage first
+            const localStorageData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            
+            // Fetch existing data from API
+            const existingData = await fetchExistingData();
+
+            // Merge localStorage data with existing API data
+            const baseData = {
+                ...existingData,
+                ...localStorageData
+            };
+
             switch (currentSection) {
                 case 0: // Company
                     if (!institutionid?.trim() || !companyName?.trim() || (!selectedLogo && !logo)) {
-                        alert('Please fill in all required fields: Institution ID, Company Name, and Logo');
+                        if (!institutionid?.trim()) alert("Please enter Institution ID");
+                        if (!companyName?.trim()) alert("Please enter Company Name");
+                        if (!selectedLogo && !logo) alert("Please upload Company Logo");
                         success = false;
                         break;
                     }
-                    
+
                     if (!userData?.cognitoId) {
                         alert('Please login to continue');
                         navigate('/login');
@@ -147,61 +204,146 @@ const Cafe = () => {
                     }
 
                     try {
-                        // If we have a logo but no selectedLogo (loaded from localStorage)
-                        let imageUrl;
+                        // Process logo if exists
+                        let logoUrl = null;
                         if (selectedLogo) {
-                            // Upload new logo
-                            const fileName = `${userData.cognitoId}/${institutionid}/images/${selectedLogo.name}`;
-                            const response = await Storage.put(fileName, selectedLogo, {
-                                contentType: selectedLogo.type,
-                                metadata: {
-                                    cognitoId: userData.cognitoId,
-                                    institutionid: institutionid
-                                }
-                            });
-                            imageUrl = await Storage.get(response.key);
-                            imageUrl = imageUrl.split("?")[0];
+                            try {
+                                const compressedLogo = await compressImage(selectedLogo);
+                                const fileName = `${userData.cognitoId}/${institutionid}/images/${selectedLogo.name}`;
+                                const uploadResponse = await Storage.put(fileName, compressedLogo, {
+                                    contentType: selectedLogo.type,
+                                    metadata: {
+                                        cognitoId: userData.cognitoId,
+                                        institutionid: institutionid.trim()
+                                    }
+                                });
+                                logoUrl = await Storage.get(uploadResponse.key);
+                                logoUrl = logoUrl.split("?")[0];
+
+                                // Save logo to localStorage for persistence
+                                const logoBase64 = await convertFileToBase64(compressedLogo);
+                                localStorage.setItem('cafeFormLogo', JSON.stringify({
+                                    logo: logoBase64,
+                                    fileName: selectedLogo.name
+                                }));
+                            } catch (uploadError) {
+                                console.error("Error processing logo:", uploadError);
+                                throw new Error('Failed to process logo. Please try again.');
+                            }
                         } else if (logo) {
-                            // Use existing logo URL
-                            imageUrl = logo;
+                            logoUrl = logo;
                         }
 
-                        // API call
-                        await API.put("clients", '/user/cafewebDevForm', {
-                            headers: {
-                                'Content-Type': 'application/json'
+                        // Start with existing data from baseData (which includes localStorage data)
+                        const existingData = {
+                            index: baseData?.index || "0",
+                            socialMediaLinks: baseData?.socialMediaLinks || {
+                                instagram: '',
+                                facebook: '',
+                                youtube: ''
                             },
-                            body: {
-                                institutionid: institutionid.trim(),
-                                index: "0",
-                                companyName: companyName.trim(),
-                                PrimaryColor,
-                                SecondaryColor,
-                                logoUrl: imageUrl,
-                                LightPrimaryColor,
-                                LightestPrimaryColor,
-                                institutionType: "cafe",
-                                createdBy: userData.cognitoId,
-                                date: Date.now(),
-                                PrivacyPolicy: [],
-                                heroImage: null,
-                                mission: {
-                                    description1: "",
-                                    description2: "",
-                                    highlights: []
+                            OurMissionBg: baseData?.OurMissionBg || '',
+                            Query_PhoneNumber: baseData?.Query_PhoneNumber || '',
+                            institutionid: baseData?.institutionid || institutionid.trim(),
+                            emailId: baseData?.emailId || '',
+                            isFormFilled: baseData?.isFormFilled || false,
+                            LightestPrimaryColor: baseData?.LightestPrimaryColor || LightestPrimaryColor || "#f3fbfc",
+                            createdBy: baseData?.createdBy || userData.cognitoId,
+                            qrURL: baseData?.qrURL || '',
+                            date: baseData?.date || Date.now(),
+                            OurMission: baseData?.OurMission || '',
+                            institutionType: baseData?.institutionType || "cafe",
+                            visitUs: baseData?.visitUs || {
+                                locatemap: ''
+                            },
+                            LightPrimaryColor: baseData?.LightPrimaryColor || LightPrimaryColor || "#e6f7f9",
+                            PrivacyPolicy: baseData?.PrivacyPolicy || [],
+                            SecondaryColor: baseData?.SecondaryColor || SecondaryColor || "#2b9ea9",
+                            companyName: baseData?.companyName || companyName.trim(),
+                            logoUrl: baseData?.logoUrl || '',
+                            tagLine1: baseData?.tagLine1 || '',
+                            userName: baseData?.userName || '',
+                            tagLine2: baseData?.tagLine2 || '',
+                            usefulLinks: baseData?.usefulLinks || [],
+                            PrimaryColor: baseData?.PrimaryColor || PrimaryColor || "#30afbc",
+                            heroImage: baseData?.heroImage || '',
+                            Query_Address: baseData?.Query_Address || '',
+                            productTagline: baseData?.productTagline || '',
+                            testimonials: baseData?.testimonials || [
+                                {
+                                    rating: 5,
+                                    imageBase64: "",
+                                    text: "",
+                                    imgSrc: "",
+                                    customerName: ""
                                 },
-                                productTagline: "",
-                                qrURL: null,
-                                socialMediaLinks: {},
-                                tagLine1: "",
-                                tagLine2: "",
-                                testimonials: [],
-                                usefulLinks: [],
-                            }
+                                {
+                                    rating: 5,
+                                    imageBase64: "",
+                                    text: "",
+                                    imgSrc: "",
+                                    customerName: ""
+                                },
+                                {
+                                    rating: 5,
+                                    imageBase64: "",
+                                    text: "",
+                                    imgSrc: "",
+                                    customerName: ""
+                                }
+                            ]
+                        };
+
+                        // Update with current changes
+                        const payload = {
+                            index: existingData.index,
+                            socialMediaLinks: existingData.socialMediaLinks,
+                            OurMissionBg: existingData.OurMissionBg,
+                            Query_PhoneNumber: existingData.Query_PhoneNumber,
+                            institutionid: institutionid.trim(),
+                            emailId: existingData.emailId,
+                            isFormFilled: false,
+                            LightestPrimaryColor: LightestPrimaryColor || existingData.LightestPrimaryColor,
+                            createdBy: userData.cognitoId,
+                            qrURL: existingData.qrURL,
+                            date: Date.now(),
+                            OurMission: existingData.OurMission,
+                            institutionType: "cafe",
+                            visitUs: existingData.visitUs,
+                            LightPrimaryColor: LightPrimaryColor || existingData.LightPrimaryColor,
+                            PrivacyPolicy: existingData.PrivacyPolicy,
+                            SecondaryColor: SecondaryColor || existingData.SecondaryColor,
+                            companyName: companyName.trim(),
+                            logoUrl: logoUrl || existingData.logoUrl,
+                            tagLine1: existingData.tagLine1,
+                            userName: existingData.userName,
+                            tagLine2: existingData.tagLine2,
+                            usefulLinks: existingData.usefulLinks,
+                            PrimaryColor: PrimaryColor || existingData.PrimaryColor,
+                            heroImage: existingData.heroImage,
+                            Query_Address: existingData.Query_Address,
+                            productTagline: existingData.productTagline,
+                            testimonials: existingData.testimonials
+                        };
+
+                        // Save to API
+                        const response = await API.put("clients", '/user/cafewebDevForm', {
+                            body: payload
                         });
+
+                        if (!response) {
+                            throw new Error('Failed to save company information');
+                        }
+
+                        // Update localStorage with merged data
+                        localStorage.setItem('cafeFormData', JSON.stringify({
+                            ...localStorageData,
+                            ...payload
+                        }));
+
                     } catch (error) {
                         console.error("Error in company section:", error);
-                        alert('Error: ' + (error.message || 'Failed to save company info. Please try again.'));
+                        alert('Error: ' + (error.message || 'Failed to save company information. Please try again.'));
                         success = false;
                     }
                     break;
@@ -214,28 +356,42 @@ const Cafe = () => {
                     }
 
                     try {
-                        // Format the contact payload for the API
-                        const contactPayload = {
+                        // Get existing data from localStorage
+                        const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+
+                        // Prepare contact data
+                        const contactData = {
+                            ...existingData,
+                            institutionid,
                             emailId: contactInfo.emailId,
-                            phoneNumber: contactInfo.phoneNumber,
-                            address: contactInfo.address,
-                            userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim(), // Combined name
-                            socialMediaLinks: contactInfo.socialMediaLinks,
-                            visitUs: contactInfo.visitUs
+                            Query_PhoneNumber: contactInfo.phoneNumber,
+                            Query_Address: contactInfo.address,
+                            userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim(),
+                            firstName: contactInfo.firstName,
+                            lastName: contactInfo.lastName,
+                            socialMediaLinks: {
+                                instagram: contactInfo.socialMediaLinks?.instagram || '',
+                                facebook: contactInfo.socialMediaLinks?.facebook || '',
+                                youtube: contactInfo.socialMediaLinks?.youtube || ''
+                            },
+                            visitUs: {
+                                locatemap: contactInfo.visitUs?.locatemap || ''
+                            }
                         };
 
+                        // Make API call
                         const response = await API.put("clients", '/user/cafewebDevForm', {
-                            body: {
-                                institutionid,
-                                contactInfo: contactPayload, // Send formatted payload
-                                createdBy: userData?.cognitoId,
-                                lastUpdated: Date.now()
-                            }
+                            body: contactData
                         });
 
                         if (!response) {
                             throw new Error('Failed to save contact information');
                         }
+
+                        // Save to localStorage
+                        localStorage.setItem('cafeFormData', JSON.stringify(contactData));
+                        success = true;
+
                     } catch (error) {
                         console.error("Error in contact section:", error);
                         alert('Error saving contact information. Please try again.');
@@ -245,49 +401,91 @@ const Cafe = () => {
 
                 case 2: // Home
                     if (!TagLine || !TagLine1 || !TagLine2) {
-                        alert('Please fill in all taglines');
+                        if (!TagLine) alert("Please enter the main tagline");
+                        if (!TagLine1) alert("Please enter tagline 1");
+                        if (!TagLine2) alert("Please enter tagline 2");
                         success = false;
                         break;
                     }
 
                     try {
-                        // Upload hero image if exists
                         let heroImageUrl = null;
-                        if (heroImage) {
-                            const fileName = `${institutionid}/images/hero/hero_${Date.now()}.${heroImage.name.split('.').pop()}`;
-                            const uploadResponse = await Storage.put(fileName, heroImage, {
-                                contentType: heroImage.type
-                            });
-                            heroImageUrl = await Storage.get(uploadResponse.key);
-                            heroImageUrl = heroImageUrl.split("?")[0];
+                        if (heroImage && heroImage instanceof File) {
+                            try {
+                                // Compress the hero image before uploading
+                                const compressedHeroImage = await compressImage(heroImage);
+                                
+                                // Generate a unique file name for the hero image
+                                const fileName = `${institutionid}/images/hero/hero_${Date.now()}.${heroImage.name.split('.').pop()}`;
+                                
+                                // Upload the hero image to AWS S3
+                                const uploadResponse = await Storage.put(fileName, compressedHeroImage, {
+                                    contentType: compressedHeroImage.type,
+                                    metadata: {
+                                        cognitoId: userData?.cognitoId,
+                                        institutionid: institutionid
+                                    }
+                                });
+                                
+                                // Get the URL of the uploaded hero image
+                                heroImageUrl = await Storage.get(uploadResponse.key);
+                                heroImageUrl = heroImageUrl.split("?")[0];
+                            } catch (uploadError) {
+                                console.error("Error uploading hero image:", uploadError);
+                                throw new Error('Failed to upload hero image. Please try again.');
+                            }
                         }
 
-                        // Update API
-                        await API.put("clients", '/user/cafewebDevForm', {
-                            body: {
-                                institutionid,
-                                TagLine,
-                                TagLine1,
-                                TagLine2,
-                                TagLine3,
-                                heroImageUrl,
-                                createdBy: userData?.cognitoId,
-                                isFormFilled: false,
-                                lastUpdated: Date.now()
-                            }
+                        // Prepare home section data
+                        const homeData = {
+                            ...baseData,
+                            institutionid,
+                            TagLine: TagLine.trim(),
+                            TagLine1: TagLine1.trim(),
+                            TagLine2: TagLine2.trim(),
+                            TagLine3: TagLine3?.trim() || '',
+                            heroImage: heroImageUrl, // Use the uploaded image URL
+                            selectedMedia: selectedMedia || null,
+                            createdBy: userData?.cognitoId,
+                            isFormFilled: false,
+                            lastUpdated: Date.now(),
+                            section: 'home'
+                        };
+
+                        // Save to API
+                        const response = await API.put("clients", '/user/cafewebDevForm', {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: homeData
                         });
+
+                        if (!response) {
+                            throw new Error('Failed to save home section data');
+                        }
+
+                        // Update localStorage with the latest data
+                        const updatedLocalStorage = {
+                            ...localStorageData,
+                            TagLine,
+                            TagLine1,
+                            TagLine2,
+                            TagLine3,
+                            heroImage: heroImageUrl, // Save the hero image URL to localStorage
+                            selectedMedia,
+                            lastUpdated: Date.now()
+                        };
+                        localStorage.setItem('cafeFormData', JSON.stringify(updatedLocalStorage));
+
                     } catch (error) {
                         console.error("Error in home section:", error);
-                        alert('Error saving home information. Please try again.');
+                        alert('Error: ' + (error.message || 'Failed to save home section. Please try again.'));
                         success = false;
                     }
                     break;
 
                 case 3: // Testimonials
                     try {
-                        util.setLoader(true);
-
-                        // First validate all testimonials are filled
                         const incompleteTestimonials = testimonials.filter((t, index) => {
                             const missing = [];
                             
@@ -311,64 +509,57 @@ const Cafe = () => {
                         if (incompleteTestimonials.length > 0) {
                             util.setLoader(false);
                             success = false;
-                            return; // Stop here if any testimonial is incomplete
+                            return;
                         }
 
-                        // All testimonials are valid, proceed with API submission
-                        try {
-                            // Process testimonials for API
-                            const processedTestimonials = await Promise.all(
-                                testimonials.map(async (t, index) => {
-                                    let imageUrl = t.imgSrc;
+                        const processedTestimonials = await Promise.all(
+                            testimonials.map(async (t, index) => {
+                                let imageUrl = t.imgSrc;
 
-                                    if (t.uploadedFile) {
-                                        const fileName = `${institutionid}/images/testimonials/testimonial_${index + 1}_${Date.now()}.${t.uploadedFile.name.split('.').pop()}`;
-                                        const response = await Storage.put(fileName, t.uploadedFile, {
-                                            contentType: t.uploadedFile.type
-                                        });
-                                        imageUrl = await Storage.get(response.key);
-                                        imageUrl = imageUrl.split("?")[0];
-                                    }
-
-                                    return {
-                                        image: imageUrl,
-                                        customerName: t.customerName.trim(),
-                                        text: t.text.trim(),
-                                        rating: t.rating || 5
-                                    };
-                                })
-                            );
-
-                            // API call
-                            const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
-                                body: {
-                                    institutionid,
-                                    testimonials: processedTestimonials,
-                                    createdBy: userData?.cognitoId,
-                                    isFormFilled: false,
-                                    lastUpdated: Date.now()
+                                if (t.uploadedFile) {
+                                    const fileName = `${institutionid}/images/testimonials/testimonial_${index + 1}_${Date.now()}.${t.uploadedFile.name.split('.').pop()}`;
+                                    const response = await Storage.put(fileName, t.uploadedFile, {
+                                        contentType: t.uploadedFile.type
+                                    });
+                                    imageUrl = await Storage.get(response.key);
+                                    imageUrl = imageUrl.split("?")[0];
                                 }
-                            });
 
-                            if (!apiResponse) {
-                                throw new Error('Failed to submit testimonials');
-                            }
+                                return {
+                                    image: imageUrl,
+                                    customerName: t.customerName.trim(),
+                                    text: t.text.trim(),
+                                    rating: t.rating || 5
+                                };
+                            })
+                        );
 
-                            // Success! Save to localStorage and proceed
-                            await saveData();
-                            setCurrentSection(prev => prev + 1);
-                            return true;
+                        // Merge with base data
+                        const testimonialData = {
+                            ...baseData,
+                            institutionid,
+                            testimonials: processedTestimonials,
+                            createdBy: userData?.cognitoId,
+                            isFormFilled: false,
+                            lastUpdated: Date.now()
+                        };
 
-                        } catch (error) {
-                            throw new Error(`Error processing testimonials: ${error.message}`);
+                        const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
+                            body: testimonialData
+                        });
+
+                        if (!apiResponse) {
+                            throw new Error('Failed to submit testimonials');
                         }
+
+                        await saveData();
+                        setCurrentSection(prev => prev + 1);
+                        return true;
 
                     } catch (error) {
                         console.error("Error in testimonials section:", error);
                         alert('Error: ' + (error.message || 'Failed to save testimonials. Please try again.'));
                         success = false;
-                    } finally {
-                        util.setLoader(false);
                     }
                     break;
 
@@ -380,9 +571,6 @@ const Cafe = () => {
             if (success) {
                 await saveData();
                 setCurrentSection(prev => prev + 1);
-
-                // If it's the final section and submission is successful
-                
                 return true;
             }
             return false;
@@ -398,62 +586,56 @@ const Cafe = () => {
 
     const saveData = async () => {
         try {
-            // Process testimonials first
-            const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
-                let imageBase64 = '';
-                if (t.uploadedFile) {
-                    imageBase64 = await convertFileToBase64(t.uploadedFile);
-                } else if (t.imgSrc && t.imgSrc.startsWith('data:image')) {
-                    imageBase64 = t.imgSrc;
-                }
-                
-                return {
-                    customerName: t.customerName || t.name || '',
-                    text: t.text || t.feedback || '',
-                    rating: t.rating || 5,
-                    imgSrc: t.imgSrc || '',
-                    imageBase64
-                };
-            }));
-
-            // Format contact info for storage
-            const formattedContactInfo = {
-                emailId: contactInfo.emailId,
-                phoneNumber: contactInfo.phoneNumber,
-                address: contactInfo.address,
-                userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim(),
-                socialMediaLinks: contactInfo.socialMediaLinks,
-                visitUs: contactInfo.visitUs
-            };
-
-            // Prepare data
+            const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            
             const dataToSave = {
-                currentSection,
-                companyName,
+                ...existingData,
+                // Company info
                 institutionid,
+                companyName,
                 PrimaryColor,
                 SecondaryColor,
                 LightPrimaryColor,
                 LightestPrimaryColor,
-                contactInfo: formattedContactInfo, // Use formatted contact info
-                TagLine,
-                TagLine1,
-                TagLine2,
+                logoUrl: logo,
+                
+                // Contact info
+                firstName: contactInfo.firstName,
+                lastName: contactInfo.lastName,
+                emailId: contactInfo.emailId,
+                Query_PhoneNumber: contactInfo.phoneNumber || contactInfo.Query_PhoneNumber,
+                Query_Address: contactInfo.address || contactInfo.Query_Address,
+                userName: contactInfo.userName,
+                socialMediaLinks: contactInfo.socialMediaLinks,
+                visitUs: contactInfo.visitUs,
+                
+                // Taglines
+                productTagline: TagLine,
+                tagLine1: TagLine1,
+                tagLine2: TagLine2,
                 TagLine3,
+                
+                // Media
                 selectedMedia,
-                logo,
-                testimonials: processedTestimonials,
+                heroImage: heroImage instanceof File ? null : heroImage, // Only save URL, not the File object
+                
+                // Testimonials
+                testimonials: testimonials.map(t => ({
+                    customerName: t.customerName || '',
+                    text: t.text || '',
+                    rating: t.rating || 5,
+                    imgSrc: t.imgSrc || '',
+                    imageBase64: t.imageBase64 || ''
+                })),
+                
+                // Section and metadata
+                currentSection,
                 lastUpdated: Date.now()
             };
 
-            // Save to localStorage and return result
-            try {
-                await localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
-                return true;
-            } catch (storageError) {
-                console.error('Error saving to localStorage:', storageError);
-                return false;
-            }
+            localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            console.log('Saved data to localStorage:', dataToSave);
+            return true;
         } catch (error) {
             console.error('Error saving data:', error);
             return false;
@@ -470,7 +652,7 @@ const Cafe = () => {
             if (institutionid) {
                 await API.del(
                     "clients",
-                    `/user/development-form/delete-all/${institutionid}`
+                    `/user/cafe-form/delete-all/${institutionid}`
                 );
             }
             
@@ -522,8 +704,9 @@ const Cafe = () => {
             const savedData = localStorage.getItem('cafeFormData');
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
+                console.log('Loading data from localStorage:', parsedData);
                 
-                // Load basic form data
+                // Load company data
                 setCompanyName(parsedData.companyName || '');
                 setinstitutionid(parsedData.institutionid || '');
                 setPrimaryColor(parsedData.PrimaryColor || '#30afbc');
@@ -532,53 +715,51 @@ const Cafe = () => {
                 setLightestPrimaryColor(parsedData.LightestPrimaryColor || '#f3fbfc');
                 
                 // Load contact info
-                setContactInfo(parsedData.contactInfo || {
-                    firstName: '',
-                    lastName: '',
-                    emailId: '',
-                    phoneNumber: '',
-                    address: '',
-                    userName: '',
-                    socialMediaLinks: {
+                const contactData = {
+                    firstName: parsedData.firstName || '',
+                    lastName: parsedData.lastName || '',
+                    emailId: parsedData.emailId || '',
+                    phoneNumber: parsedData.Query_PhoneNumber || '',
+                    Query_PhoneNumber: parsedData.Query_PhoneNumber || '',
+                    address: parsedData.Query_Address || '',
+                    Query_Address: parsedData.Query_Address || '',
+                    userName: parsedData.userName || '',
+                    socialMediaLinks: parsedData.socialMediaLinks || {
                         instagram: '',
                         facebook: '',
                         youtube: ''
                     },
-                    visitUs: {
+                    visitUs: parsedData.visitUs || {
                         locatemap: ''
                     }
-                });
+                };
+                setContactInfo(contactData);
                 
-                setTagLine(parsedData.TagLine || '');
-                setTagLine1(parsedData.TagLine1 || '');
-                setTagLine2(parsedData.TagLine2 || '');
+                // Load taglines
+                setTagLine(parsedData.productTagline || '');
+                setTagLine1(parsedData.tagLine1 || '');
+                setTagLine2(parsedData.tagLine2 || '');
                 setTagLine3(parsedData.TagLine3 || '');
+                
+                // Load media
                 setSelectedMedia(parsedData.selectedMedia || null);
-                setLogo(parsedData.logoData || null);
-                setCurrentSection(parsedData.currentSection || 0);
-
-                // Load testimonials if they exist
+                setLogo(parsedData.logoUrl || null);
+                
+                // Load testimonials
                 if (parsedData.testimonials?.length > 0) {
-                    const loadedTestimonials = await Promise.all(parsedData.testimonials.map(async (t) => {
-                        let uploadedFile = null;
-                        if (t.imageBase64) {
-                            uploadedFile = await base64ToFile(
-                                t.imageBase64,
-                                `testimonial_${Date.now()}.jpg`,
-                                'image/jpeg'
-                            );
-                        }
-                        
-                        return {
-                            customerName: t.customerName || '',
-                            text: t.text || '',
-                            rating: t.rating || 5,
-                            imgSrc: t.imageBase64 || t.imgSrc || '',
-                            uploadedFile
-                        };
+                    const loadedTestimonials = parsedData.testimonials.map(t => ({
+                        customerName: t.customerName || '',
+                        text: t.text || '',
+                        rating: t.rating || 5,
+                        imgSrc: t.imgSrc || '',
+                        imageBase64: t.imageBase64 || '',
+                        uploadedFile: null
                     }));
                     setTestimonials(loadedTestimonials);
                 }
+                
+                // Load current section
+                setCurrentSection(parsedData.currentSection || 0);
             }
         } catch (error) {
             console.error('Error loading from localStorage:', error);
@@ -589,71 +770,12 @@ const Cafe = () => {
         loadFromLocalStorage();
     }, []); // Run only on mount
 
+    // Add useEffect for automatic saving
     useEffect(() => {
-        const saveToLocalStorage = async () => {
-            try {
-                // Process testimonials for storage with image compression
-                const processedTestimonials = await Promise.all(testimonials.map(async (t) => {
-                    let imageBase64 = '';
-                    if (t.uploadedFile) {
-                        // Compress image before converting to base64
-                        const compressedImage = await compressImage(t.uploadedFile);
-                        imageBase64 = await convertFileToBase64(compressedImage);
-                    } else if (t.imgSrc && t.imgSrc.startsWith('data:image')) {
-                        imageBase64 = t.imgSrc;
-                    }
-                    
-                    return {
-                        customerName: t.customerName || t.name || '',
-                        text: t.text || t.feedback || '',
-                        rating: t.rating || 5,
-                        imgSrc: t.imgSrc || '',
-                        imageBase64
-                    };
-                }));
-
-                // Create a smaller payload
-                const dataToSave = {
-                    companyName,
-                    institutionid,
-                    PrimaryColor,
-                    SecondaryColor,
-                    LightPrimaryColor,
-                    LightestPrimaryColor,
-                    contactInfo,
-                    TagLine,
-                    TagLine1,
-                    TagLine2,
-                    TagLine3,
-                    selectedMedia,
-                    logoData: logo,
-                    testimonials: processedTestimonials,
-                    currentSection,
-                    lastUpdated: Date.now()
-                };
-
-                // Try to save with error handling
-                try {
-                    localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
-                } catch (storageError) {
-                    console.warn('Storage quota exceeded, removing testimonial images...');
-                    // Remove image data if storage is full
-                    const reducedData = {
-                        ...dataToSave,
-                        testimonials: processedTestimonials.map(t => ({
-                            ...t,
-                            imageBase64: '',
-                            imgSrc: ''
-                        }))
-                    };
-                    localStorage.setItem('cafeFormData', JSON.stringify(reducedData));
-                }
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-            }
+        const autoSave = async () => {
+            await saveData();
         };
-
-        saveToLocalStorage();
+        autoSave();
     }, [
         companyName,
         institutionid,
@@ -668,8 +790,8 @@ const Cafe = () => {
         TagLine3,
         selectedMedia,
         logo,
-        currentSection,
-        testimonials // Add testimonials to dependency array
+        testimonials,
+        currentSection
     ]);
 
     // Add cleanup for object URLs
@@ -678,8 +800,11 @@ const Cafe = () => {
             if (logo && typeof logo === 'string' && logo.startsWith('blob:')) {
                 URL.revokeObjectURL(logo);
             }
-            if (selectedMedia && selectedMedia.startsWith('blob:')) {
+            if (selectedMedia && typeof selectedMedia === 'string' && selectedMedia.startsWith('blob:')) {
                 URL.revokeObjectURL(selectedMedia);
+            }
+            if (heroImage && typeof heroImage === 'string' && heroImage.startsWith('blob:')) {
+                URL.revokeObjectURL(heroImage);
             }
             testimonials.forEach(testimonial => {
                 if (testimonial.imgSrc && testimonial.imgSrc.startsWith('blob:')) {
@@ -689,7 +814,7 @@ const Cafe = () => {
         };
 
         return cleanup;
-    }, [logo, selectedMedia, testimonials]);
+    }, [logo, selectedMedia, heroImage, testimonials]);
 
     // Add cleanup effect
     useEffect(() => {
