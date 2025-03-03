@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCoffee, FiPhone, FiHome, FiStar } from 'react-icons/fi';
@@ -93,6 +93,7 @@ const Cafe = () => {
     const [TagLine3, setTagLine3] = useState('');
     const [contactInfo, setContactInfo] = useState(initializeContactInfo);
     const [OurMissionBg, setOurMissionBg] = useState(null);
+    const [selectedMissionBg, setSelectedMissionBg] = useState(null);
 
     // Testimonials state
     const [testimonials, setTestimonials] = useState([
@@ -333,9 +334,6 @@ const Cafe = () => {
                         const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
                         const currentHeroImageUrl = heroImageUrl || heroImageData.heroImageUrl || existingData.heroImage || '';
 
-                        // Get OurMission data first
-                        const OurMissionData = existingData.OurMission || {};
-
                         // Process mission background image if exists
                         let missionBgUrl = null;
                         let missionBgBase64 = null;
@@ -559,7 +557,7 @@ const Cafe = () => {
         }
     };
 
-    const saveData = async () => {
+    const saveData = useCallback(async () => {
         try {
             const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
             
@@ -615,7 +613,29 @@ const Cafe = () => {
             console.error('Error saving data:', error);
             return false;
         }
-    };
+    }, [
+        institutionid,
+        companyName,
+        PrimaryColor,
+        SecondaryColor,
+        LightPrimaryColor,
+        LightestPrimaryColor,
+        logo,
+        contactInfo,
+        TagLine,
+        TagLine1,
+        TagLine2,
+        TagLine3,
+        selectedMedia,
+        heroImage,
+        testimonials,
+        currentSection
+    ]);
+
+    // Add useEffect for automatic saving
+    useEffect(() => {
+        saveData();
+    }, [saveData]);
 
     const handleSaveDraft = () => {
         saveData();
@@ -746,30 +766,6 @@ const Cafe = () => {
         loadFromLocalStorage();
     }, []); // Run only on mount
 
-    // Add useEffect for automatic saving
-    useEffect(() => {
-        const autoSave = async () => {
-            await saveData();
-        };
-        autoSave();
-    }, [
-        companyName,
-        institutionid,
-        PrimaryColor,
-        SecondaryColor,
-        LightPrimaryColor,
-        LightestPrimaryColor,
-        contactInfo,
-        TagLine,
-        TagLine1,
-        TagLine2,
-        TagLine3,
-        selectedMedia,
-        logo,
-        testimonials,
-        currentSection
-    ]);
-
     // Add cleanup for object URLs
     useEffect(() => {
         const cleanup = () => {
@@ -799,93 +795,6 @@ const Cafe = () => {
             
         };
     }, [currentSection]);
-
-    // Add function to reset form
-    // const resetForm = useCallback(() => {
-    //     // Reset all state to initial values
-    //     setCurrentSection(0);
-    //     setinstitutionid('');
-    //     setCompanyName('');
-    //     setLogo(null);
-    //     setSelectedLogo(null);
-    //     setPrimaryColor('#30afbc');
-    //     setSecondaryColor('#2b9ea9');
-    //     setLightPrimaryColor('#e6f7f9');
-    //     setLightestPrimaryColor('#f3fbfc');
-    //     setTagLine('');
-    //     setTagLine1('');
-    //     setTagLine2('');
-    //     setContactInfo({
-    //         instagram: '',
-    //         facebook: '',
-    //         youTube: ''
-    //     });
-    //     setTestimonials([
-    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
-    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
-    //         { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
-    //     ]);
-    //     setTagLine3('');
-    //     setHeroImage(null);
-    //     setSelectedMedia(null);
-    //     setEmail('');
-    //     setPhone('');
-    //     setSocialMediaLinks({
-    //         facebook: '',
-    //         instagram: '',
-    //         youtube: ''
-    //     });
-    //     setUsefulLinks([]);
-
-    //     // Clear localStorage
-    //     localStorage.removeItem('cafeFormData');
-    // }, []);
-
-    // Add a function to clear all form data
-    const clearAllFormData = () => {
-        // Clear all form states
-        setCompanyName('');
-        setinstitutionid('');
-        setPrimaryColor('');
-        setSecondaryColor('');
-        setLightPrimaryColor('');
-        setLightestPrimaryColor('');
-        setLogo(null);
-        setSelectedLogo(null);
-        setTagLine('');
-        setTagLine1('');
-        setTagLine2('');
-        setTagLine3('');
-        setHeroImage(null);
-        setSelectedMedia(null);
-        setTestimonials(Array(5).fill({
-            customerName: '',
-            text: '',
-            rating: 5,
-            imgSrc: '',
-            uploadedFile: null
-        }));
-
-        // Clear all localStorage data
-        localStorage.removeItem('cafeFormData');
-        localStorage.removeItem('cafeFormLogo');
-        localStorage.removeItem('cafeFormHeroImage');
-        localStorage.removeItem('heroImageData');
-        localStorage.removeItem('testimonialImages');
-
-        // Clear any blob URLs
-        if (selectedLogo && selectedLogo.startsWith('blob:')) {
-            URL.revokeObjectURL(selectedLogo);
-        }
-        if (selectedMedia && selectedMedia.startsWith('blob:')) {
-            URL.revokeObjectURL(selectedMedia);
-        }
-        testimonials.forEach(testimonial => {
-            if (testimonial.imgSrc && testimonial.imgSrc.startsWith('blob:')) {
-                URL.revokeObjectURL(testimonial.imgSrc);
-            }
-        });
-    };
 
     const handlePrevSection = () => {
         if (currentSection > 0) {
@@ -946,6 +855,8 @@ const Cafe = () => {
                         setSelectedMedia={setSelectedMedia}
                         OurMissionBg={OurMissionBg}
                         setOurMissionBg={setOurMissionBg}
+                        selectedMissionBg={selectedMissionBg}
+                        setSelectedMissionBg={setSelectedMissionBg}
                     />
                 );
 

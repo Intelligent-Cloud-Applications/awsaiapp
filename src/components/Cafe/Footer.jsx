@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
 import { FiChevronLeft, FiChevronRight, FiCheck } from 'react-icons/fi';
 import PropTypes from 'prop-types';
-import { API } from 'aws-amplify';
 import { createAdminAccounts } from './account';
 
 function Footer({ 
@@ -20,7 +19,6 @@ function Footer({
     contactInfo
 }) {
     const UserCtx = useContext(Context);
-    const UserCtx2 = useContext(Context).userData;
     const Navigate = useNavigate();
     
     const progress = ((currentSection + 1) / sections.length) * 100;
@@ -99,7 +97,7 @@ function Footer({
                     },
                     admin2: {
                         emailId: contactInfo.emailId,
-                        phoneNumber: contactInfo.phoneNumber,
+                        phoneNumber: contactInfo.Query_PhoneNumber,
                         userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
                     }
                 });
