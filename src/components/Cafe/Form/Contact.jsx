@@ -59,93 +59,136 @@ const Contact = ({
   contactInfo,
   setContactInfo
 }) => {
-  const [address, setAddress] = useState('');
-  const [locationMap, setLocationMap] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [errors, setErrors] = useState({});
 
-  // Function to update username when first or last name changes
-  const updateUsername = (firstName, lastName) => {
-    const username = `${firstName} ${lastName}`.trim();
-    setContactInfo(prev => ({
-      ...prev,
-      username,
-      firstName,
-      lastName
-    }));
-  };
-
-  // Modified first name handler
-  const handleFirstNameChange = (e) => {
-    const value = e.target.value;
-    updateUsername(value, lastName);
-    const error = validateField('firstName', value);
-    setErrors(prev => ({ ...prev, firstName: error }));
-  };
-
-  // Modified last name handler
-  const handleLastNameChange = (e) => {
-    const value = e.target.value;
-    updateUsername(firstName, value);
-    const error = validateField('lastName', value);
-    setErrors(prev => ({ ...prev, lastName: error }));
-  };
-
-  // Modified useEffect to load data with new social media format
+  // Load data from localStorage when component mounts
   useEffect(() => {
     try {
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+      console.log('Loading saved data:', savedData); // Debug log
       
-      if (savedData.contactInfo) {
-        const contactData = savedData.contactInfo;
-        setContactInfo({
-          ...contactData,
-          username: `${contactData.firstName || ''} ${contactData.lastName || ''}`.trim()
-        });
-        setFirstName(contactData.firstName || '');
-        setLastName(contactData.lastName || '');
-        setAddress(contactData.address || '');
-        setLocationMap(contactData.visitUs?.locatemap || '');
-      }
-
-      // Load social media links in array format
-      if (savedData.socialMediaLinks) {
-        setContactInfo(prev => ({
-          ...prev,
-          socialMediaLinks: savedData.socialMediaLinks || [
-            { platform: 'Instagram', url: '' },
-            { platform: 'Facebook', url: '' },
-            { platform: 'YouTube', url: '' }
-          ]
-        }));
-      }
-    } catch (error) {
-      console.error('Error loading contact data:', error);
-    }
-  }, [setContactInfo]);
-
-  // Modified useEffect to save data with username
-  useEffect(() => {
-    try {
-      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-      
-      const updatedData = {
-        ...savedData,
-        contactInfo: {
-          ...contactInfo,
-          username: `${contactInfo.firstName || ''} ${contactInfo.lastName || ''}`.trim(),
-          visitUs: {
-            locatemap: contactInfo.visitUs?.locatemap || ''
-          }
+      // Create a properly structured contact info object with all fields
+      const newContactInfo = {
+        firstName: savedData.firstName || '',
+        lastName: savedData.lastName || '',
+        userName: savedData.userName || '',
+        emailId: savedData.emailId || '',
+        Query_PhoneNumber: savedData.Query_PhoneNumber || '',
+        Query_Address: savedData.Query_Address || '',
+        socialMediaLinks: {
+          instagram: savedData.socialMediaLinks?.instagram || '',
+          facebook: savedData.socialMediaLinks?.facebook || '',
+          youtube: savedData.socialMediaLinks?.youtube || ''
+        },
+        visitUs: {
+          locatemap: savedData.visitUs?.locatemap || ''
         }
       };
 
-      localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
+      console.log('Setting contact info to:', newContactInfo); // Debug log
+      setContactInfo(newContactInfo);
+      
     } catch (error) {
-      console.error('Error saving contact data:', error);
+      console.error('Error loading contact data:', error);
     }
-  }, [contactInfo]);
+  }, []); // Run only once on component mount
+
+  // Modified handleInputChange to properly update state and storage
+  const handleInputChange = (field, value) => {
+    const error = validateField(field, value);
+    setErrors(prev => ({ ...prev, [field]: error }));
+
+    setContactInfo(prev => {
+      let updated = { ...prev };
+      
+      switch (field) {
+        case 'locationMap':
+          updated = {
+            ...updated,
+            visitUs: {
+              ...updated.visitUs,
+              locatemap: value
+            }
+          };
+          break;
+        case 'firstName':
+          updated = {
+            ...updated,
+            firstName: value,
+            userName: `${value} ${updated.lastName || ''}`.trim()
+          };
+          break;
+        case 'lastName':
+          updated = {
+            ...updated,
+            lastName: value,
+            userName: `${updated.firstName || ''} ${value}`.trim()
+          };
+          break;
+        case 'emailId':
+          updated = {
+            ...updated,
+            emailId: value
+          };
+          break;
+        case 'phoneNumber':
+          updated = {
+            ...updated,
+            phoneNumber: value,
+            Query_PhoneNumber: value
+          };
+          break;
+        case 'address':
+          updated = {
+            ...updated,
+            address: value,
+            Query_Address: value
+          };
+          break;
+        case 'social_instagram':
+        case 'social_facebook':
+        case 'social_youtube':
+          const platform = field.split('_')[1];
+          updated = {
+            ...updated,
+            socialMediaLinks: {
+              ...updated.socialMediaLinks,
+              [platform]: value
+            }
+          };
+          break;
+        default:
+          updated[field] = value;
+      }
+
+      // Save to localStorage immediately
+      try {
+        const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+        const dataToSave = {
+          ...savedData,
+          firstName: updated.firstName || '',
+          lastName: updated.lastName || '',
+          userName: updated.userName || '',
+          emailId: updated.emailId || '',
+          Query_PhoneNumber: updated.phoneNumber || updated.Query_PhoneNumber || '',
+          Query_Address: updated.address || updated.Query_Address || '',
+          socialMediaLinks: {
+            instagram: updated.socialMediaLinks?.instagram || '',
+            facebook: updated.socialMediaLinks?.facebook || '',
+            youtube: updated.socialMediaLinks?.youtube || ''
+          },
+          visitUs: {
+            locatemap: updated.visitUs?.locatemap || ''
+          }
+        };
+        localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+      
+      return updated;
+    });
+  };
 
   // Validation function for all fields
   const validateField = (field, value) => {
@@ -154,14 +197,14 @@ const Contact = ({
         return !value?.trim() ? 'First name is required' : '';
       case 'lastName':
         return !value?.trim() ? 'Last name is required' : '';
-      case 'email':
+      case 'emailId':
         if (!value?.trim()) {
           return 'Email is required';
         } else if (!EMAIL_REGEX.test(value.trim())) {
           return 'Invalid email format';
         }
         return '';
-      case 'phone':
+      case 'phoneNumber':
         if (!value?.trim()) {
           return 'Phone number is required';
         } else if (!PHONE_REGEX.test(value.trim())) {
@@ -182,50 +225,16 @@ const Contact = ({
     }
   };
 
-  // Update handleInputChange to maintain proper data structure
-  const handleInputChange = (field, value) => {
-    const error = validateField(field, value);
-    setErrors(prev => ({ ...prev, [field]: error }));
-
-    setContactInfo(prev => {
-      const updated = { ...prev };
-      
-      if (field === 'locationMap') {
-        updated.visitUs = {
-          ...prev.visitUs,
-          locatemap: value
-        };
-      } else if (field.startsWith('social_')) {
-        const platform = field.split('_')[1];
-        updated.socialMediaLinks = {
-          ...prev.socialMediaLinks,
-          [platform]: value
-        };
-      } else {
-        updated[field] = value;
-      }
-
-      // Always update userName when firstName or lastName changes
-      if (field === 'firstName' || field === 'lastName') {
-        const firstName = field === 'firstName' ? value : prev.firstName;
-        const lastName = field === 'lastName' ? value : prev.lastName;
-        updated.userName = `${firstName || ''} ${lastName || ''}`.trim();
-      }
-      
-      return updated;
-    });
-  };
-
   // Export both the component and the validation function
   Contact.validateContactData = validateContactData;
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
           <FiPhone className="w-8 h-8 text-teal-600" />
         </div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Stay Connected</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Stay Connected</h1>
         <p className="text-gray-600">
           Provide your contact details and social media links for better connectivity.
         </p>
@@ -246,7 +255,8 @@ const Contact = ({
               </Label>
               <TextInput
                 id="firstName"
-                value={contactInfo.firstName || ''}
+                type="text"
+                value={contactInfo?.firstName || ''}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 placeholder="Enter your first name"
                 required
@@ -264,7 +274,8 @@ const Contact = ({
               </Label>
               <TextInput
                 id="lastName"
-                value={contactInfo.lastName || ''}
+                type="text"
+                value={contactInfo?.lastName || ''}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 placeholder="Enter your last name"
                 required
@@ -311,7 +322,7 @@ const Contact = ({
               <TextInput
                 id="phone"
                 type="tel"
-                value={contactInfo.phoneNumber || ''}
+                value={contactInfo.Query_PhoneNumber || ''}
                 onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 placeholder="Enter your phone number"
                 required
@@ -339,7 +350,7 @@ const Contact = ({
               <TextInput
                 id="address"
                 type="text"
-                value={contactInfo.address || ''}
+                value={contactInfo.Query_Address || ''}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 placeholder="Enter your business address"
                 required
@@ -387,22 +398,22 @@ const Contact = ({
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-                { platform: 'instagram', label: 'Instagram' },
-                { platform: 'facebook', label: 'Facebook' },
-                { platform: 'youtube', label: 'YouTube' }
+              { platform: 'instagram', label: 'Instagram' },
+              { platform: 'facebook', label: 'Facebook' },
+              { platform: 'youtube', label: 'YouTube' }
             ].map(({ platform, label }) => (
-                <div key={platform}>
-                    <Label htmlFor={platform} className="block text-sm font-medium text-gray-700 mb-1">
-                        {label}
-                    </Label>
-                    <TextInput
-                        id={platform}
-                        type="url"
-                        value={contactInfo.socialMediaLinks?.[platform] || ''}
-                        onChange={(e) => handleInputChange(`social_${platform}`, e.target.value)}
-                        placeholder={`${label} profile URL`}
-                    />
-                </div>
+              <div key={platform}>
+                <Label htmlFor={platform} className="block text-sm font-medium text-gray-700 mb-1">
+                  {label}
+                </Label>
+                <TextInput
+                  id={platform}
+                  type="url"
+                  value={contactInfo.socialMediaLinks?.[platform] || ''}
+                  onChange={(e) => handleInputChange(`social_${platform}`, e.target.value)}
+                  placeholder={`${label} profile URL`}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -415,15 +426,11 @@ Contact.propTypes = {
   contactInfo: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    emailId: PropTypes.string,
-    phoneNumber: PropTypes.string,
-    address: PropTypes.string,
     userName: PropTypes.string,
-    socialMediaLinks: PropTypes.shape({
-      instagram: PropTypes.string,
-      facebook: PropTypes.string,
-      youtube: PropTypes.string
-    }),
+    emailId: PropTypes.string,
+    Query_PhoneNumber: PropTypes.string,
+    Query_Address: PropTypes.string,
+    socialMediaLinks: PropTypes.object,
     visitUs: PropTypes.shape({
       locatemap: PropTypes.string
     })
