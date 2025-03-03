@@ -1,18 +1,6 @@
 import { API } from 'aws-amplify';
 
-// Add regex constants
-// const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
 
-/**
- * Creates admin accounts for the institution
- * @param {Object} params Parameters for creating admin accounts
- * @param {string} params.institution Institution ID
- * @param {string} params.country Country code
- * @param {Object} params.admin1 First admin details
- * @param {Object} params.admin2 Second admin details
- * @returns {Promise} API response
- */
 export const createAdminAccounts = async ({
     institution,
     country = 'default',
