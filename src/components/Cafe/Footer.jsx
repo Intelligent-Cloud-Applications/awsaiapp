@@ -112,18 +112,9 @@ function Footer({
                 localStorage.removeItem('heroImage');
                 localStorage.removeItem('testimonialImages');
                 localStorage.removeItem('cafeFormMissionBg');
-                localStorage.removeItem('cafeCurrentSection');
                 
-                // Navigate to dashboard first
-                
-                // Open payment URL in new tab
+                Navigate("/dashboard");
                 window.open(url, '_blank');
-                
-                // Navigate to fresh form
-                setTimeout(() => {
-                    Navigate("/dashboard", { replace: true });
-                    window.location.reload(); // Force reload to reset all form states
-                }, 100);
             } else {
                 scrollToTop();
             }
