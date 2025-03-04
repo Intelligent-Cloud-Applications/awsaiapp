@@ -348,24 +348,27 @@ const Panel = () => {
     };
 
 
-    const handleRowClick = (institution, event) => {
+    const handleRowClick = (institution) => {
         setPayment(institution.payment);
         setisMonthlyReport(institution.institutionid);
-
-        const link = event.currentTarget.querySelector(".change-page");
-        if (link) {
-            link.click();
-        }
+        navigate(`/pricing?institutionId=${institution.institutionid}`, {
+            state: {
+                institutionId: institution.institutionid,
+                cognitoId: Ctx.userData.cognitoId
+            }
+        });
     };
 
     const handlePayment = () => {
-        console.log("redirect to payment");
-        const SecondaryColor = "0000";
-        const PrimaryColor = "30afbc";
-        const url = `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${tempInstitution}`;
-        window.open(url, "_blank");
+        console.log("redirect to pricing");
+        
         setShowMemberList(false);
-        navigate("/dashboard");
+        navigate("/pricing", { 
+            state: { 
+                institutionId: tempInstitution,
+                cognitoId: Ctx.userData.cognitoId 
+            } 
+        });
     };
 
     const handleDropdownChange = useCallback(
@@ -395,14 +398,12 @@ const Panel = () => {
     const [showMemberList, setShowMemberList] = useState(false);
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
     const handleInstitutionClick = (client) => {
-        const updatedUserData = {
-            ...userData,
-            tempinstitutionName: client.institutionid,
-        };
-        setUserData(updatedUserData);
-        setTempInstitution(client.institutionid);
-        setSelectedInstitutionType(client.institutionType);
-        setShowMemberList(true);
+        navigate(`/pricing?institutionId=${client.institutionid}`, {
+            state: {
+                institutionId: client.institutionid,
+                cognitoId: Ctx.userData.cognitoId
+            }
+        });
     };
 
     const getLinkPath = (instituteType) => {

@@ -1523,7 +1523,7 @@ const New_Full = () => {
             : 'http://beta.happyprancer.com';
 
 
-        const url = `${baseUrl}/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}/${templateDetails.institutionId}`;
+        const url = `${baseUrl}/awsaiapp/${subscriptionDetails[0]?.productId || 'default'}/${UserCtx.userData.cognitoId}/${institutionNames}`;
 
 
         window.open(url, "_blank");
