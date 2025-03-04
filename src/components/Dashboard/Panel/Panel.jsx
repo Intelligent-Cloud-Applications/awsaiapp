@@ -26,6 +26,7 @@ const Panel = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState(null);
     const [isMonthlyReport, setisMonthlyReport] = useState("");
+    // eslint-disable-next-line
     const { clients, userData, setUserData } = useContext(Context);
     const clientsData = Object.entries(clients?.data || {});
     const [selectedStatuses, setSelectedStatuses] = useState({});
@@ -394,9 +395,12 @@ const Panel = () => {
         },
         []
     );
-    const [tempInstitution, setTempInstitution] = useState(null);
+    // eslint-disable-next-lin
+    const [tempInstitution] = null; 
     const [showMemberList, setShowMemberList] = useState(false);
+    // eslint-disable-next-line 
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
+    
     const handleInstitutionClick = (client) => {
         navigate(`/pricing?institutionId=${client.institutionid}`, {
             state: {
