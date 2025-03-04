@@ -191,18 +191,21 @@ const Company = ({
     const value = e.target.value;
     setCompanyName(value);
     setErrors(prev => ({ ...prev, companyName: !value.trim() ? 'Company name is required' : '' }));
-    
-    // Save to localStorage
+  }, [setCompanyName]);
+
+  // Update localStorage when company name or institution ID changes
+  useEffect(() => {
     try {
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
       localStorage.setItem('cafeFormData', JSON.stringify({
         ...savedData,
-        companyName: value
+        companyName: companyName || '',
+        institutionid: institutionid || ''
       }));
     } catch (error) {
-      console.error('Error saving company name:', error);
+      console.error('Error saving company data:', error);
     }
-  }, [setCompanyName]);
+  }, [companyName, institutionid]);
 
   // Handle logo change
   const handleLogoChange = useCallback(async (e) => {

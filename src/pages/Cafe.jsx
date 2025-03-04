@@ -522,7 +522,7 @@ const Cafe = () => {
                             institutionid,
                             testimonials: processedTestimonials,
                             createdBy: userData?.cognitoId,
-                            isFormFilled: false,
+                            isFormFilled: true,
                             lastUpdated: Date.now(),
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
@@ -730,14 +730,18 @@ const Cafe = () => {
         }
     };
 
-    const loadFromLocalStorage = async () => {
+    const loadFromLocalStorage = useCallback(async () => {
         try {
             const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
             console.log('Loading data from localStorage:', savedData);
             
             // Load company data
-            if (savedData.companyName) setCompanyName(savedData.companyName);
-            if (savedData.institutionid) setinstitutionid(savedData.institutionid);
+            if (savedData.companyName) {
+                setCompanyName(savedData.companyName);
+            }
+            if (savedData.institutionid) {
+                setinstitutionid(savedData.institutionid);
+            }
             setPrimaryColor(savedData.PrimaryColor || '#30afbc');
             setSecondaryColor(savedData.SecondaryColor || '#2b9ea9');
             setLightPrimaryColor(savedData.LightPrimaryColor || '#e6f7f9');
@@ -795,11 +799,11 @@ const Cafe = () => {
         } catch (error) {
             console.error('Error loading from localStorage:', error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         loadFromLocalStorage();
-    }, []); // Run only on mount
+    }, [loadFromLocalStorage]); // Run only on mount
 
     // Add cleanup for object URLs
     useEffect(() => {
