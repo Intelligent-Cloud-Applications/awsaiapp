@@ -54,10 +54,8 @@ const Pricing = () => {
               </ul>
               <button
                 onClick={() => {
-                  // Use the cognitoId from state if available, otherwise from context
                   const userCognitoId = cognitoId || Ctx.userData.cognitoId;
 
-                  // Construct the URL with path parameters
                   const url =
                     process.env.REACT_APP_STAGE === "PROD"
                       ? `https://payment.happyprancer.com/awsaiapp/${
@@ -71,7 +69,7 @@ const Pricing = () => {
                           userCognitoId
                         )}?childInstitution=${institutionId || ""}`;
 
-                  window.open(url, "_blank", "noopener,noreferrer");
+                  window.location.href = url;
                 }}
                 className="mt-auto text-white text-lg font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg w-full"
               >
