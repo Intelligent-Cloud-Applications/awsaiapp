@@ -35,6 +35,7 @@ const validateField = (field, value) => {
       if (!value?.trim()) {
         return 'Location map URL is required';
       } 
+
       return '';
     default:
       return '';
@@ -124,6 +125,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
   useEffect(() => {
     loadFromLocalStorage();
   }, [loadFromLocalStorage]);
+
 
   // Handle input changes with validation
   const handleInputChange = useCallback((field, value) => {

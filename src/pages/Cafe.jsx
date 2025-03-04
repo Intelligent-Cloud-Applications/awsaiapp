@@ -592,6 +592,7 @@ const Cafe = () => {
                 // Ensure institutionid and companyName are always saved
                 institutionid: institutionid || existingData.institutionid || '',
                 companyName: companyName || existingData.companyName || '',
+
                 PrimaryColor,
                 SecondaryColor,
                 LightPrimaryColor,
@@ -764,6 +765,7 @@ const Cafe = () => {
             }
             
             // Load the rest of the data
+
             setPrimaryColor(savedData.PrimaryColor || '#30afbc');
             setSecondaryColor(savedData.SecondaryColor || '#2b9ea9');
             setLightPrimaryColor(savedData.LightPrimaryColor || '#e6f7f9');
