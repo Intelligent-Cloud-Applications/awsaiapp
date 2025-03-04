@@ -1,74 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Label, TextInput } from 'flowbite-react';
-import { FiPhone, FiMail, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiPhone } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
 // Constants
-const MAX_USEFUL_LINKS = 5;
-
-// Validation
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
 const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
-// Move validateContactData outside the component and update validation
-const validateContactData = (contactData) => {
-  console.log('Validating contact data:', contactData);
-  
-  if (!contactData) {
-    console.log('Contact data is null or undefined');
-    return false;
+// Validation functions
+const validateField = (field, value) => {
+  switch (field) {
+    case 'firstName':
+      return !value?.trim() ? 'First name is required' : '';
+    case 'lastName':
+      return !value?.trim() ? 'Last name is required' : '';
+    case 'emailId':
+      if (!value?.trim()) {
+        return 'Email is required';
+      } else if (!EMAIL_REGEX.test(value.trim())) {
+        return 'Invalid email format';
+      }
+      return '';
+    case 'phoneNumber':
+      if (!value?.trim()) {
+        return 'Phone number is required';
+      } else if (!PHONE_REGEX.test(value.trim())) {
+        return 'Invalid phone number format';
+      }
+      return '';
+    case 'address':
+      return !value?.trim() ? 'Address is required' : '';
+    case 'locationMap':
+      if (!value?.trim()) {
+        return 'Location map URL is required';
+      } else if (!URL_REGEX.test(value.trim())) {
+        return 'Invalid URL format';
+      }
+      return '';
+    default:
+      return '';
   }
+};
+
+const validateContactData = (contactData) => {
+  if (!contactData) return false;
   
-  // Check all required fields
   const requiredFields = {
     firstName: contactData.firstName?.trim(),
     lastName: contactData.lastName?.trim(),
-    emailId: contactData.emailId?.trim(),  // Changed from email
-    phoneNumber: contactData.phoneNumber?.trim(),  // Changed from phone
+    emailId: contactData.emailId?.trim(),
+    phoneNumber: contactData.phoneNumber?.trim(),
     address: contactData.address?.trim()
   };
 
-  // Check if any required field is empty
   const missingFields = Object.entries(requiredFields).filter(([_, value]) => !value);
-  if (missingFields.length > 0) {
-    return false;
-  }
+  if (missingFields.length > 0) return false;
 
-  // Validate email format
-  if (!EMAIL_REGEX.test(contactData.emailId)) {
-    return false;
-  }
+  if (!EMAIL_REGEX.test(contactData.emailId)) return false;
+  if (!PHONE_REGEX.test(contactData.phoneNumber)) return false;
+  if (contactData.visitUs?.locatemap && !URL_REGEX.test(contactData.visitUs.locatemap)) return false;
 
-  // Validate phone format
-  if (!PHONE_REGEX.test(contactData.phoneNumber)) {
-    return false;
-  }
-
-  // Validate location map if provided
-  if (contactData.visitUs?.locatemap && !URL_REGEX.test(contactData.visitUs.locatemap)) {
-    return false;
-  }
-
-  const isValid = true; // All validations passed
-  console.log('Validation result:', isValid);
-  return isValid;
+  return true;
 };
 
-const Contact = ({
-  contactInfo,
-  setContactInfo
-}) => {
+const Contact = ({ contactInfo, setContactInfo }) => {
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load data from localStorage when component mounts
-  useEffect(() => {
+  // Memoize the initial contact info structure
+  const initialContactInfo = useMemo(() => ({
+    firstName: '',
+    lastName: '',
+    userName: '',
+    emailId: '',
+    phoneNumber: '',
+    Query_PhoneNumber: '',
+    address: '',
+    Query_Address: '',
+    socialMediaLinks: {
+      instagram: '',
+      facebook: '',
+      youtube: ''
+    },
+    visitUs: {
+      locatemap: ''
+    }
+  }), []);
+
+  // Load data from localStorage
+  const loadFromLocalStorage = useCallback(async () => {
     try {
+      setIsLoading(true);
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-      console.log('Loading saved data:', savedData); // Debug log
       
-      // Create a properly structured contact info object with all fields
       const newContactInfo = {
+        ...initialContactInfo,
         firstName: savedData.firstName || '',
         lastName: savedData.lastName || '',
         userName: savedData.userName || '',
@@ -85,16 +112,23 @@ const Contact = ({
         }
       };
 
-      console.log('Setting contact info to:', newContactInfo); // Debug log
       setContactInfo(newContactInfo);
-      
     } catch (error) {
       console.error('Error loading contact data:', error);
+      // Set default values on error
+      setContactInfo(initialContactInfo);
+    } finally {
+      setIsLoading(false);
     }
-  }, []); // Run only once on component mount
+  }, [setContactInfo, initialContactInfo]);
 
-  // Modified handleInputChange to properly update state and storage
-  const handleInputChange = (field, value) => {
+  // Load data on mount
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, [loadFromLocalStorage]);
+
+  // Handle input changes with validation
+  const handleInputChange = useCallback((field, value) => {
     const error = validateField(field, value);
     setErrors(prev => ({ ...prev, [field]: error }));
 
@@ -161,25 +195,14 @@ const Contact = ({
           updated[field] = value;
       }
 
-      // Save to localStorage immediately
+      // Save to localStorage
       try {
         const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
         const dataToSave = {
           ...savedData,
-          firstName: updated.firstName || '',
-          lastName: updated.lastName || '',
-          userName: updated.userName || '',
-          emailId: updated.emailId || '',
-          Query_PhoneNumber: updated.phoneNumber || updated.Query_PhoneNumber || '',
-          Query_Address: updated.address || updated.Query_Address || '',
-          socialMediaLinks: {
-            instagram: updated.socialMediaLinks?.instagram || '',
-            facebook: updated.socialMediaLinks?.facebook || '',
-            youtube: updated.socialMediaLinks?.youtube || ''
-          },
-          visitUs: {
-            locatemap: updated.visitUs?.locatemap || ''
-          }
+          ...updated,
+          socialMediaLinks: updated.socialMediaLinks,
+          visitUs: updated.visitUs
         };
         localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
       } catch (error) {
@@ -188,45 +211,22 @@ const Contact = ({
       
       return updated;
     });
-  };
+  }, [setContactInfo]);
 
-  // Validation function for all fields
-  const validateField = (field, value) => {
-    switch (field) {
-      case 'firstName':
-        return !value?.trim() ? 'First name is required' : '';
-      case 'lastName':
-        return !value?.trim() ? 'Last name is required' : '';
-      case 'emailId':
-        if (!value?.trim()) {
-          return 'Email is required';
-        } else if (!EMAIL_REGEX.test(value.trim())) {
-          return 'Invalid email format';
-        }
-        return '';
-      case 'phoneNumber':
-        if (!value?.trim()) {
-          return 'Phone number is required';
-        } else if (!PHONE_REGEX.test(value.trim())) {
-          return 'Invalid phone number format';
-        }
-        return '';
-      case 'address':
-        return !value?.trim() ? 'Address is required' : '';
-      case 'locationMap':
-        if (!value?.trim()) {
-          return 'Location map URL is required';
-        } else if (!URL_REGEX.test(value.trim())) {
-          return 'Invalid URL format';
-        }
-        return '';
-      default:
-        return '';
-    }
-  };
+  // Memoize social media platforms configuration
+  const socialPlatforms = useMemo(() => [
+    { id: 'instagram', label: 'Instagram', icon: 'instagram' },
+    { id: 'facebook', label: 'Facebook', icon: 'facebook' },
+    { id: 'youtube', label: 'YouTube', icon: 'youtube' }
+  ], []);
 
-  // Export both the component and the validation function
-  Contact.validateContactData = validateContactData;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -241,7 +241,7 @@ const Contact = ({
       </div>
 
       <div className="space-y-8">
-        {/* Name Fields */}
+        {/* Personal Information */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
             Personal Information
@@ -260,10 +260,15 @@ const Contact = ({
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 placeholder="Enter your first name"
                 required
-                className={`w-full ${errors.firstName ? 'border-red-500' : ''}`}
+                aria-label="First Name"
+                aria-invalid={!!errors.firstName}
+                aria-describedby={errors.firstName ? "firstName-error" : undefined}
+                className={errors.firstName ? 'border-red-500' : ''}
               />
               {errors.firstName && (
-                <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+                <p id="firstName-error" className="mt-1 text-sm text-red-500" role="alert">
+                  {errors.firstName}
+                </p>
               )}
             </div>
 
@@ -279,19 +284,24 @@ const Contact = ({
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 placeholder="Enter your last name"
                 required
-                className={`w-full ${errors.lastName ? 'border-red-500' : ''}`}
+                aria-label="Last Name"
+                aria-invalid={!!errors.lastName}
+                aria-describedby={errors.lastName ? "lastName-error" : undefined}
+                className={errors.lastName ? 'border-red-500' : ''}
               />
               {errors.lastName && (
-                <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+                <p id="lastName-error" className="mt-1 text-sm text-red-500" role="alert">
+                  {errors.lastName}
+                </p>
               )}
             </div>
           </div>
         </div>
 
-        {/* Basic Contact Details */}
+        {/* Contact Details */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Basic Contact Details
+            Contact Details
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -307,10 +317,15 @@ const Contact = ({
                 onChange={(e) => handleInputChange('emailId', e.target.value)}
                 placeholder="Enter your email"
                 required
-                className={`w-full ${errors.emailId ? 'border-red-500' : ''}`}
+                aria-label="Email Address"
+                aria-invalid={!!errors.emailId}
+                aria-describedby={errors.emailId ? "email-error" : undefined}
+                className={errors.emailId ? 'border-red-500' : ''}
               />
               {errors.emailId && (
-                <p className="mt-1 text-sm text-red-500">{errors.emailId}</p>
+                <p id="email-error" className="mt-1 text-sm text-red-500" role="alert">
+                  {errors.emailId}
+                </p>
               )}
             </div>
 
@@ -326,67 +341,77 @@ const Contact = ({
                 onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 placeholder="Enter your phone number"
                 required
-                className={`w-full ${errors.phoneNumber ? 'border-red-500' : ''}`}
+                aria-label="Phone Number"
+                aria-invalid={!!errors.phoneNumber}
+                aria-describedby={errors.phoneNumber ? "phone-error" : undefined}
+                className={errors.phoneNumber ? 'border-red-500' : ''}
               />
               {errors.phoneNumber && (
-                <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
+                <p id="phone-error" className="mt-1 text-sm text-red-500" role="alert">
+                  {errors.phoneNumber}
+                </p>
               )}
             </div>
           </div>
         </div>
 
-        {/* Address Section */}
+        {/* Address */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
             Address
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Address */}
-            <div>
-              <Label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                Address <span className="text-red-500">*</span>
-              </Label>
-              <TextInput
-                id="address"
-                type="text"
-                value={contactInfo.Query_Address || ''}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Enter your business address"
-                required
-                className={`w-full ${errors.address ? 'border-red-500' : ''}`}
-              />
-              {errors.address && (
-                <p className="mt-1 text-sm text-red-500">{errors.address}</p>
-              )}
-            </div>
+          <div>
+            <Label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+              Address <span className="text-red-500">*</span>
+            </Label>
+            <TextInput
+              id="address"
+              type="text"
+              value={contactInfo.Query_Address || ''}
+              onChange={(e) => handleInputChange('address', e.target.value)}
+              placeholder="Enter your business address"
+              required
+              aria-label="Business Address"
+              aria-invalid={!!errors.address}
+              aria-describedby={errors.address ? "address-error" : undefined}
+              className={errors.address ? 'border-red-500' : ''}
+            />
+            {errors.address && (
+              <p id="address-error" className="mt-1 text-sm text-red-500" role="alert">
+                {errors.address}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Location Map URL */}
+        {/* Location Map */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Location Map URL
+            Location Map
           </h2>
           
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <Label htmlFor="locationMap" className="block text-sm font-medium text-gray-700 mb-1">
-                Location Map URL <span className="text-red-500">*</span>
-              </Label>
-              <TextInput
-                id="locationMap"
-                type="url"
-                value={contactInfo.visitUs?.locatemap || ''}
-                onChange={(e) => handleInputChange('locationMap', e.target.value)}
-                placeholder="Enter Google Maps or location URL"
-                required
-                className={`w-full ${errors.locationMap ? 'border-red-500' : ''}`}
-              />
-              {errors.locationMap && (
-                <p className="mt-1 text-sm text-red-500">{errors.locationMap}</p>
-              )}
-            </div>
+          <div>
+            <Label htmlFor="locationMap" className="block text-sm font-medium text-gray-700 mb-1">
+              Location Map URL <span className="text-red-500">*</span>
+            </Label>
+            <TextInput
+              id="locationMap"
+              type="url"
+              value={contactInfo.visitUs?.locatemap || ''}
+              onChange={(e) => handleInputChange('locationMap', e.target.value)}
+              placeholder="Enter Google Maps or location URL"
+              required
+              aria-label="Location Map URL"
+              aria-invalid={!!errors.locationMap}
+              aria-describedby={errors.locationMap ? "locationMap-error" : undefined}
+              className={errors.locationMap ? 'border-red-500' : ''}
+            />
+            {errors.locationMap && (
+              <p id="locationMap-error" className="mt-1 text-sm text-red-500" role="alert">
+                {errors.locationMap}
+              </p>
+            )}
           </div>
         </div>
 
@@ -397,21 +422,18 @@ const Contact = ({
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { platform: 'instagram', label: 'Instagram' },
-              { platform: 'facebook', label: 'Facebook' },
-              { platform: 'youtube', label: 'YouTube' }
-            ].map(({ platform, label }) => (
-              <div key={platform}>
-                <Label htmlFor={platform} className="block text-sm font-medium text-gray-700 mb-1">
+            {socialPlatforms.map(({ id, label }) => (
+              <div key={id}>
+                <Label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
                   {label}
                 </Label>
                 <TextInput
-                  id={platform}
+                  id={id}
                   type="url"
-                  value={contactInfo.socialMediaLinks?.[platform] || ''}
-                  onChange={(e) => handleInputChange(`social_${platform}`, e.target.value)}
+                  value={contactInfo.socialMediaLinks?.[id] || ''}
+                  onChange={(e) => handleInputChange(`social_${id}`, e.target.value)}
                   placeholder={`${label} profile URL`}
+                  aria-label={`${label} Profile URL`}
                 />
               </div>
             ))}
@@ -430,12 +452,19 @@ Contact.propTypes = {
     emailId: PropTypes.string,
     Query_PhoneNumber: PropTypes.string,
     Query_Address: PropTypes.string,
-    socialMediaLinks: PropTypes.object,
+    socialMediaLinks: PropTypes.shape({
+      instagram: PropTypes.string,
+      facebook: PropTypes.string,
+      youtube: PropTypes.string
+    }),
     visitUs: PropTypes.shape({
       locatemap: PropTypes.string
     })
   }).isRequired,
   setContactInfo: PropTypes.func.isRequired
 };
+
+// Export both the component and the validation function
+Contact.validateContactData = validateContactData;
 
 export default Contact;
