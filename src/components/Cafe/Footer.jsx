@@ -85,45 +85,98 @@ function Footer({
             const success = await nextSection();
 
             if (success && currentSection === sections.length - 1) {
-                // Create admin accounts after testimonial submission
-                await createAdminAccounts({
-                    institution: institutionId,
-                    country: 'default',
-                    admin1: {
-                        cognitoId: UserCtx.userData.cognitoId,
-                        emailId: UserCtx.userData.emailId,
-                        phoneNumber: UserCtx.userData.phoneNumber || '',
-                        userName: UserCtx.userData.userName
-                    },
-                    admin2: {
-                        emailId: contactInfo.emailId,
-                        phoneNumber: contactInfo.Query_PhoneNumber,
-                        userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
-                    }
-                });
+                try {
+                    // Create admin accounts after testimonial submission
+                    await createAdminAccounts({
+                        institution: institutionId,
+                        country: 'default',
+                        admin1: {
+                            cognitoId: UserCtx.userData.cognitoId,
+                            emailId: UserCtx.userData.emailId,
+                            phoneNumber: UserCtx.userData.phoneNumber || '',
+                            userName: UserCtx.userData.userName
+                        },
+                        admin2: {
+                            emailId: contactInfo.emailId,
+                            phoneNumber: contactInfo.Query_PhoneNumber,
+                            userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
+                        }
+                    });
 
-                const SecondaryColor = "#0000";
-                const PrimaryColor = "#30afbc";
-                const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
-                
-                // Clear form data
-                localStorage.removeItem('cafeFormData');
-                localStorage.removeItem('cafeFormLogo');
-                localStorage.removeItem('heroImage');
-                localStorage.removeItem('testimonialImages');
-                localStorage.removeItem('cafeFormMissionBg');
-                localStorage.removeItem('cafeCurrentSection');
-                
-                // Navigate to dashboard first
-                
-                // Open payment URL in new tab
-                window.open(url, '_blank');
-                
-                // Navigate to fresh form
-                setTimeout(() => {
+                    const SecondaryColor = "#ffffff";
+                    const PrimaryColor = "#30afbc";
+                    
+                    const encodedPrimary = encodeURIComponent(PrimaryColor);
+                    const encodedSecondary = encodeURIComponent(SecondaryColor);
+                    const encodedEmail = encodeURIComponent(UserCtx.userData.emailId);
+                    
+                    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${encodedEmail}?primary=${encodedPrimary}&secondary=${encodedSecondary}&institutionId=${institutionId}`;
+                    
+                    // Clear all local storage items
+                    const clearStorage = () => {
+                        console.log('Clearing local storage...');
+                        // Clear form data
+                        localStorage.removeItem('cafeFormData');
+                        localStorage.removeItem('cafeFormLogo');
+                        localStorage.removeItem('heroImage');
+                        localStorage.removeItem('testimonialImages');
+                        localStorage.removeItem('cafeFormMissionBg');
+                        localStorage.removeItem('cafeCurrentSection');
+                        
+                        // Clear company data
+                        localStorage.removeItem('companyName');
+                        localStorage.removeItem('institutionid');
+                        
+                        // Clear any other form-related data
+                        localStorage.removeItem('formProgress');
+                        localStorage.removeItem('currentStep');
+                        localStorage.removeItem('formState');
+                        localStorage.removeItem('contactInfo');
+                        localStorage.removeItem('testimonials');
+                        
+                        // For safety, get all keys and remove any that contain relevant keywords
+                        const keysToCheck = ['cafe', 'form', 'company', 'institution', 'step'];
+                        Object.keys(localStorage).forEach(key => {
+                            const keyLower = key.toLowerCase();
+                            if (keysToCheck.some(check => keyLower.includes(check))) {
+                                localStorage.removeItem(key);
+                            }
+                        });
+                        
+                        console.log('Local storage cleared completely');
+                    };
+
+                    // Execute the flow
+                    clearStorage();
+                    
+                    // Small delay to ensure storage is cleared
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    console.log('Opening payment URL...');
+                    const newWindow = window.open(url, '_blank');
+                    if (newWindow) {
+                        console.log('Payment URL opened successfully');
+                    } else {
+                        console.error('Failed to open payment URL - popup might be blocked');
+                        alert('Please allow popups to open the payment page');
+                    }
+                    
+                    // Another small delay before navigation
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    console.log('Navigating to dashboard...');
                     Navigate("/dashboard", { replace: true });
-                    window.location.reload(); // Force reload to reset all form states
-                }, 100);
+                    
+                    // Final reload after navigation
+                    setTimeout(() => {
+                        console.log('Reloading page...');
+                        window.location.reload();
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error in submission flow:', error);
+                    alert('Error during submission: ' + error.message);
+                }
             } else {
                 scrollToTop();
             }
