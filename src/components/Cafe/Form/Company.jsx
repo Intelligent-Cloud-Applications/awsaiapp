@@ -1,7 +1,64 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Label, TextInput } from 'flowbite-react';
 import { FiType, FiEdit2, FiUpload } from 'react-icons/fi';
 import { GrCafeteria } from "react-icons/gr";
+import PropTypes from 'prop-types';
+
+// Constants
+const MAX_FILE_SIZE_MB = 50;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+// Validation functions
+const validateCompanyData = (data) => {
+  const errors = {};
+
+  if (!data.institutionid?.trim()) {
+    errors.institutionid = 'Institution ID is required';
+  }
+
+  if (!data.companyName?.trim()) {
+    errors.companyName = 'Company name is required';
+  }
+
+  if (!data.logo && !data.selectedLogo) {
+    errors.logo = 'Company logo is required';
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
+// Utility functions
+const validateImageFile = (file) => {
+  if (!file) {
+    return 'Please select a file';
+  }
+
+  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    return `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.map(type => type.split('/')[1]).join(', ')}`;
+  }
+
+  const fileSizeMB = file.size / (1024 * 1024);
+  if (fileSizeMB > MAX_FILE_SIZE_MB) {
+    return `File size exceeds ${MAX_FILE_SIZE_MB}MB. Please choose a smaller file.`;
+  }
+
+  return null;
+};
+
+const generateCompanyId = (companyName) => {
+  if (!companyName?.trim()) return '';
+
+  const letters = companyName
+    .replace(/[^a-zA-Z]/g, '')
+    .slice(0, 4)
+    .toUpperCase()
+    .padEnd(4, 'X');
+  const digits = Math.floor(1000 + Math.random() * 9000);
+  return `${letters}${digits}`;
+};
 
 const Company = ({
   companyName,
@@ -22,66 +79,147 @@ const Company = ({
   setSelectedLogo
 }) => {
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [localLogo, setLocalLogo] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Handle logo persistence
-  useEffect(() => {
-    const loadSavedLogo = async () => {
-      const savedLogo = localStorage.getItem('cafeFormLogo');
-      if (!savedLogo) return;
-
-      try {
-        const { logo: savedLogoData, fileName } = JSON.parse(savedLogo);
-        if (!savedLogoData) return;
-
-        setLocalLogo(savedLogoData);
-        
-        const response = await fetch(savedLogoData);
-        const blob = await response.blob();
-        const file = new File([blob], fileName || 'logo.jpg', { type: 'image/jpeg' });
-        
-        setLogo(file);
-        setSelectedLogo(file);
-      } catch (error) {
-        console.error('Error loading saved logo:', error);
-        // Clear invalid data from localStorage
-        localStorage.removeItem('cafeFormLogo');
-      }
-    };
-
-    loadSavedLogo();
-  }, [setLogo, setSelectedLogo]); // Include dependencies
+  // Memoize initial state
+  const initialState = useMemo(() => ({
+    companyName: '',
+    institutionid: '',
+    PrimaryColor: '#30afbc',
+    SecondaryColor: '#2b9ea9',
+    LightPrimaryColor: '#e6f7f9',
+    LightestPrimaryColor: '#f3fbfc',
+    logo: null,
+    selectedLogo: null
+  }), []);
 
   // Generate Company ID
   useEffect(() => {
-    const generateCompanyId = () => {
-      if (!companyName?.length) return;
+    if (!companyName?.trim()) return;
+    
+    const newId = generateCompanyId(companyName);
+    setinstitutionid(newId);
+    
+    // Save to localStorage
+    try {
+      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+      localStorage.setItem('cafeFormData', JSON.stringify({
+        ...savedData,
+        institutionid: newId
+      }));
+    } catch (error) {
+      console.error('Error saving institution ID:', error);
+    }
+  }, [companyName, setinstitutionid]);
 
-      const letters = companyName
-        .replace(/[^a-zA-Z]/g, '')
-        .slice(0, 4)
-        .toUpperCase()
-        .padEnd(4, 'X');
-      const digits = Math.floor(1000 + Math.random() * 9000);
+  // Load saved data
+  const loadFromLocalStorage = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
       
-      setinstitutionid(`${letters}${digits}`);
-    };
+      if (savedData.companyName && !companyName) {
+        setCompanyName(savedData.companyName);
+      }
+      if (savedData.institutionid && !institutionid) {
+        setinstitutionid(savedData.institutionid);
+      }
+      if (savedData.logo && !logo) {
+        setLogo(savedData.logo);
+      }
+      if (savedData.PrimaryColor) {
+        setPrimaryColor(savedData.PrimaryColor);
+      }
+      if (savedData.SecondaryColor) {
+        setSecondaryColor(savedData.SecondaryColor);
+      }
+      if (savedData.LightPrimaryColor) {
+        setLightPrimaryColor(savedData.LightPrimaryColor);
+      }
+      if (savedData.LightestPrimaryColor) {
+        setLightestPrimaryColor(savedData.LightestPrimaryColor);
+      }
 
-    generateCompanyId();
-  }, [companyName, setinstitutionid]); // Include dependencies
+      // Load logo if exists
+      const savedLogo = localStorage.getItem('cafeFormLogo');
+      if (savedLogo) {
+        try {
+          const { logo: savedLogoData } = JSON.parse(savedLogo);
+          if (savedLogoData) {
+            setLocalLogo(savedLogoData);
+          }
+        } catch (error) {
+          console.error('Error loading saved logo:', error);
+          localStorage.removeItem('cafeFormLogo');
+        }
+      }
+    } catch (error) {
+      console.error('Error loading company data:', error);
+      // Set default values on error
+      setCompanyName(initialState.companyName);
+      setinstitutionid(initialState.institutionid);
+      setPrimaryColor(initialState.PrimaryColor);
+      setSecondaryColor(initialState.SecondaryColor);
+      setLightPrimaryColor(initialState.LightPrimaryColor);
+      setLightestPrimaryColor(initialState.LightestPrimaryColor);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    initialState,
+    companyName,
+    institutionid,
+    logo,
+    setCompanyName,
+    setinstitutionid,
+    setLogo,
+    setPrimaryColor,
+    setSecondaryColor,
+    setLightPrimaryColor,
+    setLightestPrimaryColor
+  ]);
 
-  // Memoize logo change handler
+  // Load data on mount
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, [loadFromLocalStorage]);
+
+  // Handle company name change
+  const handleCompanyNameChange = useCallback((e) => {
+    const value = e.target.value;
+    setCompanyName(value);
+    setErrors(prev => ({ ...prev, companyName: !value.trim() ? 'Company name is required' : '' }));
+  }, [setCompanyName]);
+
+  // Update localStorage when company name or institution ID changes
+  useEffect(() => {
+    try {
+      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+      localStorage.setItem('cafeFormData', JSON.stringify({
+        ...savedData,
+        companyName: companyName || '',
+        institutionid: institutionid || ''
+      }));
+    } catch (error) {
+      console.error('Error saving company data:', error);
+    }
+  }, [companyName, institutionid]);
+
+  // Handle logo change
   const handleLogoChange = useCallback(async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     try {
       setIsProcessing(true);
       setLocalLogo('loading');
 
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Please upload an image file');
+      // Validate file
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        throw new Error(validationError);
       }
 
       const reader = new FileReader();
@@ -133,7 +271,7 @@ const Company = ({
     } finally {
       setIsProcessing(false);
     }
-  }, [setLogo, setSelectedLogo]); // Include dependencies
+  }, [setLogo, setSelectedLogo]);
 
   // Memoize logo preview renderer
   const renderLogoPreview = useCallback(() => {
@@ -144,7 +282,7 @@ const Company = ({
           <p className={`text-sm ${errors.logo ? 'text-red-500' : 'text-gray-500'}`}>
             Click to upload logo
           </p>
-          <p className="text-xs text-gray-500">Maximum file size: 50MB</p>
+          <p className="text-xs text-gray-500">Maximum file size: {MAX_FILE_SIZE_MB}MB</p>
           <p className="text-xs text-gray-500">Image will be compressed automatically</p>
         </div>
       );
@@ -173,7 +311,28 @@ const Company = ({
         </div>
       </div>
     );
-  }, [localLogo, isProcessing, errors.logo]); // Include dependencies
+  }, [localLogo, isProcessing, errors.logo]);
+
+  // Memoize color options
+  const colorOptions = useMemo(() => [
+    { value: PrimaryColor, onChange: setPrimaryColor, label: 'Primary Color' },
+    { value: SecondaryColor, onChange: setSecondaryColor, label: 'Secondary Color' },
+    { value: LightPrimaryColor, onChange: setLightPrimaryColor, label: 'Light Primary' },
+    { value: LightestPrimaryColor, onChange: setLightestPrimaryColor, label: 'Lightest Primary' }
+  ], [
+    PrimaryColor, setPrimaryColor,
+    SecondaryColor, setSecondaryColor,
+    LightPrimaryColor, setLightPrimaryColor,
+    LightestPrimaryColor, setLightestPrimaryColor
+  ]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -188,6 +347,7 @@ const Company = ({
       </div>
 
       <div className="space-y-8">
+        {/* Basic Information */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <FiType className="w-5 h-5 text-teal-600" />
@@ -201,8 +361,8 @@ const Company = ({
               </Label>
               <TextInput
                 id="companyName"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                value={companyName || ''}
+                onChange={handleCompanyNameChange}
                 placeholder="Enter your company name"
                 required
                 className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
@@ -216,7 +376,7 @@ const Company = ({
               </Label>
               <TextInput
                 id="institutionid"
-                value={institutionid}
+                value={institutionid || ''}
                 readOnly
                 className="w-full bg-gray-100 border border-gray-200 cursor-not-allowed rounded-lg"
               />
@@ -226,6 +386,7 @@ const Company = ({
           </div>
         </div>
 
+        {/* Theme Colors */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <FiEdit2 className="w-5 h-5 text-teal-600" />
@@ -233,12 +394,7 @@ const Company = ({
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { value: PrimaryColor, onChange: setPrimaryColor, label: 'Primary Color' },
-              { value: SecondaryColor, onChange: setSecondaryColor, label: 'Secondary Color' },
-              { value: LightPrimaryColor, onChange: setLightPrimaryColor, label: 'Light Primary' },
-              { value: LightestPrimaryColor, onChange: setLightestPrimaryColor, label: 'Lightest Primary' }
-            ].map(({ value, onChange, label }, index) => (
+            {colorOptions.map(({ value, onChange, label }, index) => (
               <div key={index} className="relative group flex flex-col items-center">
                 <div className="relative">
                   <div 
@@ -262,6 +418,7 @@ const Company = ({
           </div>
         </div>
 
+        {/* Logo Upload */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <FiUpload className="w-5 h-5 text-teal-600" />
@@ -295,4 +452,26 @@ const Company = ({
   );
 };
 
-export default React.memo(Company);
+Company.propTypes = {
+  companyName: PropTypes.string.isRequired,
+  setCompanyName: PropTypes.func.isRequired,
+  institutionid: PropTypes.string.isRequired,
+  setinstitutionid: PropTypes.func.isRequired,
+  PrimaryColor: PropTypes.string.isRequired,
+  setPrimaryColor: PropTypes.func.isRequired,
+  SecondaryColor: PropTypes.string.isRequired,
+  setSecondaryColor: PropTypes.func.isRequired,
+  LightPrimaryColor: PropTypes.string.isRequired,
+  setLightPrimaryColor: PropTypes.func.isRequired,
+  LightestPrimaryColor: PropTypes.string.isRequired,
+  setLightestPrimaryColor: PropTypes.func.isRequired,
+  logo: PropTypes.string,
+  setLogo: PropTypes.func.isRequired,
+  selectedLogo: PropTypes.object,
+  setSelectedLogo: PropTypes.func.isRequired
+};
+
+// Export both the component and validation function
+Company.validateCompanyData = validateCompanyData;
+
+export default Company;

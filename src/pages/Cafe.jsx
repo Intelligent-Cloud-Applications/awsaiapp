@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCoffee, FiPhone, FiHome, FiStar } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
@@ -18,15 +17,23 @@ import { compressImage } from '../utils/imageUtils';
 
 // Define sections with icons
 const FORM_SECTIONS = [
-    { id: 'company', title: 'Company', description: 'Tell us about your company', icon: FiCoffee },
-    { id: 'contact', title: 'Contact', description: 'How can customers reach you?', icon: FiPhone },
-    { id: 'home', title: 'Home', description: 'Design your homepage', icon: FiHome },
-    { id: 'testimonials', title: 'Testimonials', description: 'Share customer experiences', icon: FiStar }
+    { id: 'company', title: 'Company'},
+    { id: 'contact', title: 'Contact' },
+    { id: 'home', title: 'Home'},
+    { id: 'testimonials', title: 'Testimonials' }
 ];
 
 const Cafe = () => {
     const navigate = useNavigate();
-    const [currentSection, setCurrentSection] = useState(0);
+    const [currentSection, setCurrentSection] = useState(() => {
+        try {
+            const savedSection = localStorage.getItem('cafeCurrentSection');
+            return savedSection ? parseInt(savedSection, 10) : 0;
+        } catch (error) {
+            console.error('Error loading current section:', error);
+            return 0;
+        }
+    });
     const [showModal, setShowModal] = useState(false);
     const { userData } = useContext(Context);
     const util = useContext(Context).util;
@@ -91,6 +98,7 @@ const Cafe = () => {
     const [TagLine1, setTagLine1] = useState('');
     const [TagLine2, setTagLine2] = useState('');
     const [TagLine3, setTagLine3] = useState('');
+    const [productTagline, setProductTagline] = useState('');
     const [contactInfo, setContactInfo] = useState(initializeContactInfo);
     const [OurMissionBg, setOurMissionBg] = useState(null);
     const [selectedMissionBg, setSelectedMissionBg] = useState(null);
@@ -116,6 +124,15 @@ const Cafe = () => {
             return null;
         }
     };
+
+    // Save current section to localStorage whenever it changes
+    useEffect(() => {
+        try {
+            localStorage.setItem('cafeCurrentSection', currentSection.toString());
+        } catch (error) {
+            console.error('Error saving current section:', error);
+        }
+    }, [currentSection]);
 
     const handleNextSection = async () => {
         try {
@@ -193,17 +210,7 @@ const Cafe = () => {
                             LightestPrimaryColor: LightestPrimaryColor || baseData.LightestPrimaryColor || "#f3fbfc",
                             createdBy: userData.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now(),
-                            usefulLinks: [
-                                {
-                                    style: {
-                                        color: "white",
-                                        textDecoration: "none"
-                                    },
-                                    title: "Awsaiapp",
-                                    url: "http://awsaiapp.com/"
-                                }
-                            ]
+                            lastUpdated: Date.now()
                         };
 
                         // Save to API
@@ -268,17 +275,7 @@ const Cafe = () => {
                             logo: logoData.logo || existingData.logo || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
-                            lastUpdated: Date.now(),
-                            usefulLinks: [
-                                {
-                                    style: {
-                                        color: "white",
-                                        textDecoration: "none"
-                                    },
-                                    title: "Awsaiapp",
-                                    url: "http://awsaiapp.com/"
-                                }
-                            ]
+                            lastUpdated: Date.now()
                         };
 
                         // Make API call
@@ -306,10 +303,12 @@ const Cafe = () => {
                     break;
 
                 case 2: // Home
-                    if (!TagLine || !TagLine1 || !TagLine2) {
-                        if (!TagLine) alert("Please enter the main tagline");
-                        if (!TagLine1) alert("Please enter tagline 1");
-                        if (!TagLine2) alert("Please enter tagline 2");
+                    // Validate required taglines
+                    if (!TagLine?.trim() || !TagLine1?.trim() || !TagLine2?.trim() || !productTagline?.trim()) {
+                        if (!TagLine?.trim()) alert("Please enter the main tagline");
+                        if (!TagLine1?.trim()) alert("Please enter tagline 1");
+                        if (!TagLine2?.trim()) alert("Please enter tagline 2");
+                        if (!productTagline?.trim()) alert("Please enter product tagline");
                         success = false;
                         break;
                     }
@@ -418,6 +417,7 @@ const Cafe = () => {
                             TagLine1: TagLine1.trim(),
                             TagLine2: TagLine2.trim(),
                             TagLine3: TagLine3?.trim() || '',
+                            productTagline: productTagline?.trim() || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
                             logoUrl: currentLogoUrl,
@@ -431,17 +431,7 @@ const Cafe = () => {
                             OurMissionBg: currentMissionBgUrl,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
-                            lastUpdated: Date.now(),
-                            usefulLinks: [
-                                {
-                                    style: {
-                                        color: "white",
-                                        textDecoration: "none"
-                                    },
-                                    title: "Awsaiapp",
-                                    url: "http://awsaiapp.com/"
-                                }
-                            ]
+                            lastUpdated: Date.now()
                         };
 
                         const response = await API.put("clients", '/user/cafewebDevForm', {
@@ -531,23 +521,13 @@ const Cafe = () => {
                             institutionid,
                             testimonials: processedTestimonials,
                             createdBy: userData?.cognitoId,
-                            isFormFilled: true,
+                            isFormFilled: false,
                             lastUpdated: Date.now(),
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
-                            section: 'home',
-                            usefulLinks: [
-                                {
-                                    style: {
-                                        color: "white",
-                                        textDecoration: "none"
-                                    },
-                                    title: "Awsaiapp",
-                                    url: "http://awsaiapp.com/"
-                                }
-                            ]
+                            section: 'home'
                         };
 
                         const apiResponse = await API.put("clients", '/user/cafewebDevForm', {
@@ -566,7 +546,10 @@ const Cafe = () => {
                         }));
 
                         await saveData();
-                        setCurrentSection(prev => prev + 1);
+                        const nextSection = currentSection + 1;
+                        setCurrentSection(nextSection);
+                        // Save the next section to localStorage
+                        localStorage.setItem('cafeCurrentSection', nextSection.toString());
                         return true;
 
                     } catch (error) {
@@ -583,7 +566,10 @@ const Cafe = () => {
 
             if (success) {
                 await saveData();
-                setCurrentSection(prev => prev + 1);
+                const nextSection = currentSection + 1;
+                setCurrentSection(nextSection);
+                // Save the next section to localStorage
+                localStorage.setItem('cafeCurrentSection', nextSection.toString());
                 return true;
             }
             return false;
@@ -603,8 +589,10 @@ const Cafe = () => {
             
             const dataToSave = {
                 ...existingData,
-                institutionid,
-                companyName,
+                // Ensure institutionid and companyName are always saved
+                institutionid: institutionid || existingData.institutionid || '',
+                companyName: companyName || existingData.companyName || '',
+
                 PrimaryColor,
                 SecondaryColor,
                 LightPrimaryColor,
@@ -612,24 +600,25 @@ const Cafe = () => {
                 logoUrl: logo,
                 
                 // Contact info
-                firstName: contactInfo.firstName,
-                lastName: contactInfo.lastName,
-                emailId: contactInfo.emailId,
-                Query_PhoneNumber: contactInfo.phoneNumber || contactInfo.Query_PhoneNumber,
-                Query_Address: contactInfo.address || contactInfo.Query_Address,
-                userName: contactInfo.userName,
-                socialMediaLinks: contactInfo.socialMediaLinks,
-                visitUs: contactInfo.visitUs,
+                firstName: contactInfo.firstName || '',
+                lastName: contactInfo.lastName || '',
+                emailId: contactInfo.emailId || '',
+                Query_PhoneNumber: contactInfo.phoneNumber || contactInfo.Query_PhoneNumber || '',
+                Query_Address: contactInfo.address || contactInfo.Query_Address || '',
+                userName: contactInfo.userName || '',
+                socialMediaLinks: contactInfo.socialMediaLinks || {},
+                visitUs: contactInfo.visitUs || {},
                 
                 // Taglines
-                productTagline: TagLine,
-                tagLine1: TagLine1,
-                tagLine2: TagLine2,
-                TagLine3,
+                TagLine: TagLine || '',
+                TagLine1: TagLine1 || '',
+                TagLine2: TagLine2 || '',
+                TagLine3: TagLine3 || '',
+                productTagline: productTagline || '',
                 
                 // Media
                 selectedMedia,
-                heroImage: heroImage instanceof File ? null : heroImage, // Only save URL, not the File object
+                heroImage: heroImage instanceof File ? null : heroImage,
                 
                 // Testimonials
                 testimonials: testimonials.map(t => ({
@@ -645,7 +634,17 @@ const Cafe = () => {
                 lastUpdated: Date.now()
             };
 
+            // Save to localStorage
             localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            
+            // Also save institutionid and companyName separately to ensure persistence
+            if (institutionid) {
+                localStorage.setItem('cafeInstitutionId', institutionid);
+            }
+            if (companyName) {
+                localStorage.setItem('cafeCompanyName', companyName);
+            }
+            
             console.log('Saved data to localStorage:', dataToSave);
             return true;
         } catch (error) {
@@ -665,6 +664,7 @@ const Cafe = () => {
         TagLine1,
         TagLine2,
         TagLine3,
+        productTagline,
         selectedMedia,
         heroImage,
         testimonials,
@@ -690,11 +690,13 @@ const Cafe = () => {
                 );
             }
 
-                localStorage.removeItem('cafeFormData');
-                localStorage.removeItem('cafeFormLogo');
-                localStorage.removeItem('heroImage');
-                localStorage.removeItem('testimonialImages');
-                localStorage.removeItem('cafeFormMissionBg');
+            // Clear all form-related data from localStorage
+            localStorage.removeItem('cafeFormData');
+            localStorage.removeItem('cafeFormLogo');
+            localStorage.removeItem('cafeFormHeroImage');
+            localStorage.removeItem('testimonialImages');
+            localStorage.removeItem('cafeFormMissionBg');
+            localStorage.removeItem('cafeCurrentSection'); // Also clear the current section
 
             setinstitutionid('');
             setCompanyName('');
@@ -708,6 +710,7 @@ const Cafe = () => {
             setTagLine1('');
             setTagLine2('');
             setTagLine3('');
+            setProductTagline('');
             setContactInfo({
                 firstName: '',
                 lastName: '',
@@ -738,76 +741,93 @@ const Cafe = () => {
         }
     };
 
-    const loadFromLocalStorage = async () => {
+    const loadFromLocalStorage = useCallback(async () => {
         try {
-            const savedData = localStorage.getItem('cafeFormData');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                console.log('Loading data from localStorage:', parsedData);
-                
-                // Load company data
-                setCompanyName(parsedData.companyName || '');
-                setinstitutionid(parsedData.institutionid || '');
-                setPrimaryColor(parsedData.PrimaryColor || '#30afbc');
-                setSecondaryColor(parsedData.SecondaryColor || '#2b9ea9');
-                setLightPrimaryColor(parsedData.LightPrimaryColor || '#e6f7f9');
-                setLightestPrimaryColor(parsedData.LightestPrimaryColor || '#f3fbfc');
-                
-                // Load contact info
-                const contactData = {
-                    firstName: parsedData.firstName || '',
-                    lastName: parsedData.lastName || '',
-                    emailId: parsedData.emailId || '',
-                    phoneNumber: parsedData.Query_PhoneNumber || '',
-                    Query_PhoneNumber: parsedData.Query_PhoneNumber || '',
-                    address: parsedData.Query_Address || '',
-                    Query_Address: parsedData.Query_Address || '',
-                    userName: parsedData.userName || '',
-                    socialMediaLinks: parsedData.socialMediaLinks || {
-                        instagram: '',
-                        facebook: '',
-                        youtube: ''
-                    },
-                    visitUs: parsedData.visitUs || {
-                        locatemap: ''
-                    }
-                };
-                setContactInfo(contactData);
-                
-                // Load taglines
-                setTagLine(parsedData.productTagline || '');
-                setTagLine1(parsedData.tagLine1 || '');
-                setTagLine2(parsedData.tagLine2 || '');
-                setTagLine3(parsedData.TagLine3 || '');
-                
-                // Load media
-                setSelectedMedia(parsedData.selectedMedia || null);
-                setLogo(parsedData.logoUrl || null);
-                
-                // Load testimonials
-                if (parsedData.testimonials?.length > 0) {
-                    const loadedTestimonials = parsedData.testimonials.map(t => ({
-                        customerName: t.customerName || '',
-                        text: t.text || '',
-                        rating: t.rating || 5,
-                        imgSrc: t.imgSrc || '',
-                        imageBase64: t.imageBase64 || '',
-                        uploadedFile: null
-                    }));
-                    setTestimonials(loadedTestimonials);
+            // First try to load from separate storage
+            const savedInstitutionId = localStorage.getItem('cafeInstitutionId');
+            const savedCompanyName = localStorage.getItem('cafeCompanyName');
+            
+            // Then load the rest of the data
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            console.log('Loading data from localStorage:', savedData);
+            
+            // Set institutionid and companyName with priority to separate storage
+            if (savedInstitutionId) {
+                setinstitutionid(savedInstitutionId);
+            } else if (savedData.institutionid) {
+                setinstitutionid(savedData.institutionid);
+            }
+            
+            if (savedCompanyName) {
+                setCompanyName(savedCompanyName);
+            } else if (savedData.companyName) {
+                setCompanyName(savedData.companyName);
+            }
+            
+            // Load the rest of the data
+
+            setPrimaryColor(savedData.PrimaryColor || '#30afbc');
+            setSecondaryColor(savedData.SecondaryColor || '#2b9ea9');
+            setLightPrimaryColor(savedData.LightPrimaryColor || '#e6f7f9');
+            setLightestPrimaryColor(savedData.LightestPrimaryColor || '#f3fbfc');
+            
+            // Load contact info
+            const contactData = {
+                firstName: savedData.firstName || '',
+                lastName: savedData.lastName || '',
+                emailId: savedData.emailId || '',
+                phoneNumber: savedData.Query_PhoneNumber || '',
+                Query_PhoneNumber: savedData.Query_PhoneNumber || '',
+                address: savedData.Query_Address || '',
+                Query_Address: savedData.Query_Address || '',
+                userName: savedData.userName || '',
+                socialMediaLinks: savedData.socialMediaLinks || {
+                    instagram: '',
+                    facebook: '',
+                    youtube: ''
+                },
+                visitUs: savedData.visitUs || {
+                    locatemap: ''
                 }
-                
-                // Load current section
-                setCurrentSection(parsedData.currentSection || 0);
+            };
+            setContactInfo(contactData);
+            
+            // Load taglines
+            setTagLine(savedData.TagLine || '');
+            setTagLine1(savedData.TagLine1 || '');
+            setTagLine2(savedData.TagLine2 || '');
+            setTagLine3(savedData.TagLine3 || '');
+            setProductTagline(savedData.productTagline || '');
+            
+            // Load media
+            setSelectedMedia(savedData.selectedMedia || null);
+            setLogo(savedData.logoUrl || null);
+            
+            // Load testimonials
+            if (savedData.testimonials?.length > 0) {
+                const loadedTestimonials = savedData.testimonials.map(t => ({
+                    customerName: t.customerName || '',
+                    text: t.text || '',
+                    rating: t.rating || 5,
+                    imgSrc: t.imgSrc || '',
+                    imageBase64: t.imageBase64 || '',
+                    uploadedFile: null
+                }));
+                setTestimonials(loadedTestimonials);
+            }
+            
+            // Load current section
+            if (typeof savedData.currentSection === 'number') {
+                setCurrentSection(savedData.currentSection);
             }
         } catch (error) {
             console.error('Error loading from localStorage:', error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         loadFromLocalStorage();
-    }, []); // Run only on mount
+    }, [loadFromLocalStorage]); // Run only on mount
 
     // Add cleanup for object URLs
     useEffect(() => {
@@ -841,7 +861,10 @@ const Cafe = () => {
 
     const handlePrevSection = () => {
         if (currentSection > 0) {
-            setCurrentSection(prev => prev - 1);
+            const prevSection = currentSection - 1;
+            setCurrentSection(prevSection);
+            // Save the previous section to localStorage
+            localStorage.setItem('cafeCurrentSection', prevSection.toString());
         }
     };
 
@@ -892,6 +915,8 @@ const Cafe = () => {
                         setTagLine2={setTagLine2}
                         TagLine3={TagLine3}
                         setTagLine3={setTagLine3}
+                        productTagline={productTagline}
+                        setProductTagline={setProductTagline}
                         heroImage={heroImage}
                         setHeroImage={setHeroImage}
                         selectedMedia={selectedMedia}

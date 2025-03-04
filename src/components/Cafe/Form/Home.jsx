@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
-import { FiImage, FiAlertCircle, FiHome } from 'react-icons/fi';
+import { FiImage, FiAlertCircle, FiHome, FiType } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 
 // Constants
 const MAX_TAGLINE_LENGTH = 100;
+
+// Validation functions
+const validateTaglines = (taglines) => {
+    // Remove all validation errors since we don't want to show them
+    return {};
+};
 
 const Home = ({
     TagLine,
@@ -22,7 +28,9 @@ const Home = ({
     OurMissionBg,
     setOurMissionBg,
     selectedMissionBg,
-    setSelectedMissionBg
+    setSelectedMissionBg,
+    productTagline,
+    setProductTagline
 }) => {
     const [errors, setErrors] = useState({});
     const [OurMission, setOurMission] = useState({
@@ -31,23 +39,119 @@ const Home = ({
         points: ['', '', '']
     });
 
-    // Define validateTagline first since it has no dependencies
-    const validateTagline = useCallback((value, field) => {
-        if (!value || value.trim() === '') {
-            return `${field} is required`;
-        }
-        if (value.length > MAX_TAGLINE_LENGTH) {
-            return `${field} must be less than ${MAX_TAGLINE_LENGTH} characters`;
-        }
-        return '';
-    }, []);
+    // Memoize the initial tagline state
+    const initialTaglines = useMemo(() => ({
+        TagLine: '',
+        TagLine1: '',
+        TagLine2: '',
+        TagLine3: '',
+        productTagline: ''
+    }), []);
 
-    // Now handleTaglineChange can use validateTagline
+    // Load initial data from localStorage
+    useEffect(() => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            
+            // Load taglines with fallback to empty strings
+            setTagLine(savedData.TagLine || initialTaglines.TagLine);
+            setTagLine1(savedData.TagLine1 || initialTaglines.TagLine1);
+            setTagLine2(savedData.TagLine2 || initialTaglines.TagLine2);
+            setTagLine3(savedData.TagLine3 || initialTaglines.TagLine3);
+            setProductTagline(savedData.productTagline || initialTaglines.productTagline);
+
+            // Load other data
+            if (savedData.heroImageData) {
+                setSelectedMedia(savedData.heroImageData);
+            }
+            if (savedData.OurMission) {
+                setOurMission(savedData.OurMission);
+            }
+            if (savedData.OurMissionBg) {
+                setSelectedMissionBg(savedData.OurMissionBg);
+            }
+        } catch (error) {
+            console.error('Error loading data from localStorage:', error);
+        }
+    }, [setTagLine, setTagLine1, setTagLine2, setTagLine3, setProductTagline, setSelectedMedia, setSelectedMissionBg, initialTaglines]);
+
+    // Save data to localStorage whenever it changes
+    useEffect(() => {
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            const updatedData = {
+                ...currentData,
+                TagLine: TagLine || '',
+                TagLine1: TagLine1 || '',
+                TagLine2: TagLine2 || '',
+                TagLine3: TagLine3 || '',
+                productTagline: productTagline || '',
+                heroImageData: selectedMedia,
+                OurMission,
+                OurMissionBg: selectedMissionBg
+            };
+            
+            localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
+            
+            // Validate taglines and update errors
+            const validationErrors = validateTaglines({
+                TagLine,
+                TagLine1,
+                TagLine2,
+                TagLine3,
+                productTagline
+            });
+            setErrors(prev => ({ ...prev, ...validationErrors }));
+            
+        } catch (error) {
+            console.error('Error saving data to localStorage:', error);
+        }
+    }, [TagLine, TagLine1, TagLine2, TagLine3, productTagline, selectedMedia, OurMission, selectedMissionBg]);
+
+    // Handle tagline change with validation
     const handleTaglineChange = useCallback((value, setter, field) => {
+        // Remove any leading/trailing whitespace
+        const trimmedValue = value.trim();
+        
+        // Validate length
+        if (trimmedValue.length > MAX_TAGLINE_LENGTH) {
+            setErrors(prev => ({
+                ...prev,
+                [field.toLowerCase()]: `${field} must be less than ${MAX_TAGLINE_LENGTH} characters`
+            }));
+            return;
+        }
+
+        // Update the value
         setter(value);
-        const error = validateTagline(value, field);
-        setErrors(prev => ({ ...prev, [field.toLowerCase()]: error }));
-    }, [validateTagline]);
+
+        // Only show error for productTagline
+        if (field === 'productTagline') {
+            if (trimmedValue) {
+                setErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors[field.toLowerCase()];
+                    return newErrors;
+                });
+            } else {
+                setErrors(prev => ({
+                    ...prev,
+                    [field.toLowerCase()]: `${field} is required`
+                }));
+            }
+        }
+
+        // Save to localStorage
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            localStorage.setItem('cafeFormData', JSON.stringify({
+                ...currentData,
+                [field]: value
+            }));
+        } catch (error) {
+            console.error('Error saving tagline to localStorage:', error);
+        }
+    }, []);
 
     const compressImage = useCallback((file) => {
         return new Promise((resolve, reject) => {
@@ -94,42 +198,6 @@ const Home = ({
             reader.onerror = reject;
         });
     }, []);
-
-    // Load initial data from localStorage
-    useEffect(() => {
-        const savedData = localStorage.getItem('cafeFormData');
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            setTagLine(parsedData.TagLine || '');
-            setTagLine1(parsedData.TagLine1 || '');
-            setTagLine2(parsedData.TagLine2 || '');
-            setTagLine3(parsedData.TagLine3 || '');
-            if (parsedData.heroImageData) {
-                setSelectedMedia(parsedData.heroImageData);
-            }
-            if (parsedData.OurMission) {
-                setOurMission(parsedData.OurMission);
-            }
-            if (parsedData.OurMissionBg) {
-                setSelectedMissionBg(parsedData.OurMissionBg);
-            }
-        }
-    }, [setTagLine, setTagLine1, setTagLine2, setTagLine3, setSelectedMedia, setOurMission, setSelectedMissionBg]);
-
-    // Save data to localStorage whenever it changes
-    useEffect(() => {
-        const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-        localStorage.setItem('cafeFormData', JSON.stringify({
-            ...currentData,
-            TagLine,
-            TagLine1,
-            TagLine2,
-            TagLine3,
-            heroImageData: selectedMedia,
-            OurMission,
-            OurMissionBg: selectedMissionBg
-        }));
-    }, [TagLine, TagLine1, TagLine2, TagLine3, selectedMedia, OurMission, selectedMissionBg]);
 
     const handleHeroImageChange = useCallback(async (e) => {
         const file = e.target.files[0];
@@ -323,41 +391,45 @@ const Home = ({
 
             <div className="space-y-8">
                 {/* Taglines */}
-                <div>
-                    <h2 className="text-lg font-medium text-gray-900 mb-4">Taglines</h2>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                        <FiType className="w-5 h-5 text-teal-600" />
+                        Taglines
+                    </h2>
                     <div className="space-y-6">
                         {[
-                            { value: TagLine, setter: setTagLine, label: 'Main Tagline', field: 'TagLine' },
-                            { value: TagLine1, setter: setTagLine1, label: 'Additional Tagline 1', field: 'TagLine1' },
-                            { value: TagLine2, setter: setTagLine2, label: 'Additional Tagline 2', field: 'TagLine2' },
-                            { value: TagLine3, setter: setTagLine3, label: 'Additional Tagline 3', field: 'TagLine3' }
-                        ].map(({ value, setter, label, field }) => (
+                            { value: TagLine, setter: setTagLine, label: 'Main Tagline', field: 'TagLine', required: true, showRequired: false, showError: false },
+                            { value: TagLine1, setter: setTagLine1, label: 'Additional Tagline 1', field: 'TagLine1', required: true, showRequired: false, showError: false },
+                            { value: TagLine2, setter: setTagLine2, label: 'Additional Tagline 2', field: 'TagLine2', required: true, showRequired: false, showError: false },
+                            { value: TagLine3, setter: setTagLine3, label: 'Additional Tagline 3', field: 'TagLine3', required: false, showRequired: false, showError: false },
+                            { value: productTagline, setter: setProductTagline, label: 'Product Tagline', field: 'productTagline', required: true, showRequired: false, showError: false }
+                        ].map(({ value, setter, label, field, required, showRequired, showError }) => (
                             <div key={field}>
                                 <Label htmlFor={field} className="block text-sm font-medium text-gray-700 mb-1">
-                                    {label} <span className="text-red-500">*</span>
+                                    {label} {showRequired && required && <span className="text-red-500">*</span>}
                                 </Label>
                                 <div className="relative">
                                     <TextInput
                                         id={field}
                                         type="text"
-                                        value={value}
+                                        value={value || ''}
                                         onChange={(e) => handleTaglineChange(e.target.value, setter, field)}
                                         placeholder={`Enter your ${label.toLowerCase()}`}
-                                        required
+                                        required={required}
                                         maxLength={MAX_TAGLINE_LENGTH}
-                                        className={errors[field.toLowerCase()] ? 'border-red-500' : ''}
+                                        className={showError && errors[field.toLowerCase()] ? 'border-red-500' : ''}
                                     />
-                                    {errors[field.toLowerCase()] && (
+                                    {showError && errors[field.toLowerCase()] && (
                                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                             <FiAlertCircle className="h-5 w-5 text-red-500" />
                                         </div>
                                     )}
                                 </div>
-                                {errors[field.toLowerCase()] && (
+                                {showError && errors[field.toLowerCase()] && (
                                     <p className="mt-1 text-sm text-red-500">{errors[field.toLowerCase()]}</p>
                                 )}
                                 <p className="mt-1 text-sm text-gray-500">
-                                    {value?.length || 0}/{MAX_TAGLINE_LENGTH} characters
+                                    {(value || '').length}/{MAX_TAGLINE_LENGTH} characters
                                 </p>
                             </div>
                         ))}
@@ -505,6 +577,8 @@ Home.propTypes = {
     setTagLine2: PropTypes.func.isRequired,
     TagLine3: PropTypes.string.isRequired,
     setTagLine3: PropTypes.func.isRequired,
+    productTagline: PropTypes.string.isRequired,
+    setProductTagline: PropTypes.func.isRequired,
     heroImage: PropTypes.object,
     setHeroImage: PropTypes.func.isRequired,
     selectedMedia: PropTypes.string,

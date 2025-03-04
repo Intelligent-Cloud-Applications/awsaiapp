@@ -101,6 +101,9 @@ function Footer({
                 localStorage.removeItem('heroImage');
                 localStorage.removeItem('testimonialImages');
                 localStorage.removeItem('cafeFormMissionBg');
+                localStorage.removeItem('cafeCurrentSection');
+                
+                // Navigate to dashboard first
                 
                 // Navigate to pricing with institutionId and cognitoId in state
                 Navigate(`/pricing?institutionId=${encodeURIComponent(institutionId)}`, {
