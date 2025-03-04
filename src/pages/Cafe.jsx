@@ -522,7 +522,7 @@ const Cafe = () => {
                             institutionid,
                             testimonials: processedTestimonials,
                             createdBy: userData?.cognitoId,
-                            isFormFilled: false,
+                            isFormFilled: true,
                             lastUpdated: Date.now(),
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
