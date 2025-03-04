@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCoffee, FiPhone, FiHome, FiStar } from 'react-icons/fi';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Cafe/Footer';
 import Company from '../components/Cafe/Form/Company';
@@ -18,10 +17,10 @@ import { compressImage } from '../utils/imageUtils';
 
 // Define sections with icons
 const FORM_SECTIONS = [
-    { id: 'company', title: 'Company', description: 'Tell us about your company', icon: FiCoffee },
-    { id: 'contact', title: 'Contact', description: 'How can customers reach you?', icon: FiPhone },
-    { id: 'home', title: 'Home', description: 'Design your homepage', icon: FiHome },
-    { id: 'testimonials', title: 'Testimonials', description: 'Share customer experiences', icon: FiStar }
+    { id: 'company', title: 'Company'},
+    { id: 'contact', title: 'Contact' },
+    { id: 'home', title: 'Home'},
+    { id: 'testimonials', title: 'Testimonials' }
 ];
 
 const Cafe = () => {
@@ -590,8 +589,9 @@ const Cafe = () => {
             
             const dataToSave = {
                 ...existingData,
-                institutionid: institutionid || '',
-                companyName: companyName || '',
+                // Ensure institutionid and companyName are always saved
+                institutionid: institutionid || existingData.institutionid || '',
+                companyName: companyName || existingData.companyName || '',
                 PrimaryColor,
                 SecondaryColor,
                 LightPrimaryColor,
@@ -633,7 +633,17 @@ const Cafe = () => {
                 lastUpdated: Date.now()
             };
 
+            // Save to localStorage
             localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            
+            // Also save institutionid and companyName separately to ensure persistence
+            if (institutionid) {
+                localStorage.setItem('cafeInstitutionId', institutionid);
+            }
+            if (companyName) {
+                localStorage.setItem('cafeCompanyName', companyName);
+            }
+            
             console.log('Saved data to localStorage:', dataToSave);
             return true;
         } catch (error) {
@@ -730,14 +740,30 @@ const Cafe = () => {
         }
     };
 
-    const loadFromLocalStorage = async () => {
+    const loadFromLocalStorage = useCallback(async () => {
         try {
+            // First try to load from separate storage
+            const savedInstitutionId = localStorage.getItem('cafeInstitutionId');
+            const savedCompanyName = localStorage.getItem('cafeCompanyName');
+            
+            // Then load the rest of the data
             const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
             console.log('Loading data from localStorage:', savedData);
             
-            // Load company data
-            if (savedData.companyName) setCompanyName(savedData.companyName);
-            if (savedData.institutionid) setinstitutionid(savedData.institutionid);
+            // Set institutionid and companyName with priority to separate storage
+            if (savedInstitutionId) {
+                setinstitutionid(savedInstitutionId);
+            } else if (savedData.institutionid) {
+                setinstitutionid(savedData.institutionid);
+            }
+            
+            if (savedCompanyName) {
+                setCompanyName(savedCompanyName);
+            } else if (savedData.companyName) {
+                setCompanyName(savedData.companyName);
+            }
+            
+            // Load the rest of the data
             setPrimaryColor(savedData.PrimaryColor || '#30afbc');
             setSecondaryColor(savedData.SecondaryColor || '#2b9ea9');
             setLightPrimaryColor(savedData.LightPrimaryColor || '#e6f7f9');
@@ -795,11 +821,11 @@ const Cafe = () => {
         } catch (error) {
             console.error('Error loading from localStorage:', error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         loadFromLocalStorage();
-    }, []); // Run only on mount
+    }, [loadFromLocalStorage]); // Run only on mount
 
     // Add cleanup for object URLs
     useEffect(() => {
