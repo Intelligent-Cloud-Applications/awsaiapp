@@ -395,8 +395,8 @@ const Panel = () => {
         },
         []
     );
-    // eslint-disable-next-lin
-    const [tempInstitution] = null; 
+    // eslint-disable-next-line
+    const [tempInstitution, settem] = useState(null); 
     const [showMemberList, setShowMemberList] = useState(false);
     // eslint-disable-next-line 
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
