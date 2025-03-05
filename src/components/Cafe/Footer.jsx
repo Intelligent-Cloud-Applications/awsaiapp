@@ -103,10 +103,6 @@ function Footer({
                         }
                     });
 
-                   
-                    
-                    const url = `https://beta.awsaiapp.com/pricing?institutionId=${institutionId}`;
-                    
                     // Clear all local storage items
                     const clearStorage = () => {
                         console.log('Clearing local storage...');
@@ -147,26 +143,12 @@ function Footer({
                     // Small delay to ensure storage is cleared
                     await new Promise(resolve => setTimeout(resolve, 100));
                     
-                    console.log('Opening payment URL...');
-                    const newWindow = window.open(url, '_blank');
-                    if (newWindow) {
-                        console.log('Payment URL opened successfully');
-                    } else {
-                        console.error('Failed to open payment URL - popup might be blocked');
-                        alert('Please allow popups to open the payment page');
-                    }
-                    
-                    // Another small delay before navigation
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    
-                    console.log('Navigating to dashboard...');
-                    Navigate("/dashboard", { replace: true });
-                    
-                    // Final reload after navigation
-                    setTimeout(() => {
-                        console.log('Reloading page...');
-                        window.location.reload();
-                    }, 500);
+                    console.log('Navigating to pricing page...');
+                    // Navigate to pricing page in the same window
+                    Navigate(`/pricing?institutionId=${institutionId}`, { 
+                        replace: true,
+                        state: { from: 'cafe' } // Add state to track where we came from
+                    });
 
                 } catch (error) {
                     console.error('Error in submission flow:', error);
