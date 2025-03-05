@@ -686,11 +686,21 @@ const Cafe = () => {
             if (institutionid) {
                 await API.del(
                     "clients",
-                    `/user/cafe-form/delete-all/${institutionid}`
+                    `/user/development-form/delete-all/${institutionid}`
                 );
             }
 
             // Clear all form-related data from localStorage
+            // Clear company data
+                        localStorage.removeItem('companyName');
+                        localStorage.removeItem('institutionid');
+                        
+                        // Clear any other form-related data
+                        localStorage.removeItem('formProgress');
+                        localStorage.removeItem('currentStep');
+                        localStorage.removeItem('formState');
+                        localStorage.removeItem('contactInfo');
+                        localStorage.removeItem('testimonials');
             localStorage.removeItem('cafeFormData');
             localStorage.removeItem('cafeFormLogo');
             localStorage.removeItem('cafeFormHeroImage');

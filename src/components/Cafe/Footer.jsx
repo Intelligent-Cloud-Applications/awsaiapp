@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
-import { FiChevronLeft, FiChevronRight, FiCheck } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiCheck, FiX } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { createAdminAccounts } from './account';
 
@@ -54,8 +54,8 @@ function Footer({
 
     const handlePrevClick = () => {
         if (currentSection === 0) {
-            // If we're on the first section, just open the modal
-            openModal();
+            // If we're on the first section, just navigate back without showing modal
+            Navigate('/dashboard');
         } else {
             // For other sections, show the modal first
             openModal();
@@ -103,14 +103,9 @@ function Footer({
                         }
                     });
 
-                    const SecondaryColor = "#ffffff";
-                    const PrimaryColor = "#30afbc";
+                   
                     
-                    const encodedPrimary = encodeURIComponent(PrimaryColor);
-                    const encodedSecondary = encodeURIComponent(SecondaryColor);
-                    const encodedEmail = encodeURIComponent(UserCtx.userData.emailId);
-                    
-                    const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${encodedEmail}?primary=${encodedPrimary}&secondary=${encodedSecondary}&institutionId=${institutionId}`;
+                    const url = `https://beta.awsaiapp.com/pricing?institutionId=${institutionId}`;
                     
                     // Clear all local storage items
                     const clearStorage = () => {
@@ -195,10 +190,19 @@ function Footer({
                     {/* Back/Previous Button */}
                     <button
                         onClick={handlePrevClick}
-                        className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                        className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors ${currentSection === 0 ? 'border-2 border-white' : ''}`}
                     >
-                        <FiChevronLeft className="w-4 h-4" />
-                        {currentSection === 0 ? 'BACK' : 'PREVIOUS'}
+                        {currentSection === 0 ? (
+                            <>
+                                <FiX className="w-4 h-4" />
+                                CLOSE
+                            </>
+                        ) : (
+                            <>
+                                <FiChevronLeft className="w-4 h-4" />
+                                PREVIOUS
+                            </>
+                        )}
                     </button>
 
                     {/* Progress Section */}
