@@ -48,6 +48,23 @@ const validateImageFile = (file) => {
   return null;
 };
 
+// Add new utility function for color contrast
+const getContrastColor = (hexcolor) => {
+  // Remove the hash if present
+  const hex = hexcolor.replace('#', '');
+  
+  // Convert hex to RGB
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return white for dark backgrounds, black for light backgrounds
+  return luminance > 0.5 ? '#000000' : '#ffffff';
+};
+
 const generateCompanyId = (companyName) => {
   if (!companyName?.trim()) return '';
 
@@ -95,38 +112,20 @@ const Company = ({
     selectedLogo: null
   }), []);
 
-  // Generate Company ID
-  useEffect(() => {
-    if (!companyName?.trim()) return;
-    
-    const newId = generateCompanyId(companyName);
-    setinstitutionid(newId);
-    
-    // Save to localStorage
-    try {
-      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-      localStorage.setItem('cafeFormData', JSON.stringify({
-        ...savedData,
-        institutionid: newId
-      }));
-    } catch (error) {
-      console.error('Error saving institution ID:', error);
-    }
-  }, [companyName, setinstitutionid]);
-
   // Load saved data
   const loadFromLocalStorage = useCallback(async () => {
     try {
       setIsLoading(true);
       const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
       
-      if (savedData.companyName && !companyName) {
+      // Always set the values from localStorage if they exist
+      if (savedData.companyName) {
         setCompanyName(savedData.companyName);
       }
-      if (savedData.institutionid && !institutionid) {
+      if (savedData.institutionid) {
         setinstitutionid(savedData.institutionid);
       }
-      if (savedData.logo && !logo) {
+      if (savedData.logo) {
         setLogo(savedData.logo);
       }
       if (savedData.PrimaryColor) {
@@ -169,9 +168,6 @@ const Company = ({
     }
   }, [
     initialState,
-    companyName,
-    institutionid,
-    logo,
     setCompanyName,
     setinstitutionid,
     setLogo,
@@ -190,8 +186,18 @@ const Company = ({
   const handleCompanyNameChange = useCallback((e) => {
     const value = e.target.value;
     setCompanyName(value);
+    
+    // Clear institution ID if company name is empty
+    if (!value.trim()) {
+      setinstitutionid('');
+    } else {
+      // Generate new ID if company name has value
+      const newId = generateCompanyId(value);
+      setinstitutionid(newId);
+    }
+    
     setErrors(prev => ({ ...prev, companyName: !value.trim() ? 'Company name is required' : '' }));
-  }, [setCompanyName]);
+  }, [setCompanyName, setinstitutionid]);
 
   // Update localStorage when company name or institution ID changes
   useEffect(() => {
@@ -367,7 +373,7 @@ const Company = ({
                 required
                 className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
               />
-              {errors.companyName && <p className="text-red-500">{errors.companyName}</p>}
+              {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>}
             </div>
 
             <div>
@@ -381,7 +387,7 @@ const Company = ({
                 className="w-full bg-gray-100 border border-gray-200 cursor-not-allowed rounded-lg"
               />
               <p className="mt-1 text-sm text-gray-500">Auto-generated based on company name</p>
-              {errors.institutionid && <p className="text-red-500">{errors.institutionid}</p>}
+              {errors.institutionid && <p className="text-red-500 text-sm mt-1">{errors.institutionid}</p>}
             </div>
           </div>
         </div>
@@ -401,7 +407,10 @@ const Company = ({
                     className="w-16 h-16 rounded-full border-4 border-white shadow-md transition-transform hover:scale-110 cursor-pointer"
                     style={{ backgroundColor: value }}
                   />
-                  <FiEdit2 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <FiEdit2 
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" 
+                    style={{ color: getContrastColor(value) }}
+                  />
                   <input
                     type="color"
                     value={value}

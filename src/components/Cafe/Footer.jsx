@@ -77,15 +77,19 @@ function Footer({
     };
 
     const handleSubmit = async () => {
+        let success = false;
         try {
             if (!validateTestimonials()) return;
 
             UserCtx.util.setLoader(true);
             
-            const success = await nextSection();
+            success = await nextSection();
 
             if (success && currentSection === sections.length - 1) {
                 try {
+                    // Show loader while creating admin accounts
+                    UserCtx.util.setLoader(true);
+                    
                     // Create admin accounts after testimonial submission
                     await createAdminAccounts({
                         institution: institutionId,
@@ -102,7 +106,7 @@ function Footer({
                             userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
                         }
                     });
-
+                    UserCtx.util.setLoader(false);
                     // Clear all local storage items
                     const clearStorage = () => {
                         console.log('Clearing local storage...');
@@ -153,6 +157,7 @@ function Footer({
                 } catch (error) {
                     console.error('Error in submission flow:', error);
                     alert('Error during submission: ' + error.message);
+                    UserCtx.util.setLoader(false); // Hide loader on error
                 }
             } else {
                 scrollToTop();
@@ -161,7 +166,10 @@ function Footer({
             console.error("Error submitting form:", error);
             alert("Error: " + (error.message || "Failed to submit form. Please try again."));
         } finally {
-            UserCtx.util.setLoader(false);
+            // Only hide loader if we're not navigating to pricing page
+            if (!(success && currentSection === sections.length - 1)) {
+                UserCtx.util.setLoader(false);
+            }
         }
     };
 
