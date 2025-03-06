@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Label, TextInput, Textarea } from 'flowbite-react';
 import { FiImage, FiAlertCircle, FiHome, FiType } from 'react-icons/fi';
 import PropTypes from 'prop-types';
@@ -13,14 +13,10 @@ const validateTaglines = (taglines) => {
 };
 
 const Home = ({
-    TagLine,
-    setTagLine,
-    TagLine1,
-    setTagLine1,
-    TagLine2,
-    setTagLine2,
-    TagLine3,
-    setTagLine3,
+    tagLine1,
+    settagLine1,
+    tagLine2,
+    settagLine2,
     heroImage,
     setHeroImage,
     selectedMedia,
@@ -38,75 +34,6 @@ const Home = ({
         description: '',
         points: ['', '', '']
     });
-
-    // Memoize the initial tagline state
-    const initialTaglines = useMemo(() => ({
-        TagLine: '',
-        TagLine1: '',
-        TagLine2: '',
-        TagLine3: '',
-        productTagline: ''
-    }), []);
-
-    // Load initial data from localStorage
-    useEffect(() => {
-        try {
-            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            
-            // Load taglines with fallback to empty strings
-            setTagLine(savedData.TagLine || initialTaglines.TagLine);
-            setTagLine1(savedData.TagLine1 || initialTaglines.TagLine1);
-            setTagLine2(savedData.TagLine2 || initialTaglines.TagLine2);
-            setTagLine3(savedData.TagLine3 || initialTaglines.TagLine3);
-            setProductTagline(savedData.productTagline || initialTaglines.productTagline);
-
-            // Load other data
-            if (savedData.heroImageData) {
-                setSelectedMedia(savedData.heroImageData);
-            }
-            if (savedData.OurMission) {
-                setOurMission(savedData.OurMission);
-            }
-            if (savedData.OurMissionBg) {
-                setSelectedMissionBg(savedData.OurMissionBg);
-            }
-        } catch (error) {
-            console.error('Error loading data from localStorage:', error);
-        }
-    }, [setTagLine, setTagLine1, setTagLine2, setTagLine3, setProductTagline, setSelectedMedia, setSelectedMissionBg, initialTaglines]);
-
-    // Save data to localStorage whenever it changes
-    useEffect(() => {
-        try {
-            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            const updatedData = {
-                ...currentData,
-                TagLine: TagLine || '',
-                TagLine1: TagLine1 || '',
-                TagLine2: TagLine2 || '',
-                TagLine3: TagLine3 || '',
-                productTagline: productTagline || '',
-                heroImageData: selectedMedia,
-                OurMission,
-                OurMissionBg: selectedMissionBg
-            };
-            
-            localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
-            
-            // Validate taglines and update errors
-            const validationErrors = validateTaglines({
-                TagLine,
-                TagLine1,
-                TagLine2,
-                TagLine3,
-                productTagline
-            });
-            setErrors(prev => ({ ...prev, ...validationErrors }));
-            
-        } catch (error) {
-            console.error('Error saving data to localStorage:', error);
-        }
-    }, [TagLine, TagLine1, TagLine2, TagLine3, productTagline, selectedMedia, OurMission, selectedMissionBg]);
 
     // Handle tagline change with validation
     const handleTaglineChange = useCallback((value, setter, field) => {
@@ -141,17 +68,124 @@ const Home = ({
             }
         }
 
-        // Save to localStorage
+        // Save to localStorage immediately
         try {
             const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            localStorage.setItem('cafeFormData', JSON.stringify({
+            const updatedData = {
                 ...currentData,
-                [field]: value
-            }));
+                [field]: value,
+                lastUpdated: Date.now()
+            };
+            localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
+            
+            // Also save to a separate taglines storage for redundancy
+            const taglinesData = {
+                tagLine1: field === 'tagLine1' ? value : currentData.tagLine1 || '',
+                tagLine2: field === 'tagLine2' ? value : currentData.tagLine2 || '',
+                productTagline: field === 'productTagline' ? value : currentData.productTagline || '',
+                lastUpdated: Date.now()
+            };
+            localStorage.setItem('cafeFormTaglines', JSON.stringify(taglinesData));
         } catch (error) {
             console.error('Error saving tagline to localStorage:', error);
         }
     }, []);
+
+    // Load initial data from localStorage
+    useEffect(() => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            const taglinesData = JSON.parse(localStorage.getItem('cafeFormTaglines') || '{}');
+            
+            // Load taglines with priority to taglines storage
+            if (taglinesData.tagLine1) {
+                settagLine1(taglinesData.tagLine1);
+            } else if (savedData.tagLine1) {
+                settagLine1(savedData.tagLine1);
+            }
+            
+            if (taglinesData.tagLine2) {
+                settagLine2(taglinesData.tagLine2);
+            } else if (savedData.tagLine2) {
+                settagLine2(savedData.tagLine2);
+            }
+            
+            if (taglinesData.productTagline) {
+                setProductTagline(taglinesData.productTagline);
+            } else if (savedData.productTagline) {
+                setProductTagline(savedData.productTagline);
+            }
+
+            // Load hero image data
+            if (heroImageData.heroImage) {
+                setSelectedMedia(heroImageData.heroImage);
+            }
+            if (heroImageData.heroImageUrl) {
+                setHeroImage(heroImageData.heroImageUrl);
+            }
+
+            // Load other data
+            if (savedData.OurMission) {
+                setOurMission(savedData.OurMission);
+            }
+            if (savedData.OurMissionBg) {
+                setSelectedMissionBg(savedData.OurMissionBg);
+            }
+        } catch (error) {
+            console.error('Error loading data from localStorage:', error);
+        }
+    }, [settagLine1, settagLine2, setProductTagline, setSelectedMedia, setSelectedMissionBg, setHeroImage]);
+
+    // Save data to localStorage whenever it changes
+    useEffect(() => {
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            
+            // Update taglines in localStorage
+            const updatedData = {
+                ...currentData,
+                tagLine1: tagLine1 || '',
+                tagLine2: tagLine2 || '',
+                productTagline: productTagline || '',
+                OurMission,
+                OurMissionBg: selectedMissionBg,
+                lastUpdated: Date.now()
+            };
+            
+            // Update hero image data in localStorage
+            const updatedHeroImageData = {
+                ...heroImageData,
+                heroImage: selectedMedia,
+                heroImageUrl: heroImage,
+                lastUpdated: Date.now()
+            };
+            
+            // Save to both storages
+            localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
+            localStorage.setItem('cafeFormHeroImage', JSON.stringify(updatedHeroImageData));
+            
+            // Also save taglines separately
+            localStorage.setItem('cafeFormTaglines', JSON.stringify({
+                tagLine1: tagLine1 || '',
+                tagLine2: tagLine2 || '',
+                productTagline: productTagline || '',
+                lastUpdated: Date.now()
+            }));
+            
+            // Validate taglines and update errors
+            const validationErrors = validateTaglines({
+                tagLine1,
+                tagLine2,
+                productTagline
+            });
+            setErrors(prev => ({ ...prev, ...validationErrors }));
+            
+        } catch (error) {
+            console.error('Error saving data to localStorage:', error);
+        }
+    }, [tagLine1, tagLine2, productTagline, selectedMedia, OurMission, selectedMissionBg, heroImage]);
 
     const compressImage = useCallback((file) => {
         return new Promise((resolve, reject) => {
@@ -199,6 +233,7 @@ const Home = ({
         });
     }, []);
 
+    // Handle hero image change
     const handleHeroImageChange = useCallback(async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -220,14 +255,14 @@ const Home = ({
             };
 
             try {
-                const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-                localStorage.setItem('cafeFormData', JSON.stringify({
-                    ...currentData,
-                    heroImageData: storageData
+                // Save to localStorage
+                localStorage.setItem('cafeFormHeroImage', JSON.stringify({
+                    ...storageData,
+                    heroImageUrl: URL.createObjectURL(file)
                 }));
 
                 setSelectedMedia(compressedBase64);
-                setHeroImage(file);
+                setHeroImage(URL.createObjectURL(file));
                 setErrors(prev => ({ ...prev, heroImage: null }));
             } catch (storageError) {
                 console.error('Failed to save to localStorage:', storageError);
@@ -241,6 +276,7 @@ const Home = ({
                 heroImage: error.message || 'Error processing image. Please try a different file.'
             }));
             setSelectedMedia(null);
+            setHeroImage(null);
         }
     }, [compressImage, setHeroImage, setSelectedMedia]);
 
@@ -380,9 +416,9 @@ const Home = ({
     return (
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
-          <FiHome className="w-8 h-8 text-teal-600" />
-        </div>
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+                    <FiHome className="w-8 h-8 text-teal-600" />
+                </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Journey Starts Here</h1>
                 <p className="text-gray-600">
                     Create engaging content for your website's homepage.
@@ -398,10 +434,8 @@ const Home = ({
                     </h2>
                     <div className="space-y-6">
                         {[
-                            { value: TagLine, setter: setTagLine, label: 'Main Tagline', field: 'TagLine', required: true, showRequired: false, showError: false },
-                            { value: TagLine1, setter: setTagLine1, label: 'Additional Tagline 1', field: 'TagLine1', required: true, showRequired: false, showError: false },
-                            { value: TagLine2, setter: setTagLine2, label: 'Additional Tagline 2', field: 'TagLine2', required: true, showRequired: false, showError: false },
-                            { value: TagLine3, setter: setTagLine3, label: 'Additional Tagline 3', field: 'TagLine3', required: false, showRequired: false, showError: false },
+                            { value: tagLine1, setter: settagLine1, label: 'Additional Tagline 1', field: 'tagLine1', required: true, showRequired: false, showError: false },
+                            { value: tagLine2, setter: settagLine2, label: 'Additional Tagline 2', field: 'tagLine2', required: true, showRequired: false, showError: false },
                             { value: productTagline, setter: setProductTagline, label: 'Product Tagline', field: 'productTagline', required: true, showRequired: false, showError: false }
                         ].map(({ value, setter, label, field, required, showRequired, showError }) => (
                             <div key={field}>
@@ -569,17 +603,13 @@ const Home = ({
 };
 
 Home.propTypes = {
-    TagLine: PropTypes.string.isRequired,
-    setTagLine: PropTypes.func.isRequired,
-    TagLine1: PropTypes.string.isRequired,
-    setTagLine1: PropTypes.func.isRequired,
-    TagLine2: PropTypes.string.isRequired,
-    setTagLine2: PropTypes.func.isRequired,
-    TagLine3: PropTypes.string.isRequired,
-    setTagLine3: PropTypes.func.isRequired,
+    tagLine1: PropTypes.string.isRequired,
+    settagLine1: PropTypes.func.isRequired,
+    tagLine2: PropTypes.string.isRequired,
+    settagLine2: PropTypes.func.isRequired,
     productTagline: PropTypes.string.isRequired,
     setProductTagline: PropTypes.func.isRequired,
-    heroImage: PropTypes.object,
+    heroImage: PropTypes.string,
     setHeroImage: PropTypes.func.isRequired,
     selectedMedia: PropTypes.string,
     setSelectedMedia: PropTypes.func.isRequired,

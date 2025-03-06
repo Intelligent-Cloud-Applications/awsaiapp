@@ -94,11 +94,33 @@ const Cafe = () => {
     const [SecondaryColor, setSecondaryColor] = useState('#2b9ea9');
     const [LightPrimaryColor, setLightPrimaryColor] = useState('#e6f7f9');
     const [LightestPrimaryColor, setLightestPrimaryColor] = useState('#f3fbfc');
-    const [TagLine, setTagLine] = useState('');
-    const [TagLine1, setTagLine1] = useState('');
-    const [TagLine2, setTagLine2] = useState('');
-    const [TagLine3, setTagLine3] = useState('');
-    const [productTagline, setProductTagline] = useState('');
+    const [tagLine1, settagLine1] = useState(() => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            return savedData.tagLine1 || '';
+        } catch (error) {
+            console.error('Error initializing tagLine1:', error);
+            return '';
+        }
+    });
+    const [tagLine2, settagLine2] = useState(() => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            return savedData.tagLine2 || '';
+        } catch (error) {
+            console.error('Error initializing tagLine2:', error);
+            return '';
+        }
+    });
+    const [productTagline, setProductTagline] = useState(() => {
+        try {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            return savedData.productTagline || '';
+        } catch (error) {
+            console.error('Error initializing productTagline:', error);
+            return '';
+        }
+    });
     const [contactInfo, setContactInfo] = useState(initializeContactInfo);
     const [OurMissionBg, setOurMissionBg] = useState(null);
     const [selectedMissionBg, setSelectedMissionBg] = useState(null);
@@ -111,8 +133,75 @@ const Cafe = () => {
     ]);
 
     // Add new states for Home component
-    const [heroImage, setHeroImage] = useState(null);
-    const [selectedMedia, setSelectedMedia] = useState(null);
+    const [heroImage, setHeroImage] = useState(() => {
+        try {
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            return heroImageData.heroImageUrl || null;
+        } catch (error) {
+            console.error('Error initializing heroImage:', error);
+            return null;
+        }
+    });
+
+    // Wrap setHeroImage in useCallback
+    const handleSetHeroImage = useCallback((value) => {
+        setHeroImage(value);
+    }, []);
+
+    const [selectedMedia, setSelectedMedia] = useState(() => {
+        try {
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            return heroImageData.heroImage || null;
+        } catch (error) {
+            console.error('Error initializing selectedMedia:', error);
+            return null;
+        }
+    });
+
+    // Wrap setSelectedMedia in useCallback
+    const handleSetSelectedMedia = useCallback((value) => {
+        setSelectedMedia(value);
+    }, []);
+
+    // Wrap tagline setters in useCallback
+    const handleSetTagLine1 = useCallback((value) => {
+        settagLine1(value);
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            localStorage.setItem('cafeFormData', JSON.stringify({
+                ...currentData,
+                tagLine1: value
+            }));
+        } catch (error) {
+            console.error('Error saving tagLine1:', error);
+        }
+    }, []);
+
+    const handleSetTagLine2 = useCallback((value) => {
+        settagLine2(value);
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            localStorage.setItem('cafeFormData', JSON.stringify({
+                ...currentData,
+                tagLine2: value
+            }));
+        } catch (error) {
+            console.error('Error saving tagLine2:', error);
+        }
+    }, []);
+
+    const handleSetProductTagline = useCallback((value) => {
+        setProductTagline(value);
+        try {
+            const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            localStorage.setItem('cafeFormData', JSON.stringify({
+                ...currentData,
+                productTagline: value
+            }));
+        } catch (error) {
+            console.error('Error saving productTagline:', error);
+        }
+    }, []);
 
     // Add this new function to fetch existing data
     const fetchExistingData = async () => {
@@ -304,10 +393,9 @@ const Cafe = () => {
 
                 case 2: // Home
                     // Validate required taglines
-                    if (!TagLine?.trim() || !TagLine1?.trim() || !TagLine2?.trim() || !productTagline?.trim()) {
-                        if (!TagLine?.trim()) alert("Please enter the main tagline");
-                        if (!TagLine1?.trim()) alert("Please enter tagline 1");
-                        if (!TagLine2?.trim()) alert("Please enter tagline 2");
+                    if (!tagLine1?.trim() || !tagLine2?.trim() || !productTagline?.trim()) {
+                        if (!tagLine1?.trim()) alert("Please enter tagline 1");
+                        if (!tagLine2?.trim()) alert("Please enter tagline 2");
                         if (!productTagline?.trim()) alert("Please enter product tagline");
                         success = false;
                         break;
@@ -413,10 +501,8 @@ const Cafe = () => {
                         const homeData = {
                             ...baseData,
                             institutionid,
-                            TagLine: TagLine.trim(),
-                            TagLine1: TagLine1.trim(),
-                            TagLine2: TagLine2.trim(),
-                            TagLine3: TagLine3?.trim() || '',
+                            tagLine1: tagLine1.trim(),
+                            tagLine2: tagLine2.trim(),
                             productTagline: productTagline?.trim() || '',
                             heroImage: currentHeroImageUrl,
                             heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
@@ -586,6 +672,7 @@ const Cafe = () => {
     const saveData = useCallback(async () => {
         try {
             const existingData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
             
             const dataToSave = {
                 ...existingData,
@@ -610,10 +697,8 @@ const Cafe = () => {
                 visitUs: contactInfo.visitUs || {},
                 
                 // Taglines
-                TagLine: TagLine || '',
-                TagLine1: TagLine1 || '',
-                TagLine2: TagLine2 || '',
-                TagLine3: TagLine3 || '',
+                tagLine1: tagLine1 || '',
+                tagLine2: tagLine2 || '',
                 productTagline: productTagline || '',
                 
                 // Media
@@ -636,6 +721,13 @@ const Cafe = () => {
 
             // Save to localStorage
             localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
+            
+            // Save hero image data separately
+            localStorage.setItem('cafeFormHeroImage', JSON.stringify({
+                ...heroImageData,
+                heroImage: selectedMedia,
+                heroImageUrl: heroImage
+            }));
             
             // Also save institutionid and companyName separately to ensure persistence
             if (institutionid) {
@@ -660,10 +752,8 @@ const Cafe = () => {
         LightestPrimaryColor,
         logo,
         contactInfo,
-        TagLine,
-        TagLine1,
-        TagLine2,
-        TagLine3,
+        tagLine1,
+        tagLine2,
         productTagline,
         selectedMedia,
         heroImage,
@@ -683,6 +773,8 @@ const Cafe = () => {
 
     const handleClearData = async () => {
         try {
+            util.setLoader(true); // Start loader
+
             if (institutionid) {
                 await API.del(
                     "clients",
@@ -691,23 +783,26 @@ const Cafe = () => {
             }
 
             // Clear all form-related data from localStorage
-            // Clear company data
-                        localStorage.removeItem('companyName');
-                        localStorage.removeItem('institutionid');
-                        
-                        // Clear any other form-related data
-                        localStorage.removeItem('formProgress');
-                        localStorage.removeItem('currentStep');
-                        localStorage.removeItem('formState');
-                        localStorage.removeItem('contactInfo');
-                        localStorage.removeItem('testimonials');
-            localStorage.removeItem('cafeFormData');
-            localStorage.removeItem('cafeFormLogo');
-            localStorage.removeItem('cafeFormHeroImage');
-            localStorage.removeItem('testimonialImages');
-            localStorage.removeItem('cafeFormMissionBg');
-            localStorage.removeItem('cafeCurrentSection'); // Also clear the current section
+            const localStorageKeys = [
+                'cafeFormData',
+                'cafeFormLogo',
+                'cafeFormHeroImage',
+                'cafeFormMissionBg',
+                'cafeCurrentSection',
+                'cafeInstitutionId',
+                'cafeCompanyName',
+                'testimonialImages',
+                'formProgress',
+                'currentStep',
+                'formState',
+                'contactInfo',
+                'testimonials'
+            ];
 
+            // Clear all localStorage items
+            localStorageKeys.forEach(key => localStorage.removeItem(key));
+
+            // Reset all state variables
             setinstitutionid('');
             setCompanyName('');
             setLogo(null);
@@ -716,10 +811,8 @@ const Cafe = () => {
             setSecondaryColor('#2b9ea9');
             setLightPrimaryColor('#e6f7f9');
             setLightestPrimaryColor('#f3fbfc');
-            setTagLine('');
-            setTagLine1('');
-            setTagLine2('');
-            setTagLine3('');
+            settagLine1('');
+            settagLine2('');
             setProductTagline('');
             setContactInfo({
                 firstName: '',
@@ -742,12 +835,31 @@ const Cafe = () => {
                 { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null },
                 { imgSrc: '', name: '', feedback: '', rating: 5, uploadedFile: null }
             ]);
+            setCurrentSection(0);
+            
+            // Clean up any object URLs
+            if (logo && typeof logo === 'string' && logo.startsWith('blob:')) {
+                URL.revokeObjectURL(logo);
+            }
+            if (selectedMedia && typeof selectedMedia === 'string' && selectedMedia.startsWith('blob:')) {
+                URL.revokeObjectURL(selectedMedia);
+            }
+            if (heroImage && typeof heroImage === 'string' && heroImage.startsWith('blob:')) {
+                URL.revokeObjectURL(heroImage);
+            }
+            testimonials.forEach(testimonial => {
+                if (testimonial.imgSrc && testimonial.imgSrc.startsWith('blob:')) {
+                    URL.revokeObjectURL(testimonial.imgSrc);
+                }
+            });
             
             alert('All data cleared successfully');
             navigate('/dashboard');
         } catch (error) {
             console.error("Error clearing data:", error);
             alert('Error clearing data. Please try again.');
+        } finally {
+            util.setLoader(false); // Stop loader regardless of success or failure
         }
     };
 
@@ -759,6 +871,8 @@ const Cafe = () => {
             
             // Then load the rest of the data
             const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            
             console.log('Loading data from localStorage:', savedData);
             
             // Set institutionid and companyName with priority to separate storage
@@ -775,7 +889,6 @@ const Cafe = () => {
             }
             
             // Load the rest of the data
-
             setPrimaryColor(savedData.PrimaryColor || '#30afbc');
             setSecondaryColor(savedData.SecondaryColor || '#2b9ea9');
             setLightPrimaryColor(savedData.LightPrimaryColor || '#e6f7f9');
@@ -803,15 +916,17 @@ const Cafe = () => {
             setContactInfo(contactData);
             
             // Load taglines
-            setTagLine(savedData.TagLine || '');
-            setTagLine1(savedData.TagLine1 || '');
-            setTagLine2(savedData.TagLine2 || '');
-            setTagLine3(savedData.TagLine3 || '');
+            settagLine1(savedData.tagLine1 || '');
+            settagLine2(savedData.tagLine2 || '');
             setProductTagline(savedData.productTagline || '');
             
             // Load media
-            setSelectedMedia(savedData.selectedMedia || null);
-            setLogo(savedData.logoUrl || null);
+            if (heroImageData.heroImage) {
+                setSelectedMedia(heroImageData.heroImage);
+            }
+            if (heroImageData.heroImageUrl) {
+                setHeroImage(heroImageData.heroImageUrl);
+            }
             
             // Load testimonials
             if (savedData.testimonials?.length > 0) {
@@ -917,20 +1032,16 @@ const Cafe = () => {
             case 2:
                 return (
                     <Home
-                        TagLine={TagLine}
-                        setTagLine={setTagLine}
-                        TagLine1={TagLine1}
-                        setTagLine1={setTagLine1}
-                        TagLine2={TagLine2}
-                        setTagLine2={setTagLine2}
-                        TagLine3={TagLine3}
-                        setTagLine3={setTagLine3}
+                        tagLine1={tagLine1}
+                        settagLine1={handleSetTagLine1}
+                        tagLine2={tagLine2}
+                        settagLine2={handleSetTagLine2}
                         productTagline={productTagline}
-                        setProductTagline={setProductTagline}
+                        setProductTagline={handleSetProductTagline}
                         heroImage={heroImage}
-                        setHeroImage={setHeroImage}
+                        setHeroImage={handleSetHeroImage}
                         selectedMedia={selectedMedia}
-                        setSelectedMedia={setSelectedMedia}
+                        setSelectedMedia={handleSetSelectedMedia}
                         OurMissionBg={OurMissionBg}
                         setOurMissionBg={setOurMissionBg}
                         selectedMissionBg={selectedMissionBg}
