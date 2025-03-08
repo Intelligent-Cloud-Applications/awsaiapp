@@ -6,10 +6,10 @@ import { convertFileToBase64, base64ToFile } from '../../../utils/imageUtils';
 import { FiStar } from 'react-icons/fi';
 
 // Constants
-// const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
-// const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const MAX_NAME_LENGTH = 50;
 const MAX_TEXT_LENGTH = 500;
+const MAX_FILE_SIZE_MB = 50;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 const compressImage = (file) => {
   return new Promise((resolve, reject) => {
@@ -69,6 +69,24 @@ const compressImage = (file) => {
 
     reader.onerror = reject;
   });
+};
+
+// Validation functions
+const validateImageFile = (file) => {
+  if (!file) {
+    return 'Please select a file';
+  }
+
+  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    return `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.map(type => type.split('/')[1]).join(', ')}`;
+  }
+
+  const fileSizeMB = file.size / (1024 * 1024);
+  if (fileSizeMB > MAX_FILE_SIZE_MB) {
+    return `File size exceeds ${MAX_FILE_SIZE_MB}MB. Please choose a smaller file.`;
+  }
+
+  return null;
 };
 
 const Testimonials = ({ testimonials, setTestimonials }) => {
@@ -234,8 +252,9 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
             });
 
             // Validate file
-            if (!file.type.startsWith('image/')) {
-                throw new Error('Please upload an image file');
+            const validationError = validateImageFile(file);
+            if (validationError) {
+                throw new Error(validationError);
             }
 
             // Compress the image

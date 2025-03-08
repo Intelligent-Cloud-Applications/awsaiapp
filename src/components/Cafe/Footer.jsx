@@ -16,7 +16,8 @@ function Footer({
     openModal,
     testimonials,
     sections,
-    contactInfo
+    contactInfo,
+    isCurrentSectionValid
 }) {
     const UserCtx = useContext(Context);
     const Navigate = useNavigate();
@@ -77,19 +78,15 @@ function Footer({
     };
 
     const handleSubmit = async () => {
-        let success = false;
-        try {
-            if (!validateTestimonials()) return;
+        if (!validateTestimonials()) return;
 
+        try {
             UserCtx.util.setLoader(true);
             
-            success = await nextSection();
+            const success = await nextSection();
 
             if (success && currentSection === sections.length - 1) {
                 try {
-                    // Show loader while creating admin accounts
-                    UserCtx.util.setLoader(true);
-                    
                     // Create admin accounts after testimonial submission
                     await createAdminAccounts({
                         institution: institutionId,
@@ -106,70 +103,65 @@ function Footer({
                             userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
                         }
                     });
-                    UserCtx.util.setLoader(false);
+
                     // Clear all local storage items
                     const clearStorage = () => {
-                        console.log('Clearing local storage...');
-                        // Clear form data
-                        localStorage.removeItem('cafeFormData');
-                        localStorage.removeItem('cafeFormLogo');
-                        localStorage.removeItem('heroImage');
-                        localStorage.removeItem('testimonialImages');
-                        localStorage.removeItem('cafeFormMissionBg');
-                        localStorage.removeItem('cafeCurrentSection');
+                        const keysToRemove = [
+                            'cafeFormData',
+                            'cafeFormLogo',
+                            'heroImage',
+                            'testimonialImages',
+                            'cafeFormMissionBg',
+                            'cafeCurrentSection',
+                            'cafeFormHeroImage',
+                            'cafeFormTaglines',
+                            'cafeInstitutionId',
+                            'cafeCompanyName',
+                            'companyName',
+                            'institutionid',
+                            'formProgress',
+                            'currentStep',
+                            'formState',
+                            'contactInfo',
+                            'testimonials'
+                        ];
+
+                        keysToRemove.forEach(key => localStorage.removeItem(key));
                         
-                        // Clear company data
-                        localStorage.removeItem('companyName');
-                        localStorage.removeItem('institutionid');
-                        
-                        // Clear any other form-related data
-                        localStorage.removeItem('formProgress');
-                        localStorage.removeItem('currentStep');
-                        localStorage.removeItem('formState');
-                        localStorage.removeItem('contactInfo');
-                        localStorage.removeItem('testimonials');
-                        
-                        // For safety, get all keys and remove any that contain relevant keywords
-                        const keysToCheck = ['cafe', 'form', 'company', 'institution', 'step'];
+                        // For safety, remove any keys containing relevant keywords
+                        const keysToCheck = ['cafe', 'form', 'company', 'institution', 'step', 'subscription', 'class'];
                         Object.keys(localStorage).forEach(key => {
                             const keyLower = key.toLowerCase();
                             if (keysToCheck.some(check => keyLower.includes(check))) {
                                 localStorage.removeItem(key);
                             }
                         });
-                        
-                        console.log('Local storage cleared completely');
                     };
 
-                    // Execute the flow
                     clearStorage();
+
+                    // Turn off loader before navigation
+                    UserCtx.util.setLoader(false);
                     
-                    // Small delay to ensure storage is cleared
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    
-                    console.log('Navigating to pricing page...');
-                    // Navigate to pricing page in the same window
+                    // Navigate to pricing page
                     Navigate(`/pricing?institutionId=${institutionId}`, { 
                         replace: true,
-                        state: { from: 'cafe' } // Add state to track where we came from
+                        state: { from: 'cafe' }
                     });
 
                 } catch (error) {
                     console.error('Error in submission flow:', error);
                     alert('Error during submission: ' + error.message);
-                    UserCtx.util.setLoader(false); // Hide loader on error
+                    UserCtx.util.setLoader(false);
                 }
             } else {
                 scrollToTop();
+                UserCtx.util.setLoader(false);
             }
         } catch (error) {
             console.error("Error submitting form:", error);
             alert("Error: " + (error.message || "Failed to submit form. Please try again."));
-        } finally {
-            // Only hide loader if we're not navigating to pricing page
-            if (!(success && currentSection === sections.length - 1)) {
-                UserCtx.util.setLoader(false);
-            }
+            UserCtx.util.setLoader(false);
         }
     };
 
@@ -224,18 +216,28 @@ function Footer({
                     {currentSection === sections.length - 1 ? (
                         <button
                             onClick={handleSubmit}
-                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                            disabled={!isCurrentSectionValid}
+                            className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 bg-[#30afbc]
+                                ${isCurrentSectionValid 
+                                    ? 'hover:bg-[#2b9ea9] cursor-pointer shadow-md' 
+                                    : 'opacity-60 cursor-not-allowed hover:opacity-70'}`}
+                            title={!isCurrentSectionValid ? "Please fill in all required fields" : ""}
                         >
                             SUBMIT
-                            <FiCheck className="w-4 h-4" />
+                            <FiCheck className={`w-4 h-4 ${!isCurrentSectionValid ? 'opacity-60' : ''}`} />
                         </button>
                     ) : (
                         <button
                             onClick={handleNextClick}
-                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                            disabled={!isCurrentSectionValid}
+                            className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 bg-[#30afbc]
+                                ${isCurrentSectionValid 
+                                    ? 'hover:bg-[#2b9ea9] cursor-pointer shadow-md' 
+                                    : 'opacity-60 cursor-not-allowed hover:opacity-70'}`}
+                            title={!isCurrentSectionValid ? "Please fill in all required fields" : ""}
                         >
                             NEXT
-                            <FiChevronRight className="w-4 h-4" />
+                            <FiChevronRight className={`w-4 h-4 ${!isCurrentSectionValid ? 'opacity-60' : ''}`} />
                         </button>
                     )}
                 </div>
@@ -251,10 +253,11 @@ Footer.propTypes = {
     saveData: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     institutionId: PropTypes.string,
-    openModal: PropTypes.func,
+    openModal: PropTypes.func.isRequired,
     testimonials: PropTypes.array,
-    
-    contactInfo: PropTypes.object.isRequired
+    sections: PropTypes.array.isRequired,
+    contactInfo: PropTypes.object.isRequired,
+    isCurrentSectionValid: PropTypes.bool.isRequired
 };
 
 export default Footer;

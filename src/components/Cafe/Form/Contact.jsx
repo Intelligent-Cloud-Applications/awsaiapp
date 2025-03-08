@@ -5,8 +5,26 @@ import PropTypes from 'prop-types';
 
 // Constants
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_REGEX = /^\+?[\d\s-]{10,}$/;
-const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+const PHONE_REGEX = /^\+?[\d\s-]{8,15}$/;
+const GMAPS_REGEX = /^(https?:\/\/)?(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.google\.com)\/.+/;
+const INSTAGRAM_REGEX = /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_.]+(\/)?$/;
+const FACEBOOK_REGEX = /^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9_.]+(\/?|\/.+)?$/;
+const YOUTUBE_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|user\/|c\/)[a-zA-Z0-9_-]+|youtube\.com\/@[a-zA-Z0-9_-]+)$/;
+
+// Add phone formatting function
+const formatPhoneNumber = (value) => {
+  // Remove all non-numeric characters except +
+  const cleaned = value.replace(/[^\d+]/g, '');
+  
+  // If it starts with +, keep it, otherwise remove any + that might be in the middle
+  const normalizedNumber = cleaned.startsWith('+') 
+    ? cleaned
+    : cleaned.replace(/\+/g, '');
+
+  // Split into groups of 4 for readability
+  const groups = normalizedNumber.match(/.{1,4}/g) || [];
+  return groups.join(' ').trim();
+};
 
 // Validation functions
 const validateField = (field, value) => {
@@ -25,17 +43,33 @@ const validateField = (field, value) => {
     case 'phoneNumber':
       if (!value?.trim()) {
         return 'Phone number is required';
-      } else if (!PHONE_REGEX.test(value.trim())) {
-        return 'Invalid phone number format';
+      } else if (!PHONE_REGEX.test(value.replace(/\s/g, ''))) {
+        return 'Please enter a valid phone number with country code';
       }
       return '';
     case 'address':
       return !value?.trim() ? 'Address is required' : '';
     case 'locationMap':
       if (!value?.trim()) {
-        return 'Location map URL is required';
-      } 
-
+        return 'Google Maps link is required';
+      } else if (!GMAPS_REGEX.test(value.trim())) {
+        return 'Please enter a valid Google Maps link';
+      }
+      return '';
+    case 'social_instagram':
+      if (value && !INSTAGRAM_REGEX.test(value)) {
+        return 'Please enter a valid Instagram profile URL';
+      }
+      return '';
+    case 'social_facebook':
+      if (value && !FACEBOOK_REGEX.test(value)) {
+        return 'Please enter a valid Facebook profile URL';
+      }
+      return '';
+    case 'social_youtube':
+      if (value && !YOUTUBE_REGEX.test(value)) {
+        return 'Please enter a valid YouTube channel URL';
+      }
       return '';
     default:
       return '';
@@ -58,7 +92,7 @@ const validateContactData = (contactData) => {
 
   if (!EMAIL_REGEX.test(contactData.emailId)) return false;
   if (!PHONE_REGEX.test(contactData.phoneNumber)) return false;
-  if (contactData.visitUs?.locatemap && !URL_REGEX.test(contactData.visitUs.locatemap)) return false;
+  if (contactData.visitUs?.locatemap && !GMAPS_REGEX.test(contactData.visitUs.locatemap)) return false;
 
   return true;
 };
@@ -86,46 +120,6 @@ const Contact = ({ contactInfo, setContactInfo }) => {
       locatemap: ''
     }
   }), []);
-
-  // Load data from localStorage
-  const loadFromLocalStorage = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-      
-      const newContactInfo = {
-        ...initialContactInfo,
-        firstName: savedData.firstName || '',
-        lastName: savedData.lastName || '',
-        userName: savedData.userName || '',
-        emailId: savedData.emailId || '',
-        Query_PhoneNumber: savedData.Query_PhoneNumber || '',
-        Query_Address: savedData.Query_Address || '',
-        socialMediaLinks: {
-          instagram: savedData.socialMediaLinks?.instagram || '',
-          facebook: savedData.socialMediaLinks?.facebook || '',
-          youtube: savedData.socialMediaLinks?.youtube || ''
-        },
-        visitUs: {
-          locatemap: savedData.visitUs?.locatemap || ''
-        }
-      };
-
-      setContactInfo(newContactInfo);
-    } catch (error) {
-      console.error('Error loading contact data:', error);
-      // Set default values on error
-      setContactInfo(initialContactInfo);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setContactInfo, initialContactInfo]);
-
-  // Load data on mount
-  useEffect(() => {
-    loadFromLocalStorage();
-  }, [loadFromLocalStorage]);
-
 
   // Handle input changes with validation
   const handleInputChange = useCallback((field, value) => {
@@ -195,12 +189,14 @@ const Contact = ({ contactInfo, setContactInfo }) => {
           updated[field] = value;
       }
 
-      // Save to localStorage
+      // Save to localStorage with all necessary fields
       try {
         const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
         const dataToSave = {
           ...savedData,
           ...updated,
+          Query_PhoneNumber: updated.phoneNumber || updated.Query_PhoneNumber,
+          Query_Address: updated.address || updated.Query_Address,
           socialMediaLinks: updated.socialMediaLinks,
           visitUs: updated.visitUs
         };
@@ -213,11 +209,69 @@ const Contact = ({ contactInfo, setContactInfo }) => {
     });
   }, [setContactInfo]);
 
+  // Load data from localStorage
+  const loadFromLocalStorage = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+      
+      const newContactInfo = {
+        ...initialContactInfo,
+        firstName: savedData.firstName || '',
+        lastName: savedData.lastName || '',
+        userName: savedData.userName || '',
+        emailId: savedData.emailId || '',
+        phoneNumber: savedData.Query_PhoneNumber || savedData.phoneNumber || '',
+        Query_PhoneNumber: savedData.Query_PhoneNumber || savedData.phoneNumber || '',
+        address: savedData.Query_Address || savedData.address || '',
+        Query_Address: savedData.Query_Address || savedData.address || '',
+        socialMediaLinks: {
+          instagram: savedData.socialMediaLinks?.instagram || '',
+          facebook: savedData.socialMediaLinks?.facebook || '',
+          youtube: savedData.socialMediaLinks?.youtube || ''
+        },
+        visitUs: {
+          locatemap: savedData.visitUs?.locatemap || ''
+        }
+      };
+
+      setContactInfo(newContactInfo);
+    } catch (error) {
+      console.error('Error loading contact data:', error);
+      setContactInfo(initialContactInfo);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setContactInfo, initialContactInfo]);
+
+  // Load data on mount
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, [loadFromLocalStorage]);
+
   // Memoize social media platforms configuration
   const socialPlatforms = useMemo(() => [
-    { id: 'instagram', label: 'Instagram', icon: 'instagram' },
-    { id: 'facebook', label: 'Facebook', icon: 'facebook' },
-    { id: 'youtube', label: 'YouTube', icon: 'youtube' }
+    { 
+      id: 'instagram',
+      label: 'Instagram',
+      icon: 'instagram',
+      placeholder: 'https://instagram.com/yourusername',
+      regex: INSTAGRAM_REGEX
+    },
+    { 
+      id: 'facebook',
+      label: 'Facebook',
+      icon: 'facebook',
+      placeholder: 'https://facebook.com/yourusername',
+      regex: FACEBOOK_REGEX
+    },
+    { 
+      id: 'youtube',
+      label: 'YouTube',
+      icon: 'youtube',
+      placeholder: 'https://youtube.com/@yourchannel',
+      regex: YOUTUBE_REGEX
+    }
   ], []);
 
   if (isLoading) {
@@ -338,9 +392,35 @@ const Contact = ({ contactInfo, setContactInfo }) => {
                 id="phone"
                 type="tel"
                 value={contactInfo.Query_PhoneNumber || ''}
-                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                placeholder="Enter your phone number"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  
+                  // Only allow numbers, +, and spaces
+                  if (!/^[\d\s+]*$/.test(value)) return;
+                  
+                  // Prevent multiple + symbols
+                  if ((value.match(/\+/g) || []).length > 1) return;
+                  
+                  // Ensure + only appears at the start
+                  if (value.includes('+') && !value.startsWith('+')) return;
+                  
+                  // Format the number
+                  const formatted = formatPhoneNumber(value);
+                  
+                  // Only update if within length limits
+                  if (formatted.replace(/\s/g, '').length <= 15) {
+                    handleInputChange('phoneNumber', formatted);
+                  }
+                }}
+                placeholder="Enter phone number with country code (e.g., +91 9999 9999)"
                 required
+                maxLength={20} // Allow for spaces and formatting
+                onKeyPress={(e) => {
+                  // Allow only numbers, +, space, and backspace
+                  if (!/[\d\s+]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 aria-label="Phone Number"
                 aria-invalid={!!errors.phoneNumber}
                 aria-describedby={errors.phoneNumber ? "phone-error" : undefined}
@@ -351,6 +431,9 @@ const Contact = ({ contactInfo, setContactInfo }) => {
                   {errors.phoneNumber}
                 </p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Enter phone number with country code (8-15 digits)
+              </p>
             </div>
           </div>
         </div>
@@ -393,16 +476,30 @@ const Contact = ({ contactInfo, setContactInfo }) => {
           
           <div>
             <Label htmlFor="locationMap" className="block text-sm font-medium text-gray-700 mb-1">
-              Location Map URL <span className="text-red-500">*</span>
+              Google Maps Link <span className="text-red-500">*</span>
             </Label>
             <TextInput
               id="locationMap"
               type="url"
               value={contactInfo.visitUs?.locatemap || ''}
-              onChange={(e) => handleInputChange('locationMap', e.target.value)}
-              placeholder="Enter Google Maps or location URL"
+              onChange={(e) => {
+                const value = e.target.value;
+                // Only allow if empty or matches Google Maps URL pattern
+                if (!value || GMAPS_REGEX.test(value)) {
+                  handleInputChange('locationMap', value);
+                }
+              }}
+              onPaste={(e) => {
+                // Prevent pasting non-Google Maps URLs
+                const pastedText = e.clipboardData.getData('text');
+                if (!GMAPS_REGEX.test(pastedText)) {
+                  e.preventDefault();
+                  alert('Please paste a valid Google Maps link');
+                }
+              }}
+              placeholder="Enter your Google Maps location link (e.g., https://goo.gl/maps/...)"
               required
-              aria-label="Location Map URL"
+              aria-label="Google Maps Link"
               aria-invalid={!!errors.locationMap}
               aria-describedby={errors.locationMap ? "locationMap-error" : undefined}
               className={errors.locationMap ? 'border-red-500' : ''}
@@ -412,6 +509,17 @@ const Contact = ({ contactInfo, setContactInfo }) => {
                 {errors.locationMap}
               </p>
             )}
+            <div className="mt-2 space-y-2">
+              <p className="text-xs text-gray-500">
+                How to get your Google Maps link:
+              </p>
+              <ol className="text-xs text-gray-500 list-decimal list-inside space-y-1">
+                <li>Go to Google Maps and find your location</li>
+                <li>Click the "Share" button</li>
+                <li>Copy the link provided</li>
+                <li>Paste the link into the input field</li>
+              </ol>
+            </div>
           </div>
         </div>
 
@@ -422,7 +530,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {socialPlatforms.map(({ id, label }) => (
+            {socialPlatforms.map(({ id, label, placeholder, regex }) => (
               <div key={id}>
                 <Label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
                   {label}
@@ -431,10 +539,31 @@ const Contact = ({ contactInfo, setContactInfo }) => {
                   id={id}
                   type="url"
                   value={contactInfo.socialMediaLinks?.[id] || ''}
-                  onChange={(e) => handleInputChange(`social_${id}`, e.target.value)}
-                  placeholder={`${label} profile URL`}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleInputChange(`social_${id}`, value);
+                  }}
+                  onPaste={(e) => {
+                    const pastedText = e.clipboardData.getData('text');
+                    if (pastedText && !regex.test(pastedText)) {
+                      e.preventDefault();
+                      alert(`Please paste a valid ${label} URL`);
+                    }
+                  }}
+                  placeholder={placeholder}
                   aria-label={`${label} Profile URL`}
+                  aria-invalid={!!errors[`social_${id}`]}
+                  aria-describedby={errors[`social_${id}`] ? `${id}-error` : undefined}
+                  className={errors[`social_${id}`] ? 'border-red-500' : ''}
                 />
+                {errors[`social_${id}`] && (
+                  <p id={`${id}-error`} className="mt-1 text-sm text-red-500" role="alert">
+                    {errors[`social_${id}`]}
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Example: {placeholder}
+                </p>
               </div>
             ))}
           </div>

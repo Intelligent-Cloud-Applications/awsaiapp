@@ -5,11 +5,30 @@ import PropTypes from 'prop-types';
 
 // Constants
 const MAX_TAGLINE_LENGTH = 100;
+const MAX_FILE_SIZE_MB = 50;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 // Validation functions
 const validateTaglines = (taglines) => {
     // Remove all validation errors since we don't want to show them
     return {};
+};
+
+const validateImageFile = (file) => {
+    if (!file) {
+        return 'Please select a file';
+    }
+
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        return `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.map(type => type.split('/')[1]).join(', ')}`;
+    }
+
+    const fileSizeMB = file.size / (1024 * 1024);
+    if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        return `File size exceeds ${MAX_FILE_SIZE_MB}MB. Please choose a smaller file.`;
+    }
+
+    return null;
 };
 
 const Home = ({
@@ -117,12 +136,11 @@ const Home = ({
                 setProductTagline(savedData.productTagline);
             }
 
-            // Load hero image data
-            if (heroImageData.heroImage) {
-                setSelectedMedia(heroImageData.heroImage);
-            }
-            if (heroImageData.heroImageUrl) {
-                setHeroImage(heroImageData.heroImageUrl);
+            // Load hero image data - prioritize heroImageData but fallback to savedData
+            const heroImage = heroImageData.heroImage || savedData.heroImage;
+            if (heroImage) {
+                setSelectedMedia(heroImage);
+                setHeroImage(heroImage);
             }
 
             // Load other data
@@ -141,9 +159,8 @@ const Home = ({
     useEffect(() => {
         try {
             const currentData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
-            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
             
-            // Update taglines in localStorage
+            // Update data in localStorage
             const updatedData = {
                 ...currentData,
                 tagLine1: tagLine1 || '',
@@ -151,20 +168,12 @@ const Home = ({
                 productTagline: productTagline || '',
                 OurMission,
                 OurMissionBg: selectedMissionBg,
+                heroImage: heroImage, // Store the File object directly
                 lastUpdated: Date.now()
             };
             
-            // Update hero image data in localStorage
-            const updatedHeroImageData = {
-                ...heroImageData,
-                heroImage: selectedMedia,
-                heroImageUrl: heroImage,
-                lastUpdated: Date.now()
-            };
-            
-            // Save to both storages
+            // Save to localStorage
             localStorage.setItem('cafeFormData', JSON.stringify(updatedData));
-            localStorage.setItem('cafeFormHeroImage', JSON.stringify(updatedHeroImageData));
             
             // Also save taglines separately
             localStorage.setItem('cafeFormTaglines', JSON.stringify({
@@ -223,7 +232,13 @@ const Home = ({
                     ctx.drawImage(img, 0, 0, width, height);
                     
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    resolve(compressedBase64);
+                    
+                    const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
+                    if (sizeInMB > 1) {
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
+                    } else {
+                        resolve(compressedBase64);
+                    }
                 };
 
                 img.onerror = reject;
@@ -241,28 +256,35 @@ const Home = ({
         try {
             setSelectedMedia('loading');
 
-            if (!file.type.startsWith('image/')) {
-                throw new Error('Please upload an image file');
+            // Validate file
+            const validationError = validateImageFile(file);
+            if (validationError) {
+                throw new Error(validationError);
             }
 
             const compressedBase64 = await compressImage(file);
             console.log('Image compressed successfully');
 
-            const storageData = {
-                heroImage: compressedBase64,
-                fileName: file.name,
-                timestamp: Date.now()
-            };
-
             try {
-                // Save to localStorage
-                localStorage.setItem('cafeFormHeroImage', JSON.stringify({
-                    ...storageData,
-                    heroImageUrl: URL.createObjectURL(file)
+                // Update state with both the file and preview
+                setSelectedMedia(compressedBase64); // For preview
+                setHeroImage(file); // Store the actual file for upload
+
+                // Save preview to localStorage for display purposes
+                const storageData = {
+                    heroImage: compressedBase64,
+                    fileName: file.name,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('cafeFormHeroImage', JSON.stringify(storageData));
+
+                // Also update the main form data with the preview
+                const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+                localStorage.setItem('cafeFormData', JSON.stringify({
+                    ...savedData,
+                    heroImage: file // Store the file object for upload
                 }));
 
-                setSelectedMedia(compressedBase64);
-                setHeroImage(URL.createObjectURL(file));
                 setErrors(prev => ({ ...prev, heroImage: null }));
             } catch (storageError) {
                 console.error('Failed to save to localStorage:', storageError);
@@ -273,7 +295,7 @@ const Home = ({
             console.error('Error handling hero image:', error);
             setErrors(prev => ({
                 ...prev,
-                heroImage: error.message || 'Error processing image. Please try a different file.'
+                heroImage: error.message || 'Error processing image. Please try again.'
             }));
             setSelectedMedia(null);
             setHeroImage(null);
@@ -287,8 +309,10 @@ const Home = ({
         try {
             setSelectedMissionBg('loading');
 
-            if (!file.type.startsWith('image/')) {
-                throw new Error('Please upload an image file');
+            // Validate file
+            const validationError = validateImageFile(file);
+            if (validationError) {
+                throw new Error(validationError);
             }
 
             const compressedBase64 = await compressImage(file);
@@ -307,7 +331,7 @@ const Home = ({
             console.error('Error handling mission background image:', error);
             setErrors(prev => ({
                 ...prev,
-                missionBg: error.message || 'Error processing image. Please try a different file.'
+                missionBg: error.message || 'Error processing image. Please try again.'
             }));
             setSelectedMissionBg(null);
         }
@@ -609,7 +633,7 @@ Home.propTypes = {
     settagLine2: PropTypes.func.isRequired,
     productTagline: PropTypes.string.isRequired,
     setProductTagline: PropTypes.func.isRequired,
-    heroImage: PropTypes.string,
+    heroImage: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     setHeroImage: PropTypes.func.isRequired,
     selectedMedia: PropTypes.string,
     setSelectedMedia: PropTypes.func.isRequired,

@@ -250,6 +250,13 @@ const Cafe = () => {
                         break;
                     }
 
+                    // Validate company name format
+                    if (!/^[a-zA-Z0-9\s]+$/.test(companyName)) {
+                        alert("Company name can only contain letters, numbers, and spaces");
+                        success = false;
+                        break;
+                    }
+
                     if (!userData?.cognitoId) {
                         alert('Please login to continue');
                         navigate('/login');
@@ -993,6 +1000,70 @@ const Cafe = () => {
         }
     };
 
+    // Add new state for section validation
+    const [isCurrentSectionValid, setIsCurrentSectionValid] = useState(false);
+
+    // Add effect to run validation when relevant data changes
+    useEffect(() => {
+        const validateCurrentSectionData = () => {
+            const savedData = JSON.parse(localStorage.getItem('cafeFormData') || '{}');
+            
+            switch (currentSection) {
+                case 0: // Company
+                    const isCompanyValid = 
+                        institutionid?.trim() && 
+                        companyName?.trim() && 
+                        (selectedLogo || logo || savedData.logoUrl) &&
+                        /^[a-zA-Z0-9\s]+$/.test(companyName);
+                    setIsCurrentSectionValid(isCompanyValid);
+                    break;
+
+                case 1: // Contact
+                    const isContactValid = 
+                        contactInfo?.emailId?.trim() &&
+                        contactInfo?.firstName?.trim() &&
+                        contactInfo?.lastName?.trim() &&
+                        contactInfo?.Query_PhoneNumber?.trim() &&
+                        contactInfo?.Query_Address?.trim();
+                    setIsCurrentSectionValid(isContactValid);
+                    break;
+
+                case 2: // Home
+                    const isHomeValid = 
+                        tagLine1?.trim() && 
+                        tagLine2?.trim() && 
+                        productTagline?.trim();
+                    setIsCurrentSectionValid(isHomeValid);
+                    break;
+
+                case 3: // Testimonials
+                    const isTestimonialsValid = testimonials?.every(t => 
+                        t.customerName?.trim() && 
+                        t.text?.trim() && 
+                        t.imgSrc
+                    );
+                    setIsCurrentSectionValid(isTestimonialsValid);
+                    break;
+
+                default:
+                    setIsCurrentSectionValid(false);
+            }
+        };
+
+        validateCurrentSectionData();
+    }, [
+        currentSection,
+        institutionid,
+        companyName,
+        selectedLogo,
+        logo,
+        contactInfo,
+        tagLine1,
+        tagLine2,
+        productTagline,
+        testimonials
+    ]);
+
     const renderSection = () => {
         switch (currentSection) {
             case 0:
@@ -1105,6 +1176,7 @@ const Cafe = () => {
                 testimonials={testimonials}
                 sections={FORM_SECTIONS}
                 contactInfo={contactInfo}
+                isCurrentSectionValid={isCurrentSectionValid}
             />
 
             <PrevSectionDraftHandler

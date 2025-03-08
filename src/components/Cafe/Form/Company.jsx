@@ -18,6 +18,8 @@ const validateCompanyData = (data) => {
 
   if (!data.companyName?.trim()) {
     errors.companyName = 'Company name is required';
+  } else if (!/^[a-zA-Z0-9\s]+$/.test(data.companyName)) {
+    errors.companyName = 'Company name can only contain letters, numbers, and spaces';
   }
 
   if (!data.logo && !data.selectedLogo) {
@@ -185,18 +187,28 @@ const Company = ({
   // Handle company name change
   const handleCompanyNameChange = useCallback((e) => {
     const value = e.target.value;
+    
+    // Check for special characters
+    if (value && !/^[a-zA-Z0-9\s]*$/.test(value)) {
+      setErrors(prev => ({ 
+        ...prev, 
+        companyName: 'Company name can only contain letters, numbers, and spaces' 
+      }));
+      return;
+    }
+    
     setCompanyName(value);
     
     // Clear institution ID if company name is empty
     if (!value.trim()) {
       setinstitutionid('');
+      setErrors(prev => ({ ...prev, companyName: 'Company name is required' }));
     } else {
       // Generate new ID if company name has value
       const newId = generateCompanyId(value);
       setinstitutionid(newId);
+      setErrors(prev => ({ ...prev, companyName: '' }));
     }
-    
-    setErrors(prev => ({ ...prev, companyName: !value.trim() ? 'Company name is required' : '' }));
   }, [setCompanyName, setinstitutionid]);
 
   // Update localStorage when company name or institution ID changes
