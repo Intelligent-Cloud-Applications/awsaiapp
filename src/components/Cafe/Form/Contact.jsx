@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 // Constants
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{8,15}$/;
-const GMAPS_REGEX = /^(https?:\/\/)?(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.google\.com)\/.+/;
 const INSTAGRAM_REGEX = /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_.]+(\/)?$/;
 const FACEBOOK_REGEX = /^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9_.]+(\/?|\/.+)?$/;
 const YOUTUBE_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|user\/|c\/)[a-zA-Z0-9_-]+|youtube\.com\/@[a-zA-Z0-9_-]+)$/;
@@ -50,25 +49,20 @@ const validateField = (field, value) => {
     case 'address':
       return !value?.trim() ? 'Address is required' : '';
     case 'locationMap':
-      if (!value?.trim()) {
-        return 'Google Maps link is required';
-      } else if (!GMAPS_REGEX.test(value.trim())) {
-        return 'Please enter a valid Google Maps link';
-      }
-      return '';
+      return !value?.trim() ? 'Google Maps link is required' : '';
     case 'social_instagram':
-      if (value && !INSTAGRAM_REGEX.test(value)) {
-        return 'Please enter a valid Instagram profile URL';
+      if (value && !INSTAGRAM_REGEX.test(value.trim())) {
+        return 'Please enter a valid Instagram profile URL (e.g., https://instagram.com/username)';
       }
       return '';
     case 'social_facebook':
-      if (value && !FACEBOOK_REGEX.test(value)) {
-        return 'Please enter a valid Facebook profile URL';
+      if (value && !FACEBOOK_REGEX.test(value.trim())) {
+        return 'Please enter a valid Facebook profile URL (e.g., https://facebook.com/username)';
       }
       return '';
     case 'social_youtube':
-      if (value && !YOUTUBE_REGEX.test(value)) {
-        return 'Please enter a valid YouTube channel URL';
+      if (value && !YOUTUBE_REGEX.test(value.trim())) {
+        return 'Please enter a valid YouTube channel URL (e.g., https://youtube.com/@channel)';
       }
       return '';
     default:
@@ -84,7 +78,8 @@ const validateContactData = (contactData) => {
     lastName: contactData.lastName?.trim(),
     emailId: contactData.emailId?.trim(),
     phoneNumber: contactData.phoneNumber?.trim(),
-    address: contactData.address?.trim()
+    address: contactData.address?.trim(),
+    visitUs: contactData.visitUs?.locatemap?.trim()
   };
 
   const missingFields = Object.entries(requiredFields).filter(([_, value]) => !value);
@@ -92,7 +87,20 @@ const validateContactData = (contactData) => {
 
   if (!EMAIL_REGEX.test(contactData.emailId)) return false;
   if (!PHONE_REGEX.test(contactData.phoneNumber)) return false;
-  if (contactData.visitUs?.locatemap && !GMAPS_REGEX.test(contactData.visitUs.locatemap)) return false;
+
+  // Validate social media links if provided
+  const { socialMediaLinks } = contactData;
+  if (socialMediaLinks) {
+    if (socialMediaLinks.instagram && !INSTAGRAM_REGEX.test(socialMediaLinks.instagram)) {
+      return false;
+    }
+    if (socialMediaLinks.facebook && !FACEBOOK_REGEX.test(socialMediaLinks.facebook)) {
+      return false;
+    }
+    if (socialMediaLinks.youtube && !YOUTUBE_REGEX.test(socialMediaLinks.youtube)) {
+      return false;
+    }
+  }
 
   return true;
 };
@@ -123,7 +131,8 @@ const Contact = ({ contactInfo, setContactInfo }) => {
 
   // Handle input changes with validation
   const handleInputChange = useCallback((field, value) => {
-    const error = validateField(field, value);
+    const processedValue = value;
+    const error = validateField(field, processedValue);
     setErrors(prev => ({ ...prev, [field]: error }));
 
     setContactInfo(prev => {
@@ -135,42 +144,42 @@ const Contact = ({ contactInfo, setContactInfo }) => {
             ...updated,
             visitUs: {
               ...updated.visitUs,
-              locatemap: value
+              locatemap: processedValue
             }
           };
           break;
         case 'firstName':
           updated = {
             ...updated,
-            firstName: value,
-            userName: `${value} ${updated.lastName || ''}`.trim()
+            firstName: processedValue,
+            userName: `${processedValue} ${updated.lastName || ''}`.trim()
           };
           break;
         case 'lastName':
           updated = {
             ...updated,
-            lastName: value,
-            userName: `${updated.firstName || ''} ${value}`.trim()
+            lastName: processedValue,
+            userName: `${updated.firstName || ''} ${processedValue}`.trim()
           };
           break;
         case 'emailId':
           updated = {
             ...updated,
-            emailId: value
+            emailId: processedValue
           };
           break;
         case 'phoneNumber':
           updated = {
             ...updated,
-            phoneNumber: value,
-            Query_PhoneNumber: value
+            phoneNumber: processedValue,
+            Query_PhoneNumber: processedValue
           };
           break;
         case 'address':
           updated = {
             ...updated,
-            address: value,
-            Query_Address: value
+            address: processedValue,
+            Query_Address: processedValue
           };
           break;
         case 'social_instagram':
@@ -181,12 +190,12 @@ const Contact = ({ contactInfo, setContactInfo }) => {
             ...updated,
             socialMediaLinks: {
               ...updated.socialMediaLinks,
-              [platform]: value
+              [platform]: processedValue
             }
           };
           break;
         default:
-          updated[field] = value;
+          updated[field] = processedValue;
       }
 
       // Save to localStorage with all necessary fields
@@ -482,22 +491,8 @@ const Contact = ({ contactInfo, setContactInfo }) => {
               id="locationMap"
               type="url"
               value={contactInfo.visitUs?.locatemap || ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                // Only allow if empty or matches Google Maps URL pattern
-                if (!value || GMAPS_REGEX.test(value)) {
-                  handleInputChange('locationMap', value);
-                }
-              }}
-              onPaste={(e) => {
-                // Prevent pasting non-Google Maps URLs
-                const pastedText = e.clipboardData.getData('text');
-                if (!GMAPS_REGEX.test(pastedText)) {
-                  e.preventDefault();
-                  alert('Please paste a valid Google Maps link');
-                }
-              }}
-              placeholder="Enter your Google Maps location link (e.g., https://goo.gl/maps/...)"
+              onChange={(e) => handleInputChange('locationMap', e.target.value)}
+              placeholder="Enter your Google Maps location link"
               required
               aria-label="Google Maps Link"
               aria-invalid={!!errors.locationMap}

@@ -143,6 +143,17 @@ const Cafe = () => {
         }
     });
 
+    // Add this state to track the S3 URL specifically
+    const [heroImageS3Url, setHeroImageS3Url] = useState(() => {
+        try {
+            const heroImageData = JSON.parse(localStorage.getItem('cafeFormHeroImage') || '{}');
+            return heroImageData.heroImageUrl || null;
+        } catch (error) {
+            console.error('Error initializing heroImageS3Url:', error);
+            return null;
+        }
+    });
+
     // Wrap setHeroImage in useCallback
     const handleSetHeroImage = useCallback((value) => {
         setHeroImage(value);
@@ -428,14 +439,15 @@ const Cafe = () => {
                                         institutionid: institutionid
                                     }
                                 });
-                                heroImageUrl = await Storage.get(uploadResponse.key);
-                                heroImageUrl = heroImageUrl.split("?")[0];
+                                const newHeroImageUrl = await Storage.get(uploadResponse.key);
+                                const cleanUrl = newHeroImageUrl.split("?")[0];
+                                setHeroImageS3Url(cleanUrl);
 
                                 // Save hero image data to localStorage
                                 heroImageBase64 = await convertFileToBase64(compressedHeroImage);
                                 localStorage.setItem('cafeFormHeroImage', JSON.stringify({
-                                    heroImage: heroImageBase64,
-                                    heroImageUrl: heroImageUrl,
+                                    heroImage: heroImageBase64, // For preview only
+                                    heroImageUrl: cleanUrl,
                                     fileName: heroImage.name
                                 }));
                             } catch (uploadError) {
@@ -511,11 +523,11 @@ const Cafe = () => {
                             tagLine1: tagLine1.trim(),
                             tagLine2: tagLine2.trim(),
                             productTagline: productTagline?.trim() || '',
-                            heroImage: currentHeroImageUrl,
-                            heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
+                            heroImage: currentHeroImageUrl, // Always use S3 URL
+                            heroImageData: null, // Never send base64 data
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
-                            selectedMedia: selectedMedia || null,
+                            selectedMedia: null,
                             OurMission: {
                                 title: OurMission.title.trim(),
                                 description: OurMission.description.trim(),
@@ -535,11 +547,12 @@ const Cafe = () => {
                             throw new Error('Failed to save home section data');
                         }
 
+                        // Update localStorage with the correct data structure
                         localStorage.setItem('cafeFormData', JSON.stringify({
                             ...localStorageData,
                             ...homeData,
-                            heroImage: currentHeroImageUrl,
-                            heroImageData: heroImageBase64 || heroImageData.heroImage || existingData.heroImageData || '',
+                            heroImage: currentHeroImageUrl, // Store S3 URL in main data
+                            heroImageData: null, // Don't store base64 in main data
                             logoUrl: currentLogoUrl,
                             OurMission: homeData.OurMission,
                             OurMissionBg: currentMissionBgUrl
@@ -618,8 +631,8 @@ const Cafe = () => {
                             lastUpdated: Date.now(),
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
-                            heroImage: currentHeroImageUrl,
-                            heroImageData: heroImageData.heroImage || existingData.heroImageData || '',
+                            heroImage: currentHeroImageUrl, // Use S3 URL
+                            heroImageData: null, // Don't send base64 data to API
                             section: 'home'
                         };
 
@@ -631,11 +644,13 @@ const Cafe = () => {
                             throw new Error('Failed to submit testimonials');
                         }
 
+                        // Update localStorage with the correct data structure
                         localStorage.setItem('cafeFormData', JSON.stringify({
                             ...localStorageData,
                             ...testimonialData,
                             logoUrl: currentLogoUrl,
-                            heroImage: currentHeroImageUrl
+                            heroImage: currentHeroImageUrl, // Store S3 URL
+                            heroImageData: null // Don't store base64 data
                         }));
 
                         await saveData();
@@ -683,10 +698,8 @@ const Cafe = () => {
             
             const dataToSave = {
                 ...existingData,
-                // Ensure institutionid and companyName are always saved
                 institutionid: institutionid || existingData.institutionid || '',
                 companyName: companyName || existingData.companyName || '',
-
                 PrimaryColor,
                 SecondaryColor,
                 LightPrimaryColor,
@@ -708,9 +721,9 @@ const Cafe = () => {
                 tagLine2: tagLine2 || '',
                 productTagline: productTagline || '',
                 
-                // Media
-                selectedMedia,
-                heroImage: heroImage instanceof File ? null : heroImage,
+                // Media - only store S3 URLs in main data
+                selectedMedia: null,
+                heroImage: heroImageS3Url || heroImageData.heroImageUrl || null, // Always use S3 URL
                 
                 // Testimonials
                 testimonials: testimonials.map(t => ({
@@ -718,10 +731,9 @@ const Cafe = () => {
                     text: t.text || '',
                     rating: t.rating || 5,
                     imgSrc: t.imgSrc || '',
-                    imageBase64: t.imageBase64 || ''
+                    imageBase64: null
                 })),
                 
-                // Section and metadata
                 currentSection,
                 lastUpdated: Date.now()
             };
@@ -729,14 +741,22 @@ const Cafe = () => {
             // Save to localStorage
             localStorage.setItem('cafeFormData', JSON.stringify(dataToSave));
             
-            // Save hero image data separately
-            localStorage.setItem('cafeFormHeroImage', JSON.stringify({
-                ...heroImageData,
-                heroImage: selectedMedia,
-                heroImageUrl: heroImage
-            }));
+            // Save preview data separately
+            if (heroImage instanceof File) {
+                // Keep existing heroImageUrl if we have a new file pending upload
+                localStorage.setItem('cafeFormHeroImage', JSON.stringify({
+                    ...heroImageData,
+                    heroImage: selectedMedia, // Preview only
+                }));
+            } else {
+                // Store both preview and S3 URL
+                localStorage.setItem('cafeFormHeroImage', JSON.stringify({
+                    ...heroImageData,
+                    heroImage: selectedMedia, // Preview only
+                    heroImageUrl: heroImageS3Url || heroImageData.heroImageUrl // S3 URL
+                }));
+            }
             
-            // Also save institutionid and companyName separately to ensure persistence
             if (institutionid) {
                 localStorage.setItem('cafeInstitutionId', institutionid);
             }
@@ -744,7 +764,6 @@ const Cafe = () => {
                 localStorage.setItem('cafeCompanyName', companyName);
             }
             
-            console.log('Saved data to localStorage:', dataToSave);
             return true;
         } catch (error) {
             console.error('Error saving data:', error);
@@ -764,6 +783,7 @@ const Cafe = () => {
         productTagline,
         selectedMedia,
         heroImage,
+        heroImageS3Url, // Add this to dependencies
         testimonials,
         currentSection
     ]);

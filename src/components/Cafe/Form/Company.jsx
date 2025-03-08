@@ -20,6 +20,8 @@ const validateCompanyData = (data) => {
     errors.companyName = 'Company name is required';
   } else if (!/^[a-zA-Z0-9\s]+$/.test(data.companyName)) {
     errors.companyName = 'Company name can only contain letters, numbers, and spaces';
+  } else if (/^\d+$/.test(data.companyName)) {
+    errors.companyName = 'Company name cannot contain only numbers';
   }
 
   if (!data.logo && !data.selectedLogo) {
@@ -70,13 +72,29 @@ const getContrastColor = (hexcolor) => {
 const generateCompanyId = (companyName) => {
   if (!companyName?.trim()) return '';
 
-  const letters = companyName
+  // Remove spaces and special characters
+  const cleanName = companyName.replace(/[^a-zA-Z0-9]/g, '');
+  
+  // Check if name contains only numbers
+  if (/^\d+$/.test(cleanName)) {
+    return ''; // Return empty to trigger validation error
+  }
+
+  // Extract letters (non-numeric characters)
+  const letters = cleanName
     .replace(/[^a-zA-Z]/g, '')
     .slice(0, 4)
-    .toUpperCase()
-    .padEnd(4, 'X');
+    .toUpperCase();
+
+  // If no letters found, return empty to trigger validation
+  if (!letters) {
+    return '';
+  }
+
+  // Pad with 'X' if less than 4 letters
+  const paddedLetters = letters.padEnd(4, 'X');
   const digits = Math.floor(1000 + Math.random() * 9000);
-  return `${letters}${digits}`;
+  return `${paddedLetters}${digits}`;
 };
 
 const Company = ({
@@ -196,6 +214,17 @@ const Company = ({
       }));
       return;
     }
+
+    // Check for numeric-only names
+    if (value && /^\d+$/.test(value.trim())) {
+      setErrors(prev => ({
+        ...prev,
+        companyName: 'Company name cannot contain only numbers'
+      }));
+      setinstitutionid('');
+      setCompanyName(value);
+      return;
+    }
     
     setCompanyName(value);
     
@@ -207,7 +236,7 @@ const Company = ({
       // Generate new ID if company name has value
       const newId = generateCompanyId(value);
       setinstitutionid(newId);
-      setErrors(prev => ({ ...prev, companyName: '' }));
+      setErrors(prev => ({ ...prev, companyName: newId ? '' : 'Company name must contain at least one letter' }));
     }
   }, [setCompanyName, setinstitutionid]);
 

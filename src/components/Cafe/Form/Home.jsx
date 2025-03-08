@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 const MAX_TAGLINE_LENGTH = 100;
 const MAX_FILE_SIZE_MB = 50;
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const MAX_MISSION_TITLE_LENGTH = 100;
+const MAX_MISSION_DESCRIPTION_LENGTH = 500;
+const MAX_MISSION_POINT_LENGTH = 150;
 
 // Validation functions
 const validateTaglines = (taglines) => {
@@ -565,16 +568,36 @@ const Home = ({
                             <Label htmlFor="mission-title" className="block text-sm font-medium text-gray-700 mb-1">
                                 Mission Title <span className="text-red-500">*</span>
                             </Label>
-                            <TextInput
-                                id="mission-title"
-                                value={OurMission.title}
-                                onChange={(e) => setOurMission(prev => ({
-                                    ...prev,
-                                    title: e.target.value
-                                }))}
-                                placeholder="Enter mission title"
-                                required
-                            />
+                            <div>
+                                <TextInput
+                                    id="mission-title"
+                                    value={OurMission.title}
+                                    onChange={(e) => {
+                                        const newTitle = e.target.value;
+                                        if (newTitle.length <= MAX_MISSION_TITLE_LENGTH) {
+                                            setOurMission(prev => ({
+                                                ...prev,
+                                                title: newTitle
+                                            }));
+                                            // Clear error if exists
+                                            if (errors.missionTitle) {
+                                                setErrors(prev => {
+                                                    const newErrors = { ...prev };
+                                                    delete newErrors.missionTitle;
+                                                    return newErrors;
+                                                });
+                                            }
+                                        }
+                                    }}
+                                    placeholder="Enter mission title"
+                                    required
+                                    className={errors.missionTitle ? 'border-red-500' : ''}
+                                />
+                                <p className="mt-1 text-sm text-gray-500 flex justify-between">
+                                    <span>{errors.missionTitle || ''}</span>
+                                    <span>{OurMission.title.length}/{MAX_MISSION_TITLE_LENGTH} characters</span>
+                                </p>
+                            </div>
                         </div>
 
                         {/* Mission Description */}
@@ -582,17 +605,37 @@ const Home = ({
                             <Label htmlFor="mission-description" className="block text-sm font-medium text-gray-700 mb-1">
                                 Mission Description <span className="text-red-500">*</span>
                             </Label>
-                            <Textarea
-                                id="mission-description"
-                                value={OurMission.description}
-                                onChange={(e) => setOurMission(prev => ({
-                                    ...prev,
-                                    description: e.target.value
-                                }))}
-                                placeholder="Enter mission description"
-                                required
-                                rows={4}
-                            />
+                            <div>
+                                <Textarea
+                                    id="mission-description"
+                                    value={OurMission.description}
+                                    onChange={(e) => {
+                                        const newDescription = e.target.value;
+                                        if (newDescription.length <= MAX_MISSION_DESCRIPTION_LENGTH) {
+                                            setOurMission(prev => ({
+                                                ...prev,
+                                                description: newDescription
+                                            }));
+                                            // Clear error if exists
+                                            if (errors.missionDescription) {
+                                                setErrors(prev => {
+                                                    const newErrors = { ...prev };
+                                                    delete newErrors.missionDescription;
+                                                    return newErrors;
+                                                });
+                                            }
+                                        }
+                                    }}
+                                    placeholder="Enter mission description"
+                                    required
+                                    rows={4}
+                                    className={errors.missionDescription ? 'border-red-500' : ''}
+                                />
+                                <p className="mt-1 text-sm text-gray-500 flex justify-between">
+                                    <span>{errors.missionDescription || ''}</span>
+                                    <span>{OurMission.description.length}/{MAX_MISSION_DESCRIPTION_LENGTH} characters</span>
+                                </p>
+                            </div>
                         </div>
 
                         {/* Mission Points */}
@@ -602,20 +645,37 @@ const Home = ({
                             </Label>
                             <div className="space-y-3">
                                 {OurMission.points.map((point, index) => (
-                                    <TextInput
-                                        key={index}
-                                        value={point}
-                                        onChange={(e) => {
-                                            const newPoints = [...OurMission.points];
-                                            newPoints[index] = e.target.value;
-                                            setOurMission(prev => ({
-                                                ...prev,
-                                                points: newPoints
-                                            }));
-                                        }}
-                                        placeholder={`Enter point ${index + 1}`}
-                                        required
-                                    />
+                                    <div key={index}>
+                                        <TextInput
+                                            value={point}
+                                            onChange={(e) => {
+                                                const newPoint = e.target.value;
+                                                if (newPoint.length <= MAX_MISSION_POINT_LENGTH) {
+                                                    const newPoints = [...OurMission.points];
+                                                    newPoints[index] = newPoint;
+                                                    setOurMission(prev => ({
+                                                        ...prev,
+                                                        points: newPoints
+                                                    }));
+                                                    // Clear error if exists
+                                                    if (errors[`missionPoint${index}`]) {
+                                                        setErrors(prev => {
+                                                            const newErrors = { ...prev };
+                                                            delete newErrors[`missionPoint${index}`];
+                                                            return newErrors;
+                                                        });
+                                                    }
+                                                }
+                                            }}
+                                            placeholder={`Enter point ${index + 1}`}
+                                            required
+                                            className={errors[`missionPoint${index}`] ? 'border-red-500' : ''}
+                                        />
+                                        <p className="mt-1 text-sm text-gray-500 flex justify-between">
+                                            <span>{errors[`missionPoint${index}`] || ''}</span>
+                                            <span>{point.length}/{MAX_MISSION_POINT_LENGTH} characters</span>
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
                         </div>
