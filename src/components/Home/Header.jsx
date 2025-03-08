@@ -22,10 +22,12 @@ const Header = () => {
 
   return (
     <motion.div
-      className="wow overflow-hidden flex flex-col md:flex-row justify-center md:justify-between items-center pt-6 md:pt-16 w-full"
-      initial={{ opacity: 0, x: -50 }}
-      animate={controls}
-    >
+    className="wow overflow-hidden flex flex-col md:flex-row justify-center md:justify-between items-center pt-6 md:pt-16 w-full hero-section"
+    initial={{ opacity: 0, x: -50 }}
+    animate={controls}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+  >
+
       <motion.div
         className="flex flex-col w-full md:w-1/2 gap-1 md:pl-8 main lg:pl-16 px-5"
         initial={{ opacity: 0, y: -20 }}
