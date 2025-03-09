@@ -76,7 +76,7 @@ const Trade = () => {
               className="item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+          <p className="text-[20px] pb-[2rem] max500:px-4 max500:text-[15px] justify-center">
             Every industry has unique requirements, and our Trade Specific
             Features service ensures that your web application is tailored to
             meet the specific needs of your trade. Whether you operate in
@@ -140,4 +140,5 @@ const Trade = () => {
     </div>
   );
 };
+
 export default Trade;

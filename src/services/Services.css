@@ -58,7 +58,7 @@
 
 .styled-list li h1{
     margin: 0; /* Remove default margin for the heading */
-    font-size: 15px;
+    font-size: 22px;
     font-weight: bold;
 }
 .styled-list {
@@ -69,6 +69,7 @@
 
 .styled-list li {
     margin-bottom: 10px;
+    color: #2a9d8f;
 }
 
 .description{
