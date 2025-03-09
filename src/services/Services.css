@@ -1,26 +1,37 @@
-.serv a p{
-    font-size: 14px ;
+.serv a p {
+    font-size: 14px;
 }
-.serv a{
+
+.serv a {
     width: 230px;
     display: flex;
-    justify-content: space-between; /* Make sure the elements are in a row */
+    justify-content: space-between;
+    /* Make sure the elements are in a row */
     align-items: center;
-    text-decoration: none; /* Remove default link underline */
-    padding-bottom: 10px; /* Add spacing between the links and the underline */
-    border-bottom: 1px solid #000000; /* Add a 1px solid gray underline to each link */
+    text-decoration: none;
+    /* Remove default link underline */
+    padding-bottom: 10px;
+    /* Add spacing between the links and the underline */
+    border-bottom: 1px solid #000000;
+    /* Add a 1px solid gray underline to each link */
     margin-bottom: 10px;
+}
+
+.serv{
+    margin-top: 10%;
+    position: relative;
 }
 
 @media (max-width: 600px) {
     .nor {
         margin: 5%;
-        padding:0rem;
+        padding: 0rem;
         padding-top: 5rem;
         justify-content: center;
         align-items: center;
     }
-    .serv{
+
+    .serv {
         padding-left: 0%;
         padding-right: 0%;
         width: 0%;
@@ -28,39 +39,53 @@
         display: none;
     }
 }
-.relat{
+
+.relat {
     position: fixed;
-    top: 100px; /* Adjust this value to position it below the navbar */
+    top: 100px;
+    /* Adjust this value to position it below the navbar */
     z-index: 1;
 }
+
 @media (max-width:800px) {
-    .serv a p{
-        font-size: 10px ;
+    .serv a p {
+        font-size: 10px;
     }
-    .serv a{
+
+    .serv a {
         width: 170px;
     }
-    .nor img{
+
+    .nor img {
         object-fit: contain;
         padding: 5%;
     }
+
+    .serv{
+        width: 28%;
+        margin-top: 15%;
+        margin-right: 0;
+    }
 }
-.serv a img{
+
+.serv a img {
     width: 10px;
     height: 10px;
     display: flex;
     object-fit: cover;
 }
 
-.serv{
+.serv {
     position: relative;
 }
 
-.styled-list li h1{
-    margin: 0; /* Remove default margin for the heading */
+.styled-list li h1 {
+    margin: 0;
+    /* Remove default margin for the heading */
     font-size: 22px;
     font-weight: bold;
 }
+
 .styled-list {
     list-style-type: disc;
     list-style-position: outside;
@@ -72,12 +97,21 @@
     color: #2a9d8f;
 }
 
-.description{
+.description {
     display: flex;
     float: left;
 }
 
 .sty{
-    list-style-type: disc;
-    padding-left: 25px;
+    font-size: small;
+}
+
+.sty div:nth-child(odd) {
+    background: rgb(220, 220, 220);
+    padding: 3%;
+}
+
+.sty div:nth-child(even) {
+    background: rgb(255, 254, 254);
+    padding: 3%;
 }

@@ -16,16 +16,15 @@ const Common = () => {
   };
 
   const containerStyle = {
-    width: isPanelOpen ? "200px" : "20px",
+    width: isPanelOpen ? "250px" : "20px",
     transition: "width 0.3s ease", // Add a transition effect for the container width
     position: "relative",
   };
 
   const panelStyle = {
-    background: "white",
-    width: "200px", // Set the width of the panel
+    width: "300px", // Set the width of the panel
     position: "relative",
-    left: isPanelOpen ? "40px" : "-170px", // Adjust the initial left position to hide the panel
+    left: isPanelOpen ? "40px" : "-300px", // Adjust the initial left position to hide the panel
     top: "0",
     height: "100%",
     transition: "left 0.3s ease", // Add a transition effect for the left position
@@ -36,7 +35,7 @@ const Common = () => {
   return (
     <div className="flex flex-row " style={containerStyle}>
       <div
-        className=" h-[30px] w-[30px] absolute bg-[#30AFBC]"
+        className=" h-[30px] w-[30px] absolute bg-[#30AFBC] mt-[2rem]"
         style={{
           boxShadow: "2px 2px 4px #353535",
           borderTopRightRadius: "10px",
@@ -51,26 +50,26 @@ const Common = () => {
           onClick={togglePanel}
         />
       </div>
-      <div style={panelStyle}>
-        <ul className="gap-6 p-4 sty">
-          <li>
+      <div style={panelStyle} className=" mt-[2rem] w-[90%]">
+        <ul className="gap-6 sty">
+          <div>
             <Link to="/User_interface">User interface & User experience</Link>
-          </li>
-          <li>
+          </div>
+          <div>
             <Link to="/Personalization">Personalization</Link>
-          </li>
-          <li>
+          </div>
+          <div>
             <Link to="/identity">Login And identity managment</Link>
-          </li>
-          <li>
+          </div>
+          <div>
             <Link to="/trade">Trade Specific features</Link>
-          </li>
-          <li>
+          </div>
+          <div>
             <Link to="/customer">Leads & customer tracking</Link>
-          </li>
-          <li>
+          </div>
+          <div>
             <Link to="/payment">Payments</Link>
-          </li>
+          </div>
         </ul>
       </div>
     </div>

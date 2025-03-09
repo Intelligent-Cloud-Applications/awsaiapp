@@ -34,7 +34,7 @@ const Trade = () => {
               <Common />
             </div>
           ) : (
-            <div className="flex flex-col serv h-269 w-231 pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:w-[150px] max800:pt-[15%] max800:p-[2%]">
+            <div className="flex flex-col serv h-269 w-231 pl-[4rem] pt-[7rem] description p-[5%] gap-2 max800:pt-[15%] max800:p-[2%]">
               <h2 className="text-[29px] pb-[1rem] max800:text-[22px]">
                 Our Services
               </h2>
