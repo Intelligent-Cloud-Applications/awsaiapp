@@ -106,12 +106,27 @@ const Panel = () => {
       toast.error("An error occurred while updating the deliverable.");
     }
   };
-  const handleDomainLinkSubmit = async (institutionid) => {
-    const domainLink = domainLinks[institutionid];
+  const validateDomainLink = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:";
+    } catch (e) {
+      return false;
+    }
+  };
 
+  const handleDomainLinkSubmit = async (institutionid) => {
+    let domainLink = domainLinks[institutionid]?.trim();
     if (!domainLink) {
       toast.error("Domain link cannot be empty for Completed deliverables.");
       return;
+    }
+    if (!validateDomainLink(domainLink)) {
+      toast.error("Please enter a valid URL.");
+      return;
+    }
+    if (domainLink.endsWith("/")) {
+      domainLink = domainLink.slice(0, -1);
     }
 
     try {
@@ -186,28 +201,28 @@ const Panel = () => {
     if (!searchQuery && !selectedType && filterStatus === null) {
       return Array.isArray(clientsData)
         ? clientsData
-          .filter(([key, client]) => client?.isFormFilled || false)
-          .sort((a, b) => {
-            const dateA = a[1].date || -Infinity;
-            const dateB = b[1].date || -Infinity;
-            return dateB - dateA;
-          })
+            .filter(([key, client]) => client?.isFormFilled || false)
+            .sort((a, b) => {
+              const dateA = a[1].date || -Infinity;
+              const dateB = b[1].date || -Infinity;
+              return dateB - dateA;
+            })
         : [];
     }
     const query = searchQuery?.toLowerCase();
 
     const filtered = Array.isArray(clientsData)
       ? clientsData.filter(([key, client]) => {
-        const institution = client?.institutionid
-          ? String(client.institutionid).toLowerCase()
-          : "";
-        const matchesQuery = !searchQuery || institution.includes(query);
-        const matchesType =
-          !selectedType || client.institutionType === selectedType;
-        const matchesDelivery =
-          filterStatus === null || client.isDelivered === filterStatus;
-        return matchesQuery && matchesType && matchesDelivery;
-      })
+          const institution = client?.institutionid
+            ? String(client.institutionid).toLowerCase()
+            : "";
+          const matchesQuery = !searchQuery || institution.includes(query);
+          const matchesType =
+            !selectedType || client.institutionType === selectedType;
+          const matchesDelivery =
+            filterStatus === null || client.isDelivered === filterStatus;
+          return matchesQuery && matchesType && matchesDelivery;
+        })
       : [];
     console.log("Filtered Clients:", filtered);
     return filtered;
@@ -473,11 +488,13 @@ const Panel = () => {
                     <div className="relative inline-block ml-5">
                       <button
                         className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
-                        onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
-                      >
-                        {(selectedType !== null || filterStatus !== null) &&
-                            <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                        onClick={() =>
+                          setActiveMenu((prev) => (prev ? null : "main"))
                         }
+                      >
+                        {(selectedType !== null || filterStatus !== null) && (
+                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                        )}
                         Filter
                         {activeMenu ? (
                           <HiChevronUp className="ml-2" />
@@ -500,14 +517,22 @@ const Panel = () => {
                                 onClick={() => handleMenuToggle("type")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>{selectedType !== null ? selectedType : "Type"}</span>
+                                <span>
+                                  {selectedType !== null
+                                    ? selectedType
+                                    : "Type"}
+                                </span>
                                 <HiChevronRight />
                               </div>
                               <div
                                 onClick={() => handleMenuToggle("isDelivered")}
                                 className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
                               >
-                                <span>{filterStatus === false ? "Not Delivered" : "Delivered"}</span>
+                                <span>
+                                  {filterStatus === false
+                                    ? "Not Delivered"
+                                    : "Delivered"}
+                                </span>
                                 <HiChevronRight />
                               </div>
                             </div>
@@ -615,8 +640,9 @@ const Panel = () => {
                         )}
 
                         <Table.HeadCell
-                          className={`${showHiddenContent ? "" : "max1008:hidden"
-                            } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                          className={`${
+                            showHiddenContent ? "" : "max1008:hidden"
+                          } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
                         >
                           Created By
                         </Table.HeadCell>
@@ -686,7 +712,9 @@ const Panel = () => {
                                   <Dropdown
                                     label={
                                       deliveryStatuses[client.institutionid] ??
-                                      (client.isDelivered ? "Delivered" : "Not Delivered")
+                                      (client.isDelivered
+                                        ? "Delivered"
+                                        : "Not Delivered")
                                     }
                                     inline
                                   >
@@ -695,9 +723,13 @@ const Panel = () => {
                                       onClick={() => {
                                         setDeliveryStatuses((prev) => ({
                                           ...prev,
-                                          [client.institutionid]: "Not Delivered",
+                                          [client.institutionid]:
+                                            "Not Delivered",
                                         }));
-                                        handleDropdownChange(client, "Not Delivered");
+                                        handleDropdownChange(
+                                          client,
+                                          "Not Delivered"
+                                        );
                                       }}
                                     >
                                       Not Delivered
@@ -709,7 +741,10 @@ const Panel = () => {
                                           ...prev,
                                           [client.institutionid]: "Delivered",
                                         }));
-                                        handleDropdownChange(client, "Delivered");
+                                        handleDropdownChange(
+                                          client,
+                                          "Delivered"
+                                        );
                                       }}
                                     >
                                       Delivered
@@ -721,11 +756,9 @@ const Panel = () => {
                                     className="bg-gray-200 border border-none rounded-md"
                                   >
                                     <option>
-                                      {
-                                        client.isDelivered
-                                          ? "Delivered"
-                                          : "Not Delivered"
-                                      }
+                                      {client.isDelivered
+                                        ? "Delivered"
+                                        : "Not Delivered"}
                                     </option>
                                   </select>
                                 )}
@@ -738,8 +771,9 @@ const Panel = () => {
                             )}
 
                             <Table.Cell
-                              className={`${showHiddenContent ? "" : "max1008:hidden"
-                                } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                              className={`${
+                                showHiddenContent ? "" : "max1008:hidden"
+                              } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
                             >
                               {client.createdBy
                                 ? getUsernameByCognitoId(client.createdBy)
@@ -812,19 +846,17 @@ const Panel = () => {
                               <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
                                 <div className="flex items-center gap-2">
                                   <TextInput
-                                    id="domain"
                                     value={
                                       domainLinks[client.institutionid] || ""
                                     }
                                     placeholder={
-                                      client.domainLink
-                                        ? client.domainLink
-                                        : "Enter the Domain link"
+                                      client.domainLink ||
+                                      "Enter the Domain link"
                                     }
                                     required
                                     disabled={
                                       selectedStatuses[client.institutionid] !==
-                                      "Completed" &&
+                                        "Completed" &&
                                       client.deliverable !== "Completed"
                                     }
                                     className="w-[160px]"
@@ -838,17 +870,16 @@ const Panel = () => {
                                   {(selectedStatuses[client.institutionid] ===
                                     "Completed" ||
                                     client.deliverable === "Completed") && (
-                                      <Button
-                                        onClick={() =>
-                                          handleDomainLinkSubmit(
-                                            client.institutionid
-                                          )
-                                        }
-                                        className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                                      >
-                                        <FaCheck />
-                                      </Button>
-                                    )}
+                                    <Button
+                                      onClick={() =>
+                                        handleDomainLinkSubmit(
+                                          client.institutionid
+                                        )
+                                      }
+                                    >
+                                      <FaCheck />
+                                    </Button>
+                                  )}
                                 </div>
                               </Table.Cell>
                             )}
@@ -881,7 +912,7 @@ const Panel = () => {
                                   />
                                 ) : null}
 
-                                {client.domainLink ? (
+                                  {client.institutionType === "DanceStudio" && client.domainLink && (
                                   <>
                                     <BsQrCodeScan
                                       className="text-blue-500 cursor-pointer h-5 w-5"
@@ -952,7 +983,7 @@ const Panel = () => {
                                       </Modal.Footer>
                                     </Modal>
                                   </>
-                                ) : null}
+                                )}
                               </div>
                             </Table.Cell>
 
@@ -1000,7 +1031,6 @@ const Panel = () => {
             </>
           ) : (
             <>
-
               <Select
                 value={instituteType && splitandjoin(instituteType)}
                 onChange={(e) => setInstituteType(e.target.value)}
@@ -1042,7 +1072,9 @@ const Panel = () => {
               <div className="relative mt-4">
                 <button
                   className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
-                  onClick={() => setActiveMenu((prev) => (prev ? null : "main"))}
+                  onClick={() =>
+                    setActiveMenu((prev) => (prev ? null : "main"))
+                  }
                 >
                   Filter
                   {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
@@ -1134,7 +1166,6 @@ const Panel = () => {
                     className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
                   >
                     <div className="flex flex-col gap-2">
-
                       <div
                         className="flex justify-between items-center text-center"
                         onClick={(e) => handleRowClick(client, e)}
@@ -1314,7 +1345,7 @@ const Panel = () => {
                             required
                             disabled={
                               selectedStatuses[client.institutionid] !==
-                              "Completed" &&
+                                "Completed" &&
                               client.deliverable !== "Completed"
                             }
                             className="w-[160px]"
@@ -1328,15 +1359,15 @@ const Panel = () => {
                           {(selectedStatuses[client.institutionid] ===
                             "Completed" ||
                             client.deliverable === "Completed") && (
-                              <Button
-                                onClick={() =>
-                                  handleDomainLinkSubmit(client.institutionid)
-                                }
-                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                              >
-                                <FaCheck />
-                              </Button>
-                            )}
+                            <Button
+                              onClick={() =>
+                                handleDomainLinkSubmit(client.institutionid)
+                              }
+                              className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                            >
+                              <FaCheck />
+                            </Button>
+                          )}
                         </div>
                       )}
 
@@ -1439,10 +1470,11 @@ const Panel = () => {
                         currentPage > 1 && setCurrentPage(currentPage - 1)
                       }
                       disabled={currentPage === 1}
-                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                        ? "bg-gray-200 text-gray-500"
-                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                        }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === 1
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
                       Previous
                     </button>
@@ -1452,10 +1484,11 @@ const Panel = () => {
                         setCurrentPage(currentPage + 1)
                       }
                       disabled={currentPage === totalPages}
-                      className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                        ? "bg-gray-200 text-gray-500"
-                        : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                        }`}
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        currentPage === totalPages
+                          ? "bg-gray-200 text-gray-500"
+                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                      }`}
                     >
                       Next
                     </button>
@@ -1473,8 +1506,7 @@ const Panel = () => {
         />
       ) : (
         !payment && handlePayment()
-      )
-      }
+      )}
     </>
   );
 };
