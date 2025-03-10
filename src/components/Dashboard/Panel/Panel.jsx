@@ -26,7 +26,7 @@ const Panel = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState(null);
     const [isMonthlyReport, setisMonthlyReport] = useState("");
-    const { clients, userData, setUserData } = useContext(Context);
+    const { clients, userData } = useContext(Context);
     const clientsData = Object.entries(clients?.data || {});
     const [selectedStatuses, setSelectedStatuses] = useState({});
     const [deliveryStatuses, setDeliveryStatuses] = useState({});
@@ -346,25 +346,38 @@ const Panel = () => {
         }
     };
 
-    const handleRowClick = (institution, event) => {
+
+    const handleRowClick = (institution) => {
+        setTempInstitution(institution.institutionId);
+        setSelectedInstitutionType(institution.instituteType);
+        setisMonthlyReport(institution.institutionid);
         setPayment(institution.payment);
         setisMonthlyReport(institution.institutionid);
-
-        const link = event.currentTarget.querySelector(".change-page");
-        if (link) {
-            link.click();
+        if (institution.payment ? !institution.payment : true) {
+            navigate(`/pricing?institutionId=${institution.institutionid}`, {
+                state: {
+                    institutionId: institution.institutionid,
+                    cognitoId: Ctx.userData.cognitoId
+                }
+            });
+        } else {
+            if (Ctx.userData.userType === "admin") {
+                setShowMemberList(true);
+            }
         }
     };
 
-    const handlePayment = () => {
-        console.log("redirect to payment");
-        const SecondaryColor = "0000";
-        const PrimaryColor = "30afbc";
-        const url = `https://happyprancer.com/allpayment/awsaiapp/${Ctx.userData.cognitoId}/${Ctx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${tempInstitution}`;
-        window.open(url, "_blank");
-        setShowMemberList(false);
-        navigate("/dashboard");
-    };
+    // const handlePayment = () => {
+    //     console.log("redirect to pricing");
+
+    //     setShowMemberList(false);
+    //     navigate("/pricing", {
+    //         state: {
+    //             institutionId: tempInstitution,
+    //             cognitoId: Ctx.userData.cognitoId
+    //         }
+    //     });
+    // };
 
     const handleDropdownChange = useCallback(
         async (clientInstitution, status) => {
@@ -392,16 +405,22 @@ const Panel = () => {
     const [tempInstitution, setTempInstitution] = useState(null);
     const [showMemberList, setShowMemberList] = useState(false);
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
-    const handleInstitutionClick = (client) => {
-        const updatedUserData = {
-            ...userData,
-            tempinstitutionName: client.institutionid,
-        };
-        setUserData(updatedUserData);
-        setTempInstitution(client.institutionid);
-        setSelectedInstitutionType(client.institutionType);
-        setShowMemberList(true);
-    };
+    // const handleInstitutionClick = (client) => {
+    //     if (!client.payment) {
+    //         navigate(`/pricing?institutionId=${client.institutionid}`, {
+    //             state: {
+    //                 institutionId: client.institutionid,
+    //                 cognitoId: Ctx.userData.cognitoId
+    //             }
+    //         });
+    //     } else {
+    //         setTempInstitution(client.institutionId);
+    //         setSelectedInstitutionType(client.instituteType);
+    //         setisMonthlyReport(client.institutionid);
+    //         setPayment(client.payment);
+    //         setShowMemberList(true);
+    //     }
+    // };
 
     const getLinkPath = (instituteType) => {
         switch (instituteType) {
@@ -681,9 +700,9 @@ const Panel = () => {
                                                             onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
-                                                                onClick={() => {
-                                                                    handleInstitutionClick(client);
-                                                                }}
+                                                            // onClick={() => {
+                                                            //     handleInstitutionClick(client);
+                                                            // }}
                                                             >
                                                                 <div className="email-hover font-semibold text-[#11192B]">
                                                                     {client.institutionid}
@@ -777,10 +796,9 @@ const Panel = () => {
                                                                 {client.payment ? "Paid" : "Not Paid"}
                                                             </Table.Cell>
                                                         )}
-                                                        {client.payment ? (
-                                                            (Ctx.userData.role === "owner" ||
-                                                                Ctx.userData.role === "sale") && (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                        {(Ctx.userData.role === "owner" ||
+                                                            Ctx.userData.role === "sale") && (client.payment ?
+                                                                (<Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                                                     <Dropdown
                                                                         label={
                                                                             planStatuses[client.institutionid] ||
@@ -826,12 +844,11 @@ const Panel = () => {
                                                                         </Dropdown.Item>
                                                                     </Dropdown>
                                                                 </Table.Cell>
-                                                            )
-                                                        ) : (
-                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                                                No Plan
-                                                            </Table.Cell>
-                                                        )}
+                                                                ) : (
+                                                                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                        No Plan
+                                                                    </Table.Cell>
+                                                                ))}
                                                         <Table.Cell
                                                             className={`${showHiddenContent ? "" : "max1008:hidden"
                                                                 } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
@@ -1051,14 +1068,14 @@ const Panel = () => {
                                                             </div>
                                                         </Table.Cell>
 
-                                                        <Link
+                                                        {/* <Link
                                                             onClick={() => handleInstitutionClick(client)}
                                                             className="hidden change-page"
-                                                        ></Link>
+                                                        ></Link> */}
 
                                                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                                             <Link
-                                                                onClick={() => handleInstitutionClick(client)}
+                                                            // onClick={() => handleInstitutionClick(client)}
                                                             >
                                                                 {isMoreVisible ? <FaChevronRight /> : ""}
                                                             </Link>
@@ -1139,6 +1156,7 @@ const Panel = () => {
                                     onClick={() =>
                                         setActiveMenu((prev) => (prev ? null : "main"))
                                     }
+
                                 >
                                     {(selectedType !== null || filterStatus !== null) && (
                                         <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
@@ -1247,9 +1265,9 @@ const Panel = () => {
                                                     {client.institutionid}
                                                 </div>
                                                 <Link
-                                                    onClick={() => {
-                                                        handleInstitutionClick(client);
-                                                    }}
+                                                // onClick={() => {
+                                                //     handleInstitutionClick(client);
+                                                // }}
                                                 >
                                                     <div className="text-[#30AFBC] text-sm">
                                                         <AiOutlineEye size={20} />
@@ -1621,16 +1639,14 @@ const Panel = () => {
                         </>
                     )}
                 </>
-            ) : (Ctx.userData.userType === "admin" ||
-                Ctx.userData.role === "operation") &&
-                payment ? (
+            ) : (
                 <Index
                     tempInstitution={tempInstitution}
                     setShowMemberList={setShowMemberList}
                     selectedInstitutionType={selectedInstitutionType}
                 />
-            ) : (
-                handlePayment()
+                // ) : (
+                //     handlePayment()
             )}
         </>
     );
