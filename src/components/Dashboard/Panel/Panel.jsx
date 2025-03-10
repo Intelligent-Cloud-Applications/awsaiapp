@@ -188,32 +188,35 @@ const Panel = () => {
 
     const navigate = useNavigate();
     const filterClients = useCallback(() => {
-        if (!searchQuery && !selectedType && filterStatus === null) {
-            return Array.isArray(clientsData)
-                ? clientsData
-                    ?.filter(([key, client]) => client?.isFormFilled || false)
-                    .sort((a, b) => {
-                        const dateA = a[1].date || -Infinity;
-                        const dateB = b[1].date || -Infinity;
-                        return dateB - dateA;
-                    })
-                : [];
-        }
-        const query = searchQuery?.toLowerCase();
+        if (!Array.isArray(clientsData)) return [];
 
-        const filtered = Array.isArray(clientsData)
-            ? clientsData?.filter(([key, client]) => {
-                const institution = client?.institutionid
-                    ? String(client.institutionid).toLowerCase()
-                    : "";
-                const matchesQuery = !searchQuery || institution.includes(query);
-                const matchesType =
-                    !selectedType || client.institutionType === selectedType;
-                const matchesDelivery =
-                    filterStatus === null || client.isDelivered === filterStatus;
-                return matchesQuery && matchesType && matchesDelivery;
-            })
-            : [];
+        // Step 1: Get initial data where isFormFilled is true and sort it by date
+        let initialData = clientsData
+            .filter(([key, client]) => client?.isFormFilled)
+            .sort((a, b) => {
+                const dateA = a[1].date || -Infinity;
+                const dateB = b[1].date || -Infinity;
+                return dateB - dateA; // Sort in descending order (latest date first)
+            });
+
+        // Step 2: If no filters are applied, return the initial sorted data
+        if (!searchQuery && !selectedType && filterStatus === null) {
+            return initialData;
+        }
+
+        // Step 3: Apply filters only on the initially displayed data
+        const query = searchQuery?.toLowerCase();
+        const filtered = initialData.filter(([key, client]) => {
+            const institution = client?.institutionid
+                ? String(client.institutionid).toLowerCase()
+                : "";
+            const matchesQuery = !searchQuery || institution.includes(query);
+            const matchesType = !selectedType || client.institutionType === selectedType;
+            const matchesDelivery = filterStatus === null || client.isDelivered === filterStatus;
+
+            return matchesQuery && matchesType && matchesDelivery;
+        });
+
         console.log("Filtered Clients:", filtered);
         return filtered;
     }, [searchQuery, selectedType, clientsData, filterStatus]);
