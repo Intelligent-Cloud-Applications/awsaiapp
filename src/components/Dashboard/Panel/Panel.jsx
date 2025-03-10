@@ -47,7 +47,6 @@ const Panel = () => {
     const type = ["Dance Studio", "Dentist", "Cafe", "Course Based"];
     const filterType = ["Dance Studio", "Dentist", "Cafe", "Course Based", "Parlour", "Furniture", "Marble shop"];
     // const [memberCounts, setMemberCounts] = useState({});
-    const [payment, setPayment] = useState(false);
     const [filterStatus, setFilterStatus] = useState(null);
     const [domainLinks, setDomainLinks] = useState({});
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -351,7 +350,6 @@ const Panel = () => {
         setTempInstitution(institution.institutionId);
         setSelectedInstitutionType(institution.instituteType);
         setisMonthlyReport(institution.institutionid);
-        setPayment(institution.payment);
         setisMonthlyReport(institution.institutionid);
         if (institution.payment ? !institution.payment : true) {
             navigate(`/pricing?institutionId=${institution.institutionid}`, {
