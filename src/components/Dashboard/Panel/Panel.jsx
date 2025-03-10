@@ -52,6 +52,17 @@ const Panel = () => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const menuRef = useRef(null);
 
+    const validateURL = (url) => {
+        const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z0-9](?!-)|[a-z0-9]*[a-z0-9-][a-z0-9])\\.)+[a-z]{2,}|localhost|' + // domain name
+            '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|' + // IP address
+            '\\[?[a-f0-9]*:[a-f0-9:]+\\]?)' + // IPv6
+            '(\\:\\d+)?(\\/[-a-z0-9+&@#\\/%?=~_|!:,.;]*)*' + // path
+            '(\\?[;&a-z0-9+%#=~_|!:,.;]*)?' + // query string
+            '(\\#[-a-z0-9+&@#/%=~_|]*)?$', 'i'); // fragment locator
+        return !!pattern.test(url);
+    };
+
     useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth);
         window.addEventListener("resize", handleResize);
@@ -93,6 +104,11 @@ const Panel = () => {
 
         if (!domainLink) {
             toast.error("Domain link cannot be empty for Completed deliverables.");
+            return;
+        }
+
+        if (!validateURL(domainLink)) {
+            toast.error('Please enter a valid URL.');
             return;
         }
 
