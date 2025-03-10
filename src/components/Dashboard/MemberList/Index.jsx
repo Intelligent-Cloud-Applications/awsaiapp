@@ -49,13 +49,13 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
-    <div className="min-h-[calc(100vh-35px)] bg-[#f1f1f1]">
+    <div className="min-h-[calc(100vh-35px)] m-5 bg-[#f1f1f1]">
       {screenWidth > 1025 ? (
         <>
           <div className="w-[97vw] flex flex-col items-center ml-[220px]">
             <div>
               <Navbar />
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center mt-5">
                 <div className="fixed mt-14 z-50 bg-[#f1f1f1] w-[calc(90vw-200px)] flex justify-evenly items-center">
                   <div
                     onClick={goBack}
@@ -75,7 +75,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
       ) : (
         <>
           <div className="w-full gap-2">
-            <div className="mt-10">
+            <div className="mt-20">
               <div
                 onClick={goBack}
                 className="border bg-[#30afbc] rounded cursor-pointer w-[36px] text-[30px] "
