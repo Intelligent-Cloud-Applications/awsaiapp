@@ -42,7 +42,7 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
-          <li>
+          <li className="[@media(max-width:767px)]:mb-5">
             {UserCtx.isAuth ? (
               <button
                 onClick={() => {
