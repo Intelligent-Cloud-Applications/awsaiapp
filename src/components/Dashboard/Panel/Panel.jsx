@@ -50,11 +50,17 @@ const Panel = () => {
     const [filterStatus, setFilterStatus] = useState(null);
     const [domainLinks, setDomainLinks] = useState({});
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [isResponsive, setIsResponsive] = useState(false);
+
     const menuRef = useRef(null);
 
 
     useEffect(() => {
-        const handleResize = () => setScreenWidth(window.innerWidth);
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth);
+            setIsResponsive(window.innerWidth < 1030);
+        };
+
         window.addEventListener("resize", handleResize);
 
         return () => window.removeEventListener("resize", handleResize);
@@ -460,14 +466,17 @@ const Panel = () => {
                 <>
                     {screenWidth > 1025 ? (
                         <>
-                            <div className="w-screen h-[95vh] flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
+                            <div className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
+
                                 <ToastContainer />
-                                <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
+                                <div className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? 'flex-col' : 'flex-row'}`}>
+
                                     <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
                                         <Select
                                             value={instituteType}
                                             onChange={(e) => setInstituteType(e.target.value)}
-                                            className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
+                                            className={`text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}
+
                                         >
                                             {instituteType === "" && (
                                                 <option value="" disabled hidden>
@@ -508,7 +517,8 @@ const Panel = () => {
                                             }}
                                             className="hover:no-underline"
                                         >
-                                            <button className="flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto">
+                                            <button className={`flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}>
+
                                                 <p className="text-white">Create New Institution</p>
                                             </button>
                                         </Link>
@@ -638,7 +648,8 @@ const Panel = () => {
                                         </form>
                                     </div>
                                     {/* Headings */}
-                                    <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
+                                    <div className={`overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto ${isResponsive ? 'px-2' : ''}`}>
+
                                         <Table className="w-full text-sm text-left text-gray-500">
                                             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                                                 {/* <Table.HeadCell></Table.HeadCell> */}
