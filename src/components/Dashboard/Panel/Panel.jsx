@@ -671,7 +671,7 @@ const Panel = () => {
                                                 )}
                                                 {(Ctx.userData.role === "owner" ||
                                                     Ctx.userData.role === "sale") && (
-                                                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                        <Table.HeadCell className="px-6 py-2 text-xs font-medium text-gray-500 uppercase pl-10">
                                                             Plan
                                                         </Table.HeadCell>
                                                     )}
@@ -743,7 +743,7 @@ const Panel = () => {
                                                         </Table.Cell>
                                                         {Ctx.userData.role !== "operation" &&
                                                             (client.payment ? (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
                                                                     <Dropdown
                                                                         label={
                                                                             deliveryStatuses[client.institutionid] ??
@@ -787,7 +787,7 @@ const Panel = () => {
                                                                     </Dropdown>
                                                                 </Table.Cell>
                                                             ) : (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
                                                                     {client.isDelivered
                                                                         ? "Delivered"
                                                                         : "Not Delivered"}
@@ -800,7 +800,7 @@ const Panel = () => {
                                                         )}
                                                         {(Ctx.userData.role === "owner" ||
                                                             Ctx.userData.role === "sale") && (client.payment ?
-                                                                (<Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                (<Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
                                                                     <Dropdown
                                                                         label={
                                                                             planStatuses[client.institutionid] ||
@@ -847,7 +847,7 @@ const Panel = () => {
                                                                     </Dropdown>
                                                                 </Table.Cell>
                                                                 ) : (
-                                                                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
                                                                         No Plan
                                                                     </Table.Cell>
                                                                 ))}
