@@ -1115,9 +1115,9 @@ const Panel = () => {
                     ) : (
                         <>
                             <Select
-                                value={instituteType && splitandjoin(instituteType)}
+                                value={instituteType}
                                 onChange={(e) => setInstituteType(e.target.value)}
-                                className=" font-semibold w-full border rounded-md  px-3 focus:outline-none focus:ring-2  mt-14"
+                                className=" font-semibold w-full border rounded-lg mt-20"
                             >
                                 {instituteType === "" && (
                                     <option value="" disabled hidden>
