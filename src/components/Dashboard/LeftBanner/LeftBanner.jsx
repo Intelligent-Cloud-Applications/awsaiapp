@@ -60,7 +60,7 @@ const LeftBanner = ({ displayAfterClick }) => {
         >
           <div className="h-full w-full overflow-y-auto overflow-x-hidden rounded lg:px-6">
             <Sidebar.Items className="lg:pr-4">
-              <Sidebar.ItemGroup className="flex flex-row justify-around items-center lg:items-start lg:flex-col lg:justify-start">
+              <Sidebar.ItemGroup className="flex flex-row justify-around items-center lg:items-start lg:flex-col lg:justify-start [@media(max-width:400px)]:gap-0">
                 {isSuperAdmin && (
                   <>
                     <Sidebar.ItemGroup className="hidden lg:block border-b-2 border-b-gray-500">
