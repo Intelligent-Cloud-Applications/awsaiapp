@@ -53,7 +53,7 @@ const LeftBanner = ({ displayAfterClick }) => {
 
   return (
     <Flowbite theme={{ theme: customTheme }}>
-      <div className="flex justify-center items-center fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20">
+      <div className="flex justify-center items-center fixed bottom-0 left-0 w-full lg:w-auto lg:relative lg:flex lg:flex-col lg:items-start lg:justify-start z-20 ">
         <Sidebar
           aria-label="Sidebar"
           className="custom-sidebar lg:pt-16 lg:h-full w-full lg:w-auto lg:fixed lg:left-0 lg:top-0 z-20"

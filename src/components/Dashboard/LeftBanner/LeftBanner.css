@@ -12,3 +12,10 @@
         margin-left: 5rem;
     }
 }
+
+
+@media (min-width: 1025px) and (max-width: 1300px) {
+    .custom-sidebar {
+        width: 25%;
+    }
+}
