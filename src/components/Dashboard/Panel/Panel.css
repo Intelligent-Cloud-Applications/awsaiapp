@@ -138,6 +138,10 @@
     .custom-pagination li {
         font-size: 0.9rem; /* Adjust font size for better readability */
     }
+
+    .panel{
+        margin-left: 16rem;
+    }
 }
 
 @media (min-width: 1008px) {

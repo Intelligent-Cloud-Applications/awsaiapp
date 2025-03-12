@@ -464,9 +464,9 @@ const Panel = () => {
         <>
             {!showMemberList ? (
                 <>
-                    {screenWidth > 1025 ? (
+                    {screenWidth > 1023 ? (
                         <>
-                            <div className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
+                            <div className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
 
                                 <ToastContainer />
                                 <div className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? 'flex-col' : 'flex-row'}`}>
@@ -1124,7 +1124,7 @@ const Panel = () => {
                             </div>
                         </>
                     ) : (
-                        <>
+                        <div className="[@media(max-width:1000px)]:ml-[10%]">
                             <Select
                                 value={instituteType}
                                 onChange={(e) => setInstituteType(e.target.value)}
@@ -1649,7 +1649,7 @@ const Panel = () => {
                                     </div>
                                 </div>
                             )}
-                        </>
+                        </div>
                     )}
                 </>
             ) : (
