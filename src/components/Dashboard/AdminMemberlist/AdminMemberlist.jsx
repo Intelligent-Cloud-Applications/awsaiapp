@@ -249,14 +249,14 @@ const AdminMemberlist = () => {
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.emailId}px` }} className="p-4">
                                 <div className="min-w-0">
-                                  <div className="truncate text-[13px] text-gray-600" title={member.emailId}>
+                                  <div className="truncate text-[16px] text-gray-600" title={member.emailId}>
                                     {member.emailId}
                                   </div>
                                 </div>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.phoneNumber}px` }} className="p-4">
                                 <div className="min-w-0">
-                                  <div className="truncate text-[13px] text-gray-600" title={member.phoneNumber}>
+                                  <div className="truncate text-[16px] text-gray-600" title={member.phoneNumber}>
                                     {member.phoneNumber}
                                   </div>
                                 </div>
@@ -294,7 +294,7 @@ const AdminMemberlist = () => {
                                 </div>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.joiningDate}px` }} className="p-4">
-                                <div className="truncate text-[13px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
+                                <div className="truncate text-[16px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
                                   {formatEpochToReadableDate(member.joiningDate)}
                                 </div>
                               </Table.Cell>
@@ -308,10 +308,10 @@ const AdminMemberlist = () => {
                                 </span>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.delivered}px` }} className="p-4 text-center">
-                                <span className="text-[13px] font-medium text-gray-700">{member.delivered || '0'}</span>
+                                <span className="text-[16px] font-medium text-gray-700">{member.delivered || '0'}</span>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.inprogress}px` }} className="p-4 text-center">
-                                <span className="text-[13px] font-medium text-gray-700">{member.inprogress || '0'}</span>
+                                <span className="text-[16px] font-medium text-gray-700">{member.inprogress || '0'}</span>
                               </Table.Cell>
                             </Table.Row>
                           ))}
