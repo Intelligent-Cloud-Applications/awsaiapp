@@ -51,7 +51,8 @@ const Navbar = () => {
                 }}
                 className="bg-white cursor-pointer text-black font-[Poppins] py-2 px-6 rounded md:ml-4 hover:scale-105"
               >
-                {UserCtx.userData.userName}
+                {UserCtx.userData.userName.split(' ')[0] + ' ' + UserCtx.userData.userName.split(' ').slice(-1)[0]}
+
               </button>
             ) : (
               <div className="flex flex-row">
