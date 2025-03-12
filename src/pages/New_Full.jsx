@@ -2522,11 +2522,14 @@ const New_Full = () => {
                       {templateDetails.ClassTypes.map((ClassType, index) => (
                         <div key={index} className="relative px-2 lg:px-[80px]">
                           <div className="flex flex-col items-start">
-                            <Label
-                              htmlFor={`ClassType-${index}`}
-                              color="gray"
-                              value={`Class Type ${index + 1}`}
-                            />
+                            <div className="flex flex-row gap-1">
+                              <Label
+                                htmlFor={`ClassType-${index}`}
+                                color="gray"
+                                value={`Class Type ${index + 1}`}
+                              />
+                              <span className="text-red-500 mb-4">*</span>
+                            </div>
                             <div className="relative w-full">
                               <TextInput
                                 id={`ClassType-${index}`}
@@ -3717,12 +3720,13 @@ const New_Full = () => {
                       <select
                         value={selectedCountryCode}
                         onChange={handleCountryChange1}
-                        className="border w-[9rem] border-[#ccc] rounded-l px-2 py-1"
+                        className="border w-[9rem] border-[#ccc] rounded-md px-2 py-1 mb-3"
                       >
                         {/* Render country options */}
                         <Country />
                       </select>
                       <TextInput
+                        type="number"
                         id="phone"
                         placeholder="Enter your phone number"
                         required
