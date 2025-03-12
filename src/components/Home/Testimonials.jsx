@@ -141,7 +141,7 @@ function Testimonials() {
           <img src={rightarrow} alt="" className=" h-12 max600:h-8" />
         </button>
       </div>
-      <div className="w-full flex justify-center max375:pb-5">
+      <div className="w-full flex justify-center max375:pb-5 [@media(max-width:1500px)]:mb-5">
         <div class="px-4 py-2 bg-[#30AFBC] text-center text-sm sm:text-lg md:text-3xl lg:text-7xl max375:text-xs p-1 rounded-full">
           <p class="font-bold text-white break-words">
 
