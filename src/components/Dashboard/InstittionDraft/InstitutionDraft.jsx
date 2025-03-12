@@ -173,9 +173,9 @@ const InstitutionDraft = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-3rem] mx-[4rem] max1300:mt-[-16px] sm:mx-6 lg:mx-10 shadow-xl rounded-[0] bg-[#e6e4e4] [@media(max-width:900px)]:bg-white rounded-[0] lg:ml-[9%] px-2 [@media(max-width:1025px)]:mr-0 [@media(max-width:1025px)]:pr-0 [@media(max-width:800px)]:shadow-none">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-3rem] mx-[4rem] max1300:mt-[-16px] sm:mx-6 lg:mx-10 shadow-xl bg-[#e6e4e4] [@media(max-width:900px)]:bg-white rounded-[0] lg:ml-[9%] px-2 [@media(max-width:1025px)]:mr-0 [@media(max-width:1025px)]:pr-0 [@media(max-width:800px)]:shadow-none">
       <ToastContainer />
-      <div className="w-[80%] [@media(max-width:1500px)]:w-[70%] [@media(max-width:1025px)]:w-[50%] [@media(max-width:800px)]:w-[95%]  [@media(max-width:800px)]:ml-[2rem] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table overflow-x-auto  [@media(max-width:800px)]:mb-[5rem]">
+      <div className="w-[80%] [@media(max-width:1500px)]:w-[70%] [@media(max-width:1025px)]:w-[50%] [@media(max-width:800px)]:w-[95%]  [@media(max-width:800px)]:ml-[2rem] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table overflow-x-auto  [@media(max-width:1000px)]:mb-[5rem]">
         {/* Search Bar */}
         <div className="w-full flex justify-end">
           <form className="w-full sm:w-[30%] rounded-sm my-3">

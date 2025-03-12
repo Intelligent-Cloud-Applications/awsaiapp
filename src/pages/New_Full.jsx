@@ -551,6 +551,7 @@ const New_Full = () => {
     logoUrl: useRef(null),
     videoUrl: useRef(null),
     TagLine: useRef(null),
+    TagLine1: useRef(null),
     Query_Address: useRef(null),
     Query_PhoneNumber: useRef(null),
     Query_EmailId: useRef(null),
@@ -815,11 +816,12 @@ const New_Full = () => {
       { value: templateDetails.description, name: "companyDescription" },
       { value: templateDetails.videoUrl, name: "videoUrl" },
       { value: templateDetails.TagLine, name: "TagLine" },
+      { value: templateDetails.TagLine1, name: "TagLine1" },
       { value: templateDetails.Query_Address, name: "Query_Address" },
       { value: templateDetails.Query_PhoneNumber, name: "Query_PhoneNumber" },
       { value: templateDetails.Query_EmailId, name: "Query_EmailId" },
-      { value: templateDetails.Facebook, name: "Facebook" },
-      { value: templateDetails.Instagram, name: "Instagram" },
+      // { value: templateDetails.Facebook, name: "Facebook" },
+      // { value: templateDetails.Instagram, name: "Instagram" },
       { value: templateDetails.userName, name: "userName" },
     ];
 
@@ -1923,7 +1925,7 @@ const New_Full = () => {
                         <Label
                           htmlFor="institutionid"
                           color="gray"
-                          value="InstitutionName"
+                          value="Institution Id"
                         />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
@@ -1978,6 +1980,7 @@ const New_Full = () => {
                           color="gray"
                           value="Tag Line 2"
                         />
+                        <span className="text-red-500 ml-1">*</span>
                       </div>
                       <TextInput
                         id="Tag Line 2"
@@ -1987,9 +1990,12 @@ const New_Full = () => {
                         value={templateDetails.TagLine1}
                         sizing="sm"
                         onChange={(event) => handleChange(event, "TagLine1")}
+                        ref={refs.TagLine}
+                        color={errors.TagLine ? "failure" : "gray"}
                         style={{
-                          borderColor: "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
+                          border: errors.TagLine1
+                            ? "1px solid red"
+                            : "1px solid #ccc",
                           borderRadius: "8px",
                         }}
                       />
@@ -2003,7 +2009,7 @@ const New_Full = () => {
                     {/* First Input */}
                     <div className="max-w-md">
                       <div className="mb-2 block">
-                        <Label htmlFor="PrimaryColor" value="PrimaryColor" />
+                        <Label htmlFor="PrimaryColor" value="Primary Color" />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
                       <div className="relative">
@@ -2050,7 +2056,7 @@ const New_Full = () => {
                       <div className="mb-2 block">
                         <Label
                           htmlFor="LightPrimaryColor"
-                          value="LightPrimaryColor"
+                          value="Light Primary Color"
                         />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
@@ -2101,7 +2107,7 @@ const New_Full = () => {
                       <div className="mb-2 block">
                         <Label
                           htmlFor="LightestPrimaryColor"
-                          value="LightestPrimaryColor"
+                          value="Lightest Primary Color"
                         />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
@@ -2149,7 +2155,7 @@ const New_Full = () => {
                     </div>
                     <div className="max-w-md">
                       <div className="mb-2 block">
-                        <Label htmlFor="SecondaryColor" value="SecondaryColor" />
+                        <Label htmlFor="SecondaryColor" value="Secondary Color" />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
                       <div className="relative">
@@ -2208,7 +2214,7 @@ const New_Full = () => {
                         <Label
                           htmlFor="companyName"
                           color="gray"
-                          value="companyName"
+                          value="company Name"
                         />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
@@ -2219,7 +2225,7 @@ const New_Full = () => {
                         value={templateDetails.companyName}
                         helperText="It’s the companyName"
                         sizing="sm"
-                        onChange={(event) => handleChange(event, "companyName")}
+                        // onChange={(event) => handleChange(event, "companyName")}
                         ref={refs.companyName}
                         color={errors.companyName ? "failure" : "gray"}
                         style={{
@@ -2228,6 +2234,7 @@ const New_Full = () => {
                             : "1px solid #ccc",
                           borderRadius: "8px",
                         }}
+                        readOnly
                       />
                     </div>
                     <div className="relative mt-4 mr-16">
@@ -2235,7 +2242,7 @@ const New_Full = () => {
                         <Label
                           htmlFor="companyDescription"
                           color="gray"
-                          value="companyDescription"
+                          value="company Description"
                         />
                         <span className="text-red-500 ml-1">*</span>
                       </div>
@@ -2367,7 +2374,7 @@ const New_Full = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                     <div id="fileUpload" className="max-w-md relative">
                       <div className="mb-2 block">
-                        <Label htmlFor="ServicesBg" value="ServicesBg" />
+                        <Label htmlFor="ServicesBg" value="Services Bg" />
                       </div>
                       <FileInput
                         type="file"
@@ -2397,7 +2404,7 @@ const New_Full = () => {
                       <div className="mb-2 block">
                         <Label
                           htmlFor="ServicesPortrait"
-                          value="ServicesPortrait"
+                          value="Services Portrait"
                         />
                       </div>
 
@@ -2575,7 +2582,7 @@ const New_Full = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4">
                     <div id="fileUpload" className="max-w-md relative">
                       <div className="mb-2 block">
-                        <Label htmlFor="TestimonialBg" value="TestimonialBg" />
+                        <Label htmlFor="TestimonialBg" value="Testimonial Bg" />
                       </div>
                       <FileInput
                         type="file"
@@ -2709,7 +2716,7 @@ const New_Full = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
                 <div id="fileUpload" className="max-w-md relative">
                   <div className="mb-2 block">
-                    <Label htmlFor="SubscriptionBg" value="SubscriptionBg" />
+                    <Label htmlFor="SubscriptionBg" value="Subscription Bg" />
                   </div>
                   <FileInput
                     type="file"
@@ -2744,9 +2751,12 @@ const New_Full = () => {
                   {subscriptionDetails.map((subscription, index) => (
                     <div key={index} className="px-2 lg:px-[170px]">
                       <div className="flex justify-between items-center ">
-                        <h2 className="text-[18px] font-bold mb-2">
-                          Subscription {index + 1}
-                        </h2>
+                        <div className="flex flex-row">
+                          <h2 className="text-[18px] font-bold mb-2">
+                            Subscription {index + 1}
+                          </h2>
+                          <span className="text-red-500 ml-1">*</span>
+                        </div>
                         {subscriptionDetails.length > 1 &&
                           (!subscription.productId ||
                             subscriptionDetails.filter((sub) => sub.productId)
@@ -3149,7 +3159,10 @@ const New_Full = () => {
                   {templateDetails.FAQ.map((faq, index) => (
                     <div key={index} className="px-2 lg:px-[170px]">
                       <div className="flex justify-between items-center ">
-                        <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
+                        <div className="flex flex-row">
+                          <h2 className="text-[18px] font-bold">FAQ {index + 1}</h2>
+                          <span className="text-red-500">*</span>
+                        </div>
                         {templateDetails.FAQ.length > 1 && (
                           <button
                             onClick={() => removeFAQ(index)}
@@ -3237,13 +3250,13 @@ const New_Full = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:gap-10 lg:gap-10 sm:gap-4 lg:ml-12 md:ml-6 sm:ml-0">
                 <div id="fileUpload" className="max-w-md relative">
                   <div className="mb-2 block">
-                    <Label htmlFor="AboutUsBg" value="AboutUsBg" />
+                    <Label htmlFor="AboutUsBg" value="About Us Bg" />
                   </div>
                   <FileInput
                     type="file"
                     onChange={(event) => handleFileChange5(event, "AboutUsBg")}
                     id="AboutUsBg"
-                    helperText="It’s The Background of the AboutUs"
+                    helperText="It’s The Background of the About Us"
                     style={{
                       borderColor: "#D1D5DB",
                       backgroundColor: "#F9FAFB",
@@ -3271,9 +3284,12 @@ const New_Full = () => {
                   {Array.isArray(templateDetails.AboutUs) && templateDetails.AboutUs.map((item, index) => (
                     <div key={index} className="px-2 lg:px-[170px]">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-[18px] font-bold">
-                          AboutUs {index + 1}
-                        </h2>
+                        <div className="flex flex-row">
+                          <h2 className="text-[18px] font-bold">
+                            About Us {index + 1}
+                          </h2>
+                          <span className="text-red-500 ml-1">*</span>
+                        </div>
                         {templateDetails.AboutUs &&
                           templateDetails.AboutUs.length > 1 && (
                             <button
@@ -3294,7 +3310,7 @@ const New_Full = () => {
                           id={`aboutUsHeading-${index}`}
                           variant="filled"
                           label="Heading"
-                          placeholder="Enter AboutUs Policy Heading"
+                          placeholder="Enter About Us Policy Heading"
                           style={{
                             width: "100%",
                             borderColor: "#D1D5DB",
@@ -3319,7 +3335,7 @@ const New_Full = () => {
                           id={`aboutUsContent-${index}`}
                           variant="filled"
                           label="Content"
-                          placeholder="Enter AboutUs Content"
+                          placeholder="Enter About Us Content"
                           style={{
                             width: "100%",
                             borderColor: "#D1D5DB",
@@ -3362,9 +3378,12 @@ const New_Full = () => {
                     {templateDetails.PrivacyPolicy.map((item, index) => (
                       <div key={index} className="px-2 lg:px-[170px]">
                         <div className="flex justify-between items-center">
-                          <h2 className="text-[18px] font-bold">
-                            PrivacyPolicy {index + 1}
-                          </h2>
+                          <div className="flex flex-row">
+                            <h2 className="text-[18px] font-bold">
+                              Privacy Policy {index + 1}
+                            </h2>
+                            <span className="text-red-500 ml-1">*</span>
+                          </div>
                           {templateDetails.PrivacyPolicy &&
                             templateDetails.PrivacyPolicy.length > 1 && (
                               <button
@@ -3385,7 +3404,7 @@ const New_Full = () => {
                             id={`privacyPolicyHeading-${index}`}
                             variant="filled"
                             label="Heading"
-                            placeholder="Enter PrivacyPolicy Heading"
+                            placeholder="Enter Privacy Policy Heading"
                             style={{
                               width: "100%",
                               borderColor: "#D1D5DB",
@@ -3412,7 +3431,7 @@ const New_Full = () => {
                             id={`privacyPolicyContent-${index}`}
                             variant="filled"
                             label="Content"
-                            placeholder="Enter PrivacyPolicy Content"
+                            placeholder="Enter Privacy Policy Content"
                             style={{
                               width: "100%",
                               borderColor: "#D1D5DB",
@@ -3457,9 +3476,12 @@ const New_Full = () => {
                   {templateDetails.Refund.map((item, index) => (
                     <div key={index} className="px-2 lg:px-[170px]">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-[18px] font-bold">
-                          Refund Policy {index + 1}
-                        </h2>
+                        <div className="flex flex-row">
+                          <h2 className="text-[18px] font-bold">
+                            Refund Policy {index + 1}
+                          </h2>
+                          <span className="text-red-500 ml-1">*</span>
+                        </div>
                         {templateDetails.Refund &&
                           templateDetails.Refund.length > 1 && (
                             <button
@@ -3542,9 +3564,12 @@ const New_Full = () => {
                     {templateDetails.TermsData.map((item, index) => (
                       <div key={index} className="px-2 lg:px-[170px]">
                         <div className="flex justify-between items-center">
-                          <h2 className="text-[18px] font-bold">
-                            Terms And Data {index + 1}
-                          </h2>
+                          <div className="flex flex-row">
+                            <h2 className="text-[18px] font-bold">
+                              Terms And Conditions {index + 1}
+                            </h2>
+                            <span className="text-red-500 ml-1">*</span>
+                          </div>
                           {templateDetails.TermsData &&
                             templateDetails.TermsData.length > 1 && (
                               <button
@@ -3757,7 +3782,6 @@ const New_Full = () => {
                     <div className="relative">
                       <div className="mb-2 block">
                         <Label htmlFor="facebook" color="gray" value="Facebook" />
-                        <span className="text-red-500 ml-1">*</span>
                       </div>
                       <TextInput
                         id="facebook"
@@ -3766,11 +3790,9 @@ const New_Full = () => {
                         value={templateDetails.Facebook}
                         onChange={(event) => handleChange(event, "Facebook")}
                         sizing="sm"
-                        color={errors.Facebook ? "failure" : "gray"}
+                        color="gray"
                         style={{
-                          border: errors.Facebook
-                            ? "1px solid red"
-                            : "1px solid #ccc",
+                          border: "1px solid #ccc",
                           borderRadius: "8px",
                         }}
                       />
@@ -3779,7 +3801,6 @@ const New_Full = () => {
                     <div className="relative">
                       <div className="mb-2 block">
                         <Label htmlFor="instagram" color="gray" value="Instagram" />
-                        <span className="text-red-500 ml-1">*</span>
                       </div>
                       <TextInput
                         id="instagram"
@@ -3788,11 +3809,9 @@ const New_Full = () => {
                         value={templateDetails.Instagram}
                         onChange={(event) => handleChange(event, "Instagram")}
                         sizing="sm"
-                        color={errors.Instagram ? "failure" : "gray"}
+                        color="gray"
                         style={{
-                          border: errors.Instagram
-                            ? "1px solid red"
-                            : "1px solid #ccc",
+                          border: "1px solid #ccc",
                           borderRadius: "8px",
                         }}
                       />
