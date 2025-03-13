@@ -355,7 +355,6 @@ const Panel = () => {
         }
     };
 
-
     // const handleRowClick = (institution) => {
     //     setTempInstitution(institution.institutionId);
     //     setSelectedInstitutionType(institution.instituteType);
@@ -374,6 +373,7 @@ const Panel = () => {
     //         }
     //     }
     // };
+
 
     // const handlePayment = () => {
     //     console.log("redirect to pricing");
@@ -413,6 +413,7 @@ const Panel = () => {
     const [tempInstitution, setTempInstitution] = useState(null);
     const [showMemberList, setShowMemberList] = useState(false);
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
+
     const handleInstitutionClick = (client) => {
         if (!client.payment) {
             navigate(`/pricing?institutionId=${client.institutionid}`, {
@@ -526,6 +527,7 @@ const Panel = () => {
                                 </div>
                                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
                                     <div className="flex flex-row w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
+
                                         <div className="relative inline-block ml-5" ref={menuRef}>
                                             <button
                                                 className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
@@ -710,12 +712,14 @@ const Panel = () => {
                                                     >
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+
                                                             // onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
                                                             onClick={() => {
                                                                 handleInstitutionClick(client);
                                                             }}
+
                                                             >
                                                                 <div className="email-hover font-semibold text-[#11192B]">
                                                                     {client.institutionid}
@@ -1272,15 +1276,19 @@ const Panel = () => {
                                         <div className="flex flex-col gap-2">
                                             <div
                                                 className="flex justify-between items-center text-center"
+
                                                 // onClick={(e) => handleRowClick(client, e)}
+
                                             >
                                                 <div className="font-semibold text-[#11192B]">
                                                     {client.institutionid}
                                                 </div>
                                                 <Link
+
                                                 onClick={() => {
                                                     handleInstitutionClick(client);
                                                 }}
+
                                                 >
                                                     <div className="text-[#30AFBC] text-sm">
                                                         <AiOutlineEye size={20} />
