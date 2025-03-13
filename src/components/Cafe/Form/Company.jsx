@@ -22,6 +22,8 @@ const validateCompanyData = (data) => {
     errors.companyName = 'Company name can only contain letters, numbers, and spaces';
   } else if (/^\d+$/.test(data.companyName)) {
     errors.companyName = 'Company name cannot contain only numbers';
+  } else if (data.companyName.length > 50) {
+    errors.companyName = 'Company name cannot exceed 50 characters';
   }
 
   if (!data.logo && !data.selectedLogo) {
@@ -205,6 +207,15 @@ const Company = ({
   // Handle company name change
   const handleCompanyNameChange = useCallback((e) => {
     const value = e.target.value;
+    
+    // Check length limit
+    if (value.length > 50) {
+      setErrors(prev => ({
+        ...prev,
+        companyName: 'Company name cannot exceed 50 characters'
+      }));
+      return;
+    }
     
     // Check for special characters
     if (value && !/^[a-zA-Z0-9\s]*$/.test(value)) {
@@ -412,12 +423,14 @@ const Company = ({
                 onChange={handleCompanyNameChange}
                 placeholder="Enter your company name"
                 required
+                maxLength={50}
                 className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
               />
               {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>}
+              <p className="mt-1 text-sm text-gray-500">{`${companyName?.length || 0}/50 characters`}</p>
             </div>
 
-            <div>
+            {/* <div>
               <Label htmlFor="institutionid" className="block text-sm font-medium text-gray-700 mb-1">
                 Company ID <span className="text-red-500">*</span>
               </Label>
@@ -429,7 +442,7 @@ const Company = ({
               />
               <p className="mt-1 text-sm text-gray-500">Auto-generated based on company name</p>
               {errors.institutionid && <p className="text-red-500 text-sm mt-1">{errors.institutionid}</p>}
-            </div>
+            </div> */}
           </div>
         </div>
 

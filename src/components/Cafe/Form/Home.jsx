@@ -457,7 +457,7 @@ const Home = ({
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                         <FiType className="w-5 h-5 text-teal-600" />
-                        Taglines
+                        Taglines <span className="text-red-500">*</span>
                     </h2>
                     <div className="space-y-6">
                         {[

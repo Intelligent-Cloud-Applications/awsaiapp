@@ -1044,7 +1044,11 @@ const Cafe = () => {
                         contactInfo?.firstName?.trim() &&
                         contactInfo?.lastName?.trim() &&
                         contactInfo?.Query_PhoneNumber?.trim() &&
-                        contactInfo?.Query_Address?.trim();
+                        contactInfo?.Query_Address?.trim() &&
+                        contactInfo?.visitUs?.locatemap?.trim() &&
+                        contactInfo?.socialMediaLinks?.instagram?.trim() &&
+                        contactInfo?.socialMediaLinks?.facebook?.trim() &&
+                        contactInfo?.socialMediaLinks?.youtube?.trim();
                     setIsCurrentSectionValid(isContactValid);
                     break;
 
@@ -1053,6 +1057,7 @@ const Cafe = () => {
                         tagLine1?.trim() && 
                         tagLine2?.trim() && 
                         productTagline?.trim();
+
                     setIsCurrentSectionValid(isHomeValid);
                     break;
 
