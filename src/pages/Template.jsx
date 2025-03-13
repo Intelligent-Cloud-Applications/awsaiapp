@@ -952,15 +952,21 @@ const Template = () => {
         // handleCompanyUpload();
         // break;
         case 1:
-          if (!contactInfo.phoneNumber || !contactInfo.email) {
+          if (!contactInfo.address || !contactInfo["Owner Name"] || !contactInfo.phoneNumber || !contactInfo.email || !contactInfo.UpiId) {
+            if (!contactInfo.address) {
+              alert("Please enter a valid Address before proceeding.");
+            }
+            if (!contactInfo["Owner Name"]) {
+              alert("Please enter a valid Owner Name before proceeding.");
+            }
             if (!contactInfo.phoneNumber) {
               alert("Please enter a valid phone number before proceeding.");
             }
             if (!contactInfo.email) {
               alert("Please enter a valid email address before proceeding.");
             }
-            if (!contactInfo["Owner Name"]) {
-              alert("Please enter a valid Owner Name before proceeding.");
+            if (!contactInfo.UpiId) {
+              alert("Please enter a valid Upi Id before proceeding.");
             }
             return prevSection;
           }

@@ -77,7 +77,7 @@ const Payment = () => {
               className=" item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+          <p className="text-[20px] pb-[2rem] max500:px-4 max500:text-[15px] justify-center">
             Seamless and secure payment processing is fundamental to a
             successful web application. With our Payments service, we integrate
             robust and reliable payment gateways, enabling your users to make

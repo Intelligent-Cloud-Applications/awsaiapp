@@ -173,7 +173,7 @@ function Company({
                 borderRadius: "8px",
                 width: "30rem",
                 ...(window.matchMedia("(max-width: 1024px)").matches && {
-                width: "100%",
+                  width: "100%",
                 }),
               }}
             />
@@ -201,7 +201,7 @@ function Company({
                 borderRadius: "8px",
                 width: "30rem",
                 ...(window.matchMedia("(max-width: 1024px)").matches && {
-                width: "100%",
+                  width: "100%",
                 }),
               }}
             />
@@ -328,7 +328,10 @@ function Company({
               </label>
             </div> */}
           <div className="mt-2">
-            <h2 className="font-medium text-xl">Country It is Based</h2>
+            <div className="mb-2 block">
+              <h2 className="font-medium text-xl">Country It is Based</h2>
+              <span className="text-red-500 ml-1">*</span>
+            </div>
             <select
               value={courseBasedCGCountry}
               onChange={(e) => setcourseBasedCGCountry(e.target.value)}
@@ -358,7 +361,7 @@ function Company({
                     setRegistrationFeeCurrency(e.target.value);
                   }}
                 >
-              {<Currency />}
+                  {<Currency />}
                 </select>
               </div>
               <TextInput
