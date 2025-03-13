@@ -47,11 +47,6 @@ export const createAdminAccounts = async ({
                     phoneNumber: admin2.phoneNumber || '',
                     userName: admin2.userName
                 }
-            },
-            requestContext: {
-                identity: {
-                    cognitoIdentityId: admin1.cognitoId
-                }
             }
         });
 

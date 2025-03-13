@@ -6,9 +6,6 @@ import PropTypes from 'prop-types';
 // Constants
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{8,15}$/;
-const INSTAGRAM_REGEX = /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_.]+(\/)?$/;
-const FACEBOOK_REGEX = /^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9_.]+(\/?|\/.+)?$/;
-const YOUTUBE_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|user\/|c\/)[a-zA-Z0-9_-]+|youtube\.com\/@[a-zA-Z0-9_-]+)$/;
 
 // Add phone formatting function
 const formatPhoneNumber = (value) => {
@@ -51,20 +48,9 @@ const validateField = (field, value) => {
     case 'locationMap':
       return !value?.trim() ? 'Google Maps link is required' : '';
     case 'social_instagram':
-      if (value && !INSTAGRAM_REGEX.test(value.trim())) {
-        return 'Please enter a valid Instagram profile URL (e.g., https://instagram.com/username)';
-      }
-      return '';
     case 'social_facebook':
-      if (value && !FACEBOOK_REGEX.test(value.trim())) {
-        return 'Please enter a valid Facebook profile URL (e.g., https://facebook.com/username)';
-      }
-      return '';
     case 'social_youtube':
-      if (value && !YOUTUBE_REGEX.test(value.trim())) {
-        return 'Please enter a valid YouTube channel URL (e.g., https://youtube.com/@channel)';
-      }
-      return '';
+      return ''; // Remove validation for social media URLs
     default:
       return '';
   }
@@ -88,20 +74,7 @@ const validateContactData = (contactData) => {
   if (!EMAIL_REGEX.test(contactData.emailId)) return false;
   if (!PHONE_REGEX.test(contactData.phoneNumber)) return false;
 
-  // Validate social media links if provided
-  const { socialMediaLinks } = contactData;
-  if (socialMediaLinks) {
-    if (socialMediaLinks.instagram && !INSTAGRAM_REGEX.test(socialMediaLinks.instagram)) {
-      return false;
-    }
-    if (socialMediaLinks.facebook && !FACEBOOK_REGEX.test(socialMediaLinks.facebook)) {
-      return false;
-    }
-    if (socialMediaLinks.youtube && !YOUTUBE_REGEX.test(socialMediaLinks.youtube)) {
-      return false;
-    }
-  }
-
+  // Remove social media validation
   return true;
 };
 
@@ -265,21 +238,18 @@ const Contact = ({ contactInfo, setContactInfo }) => {
       label: 'Instagram',
       icon: 'instagram',
       placeholder: 'https://instagram.com/yourusername',
-      regex: INSTAGRAM_REGEX
     },
     { 
       id: 'facebook',
       label: 'Facebook',
       icon: 'facebook',
       placeholder: 'https://facebook.com/yourusername',
-      regex: FACEBOOK_REGEX
     },
     { 
       id: 'youtube',
       label: 'YouTube',
       icon: 'youtube',
       placeholder: 'https://youtube.com/@yourchannel',
-      regex: YOUTUBE_REGEX
     }
   ], []);
 
@@ -525,37 +495,23 @@ const Contact = ({ contactInfo, setContactInfo }) => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {socialPlatforms.map(({ id, label, placeholder, regex }) => (
+            {socialPlatforms.map(({ id, label, placeholder }) => (
               <div key={id}>
                 <Label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
                   {label}
                 </Label>
                 <TextInput
                   id={id}
-                  type="url"
+                  type="text"
                   value={contactInfo.socialMediaLinks?.[id] || ''}
                   onChange={(e) => {
                     const value = e.target.value;
                     handleInputChange(`social_${id}`, value);
                   }}
-                  onPaste={(e) => {
-                    const pastedText = e.clipboardData.getData('text');
-                    if (pastedText && !regex.test(pastedText)) {
-                      e.preventDefault();
-                      alert(`Please paste a valid ${label} URL`);
-                    }
-                  }}
                   placeholder={placeholder}
                   aria-label={`${label} Profile URL`}
-                  aria-invalid={!!errors[`social_${id}`]}
-                  aria-describedby={errors[`social_${id}`] ? `${id}-error` : undefined}
-                  className={errors[`social_${id}`] ? 'border-red-500' : ''}
+                  className="focus:ring-teal-500 focus:border-teal-500"
                 />
-                {errors[`social_${id}`] && (
-                  <p id={`${id}-error`} className="mt-1 text-sm text-red-500" role="alert">
-                    {errors[`social_${id}`]}
-                  </p>
-                )}
                 <p className="mt-1 text-xs text-gray-500">
                   Example: {placeholder}
                 </p>

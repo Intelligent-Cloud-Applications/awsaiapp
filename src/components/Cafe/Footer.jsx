@@ -32,41 +32,12 @@ function Footer({
     };
 
     const validateSocialMediaUrls = (contactInfo) => {
-        if (!contactInfo?.socialMediaLinks) return true;
-
-        const { instagram, facebook, youtube } = contactInfo.socialMediaLinks;
-        const errors = [];
-
-        // Only validate if URLs are provided (they're optional)
-        if (instagram && !/^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_.]+(\/)?$/.test(instagram)) {
-            errors.push('Invalid Instagram URL');
-        }
-        if (facebook && !/^(https?:\/\/)?(www\.)?facebook\.com\/[a-zA-Z0-9_.]+(\/?|\/.+)?$/.test(facebook)) {
-            errors.push('Invalid Facebook URL');
-        }
-        if (youtube && !/^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|user\/|c\/)[a-zA-Z0-9_-]+|youtube\.com\/@[a-zA-Z0-9_-]+)$/.test(youtube)) {
-            errors.push('Invalid YouTube URL');
-        }
-
-        if (errors.length > 0) {
-            alert('Please correct the following:\n' + errors.join('\n'));
-            return false;
-        }
-
+        // Always return true since we don't want to validate social media URLs anymore
         return true;
     };
 
     const handleNextClick = async () => {
         try {
-            // Check if we're on the Contact section
-            const isContactSection = sections[currentSection]?.title.toLowerCase().includes('contact');
-            
-            if (isContactSection && !validateSocialMediaUrls(contactInfo)) {
-                return;
-            }
-
-            UserCtx.util.setLoader(true);
-            
             // Save current data
             saveData();
 
