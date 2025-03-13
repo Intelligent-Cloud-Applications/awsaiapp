@@ -1,45 +1,71 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { FiSave, FiTrash2, FiX } from 'react-icons/fi';
 
-const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, currentSection, setCurrentSection }) => {
+const PrevSectionDraftHandler = ({ isOpen, onClose, onClear, onSaveDraft, onContinue }) => {
   if (!isOpen) return null;
 
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-60 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Do you want to clear your data or save it as a draft?</h2>
-        <div className="flex justify-around gap-4">
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-auto">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Go Back
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Would you like to save your progress before going back?
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="p-6 space-y-3">
+          {/* Save Draft Button */}
           <button
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition duration-200"
-            onClick={() => {
-              onClear();
-              onClose();
-            }}
-          >
-            Discard
-          </button>
-          <button
-            className="bg-black text-white px-6 py-3 rounded-lg transition duration-200"
-            onClick={() => {
-              setCurrentSection((prevSection) => Math.max(prevSection - 1, 0));
-              onClose();
-            }}
-          >
-            Previous Page
-          </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-200"
             onClick={() => {
               onSaveDraft();
               onClose();
             }}
+            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
           >
-            Save as Draft
+            <FiSave className="w-4 h-4" />
+            Save as Draft & Exit
+          </button>
+
+          {/* Go Back Without Saving Button */}
+          <button
+            onClick={() => {
+              onContinue();
+              onClose();
+            }}
+            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-[#30afbc] bg-white rounded-lg hover:bg-gray-50 border border-[#30afbc] transition-colors"
+          >
+            <FiX className="w-4 h-4" />
+            Go Back Without Saving
+          </button>
+
+          {/* Cancel Button */}
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-gray-600 hover:text-white bg-gray-50 hover:bg-gray-600 rounded-lg transition-colors"
+          >
+            <FiX className="w-4 h-4" />
+            Cancel
+          </button>
+
+          {/* Clear Data Button */}
+          <button
+            onClick={() => {
+              onClear();
+              onClose();
+            }}
+            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-red-600 hover:text-white hover:bg-red-600 rounded-lg border border-red-200 hover:border-red-600 transition-all duration-200"
+          >
+            <FiTrash2 className="w-4 h-4" />
+            Clear Data & Exit
           </button>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
 
