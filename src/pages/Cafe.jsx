@@ -59,7 +59,7 @@ const Cafe = () => {
                     youtube: ''
                 },
                 visitUs: savedData.visitUs || {
-                    locatemap: ''
+                    locationMap: ''
                 }
             };
         } catch (error) {
@@ -79,7 +79,7 @@ const Cafe = () => {
                     youtube: ''
                 },
                 visitUs: {
-                    locatemap: ''
+                    locationMap: ''
                 }
             };
         }
@@ -122,7 +122,7 @@ const Cafe = () => {
         }
     });
     const [contactInfo, setContactInfo] = useState(initializeContactInfo);
-    const [OurMissionBg, setOurMissionBg] = useState(null);
+    const [ourMissionBg, setourMissionBg] = useState(null);
     const [selectedMissionBg, setSelectedMissionBg] = useState(null);
 
     // Testimonials state
@@ -376,7 +376,7 @@ const Cafe = () => {
                                 youtube: contactInfo.socialMediaLinks?.youtube || ''
                             },
                             visitUs: {
-                                locatemap: contactInfo.visitUs?.locatemap || ''
+                                locationMap: contactInfo.visitUs?.locationMap || ''
                             },
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
@@ -463,10 +463,10 @@ const Cafe = () => {
                         // Process mission background image if exists
                         let missionBgUrl = null;
                         let missionBgBase64 = null;
-                        if (OurMissionBg && OurMissionBg instanceof File) {
+                        if (ourMissionBg && ourMissionBg instanceof File) {
                             try {
-                                const compressedMissionBg = await compressImage(OurMissionBg);
-                                const fileName = `${institutionid}/images/mission/mission_bg_${Date.now()}.${OurMissionBg.name.split('.').pop()}`;
+                                const compressedMissionBg = await compressImage(ourMissionBg);
+                                const fileName = `${institutionid}/images/mission/mission_bg_${Date.now()}.${ourMissionBg.name.split('.').pop()}`;
                                 const uploadResponse = await Storage.put(fileName, compressedMissionBg, {
                                     contentType: compressedMissionBg.type,
                                     metadata: {
@@ -482,7 +482,7 @@ const Cafe = () => {
                                 localStorage.setItem('cafeFormMissionBg', JSON.stringify({
                                     missionBg: missionBgBase64,
                                     missionBgUrl: missionBgUrl,
-                                    fileName: OurMissionBg.name
+                                    fileName: ourMissionBg.name
                                 }));
                             } catch (uploadError) {
                                 console.error("Error uploading mission background:", uploadError);
@@ -492,21 +492,21 @@ const Cafe = () => {
 
                         // Get mission bg data from storage if not uploading new one
                         const missionBgData = JSON.parse(localStorage.getItem('cafeFormMissionBg') || '{}');
-                        const currentMissionBgUrl = missionBgUrl || missionBgData.missionBgUrl || existingData.OurMissionBg || '';
+                        const currentMissionBgUrl = missionBgUrl || missionBgData.missionBgUrl || existingData.ourMissionBg || '';
 
-                        // Validate OurMission data
-                        const OurMission = existingData.OurMission || {};
-                        if (!OurMission.title?.trim()) {
+                        // Validate ourMission data
+                        const ourMission = existingData.ourMission || {};
+                        if (!ourMission.title?.trim()) {
                             alert("Please enter the mission title");
                             success = false;
                             break;
                         }
-                        if (!OurMission.description?.trim()) {
+                        if (!ourMission.description?.trim()) {
                             alert("Please enter the mission description");
                             success = false;
                             break;
                         }
-                        if (!OurMission.points?.every(point => point.trim())) {
+                        if (!ourMission.points?.every(point => point.trim())) {
                             alert("Please fill in all mission points");
                             success = false;
                             break;
@@ -528,12 +528,12 @@ const Cafe = () => {
                             logoUrl: currentLogoUrl,
                             logo: logoData.logo || existingData.logo || '',
                             selectedMedia: null,
-                            OurMission: {
-                                title: OurMission.title.trim(),
-                                description: OurMission.description.trim(),
-                                points: OurMission.points.map(point => point.trim())
+                            ourMission: {
+                                title: ourMission.title.trim(),
+                                description: ourMission.description.trim(),
+                                points: ourMission.points.map(point => point.trim())
                             },
-                            OurMissionBg: currentMissionBgUrl,
+                            ourMissionBg: currentMissionBgUrl,
                             createdBy: userData?.cognitoId,
                             isFormFilled: false,
                             lastUpdated: Date.now()
@@ -554,8 +554,8 @@ const Cafe = () => {
                             heroImage: currentHeroImageUrl, // Store S3 URL in main data
                             heroImageData: null, // Don't store base64 in main data
                             logoUrl: currentLogoUrl,
-                            OurMission: homeData.OurMission,
-                            OurMissionBg: currentMissionBgUrl
+                            ourMission: homeData.ourMission,
+                            ourMissionBg: currentMissionBgUrl
                         }));
 
                     } catch (error) {
@@ -570,7 +570,7 @@ const Cafe = () => {
                         const incompleteTestimonials = testimonials.filter((t, index) => {
                             const missing = [];
                             
-                            if (!t.customerName?.trim()) {
+                            if (!t.name?.trim()) {
                                 missing.push('Customer Name');
                             }
                             if (!t.text?.trim()) {
@@ -606,7 +606,7 @@ const Cafe = () => {
                                 }
                                 return {
                                     image: imageUrl,
-                                    customerName: t.customerName.trim(),
+                                    name: t.name.trim(),
                                     text: t.text.trim(),
                                     rating: t.rating || 5
                                 };
@@ -727,7 +727,7 @@ const Cafe = () => {
                 
                 // Testimonials
                 testimonials: testimonials.map(t => ({
-                    customerName: t.customerName || '',
+                    name: t.name || '',
                     text: t.text || '',
                     rating: t.rating || 5,
                     imgSrc: t.imgSrc || '',
@@ -854,7 +854,7 @@ const Cafe = () => {
                     youtube: ''
                 },
                 visitUs: {
-                    locatemap: ''
+                    locationMap: ''
                 }
             });
             setTestimonials([
@@ -937,7 +937,7 @@ const Cafe = () => {
                     youtube: ''
                 },
                 visitUs: savedData.visitUs || {
-                    locatemap: ''
+                    locationMap: ''
                 }
             };
             setContactInfo(contactData);
@@ -958,7 +958,7 @@ const Cafe = () => {
             // Load testimonials
             if (savedData.testimonials?.length > 0) {
                 const loadedTestimonials = savedData.testimonials.map(t => ({
-                    customerName: t.customerName || '',
+                    name: t.name || '',
                     text: t.text || '',
                     rating: t.rating || 5,
                     imgSrc: t.imgSrc || '',
@@ -1045,7 +1045,7 @@ const Cafe = () => {
                         contactInfo?.lastName?.trim() &&
                         contactInfo?.Query_PhoneNumber?.trim() &&
                         contactInfo?.Query_Address?.trim() &&
-                        contactInfo?.visitUs?.locatemap?.trim() &&
+                        contactInfo?.visitUs?.locationMap?.trim() &&
                         contactInfo?.socialMediaLinks?.instagram?.trim() &&
                         contactInfo?.socialMediaLinks?.facebook?.trim() &&
                         contactInfo?.socialMediaLinks?.youtube?.trim();
@@ -1063,7 +1063,7 @@ const Cafe = () => {
 
                 case 3: // Testimonials
                     const isTestimonialsValid = testimonials?.every(t => 
-                        t.customerName?.trim() && 
+                        t.name?.trim() && 
                         t.text?.trim() && 
                         t.imgSrc
                     );
@@ -1138,8 +1138,8 @@ const Cafe = () => {
                         setHeroImage={handleSetHeroImage}
                         selectedMedia={selectedMedia}
                         setSelectedMedia={handleSetSelectedMedia}
-                        OurMissionBg={OurMissionBg}
-                        setOurMissionBg={setOurMissionBg}
+                        ourMissionBg={ourMissionBg}
+                        setourMissionBg={setourMissionBg}
                         selectedMissionBg={selectedMissionBg}
                         setSelectedMissionBg={setSelectedMissionBg}
                     />

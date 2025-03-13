@@ -43,15 +43,15 @@ const Home = ({
     setHeroImage,
     selectedMedia,
     setSelectedMedia,
-    OurMissionBg,
-    setOurMissionBg,
+    ourMissionBg,
+    setourMissionBg,
     selectedMissionBg,
     setSelectedMissionBg,
     productTagline,
     setProductTagline
 }) => {
     const [errors, setErrors] = useState({});
-    const [OurMission, setOurMission] = useState({
+    const [ourMission, setourMission] = useState({
         title: '',
         description: '',
         points: ['', '', '']
@@ -147,11 +147,11 @@ const Home = ({
             }
 
             // Load other data
-            if (savedData.OurMission) {
-                setOurMission(savedData.OurMission);
+            if (savedData.ourMission) {
+                setourMission(savedData.ourMission);
             }
-            if (savedData.OurMissionBg) {
-                setSelectedMissionBg(savedData.OurMissionBg);
+            if (savedData.ourMissionBg) {
+                setSelectedMissionBg(savedData.ourMissionBg);
             }
         } catch (error) {
             console.error('Error loading data from localStorage:', error);
@@ -169,8 +169,8 @@ const Home = ({
                 tagLine1: tagLine1 || '',
                 tagLine2: tagLine2 || '',
                 productTagline: productTagline || '',
-                OurMission,
-                OurMissionBg: selectedMissionBg,
+                ourMission,
+                ourMissionBg: selectedMissionBg,
                 heroImage: heroImage, // Store the File object directly
                 lastUpdated: Date.now()
             };
@@ -197,7 +197,7 @@ const Home = ({
         } catch (error) {
             console.error('Error saving data to localStorage:', error);
         }
-    }, [tagLine1, tagLine2, productTagline, selectedMedia, OurMission, selectedMissionBg, heroImage]);
+    }, [tagLine1, tagLine2, productTagline, selectedMedia, ourMission, selectedMissionBg, heroImage]);
 
     const compressImage = useCallback((file) => {
         return new Promise((resolve, reject) => {
@@ -323,7 +323,7 @@ const Home = ({
 
             try {
                 setSelectedMissionBg(compressedBase64);
-                setOurMissionBg(file);
+                setourMissionBg(file);
                 setErrors(prev => ({ ...prev, missionBg: null }));
             } catch (storageError) {
                 console.error('Failed to save mission background to localStorage:', storageError);
@@ -338,7 +338,7 @@ const Home = ({
             }));
             setSelectedMissionBg(null);
         }
-    }, [compressImage, setOurMissionBg, setSelectedMissionBg]);
+    }, [compressImage, setourMissionBg, setSelectedMissionBg]);
 
     const renderHeroImagePreview = useCallback(() => {
         if (!selectedMedia) {
@@ -571,11 +571,11 @@ const Home = ({
                             <div>
                                 <TextInput
                                     id="mission-title"
-                                    value={OurMission.title}
+                                    value={ourMission.title}
                                     onChange={(e) => {
                                         const newTitle = e.target.value;
                                         if (newTitle.length <= MAX_MISSION_TITLE_LENGTH) {
-                                            setOurMission(prev => ({
+                                            setourMission(prev => ({
                                                 ...prev,
                                                 title: newTitle
                                             }));
@@ -595,7 +595,7 @@ const Home = ({
                                 />
                                 <p className="mt-1 text-sm text-gray-500 flex justify-between">
                                     <span>{errors.missionTitle || ''}</span>
-                                    <span>{OurMission.title.length}/{MAX_MISSION_TITLE_LENGTH} characters</span>
+                                    <span>{ourMission.title.length}/{MAX_MISSION_TITLE_LENGTH} characters</span>
                                 </p>
                             </div>
                         </div>
@@ -608,11 +608,11 @@ const Home = ({
                             <div>
                                 <Textarea
                                     id="mission-description"
-                                    value={OurMission.description}
+                                    value={ourMission.description}
                                     onChange={(e) => {
                                         const newDescription = e.target.value;
                                         if (newDescription.length <= MAX_MISSION_DESCRIPTION_LENGTH) {
-                                            setOurMission(prev => ({
+                                            setourMission(prev => ({
                                                 ...prev,
                                                 description: newDescription
                                             }));
@@ -633,7 +633,7 @@ const Home = ({
                                 />
                                 <p className="mt-1 text-sm text-gray-500 flex justify-between">
                                     <span>{errors.missionDescription || ''}</span>
-                                    <span>{OurMission.description.length}/{MAX_MISSION_DESCRIPTION_LENGTH} characters</span>
+                                    <span>{ourMission.description.length}/{MAX_MISSION_DESCRIPTION_LENGTH} characters</span>
                                 </p>
                             </div>
                         </div>
@@ -644,16 +644,16 @@ const Home = ({
                                 Key Points <span className="text-red-500">*</span>
                             </Label>
                             <div className="space-y-3">
-                                {OurMission.points.map((point, index) => (
+                                {ourMission.points.map((point, index) => (
                                     <div key={index}>
                                         <TextInput
                                             value={point}
                                             onChange={(e) => {
                                                 const newPoint = e.target.value;
                                                 if (newPoint.length <= MAX_MISSION_POINT_LENGTH) {
-                                                    const newPoints = [...OurMission.points];
+                                                    const newPoints = [...ourMission.points];
                                                     newPoints[index] = newPoint;
-                                                    setOurMission(prev => ({
+                                                    setourMission(prev => ({
                                                         ...prev,
                                                         points: newPoints
                                                     }));
@@ -697,8 +697,8 @@ Home.propTypes = {
     setHeroImage: PropTypes.func.isRequired,
     selectedMedia: PropTypes.string,
     setSelectedMedia: PropTypes.func.isRequired,
-    OurMissionBg: PropTypes.object,
-    setOurMissionBg: PropTypes.func.isRequired,
+    ourMissionBg: PropTypes.object,
+    setourMissionBg: PropTypes.func.isRequired,
     selectedMissionBg: PropTypes.string,
     setSelectedMissionBg: PropTypes.func.isRequired
 };

@@ -110,7 +110,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                     }
 
                     return {
-                        customerName: t.customerName || '',
+                        name: t.name || '',
                         text: t.text || '',
                         rating: t.rating || 5,
                         imgSrc: t.imgSrc || '',
@@ -156,7 +156,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                         }
 
                         return {
-                            customerName: t.customerName || '',
+                            name: t.name || '',
                             text: t.text || '',
                             rating: t.rating || 5,
                             imgSrc,
@@ -167,7 +167,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                 } else {
                     // Initialize with empty testimonials
                     const emptyTestimonials = Array(5).fill().map(() => ({
-                        customerName: '',
+                        name: '',
                         text: '',
                         rating: 5,
                         imgSrc: '',
@@ -187,12 +187,12 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
         const errors = {};
         
         // Customer Name validation
-        if (!testimonial.customerName?.trim()) {
-            errors.customerName = 'Customer name is required';
-        } else if (testimonial.customerName.length > MAX_NAME_LENGTH) {
-            errors.customerName = `Name must be ${MAX_NAME_LENGTH} characters or less`;
-        } else if (!/^[a-zA-Z\s]*$/.test(testimonial.customerName)) {
-            errors.customerName = 'Name can only contain letters and spaces';
+        if (!testimonial.name?.trim()) {
+            errors.name = 'Customer name is required';
+        } else if (testimonial.name.length > MAX_NAME_LENGTH) {
+            errors.name = `Name must be ${MAX_NAME_LENGTH} characters or less`;
+        } else if (!/^[a-zA-Z\s]*$/.test(testimonial.name)) {
+            errors.name = 'Name can only contain letters and spaces';
         }
 
         // Testimonial text validation
@@ -375,29 +375,29 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
 
                         {/* Customer Name Input */}
                         <div className="mb-4">
-                            <Label htmlFor={`customerName-${index}`}>
+                            <Label htmlFor={`name-${index}`}>
                                 Customer Name <span className="text-red-500">*</span>
                             </Label>
                             <TextInput
-                                id={`customerName-${index}`}
-                                value={testimonial.customerName}
+                                id={`name-${index}`}
+                                value={testimonial.name}
                                 onChange={(e) => {
                                     const newName = e.target.value;
                                     if (newName.length <= MAX_NAME_LENGTH) {
-                                        handleChange(index, 'customerName', newName);
+                                        handleChange(index, 'name', newName);
                                     }
                                 }}
                                 placeholder="Enter customer name"
-                                className={errors[`testimonial${index}CustomerName`] ? 'border-red-500' : ''}
+                                className={errors[`testimonial${index}name`] ? 'border-red-500' : ''}
                             />
                             <div className="mt-1 flex justify-between items-center">
-                                {errors[`testimonial${index}CustomerName`] && (
+                                {errors[`testimonial${index}name`] && (
                                     <p className="text-sm text-red-500">
-                                        {errors[`testimonial${index}CustomerName`]}
+                                        {errors[`testimonial${index}name`]}
                                     </p>
                                 )}
                                 <p className="text-sm text-gray-500">
-                                    {testimonial.customerName?.length || 0}/{MAX_NAME_LENGTH} characters
+                                    {testimonial.name?.length || 0}/{MAX_NAME_LENGTH} characters
                                 </p>
                             </div>
                         </div>
@@ -458,13 +458,13 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                 {testimonials.map((t, index) => (
                     <div key={index} className="flex items-center gap-2 mb-1">
                         <div className={`w-2 h-2 rounded-full ${
-                            t.customerName?.trim() && t.text?.trim() 
+                            t.name?.trim() && t.text?.trim() 
                             ? 'bg-green-500' 
                             : 'bg-red-500'
                         }`} />
                         <span className="text-sm text-gray-600">
                             Testimonial #{index + 1}: {
-                                t.customerName?.trim() && t.text?.trim() 
+                                t.name?.trim() && t.text?.trim() 
                                 ? 'Complete' 
                                 : 'Incomplete'
                             }
@@ -478,7 +478,7 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
 
 Testimonials.propTypes = {
     testimonials: PropTypes.arrayOf(PropTypes.shape({
-        customerName: PropTypes.string,
+        name: PropTypes.string,
         text: PropTypes.string,
         imgSrc: PropTypes.string,
         uploadedFile: PropTypes.object,
