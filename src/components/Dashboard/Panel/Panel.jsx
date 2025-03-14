@@ -20,6 +20,7 @@ import { BsQrCodeScan } from "react-icons/bs";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 
+
 const Panel = () => {
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
