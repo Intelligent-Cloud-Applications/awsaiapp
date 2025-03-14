@@ -412,7 +412,7 @@ const Panel = () => {
         []
     );
     // eslint-disable-next-line
-    const [tempInstitution, settem] = useState(null); 
+    const [tempInstitution, setTempInstitution] = useState(null); 
     const [showMemberList, setShowMemberList] = useState(false);
     // eslint-disable-next-line 
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
