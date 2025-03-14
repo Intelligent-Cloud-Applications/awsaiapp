@@ -64,167 +64,167 @@ const Panel = () => {
 
         window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  const handleDeliverableUpdate = async (institutionid, deliverable) => {
-    const domainLink = domainLinks[institutionid];
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    const handleDeliverableUpdate = async (institutionid, deliverable) => {
+        const domainLink = domainLinks[institutionid];
 
-    if (deliverable === "Completed" && !domainLink) {
-      return;
-    }
+        if (deliverable === "Completed" && !domainLink) {
+            return;
+        }
 
-    try {
-      const body = {
-        institutionid,
-        deliverable,
-        ...(deliverable === "Completed" && { domainLink }),
-      };
+        try {
+            const body = {
+                institutionid,
+                deliverable,
+                ...(deliverable === "Completed" && { domainLink }),
+            };
 
-      await API.put("clients", `/admin/update-deliverable`, { body });
+            await API.put("clients", `/admin/update-deliverable`, { body });
 
-      if (deliverable === "Completed") {
-        setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
-        toast.success("Domain link and deliverable updated successfully!");
-      } else {
-        toast.success("Deliverable updated successfully!");
-      }
+            if (deliverable === "Completed") {
+                setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+                toast.success("Domain link and deliverable updated successfully!");
+            } else {
+                toast.success("Deliverable updated successfully!");
+            }
 
-      const response = await API.get("clients", "/admin/list-institution");
-      clients.setClients(response);
-    } catch (error) {
-      console.error("Error updating deliverable:", error);
-      toast.error("An error occurred while updating the deliverable.");
-    }
-  };
-  
-// start
-const allowedDomains = ["awsaiapp.com", "happyprancer.com"];
+            const response = await API.get("clients", "/admin/list-institution");
+            clients.setClients(response);
+        } catch (error) {
+            console.error("Error updating deliverable:", error);
+            toast.error("An error occurred while updating the deliverable.");
+        }
+    };
 
-const formatDomainLink = (url) => {
-  url = url.trim();
-  if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    url = "https://" + url;
-  }
-  if (url.endsWith("/")) {
-    url = url.slice(0, -1);
-  }
-  return url;
-};
+    // start
+    const allowedDomains = ["awsaiapp.com", "happyprancer.com"];
 
-const validateDomainLink = (url) => {
-  try {
-    const parsedUrl = new URL(url);
-    return (
-      (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") &&
-      allowedDomains.some(domain => parsedUrl.hostname.endsWith(domain))
-    );
-  } catch (e) {
-    return false;
-  }
-};
+    const formatDomainLink = (url) => {
+        url = url.trim();
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+        if (url.endsWith("/")) {
+            url = url.slice(0, -1);
+        }
+        return url;
+    };
 
-const handleDomainLinkSubmit = async (institutionid) => {
-  let domainLink = formatDomainLink(domainLinks[institutionid] || "");
-  if (!domainLink) {
-    toast.error("Domain link cannot be empty.");
-    return;
-  }
-  if (!validateDomainLink(domainLink)) {
-    toast.error("Invalid domain. Allowed domains: awsaiapp.com, happyprancer.com");
-    return;
-  }
+    const validateDomainLink = (url) => {
+        try {
+            const parsedUrl = new URL(url);
+            return (
+                (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") &&
+                allowedDomains.some(domain => parsedUrl.hostname.endsWith(domain))
+            );
+        } catch (e) {
+            return false;
+        }
+    };
 
-  try {
-    await API.put("clients", `/admin/update-deliverable`, {
-      body: {
-        institutionid,
-        deliverable: "Completed",
-        domainLink,
-      },
-    });
+    const handleDomainLinkSubmit = async (institutionid) => {
+        let domainLink = formatDomainLink(domainLinks[institutionid] || "");
+        if (!domainLink) {
+            toast.error("Domain link cannot be empty.");
+            return;
+        }
+        if (!validateDomainLink(domainLink)) {
+            toast.error("Invalid domain. Allowed domains: awsaiapp.com, happyprancer.com");
+            return;
+        }
 
-    setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
-    const response = await API.get("clients", "/admin/list-institution");
-    clients.setClients(response);
-    toast.success("Domain link updated successfully!");
-  } catch (error) {
-    console.error("Error submitting domain link:", error);
-    toast.error("An error occurred while updating the domain link.");
-  }
-};
-// end
+        try {
+            await API.put("clients", `/admin/update-deliverable`, {
+                body: {
+                    institutionid,
+                    deliverable: "Completed",
+                    domainLink,
+                },
+            });
+
+            setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
+            const response = await API.get("clients", "/admin/list-institution");
+            clients.setClients(response);
+            toast.success("Domain link updated successfully!");
+        } catch (error) {
+            console.error("Error submitting domain link:", error);
+            toast.error("An error occurred while updating the domain link.");
+        }
+    };
+    // end
 
 
-  const [openModal, setOpenModal] = useState(false);
-  const [modalPlacement] = useState("center");
+    const [openModal, setOpenModal] = useState(false);
+    const [modalPlacement] = useState("center");
 
-  const customTheme = {
-    pages: {
-      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
-      showIcon: "inline-flex",
-      previous: {
-        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
-      },
-      next: {
-        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        icon: "h-5 w-5 text-gray-500 hover:text-white",
-      },
-      selector: {
-        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
-        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
-        disabled: "cursor-not-allowed opacity-50",
-      },
-    },
-  };
+    const customTheme = {
+        pages: {
+            base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+            showIcon: "inline-flex",
+            previous: {
+                base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+                icon: "h-5 w-5 text-gray-500 hover:text-white",
+            },
+            next: {
+                base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+                icon: "h-5 w-5 text-gray-500 hover:text-white",
+            },
+            selector: {
+                base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+                active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+                disabled: "cursor-not-allowed opacity-50",
+            },
+        },
+    };
 
-  const handlePlanChange = async (data, plan) => {
-    // Store the previous state before making the API call
-    const previousPlanStatus = { ...planStatuses };
+    const handlePlanChange = async (data, plan) => {
+        // Store the previous state before making the API call
+        const previousPlanStatus = { ...planStatuses };
 
-    try {
-      const body = {
-        institution: data.institutionid,
-        plan,
-      };
+        try {
+            const body = {
+                institution: data.institutionid,
+                plan,
+            };
 
-      await API.put("clients", `/admin/update-plan`, { body });
-      toast.success("Plan updated successfully!");
-    } catch (error) {
-      console.error("Error Updating Plan:", error);
-      toast.error("An error occurred while updating the plan.");
+            await API.put("clients", `/admin/update-plan`, { body });
+            toast.success("Plan updated successfully!");
+        } catch (error) {
+            console.error("Error Updating Plan:", error);
+            toast.error("An error occurred while updating the plan.");
 
             // Reset to the previous state if an error occurs
             setPlanStatuses(previousPlanStatus);
         }
     };
 
-  const handleTypeFilter = (typeSelected) => {
-    if (typeSelected === "Dance Studio") {
-      setSelectedType("DanceStudio");
-    } else if (typeSelected === "Course Based") {
-      setSelectedType("CourseBased");
-    } else {
-      setSelectedType(typeSelected);
-    }
-    setActiveMenu(null);
-    setActiveSubMenu(null);
-  };
-  const handleAllFilter = () => {
-    setFilterStatus(null);
-    setSelectedType(null);
-    setActiveMenu(null);
-    setActiveSubMenu(null);
-  };
-  const handleDeliverFilter = (value) => {
-    if (value === "Delivered") {
-      setFilterStatus(true);
-    } else {
-      setFilterStatus(false);
-    }
-    setActiveMenu(null);
-    setActiveSubMenu(null);
-  };
+    const handleTypeFilter = (typeSelected) => {
+        if (typeSelected === "Dance Studio") {
+            setSelectedType("DanceStudio");
+        } else if (typeSelected === "Course Based") {
+            setSelectedType("CourseBased");
+        } else {
+            setSelectedType(typeSelected);
+        }
+        setActiveMenu(null);
+        setActiveSubMenu(null);
+    };
+    const handleAllFilter = () => {
+        setFilterStatus(null);
+        setSelectedType(null);
+        setActiveMenu(null);
+        setActiveSubMenu(null);
+    };
+    const handleDeliverFilter = (value) => {
+        if (value === "Delivered") {
+            setFilterStatus(true);
+        } else {
+            setFilterStatus(false);
+        }
+        setActiveMenu(null);
+        setActiveSubMenu(null);
+    };
 
     const navigate = useNavigate();
     const filterClients = useCallback(() => {
@@ -261,117 +261,117 @@ const handleDomainLinkSubmit = async (institutionid) => {
         return filtered;
     }, [searchQuery, selectedType, clientsData, filterStatus]);
 
-  const filteredClients = useMemo(() => filterClients(), [filterClients]);
+    const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
-  useEffect(() => {
-    if (!Array.isArray(filteredClients)) {
-      console.error("filteredClients is not an array:", filteredClients);
-      return;
-    }
+    useEffect(() => {
+        if (!Array.isArray(filteredClients)) {
+            console.error("filteredClients is not an array:", filteredClients);
+            return;
+        }
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(
-      startIndex + itemsPerPage,
-      filteredClients.length
-    );
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(
+            startIndex + itemsPerPage,
+            filteredClients.length
+        );
 
-    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
+        const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
-    const newInstituteTypes = Array.from(
-      new Set(clientsToDisplay.map((client) => client[1].institutionType))
-    );
+        const newInstituteTypes = Array.from(
+            new Set(clientsToDisplay.map((client) => client[1].institutionType))
+        );
 
-    setInstituteTypes((prevTypes) => {
-      const combinedTypes = [...prevTypes, ...newInstituteTypes];
-      const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
+        setInstituteTypes((prevTypes) => {
+            const combinedTypes = [...prevTypes, ...newInstituteTypes];
+            const uniqueCombinedTypes = Array.from(new Set(combinedTypes));
 
-      if (uniqueCombinedTypes.length !== prevTypes.length) {
-        return uniqueCombinedTypes;
-      } else {
-        return prevTypes;
-      }
-    });
-  }, [currentPage, itemsPerPage, filteredClients]);
+            if (uniqueCombinedTypes.length !== prevTypes.length) {
+                return uniqueCombinedTypes;
+            } else {
+                return prevTypes;
+            }
+        });
+    }, [currentPage, itemsPerPage, filteredClients]);
 
-  useEffect(() => {
-    const newInstituteType = userData.institutionType;
+    useEffect(() => {
+        const newInstituteType = userData.institutionType;
 
-    if (!instituteTypes.includes(newInstituteType)) {
-      setInstituteTypes((prev) => [...prev, newInstituteType]);
-    }
-  }, [userData, instituteTypes]);
-  useEffect(() => {
-    const handleResize = () => {
-      const max670Hidden = window.innerWidth <= 670;
-      const max600Hidden = window.innerWidth <= 600;
-      const max800Hidden = window.innerWidth <= 800;
-      const max1008Hidden = window.innerWidth <= 1008;
+        if (!instituteTypes.includes(newInstituteType)) {
+            setInstituteTypes((prev) => [...prev, newInstituteType]);
+        }
+    }, [userData, instituteTypes]);
+    useEffect(() => {
+        const handleResize = () => {
+            const max670Hidden = window.innerWidth <= 670;
+            const max600Hidden = window.innerWidth <= 600;
+            const max800Hidden = window.innerWidth <= 800;
+            const max1008Hidden = window.innerWidth <= 1008;
 
-      setIsMoreVisible(
-        max670Hidden || max600Hidden || max800Hidden || max1008Hidden
-      );
+            setIsMoreVisible(
+                max670Hidden || max600Hidden || max800Hidden || max1008Hidden
+            );
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Initial check
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const useDataForSales = Ctx.saleData || [];
+
+    const getUsernameByCognitoId = (cognitoId) => {
+        // console.log("cognitoid:", cognitoId);
+        // console.log("data:", useDataForSales.userName);
+        // Normalize the input ID
+        const trimmedInputId = String(cognitoId).trim();
+
+        // Find the user with matching Cognito ID
+        const user = useDataForSales.find((user) => {
+            return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
+        });
+        console.log("user Name:", user);
+        return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
     };
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const useDataForSales = Ctx.saleData || [];
-
-  const getUsernameByCognitoId = (cognitoId) => {
-    // console.log("cognitoid:", cognitoId);
-    // console.log("data:", useDataForSales.userName);
-    // Normalize the input ID
-    const trimmedInputId = String(cognitoId).trim();
-
-    // Find the user with matching Cognito ID
-    const user = useDataForSales.find((user) => {
-      return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
-    });
-    console.log("user Name:", user);
-    return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
-  };
-
-  if (1 < 0) {
-    setShowHiddenContent(true);
-    isMonthlyReport.toUpperCase();
-    userCheck === 0 && setUserCheck(1);
-  }
-
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
-  const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
-
-  useEffect(() => {
-    if (currentPage < 1 && totalPages > 0) {
-      setCurrentPage(1);
-    } else if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
+    if (1 < 0) {
+        setShowHiddenContent(true);
+        isMonthlyReport.toUpperCase();
+        userCheck === 0 && setUserCheck(1);
     }
-  }, [currentPage, totalPages]);
 
-  const getBadgeProps = (payment, delivered) => {
-    let text, color;
+    const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
-    // if (web) {
-    if (payment && delivered) {
-      text = "Active";
-      color = "success";
-    } else {
-      text = "Pending";
-      color = "warning";
-    }
-    // } else {
-    //   text = "InActive";
-    //   color = "failure";
-    // }
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+    const clientsToDisplay = filteredClients.slice(startIndex, endIndex);
 
-    return { text, color };
-  };
+    useEffect(() => {
+        if (currentPage < 1 && totalPages > 0) {
+            setCurrentPage(1);
+        } else if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
+    const getBadgeProps = (payment, delivered) => {
+        let text, color;
+
+        // if (web) {
+        if (payment && delivered) {
+            text = "Active";
+            color = "success";
+        } else {
+            text = "Pending";
+            color = "warning";
+        }
+        // } else {
+        //   text = "InActive";
+        //   color = "failure";
+        // }
+
+        return { text, color };
+    };
 
     const splitandjoin = (str) => {
         if (typeof str !== "string") {
@@ -444,13 +444,13 @@ const handleDomainLinkSubmit = async (institutionid) => {
         []
     );
     // eslint-disable-next-line
-    const [tempInstitution, settem] = useState(null); 
+    const [tempInstitution, setTempInstitution] = useState(null);
     const [showMemberList, setShowMemberList] = useState(false);
     // eslint-disable-next-line 
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
 
     const handleInstitutionClick = (client) => {
-        if (!client.payment) {
+        if (client.payment ? !client.payment : true) {
             navigate(`/pricing?institutionId=${client.institutionid}`, {
                 state: {
                     institutionId: client.institutionid,
@@ -458,43 +458,44 @@ const handleDomainLinkSubmit = async (institutionid) => {
                 }
             });
         } else {
-            console.log("Data to set", client);
-            setTempInstitution(client.institutionid);
-            setSelectedInstitutionType(client.institutionType);
-            setisMonthlyReport(client.institutionid);
-            setShowMemberList(true);
+            if (Ctx.userData.userType === "admin") {
+                setTempInstitution(client.institutionid);
+                setSelectedInstitutionType(client.institutionType);
+                setisMonthlyReport(client.institutionid);
+                setShowMemberList(true);
+            }
         }
     };
 
-  const getLinkPath = (instituteType) => {
-    switch (instituteType) {
-      case "Dance Studio":
-        return "/dance-studio";
-      case "Dentist":
-        return "/dentist";
-      case "Cafe":
-        return "/cafe";
-      case "Course Based":
-        return "/course-based";
-      default:
-        return "";
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setActiveMenu(null);
-        setActiveSubMenu(null);
-      }
+    const getLinkPath = (instituteType) => {
+        switch (instituteType) {
+            case "Dance Studio":
+                return "/dance-studio";
+            case "Dentist":
+                return "/dentist";
+            case "Cafe":
+                return "/cafe";
+            case "Course Based":
+                return "/course-based";
+            default:
+                return "";
+        }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setActiveMenu(null);
+                setActiveSubMenu(null);
+            }
+        };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <>
@@ -691,9 +692,9 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                                                 {/* <Table.HeadCell></Table.HeadCell> */}
 
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                          Institution Id
-                        </Table.HeadCell>
+                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                    Institution Id
+                                                </Table.HeadCell>
 
                                                 {Ctx.userData.userType === "member" &&
                                                     Ctx.userData.role === "operation" && (
@@ -730,14 +731,14 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                     Created By
                                                 </Table.HeadCell>
 
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                          Deliverable
-                        </Table.HeadCell>
+                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                    Deliverable
+                                                </Table.HeadCell>
 
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                          Links
-                        </Table.HeadCell>
-                      </Table.Head>
+                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                    Links
+                                                </Table.HeadCell>
+                                            </Table.Head>
 
                                             <Table.Body className="bg-white">
                                                 {clientsToDisplay.map(([key, client], index) => (
@@ -748,12 +749,12 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
 
-                                                            // onClick={(e) => handleRowClick(client, e)}
+                                                        // onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
-                                                            onClick={() => {
-                                                                handleInstitutionClick(client);
-                                                            }}
+                                                                onClick={() => {
+                                                                    handleInstitutionClick(client);
+                                                                }}
 
                                                             >
                                                                 <div className="email-hover font-semibold text-[#11192B]">
@@ -762,16 +763,16 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                             </Link>
                                                         </Table.Cell>
 
-                            {Ctx.userData.userType === "member" &&
-                              Ctx.userData.role === "operation" && (
-                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
-                                  {client.companyName}
-                                </Table.Cell>
-                              )}
+                                                        {Ctx.userData.userType === "member" &&
+                                                            Ctx.userData.role === "operation" && (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
+                                                                    {client.companyName}
+                                                                </Table.Cell>
+                                                            )}
 
-                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              {splitandjoin(client.institutionType)}
-                            </Table.Cell>
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                            {splitandjoin(client.institutionType)}
+                                                        </Table.Cell>
 
                                                         <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                                                             {(() => {
@@ -910,221 +911,221 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                                 : "Unknown"}{" "}
                                                         </Table.Cell>
 
-                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              {Ctx.userData.role !== "sale" ? (
-                                <Dropdown
-                                  label={
-                                    selectedStatuses[client.institutionid] ||
-                                    client.deliverable ||
-                                    "Pending"
-                                  }
-                                  inline
-                                >
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setSelectedStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Pending",
-                                      }));
-                                      handleDeliverableUpdate(
-                                        client.institutionid,
-                                        "Pending"
-                                      );
-                                    }}
-                                  >
-                                    Pending
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setSelectedStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "In-progress",
-                                      }));
-                                      handleDeliverableUpdate(
-                                        client.institutionid,
-                                        "In-progress"
-                                      );
-                                    }}
-                                  >
-                                    In-progress
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    className="hover:bg-gray-200 focus:bg-gray-200"
-                                    onClick={() => {
-                                      setSelectedStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Completed",
-                                      }));
-                                      handleDeliverableUpdate(
-                                        client.institutionid,
-                                        "Completed"
-                                      );
-                                    }}
-                                  >
-                                    Completed
-                                  </Dropdown.Item>
-                                </Dropdown>
-                              ) : (
-                                <span className="text-gray-500">
-                                  {client.deliverable || "Pending"}
-                                </span>
-                              )}
-                            </Table.Cell>
-                            {Ctx.userData.role !== "sale" && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
-                                <div className="flex items-center gap-2">
-                                  <TextInput
-                                    id="domain"
-                                    value={
-                                      domainLinks[client.institutionid] || ""
-                                    }
-                                    // placeholder={
-                                    //   client.domainLink
-                                    //     ? client.domainLink
-                                    //     : "Enter the Domain link"
-                                    // }
-                                    placeholder="Enter the Domain link"
-                                    required
-                                    disabled={
-                                      selectedStatuses[client.institutionid] !==
-                                        "Completed" &&
-                                      client.deliverable !== "Completed"
-                                    }
-                                    className="w-[160px]"
-                                    onChange={(e) =>
-                                      setDomainLinks((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: e.target.value,
-                                      }))
-                                    }
-                                  />
-                                  {(selectedStatuses[client.institutionid] ===
-                                    "Completed" ||
-                                    client.deliverable === "Completed") && (
-                                    <Button
-                                      onClick={() =>
-                                        handleDomainLinkSubmit(
-                                          client.institutionid
-                                        )
-                                      }
-                                      className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
-                                    >
-                                      <FaCheck />
-                                    </Button>
-                                  )}
-                                </div>
-                              </Table.Cell>
-                            )}
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                            {Ctx.userData.role !== "sale" ? (
+                                                                <Dropdown
+                                                                    label={
+                                                                        selectedStatuses[client.institutionid] ||
+                                                                        client.deliverable ||
+                                                                        "Pending"
+                                                                    }
+                                                                    inline
+                                                                >
+                                                                    <Dropdown.Item
+                                                                        className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                        onClick={() => {
+                                                                            setSelectedStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "Pending",
+                                                                            }));
+                                                                            handleDeliverableUpdate(
+                                                                                client.institutionid,
+                                                                                "Pending"
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Pending
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item
+                                                                        className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                        onClick={() => {
+                                                                            setSelectedStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "In-progress",
+                                                                            }));
+                                                                            handleDeliverableUpdate(
+                                                                                client.institutionid,
+                                                                                "In-progress"
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        In-progress
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item
+                                                                        className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                        onClick={() => {
+                                                                            setSelectedStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "Completed",
+                                                                            }));
+                                                                            handleDeliverableUpdate(
+                                                                                client.institutionid,
+                                                                                "Completed"
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Completed
+                                                                    </Dropdown.Item>
+                                                                </Dropdown>
+                                                            ) : (
+                                                                <span className="text-gray-500">
+                                                                    {client.deliverable || "Pending"}
+                                                                </span>
+                                                            )}
+                                                        </Table.Cell>
+                                                        {Ctx.userData.role !== "sale" && (
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
+                                                                <div className="flex items-center gap-2">
+                                                                    <TextInput
+                                                                        id="domain"
+                                                                        value={
+                                                                            domainLinks[client.institutionid] || ""
+                                                                        }
+                                                                        // placeholder={
+                                                                        //   client.domainLink
+                                                                        //     ? client.domainLink
+                                                                        //     : "Enter the Domain link"
+                                                                        // }
+                                                                        placeholder="Enter the Domain link"
+                                                                        required
+                                                                        disabled={
+                                                                            selectedStatuses[client.institutionid] !==
+                                                                            "Completed" &&
+                                                                            client.deliverable !== "Completed"
+                                                                        }
+                                                                        className="w-[160px]"
+                                                                        onChange={(e) =>
+                                                                            setDomainLinks((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: e.target.value,
+                                                                            }))
+                                                                        }
+                                                                    />
+                                                                    {(selectedStatuses[client.institutionid] ===
+                                                                        "Completed" ||
+                                                                        client.deliverable === "Completed") && (
+                                                                            <Button
+                                                                                onClick={() =>
+                                                                                    handleDomainLinkSubmit(
+                                                                                        client.institutionid
+                                                                                    )
+                                                                                }
+                                                                                className="flex items-center h-[25px] w-[40px] bg-[#30AFBC]"
+                                                                            >
+                                                                                <FaCheck />
+                                                                            </Button>
+                                                                        )}
+                                                                </div>
+                                                            </Table.Cell>
+                                                        )}
 
-                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
-                              <div className="flex items-center gap-2">
-                                {client.domainLink ? (
-                                  <RiExternalLinkLine
-                                    onClick={() => {
-                                      window.open(client.domainLink, "_blank");
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
+                                                            <div className="flex items-center gap-2">
+                                                                {client.domainLink ? (
+                                                                    <RiExternalLinkLine
+                                                                        onClick={() => {
+                                                                            window.open(client.domainLink, "_blank");
 
-                                      navigator.clipboard
-                                        .writeText(client.domainLink)
-                                        .then(() => {
-                                          toast.success(
-                                            "Domain link copied to clipboard!"
-                                          );
-                                        })
-                                        .catch((err) => {
-                                          toast.error(
-                                            "Failed to copy domain link."
-                                          );
-                                          console.error(
-                                            "Clipboard copy failed:",
-                                            err
-                                          );
-                                        });
-                                    }}
-                                    className="text-blue-500 cursor-pointer h-5 w-5"
-                                  />
-                                ) : null}
+                                                                            navigator.clipboard
+                                                                                .writeText(client.domainLink)
+                                                                                .then(() => {
+                                                                                    toast.success(
+                                                                                        "Domain link copied to clipboard!"
+                                                                                    );
+                                                                                })
+                                                                                .catch((err) => {
+                                                                                    toast.error(
+                                                                                        "Failed to copy domain link."
+                                                                                    );
+                                                                                    console.error(
+                                                                                        "Clipboard copy failed:",
+                                                                                        err
+                                                                                    );
+                                                                                });
+                                                                        }}
+                                                                        className="text-blue-500 cursor-pointer h-5 w-5"
+                                                                    />
+                                                                ) : null}
 
-                                {client.institutionType === "DanceStudio" &&
-                                  client.domainLink && (
-                                    <>
-                                      <BsQrCodeScan
-                                        className="text-blue-500 cursor-pointer h-5 w-5"
-                                        onClick={() =>
-                                          setOpenModal(client.institutionid)
-                                        }
-                                      />
-                                      <Modal
-                                        show={
-                                          openModal === client.institutionid
-                                        }
-                                        position={modalPlacement}
-                                        onClose={() => setOpenModal(false)}
-                                      >
-                                        <Modal.Header>
-                                          Attendance QR
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                          <div className="flex flex-col items-center space-y-4">
-                                            <figure className="w-fit flex flex-col items-center">
-                                              <QR
-                                                url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                                download={`${client.companyName} Attendance QR Code.png`}
-                                                size={300}
-                                              />
-                                            </figure>
-                                            <h1 className="text-center font-semibold">
-                                              Institution Name:{" "}
-                                              {client.companyName}
-                                            </h1>
-                                            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                              This is the attendance QR for the{" "}
-                                              {client.companyName} institution.
-                                              Please tap on the QR code to
-                                              download it.
-                                            </p>
-                                          </div>
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                          <a
-                                            href={
-                                              client.domainLink +
-                                              "/put-attendance"
-                                            }
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={(e) => {
-                                              const linkToCopy =
-                                                client.domainLink +
-                                                "/put-attendance";
+                                                                {client.institutionType === "DanceStudio" &&
+                                                                    client.domainLink && (
+                                                                        <>
+                                                                            <BsQrCodeScan
+                                                                                className="text-blue-500 cursor-pointer h-5 w-5"
+                                                                                onClick={() =>
+                                                                                    setOpenModal(client.institutionid)
+                                                                                }
+                                                                            />
+                                                                            <Modal
+                                                                                show={
+                                                                                    openModal === client.institutionid
+                                                                                }
+                                                                                position={modalPlacement}
+                                                                                onClose={() => setOpenModal(false)}
+                                                                            >
+                                                                                <Modal.Header>
+                                                                                    Attendance QR
+                                                                                </Modal.Header>
+                                                                                <Modal.Body>
+                                                                                    <div className="flex flex-col items-center space-y-4">
+                                                                                        <figure className="w-fit flex flex-col items-center">
+                                                                                            <QR
+                                                                                                url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                                                                                download={`${client.companyName} Attendance QR Code.png`}
+                                                                                                size={300}
+                                                                                            />
+                                                                                        </figure>
+                                                                                        <h1 className="text-center font-semibold">
+                                                                                            Institution Name:{" "}
+                                                                                            {client.companyName}
+                                                                                        </h1>
+                                                                                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                                                                            This is the attendance QR for the{" "}
+                                                                                            {client.companyName} institution.
+                                                                                            Please tap on the QR code to
+                                                                                            download it.
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </Modal.Body>
+                                                                                <Modal.Footer>
+                                                                                    <a
+                                                                                        href={
+                                                                                            client.domainLink +
+                                                                                            "/put-attendance"
+                                                                                        }
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        onClick={(e) => {
+                                                                                            const linkToCopy =
+                                                                                                client.domainLink +
+                                                                                                "/put-attendance";
 
-                                              navigator.clipboard
-                                                .writeText(linkToCopy)
-                                                .then(() => {
-                                                  toast.success(
-                                                    "Link copied to clipboard!"
-                                                  );
-                                                })
-                                                .catch((err) => {
-                                                  toast.error(
-                                                    "Failed to copy link."
-                                                  );
-                                                  console.error(
-                                                    "Clipboard copy failed:",
-                                                    err
-                                                  );
-                                                });
-                                            }}
-                                          >
-                                            <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
-                                          </a>
-                                        </Modal.Footer>
-                                      </Modal>
-                                    </>
-                                  )}
-                              </div>
-                            </Table.Cell>
+                                                                                            navigator.clipboard
+                                                                                                .writeText(linkToCopy)
+                                                                                                .then(() => {
+                                                                                                    toast.success(
+                                                                                                        "Link copied to clipboard!"
+                                                                                                    );
+                                                                                                })
+                                                                                                .catch((err) => {
+                                                                                                    toast.error(
+                                                                                                        "Failed to copy link."
+                                                                                                    );
+                                                                                                    console.error(
+                                                                                                        "Clipboard copy failed:",
+                                                                                                        err
+                                                                                                    );
+                                                                                                });
+                                                                                        }}
+                                                                                    >
+                                                                                        <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
+                                                                                    </a>
+                                                                                </Modal.Footer>
+                                                                            </Modal>
+                                                                        </>
+                                                                    )}
+                                                            </div>
+                                                        </Table.Cell>
 
                                                         {/* <Link
                                                             onClick={() => handleInstitutionClick(client)}
@@ -1144,9 +1145,9 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                         </Table>
                                     </div>
 
-                  {clientsToDisplay.map(([key, client], index) => (
-                    <div key={client.institutionid}></div>
-                  ))}
+                                    {clientsToDisplay.map(([key, client], index) => (
+                                        <div key={client.institutionid}></div>
+                                    ))}
 
                                     <div className="py-2 flex justify-between items-center px-4">
                                         <div className="text-sm text-gray-600">
@@ -1318,7 +1319,7 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                             <div
                                                 className="flex justify-between items-center text-center"
 
-                                                // onClick={(e) => handleRowClick(client, e)}
+                                            // onClick={(e) => handleRowClick(client, e)}
 
                                             >
                                                 <div className="font-semibold text-[#11192B]">
@@ -1326,9 +1327,9 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                 </div>
                                                 <Link
 
-                                                onClick={() => {
-                                                    handleInstitutionClick(client);
-                                                }}
+                                                    onClick={() => {
+                                                        handleInstitutionClick(client);
+                                                    }}
 
                                                 >
                                                     <div className="text-[#30AFBC] text-sm">
@@ -1337,316 +1338,316 @@ const handleDomainLinkSubmit = async (institutionid) => {
                                                 </Link>
                                             </div>
 
-                      {/* Company Name */}
-                      {Ctx.userData.userType === "member" &&
-                        Ctx.userData.role === "operation" && (
-                          <div className="flex flex-row gap-2">
-                            <h5>Institution Name:</h5>
-                            <div>{client.companyName}</div>
-                          </div>
-                        )}
+                                            {/* Company Name */}
+                                            {Ctx.userData.userType === "member" &&
+                                                Ctx.userData.role === "operation" && (
+                                                    <div className="flex flex-row gap-2">
+                                                        <h5>Institution Name:</h5>
+                                                        <div>{client.companyName}</div>
+                                                    </div>
+                                                )}
 
-                      <div className="flex flex-row gap-2">
-                        <h5>Institution Type:</h5>
-                        <div>{splitandjoin(client.institutionType)}</div>
-                      </div>
-                      <div className="flex flex-row gap-2">
-                        <h5>Status:</h5>
-                        <div className="flex justify-center items-center">
-                          <Badge
-                            color={
-                              getBadgeProps(
-                                // client.isFormFilled,
-                                client.payment,
-                                client.isDelivered
-                              ).color
-                            }
-                            size="sm"
-                          >
-                            {
-                              getBadgeProps(
-                                client.isFormFilled,
-                                client.payment,
-                                client.isDelivered
-                              ).text
-                            }
-                          </Badge>
-                        </div>
-                      </div>
-                      {/* Delivery Status */}
-                      {Ctx.userData.role !== "operation" && (
-                        <div className="flex flex-row gap-2">
-                          <h5 className="mt-1">Is Delivered:</h5>
-                          <div className="text-md">
-                            <select
-                              value={
-                                client.payment
-                                  ? client.isDelivered
-                                    ? "Delivered"
-                                    : "Not Delivered"
-                                  : "Not Delivered"
-                              }
-                              onChange={(e) =>
-                                handleDropdownChange(client, e.target.value)
-                              }
-                              className="bg-white border border-gray-300 rounded-md p-1 text-gray-900 "
-                              disabled={!client.payment}
-                            >
-                              <option value="Not Delivered">
-                                Not Delivered
-                              </option>
-                              <option value="Delivered">Delivered</option>
-                            </select>
-                          </div>
-                        </div>
-                      )}
-                      {(Ctx.userData.role === "owner" ||
-                        Ctx.userData.role === "sale") && (
-                        <div className="flex flex-row gap-2">
-                          <h5>Plan:</h5>
-                          <div className="flex flex-col gap-2">
-                            {client.payment ? (
-                              <Dropdown
-                                label={
-                                  planStatuses[client.institutionid] ||
-                                  client.plan
-                                }
-                                inline
-                              >
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Basics",
-                                    }));
-                                    handlePlanChange(client, "Basic");
-                                  }}
-                                >
-                                  Basics
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Standard",
-                                    }));
-                                    handlePlanChange(client, "Standard");
-                                  }}
-                                >
-                                  Standard
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Advance",
-                                    }));
-                                    handlePlanChange(client, "Advance");
-                                  }}
-                                >
-                                  Advance
-                                </Dropdown.Item>
-                              </Dropdown>
-                            ) : (
-                              <div>No Plan</div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                      {/* Payment Status */}
-                      {Ctx.userData.role !== "operation" && (
-                        <div className="flex flex-row gap-2">
-                          <h5>Payment:</h5>
-                          <div className="">
-                            {client.payment ? "Paid" : "Not Paid"}
-                          </div>
-                        </div>
-                      )}
-                      <div className="flex flex-row gap-2">
-                        <h5>Created By:</h5>
+                                            <div className="flex flex-row gap-2">
+                                                <h5>Institution Type:</h5>
+                                                <div>{splitandjoin(client.institutionType)}</div>
+                                            </div>
+                                            <div className="flex flex-row gap-2">
+                                                <h5>Status:</h5>
+                                                <div className="flex justify-center items-center">
+                                                    <Badge
+                                                        color={
+                                                            getBadgeProps(
+                                                                // client.isFormFilled,
+                                                                client.payment,
+                                                                client.isDelivered
+                                                            ).color
+                                                        }
+                                                        size="sm"
+                                                    >
+                                                        {
+                                                            getBadgeProps(
+                                                                client.isFormFilled,
+                                                                client.payment,
+                                                                client.isDelivered
+                                                            ).text
+                                                        }
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                            {/* Delivery Status */}
+                                            {Ctx.userData.role !== "operation" && (
+                                                <div className="flex flex-row gap-2">
+                                                    <h5 className="mt-1">Is Delivered:</h5>
+                                                    <div className="text-md">
+                                                        <select
+                                                            value={
+                                                                client.payment
+                                                                    ? client.isDelivered
+                                                                        ? "Delivered"
+                                                                        : "Not Delivered"
+                                                                    : "Not Delivered"
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleDropdownChange(client, e.target.value)
+                                                            }
+                                                            className="bg-white border border-gray-300 rounded-md p-1 text-gray-900 "
+                                                            disabled={!client.payment}
+                                                        >
+                                                            <option value="Not Delivered">
+                                                                Not Delivered
+                                                            </option>
+                                                            <option value="Delivered">Delivered</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {(Ctx.userData.role === "owner" ||
+                                                Ctx.userData.role === "sale") && (
+                                                    <div className="flex flex-row gap-2">
+                                                        <h5>Plan:</h5>
+                                                        <div className="flex flex-col gap-2">
+                                                            {client.payment ? (
+                                                                <Dropdown
+                                                                    label={
+                                                                        planStatuses[client.institutionid] ||
+                                                                        client.plan
+                                                                    }
+                                                                    inline
+                                                                >
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            setPlanStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "Basics",
+                                                                            }));
+                                                                            handlePlanChange(client, "Basic");
+                                                                        }}
+                                                                    >
+                                                                        Basics
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            setPlanStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "Standard",
+                                                                            }));
+                                                                            handlePlanChange(client, "Standard");
+                                                                        }}
+                                                                    >
+                                                                        Standard
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            setPlanStatuses((prev) => ({
+                                                                                ...prev,
+                                                                                [client.institutionid]: "Advance",
+                                                                            }));
+                                                                            handlePlanChange(client, "Advance");
+                                                                        }}
+                                                                    >
+                                                                        Advance
+                                                                    </Dropdown.Item>
+                                                                </Dropdown>
+                                                            ) : (
+                                                                <div>No Plan</div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            {/* Payment Status */}
+                                            {Ctx.userData.role !== "operation" && (
+                                                <div className="flex flex-row gap-2">
+                                                    <h5>Payment:</h5>
+                                                    <div className="">
+                                                        {client.payment ? "Paid" : "Not Paid"}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className="flex flex-row gap-2">
+                                                <h5>Created By:</h5>
 
-                        <div>
-                          {client.createdBy
-                            ? getUsernameByCognitoId(client.createdBy)
-                            : "Unknown"}
-                        </div>
-                      </div>
+                                                <div>
+                                                    {client.createdBy
+                                                        ? getUsernameByCognitoId(client.createdBy)
+                                                        : "Unknown"}
+                                                </div>
+                                            </div>
 
-                      {/* Delivery Status Update */}
-                      {Ctx.userData.role !== "sale" ? (
-                        <div className="flex flex-row gap-2">
-                          <h5>Deliverable:</h5>
-                          <div className="flex flex-col gap-2">
-                            <Dropdown
-                              label={
-                                selectedStatuses[client.institutionid] ||
-                                client.deliverable ||
-                                "Pending"
-                              }
-                              inline
-                            >
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setSelectedStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "Pending",
-                                  }));
-                                  handleDeliverableUpdate(
-                                    client.institutionid,
-                                    "Pending"
-                                  );
-                                }}
-                              >
-                                Pending
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setSelectedStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "In-progress",
-                                  }));
-                                  handleDeliverableUpdate(
-                                    client.institutionid,
-                                    "In-progress"
-                                  );
-                                }}
-                              >
-                                In-progress
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setSelectedStatuses((prev) => ({
-                                    ...prev,
-                                    [client.institutionid]: "Completed",
-                                  }));
-                                  handleDeliverableUpdate(
-                                    client.institutionid,
-                                    "Completed"
-                                  );
-                                }}
-                              >
-                                Completed
-                              </Dropdown.Item>
-                            </Dropdown>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-row gap-2">
-                          <h5>Deliverable:</h5>
-                          <span className="text-gray-500">
-                            {client.deliverable || "Pending"}
-                          </span>
-                        </div>
-                      )}
+                                            {/* Delivery Status Update */}
+                                            {Ctx.userData.role !== "sale" ? (
+                                                <div className="flex flex-row gap-2">
+                                                    <h5>Deliverable:</h5>
+                                                    <div className="flex flex-col gap-2">
+                                                        <Dropdown
+                                                            label={
+                                                                selectedStatuses[client.institutionid] ||
+                                                                client.deliverable ||
+                                                                "Pending"
+                                                            }
+                                                            inline
+                                                        >
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    setSelectedStatuses((prev) => ({
+                                                                        ...prev,
+                                                                        [client.institutionid]: "Pending",
+                                                                    }));
+                                                                    handleDeliverableUpdate(
+                                                                        client.institutionid,
+                                                                        "Pending"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Pending
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    setSelectedStatuses((prev) => ({
+                                                                        ...prev,
+                                                                        [client.institutionid]: "In-progress",
+                                                                    }));
+                                                                    handleDeliverableUpdate(
+                                                                        client.institutionid,
+                                                                        "In-progress"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                In-progress
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item
+                                                                onClick={() => {
+                                                                    setSelectedStatuses((prev) => ({
+                                                                        ...prev,
+                                                                        [client.institutionid]: "Completed",
+                                                                    }));
+                                                                    handleDeliverableUpdate(
+                                                                        client.institutionid,
+                                                                        "Completed"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Completed
+                                                            </Dropdown.Item>
+                                                        </Dropdown>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-row gap-2">
+                                                    <h5>Deliverable:</h5>
+                                                    <span className="text-gray-500">
+                                                        {client.deliverable || "Pending"}
+                                                    </span>
+                                                </div>
+                                            )}
 
-                      {/* Domain Link */}
-                      {Ctx.userData.role !== "sale" && (
-                        <div className="flex items-center gap-2">
-                          <TextInput
-                            value={domainLinks[client.institutionid] || ""}
-                            placeholder={client.domainLink || "Enter the Domain link"}
-                            required
-                            className="w-[160px]"
-                            onChange={(e) =>
-                              setDomainLinks((prev) => ({
-                                ...prev,
-                                [client.institutionid]: e.target.value,
-                              }))
-                            }
-                          />
-                          <Button onClick={() => handleDomainLinkSubmit(client.institutionid)}>
-                            <FaCheck />
-                          </Button>
-                        </div>
-                      
-                      )}
+                                            {/* Domain Link */}
+                                            {Ctx.userData.role !== "sale" && (
+                                                <div className="flex items-center gap-2">
+                                                    <TextInput
+                                                        value={domainLinks[client.institutionid] || ""}
+                                                        placeholder={client.domainLink || "Enter the Domain link"}
+                                                        required
+                                                        className="w-[160px]"
+                                                        onChange={(e) =>
+                                                            setDomainLinks((prev) => ({
+                                                                ...prev,
+                                                                [client.institutionid]: e.target.value,
+                                                            }))
+                                                        }
+                                                    />
+                                                    <Button onClick={() => handleDomainLinkSubmit(client.institutionid)}>
+                                                        <FaCheck />
+                                                    </Button>
+                                                </div>
 
-                      {/* QR Code and External Link */}
-                      <div className="flex justify-between items-center gap-4 mt-2">
-                        {client.domainLink && (
-                          <>
-                            <RiExternalLinkLine
-                              className="text-blue-500 cursor-pointer h-5 w-5"
-                              onClick={() => {
-                                window.open(client.domainLink, "_blank");
-                                navigator.clipboard
-                                  .writeText(client.domainLink)
-                                  .then(() => {
-                                    toast.success(
-                                      "Domain link copied to clipboard!"
-                                    );
-                                  })
-                                  .catch((err) => {
-                                    toast.error("Failed to copy domain link.");
-                                    console.error(
-                                      "Clipboard copy failed:",
-                                      err
-                                    );
-                                  });
-                              }}
-                            />
-                            <BsQrCodeScan
-                              className="text-blue-500 cursor-pointer h-5 w-5"
-                              onClick={() => setOpenModal(client.institutionid)}
-                            />
-                            <Modal
-                              show={openModal === client.institutionid}
-                              position={modalPlacement}
-                              onClose={() => setOpenModal(false)}
-                            >
-                              <Modal.Header>Attendance QR</Modal.Header>
-                              <Modal.Body>
-                                <div className="flex flex-col items-center space-y-4">
-                                  <QR
-                                    url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                    download={`${client.companyName} Attendance QR Code.png`}
-                                    size={300}
-                                  />
-                                  <h1 className="text-center font-semibold">
-                                    Institution Name: {client.companyName}
-                                  </h1>
-                                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                    This is the attendance QR for the{" "}
-                                    {client.companyName} institution. Please tap
-                                    on the QR code to download it.
-                                  </p>
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <a
-                                  href={client.domainLink + "/put-attendance"}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => {
-                                    const linkToCopy =
-                                      client.domainLink + "/put-attendance";
-                                    navigator.clipboard
-                                      .writeText(linkToCopy)
-                                      .then(() => {
-                                        toast.success(
-                                          "Link copied to clipboard!"
-                                        );
-                                      })
-                                      .catch((err) => {
-                                        toast.error("Failed to copy link.");
-                                        console.error(
-                                          "Clipboard copy failed:",
-                                          err
-                                        );
-                                      });
-                                  }}
-                                >
-                                  <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
-                                </a>
-                              </Modal.Footer>
-                            </Modal>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                                            )}
+
+                                            {/* QR Code and External Link */}
+                                            <div className="flex justify-between items-center gap-4 mt-2">
+                                                {client.domainLink && (
+                                                    <>
+                                                        <RiExternalLinkLine
+                                                            className="text-blue-500 cursor-pointer h-5 w-5"
+                                                            onClick={() => {
+                                                                window.open(client.domainLink, "_blank");
+                                                                navigator.clipboard
+                                                                    .writeText(client.domainLink)
+                                                                    .then(() => {
+                                                                        toast.success(
+                                                                            "Domain link copied to clipboard!"
+                                                                        );
+                                                                    })
+                                                                    .catch((err) => {
+                                                                        toast.error("Failed to copy domain link.");
+                                                                        console.error(
+                                                                            "Clipboard copy failed:",
+                                                                            err
+                                                                        );
+                                                                    });
+                                                            }}
+                                                        />
+                                                        <BsQrCodeScan
+                                                            className="text-blue-500 cursor-pointer h-5 w-5"
+                                                            onClick={() => setOpenModal(client.institutionid)}
+                                                        />
+                                                        <Modal
+                                                            show={openModal === client.institutionid}
+                                                            position={modalPlacement}
+                                                            onClose={() => setOpenModal(false)}
+                                                        >
+                                                            <Modal.Header>Attendance QR</Modal.Header>
+                                                            <Modal.Body>
+                                                                <div className="flex flex-col items-center space-y-4">
+                                                                    <QR
+                                                                        url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                                                        download={`${client.companyName} Attendance QR Code.png`}
+                                                                        size={300}
+                                                                    />
+                                                                    <h1 className="text-center font-semibold">
+                                                                        Institution Name: {client.companyName}
+                                                                    </h1>
+                                                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                                                        This is the attendance QR for the{" "}
+                                                                        {client.companyName} institution. Please tap
+                                                                        on the QR code to download it.
+                                                                    </p>
+                                                                </div>
+                                                            </Modal.Body>
+                                                            <Modal.Footer>
+                                                                <a
+                                                                    href={client.domainLink + "/put-attendance"}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    onClick={(e) => {
+                                                                        const linkToCopy =
+                                                                            client.domainLink + "/put-attendance";
+                                                                        navigator.clipboard
+                                                                            .writeText(linkToCopy)
+                                                                            .then(() => {
+                                                                                toast.success(
+                                                                                    "Link copied to clipboard!"
+                                                                                );
+                                                                            })
+                                                                            .catch((err) => {
+                                                                                toast.error("Failed to copy link.");
+                                                                                console.error(
+                                                                                    "Clipboard copy failed:",
+                                                                                    err
+                                                                                );
+                                                                            });
+                                                                    }}
+                                                                >
+                                                                    <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
+                                                                </a>
+                                                            </Modal.Footer>
+                                                        </Modal>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
                             {setShowMemberList && (
                                 <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
