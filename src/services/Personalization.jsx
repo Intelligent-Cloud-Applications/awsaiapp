@@ -77,7 +77,7 @@ const Personalization = () => {
               className=" item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+          <p className="text-[20px] pb-[2rem] max500:px-4 max500:text-[15px] justify-center">
             Customization is key to building lasting connections with your
             users, and our Personalization service is designed to deliver just
             that. Through sophisticated algorithms and data-driven insights, we

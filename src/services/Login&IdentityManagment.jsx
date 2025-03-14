@@ -76,7 +76,7 @@ const Login_IdentityManagment = () => {
               className="item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+          <p className="text-[20px] pb-[2rem] max500:px-4 max500:text-[15px] justify-center">
             Security is paramount in the digital world, and our Login & Identity
             Management service guarantees robust user authentication and access
             control. Through secure authentication mechanisms, such as

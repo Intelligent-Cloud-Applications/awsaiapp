@@ -76,7 +76,7 @@ const Coustmer = () => {
               className="item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 max500:text-[13px] justify-center">
+          <p className="text-[20px] pb-[2rem] max500:px-4 max500:text-[15px] justify-center">
             Understanding your customers and leads is vital for driving business
             growth, and our Leads & Customer Tracking service equips you with
             the tools to do just that. From lead capture forms and lead scoring
@@ -140,4 +140,5 @@ const Coustmer = () => {
     </div>
   );
 };
+
 export default Coustmer;

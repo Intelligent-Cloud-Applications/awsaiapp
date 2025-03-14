@@ -19,6 +19,7 @@ const InstitutionDraft = () => {
   const [LoaderInitialized, setLoaderInitialized] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [institutionIdToDelete, setInstitutionIdToDelete] = useState("");
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   const fetchClients = useCallback(async () => {
     try {
@@ -44,6 +45,14 @@ const InstitutionDraft = () => {
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -164,13 +173,13 @@ const InstitutionDraft = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-5rem] mx-[4rem] max1300:mt-[-16px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[9%] px-2">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-3rem] mx-[4rem] max1300:mt-[-16px] sm:mx-6 lg:mx-10 shadow-xl bg-[#e6e4e4] [@media(max-width:900px)]:bg-white rounded-[0] lg:ml-[9%] px-2 [@media(max-width:1025px)]:mr-0 [@media(max-width:1025px)]:pr-0 [@media(max-width:800px)]:shadow-none">
       <ToastContainer />
-      <div className="w-[80%] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table">
+      <div className="w-[80%] [@media(max-width:1500px)]:w-[70%] [@media(max-width:1025px)]:w-[50%] [@media(max-width:800px)]:w-[95%]  [@media(max-width:800px)]:ml-[2rem] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table overflow-x-auto  [@media(max-width:1000px)]:mb-[5rem]">
         {/* Search Bar */}
         <div className="w-full flex justify-end">
-          <form className="w-[30%] rounded-sm my-3 [@media(max-width:500px)]:w-[100%]">
-            <div className="relative">
+          <form className="w-full sm:w-[30%] rounded-sm my-3">
+            <div className="relative right-10 [@media(max-width:900px)]:right-0">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -201,7 +210,8 @@ const InstitutionDraft = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
+        <div className="overflow-x-auto w-full mb-4 max-h-[600px] overflow-y-auto [@media(max-width:500px)]:overflow-y-scroll [@media(max-width:800px)]:border">
+
           {clientsToDisplay.length === 0 ? (
             <div className="text-center text-gray-600 py-4 font-bold">
               No drafts found. Please add a new institution to begin.
@@ -278,26 +288,61 @@ const InstitutionDraft = () => {
             </Table>
           )}
         </div>
-        <div className="py-2 flex justify-between items-center px-4 w-full [@media(max-width:500px)]:flex-col">
+        {screenWidth > 1025 ? (
+          <div className="py-2 flex justify-between items-center px-4 w-full flex-row [@media(max-width:800px)]:flex-col [@media(max-width:800px)]:w-[80%] [@media(max-width:800px)]:mb-[5%] ">
 
-          <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
-            <button className="focus:outline-none">
-              Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{filteredClients.length}</strong>
-            </button>
+            <div className="text-sm text-gray-600  px-4 py-2 rounded-md">
+              <button className="focus:outline-none">
+                Showing <strong>{startIndex + 1}-{startIndex + clientsToDisplay.length}</strong> of <strong>{filteredClients.length}</strong>
+              </button>
+            </div>
+
+            <div className="flex-shrink-0  px-4 py-2 rounded-md ">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                showIcons
+                theme={customTheme}
+                className="focus:outline-none "
+              />
+            </div>
           </div>
-
-          <div className="flex-shrink-0  px-4 py-2 rounded-md">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-              showIcons
-              theme={customTheme}
-              className="focus:outline-none"
-            />
+        ) : (
+          <div className="flex gap-20 mt-4 [@media(max-width:1025px)]:gap-[10rem] [@media(max-width:800px)]:gap-[20rem] max600:mb-[3rem] [@media(max-width:400px)]:gap-5">
+            <span className="text-sm text-gray-600">
+              Page <strong>{currentPage}</strong> of{" "}
+              <strong>{totalPages}</strong>
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() =>
+                  currentPage > 1 && setCurrentPage(currentPage - 1)
+                }
+                disabled={currentPage === 1}
+                className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
+                  ? "bg-gray-200 text-gray-500"
+                  : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                  }`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() =>
+                  currentPage < totalPages &&
+                  setCurrentPage(currentPage + 1)
+                }
+                disabled={currentPage === totalPages}
+                className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
+                  ? "bg-gray-200 text-gray-500"
+                  : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                  }`}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
-
+        )}
       </div>
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

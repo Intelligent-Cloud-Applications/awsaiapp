@@ -21,49 +21,48 @@ import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 
 const Panel = () => {
-  const itemsPerPage = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState(null);
-  const [isMonthlyReport, setisMonthlyReport] = useState("");
-  const { clients, userData, setUserData } = useContext(Context);
-  const clientsData = Object.entries(clients?.data || {});
-  const [selectedStatuses, setSelectedStatuses] = useState({});
-  const [deliveryStatuses, setDeliveryStatuses] = useState({});
-  const [planStatuses, setPlanStatuses] = useState({});
-  const [userCheck, setUserCheck] = useState(0);
-  const [isMoreVisible, setIsMoreVisible] = useState(false);
-  const [showHiddenContent, setShowHiddenContent] = useState(false);
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [activeSubMenu, setActiveSubMenu] = useState(null);
-  const isDeliveredOptions = ["Delivered", "Not Delivered"];
-  const handleMenuToggle = (menu) => {
-    setActiveSubMenu((prev) => (prev === menu ? null : menu));
-  };
+    const itemsPerPage = 5;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedType, setSelectedType] = useState(null);
+    const [isMonthlyReport, setisMonthlyReport] = useState("");
 
-  const [instituteTypes, setInstituteTypes] = useState([]);
-  const [instituteType, setInstituteType] = useState("");
-  const Ctx = useContext(Context);
-  const type = ["Dance Studio", "Dentist", "Cafe", "Course Based"];
-  const filterType = [
-    "Dance Studio",
-    "Dentist",
-    "Cafe",
-    "Course Based",
-    "Parlour",
-    "Furniture",
-    "Marble shop",
-  ];
-  // const [memberCounts, setMemberCounts] = useState({});
-  const [payment, setPayment] = useState(false);
-  const [filterStatus, setFilterStatus] = useState(null);
-  const [domainLinks, setDomainLinks] = useState({});
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const menuRef = useRef(null);
+    const { clients, userData } = useContext(Context);
+    const clientsData = Object.entries(clients?.data || {});
+    const [selectedStatuses, setSelectedStatuses] = useState({});
+    const [deliveryStatuses, setDeliveryStatuses] = useState({});
+    const [planStatuses, setPlanStatuses] = useState({});
+    const [userCheck, setUserCheck] = useState(0);
+    const [isMoreVisible, setIsMoreVisible] = useState(false);
+    const [showHiddenContent, setShowHiddenContent] = useState(false);
+    const [activeMenu, setActiveMenu] = useState(null);
+    const [activeSubMenu, setActiveSubMenu] = useState(null);
+    const isDeliveredOptions = ["Delivered", "Not Delivered"];
+    const handleMenuToggle = (menu) => {
+        setActiveSubMenu((prev) => (prev === menu ? null : menu));
+    };
 
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
+    const [instituteTypes, setInstituteTypes] = useState([]);
+    const [instituteType, setInstituteType] = useState("");
+    const Ctx = useContext(Context);
+    const type = ["Dance Studio", "Dentist", "Cafe", "Course Based"];
+    const filterType = ["Dance Studio", "Dentist", "Cafe", "Course Based", "Parlour", "Furniture", "Marble shop"];
+    // const [memberCounts, setMemberCounts] = useState({});
+    const [filterStatus, setFilterStatus] = useState(null);
+    const [domainLinks, setDomainLinks] = useState({});
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [isResponsive, setIsResponsive] = useState(false);
+
+    const menuRef = useRef(null);
+
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth);
+            setIsResponsive(window.innerWidth < 1030);
+        };
+
+        window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -195,10 +194,10 @@ const handleDomainLinkSubmit = async (institutionid) => {
       console.error("Error Updating Plan:", error);
       toast.error("An error occurred while updating the plan.");
 
-      // Reset to the previous state if an error occurs
-      setPlanStatuses(previousPlanStatus);
-    }
-  };
+            // Reset to the previous state if an error occurs
+            setPlanStatuses(previousPlanStatus);
+        }
+    };
 
   const handleTypeFilter = (typeSelected) => {
     if (typeSelected === "Dance Studio") {
@@ -227,37 +226,40 @@ const handleDomainLinkSubmit = async (institutionid) => {
     setActiveSubMenu(null);
   };
 
-  const navigate = useNavigate();
-  const filterClients = useCallback(() => {
-    if (!searchQuery && !selectedType && filterStatus === null) {
-      return Array.isArray(clientsData)
-        ? clientsData
-            ?.filter(([key, client]) => client?.isFormFilled || false)
-            .sort((a, b) => {
-              const dateA = a[1].date || -Infinity;
-              const dateB = b[1].date || -Infinity;
-              return dateB - dateA;
-            })
-        : [];
-    }
-    const query = searchQuery?.toLowerCase();
+    const navigate = useNavigate();
+    const filterClients = useCallback(() => {
+        if (!Array.isArray(clientsData)) return [];
 
-    const filtered = Array.isArray(clientsData)
-      ? clientsData?.filter(([key, client]) => {
-          const institution = client?.institutionid
-            ? String(client.institutionid).toLowerCase()
-            : "";
-          const matchesQuery = !searchQuery || institution.includes(query);
-          const matchesType =
-            !selectedType || client.institutionType === selectedType;
-          const matchesDelivery =
-            filterStatus === null || client.isDelivered === filterStatus;
-          return matchesQuery && matchesType && matchesDelivery;
-        })
-      : [];
-    console.log("Filtered Clients:", filtered);
-    return filtered;
-  }, [searchQuery, selectedType, clientsData, filterStatus]);
+        // Step 1: Get initial data where isFormFilled is true and sort it by date
+        let initialData = clientsData
+            .filter(([key, client]) => client?.isFormFilled)
+            .sort((a, b) => {
+                const dateA = a[1].date || -Infinity;
+                const dateB = b[1].date || -Infinity;
+                return dateB - dateA; // Sort in descending order (latest date first)
+            });
+
+        // Step 2: If no filters are applied, return the initial sorted data
+        if (!searchQuery && !selectedType && filterStatus === null) {
+            return initialData;
+        }
+
+        // Step 3: Apply filters only on the initially displayed data
+        const query = searchQuery?.toLowerCase();
+        const filtered = initialData.filter(([key, client]) => {
+            const institution = client?.institutionid
+                ? String(client.institutionid).toLowerCase()
+                : "";
+            const matchesQuery = !searchQuery || institution.includes(query);
+            const matchesType = !selectedType || client.institutionType === selectedType;
+            const matchesDelivery = filterStatus === null || client.isDelivered === filterStatus;
+
+            return matchesQuery && matchesType && matchesDelivery;
+        });
+
+        console.log("Filtered Clients:", filtered);
+        return filtered;
+    }, [searchQuery, selectedType, clientsData, filterStatus]);
 
   const filteredClients = useMemo(() => filterClients(), [filterClients]);
 
@@ -371,78 +373,98 @@ const handleDomainLinkSubmit = async (institutionid) => {
     return { text, color };
   };
 
-  const splitandjoin = (str) => {
-    if (typeof str !== "string") {
-      return "";
-    }
-    if (str.match(/[A-Z]/) !== null) {
-      return str
-        .split(/(?=[A-Z])/)
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(" ");
-    } else {
-      console.error("Invalid input: The input is not a string or is empty.");
-      return "";
-    }
-  };
+    const splitandjoin = (str) => {
+        if (typeof str !== "string") {
+            return "";
+        }
+        if (str.match(/[A-Z]/) !== null) {
+            return str
+                .split(/(?=[A-Z])/)
+                .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                .join(" ");
+        } else {
+            console.error("Invalid input: The input is not a string or is empty.");
+            return "";
+        }
+    };
 
-  const handleRowClick = (institution) => {
-    setPayment(institution.payment);
-    setisMonthlyReport(institution.institutionid);
-    navigate(`/pricing?institutionId=${institution.institutionid}`, {
-      state: {
-        institutionId: institution.institutionid,
-        cognitoId: Ctx.userData.cognitoId,
-      },
-    });
-  };
+    // const handleRowClick = (institution) => {
+    //     setTempInstitution(institution.institutionId);
+    //     setSelectedInstitutionType(institution.instituteType);
+    //     setisMonthlyReport(institution.institutionid);
+    //     setisMonthlyReport(institution.institutionid);
+    //     if (institution.payment ? !institution.payment : true) {
+    //         navigate(`/pricing?institutionId=${institution.institutionid}`, {
+    //             state: {
+    //                 institutionId: institution.institutionid,
+    //                 cognitoId: Ctx.userData.cognitoId
+    //             }
+    //         });
+    //     } else {
+    //         if (Ctx.userData.userType === "admin") {
+    //             setShowMemberList(true);
+    //         }
+    //     }
+    // };
 
-  const handlePayment = () => {
-    console.log("redirect to pricing");
 
-    setShowMemberList(false);
-    navigate("/pricing", {
-      state: {
-        institutionId: tempInstitution,
-        cognitoId: Ctx.userData.cognitoId,
-      },
-    });
-  };
+    // const handlePayment = () => {
+    //     console.log("redirect to pricing");
 
-  const handleDropdownChange = useCallback(
-    async (clientInstitution, status) => {
-      const isDelivered = status === "Delivered";
-      try {
-        let response;
-        const body = {
-          institutionId: clientInstitution.institutionid,
-          index: clientInstitution.index,
-          isDelivered,
-        };
-        response = await API.put("clients", "/user/updateDelivary", {
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log("API response:", response);
-        toast.success("The Delivery status Updated Successfully");
-      } catch (error) {
-        console.error("Error updating delivery status:", error);
-        toast.error("Error updating delivery status:");
-      }
-    },
-    []
-  );
-  const [tempInstitution, setTempInstitution] = useState(null);
-  const [showMemberList, setShowMemberList] = useState(false);
-  const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
-  const handleInstitutionClick = (client) => {
-    navigate(`/pricing?institutionId=${client.institutionid}`, {
-      state: {
-        institutionId: client.institutionid,
-        cognitoId: Ctx.userData.cognitoId,
-      },
-    });
-  };
+    //     setShowMemberList(false);
+    //     navigate("/pricing", {
+    //         state: {
+    //             institutionId: tempInstitution,
+    //             cognitoId: Ctx.userData.cognitoId
+    //         }
+    //     });
+    // };
+
+    const handleDropdownChange = useCallback(
+        async (clientInstitution, status) => {
+            const isDelivered = status === "Delivered";
+            try {
+                let response;
+                const body = {
+                    institutionId: clientInstitution.institutionid,
+                    index: clientInstitution.index,
+                    isDelivered,
+                };
+                response = await API.put("clients", "/user/updateDelivary", {
+                    body,
+                    headers: { "Content-Type": "application/json" },
+                });
+                console.log("API response:", response);
+                toast.success("The Delivery status Updated Successfully");
+            } catch (error) {
+                console.error("Error updating delivery status:", error);
+                toast.error("Error updating delivery status:");
+            }
+        },
+        []
+    );
+    // eslint-disable-next-line
+    const [tempInstitution, settem] = useState(null); 
+    const [showMemberList, setShowMemberList] = useState(false);
+    // eslint-disable-next-line 
+    const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
+
+    const handleInstitutionClick = (client) => {
+        if (!client.payment) {
+            navigate(`/pricing?institutionId=${client.institutionid}`, {
+                state: {
+                    institutionId: client.institutionid,
+                    cognitoId: Ctx.userData.cognitoId
+                }
+            });
+        } else {
+            console.log("Data to set", client);
+            setTempInstitution(client.institutionid);
+            setSelectedInstitutionType(client.institutionType);
+            setisMonthlyReport(client.institutionid);
+            setShowMemberList(true);
+        }
+    };
 
   const getLinkPath = (instituteType) => {
     switch (instituteType) {
@@ -474,234 +496,239 @@ const handleDomainLinkSubmit = async (institutionid) => {
     };
   }, []);
 
-  return (
-    <>
-      {!showMemberList ? (
+    return (
         <>
-          {screenWidth > 1025 ? (
-            <>
-              <div className="w-screen h-[95vh] flex flex-col justify-center items-center mx-[4rem] mt-[40px] shadow-xl rounded-[0] bg-[#e6e4e4] lg:ml-[10%]">
-                <ToastContainer />
-                <div className="w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section">
-                  <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
-                    <Select
-                      value={instituteType}
-                      onChange={(e) => setInstituteType(e.target.value)}
-                      className="text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto"
-                    >
-                      {instituteType === "" && (
-                        <option value="" disabled hidden>
-                          Type
-                        </option>
-                      )}
-                      {type.map((type) => (
-                        <option
-                          key={type}
-                          value={type}
-                          className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
-                        >
-                          {type}
-                        </option>
-                      ))}
-                    </Select>
+            {!showMemberList ? (
+                <>
+                    {screenWidth > 1023 ? (
+                        <>
+                            <div className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
 
-                    <Link
-                      to={getLinkPath(instituteType)}
-                      onClick={(e) => {
-                        if (instituteType === "") {
-                          e.stopPropagation();
-                          console.log("Showing toast message"); // Debug line
-                          toast.error("Please Select a type of Institution.", {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            style: {
-                              backgroundColor: "#f8d7da",
-                              color: "#721c24",
-                            },
-                          });
-                        }
-                      }}
-                      className="hover:no-underline"
-                    >
-                      <button className="flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto">
-                        <p className="text-white">Create New Institution</p>
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-                <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
-                  <div className="flex flex-row justify-end w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
-                    <div className="relative inline-block ml-5" ref={menuRef}>
-                      <button
-                        className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
-                        onClick={() =>
-                          setActiveMenu((prev) => (prev ? null : "main"))
-                        }
-                      >
-                        {(selectedType !== null || filterStatus !== null) && (
-                          <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                        )}
-                        Filter
-                        {activeMenu ? (
-                          <HiChevronUp className="ml-2" />
-                        ) : (
-                          <HiChevronDown className="ml-2" />
-                        )}
-                      </button>
-                      {activeMenu && (
-                        <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
-                          {/* Main Dropdown Menu */}
-                          {activeMenu === "main" && (
-                            <div>
-                              <div
-                                onClick={() => handleAllFilter()}
-                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                              >
-                                All
-                              </div>
-                              <div
-                                onClick={() => handleMenuToggle("type")}
-                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                              >
-                                <span>
-                                  {selectedType !== null
-                                    ? selectedType
-                                    : "Type"}
-                                </span>
-                                <HiChevronRight />
-                              </div>
-                              <div
-                                onClick={() => handleMenuToggle("isDelivered")}
-                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                              >
-                                <span>
-                                  {filterStatus === false
-                                    ? "Not Delivered"
-                                    : "Delivered"}
-                                </span>
-                                <HiChevronRight />
-                              </div>
-                            </div>
-                          )}
-                          {/* Type Submenu */}
-                          {activeSubMenu === "type" && (
-                            <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
-                              {filterType.map((type) => (
-                                <div
-                                  key={type}
-                                  onClick={() => handleTypeFilter(type)}
-                                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                                >
-                                  {type}
+                                <ToastContainer />
+                                <div className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? 'flex-col' : 'flex-row'}`}>
+
+                                    <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
+                                        <Select
+                                            value={instituteType}
+                                            onChange={(e) => setInstituteType(e.target.value)}
+                                            className={`text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}
+
+                                        >
+                                            {instituteType === "" && (
+                                                <option value="" disabled hidden>
+                                                    Type
+                                                </option>
+                                            )}
+                                            {type.map((type) => (
+                                                <option
+                                                    key={type}
+                                                    value={type}
+                                                    className="hover:bg-blue-500 hover:text-white transition-all duration-200 ease-in-out rounded-[0]"
+                                                >
+                                                    {type}
+                                                </option>
+                                            ))}
+                                        </Select>
+
+                                        <Link
+                                            to={getLinkPath(instituteType)}
+                                            onClick={(e) => {
+                                                if (instituteType === "") {
+                                                    e.stopPropagation();
+                                                    console.log("Showing toast message"); // Debug line
+                                                    toast.error("Please Select a type of Institution.", {
+                                                        position: "top-right",
+                                                        autoClose: 5000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                        style: {
+                                                            backgroundColor: "#f8d7da",
+                                                            color: "#721c24",
+                                                        },
+                                                    });
+                                                }
+                                            }}
+                                            className="hover:no-underline"
+                                        >
+                                            <button className={`flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}>
+
+                                                <p className="text-white">Create New Institution</p>
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                          {/* Is Delivered Submenu */}
-                          {activeSubMenu === "isDelivered" && (
-                            <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
-                              {isDeliveredOptions.map((option) => (
-                                <div
-                                  key={option}
-                                  onClick={() => handleDeliverFilter(option)}
-                                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                                >
-                                  {option}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    {/* Search Bar */}
-                    <form class="w-full min800:w-[30%] rounded-sm my-3">
-                      <label
-                        for="default-search"
-                        class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                      >
-                        Search
-                      </label>
-                      <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                          <svg
-                            class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                            />
-                          </svg>
-                        </div>
-                        <input
-                          type="search"
-                          id="default-search"
-                          class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                          placeholder="Search"
-                          required
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </div>
-                    </form>
-                  </div>
-                  {/* Headings */}
-                  <div className="overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto">
-                    <Table className="w-full text-sm text-left text-gray-500">
-                      <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
-                        {/* <Table.HeadCell></Table.HeadCell> */}
+                                <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
+                                    <div className="flex flex-row w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
+
+                                        <div className="relative inline-block ml-5" ref={menuRef}>
+                                            <button
+                                                className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
+                                                onClick={() =>
+                                                    setActiveMenu((prev) => (prev ? null : "main"))
+                                                }
+                                            >
+                                                {(selectedType !== null || filterStatus !== null) && (
+                                                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                                                )}
+                                                Filter
+                                                {activeMenu ? (
+                                                    <HiChevronUp className="ml-2" />
+                                                ) : (
+                                                    <HiChevronDown className="ml-2" />
+                                                )}
+                                            </button>
+                                            {activeMenu && (
+                                                <div className="absolute mt-2 bg-white border rounded shadow-lg w-[9rem] z-10">
+                                                    {/* Main Dropdown Menu */}
+                                                    {activeMenu === "main" && (
+                                                        <div>
+                                                            <div
+                                                                onClick={() => handleAllFilter()}
+                                                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                            >
+                                                                All
+                                                            </div>
+                                                            <div
+                                                                onClick={() => handleMenuToggle("type")}
+                                                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                            >
+                                                                <span>
+                                                                    {selectedType !== null
+                                                                        ? selectedType
+                                                                        : "Type"}
+                                                                </span>
+                                                                <HiChevronRight />
+                                                            </div>
+                                                            <div
+                                                                onClick={() => handleMenuToggle("isDelivered")}
+                                                                className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                            >
+                                                                <span>
+                                                                    {filterStatus === false
+                                                                        ? "Not Delivered"
+                                                                        : "Delivered"}
+                                                                </span>
+                                                                <HiChevronRight />
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {/* Type Submenu */}
+                                                    {activeSubMenu === "type" && (
+                                                        <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                                                            {filterType.map((type) => (
+                                                                <div
+                                                                    key={type}
+                                                                    onClick={() => handleTypeFilter(type)}
+                                                                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                                >
+                                                                    {type}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    {/* Is Delivered Submenu */}
+                                                    {activeSubMenu === "isDelivered" && (
+                                                        <div className="absolute top-0 left-full ml-2 bg-white border rounded shadow-lg w-48 z-10">
+                                                            {isDeliveredOptions.map((option) => (
+                                                                <div
+                                                                    key={option}
+                                                                    onClick={() => handleDeliverFilter(option)}
+                                                                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                                >
+                                                                    {option}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                        {/* Search Bar */}
+                                        <form class="w-full min800:w-[30%] rounded-sm my-3">
+                                            <label
+                                                for="default-search"
+                                                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                                            >
+                                                Search
+                                            </label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                    <svg
+                                                        class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                                        aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 20 20"
+                                                    >
+                                                        <path
+                                                            stroke="currentColor"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="search"
+                                                    id="default-search"
+                                                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F9FAFB]  shadow-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+                                                    placeholder="Search"
+                                                    required
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                />
+                                            </div>
+                                        </form>
+                                    </div>
+                                    {/* Headings */}
+                                    <div className={`overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto ${isResponsive ? 'px-2' : ''}`}>
+
+                                        <Table className="w-full text-sm text-left text-gray-500">
+                                            <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
+                                                {/* <Table.HeadCell></Table.HeadCell> */}
 
                         <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                           Institution Id
                         </Table.HeadCell>
 
-                        {Ctx.userData.userType === "member" &&
-                          Ctx.userData.role === "operation" && (
-                            <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                              Institution Name
-                            </Table.HeadCell>
-                          )}
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                          Type
-                        </Table.HeadCell>
-                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                          Status
-                        </Table.HeadCell>
-                        {Ctx.userData.role !== "operation" && (
-                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                            Delivered
-                          </Table.HeadCell>
-                        )}
-                        {Ctx.userData.role !== "operation" && (
-                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                            Payment
-                          </Table.HeadCell>
-                        )}
-                        {(Ctx.userData.role === "owner" ||
-                          Ctx.userData.role === "sale") && (
-                          <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                            Plan
-                          </Table.HeadCell>
-                        )}
-                        <Table.HeadCell
-                          className={`${
-                            showHiddenContent ? "" : "max1008:hidden"
-                          } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
-                        >
-                          Created By
-                        </Table.HeadCell>
+                                                {Ctx.userData.userType === "member" &&
+                                                    Ctx.userData.role === "operation" && (
+                                                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                            Institution Name
+                                                        </Table.HeadCell>
+                                                    )}
+                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                    Type
+                                                </Table.HeadCell>
+                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                    Status
+                                                </Table.HeadCell>
+                                                {Ctx.userData.role !== "operation" && (
+                                                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                        Delivered
+                                                    </Table.HeadCell>
+                                                )}
+                                                {Ctx.userData.role !== "operation" && (
+                                                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                        Payment
+                                                    </Table.HeadCell>
+                                                )}
+                                                {(Ctx.userData.role === "owner" ||
+                                                    Ctx.userData.role === "sale") && (
+                                                        <Table.HeadCell className="px-6 py-2 text-xs font-medium text-gray-500 uppercase pl-10">
+                                                            Plan
+                                                        </Table.HeadCell>
+                                                    )}
+                                                <Table.HeadCell
+                                                    className={`${showHiddenContent ? "" : "max1008:hidden"
+                                                        } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                                                >
+                                                    Created By
+                                                </Table.HeadCell>
 
                         <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                           Deliverable
@@ -712,26 +739,28 @@ const handleDomainLinkSubmit = async (institutionid) => {
                         </Table.HeadCell>
                       </Table.Head>
 
-                      <Table.Body className="bg-white">
-                        {clientsToDisplay.map(([key, client], index) => (
-                          <Table.Row
-                            key={client.institutionid}
-                            className="clients-data-table border-b hover:cursor-pointer hover:bg-white"
-                          >
-                            <Table.Cell
-                              className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-                              onClick={(e) => handleRowClick(client, e)}
-                            >
-                              <Link
-                                onClick={() => {
-                                  handleInstitutionClick(client);
-                                }}
-                              >
-                                <div className="email-hover font-semibold text-[#11192B]">
-                                  {client.institutionid}
-                                </div>
-                              </Link>
-                            </Table.Cell>
+                                            <Table.Body className="bg-white">
+                                                {clientsToDisplay.map(([key, client], index) => (
+                                                    <Table.Row
+                                                        key={client.institutionid}
+                                                        className="clients-data-table border-b hover:cursor-pointer hover:bg-white"
+                                                    >
+                                                        <Table.Cell
+                                                            className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
+
+                                                            // onClick={(e) => handleRowClick(client, e)}
+                                                        >
+                                                            <Link
+                                                            onClick={() => {
+                                                                handleInstitutionClick(client);
+                                                            }}
+
+                                                            >
+                                                                <div className="email-hover font-semibold text-[#11192B]">
+                                                                    {client.institutionid}
+                                                                </div>
+                                                            </Link>
+                                                        </Table.Cell>
 
                             {Ctx.userData.userType === "member" &&
                               Ctx.userData.role === "operation" && (
@@ -744,145 +773,142 @@ const handleDomainLinkSubmit = async (institutionid) => {
                               {splitandjoin(client.institutionType)}
                             </Table.Cell>
 
-                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              {(() => {
-                                const { text, color } = getBadgeProps(
-                                  // client.isFormFilled,
-                                  client.payment,
-                                  client.isDelivered
-                                );
-                                return (
-                                  <Badge
-                                    color={color}
-                                    size="sm"
-                                    className="flex justify-center items-center"
-                                  >
-                                    {text}
-                                  </Badge>
-                                );
-                              })()}
-                            </Table.Cell>
-                            {Ctx.userData.role !== "operation" &&
-                              (client.payment ? (
-                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                  <Dropdown
-                                    label={
-                                      deliveryStatuses[client.institutionid] ??
-                                      (client.isDelivered
-                                        ? "Delivered"
-                                        : "Not Delivered")
-                                    }
-                                    inline
-                                  >
-                                    <Dropdown.Item
-                                      className="hover:bg-gray-200 focus:bg-gray-200"
-                                      onClick={() => {
-                                        setDeliveryStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]:
-                                            "Not Delivered",
-                                        }));
-                                        handleDropdownChange(
-                                          client,
-                                          "Not Delivered"
-                                        );
-                                      }}
-                                    >
-                                      Not Delivered
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      className="hover:bg-gray-200 focus:bg-gray-200"
-                                      onClick={() => {
-                                        setDeliveryStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Delivered",
-                                        }));
-                                        handleDropdownChange(
-                                          client,
-                                          "Delivered"
-                                        );
-                                      }}
-                                    >
-                                      Delivered
-                                    </Dropdown.Item>
-                                  </Dropdown>
-                                </Table.Cell>
-                              ) : (
-                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                  {client.isDelivered
-                                    ? "Delivered"
-                                    : "Not Delivered"}
-                                </Table.Cell>
-                              ))}
-                            {Ctx.userData.role !== "operation" && (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                {client.payment ? "Paid" : "Not Paid"}
-                              </Table.Cell>
-                            )}
-                            {client.payment ? (
-                              (Ctx.userData.role === "owner" ||
-                                Ctx.userData.role === "sale") && (
-                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                  <Dropdown
-                                    label={
-                                      planStatuses[client.institutionid] ||
-                                      client.plan
-                                    }
-                                    inline
-                                  >
-                                    <Dropdown.Item
-                                      className="hover:bg-gray-200 focus:bg-gray-200"
-                                      onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Basic",
-                                        }));
-                                        handlePlanChange(client, "Basic");
-                                      }}
-                                    >
-                                      Basics
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      className="hover:bg-gray-200 focus:bg-gray-200"
-                                      onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Standard",
-                                        }));
-                                        handlePlanChange(client, "Standard");
-                                      }}
-                                    >
-                                      Standard
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      className="hover:bg-gray-200 focus:bg-gray-200"
-                                      onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Advance",
-                                        }));
-                                        handlePlanChange(client, "Advance");
-                                      }}
-                                    >
-                                      Advance
-                                    </Dropdown.Item>
-                                  </Dropdown>
-                                </Table.Cell>
-                              )
-                            ) : (
-                              <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                No Plan
-                              </Table.Cell>
-                            )}
-                            <Table.Cell
-                              className={`${
-                                showHiddenContent ? "" : "max1008:hidden"
-                              } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                            >
-                              {client.createdBy
-                                ? getUsernameByCognitoId(client.createdBy)
-                                : "Unknown"}{" "}
-                            </Table.Cell>
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                            {(() => {
+                                                                const { text, color } = getBadgeProps(
+                                                                    // client.isFormFilled,
+                                                                    client.payment,
+                                                                    client.isDelivered
+                                                                );
+                                                                return (
+                                                                    <Badge
+                                                                        color={color}
+                                                                        size="sm"
+                                                                        className="flex justify-center items-center"
+                                                                    >
+                                                                        {text}
+                                                                    </Badge>
+                                                                );
+                                                            })()}
+                                                        </Table.Cell>
+                                                        {Ctx.userData.role !== "operation" &&
+                                                            (client.payment ? (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                    <Dropdown
+                                                                        label={
+                                                                            deliveryStatuses[client.institutionid] ??
+                                                                            (client.isDelivered
+                                                                                ? "Delivered"
+                                                                                : "Not Delivered")
+                                                                        }
+                                                                        inline
+                                                                    >
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setDeliveryStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]:
+                                                                                        "Not Delivered",
+                                                                                }));
+                                                                                handleDropdownChange(
+                                                                                    client,
+                                                                                    "Not Delivered"
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Not Delivered
+                                                                        </Dropdown.Item>
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setDeliveryStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]: "Delivered",
+                                                                                }));
+                                                                                handleDropdownChange(
+                                                                                    client,
+                                                                                    "Delivered"
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Delivered
+                                                                        </Dropdown.Item>
+                                                                    </Dropdown>
+                                                                </Table.Cell>
+                                                            ) : (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                    {client.isDelivered
+                                                                        ? "Delivered"
+                                                                        : "Not Delivered"}
+                                                                </Table.Cell>
+                                                            ))}
+                                                        {Ctx.userData.role !== "operation" && (
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                                {client.payment ? "Paid" : "Not Paid"}
+                                                            </Table.Cell>
+                                                        )}
+                                                        {(Ctx.userData.role === "owner" ||
+                                                            Ctx.userData.role === "sale") && (client.payment ?
+                                                                (<Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                    <Dropdown
+                                                                        label={
+                                                                            planStatuses[client.institutionid] ||
+                                                                            client.plan
+                                                                        }
+                                                                        inline
+                                                                    >
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setPlanStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]: "Basic",
+                                                                                }));
+                                                                                handlePlanChange(client, "Basic");
+                                                                            }}
+                                                                        >
+                                                                            Basics
+                                                                        </Dropdown.Item>
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setPlanStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]: "Standard",
+                                                                                }));
+                                                                                handlePlanChange(client, "Standard");
+                                                                            }}
+                                                                        >
+                                                                            Standard
+                                                                        </Dropdown.Item>
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setPlanStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]: "Advance",
+                                                                                }));
+                                                                                handlePlanChange(client, "Advance");
+                                                                            }}
+                                                                        >
+                                                                            Advance
+                                                                        </Dropdown.Item>
+                                                                    </Dropdown>
+                                                                </Table.Cell>
+                                                                ) : (
+                                                                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                        No Plan
+                                                                    </Table.Cell>
+                                                                ))}
+                                                        <Table.Cell
+                                                            className={`${showHiddenContent ? "" : "max1008:hidden"
+                                                                } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
+                                                        >
+                                                            {client.createdBy
+                                                                ? getUsernameByCognitoId(client.createdBy)
+                                                                : "Unknown"}{" "}
+                                                        </Table.Cell>
 
                             <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                               {Ctx.userData.role !== "sale" ? (
@@ -1100,211 +1126,216 @@ const handleDomainLinkSubmit = async (institutionid) => {
                               </div>
                             </Table.Cell>
 
-                            <Link
-                              onClick={() => handleInstitutionClick(client)}
-                              className="hidden change-page"
-                            ></Link>
+                                                        {/* <Link
+                                                            onClick={() => handleInstitutionClick(client)}
+                                                            className="hidden change-page"
+                                                        ></Link> */}
 
-                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                              <Link
-                                onClick={() => handleInstitutionClick(client)}
-                              >
-                                {isMoreVisible ? <FaChevronRight /> : ""}
-                              </Link>
-                            </Table.Cell>
-                          </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
-                  </div>
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                            <Link
+                                                            // onClick={() => handleInstitutionClick(client)}
+                                                            >
+                                                                {isMoreVisible ? <FaChevronRight /> : ""}
+                                                            </Link>
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                ))}
+                                            </Table.Body>
+                                        </Table>
+                                    </div>
 
                   {clientsToDisplay.map(([key, client], index) => (
                     <div key={client.institutionid}></div>
                   ))}
 
-                  <div className="py-2 flex justify-between items-center px-4">
-                    <div className="text-sm text-gray-600">
-                      Showing{" "}
-                      <strong>
-                        {startIndex + 1}-{startIndex + clientsToDisplay.length}
-                      </strong>{" "}
-                      of <strong>{filteredClients.length}</strong>
-                    </div>
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setCurrentPage}
-                      className="flex justify-end"
-                      showIcons
-                      theme={customTheme}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <Select
-                value={instituteType && splitandjoin(instituteType)}
-                onChange={(e) => setInstituteType(e.target.value)}
-                className=" font-semibold w-full border rounded-md  px-3 focus:outline-none focus:ring-2  mt-14"
-              >
-                {instituteType === "" && (
-                  <option value="" disabled hidden>
-                    Type
-                  </option>
-                )}
-                {filterType.map((type) => (
-                  <option key={type} value={type} className=" hover:text-white">
-                    {splitandjoin(type)}
-                  </option>
-                ))}
-              </Select>
+                                    <div className="py-2 flex justify-between items-center px-4">
+                                        <div className="text-sm text-gray-600">
+                                            Showing{" "}
+                                            <strong>
+                                                {startIndex + 1}-{startIndex + clientsToDisplay.length}
+                                            </strong>{" "}
+                                            of <strong>{filteredClients.length}</strong>
+                                        </div>
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={setCurrentPage}
+                                            className="flex justify-end"
+                                            showIcons
+                                            theme={customTheme}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="[@media(max-width:1000px)]:ml-[10%]">
+                            <Select
+                                value={instituteType}
+                                onChange={(e) => setInstituteType(e.target.value)}
+                                className=" font-semibold w-full border rounded-lg mt-20"
+                            >
+                                {instituteType === "" && (
+                                    <option value="" disabled hidden>
+                                        Type
+                                    </option>
+                                )}
+                                {filterType.map((type) => (
+                                    <option key={type} value={type} className=" hover:text-white">
+                                        {splitandjoin(type)}
+                                    </option>
+                                ))}
+                            </Select>
 
-              <Link
-                to={getLinkPath(instituteType)}
-                onClick={(e) => {
-                  if (instituteType === "") {
-                    e.stopPropagation();
-                    toast.error("Please Select a type of Institution.", {
-                      position: "top-right",
-                      autoClose: 5000,
-                      style: {
-                        backgroundColor: "#f8d7da",
-                        color: "#721c24",
-                      },
-                    });
-                  }
-                }}
-                className="mt-3 block"
-              >
-                <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
-                  Create New Institution
-                </button>
-              </Link>
-              <div className="relative mt-4">
-                <button
-                  className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
-                  onClick={() =>
-                    setActiveMenu((prev) => (prev ? null : "main"))
-                  }
-                >
-                  {(selectedType !== null || filterStatus !== null) && (
-                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                  )}
-                  Filter
-                  {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
-                </button>
-                {activeMenu && (
-                  <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
-                    {activeMenu === "main" && (
-                      <div>
-                        <div
-                          onClick={() => handleAllFilter()}
-                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          All
-                        </div>
-                        <div
-                          onClick={() => handleMenuToggle("type")}
-                          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          <span>
-                            {selectedType !== null ? selectedType : "Type"}
-                          </span>
-                        </div>
-                        <div
-                          onClick={() => handleMenuToggle("isDelivered")}
-                          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        >
-                          <span>
-                            {filterStatus === false
-                              ? "Not Delivered"
-                              : "Delivered"}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {activeSubMenu === "type" && (
-                      <div className="mt-2">
-                        {type.map((type) => (
-                          <div
-                            key={type}
-                            onClick={() => handleTypeFilter(type)}
-                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                          >
-                            {type}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {activeSubMenu === "isDelivered" && (
-                      <div className="mt-2">
-                        {isDeliveredOptions.map((option) => (
-                          <div
-                            key={option}
-                            onClick={() => handleDeliverFilter(option)}
-                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                          >
-                            {option}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <form className="mt-5">
-                <div className="relative">
-                  <input
-                    type="search"
-                    className="w-full border rounded-md py-2 px-10 bg-[#F9FAFB] text-gray-700 shadow-md focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <div className="absolute inset-y-0 left-3 flex items-center">
-                    <svg
-                      className="w-5 h-5 text-gray-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </form>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
-                {clientsToDisplay.map(([key, client], index) => (
-                  <div
-                    key={client.institutionid}
-                    className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
-                  >
-                    <div className="flex flex-col gap-2">
-                      <div
-                        className="flex justify-between items-center text-center"
-                        onClick={(e) => handleRowClick(client, e)}
-                      >
-                        <div className="font-semibold text-[#11192B]">
-                          {client.institutionid}
-                        </div>
-                        <Link
-                          onClick={() => {
-                            handleInstitutionClick(client);
-                          }}
-                        >
-                          <div className="text-[#30AFBC] text-sm">
-                            <AiOutlineEye size={20} />
-                          </div>
-                        </Link>
-                      </div>
+                            <Link
+                                to={getLinkPath(instituteType)}
+                                onClick={(e) => {
+                                    if (instituteType === "") {
+                                        e.stopPropagation();
+                                        toast.error("Please Select a type of Institution.", {
+                                            position: "top-right",
+                                            autoClose: 5000,
+                                            style: {
+                                                backgroundColor: "#f8d7da",
+                                                color: "#721c24",
+                                            },
+                                        });
+                                    }
+                                }}
+                                className="mt-3 block"
+                            >
+                                <button className="w-full bg-[#48d6e0] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#3ae1f7] transition">
+                                    Create New Institution
+                                </button>
+                            </Link>
+                            <div className="relative mt-4">
+                                <button
+                                    className="w-full bg-[#0891b2] text-white py-2 px-4 rounded-md flex justify-between items-center"
+                                    onClick={() =>
+                                        setActiveMenu((prev) => (prev ? null : "main"))
+                                    }
+
+                                >
+                                    {(selectedType !== null || filterStatus !== null) && (
+                                        <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                                    )}
+                                    Filter
+                                    {activeMenu ? <HiChevronUp /> : <HiChevronDown />}
+                                </button>
+                                {activeMenu && (
+                                    <div className="absolute mt-2 w-full bg-white border rounded shadow-lg z-10">
+                                        {activeMenu === "main" && (
+                                            <div>
+                                                <div
+                                                    onClick={() => handleAllFilter()}
+                                                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                >
+                                                    All
+                                                </div>
+                                                <div
+                                                    onClick={() => handleMenuToggle("type")}
+                                                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                >
+                                                    <span>
+                                                        {selectedType !== null ? selectedType : "Type"}
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    onClick={() => handleMenuToggle("isDelivered")}
+                                                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                >
+                                                    <span>
+                                                        {filterStatus === false
+                                                            ? "Not Delivered"
+                                                            : "Delivered"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {activeSubMenu === "type" && (
+                                            <div className="mt-2">
+                                                {type.map((type) => (
+                                                    <div
+                                                        key={type}
+                                                        onClick={() => handleTypeFilter(type)}
+                                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                    >
+                                                        {type}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {activeSubMenu === "isDelivered" && (
+                                            <div className="mt-2">
+                                                {isDeliveredOptions.map((option) => (
+                                                    <div
+                                                        key={option}
+                                                        onClick={() => handleDeliverFilter(option)}
+                                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                                    >
+                                                        {option}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <form className="mt-5">
+                                <div className="relative">
+                                    <input
+                                        type="search"
+                                        className="w-full border rounded-md py-2 px-10 bg-[#F9FAFB] text-gray-700 shadow-md focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="Search"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    <div className="absolute inset-y-0 left-3 flex items-center">
+                                        <svg
+                                            className="w-5 h-5 text-gray-500"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </form>
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10">
+                                {clientsToDisplay.map(([key, client], index) => (
+                                    <div
+                                        key={client.institutionid}
+                                        className="bg-white p-4 rounded-md shadow-md border hover:shadow-lg"
+                                    >
+                                        <div className="flex flex-col gap-2">
+                                            <div
+                                                className="flex justify-between items-center text-center"
+
+                                                // onClick={(e) => handleRowClick(client, e)}
+
+                                            >
+                                                <div className="font-semibold text-[#11192B]">
+                                                    {client.institutionid}
+                                                </div>
+                                                <Link
+
+                                                onClick={() => {
+                                                    handleInstitutionClick(client);
+                                                }}
+
+                                                >
+                                                    <div className="text-[#30AFBC] text-sm">
+                                                        <AiOutlineEye size={20} />
+                                                    </div>
+                                                </Link>
+                                            </div>
 
                       {/* Company Name */}
                       {Ctx.userData.userType === "member" &&
@@ -1617,59 +1648,55 @@ const handleDomainLinkSubmit = async (institutionid) => {
                 ))}
               </div>
 
-              {setShowMemberList && (
-                <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
-                  <span className="text-sm text-gray-600">
-                    Page <strong>{currentPage}</strong> of{" "}
-                    <strong>{totalPages}</strong>
-                  </span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        currentPage > 1 && setCurrentPage(currentPage - 1)
-                      }
-                      disabled={currentPage === 1}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === 1
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
-                    >
-                      Previous
-                    </button>
-                    <button
-                      onClick={() =>
-                        currentPage < totalPages &&
-                        setCurrentPage(currentPage + 1)
-                      }
-                      disabled={currentPage === totalPages}
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        currentPage === totalPages
-                          ? "bg-gray-200 text-gray-500"
-                          : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
-                      }`}
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+                            {setShowMemberList && (
+                                <div className="flex justify-between items-center mt-4 max600:mb-[7rem]">
+                                    <span className="text-sm text-gray-600">
+                                        Page <strong>{currentPage}</strong> of{" "}
+                                        <strong>{totalPages}</strong>
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() =>
+                                                currentPage > 1 && setCurrentPage(currentPage - 1)
+                                            }
+                                            disabled={currentPage === 1}
+                                            className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                }`}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                currentPage < totalPages &&
+                                                setCurrentPage(currentPage + 1)
+                                            }
+                                            disabled={currentPage === totalPages}
+                                            className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                }`}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </>
+            ) : (
+                <Index
+                    tempInstitution={tempInstitution}
+                    setShowMemberList={setShowMemberList}
+                    selectedInstitutionType={selectedInstitutionType}
+                />
+                // ) : (
+                //     handlePayment()
+            )}
         </>
-      ) : (Ctx.userData.userType === "admin" ||
-          Ctx.userData.role === "operation") &&
-        payment ? (
-        <Index
-          tempInstitution={tempInstitution}
-          setShowMemberList={setShowMemberList}
-          selectedInstitutionType={selectedInstitutionType}
-        />
-      ) : (
-        handlePayment()
-      )}
-    </>
-  );
+    );
 };
 
 export default Panel;

@@ -6,10 +6,10 @@ import { convertFileToBase64, base64ToFile } from '../../../utils/imageUtils';
 import { FiStar } from 'react-icons/fi';
 
 // Constants
-// const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
-// const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const MAX_NAME_LENGTH = 50;
 const MAX_TEXT_LENGTH = 500;
+const MAX_FILE_SIZE_MB = 50;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 const compressImage = (file) => {
   return new Promise((resolve, reject) => {
@@ -69,6 +69,24 @@ const compressImage = (file) => {
 
     reader.onerror = reject;
   });
+};
+
+// Validation functions
+const validateImageFile = (file) => {
+  if (!file) {
+    return 'Please select a file';
+  }
+
+  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    return `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.map(type => type.split('/')[1]).join(', ')}`;
+  }
+
+  const fileSizeMB = file.size / (1024 * 1024);
+  if (fileSizeMB > MAX_FILE_SIZE_MB) {
+    return `File size exceeds ${MAX_FILE_SIZE_MB}MB. Please choose a smaller file.`;
+  }
+
+  return null;
 };
 
 const Testimonials = ({ testimonials, setTestimonials }) => {
@@ -168,18 +186,23 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
     const validateTestimonial = useCallback((testimonial) => {
         const errors = {};
         
+        // Customer Name validation
         if (!testimonial.customerName?.trim()) {
             errors.customerName = 'Customer name is required';
         } else if (testimonial.customerName.length > MAX_NAME_LENGTH) {
-            errors.customerName = `Name must be less than ${MAX_NAME_LENGTH} characters`;
+            errors.customerName = `Name must be ${MAX_NAME_LENGTH} characters or less`;
+        } else if (!/^[a-zA-Z\s]*$/.test(testimonial.customerName)) {
+            errors.customerName = 'Name can only contain letters and spaces';
         }
 
+        // Testimonial text validation
         if (!testimonial.text?.trim()) {
             errors.text = 'Testimonial text is required';
         } else if (testimonial.text.length > MAX_TEXT_LENGTH) {
-            errors.text = `Text must be less than ${MAX_TEXT_LENGTH} characters`;
+            errors.text = `Text must be ${MAX_TEXT_LENGTH} characters or less`;
         }
 
+        // Image validation
         if (!testimonial.imgSrc) {
             errors.image = 'Customer image is required';
         }
@@ -234,8 +257,9 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
             });
 
             // Validate file
-            if (!file.type.startsWith('image/')) {
-                throw new Error('Please upload an image file');
+            const validationError = validateImageFile(file);
+            if (validationError) {
+                throw new Error(validationError);
             }
 
             // Compress the image
@@ -357,15 +381,25 @@ const Testimonials = ({ testimonials, setTestimonials }) => {
                             <TextInput
                                 id={`customerName-${index}`}
                                 value={testimonial.customerName}
-                                onChange={(e) => handleChange(index, 'customerName', e.target.value)}
+                                onChange={(e) => {
+                                    const newName = e.target.value;
+                                    if (newName.length <= MAX_NAME_LENGTH) {
+                                        handleChange(index, 'customerName', newName);
+                                    }
+                                }}
                                 placeholder="Enter customer name"
                                 className={errors[`testimonial${index}CustomerName`] ? 'border-red-500' : ''}
                             />
-                            {errors[`testimonial${index}CustomerName`] && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {errors[`testimonial${index}CustomerName`]}
+                            <div className="mt-1 flex justify-between items-center">
+                                {errors[`testimonial${index}CustomerName`] && (
+                                    <p className="text-sm text-red-500">
+                                        {errors[`testimonial${index}CustomerName`]}
+                                    </p>
+                                )}
+                                <p className="text-sm text-gray-500">
+                                    {testimonial.customerName?.length || 0}/{MAX_NAME_LENGTH} characters
                                 </p>
-                            )}
+                            </div>
                         </div>
 
                         {/* Testimonial Text Input */}

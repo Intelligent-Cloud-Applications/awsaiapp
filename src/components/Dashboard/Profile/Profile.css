@@ -52,3 +52,16 @@
   /* .image-container:hover .pencil-icon {
     opacity: 1;
   } */
+
+  @media (min-width: 650px) and (max-width: 1020px) {
+    .change{
+      margin-left: 5rem;
+      margin-bottom: 5rem;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .change{
+      margin-left: 0rem;
+    }
+  }

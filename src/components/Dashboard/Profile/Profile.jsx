@@ -9,6 +9,7 @@ import './Profile.css'
 import { toast } from 'react-toastify'
 import EditableInput from './EditableInput';
 import { MdModeEditOutline } from "react-icons/md";
+import "./Profile.css";
 
 const Profile = () => {
   const Ctx = useContext(Context)
@@ -93,7 +94,7 @@ const Profile = () => {
   }
 
   const handleFileUpload = async (base64File) => {
-    
+
     UtilCtx.setLoader(true)
     try {
       // Validate file size (less than 5MB)
@@ -127,22 +128,22 @@ const Profile = () => {
         UtilCtx.setLoader(false);
         return;
       }
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailPattern.test(currentEmail)) {
-    alert('Please enter a valid email address');
-    return;
-  }
-    
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(currentEmail)) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
       await API.put(
         "clients",
         `/user/update-self`,
         {
           body: {
-            institution:"awsaiapp",
+            institution: "awsaiapp",
             emailId: currentEmail,
             userName: name,
-            balance:UserCtx.balance,
-            status:UserCtx.status,
+            balance: UserCtx.balance,
+            status: UserCtx.status,
             phoneNumber: phoneNumber,
             country: country,
             joiningDate: joiningDate,
@@ -161,7 +162,7 @@ const Profile = () => {
       setImage(null)
     }
   }
-  
+
   const onProfileUpdate = async (e) => {
     e.preventDefault()
     if (name.trim() === '') {
@@ -170,25 +171,25 @@ const Profile = () => {
       return;
     }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailPattern.test(currentEmail)) {
-   alert('Please enter a valid email address');
-    return;
-  }
+    if (!emailPattern.test(currentEmail)) {
+      alert('Please enter a valid email address');
+      return;
+    }
     UtilCtx.setLoader(true)
     if (ifDataChanged()) {
       if (phoneNumber.length >= 10) {
         try {
           const userdata = await API.put(
             "clients",
-        `/user/update-self`,
+            `/user/update-self`,
             {
               body: {
-                institution:"awsaiapp",
+                institution: "awsaiapp",
                 emailId: currentEmail,
                 userName: name,
-                balance:UserCtx.balance,
+                balance: UserCtx.balance,
                 phoneNumber: phoneNumber,
-                status:UserCtx.status,
+                status: UserCtx.status,
                 country: country,
                 joiningDate: joiningDate,
                 imgUrl: UserCtx.imgUrl || null
@@ -271,12 +272,11 @@ const Profile = () => {
 
   return (
     <div
-      className={`relative w-[calc(100vw-16rem)] max1050:w-screen flex flex-col items-center [@media(max-width:500px)]:mb-[5rem]`}
+      className={`relative w-[calc(100vw-16rem)] change max1050:w-screen flex flex-col items-center [@media(max-width:1026px)]:ml-[10rem]`}
     >
       <div
-        className={`w-[75%] max1050:w-[100%] max-w-[36rem] rounded-3xl p-3 flex flex-col items-center max536:w-[90%] relative bg-[#eceaeac7]`}
+        className={`w-[75%] max1050:w-[100%] max-w-[36rem] rounded-3xl p-3 flex flex-col items-center max536:w-[90%] relative bg-[#eceaeac7] [@media(max-width:1025px)]:w-[60%] [@media(max-width:7000px)]:w-[80%]`}
       >
-     
         <div className="avatar-editor-container flex flex-row justify-center">
           <input
             type="file"
@@ -606,7 +606,7 @@ const Profile = () => {
                       w="8rem"
                       className={`mt-8`}
                     />
-                  
+
                   </div>
                 </form>
               </div>
