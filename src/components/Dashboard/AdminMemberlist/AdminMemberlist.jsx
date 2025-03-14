@@ -103,7 +103,7 @@ const AdminMemberlist = () => {
   };
 
   return (
-    <div className="fixed inset-0 lg:ml-64 bg-gray-50/50 overflow-hidden">
+    <div className="fixed inset-0 lg:ml-64 bg-gray-50/50 overflow-hidden [@media(max-width:1025px)]:mb-5">
       <div className="flex flex-col h-full max-h-screen">
         {/* Main Container */}
         <div className="flex-1 p-2 sm:p-4 md:p-6 pt-16 sm:pt-20 md:pt-24 overflow-y-auto">
@@ -249,14 +249,14 @@ const AdminMemberlist = () => {
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.emailId}px` }} className="p-4">
                                 <div className="min-w-0">
-                                  <div className="truncate text-[13px] text-gray-600" title={member.emailId}>
+                                  <div className="truncate text-[16px] text-gray-600" title={member.emailId}>
                                     {member.emailId}
                                   </div>
                                 </div>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.phoneNumber}px` }} className="p-4">
                                 <div className="min-w-0">
-                                  <div className="truncate text-[13px] text-gray-600" title={member.phoneNumber}>
+                                  <div className="truncate text-[16px] text-gray-600" title={member.phoneNumber}>
                                     {member.phoneNumber}
                                   </div>
                                 </div>
@@ -294,7 +294,7 @@ const AdminMemberlist = () => {
                                 </div>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.joiningDate}px` }} className="p-4">
-                                <div className="truncate text-[13px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
+                                <div className="truncate text-[16px] text-gray-600" title={formatEpochToReadableDate(member.joiningDate)}>
                                   {formatEpochToReadableDate(member.joiningDate)}
                                 </div>
                               </Table.Cell>
@@ -308,10 +308,10 @@ const AdminMemberlist = () => {
                                 </span>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.delivered}px` }} className="p-4 text-center">
-                                <span className="text-[13px] font-medium text-gray-700">{member.delivered || '0'}</span>
+                                <span className="text-[16px] font-medium text-gray-700">{member.delivered || '0'}</span>
                               </Table.Cell>
                               <Table.Cell style={{ width: `${columnWidths.inprogress}px` }} className="p-4 text-center">
-                                <span className="text-[13px] font-medium text-gray-700">{member.inprogress || '0'}</span>
+                                <span className="text-[16px] font-medium text-gray-700">{member.inprogress || '0'}</span>
                               </Table.Cell>
                             </Table.Row>
                           ))}
@@ -345,7 +345,7 @@ const AdminMemberlist = () => {
             </div>
 
             {/* Footer with Pagination - Mobile Optimized */}
-            <div className="px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 border-t border-gray-200">
+            <div className="px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-3 border-t border-gray-200 [@media(max-width:1025px)]:mb-5">
               <div className="text-xs sm:text-sm text-gray-600 bg-gray-50 px-3 py-1.5 sm:py-2 rounded-lg order-2 sm:order-1 w-full sm:w-auto text-center sm:text-left">
                 Showing <span className="font-medium text-gray-900">{(currentPage - 1) * 7 + 1}-{Math.min(currentPage * 7, filteredAndSortedData.length)}</span> of <span className="font-medium text-gray-900">{filteredAndSortedData.length}</span>
               </div>

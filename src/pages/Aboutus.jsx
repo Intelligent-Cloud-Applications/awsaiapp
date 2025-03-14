@@ -1,7 +1,6 @@
 import React from "react";
 import arrow from "../utils/arrow mark.png";
 import Rubikfont from "../assets/fonts/Rubik_Mono_One.zip";
-// import about1 from "../utils/about1.png";
 import about4 from "../utils/about4.jpg";
 import about2 from "../utils/about2.png";
 import about3 from "../utils/about3.png";
@@ -15,8 +14,6 @@ import "./Aboutus.css";
 import Navbar from "../components/Home/Navbar";
 import FOOTER from "../components/Home/Footer";
 
-
-
 export default function AboutUs() {
   const fontStyles = `
     @font-face {
@@ -25,17 +22,16 @@ export default function AboutUs() {
     }
   `;
   
-  
   return (
     <div>
       <Navbar />
       <div className="overflow-hidden bg-white flex flex-col pb-1 gap-2 w-full">
         <div className="overflow-hidden bg-black flex flex-col mb-5 pt-1 gap-8  ">
-          <div className="flex flex-col">
-            <div className="w-full flex flex-col md:flex-row md:justify-between max800:justify-center items-center ">
+          <div className="flex flex-col sm:ml-0">
+            <div className="w-full flex flex-col md:flex-row md:justify-between max800:justify-center items-center">
               <style>{fontStyles}</style>
               <div
-                className="pl-[4rem] max800:pt-[7rem] max800:w-full text-[48px] md:text-[84px] font-family-[Rubik_Mono_One] text-[#30afbc] font-bold max800:text-[3rem]"
+                className="pl-[4rem] max800:pt-[7rem] max800:pl-[2rem] max800:w-[80%] text-[48px] md:text-[84px] font-family-[Rubik_Mono_One] text-[#30afbc] font-bold max800:text-[3rem]"
               >
                 ABOUT <span className="text-white contents">US</span>
               </div>
@@ -50,63 +46,59 @@ export default function AboutUs() {
                 <img
                   src={about3}
                   alt="About 3"
-                  className="about3 w-[100%] md:w-[27rem] rounded-[10px] max800:mt-[10rem] max800:ml-[3rem]"
+                  className="about3 w-[100%] md:w-[28.5rem] h-[14rem] rounded-[10px] max800:mt-[10rem] max800:ml-[3rem]"
                 />
                 <img
                   src={about2}
                   alt="About 2"
-                  className="about2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem]"
+                  className="about2 w-[100%] md:w-[28.5rem] h-[14rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem]"
                 />
                 <img
                   src={about4}
                   alt="About 1"
-                  className="about2 w-[100%] md:w-[28.5rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem] "
+                  className="about2 w-[100%] md:w-[28.5rem] h-[14rem] rounded-[10px] max800:mt-[10rem]  max800:ml-[3rem] "
                 />
-                
               </div>
             </div>
           </div>
         </div>
 
-
-          <div className="max767:flex max767:justify-center max767:px-[2rem] ">
-        <div className=" flex flex-col md:flex-row justify-between items-start ">
-          <div className="flex flex-col md:flex-row gap-3 w-full md:w-2/5 items-start">
-            <img
-              src={left}
-              className="left relative hidden sm:block max800:block"
-              alt="left"
-            />
-            <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start">
-              <div className="text-3xl font-Bebas Neue font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
-                Welcome to Intelligent Cloud Applications!
-              </div>
-              <div className="text-[18px] font-medium font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
-                At Intelligent Cloud Applications, we are not just a digital
-                consulting company; we are your partners in propelling your
-                business into the digital age. Our mission is to empower your
-                business with cutting-edge technologies, innovative web
-                applications, personalized dashboards, seamless payment
-                solutions, and comprehensive digital marketing strategies.
+        <div className="max767:flex max767:justify-center max767:px-[2rem] ">
+          <div className=" flex flex-col md:flex-row justify-between items-start ">
+            <div className="flex flex-col md:flex-row gap-3 w-full md:w-2/5 items-start">
+              <img
+                src={left}
+                className="left relative hidden sm:block max800:block"
+                alt="left"
+              />
+              <div className="self-start md:self-end flex flex-col mt-3 md:mt-0 gap-5 w-full md:w-[498px] items-start">
+                <div className="text-3xl font-Bebas Neue font-bold tracking-[3.2] w-full max980:text-[25px] max767:text-[20px]">
+                  Welcome to Intelligent Cloud Applications!
+                </div>
+                <div className="text-[18px] font-medium font-['Inter'] text-[#545454] leading-[25px] w-full max980:w-[302px] max980:text-[16px] max767:w-full">
+                  At Intelligent Cloud Applications, we are not just a digital
+                  consulting company; we are your partners in propelling your
+                  business into the digital age. Our mission is to empower your
+                  business with cutting-edge technologies, innovative web
+                  applications, personalized dashboards, seamless payment
+                  solutions, and comprehensive digital marketing strategies.
+                </div>
               </div>
             </div>
+            <div className="self-start md:self-end relative flex flex-col justify-start md:justify-end w-full md:w-2/5 items-end">
+              <img
+                src={cloud}
+                className="w-full md:w-[518px] h-auto absolute top-0 left-0  max980:w-[400px]"
+                alt="Cloud"
+              />
+              <img
+                src={right}
+                className="right relative hidden sm:block "
+                alt="Right"
+              />
+            </div>
           </div>
-          <div className="self-start md:self-end relative flex flex-col justify-start md:justify-end w-full md:w-2/5 items-end">
-            
-            <img
-              src={cloud}
-              className="w-full md:w-[518px] h-auto absolute top-0 left-0  max980:w-[400px]"
-              alt="Cloud"
-            />
-            <img
-              src={right}
-              className="right relative hidden sm:block "
-              alt="Right"
-            />
-          </div>
-        </div>
         </div> 
-
 
         <div className="who text-4xl font-Bebas Neue font-bold self-center md:mt-[120px] max767:pt-[1.5rem] ">
           Who<span className="text-[#30afbc] contents"> We </span>Are

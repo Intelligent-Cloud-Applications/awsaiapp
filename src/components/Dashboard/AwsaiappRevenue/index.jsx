@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown, Table } from "flowbite-react";
 import ChartComponent2 from '../MonthlyReport/ChartComponents/ChartComponent2';
 import Context from '../../../context/Context';
+import "./Revenue.css";
 
 function AwsaiappRevenue() {
   const { payments } = useContext(Context);
@@ -75,9 +76,9 @@ function AwsaiappRevenue() {
         <div className='Poppins border flex gap-2 items-center justify-center w-[8rem] py-1 rounded-md max600:w-full'>
           <div className="font-[400] text-[1.1rem]">Year</div>
           <Dropdown label={selectedYear} inline>
-            <div className="font-[500] Poppins flex flex-col items-center ">
+            <div className="font-[500] Poppins flex flex-col items-center year ">
               {years?.map(year => (
-                <Dropdown.Item className='text-[1.1rem] px-[4rem] hover:bg-[#b9b9b9]' key={year} onClick={() => setSelectedYear(year)}>{year}</Dropdown.Item>
+                <Dropdown.Item className='text-[1.1rem] px-[4rem] ' key={year} onClick={() => setSelectedYear(year)} inline>{year}</Dropdown.Item>
               ))}
             </div>
           </Dropdown>

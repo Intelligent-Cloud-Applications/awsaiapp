@@ -91,7 +91,8 @@ function Testimonials() {
 
   return (
     <div className="testi flex flex-col w-full ">
-      <h1 className="flex justify-center item-center font-bold lg:text-[3rem] md:text-[2.5rem] sm:text-[2rem] max670:text-[1.5rem] h-[20vh] pt-20 text-white">
+      <h1 className="flex justify-center item-center font-bold lg:text-[3rem] md:text-[2.5rem] sm:text-[2rem] max670:text-[1.5rem] max375:text-[1.2rem] h-[20vh] pt-20 text-white">
+
         TESTIMONIAL
       </h1>
       <div className="h-20"></div>
@@ -109,15 +110,17 @@ function Testimonials() {
           <img src={leftarrow} alt="" className="h-12 max600:h-8" />
         </button>
 
-        <div className="flex flex-col h-[55vh] max375:h-[65vh] bg-white justify-center item-center lg:w-[45%] max1300:min-w-[60%] sm:w-[60%] max670:w-[85%] 
-        md:mx-20 sm:mx-5 mx-5 border shadow-lg md:px-10 px-5 overflow-hidden rounded"
+        <div className="flex flex-col h-[55vh] max375:h-[70vh] bg-white justify-center item-center lg:w-[45%] max1300:min-w-[60%] sm:w-[60%] max670:w-[90%] max375:w-[95%]
+        md:mx-20 sm:mx-5 mx-2 border shadow-lg md:px-10 px-3 overflow-hidden rounded"
+
         >
           <div className="flex h-[20%] justify-between items-end mb-[-1rem]">
             <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={leftquote} alt="" />
             <img className="h-[1rem] sm:h-[1.2rem] md:h-[2rem] lg:h-[2.5rem]" src={rightquote} alt="" />
           </div>
           <div className="text-center my-4">
-            <motion.p className="text-[1rem] pb-10 max1008:text-sm max670:text-xs"
+            <motion.p className="text-[1rem] pb-10 max1008:text-sm max670:text-xs max375:text-[0.7rem] leading-5"
+
             variants={testimonialVariants}
             initial="initial"
             animate="animate"
@@ -138,9 +141,10 @@ function Testimonials() {
           <img src={rightarrow} alt="" className=" h-12 max600:h-8" />
         </button>
       </div>
-      <div className="w-full flex justify-center max375:pb-5">
-        <div class="px-4 py-2 bg-[#30AFBC] text-center text-sm sm:text-lg md:text-3xl lg:text-7xl p-1 rounded-full">
-          <p class="font-bold text-white">
+      <div className="w-full flex justify-center max375:pb-5 [@media(max-width:1500px)]:mb-5">
+        <div class="px-4 py-2 bg-[#30AFBC] text-center text-sm sm:text-lg md:text-3xl lg:text-7xl max375:text-xs p-1 rounded-full">
+          <p class="font-bold text-white break-words">
+
             {testimonials[currentTestimonial].add}
           </p>
         </div>

@@ -9,7 +9,7 @@ import InstitutionRevenue from "../InstitutionRevenue";
 import { IoCaretBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import BatchJobs from "../BatchJobs/BatchJobs";
-const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstitutionType }) => {
+const Index = ({ tempInstitution, setShowMemberList, selectedInstitutionType }) => {
   const { user, userData } = useContext(Context);
   const [activeTab, setActiveTab] = useState('members');
   const navigate = useNavigate();
@@ -29,13 +29,13 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   const renderContent = () => {
     switch (activeTab) {
       case 'members':
-        return <NewMemberList />;
+        return <NewMemberList tempInstitution={tempInstitution}/>;
       case 'leads':
-        return <LeadsList />;
+        return <LeadsList tempInstitution={tempInstitution}/>;
       case 'client':
-        return <ClientsProfile institution={institution} />;
+        return <ClientsProfile institution={tempInstitution} />;
       case 'economy':
-        return <InstitutionRevenue institution={userData.tempinstitutionName} />
+        return <InstitutionRevenue institution={tempInstitution} />
       case 'batch':
         return <BatchJobs />
       default:
@@ -49,13 +49,13 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
   };
 
   return (
-    <div className="min-h-[calc(100vh-35px)] bg-[#f1f1f1]">
+    <div className="h-[96vh] bg-[#f1f1f1]">
       {screenWidth > 1025 ? (
         <>
           <div className="w-[97vw] flex flex-col items-center ml-[220px]">
             <div>
               <Navbar />
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center mt-5">
                 <div className="fixed mt-14 z-50 bg-[#f1f1f1] w-[calc(90vw-200px)] flex justify-evenly items-center">
                   <div
                     onClick={goBack}
@@ -75,7 +75,7 @@ const Index = ({ institution: tempInstitution, setShowMemberList, selectedInstit
       ) : (
         <>
           <div className="w-full gap-2">
-            <div className="mt-10">
+            <div className="mt-20">
               <div
                 onClick={goBack}
                 className="border bg-[#30afbc] rounded cursor-pointer w-[36px] text-[30px] "
