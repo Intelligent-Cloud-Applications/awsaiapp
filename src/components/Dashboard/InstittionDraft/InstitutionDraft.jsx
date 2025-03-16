@@ -1,12 +1,13 @@
 import React, { useState, useContext, useCallback, useMemo, useEffect } from "react";
 import Context from "../../../context/Context";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Table, Pagination } from "flowbite-react";
 import "../Panel/Panel.css";
 import { API } from "aws-amplify";
 import { MdDeleteForever } from 'react-icons/md';
+import "./intitutionDraft.css";
 
 const InstitutionDraft = () => {
   const itemsPerPage = 5;
@@ -100,12 +101,14 @@ const InstitutionDraft = () => {
       util.setLoader(true);
       setShowConfirm(false);
       await API.del("clients", `/user/development-form/delete-all/${institutionIdToDelete}`);
-      alert('All data deleted successfully');
+      // alert('All data deleted successfully');
+      toast.success("All data deleted successfully");
       util.setLoader(false);
       await fetchClients();
       navigate('/dashboard');
     } catch (error) {
-      alert('No matching data found', error);
+      // alert('No matching data found', error);
+      toast.error('No matching data found', error);
       util.setLoader(false);
     } finally {
       setShowConfirm(false);
@@ -173,9 +176,9 @@ const InstitutionDraft = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-3rem] mx-[4rem] max1300:mt-[-16px] sm:mx-6 lg:mx-10 shadow-xl bg-[#e6e4e4] [@media(max-width:900px)]:bg-white rounded-[0] lg:ml-[9%] px-2 [@media(max-width:1025px)]:mr-0 [@media(max-width:1025px)]:pr-0 [@media(max-width:800px)]:shadow-none">
+    <div className="w-screen h-screen flex flex-col justify-center items-center mt-[-3rem] mx-[4rem] max1300:mt-[-16px] sm:mx-6 lg:mx-10 shadow-xl bg-[#e6e4e4] [@media(max-width:900px)]:bg-white rounded-[0] lg:ml-[9%] px-2 [@media(max-width:1025px)]:mr-0 [@media(max-width:1025px)]:pr-0 [@media(max-width:800px)]:shadow-none [@media(max-width:600px)]:ml-0">
       <ToastContainer />
-      <div className="w-[80%] [@media(max-width:1500px)]:w-[70%] [@media(max-width:1025px)]:w-[50%] [@media(max-width:800px)]:w-[95%]  [@media(max-width:800px)]:ml-[2rem] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table overflow-x-auto  [@media(max-width:1000px)]:mb-[5rem]">
+      <div className="w-[80%] [@media(max-width:1500px)]:w-[70%] [@media(max-width:1025px)]:w-[50%] [@media(max-width:800px)]:w-[95%]  [@media(max-width:800px)]:ml-[0] mt-4 rounded-md flex flex-col justify-center items-center bg-white py-3 flowbite-table overflow-x-auto  [@media(max-width:1000px)]:mb-[5rem]">
         {/* Search Bar */}
         <div className="w-full flex justify-end">
           <form className="w-full sm:w-[30%] rounded-sm my-3">
@@ -309,7 +312,7 @@ const InstitutionDraft = () => {
             </div>
           </div>
         ) : (
-          <div className="flex gap-20 mt-4 [@media(max-width:1025px)]:gap-[10rem] [@media(max-width:800px)]:gap-[20rem] max600:mb-[3rem] [@media(max-width:400px)]:gap-5">
+          <div className="flex mt-4 max600:mb-[3rem] page">
             <span className="text-sm text-gray-600">
               Page <strong>{currentPage}</strong> of{" "}
               <strong>{totalPages}</strong>

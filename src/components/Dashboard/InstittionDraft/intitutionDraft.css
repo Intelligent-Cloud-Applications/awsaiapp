@@ -1,0 +1,9 @@
+.page {
+    gap: 20rem !important;
+}
+
+@media (max-width: 600px) {
+    .page {
+        gap: 5rem !important;
+    }
+}
