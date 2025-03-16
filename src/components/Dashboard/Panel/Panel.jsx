@@ -355,24 +355,24 @@ const Panel = () => {
         }
     };
 
-    // const handleRowClick = (institution) => {
-    //     setTempInstitution(institution.institutionId);
-    //     setSelectedInstitutionType(institution.instituteType);
-    //     setisMonthlyReport(institution.institutionid);
-    //     setisMonthlyReport(institution.institutionid);
-    //     if (institution.payment ? !institution.payment : true) {
-    //         navigate(`/pricing?institutionId=${institution.institutionid}`, {
-    //             state: {
-    //                 institutionId: institution.institutionid,
-    //                 cognitoId: Ctx.userData.cognitoId
-    //             }
-    //         });
-    //     } else {
-    //         if (Ctx.userData.userType === "admin") {
-    //             setShowMemberList(true);
-    //         }
-    //     }
-    // };
+    const handleRowClick = (institution) => {
+        setTempInstitution(institution.institutionId);
+        setSelectedInstitutionType(institution.instituteType);
+        setisMonthlyReport(institution.institutionid);
+        setisMonthlyReport(institution.institutionid);
+        if (institution.payment ? !institution.payment : true) {
+            navigate(`/pricing?institutionId=${institution.institutionid}`, {
+                state: {
+                    institutionId: institution.institutionid,
+                    cognitoId: Ctx.userData.cognitoId
+                }
+            });
+        } else {
+            if (Ctx.userData.userType === "admin") {
+                setShowMemberList(true);
+            }
+        }
+    };
 
 
     // const handlePayment = () => {
@@ -713,7 +713,7 @@ const Panel = () => {
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
 
-                                                            // onClick={(e) => handleRowClick(client, e)}
+                                                            onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
                                                             onClick={() => {
@@ -1277,7 +1277,7 @@ const Panel = () => {
                                             <div
                                                 className="flex justify-between items-center text-center"
 
-                                                // onClick={(e) => handleRowClick(client, e)}
+                                                onClick={(e) => handleRowClick(client, e)}
 
                                             >
                                                 <div className="font-semibold text-[#11192B]">
