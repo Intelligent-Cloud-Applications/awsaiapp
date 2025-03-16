@@ -1,14 +1,20 @@
-import { TextInput } from 'flowbite-react';
 import React, { useState, useRef } from 'react';
+import { Label, TextInput } from 'flowbite-react';
+import { FiGrid, FiUpload, FiPlus, FiX, FiImage, FiList, FiActivity } from 'react-icons/fi';
+import { GiTeacher } from 'react-icons/gi';
 
-function Services({ services, setServices, danceTypes, setDanceTypes, servicesBg, setServicesBg, servicesPortrait, setServicesPortrait }) {
+function Services({ 
+  services, 
+  setServices, 
+  danceTypes, 
+  setDanceTypes, 
+  servicesBg, 
+  setServicesBg, 
+  servicesPortrait, 
+  setServicesPortrait 
+}) {
   const [activeServiceIndex, setActiveServiceIndex] = useState(null);
   const danceTypesContainerRef = useRef(null);
-  const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
-
-  // States for the overall service images
-  // const [servicesBg, setServicesBg] = useState(null);
-  // const [servicesPortrait, setServicesPortrait] = useState(null);
 
   const handleDanceTypeChange = (index, value) => {
     const updatedDanceTypes = [...danceTypes];
@@ -16,19 +22,13 @@ function Services({ services, setServices, danceTypes, setDanceTypes, servicesBg
     setDanceTypes(updatedDanceTypes);
   };
 
-  const toggleActiveDanceType = (index) => {
-    setActiveDanceTypeIndex(index === activeDanceTypeIndex ? null : index);
-  };
-
   const addNewDanceType = () => {
     if (danceTypes.length < 5) {
       setDanceTypes([...danceTypes, '']);
+      setTimeout(() => {
+        danceTypesContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
-    // Scroll to the newly added dance type
-    danceTypesContainerRef.current.scrollTo({
-      top: danceTypesContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
   };
 
   const removeDanceType = (index) => {
@@ -41,10 +41,6 @@ function Services({ services, setServices, danceTypes, setDanceTypes, servicesBg
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
     setServices(updatedServices);
-  };
-
-  const toggleActiveService = (index) => {
-    setActiveServiceIndex(index === activeServiceIndex ? null : index);
   };
 
   const handleAddItem = (index) => {
@@ -65,242 +61,225 @@ function Services({ services, setServices, danceTypes, setDanceTypes, servicesBg
     setServices(updatedServices);
   };
 
-  // const handleImageChange = (setImage, e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setImage(file);
-  //   }
-  // };
-
-  const handleBgImageChange = (e) => {
+  const handleImageChange = (setter) => (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
-    }
-    if (file) {
-      setServicesBg(file);
-    }
-  };
+    if (!file) return;
 
-  const handlePortraitImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
+    const fileSizeMB = file.size / (1024 * 1024);
+    if (fileSizeMB > 4) {
+      alert("File size exceeds 4MB. Please choose a smaller file.");
+      return;
     }
-    if (file) {
-      setServicesPortrait(file);
-    }
+    setter(file);
   };
-
-  const shortenFileName = (file) => {
-    if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
-  };
-
 
   return (
-    <div className="mx-[2%] [@media(max-width:1024px)]:m-0 [@media(max-width:1024px)]:mb-[5rem]">
-      <h1 className="font-medium text-7xl pb-[1rem] text-center">SERVICE HIGHLIGHT</h1>
-      <h5 className="text-[#939393] text-center">
-        Effectively highlight your services by showcasing their unique benefits and value propositions. Make it clear how each service meets your audience’s needs and stands out from the competition.
-      </h5>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiGrid className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Service Highlights</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Showcase your dance studio's services and class offerings to attract potential students.
+        </p>
+      </div>
 
-      {/* Service Background Image Upload */}
-      <div className="flex justify-center ml-[10%] [@media(max-width:1024px)]:ml-0">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
-          <div className="relative flex items-center mt-4">
-            <h2 className='font-bold'>Services Bg</h2>
-            <div className='mr-20'></div>
-            <TextInput
-              type="file"
-              accept="image/*"
-              // onChange={(e) => handleImageChange(setServicesBg, e)}
-              onChange={handleBgImageChange}
-              className="hidden"
-              id="servicesBgInput"
-            />
-            <label
-              htmlFor="servicesBgInput"
-              className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-              style={{
-                borderColor: 'cement',
-                borderWidth: '2px',
-                borderStyle: 'solid',
-                backgroundColor: '#D9D9D9',
-              }}
-            >
-              <span
-                className={`block text-[#000000] font-inter text-[14px] ${servicesBg ? 'hidden' : 'block'
-                  }`}
-              >
-                Choose File
-              </span>
-              <div
-                className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${servicesBg ? 'block' : 'hidden'
-                  }`}
-              >
-                <span className="text-[#636262]">
-                  {shortenFileName(servicesBg)}
-                </span>
-                <span
-                  onClick={() => setServicesBg(null)}
-                  className="text-[#3b9d33] cursor-pointer"
-                >
-                  Change
-                </span>
-              </div>
-            </label>
-          </div>
+      <div className="space-y-8">
+        {/* Background Images Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiImage className="w-5 h-5 text-teal-600" />
+            Background Images
+          </h2>
 
-          {/* Service Portrait Image Upload */}
-          <div className="relative flex items-center mt-4">
-            <h2 className='font-bold'>Services Protrait</h2>
-            <div className='mr-10'></div>
-            <TextInput
-              type="file"
-              accept="image/*"
-              // onChange={(e) => handleImageChange(setServicesPortrait, e)}
-              onChange={handlePortraitImageChange}
-              className="hidden"
-              id="servicesPortraitInput"
-            />
-            <label
-              htmlFor="servicesPortraitInput"
-              className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-              style={{
-                borderColor: 'cement',
-                borderWidth: '2px',
-                borderStyle: 'solid',
-                backgroundColor: '#D9D9D9',
-              }}
-            >
-              <span
-                className={`block text-[#000000] font-inter text-[14px] ${servicesPortrait ? 'hidden' : 'block'
-                  }`}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Services Background */}
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-2">
+                Services Background <span className="text-red-500">*</span>
+              </Label>
+              <label
+                htmlFor="servicesBgInput"
+                className={`relative flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer 
+                  ${servicesBg ? 'border-teal-200 hover:border-teal-300' : 'border-gray-200 hover:border-gray-300'}
+                  transition-colors bg-gray-50 hover:bg-gray-100`}
               >
-                Choose File
-              </span>
-              <div
-                className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${servicesPortrait ? 'block' : 'hidden'
-                  }`}
-              >
-                <span className="text-[#636262]">
-                  {shortenFileName(servicesPortrait)}
-                </span>
-                <span
-                  onClick={() => setServicesPortrait(null)}
-                  className="text-[#3b9d33] cursor-pointer"
-                >
-                  Change
-                </span>
-              </div>
-            </label>
-          </div>
-
-          {services.map((service, serviceIndex) => (
-            <div key={serviceIndex} className="mt-4">
-              <div className="flex">
-                <h2 className="font-medium text-xl">Service {serviceIndex + 1}</h2>
-                <span className="text-red-500 ml-1">*</span>
-              </div>
-              <div className="relative">
-                <TextInput
-                  type="text"
-                  name="title"
-                  value={service.title || ''}
-                  onChange={(e) => handleServiceChange(serviceIndex, e)}
-                  placeholder="Service Title"
-                  className="w-full"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                  onFocus={() => toggleActiveService(serviceIndex)}
-                  onBlur={() => toggleActiveService(null)}
+                <input
+                  id="servicesBgInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange(setServicesBg)}
+                  className="hidden"
                 />
-              </div>
-              <div>
-                {service.items.map((item, itemIndex) => (
-                  <div key={itemIndex} className="mt-2 relative">
-                    <TextInput
-                      value={item}
-                      onChange={(e) => handleItemChange(serviceIndex, itemIndex, e)}
-                      placeholder="Service Item"
-                      className="w-full"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
+                
+                {servicesBg ? (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">{servicesBg.name}</p>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setServicesBg(null);
                       }}
-                      rows={1}
-                    />
-                    <button onClick={() => handleRemoveItem(serviceIndex, itemIndex)} className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2">
-                      <span>✕</span>
+                      className="mt-2 text-teal-600 hover:text-teal-700"
+                    >
+                      Change
                     </button>
                   </div>
-                ))}
-                {service.items.length < 5 && (
-                  <div className="mt-2 flex justify-center">
-                    <button onClick={() => handleAddItem(serviceIndex)} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-                      Add Item
-                    </button>
+                ) : (
+                  <div className="text-center">
+                    <FiUpload className="w-8 h-8 text-teal-600 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">Upload background</p>
                   </div>
                 )}
-              </div>
+              </label>
             </div>
-          ))}
-          <div className="relative mt-4">
-            <div ref={danceTypesContainerRef} className="pb-6">
-              {danceTypes.map((danceType, index) => (
-                <div key={index} className="mt-2">
-                  <div className="flex">
-                    <h2 className="font-medium text-xl">Dance Type {index + 1}</h2>
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    {index >= 3 && (
-                      <button onClick={() => removeDanceType(index)} className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] z-10">
-                        <span>✕</span>
-                      </button>
-                    )}
-                    <TextInput
-                      type="text"
-                      value={danceType || ''}
-                      onChange={(e) => handleDanceTypeChange(index, e.target.value)}
-                      placeholder="Dance Type"
-                      className="w-full"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
+
+            {/* Services Portrait */}
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-2">
+                Services Portrait <span className="text-red-500">*</span>
+              </Label>
+              <label
+                htmlFor="servicesPortraitInput"
+                className={`relative flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer 
+                  ${servicesPortrait ? 'border-teal-200 hover:border-teal-300' : 'border-gray-200 hover:border-gray-300'}
+                  transition-colors bg-gray-50 hover:bg-gray-100`}
+              >
+                <input
+                  id="servicesPortraitInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange(setServicesPortrait)}
+                  className="hidden"
+                />
+                
+                {servicesPortrait ? (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">{servicesPortrait.name}</p>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setServicesPortrait(null);
                       }}
-                      onFocus={() => toggleActiveDanceType(index)}
-                      onBlur={() => toggleActiveDanceType(null)}
-                    />
+                      className="mt-2 text-teal-600 hover:text-teal-700"
+                    >
+                      Change
+                    </button>
                   </div>
-                </div>
-              ))}
+                ) : (
+                  <div className="text-center">
+                    <FiUpload className="w-8 h-8 text-teal-600 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">Upload portrait</p>
+                  </div>
+                )}
+              </label>
             </div>
-            {danceTypes.length < 5 && (
-              <div className="mt-2 flex justify-center">
-                <button onClick={addNewDanceType} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-                  Add Dance Type
-                </button>
+          </div>
+        </div>
+
+        {/* Services Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiList className="w-5 h-5 text-teal-600" />
+            Services
+          </h2>
+
+          <div className="space-y-6">
+            {services.map((service, serviceIndex) => (
+              <div 
+                key={serviceIndex}
+                className="p-4 border border-gray-100 rounded-lg bg-gray-50"
+              >
+                <div className="mb-4">
+                  <Label className="block text-sm font-medium text-gray-700 mb-1">
+                    Service {serviceIndex + 1} Title <span className="text-red-500">*</span>
+                  </Label>
+                  <TextInput
+                    name="title"
+                    value={service.title || ''}
+                    onChange={(e) => handleServiceChange(serviceIndex, e)}
+                    placeholder="Enter service title"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  {service.items.map((item, itemIndex) => (
+                    <div key={itemIndex} className="relative">
+                      <TextInput
+                        value={item}
+                        onChange={(e) => handleItemChange(serviceIndex, itemIndex, e)}
+                        placeholder="Enter service detail"
+                      />
+                      <button
+                        onClick={() => handleRemoveItem(serviceIndex, itemIndex)}
+                        className="absolute -right-2 -top-2 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <FiX className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+
+                  {service.items.length < 5 && (
+                    <button
+                      onClick={() => handleAddItem(serviceIndex)}
+                      className="w-full py-2 border-2 border-dashed border-teal-200 rounded-lg text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <FiPlus className="w-4 h-4" />
+                      Add Service Detail
+                    </button>
+                  )}
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dance Types Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiActivity className="w-5 h-5 text-teal-600" />
+            Dance Types
+          </h2>
+
+          <div className="space-y-4" ref={danceTypesContainerRef}>
+            {danceTypes.map((danceType, index) => (
+              <div key={index} className="relative">
+                <Label className="block text-sm font-medium text-gray-700 mb-1">
+                  Dance Type {index + 1} <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <TextInput
+                    value={danceType || ''}
+                    onChange={(e) => handleDanceTypeChange(index, e.target.value)}
+                    placeholder="Enter dance type"
+                  />
+                  {index >= 3 && (
+                    <button
+                      onClick={() => removeDanceType(index)}
+                      className="absolute -right-2 -top-2 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <FiX className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {danceTypes.length < 5 && (
+              <button
+                onClick={addNewDanceType}
+                className="w-full py-3 border-2 border-dashed border-teal-200 rounded-lg text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <FiPlus className="w-5 h-5" />
+                Add Dance Type
+              </button>
+            )}
+
+            {danceTypes.length >= 5 && (
+              <p className="text-center text-sm text-gray-500">
+                Maximum number of dance types reached (5)
+              </p>
             )}
           </div>
         </div>

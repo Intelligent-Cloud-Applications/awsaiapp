@@ -1,8 +1,10 @@
-import { TextInput } from 'flowbite-react';
 import React, { useState, useRef } from 'react';
+import { Label, TextInput } from 'flowbite-react';
+import { FiHelpCircle, FiPlus, FiX } from 'react-icons/fi';
 
 function FAQs({ faqs, setFaqs }) {
   const [activeFAQIndex, setActiveFAQIndex] = useState(null);
+  const faqsContainerRef = useRef(null);
 
   const handleFAQChange = (index, e) => {
     const updatedFaqs = [...faqs];
@@ -17,76 +19,113 @@ function FAQs({ faqs, setFaqs }) {
     setActiveFAQIndex(index === activeFAQIndex ? null : index);
   };
 
-  const faqsContainerRef = useRef(null);
-
   const removeFAQ = (indexToRemove) => {
     const updatedFaqs = faqs.filter((_, index) => index !== indexToRemove);
     setFaqs(updatedFaqs);
   };
 
+  const addFAQ = () => {
+    if (faqs.length < 5) {
+      setFaqs([...faqs, { question: '', answer: '' }]);
+      // Scroll to the new FAQ after it's added
+      setTimeout(() => {
+        faqsContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
   return (
-    <div className="mx-[2%] mb-[5%] [@media(max-width:1024px)]:mb-10">
-      <h1 className="font-medium text-7xl pb-[1rem] text-center">FAQs SECTION</h1>
-      <h5 className="text-[#939393] text-center">
-        Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
-      </h5>
-      <div className="flex justify-center ml-[8%] ">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0">
-          <div className="mt-4 pb-4  " ref={faqsContainerRef}>
-            {faqs.map((faq, index) => (
-              <div key={index} className="mt-4 relative">
-                {index >= 3 && (
-                  <button
-                    onClick={() => removeFAQ(index)}
-                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 "
-                  >
-                    <span>✕</span>
-                  </button>
-                )}
-                <h2 className="font-medium text-xl">FAQ {index + 1}</h2>
-                <div className="relative py-4">
-                  <TextInput
-                    type="text"
-                    name="question"
-                    value={faq.question}
-                    onChange={(e) => handleFAQChange(index, e)}
-                    placeholder="Question"
-                    className="w-full"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                    onFocus={() => toggleActiveFAQ(index)}
-                    onBlur={() => toggleActiveFAQ(null)}
-                  />
-                </div>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiHelpCircle className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Address common inquiries about your dance studio, helping potential students find quick answers.
+        </p>
+      </div>
+
+      <div className="space-y-8" ref={faqsContainerRef}>
+        {faqs.map((faq, index) => (
+          <div 
+            key={index}
+            className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">FAQ {index + 1}</h2>
+              {index >= 3 && (
+                <button
+                  onClick={() => removeFAQ(index)}
+                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  title="Remove FAQ"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              {/* Question Input */}
+              <div>
+                <Label 
+                  htmlFor={`question-${index}`}
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Question
+                </Label>
                 <TextInput
-                  name="answer"
-                  value={faq.answer}
+                  id={`question-${index}`}
+                  name="question"
+                  value={faq.question}
                   onChange={(e) => handleFAQChange(index, e)}
-                  placeholder="Answer"
+                  placeholder="Enter your question here"
                   className="w-full"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                  rows={activeFAQIndex === index ? 2 : 1}
                   onFocus={() => toggleActiveFAQ(index)}
                   onBlur={() => toggleActiveFAQ(null)}
                 />
               </div>
-            ))}
-            {faqs.length < 5 && (
-              <div className="mt-4 flex justify-center">
-                <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-                  Add FAQ
-                </button>
+
+              {/* Answer Input */}
+              <div>
+                <Label 
+                  htmlFor={`answer-${index}`}
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Answer
+                </Label>
+                <TextInput
+                  id={`answer-${index}`}
+                  name="answer"
+                  value={faq.answer}
+                  onChange={(e) => handleFAQChange(index, e)}
+                  placeholder="Enter your answer here"
+                  className="w-full"
+                  onFocus={() => toggleActiveFAQ(index)}
+                  onBlur={() => toggleActiveFAQ(null)}
+                />
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        ))}
+
+        {/* Add FAQ Button */}
+        {faqs.length < 5 && (
+          <button
+            onClick={addFAQ}
+            className="w-full py-4 border-2 border-dashed border-teal-200 rounded-xl text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2 bg-white"
+          >
+            <FiPlus className="w-5 h-5" />
+            Add New FAQ
+          </button>
+        )}
+
+        {/* Maximum FAQs Notice */}
+        {faqs.length >= 5 && (
+          <p className="text-center text-sm text-gray-500 mt-4">
+            Maximum number of FAQs reached (5)
+          </p>
+        )}
       </div>
     </div>
   );
