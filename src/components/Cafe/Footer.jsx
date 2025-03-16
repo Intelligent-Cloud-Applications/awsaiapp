@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
-import { FiChevronLeft, FiChevronRight, FiCheck } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiCheck, FiX } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { createAdminAccounts } from './account';
 
@@ -16,7 +16,8 @@ function Footer({
     openModal,
     testimonials,
     sections,
-    contactInfo
+    contactInfo,
+    isCurrentSectionValid
 }) {
     const UserCtx = useContext(Context);
     const Navigate = useNavigate();
@@ -30,10 +31,13 @@ function Footer({
         });
     };
 
+    const validateSocialMediaUrls = (contactInfo) => {
+        // Always return true since we don't want to validate social media URLs anymore
+        return true;
+    };
+
     const handleNextClick = async () => {
         try {
-            UserCtx.util.setLoader(true);
-            
             // Save current data
             saveData();
 
@@ -54,8 +58,8 @@ function Footer({
 
     const handlePrevClick = () => {
         if (currentSection === 0) {
-            // If we're on the first section, just open the modal
-            openModal();
+            // If we're on the first section, just navigate back without showing modal
+            Navigate('/dashboard');
         } else {
             // For other sections, show the modal first
             openModal();
@@ -77,60 +81,94 @@ function Footer({
     };
 
     const handleSubmit = async () => {
-        try {
-            if (!validateTestimonials()) return;
+        if (!validateTestimonials()) return;
 
+        // Validate social media URLs before final submission
+        if (!validateSocialMediaUrls(contactInfo)) {
+            return;
+        }
+
+        try {
             UserCtx.util.setLoader(true);
             
             const success = await nextSection();
 
             if (success && currentSection === sections.length - 1) {
-                // Create admin accounts after testimonial submission
-                await createAdminAccounts({
-                    institution: institutionId,
-                    country: 'default',
-                    admin1: {
-                        cognitoId: UserCtx.userData.cognitoId,
-                        emailId: UserCtx.userData.emailId,
-                        phoneNumber: UserCtx.userData.phoneNumber || '',
-                        userName: UserCtx.userData.userName
-                    },
-                    admin2: {
-                        emailId: contactInfo.emailId,
-                        phoneNumber: contactInfo.Query_PhoneNumber,
-                        userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
-                    }
-                });
+                try {
+                    // Create admin accounts after testimonial submission
+                    await createAdminAccounts({
+                        institution: institutionId,
+                        country: 'default',
+                        admin1: {
+                            cognitoId: UserCtx.userData.cognitoId,
+                            emailId: UserCtx.userData.emailId,
+                            phoneNumber: UserCtx.userData.phoneNumber || '',
+                            userName: UserCtx.userData.userName
+                        },
+                        admin2: {
+                            emailId: contactInfo.emailId,
+                            phoneNumber: contactInfo.Query_PhoneNumber,
+                            userName: `${contactInfo.firstName} ${contactInfo.lastName}`.trim()
+                        }
+                    });
 
-                const SecondaryColor = "#0000";
-                const PrimaryColor = "#30afbc";
-                const url = `https://happyprancer.com/allpayment/awsaiapp/${UserCtx.userData.cognitoId}/${UserCtx.userData.emailId}?primary=${PrimaryColor}&secondary=${SecondaryColor}&institutionId=${institutionId}`;
-                
-                // Clear form data
-                localStorage.removeItem('cafeFormData');
-                localStorage.removeItem('cafeFormLogo');
-                localStorage.removeItem('heroImage');
-                localStorage.removeItem('testimonialImages');
-                localStorage.removeItem('cafeFormMissionBg');
-                localStorage.removeItem('cafeCurrentSection');
-                
-                // Navigate to dashboard first
-                
-                // Open payment URL in new tab
-                window.open(url, '_blank');
-                
-                // Navigate to fresh form
-                setTimeout(() => {
-                    Navigate("/dashboard", { replace: true });
-                    window.location.reload(); // Force reload to reset all form states
-                }, 100);
+                    // Clear all local storage items
+                    const clearStorage = () => {
+                        const keysToRemove = [
+                            'cafeFormData',
+                            'cafeFormLogo',
+                            'heroImage',
+                            'testimonialImages',
+                            'cafeFormMissionBg',
+                            'cafeCurrentSection',
+                            'cafeFormHeroImage',
+                            'cafeFormTaglines',
+                            'cafeInstitutionId',
+                            'cafeCompanyName',
+                            'companyName',
+                            'institutionid',
+                            'formProgress',
+                            'currentStep',
+                            'formState',
+                            'contactInfo',
+                            'testimonials'
+                        ];
+
+                        keysToRemove.forEach(key => localStorage.removeItem(key));
+                        
+                        // For safety, remove any keys containing relevant keywords
+                        const keysToCheck = ['cafe', 'form', 'company', 'institution', 'step', 'subscription', 'class'];
+                        Object.keys(localStorage).forEach(key => {
+                            const keyLower = key.toLowerCase();
+                            if (keysToCheck.some(check => keyLower.includes(check))) {
+                                localStorage.removeItem(key);
+                            }
+                        });
+                    };
+
+                    clearStorage();
+
+                    // Turn off loader before navigation
+                    UserCtx.util.setLoader(false);
+                    
+                    // Navigate to pricing page
+                    Navigate(`/pricing?institutionId=${institutionId}`, { 
+                        replace: true,
+                        state: { from: 'cafe' }
+                    });
+
+                } catch (error) {
+                    console.error('Error in submission flow:', error);
+                    alert('Error during submission: ' + error.message);
+                    UserCtx.util.setLoader(false);
+                }
             } else {
                 scrollToTop();
+                UserCtx.util.setLoader(false);
             }
         } catch (error) {
             console.error("Error submitting form:", error);
             alert("Error: " + (error.message || "Failed to submit form. Please try again."));
-        } finally {
             UserCtx.util.setLoader(false);
         }
     };
@@ -142,10 +180,19 @@ function Footer({
                     {/* Back/Previous Button */}
                     <button
                         onClick={handlePrevClick}
-                        className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                        className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors ${currentSection === 0 ? 'border-2 border-white' : ''}`}
                     >
-                        <FiChevronLeft className="w-4 h-4" />
-                        {currentSection === 0 ? 'BACK' : 'PREVIOUS'}
+                        {currentSection === 0 ? (
+                            <>
+                                <FiX className="w-4 h-4" />
+                                CLOSE
+                            </>
+                        ) : (
+                            <>
+                                <FiChevronLeft className="w-4 h-4" />
+                                PREVIOUS
+                            </>
+                        )}
                     </button>
 
                     {/* Progress Section */}
@@ -177,18 +224,28 @@ function Footer({
                     {currentSection === sections.length - 1 ? (
                         <button
                             onClick={handleSubmit}
-                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                            disabled={!isCurrentSectionValid}
+                            className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 bg-[#30afbc]
+                                ${isCurrentSectionValid 
+                                    ? 'hover:bg-[#2b9ea9] cursor-pointer shadow-md' 
+                                    : 'opacity-60 cursor-not-allowed hover:opacity-70'}`}
+                            title={!isCurrentSectionValid ? "Please fill in all required fields" : ""}
                         >
                             SUBMIT
-                            <FiCheck className="w-4 h-4" />
+                            <FiCheck className={`w-4 h-4 ${!isCurrentSectionValid ? 'opacity-60' : ''}`} />
                         </button>
                     ) : (
                         <button
                             onClick={handleNextClick}
-                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+                            disabled={!isCurrentSectionValid}
+                            className={`flex items-center gap-2 px-6 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 bg-[#30afbc]
+                                ${isCurrentSectionValid 
+                                    ? 'hover:bg-[#2b9ea9] cursor-pointer shadow-md' 
+                                    : 'opacity-60 cursor-not-allowed hover:opacity-70'}`}
+                            title={!isCurrentSectionValid ? "Please fill in all required fields" : ""}
                         >
                             NEXT
-                            <FiChevronRight className="w-4 h-4" />
+                            <FiChevronRight className={`w-4 h-4 ${!isCurrentSectionValid ? 'opacity-60' : ''}`} />
                         </button>
                     )}
                 </div>
@@ -204,10 +261,11 @@ Footer.propTypes = {
     saveData: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     institutionId: PropTypes.string,
-    openModal: PropTypes.func,
+    openModal: PropTypes.func.isRequired,
     testimonials: PropTypes.array,
-    
-    contactInfo: PropTypes.object.isRequired
+    sections: PropTypes.array.isRequired,
+    contactInfo: PropTypes.object.isRequired,
+    isCurrentSectionValid: PropTypes.bool.isRequired
 };
 
 export default Footer;

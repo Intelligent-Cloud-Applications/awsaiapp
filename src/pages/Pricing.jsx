@@ -13,8 +13,9 @@ const Pricing = () => {
   // Get institutionId and cognitoId from navigation state or URL params
   const { search } = location;
   const params = new URLSearchParams(search);
-  const institutionIdFromUrl = params.get('institutionId');
-  const { institutionId: institutionIdFromState, cognitoId } = location.state || {};
+  const institutionIdFromUrl = params.get("institutionId");
+  const { institutionId: institutionIdFromState, cognitoId } =
+    location.state || {};
   const institutionId = institutionIdFromUrl || institutionIdFromState;
 
   return (
@@ -43,7 +44,9 @@ const Pricing = () => {
               <p className="text-xl xl:text-2xl pb-4 text-center">
                 Per {product.durationText}
               </p>
-              <h4 className="text-xl xl:text-2xl font-semibold pb-2">Features</h4>
+              <h4 className="text-xl xl:text-2xl font-semibold pb-2">
+                Features
+              </h4>
               <ul className="text-sm p-2 flex-grow">
                 {product.provides.map((feature, index) => (
                   <li key={index}>{feature}</li>
@@ -51,19 +54,22 @@ const Pricing = () => {
               </ul>
               <button
                 onClick={() => {
-                  // Use the cognitoId from state if available, otherwise from context
                   const userCognitoId = cognitoId || Ctx.userData.cognitoId;
-                  
-                  // Construct the URL with path parameters
-                  const url = process.env.REACT_APP_STAGE === "PROD"
-                    ? `https://payment.happyprancer.com/awsaiapp/${product.productId}/${userCognitoId}/${institutionId || ''}`
-                    : `https://betapayment.happyprancer.com/awsaiapp/${product.productId}/${userCognitoId}/${institutionId || ''}`;
 
-                  window.open(
-                    url,
-                    "_blank",
-                    "noopener,noreferrer"
-                  );
+                  const url =
+                    process.env.REACT_APP_STAGE === "PROD"
+                      ? `https://payment.happyprancer.com/awsaiapp/${
+                          product.productId
+                        }/${encodeURIComponent(
+                          userCognitoId
+                        )}?childInstitution=${institutionId || ""}`
+                      : `https://betapayment.happyprancer.com/awsaiapp/${
+                          product.productId
+                        }/${encodeURIComponent(
+                          userCognitoId
+                        )}?childInstitution=${institutionId || ""}`;
+
+                  window.location.href = url;
                 }}
                 className="mt-auto text-white text-lg font-semibold bg-black hover:bg-[#30AFBC] hover:text-black py-2 px-4 rounded-lg w-full"
               >
