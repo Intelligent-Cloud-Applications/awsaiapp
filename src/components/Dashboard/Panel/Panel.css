@@ -4,57 +4,57 @@
     list-style: none;
     padding: 0;
 }
-  
+
 .custom-pagination li {
     font-size: 1rem;
 }
-  
+
 .custom-pagination .Mui-selected {
     border-radius: 0.1875rem;
     background-color: #30AFBC !important;
     color: #fff;
 }
-  
+
 .css-yuzg60-MuiButtonBase-root-MuiPaginationItem-root {
     border: 1px solid rgba(196, 196, 196, 0.475) !important;
     border-radius: .1875rem !important;
     min-width: 1rem !important;
     height: 1.3rem !important;
 }
-  
+
 .css-1v2lvtn-MuiPaginationItem-root.ellipsis {
     display: inline !important;
 }
-  
+
 .scroll-container::-webkit-scrollbar {
     width: 4px;
     background-color: #DBDBDB;
     height: 4px;
 }
-  
+
 .scroll-container::-webkit-scrollbar-thumb {
     background-color: #484848;
     border-radius: 10px;
 }
-  
+
 .scroll-container::-webkit-scrollbar-thumb:hover {
     background-color: #474747;
 }
-  
+
 .container-fluid {
     width: 79vw !important;
 }
-  
+
 .email-hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-  
+
 .email-hover:hover {
     white-space: normal;
 }
-  
+
 .moveRight {
     animation: moveRight 1.5s ease-in-out;
 }
@@ -62,16 +62,17 @@
 .clients-data-table {
     background-color: #fff !important;
 }
+
 .clients-data-table:hover {
     background-color: #f5f5f5 !important;
 }
-  
+
 @keyframes moveRight {
     0% {
         transform: translateX(-100%);
         opacity: 0;
     }
-  
+
     100% {
         transform: translateX(0%);
         opacity: 1;
@@ -112,9 +113,10 @@
         opacity: 1;
     }
 }
-  
+
 .imganimation {
-    animation: imgAnimation 3s ease infinite; /* You can adjust the duration and timing function as needed */
+    animation: imgAnimation 3s ease infinite;
+    /* You can adjust the duration and timing function as needed */
 }
 
 /* Define the keyframes for the animation */
@@ -122,9 +124,11 @@
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }
@@ -132,14 +136,16 @@
 
 @media (min-width: 600px) and (max-width: 1030px) {
     .container-fluid {
-        width: 90vw !important; /* Adjust width for smaller screens */
-    }
-    
-    .custom-pagination li {
-        font-size: 0.9rem; /* Adjust font size for better readability */
+        width: 90vw !important;
+        /* Adjust width for smaller screens */
     }
 
-    .panel{
+    .custom-pagination li {
+        font-size: 0.9rem;
+        /* Adjust font size for better readability */
+    }
+
+    .panel {
         margin-left: 16rem;
     }
 }
@@ -148,13 +154,17 @@
     body {
         margin-bottom: 0px;
     }
+
     .more {
         display: none;
     }
 }
 
 @media screen and (max-width: 1230px) and (min-width: 1008px) {
-    .flowbite-table, .upper-section {
-        width: 70% !important; /* Maintain existing styles */
+
+    .flowbite-table,
+    .upper-section {
+        width: 70% !important;
+        /* Maintain existing styles */
     }
 }

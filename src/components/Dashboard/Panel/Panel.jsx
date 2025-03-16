@@ -415,7 +415,7 @@ const Panel = () => {
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
 
     const handleInstitutionClick = (client) => {
-        if (!client.payment) {
+        if (client.payment ? !client.payment : true) {
             navigate(`/pricing?institutionId=${client.institutionid}`, {
                 state: {
                     institutionId: client.institutionid,
@@ -467,7 +467,7 @@ const Panel = () => {
                 <>
                     {screenWidth > 1023 ? (
                         <>
-                            <div className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
+                            <div className={`w-screen flex flex-col h-[98vh] justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
 
                                 <ToastContainer />
                                 <div className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? 'flex-col' : 'flex-row'}`}>
