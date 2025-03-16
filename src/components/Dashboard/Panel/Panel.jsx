@@ -892,10 +892,7 @@ const Panel = () => {
                                     <Dropdown.Item
                                       className="hover:bg-gray-200 focus:bg-gray-200"
                                       onClick={() => {
-                                        //   setPlanStatuses((prev) => ({
-                                        //     ...prev,
-                                        //     [client.institutionid]: "Basic",
-                                        //   }));
+
                                         setSelectedClientForModal(client);
                                         setSelectedPlanForModal("Basic");
                                         setIsModalOpen(true);
