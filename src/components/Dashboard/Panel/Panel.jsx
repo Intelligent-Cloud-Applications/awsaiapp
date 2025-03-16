@@ -1084,7 +1084,7 @@ const Panel = () => {
                                   />
                                 ) : null}
 
-                                {client.institutionType === "Dance Studio" &&
+                                {client.institutionType === "DanceStudio" &&
                                   client.domainLink && (
                                     <>
                                       <BsQrCodeScan
