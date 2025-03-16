@@ -19,6 +19,7 @@ import { RiExternalLinkLine } from "react-icons/ri";
 import { BsQrCodeScan } from "react-icons/bs";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
+// import { Start } from "@mui/icons-material";
 
 const Panel = () => {
     const itemsPerPage = 5;
@@ -26,6 +27,7 @@ const Panel = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState(null);
     const [isMonthlyReport, setisMonthlyReport] = useState("");
+
     const { clients, userData } = useContext(Context);
     const clientsData = Object.entries(clients?.data || {});
     const [selectedStatuses, setSelectedStatuses] = useState({});
@@ -45,7 +47,15 @@ const Panel = () => {
     const [instituteType, setInstituteType] = useState("");
     const Ctx = useContext(Context);
     const type = ["Dance Studio", "Dentist", "Cafe", "Course Based"];
-    const filterType = ["Dance Studio", "Dentist", "Cafe", "Course Based", "Parlour", "Furniture", "Marble shop"];
+    const filterType = [
+        "Dance Studio",
+        "Dentist",
+        "Cafe",
+        "Course Based",
+        "Parlour",
+        "Furniture",
+        "Marble shop",
+    ];
     // const [memberCounts, setMemberCounts] = useState({});
     const [filterStatus, setFilterStatus] = useState(null);
     const [domainLinks, setDomainLinks] = useState({});
@@ -53,7 +63,6 @@ const Panel = () => {
     const [isResponsive, setIsResponsive] = useState(false);
 
     const menuRef = useRef(null);
-
 
     useEffect(() => {
         const handleResize = () => {
@@ -65,6 +74,32 @@ const Panel = () => {
 
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    // domain link Start
+    const allowedDomains = ["awsaiapp.com", "happyprancer.com"];
+
+    const formatDomainLink = (url) => {
+        url = url.trim();
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+        if (url.endsWith("/")) {
+            url = url.slice(0, -1);
+        }
+        return url;
+    };
+
+    const validateDomainLink = (url) => {
+        try {
+            const parsedUrl = new URL(url);
+            return (
+                (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") &&
+                allowedDomains.some((domain) => parsedUrl.hostname.endsWith(domain))
+            );
+        } catch (e) {
+            return false;
+        }
+    };
     const handleDeliverableUpdate = async (institutionid, deliverable) => {
         const domainLink = domainLinks[institutionid];
 
@@ -95,11 +130,19 @@ const Panel = () => {
             toast.error("An error occurred while updating the deliverable.");
         }
     };
+
     const handleDomainLinkSubmit = async (institutionid) => {
-        const domainLink = domainLinks[institutionid];
+        let domainLink = domainLinks[institutionid]?.trim() || "";
 
         if (!domainLink) {
-            toast.error("Domain link cannot be empty for Completed deliverables.");
+            toast.error("You can't fill an empty domain link with status Completed.");
+            return;
+        }
+
+        domainLink = formatDomainLink(domainLink); // Ensure correct format
+
+        if (!validateDomainLink(domainLink)) {
+            toast.error("Invalid domain. Allowed domains: awsaiapp.com, happyprancer.com");
             return;
         }
 
@@ -115,12 +158,14 @@ const Panel = () => {
             setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
             const response = await API.get("clients", "/admin/list-institution");
             clients.setClients(response);
-            toast.success("Domain link submitted successfully!");
+            toast.success("Domain link updated successfully!");
         } catch (error) {
             console.error("Error submitting domain link:", error);
-            toast.error("An error occurred while submitting the domain link.");
+            toast.error("An error occurred while updating the domain link.");
         }
     };
+
+    //   domain link ends
 
     const [openModal, setOpenModal] = useState(false);
     const [modalPlacement] = useState("center");
@@ -218,8 +263,10 @@ const Panel = () => {
                 ? String(client.institutionid).toLowerCase()
                 : "";
             const matchesQuery = !searchQuery || institution.includes(query);
-            const matchesType = !selectedType || client.institutionType === selectedType;
-            const matchesDelivery = filterStatus === null || client.isDelivered === filterStatus;
+            const matchesType =
+                !selectedType || client.institutionType === selectedType;
+            const matchesDelivery =
+                filterStatus === null || client.isDelivered === filterStatus;
 
             return matchesQuery && matchesType && matchesDelivery;
         });
@@ -374,7 +421,6 @@ const Panel = () => {
         }
     };
 
-
     // const handlePayment = () => {
     //     console.log("redirect to pricing");
 
@@ -410,17 +456,19 @@ const Panel = () => {
         },
         []
     );
+    // eslint-disable-next-line
     const [tempInstitution, setTempInstitution] = useState(null);
     const [showMemberList, setShowMemberList] = useState(false);
+    // eslint-disable-next-line
     const [selectedInstitutionType, setSelectedInstitutionType] = useState(null);
 
     const handleInstitutionClick = (client) => {
-        if (client.payment ? !client.payment : true) {
+        if (!client.payment) {
             navigate(`/pricing?institutionId=${client.institutionid}`, {
                 state: {
                     institutionId: client.institutionid,
-                    cognitoId: Ctx.userData.cognitoId
-                }
+                    cognitoId: Ctx.userData.cognitoId,
+                },
             });
         } else {
             console.log("Data to set", client);
@@ -467,17 +515,21 @@ const Panel = () => {
                 <>
                     {screenWidth > 1023 ? (
                         <>
-                            <div className={`w-screen flex flex-col h-[98vh] justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? 'px-4' : 'lg:ml-[10%]'}`}>
-
+                            <div
+                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
+                                    }`}
+                            >
                                 <ToastContainer />
-                                <div className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? 'flex-col' : 'flex-row'}`}>
-
+                                <div
+                                    className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
+                                        }`}
+                                >
                                     <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
                                         <Select
                                             value={instituteType}
                                             onChange={(e) => setInstituteType(e.target.value)}
-                                            className={`text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}
-
+                                            className={`text-white font-semibold shadow-md border-1 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full ${isResponsive ? "mt-2" : "sm:w-auto"
+                                                }`}
                                         >
                                             {instituteType === "" && (
                                                 <option value="" disabled hidden>
@@ -518,8 +570,10 @@ const Panel = () => {
                                             }}
                                             className="hover:no-underline"
                                         >
-                                            <button className={`flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full ${isResponsive ? 'mt-2' : 'sm:w-auto'}`}>
-
+                                            <button
+                                                className={`flex items-center gap-2 p-2 bg-[#48d6e0] font-semibold text-sm rounded-md hover:bg-[#3ae1f7] focus:outline-none focus:ring-2 focus:ring-[#6cebff] transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full ${isResponsive ? "mt-2" : "sm:w-auto"
+                                                    }`}
+                                            >
                                                 <p className="text-white">Create New Institution</p>
                                             </button>
                                         </Link>
@@ -527,7 +581,6 @@ const Panel = () => {
                                 </div>
                                 <div className="w-[78%] mt-4 rounded-md flex flex-col justify-center bg-white py-3 flowbite-table">
                                     <div className="flex flex-row w-[95%] items-center mt-[1rem] my-10 md:my-0 max850:flex-col max850:justify-center max850:items-center justify-between">
-
                                         <div className="relative inline-block ml-5" ref={menuRef}>
                                             <button
                                                 className="flex flex-row bg-[#3cc0c9] text-white px-4 py-2  font-semibold text-sm rounded-md "
@@ -650,8 +703,10 @@ const Panel = () => {
                                         </form>
                                     </div>
                                     {/* Headings */}
-                                    <div className={`overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto ${isResponsive ? 'px-2' : ''}`}>
-
+                                    <div
+                                        className={`overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto ${isResponsive ? "px-2" : ""
+                                            }`}
+                                    >
                                         <Table className="w-full text-sm text-left text-gray-500">
                                             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                                                 {/* <Table.HeadCell></Table.HeadCell> */}
@@ -713,13 +768,12 @@ const Panel = () => {
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
 
-                                                            onClick={(e) => handleRowClick(client, e)}
+                                                        onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
-                                                            onClick={() => {
-                                                                handleInstitutionClick(client);
-                                                            }}
-
+                                                                onClick={() => {
+                                                                    handleInstitutionClick(client);
+                                                                }}
                                                             >
                                                                 <div className="email-hover font-semibold text-[#11192B]">
                                                                     {client.institutionid}
@@ -814,8 +868,9 @@ const Panel = () => {
                                                             </Table.Cell>
                                                         )}
                                                         {(Ctx.userData.role === "owner" ||
-                                                            Ctx.userData.role === "sale") && (client.payment ?
-                                                                (<Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                            Ctx.userData.role === "sale") &&
+                                                            (client.payment ? (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
                                                                     <Dropdown
                                                                         label={
                                                                             planStatuses[client.institutionid] ||
@@ -861,11 +916,11 @@ const Panel = () => {
                                                                         </Dropdown.Item>
                                                                     </Dropdown>
                                                                 </Table.Cell>
-                                                                ) : (
-                                                                    <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
-                                                                        No Plan
-                                                                    </Table.Cell>
-                                                                ))}
+                                                            ) : (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                    No Plan
+                                                                </Table.Cell>
+                                                            ))}
                                                         <Table.Cell
                                                             className={`${showHiddenContent ? "" : "max1008:hidden"
                                                                 } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
@@ -945,11 +1000,12 @@ const Panel = () => {
                                                                         value={
                                                                             domainLinks[client.institutionid] || ""
                                                                         }
-                                                                        placeholder={
-                                                                            client.domainLink
-                                                                                ? client.domainLink
-                                                                                : "Enter the Domain link"
-                                                                        }
+                                                                        // placeholder={
+                                                                        //   client.domainLink
+                                                                        //     ? client.domainLink
+                                                                        //     : "Enter the Domain link"
+                                                                        // }
+                                                                        placeholder="Enter the Domain Link"
                                                                         required
                                                                         disabled={
                                                                             selectedStatuses[client.institutionid] !==
@@ -1010,78 +1066,83 @@ const Panel = () => {
                                                                     />
                                                                 ) : null}
 
-                                                                {client.domainLink ? (
-                                                                    <>
-                                                                        <BsQrCodeScan
-                                                                            className="text-blue-500 cursor-pointer h-5 w-5"
-                                                                            onClick={() =>
-                                                                                setOpenModal(client.institutionid)
-                                                                            }
-                                                                        />
-                                                                        <Modal
-                                                                            show={openModal === client.institutionid}
-                                                                            position={modalPlacement}
-                                                                            onClose={() => setOpenModal(false)}
-                                                                        >
-                                                                            <Modal.Header>Attendance QR</Modal.Header>
-                                                                            <Modal.Body>
-                                                                                <div className="flex flex-col items-center space-y-4">
-                                                                                    <figure className="w-fit flex flex-col items-center">
-                                                                                        <QR
-                                                                                            url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
-                                                                                            download={`${client.companyName} Attendance QR Code.png`}
-                                                                                            size={300}
-                                                                                        />
-                                                                                    </figure>
-                                                                                    <h1 className="text-center font-semibold">
-                                                                                        Institution Name:{" "}
-                                                                                        {client.companyName}
-                                                                                    </h1>
-                                                                                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
-                                                                                        This is the attendance QR for the{" "}
-                                                                                        {client.companyName} institution.
-                                                                                        Please tap on the QR code to
-                                                                                        download it.
-                                                                                    </p>
-                                                                                </div>
-                                                                            </Modal.Body>
-                                                                            <Modal.Footer>
-                                                                                <a
-                                                                                    href={
-                                                                                        client.domainLink +
-                                                                                        "/put-attendance"
-                                                                                    }
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    onClick={(e) => {
-                                                                                        const linkToCopy =
+                                                                {client.institutionType === "Dance Studio" &&
+                                                                    client.domainLink && (
+                                                                        <>
+                                                                            <BsQrCodeScan
+                                                                                className="text-blue-500 cursor-pointer h-5 w-5"
+                                                                                onClick={() =>
+                                                                                    setOpenModal(client.institutionid)
+                                                                                }
+                                                                            />
+                                                                            <Modal
+                                                                                show={
+                                                                                    openModal === client.institutionid
+                                                                                }
+                                                                                position={modalPlacement}
+                                                                                onClose={() => setOpenModal(false)}
+                                                                            >
+                                                                                <Modal.Header>
+                                                                                    Attendance QR
+                                                                                </Modal.Header>
+                                                                                <Modal.Body>
+                                                                                    <div className="flex flex-col items-center space-y-4">
+                                                                                        <figure className="w-fit flex flex-col items-center">
+                                                                                            <QR
+                                                                                                url={`${client.domainLink}/put-attendance?id=${client.institutionid}`}
+                                                                                                download={`${client.companyName} Attendance QR Code.png`}
+                                                                                                size={300}
+                                                                                            />
+                                                                                        </figure>
+                                                                                        <h1 className="text-center font-semibold">
+                                                                                            Institution Name:{" "}
+                                                                                            {client.companyName}
+                                                                                        </h1>
+                                                                                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                                                                            This is the attendance QR for the{" "}
+                                                                                            {client.companyName} institution.
+                                                                                            Please tap on the QR code to
+                                                                                            download it.
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </Modal.Body>
+                                                                                <Modal.Footer>
+                                                                                    <a
+                                                                                        href={
                                                                                             client.domainLink +
-                                                                                            "/put-attendance";
+                                                                                            "/put-attendance"
+                                                                                        }
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        onClick={(e) => {
+                                                                                            const linkToCopy =
+                                                                                                client.domainLink +
+                                                                                                "/put-attendance";
 
-                                                                                        navigator.clipboard
-                                                                                            .writeText(linkToCopy)
-                                                                                            .then(() => {
-                                                                                                toast.success(
-                                                                                                    "Link copied to clipboard!"
-                                                                                                );
-                                                                                            })
-                                                                                            .catch((err) => {
-                                                                                                toast.error(
-                                                                                                    "Failed to copy link."
-                                                                                                );
-                                                                                                console.error(
-                                                                                                    "Clipboard copy failed:",
-                                                                                                    err
-                                                                                                );
-                                                                                            });
-                                                                                    }}
-                                                                                >
-                                                                                    <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
-                                                                                </a>
-                                                                            </Modal.Footer>
-                                                                        </Modal>
-                                                                    </>
-                                                                ) : null}
+                                                                                            navigator.clipboard
+                                                                                                .writeText(linkToCopy)
+                                                                                                .then(() => {
+                                                                                                    toast.success(
+                                                                                                        "Link copied to clipboard!"
+                                                                                                    );
+                                                                                                })
+                                                                                                .catch((err) => {
+                                                                                                    toast.error(
+                                                                                                        "Failed to copy link."
+                                                                                                    );
+                                                                                                    console.error(
+                                                                                                        "Clipboard copy failed:",
+                                                                                                        err
+                                                                                                    );
+                                                                                                });
+                                                                                        }}
+                                                                                    >
+                                                                                        <RiExternalLinkLine className="text-blue-500 cursor-pointer h-5 w-5" />
+                                                                                    </a>
+                                                                                </Modal.Footer>
+                                                                            </Modal>
+                                                                        </>
+                                                                    )}
                                                             </div>
                                                         </Table.Cell>
 
@@ -1173,7 +1234,6 @@ const Panel = () => {
                                     onClick={() =>
                                         setActiveMenu((prev) => (prev ? null : "main"))
                                     }
-
                                 >
                                     {(selectedType !== null || filterStatus !== null) && (
                                         <span className="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
@@ -1277,18 +1337,15 @@ const Panel = () => {
                                             <div
                                                 className="flex justify-between items-center text-center"
 
-                                                onClick={(e) => handleRowClick(client, e)}
-
+                                            onClick={(e) => handleRowClick(client, e)}
                                             >
                                                 <div className="font-semibold text-[#11192B]">
                                                     {client.institutionid}
                                                 </div>
                                                 <Link
-
-                                                onClick={() => {
-                                                    handleInstitutionClick(client);
-                                                }}
-
+                                                    onClick={() => {
+                                                        handleInstitutionClick(client);
+                                                    }}
                                                 >
                                                     <div className="text-[#30AFBC] text-sm">
                                                         <AiOutlineEye size={20} />
@@ -1506,6 +1563,7 @@ const Panel = () => {
                                                         placeholder={
                                                             client.domainLink || "Enter the Domain link"
                                                         }
+                                                        // placeholder="Enter the Domain Link"
                                                         required
                                                         disabled={
                                                             selectedStatuses[client.institutionid] !==
@@ -1635,8 +1693,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === 1}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                                                ? "bg-gray-200 text-gray-500"
-                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                    ? "bg-gray-200 text-gray-500"
+                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Previous
@@ -1648,8 +1706,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === totalPages}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                                                ? "bg-gray-200 text-gray-500"
-                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                    ? "bg-gray-200 text-gray-500"
+                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Next
