@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import { AiOutlineEye } from "react-icons/ai";
 import { BsQrCodeScan } from "react-icons/bs";
 import { FaCheck, FaChevronRight } from "react-icons/fa";
-import { HiChevronDown, HiChevronRight, HiChevronUp, HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiChevronDown, HiChevronRight, HiChevronUp } from "react-icons/hi";
 import { RiExternalLinkLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -846,10 +846,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                       <Dropdown.Item
                                         className="hover:bg-gray-200 focus:bg-gray-200"
                                         onClick={() => {
-                                          setPlanStatuses((prev) => ({
-                                            ...prev,
-                                            [client.institutionid]: "Basic",
-                                          }));
+                                        //   setPlanStatuses((prev) => ({
+                                        //     ...prev,
+                                        //     [client.institutionid]: "Basic",
+                                        //   }));
                                           setSelectedClientForModal(client);
                                           setSelectedPlanForModal("Basic");
                                           setIsModalOpen(true);
@@ -861,10 +861,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                       <Dropdown.Item
                                         className="hover:bg-gray-200 focus:bg-gray-200"
                                         onClick={() => {
-                                          setPlanStatuses((prev) => ({
-                                            ...prev,
-                                            [client.institutionid]: "Standard",
-                                          }));
+                                        //   setPlanStatuses((prev) => ({
+                                        //     ...prev,
+                                        //     [client.institutionid]: "Standard",
+                                        //   }));
                                           setSelectedClientForModal(client);
                                           setSelectedPlanForModal("Standard");
                                           setIsModalOpen(true);
@@ -876,10 +876,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                       <Dropdown.Item
                                         className="hover:bg-gray-200 focus:bg-gray-200"
                                         onClick={() => {
-                                          setPlanStatuses((prev) => ({
-                                            ...prev,
-                                            [client.institutionid]: "Advance",
-                                          }));
+                                        //   setPlanStatuses((prev) => ({
+                                        //     ...prev,
+                                        //     [client.institutionid]: "Advance",
+                                        //   }));
                                           setSelectedClientForModal(client);
                                           setSelectedPlanForModal("Advance");
                                           setIsModalOpen(true);
@@ -1414,10 +1414,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                 >
                                   <Dropdown.Item
                                     onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Basics",
-                                      }));
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Basics",
+                                    //   }));
                                       setSelectedClientForModal(client);
                                       setSelectedPlanForModal("Basic");
                                       setIsModalOpen(true);
@@ -1427,10 +1427,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                   </Dropdown.Item>
                                   <Dropdown.Item
                                     onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Standard",
-                                      }));
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Standard",
+                                    //   }));
                                       setSelectedClientForModal(client);
                                       setSelectedPlanForModal("Standard");
                                       setIsModalOpen(true);
@@ -1440,10 +1440,10 @@ const [isModalOpen,setIsModalOpen] = useState(false);
                                   </Dropdown.Item>
                                   <Dropdown.Item
                                     onClick={() => {
-                                      setPlanStatuses((prev) => ({
-                                        ...prev,
-                                        [client.institutionid]: "Advance",
-                                      }));
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Advance",
+                                    //   }));
                                       setSelectedClientForModal(client);
                                       setSelectedPlanForModal("Advance");
                                       setIsModalOpen(true);
@@ -1722,42 +1722,6 @@ const [isModalOpen,setIsModalOpen] = useState(false);
           //     handlePayment()
         )}
         {isModalOpen && (
-          //   <Modal
-          //     show={isModalOpen}
-          //     position="center"
-          //     onClose={() => setIsModalOpen(false)}
-          //     size={"md"}
-          //   >
-          //     <Modal.Header>Confirm Plan Change</Modal.Header>
-          //     <Modal.Body>
-          //       <div className="flex flex-col space-y-4">
-          //         <p className="text-base leading-relaxed text-gray-500">
-          //           Are you sure you want to change the plan to{" "}
-          //           <span className="font-semibold">{selectedPlanForModal}</span>{" "}
-          //           for this institution?
-          //         </p>
-          //       </div>
-          //     </Modal.Body>
-          //     <Modal.Footer>
-          //       <div className="flex justify-end gap-2">
-          //         <Button color="failure" onClick={() => setIsModalOpen(false)}>
-          //           Cancel
-          //         </Button>
-          //         <Button
-          //           className="bg-[#30AFBC] hover:bg-[#289da9]"
-          //           onClick={() => {
-          //             handlePlanChange(
-          //               selectedClientForModal,
-          //               selectedPlanForModal
-          //             );
-          //             setIsModalOpen(false);
-          //           }}
-          //         >
-          //           Confirm Change
-          //         </Button>
-          //       </div>
-          //     </Modal.Footer>
-          //   </Modal>
           <Modal
             show={isModalOpen}
             size="md"
@@ -1767,17 +1731,35 @@ const [isModalOpen,setIsModalOpen] = useState(false);
             <Modal.Header />
             <Modal.Body>
               <div className="text-center">
-                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to change the plan to {" "}
+                  Are you sure you want to change the plan to{" "}
                   <span className="font-semibold">{selectedPlanForModal}</span>{" "}
-                   for this institution?
+                  for this institution?
                 </h3>
                 <div className="flex justify-center gap-4">
-                  <Button color="teal" onClick={() => setIsModalOpen(false)}>
+                  <Button
+                    color="teal"
+                    onClick={() => {
+                      setPlanStatuses((prev) => ({
+                        ...prev,
+                        [selectedClientForModal.institutionid]:
+                          selectedPlanForModal,
+                      }));
+                      handlePlanChange(
+                        selectedClientForModal,
+                        selectedPlanForModal
+                      );
+                      setIsModalOpen(false);
+                    }}
+                  >
                     {"Yes, I'm sure"}
                   </Button>
-                  <Button color="gray" onClick={() => setIsModalOpen(false)}>
+                  <Button
+                    color="gray"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                    }}
+                  >
                     No, cancel
                   </Button>
                 </div>
