@@ -220,7 +220,7 @@ const CompleteDraft = () => {
                 console.log("Data requesting for PUT", body);
 
                 // Call the API
-                const response = await API.post("clients", "/user/dentalWebDevForm", {
+                const response = await API.put("clients", "/user/dentalWebDevForm", {
                     body,
                     headers: {
                         "Content-Type": "application/json",

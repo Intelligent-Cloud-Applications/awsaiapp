@@ -16,20 +16,20 @@ const Query = ({ activeComponent }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
-    email: "",
+    emailId: "",
     phoneNumber: "",
     address: "",
     projectDetails: "",
   });
-  const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
+  const [errors, setErrors] = useState({ emailId: "", phoneNumber: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "email") {
+    if (name === "emailId") {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setErrors({
         ...errors,
-        email: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
+        emailId: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
       });
     }
     if (name === "phoneNumber") {
@@ -58,7 +58,7 @@ const Query = ({ activeComponent }) => {
       }
       await API.post("clients", "/any/create-query", { body: formData });
       alert("Submitted Successfully");
-      setFormData({ fullName: "", companyName: "", email: "", phoneNumber: "", address: "", projectDetails: "" });
+      setFormData({ fullName: "", companyName: "", emailId: "", phoneNumber: "", address: "", projectDetails: "" });
       navigate("/");
     } catch (error) {
       alert("Error sending message: " + error.message);
@@ -83,7 +83,7 @@ const Query = ({ activeComponent }) => {
               {[
                 { label: "Full Name", name: "fullName", type: "text" },
                 { label: "Company Name", name: "companyName", type: "text" },
-                { label: "Email", name: "email", type: "email", error: errors.email },
+                { label: "Email", name: "emailId", type: "email", error: errors.emailId },
                 { label: "Phone Number", name: "phoneNumber", type: "text", error: errors.phoneNumber },
               ].map(({ label, name, type, error }) => (
                 <div key={name}>
