@@ -61,6 +61,9 @@ const Panel = () => {
   const [domainLinks, setDomainLinks] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [isResponsive, setIsResponsive] = useState(false);
+  const [selectedClientForModal, setSelectedClientForModal] = useState(null);
+  const [selectedPlanForModal, setSelectedPlanForModal] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const menuRef = useRef(null);
 
@@ -133,19 +136,21 @@ const Panel = () => {
 
   const handleDomainLinkSubmit = async (institutionid) => {
     let domainLink = domainLinks[institutionid]?.trim() || "";
-  
+
     if (!domainLink) {
       toast.error("You can't fill an empty domain link with status Completed.");
       return;
     }
-  
+
     domainLink = formatDomainLink(domainLink); // Ensure correct format
-  
+
     if (!validateDomainLink(domainLink)) {
-      toast.error("Invalid domain. Allowed domains: awsaiapp.com, happyprancer.com");
+      toast.error(
+        "Invalid domain. Allowed domains: awsaiapp.com, happyprancer.com"
+      );
       return;
     }
-  
+
     try {
       await API.put("clients", `/admin/update-deliverable`, {
         body: {
@@ -154,7 +159,7 @@ const Panel = () => {
           domainLink,
         },
       });
-  
+
       setDomainLinks((prev) => ({ ...prev, [institutionid]: domainLink }));
       const response = await API.get("clients", "/admin/list-institution");
       clients.setClients(response);
@@ -164,7 +169,7 @@ const Panel = () => {
       toast.error("An error occurred while updating the domain link.");
     }
   };
-  
+
   //   domain link ends
 
   const [openModal, setOpenModal] = useState(false);
@@ -516,7 +521,7 @@ const Panel = () => {
           {screenWidth > 1023 ? (
             <>
               <div
-                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${
+                className={`w-screen h-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${
                   isResponsive ? "px-4" : "lg:ml-[10%]"
                 }`}
               >
@@ -887,11 +892,11 @@ const Panel = () => {
                                     <Dropdown.Item
                                       className="hover:bg-gray-200 focus:bg-gray-200"
                                       onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Basic",
-                                        }));
-                                        handlePlanChange(client, "Basic");
+
+                                        setSelectedClientForModal(client);
+                                        setSelectedPlanForModal("Basic");
+                                        setIsModalOpen(true);
+                                        console.log("Opening modal", client);
                                       }}
                                     >
                                       Basics
@@ -899,11 +904,14 @@ const Panel = () => {
                                     <Dropdown.Item
                                       className="hover:bg-gray-200 focus:bg-gray-200"
                                       onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Standard",
-                                        }));
-                                        handlePlanChange(client, "Standard");
+                                        //   setPlanStatuses((prev) => ({
+                                        //     ...prev,
+                                        //     [client.institutionid]: "Standard",
+                                        //   }));
+                                        setSelectedClientForModal(client);
+                                        setSelectedPlanForModal("Standard");
+                                        setIsModalOpen(true);
+                                        console.log("Opening modal", client);
                                       }}
                                     >
                                       Standard
@@ -911,11 +919,14 @@ const Panel = () => {
                                     <Dropdown.Item
                                       className="hover:bg-gray-200 focus:bg-gray-200"
                                       onClick={() => {
-                                        setPlanStatuses((prev) => ({
-                                          ...prev,
-                                          [client.institutionid]: "Advance",
-                                        }));
-                                        handlePlanChange(client, "Advance");
+                                        //   setPlanStatuses((prev) => ({
+                                        //     ...prev,
+                                        //     [client.institutionid]: "Advance",
+                                        //   }));
+                                        setSelectedClientForModal(client);
+                                        setSelectedPlanForModal("Advance");
+                                        setIsModalOpen(true);
+                                        console.log("Opening modal", client);
                                       }}
                                     >
                                       Advance
@@ -1073,7 +1084,7 @@ const Panel = () => {
                                   />
                                 ) : null}
 
-                                {client.institutionType === "Dance Studio" &&
+                                {client.institutionType === "DanceStudio" &&
                                   client.domainLink && (
                                     <>
                                       <BsQrCodeScan
@@ -1437,34 +1448,46 @@ const Panel = () => {
                                 inline
                               >
                                 <Dropdown.Item
+                                  className="hover:bg-gray-200 focus:bg-gray-200"
                                   onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Basics",
-                                    }));
-                                    handlePlanChange(client, "Basic");
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Basic",
+                                    //   }));
+                                    setSelectedClientForModal(client);
+                                    setSelectedPlanForModal("Basic");
+                                    setIsModalOpen(true);
+                                    console.log("Opening modal", client);
                                   }}
                                 >
                                   Basics
                                 </Dropdown.Item>
                                 <Dropdown.Item
+                                  className="hover:bg-gray-200 focus:bg-gray-200"
                                   onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Standard",
-                                    }));
-                                    handlePlanChange(client, "Standard");
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Standard",
+                                    //   }));
+                                    setSelectedClientForModal(client);
+                                    setSelectedPlanForModal("Standard");
+                                    setIsModalOpen(true);
+                                    console.log("Opening modal", client);
                                   }}
                                 >
                                   Standard
                                 </Dropdown.Item>
                                 <Dropdown.Item
+                                  className="hover:bg-gray-200 focus:bg-gray-200"
                                   onClick={() => {
-                                    setPlanStatuses((prev) => ({
-                                      ...prev,
-                                      [client.institutionid]: "Advance",
-                                    }));
-                                    handlePlanChange(client, "Advance");
+                                    //   setPlanStatuses((prev) => ({
+                                    //     ...prev,
+                                    //     [client.institutionid]: "Advance",
+                                    //   }));
+                                    setSelectedClientForModal(client);
+                                    setSelectedPlanForModal("Advance");
+                                    setIsModalOpen(true);
+                                    console.log("Opening modal", client);
                                   }}
                                 >
                                   Advance
@@ -1735,6 +1758,52 @@ const Panel = () => {
         />
         // ) : (
         //     handlePayment()
+      )}
+      {isModalOpen && (
+        <Modal
+          show={isModalOpen}
+          size="md"
+          onClose={() => setIsModalOpen(false)}
+          popup
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center">
+              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                Are you sure you want to change the plan to{" "}
+                <span className="font-semibold">{selectedPlanForModal}</span>{" "}
+                for this institution?
+              </h3>
+              <div className="flex justify-center gap-4">
+                <Button
+                  color="teal"
+                  onClick={() => {
+                    setPlanStatuses((prev) => ({
+                      ...prev,
+                      [selectedClientForModal.institutionid]:
+                        selectedPlanForModal,
+                    }));
+                    handlePlanChange(
+                      selectedClientForModal,
+                      selectedPlanForModal
+                    );
+                    setIsModalOpen(false);
+                  }}
+                >
+                  {"Yes, I'm sure"}
+                </Button>
+                <Button
+                  color="gray"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                  }}
+                >
+                  No, cancel
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       )}
     </>
   );
