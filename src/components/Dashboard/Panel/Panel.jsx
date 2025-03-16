@@ -521,7 +521,7 @@ const Panel = () => {
           {screenWidth > 1023 ? (
             <>
               <div
-                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${
+                className={`w-screen h-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${
                   isResponsive ? "px-4" : "lg:ml-[10%]"
                 }`}
               >
