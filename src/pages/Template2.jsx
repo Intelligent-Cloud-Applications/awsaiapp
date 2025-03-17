@@ -238,18 +238,35 @@ const Template2 = () => {
         // handleCompanyUpload();
         // break;
         case 1:
-          if (!contactInfo['Phone Number'] || !contactInfo.email) {
-            if (!contactInfo['Phone Number'])
+          if (!contactInfo.address || !contactInfo["Owner Name"] || !contactInfo["Phone Number"] || !contactInfo.email || !contactInfo["UPI Id"] || !contactInfo["Establishment Year of Company"]) {
+            console.log("data gettting in the contact page", contactInfo);
+            if (!contactInfo.address) {
+              alert("Please enter a valid Address before proceeding.");
+            }
+            if (!contactInfo["Owner Name"]) {
+              alert("Please enter a valid Owner Name before proceeding.");
+            }
+            if (!contactInfo["Phone Number"]) {
               alert("Please enter a valid phone number before proceeding.");
-            if (!contactInfo.email)
+            }
+            if (!contactInfo.email) {
               alert("Please enter a valid email address before proceeding.");
-            if (!contactInfo.owner_name)
-              alert("Please enter a valid ownername before proceeding.");
-            return prevSection; // return to prevent proceeding
+            }
+            if (!contactInfo["UPI Id"]) {
+              alert("Please enter a valid Upi Id before proceeding.");
+            }
+            if(!contactInfo["Establishment Year of Company"]){
+              alert("Please enter a valid establishment year of the company.");
+            }
+            return prevSection;
           }
           const phoneRegex = /^[0-9]+$/;
           if (!phoneRegex.test(contactInfo['Phone Number'])) {
             alert("Please enter a valid phone number.");
+            return prevSection;
+          }
+          if (!phoneRegex.test(contactInfo["Establishment Year of Company"])) {
+            alert("Please enter a establishment year of the company.");
             return prevSection;
           }
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -290,7 +307,13 @@ const Template2 = () => {
             return prevSection; // return to prevent proceeding
           }
           break;
-
+        case 3:
+          const isAllCountFilled = countBanner.every(item => item.count !== '');
+          if (!isAllCountFilled) {
+            alert("Please fill all the count Banner.");
+            return prevSection;
+          }
+          break;
         case 4:
           if (testimonials && testimonials.some(item => item.name || item.feedback || item.imgSrc || item.uploadedFile || item.type)) {
             uploadTestimonials();

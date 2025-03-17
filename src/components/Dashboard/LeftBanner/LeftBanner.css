@@ -12,3 +12,24 @@
         margin-left: 5rem;
     }
 }
+
+
+@media (max-width: 400px) {
+    .custom-sidebar .custom-sidebar-item {
+        margin-bottom: 0.5rem; /* Reduce space between items */
+    }
+}
+
+
+@media (min-width: 1025px) and (max-width: 1300px) {
+    .custom-sidebar {
+        width: 25%;
+    }
+}
+
+
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .custom-sidebar {
+        width: 20%;
+    }
+}

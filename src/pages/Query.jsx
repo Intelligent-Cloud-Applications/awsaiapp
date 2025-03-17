@@ -16,20 +16,20 @@ const Query = ({ activeComponent }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
-    email: "",
+    emailId: "",
     phoneNumber: "",
     address: "",
     projectDetails: "",
   });
-  const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
+  const [errors, setErrors] = useState({ emailId: "", phoneNumber: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "email") {
+    if (name === "emailId") {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setErrors({
         ...errors,
-        email: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
+        emailId: emailPattern.test(value) ? "" : "Invalid email format. Please use example@domain.com",
       });
     }
     if (name === "phoneNumber") {
@@ -58,7 +58,7 @@ const Query = ({ activeComponent }) => {
       }
       await API.post("clients", "/any/create-query", { body: formData });
       alert("Submitted Successfully");
-      setFormData({ fullName: "", companyName: "", email: "", phoneNumber: "", address: "", projectDetails: "" });
+      setFormData({ fullName: "", companyName: "", emailId: "", phoneNumber: "", address: "", projectDetails: "" });
       navigate("/");
     } catch (error) {
       alert("Error sending message: " + error.message);
@@ -74,8 +74,8 @@ const Query = ({ activeComponent }) => {
         <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl">
           <div className="bg-teal-600 text-white p-8 flex flex-col justify-center items-center w-full lg:w-1/2">
             <motion.img src={Pic} alt="Contact" className="w-40 mb-4 hidden md:block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} />
-            <h2 className="text-2xl font-bold text-center">Let's Chat.<br />Tell Us About Your Project.</h2>
-            <p className="text-center mt-2">Let's maximize your business potential with us.</p>
+            <h2 className="text-2xl font-bold text-center text-white">Let's Chat.<br />Tell Us About Your Project.</h2>
+            <p className="text-center mt-2 text-white">Let's maximize your business potential with us.</p>
           </div>
           <div className="p-8 w-full lg:w-2/3">
             <h2 className="text-2xl font-bold mb-4 text-center lg:text-left">Send us a message</h2>
@@ -83,7 +83,7 @@ const Query = ({ activeComponent }) => {
               {[
                 { label: "Full Name", name: "fullName", type: "text" },
                 { label: "Company Name", name: "companyName", type: "text" },
-                { label: "Email", name: "email", type: "email", error: errors.email },
+                { label: "Email", name: "emailId", type: "email", error: errors.emailId },
                 { label: "Phone Number", name: "phoneNumber", type: "text", error: errors.phoneNumber },
               ].map(({ label, name, type, error }) => (
                 <div key={name}>
@@ -102,7 +102,7 @@ const Query = ({ activeComponent }) => {
                 </div>
               ))}
               <ReCAPTCHA ref={recaptchaRef} sitekey="6Le1xsooAAAAAH6kz7sA_d-qC8FdHdavrAKVb68d" size="invisible" />
-              <button type="submit" className="w-full bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600">Send Message</button>
+              <button type="submit" className="w-full font-bold text-[18px] bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600">Send Message</button>
             </form>
           </div>
         </div>

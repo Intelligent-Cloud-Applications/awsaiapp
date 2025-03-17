@@ -955,6 +955,7 @@ const Template = () => {
         case 1:
           // First check if required fields exist
           if (!contactInfo.phoneNumber || !contactInfo.email || !contactInfo["Owner Name"]) {
+
             if (!contactInfo.phoneNumber) {
               alert("Please enter a valid phone number before proceeding.");
               return prevSection;
@@ -966,6 +967,7 @@ const Template = () => {
             if (!contactInfo.email) {
               alert("Please enter a valid email address before proceeding.");
               return prevSection;
+
             }
           }
 

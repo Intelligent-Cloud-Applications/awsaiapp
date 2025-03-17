@@ -677,7 +677,7 @@ const CourseBasedCG = () => {
                             body: {
                                 cognitoId: Ctx.userData.cognitoId,
                                 institution: institutionId,
-                                institutionType:"CourseBased",
+                                institutionType: "CourseBased",
                                 ...updatedSubscription
                             }
                         });
@@ -930,6 +930,10 @@ const CourseBasedCG = () => {
                     //   alert("Please select a csv file to upload.");
                     //  return prevSection;
                     // }
+                    if (!courseBasedCGCountry){
+                        alert("Please select the country on which your institution is based on");
+                        return prevSection;
+                    }
                     if (!institutionCheckInProgress) {
                         institutionCheckInProgress = true;
                         API.get("clients", `/user/check-institution?institutionid=${institutionId}`)
@@ -958,15 +962,21 @@ const CourseBasedCG = () => {
                 // handleCompanyUpload();
                 // break;
                 case 1:
-                    if (!contactInfo.phoneNumber || !contactInfo.email) {
+                    if (!contactInfo.address || !contactInfo["Owner Name"] || !contactInfo.phoneNumber || !contactInfo.email || !contactInfo.UpiId) {
+                        if (!contactInfo.address) {
+                            alert("Please enter a valid address before proceeding.");
+                        }
+                        if (!contactInfo["Owner Name"]) {
+                            alert("Please enter a valid Owner Name before proceeding.");
+                        }
                         if (!contactInfo.phoneNumber) {
                             alert("Please enter a valid phone number before proceeding.");
                         }
                         if (!contactInfo.email) {
                             alert("Please enter a valid email address before proceeding.");
                         }
-                        if (!contactInfo["Owner Name"]) {
-                            alert("Please enter a valid Owner Name before proceeding.");
+                        if (!contactInfo.UpiId) {
+                            alert("Please enter a valid Upi Id before proceeding.");
                         }
                         return prevSection;
                     }

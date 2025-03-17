@@ -14,7 +14,7 @@ import "./LeadsList.css";
 import { CSVUpload } from "../../UploadFile/CSVUpload";
 import EditLead from "./EditLead";
 
-const LeadsList = ({ institution: tempInstitution }) => {
+const LeadsList = ({ tempInstitution }) => {
   const { util, user, userData } = useContext(Context);
   // const location = useLocation()
   // const searchParams = new URLSearchParams(window.location.search);
@@ -144,6 +144,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
   }, [leadsData, searchInput]);
 
   const filterLeadsByNameEmailIdPhoneNumber = (leads, query) => {
+    if (!query) return leads;
     const normalizedQuery = query.toLowerCase();
     return leads.filter(
       (lead) =>
@@ -727,7 +728,7 @@ const LeadsList = ({ institution: tempInstitution }) => {
     <div>
       {screenWidth > 1025 ? (
         <main>
-          <div className="">
+          <div>
             <div className="flex items-center justify-between bg-white px-5 rounded-t-md">
               {/* Center: Search Bar */}
               <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md m-1">

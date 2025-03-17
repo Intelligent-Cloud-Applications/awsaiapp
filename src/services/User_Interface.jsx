@@ -76,7 +76,7 @@ const User_Interface = () => {
               className=" item-center justify-center"
             />
           </div>
-          <p className="text-[15px] pb-[2rem] max500:px-4 justify-center max500:text-[13px]">
+          <p className="text-[20px] pb-[2rem] max500:px-4 justify-center max500:text-[15px]">
             At Intelligent Cloud Applications, we understand that the success of
             your web application hinges on delivering a delightful user
             experience. Our User Interface and User Experience service are
@@ -141,4 +141,5 @@ const User_Interface = () => {
     </div>
   );
 };
+
 export default User_Interface;

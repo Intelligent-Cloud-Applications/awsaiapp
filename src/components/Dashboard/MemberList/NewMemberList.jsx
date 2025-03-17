@@ -11,7 +11,7 @@ import UserModal from "./UserModal";
 import { CSVUpload } from "../../UploadFile/CSVUpload";
 import { handleExportExcel } from "../../UploadFile/DownloadCsvButton";
 
-function NewMemberList({ institution: tempInstitution }) {
+function NewMemberList({ tempInstitution }) {
   const [members, setMembers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("All");
