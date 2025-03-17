@@ -70,7 +70,7 @@ function Footer({
         if (!testimonials) return true;
         
         const incompleteTestimonials = testimonials.filter(t => {
-            return !t.customerName?.trim() || !t.text?.trim();
+            return !t.name?.trim() || !t.text?.trim();
         });
 
         if (incompleteTestimonials.length > 0) {

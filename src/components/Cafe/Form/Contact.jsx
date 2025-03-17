@@ -65,7 +65,7 @@ const validateContactData = (contactData) => {
     emailId: contactData.emailId?.trim(),
     phoneNumber: contactData.phoneNumber?.trim(),
     address: contactData.address?.trim(),
-    visitUs: contactData.visitUs?.locatemap?.trim()
+    visitUs: contactData.visitUs?.locationMap?.trim()
   };
 
   const missingFields = Object.entries(requiredFields).filter(([_, value]) => !value);
@@ -98,7 +98,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
       youtube: ''
     },
     visitUs: {
-      locatemap: ''
+      locationMap: ''
     }
   }), []);
 
@@ -117,7 +117,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
             ...updated,
             visitUs: {
               ...updated.visitUs,
-              locatemap: processedValue
+              locationMap: processedValue
             }
           };
           break;
@@ -213,7 +213,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
           youtube: savedData.socialMediaLinks?.youtube || ''
         },
         visitUs: {
-          locatemap: savedData.visitUs?.locatemap || ''
+          locationMap: savedData.visitUs?.locationMap || ''
         }
       };
 
@@ -460,7 +460,7 @@ const Contact = ({ contactInfo, setContactInfo }) => {
             <TextInput
               id="locationMap"
               type="url"
-              value={contactInfo.visitUs?.locatemap || ''}
+              value={contactInfo.visitUs?.locationMap || ''}
               onChange={(e) => handleInputChange('locationMap', e.target.value)}
               placeholder="Enter your Google Maps location link"
               required
@@ -538,7 +538,7 @@ Contact.propTypes = {
       youtube: PropTypes.string
     }),
     visitUs: PropTypes.shape({
-      locatemap: PropTypes.string
+      locationMap: PropTypes.string
     })
   }).isRequired,
   setContactInfo: PropTypes.func.isRequired

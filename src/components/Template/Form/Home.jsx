@@ -1,175 +1,186 @@
 import React, { useState } from "react";
-import vupload from "../../../utils/png/vupload.png";
-import "../../../pages/Template.css";
-import { TextInput } from "flowbite-react";
+import { Label, TextInput } from "flowbite-react";
+import { FiHome, FiUpload, FiEdit, FiVideo } from "react-icons/fi";
 
-function Home({ TagLine, setTagLine, video, setVideo, selectedMedia, setSelectedMedia, mediaType, TagLine1, setTagLine1, setMediaType }) {
-  // const [TagLineName, setTagLineName] = useState("");
+function Home({ 
+  TagLine, 
+  setTagLine, 
+  video, 
+  setVideo, 
+  selectedMedia, 
+  setSelectedMedia, 
+  mediaType, 
+  TagLine1, 
+  setTagLine1, 
+  setMediaType 
+}) {
   const [charTag, setCharTag] = useState(0);
   const [charTag2, setCharTag2] = useState(0);
-  // const [TagLineLineColor, setTagLineLineColor] = useState("#939393");
+  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
 
   const handleTagLineInputChange = (e) => {
-    setTagLine(e.target.value);
-    setCharTag(e.target.value.length);
-  };
-  const handleTagLineInputChange1 = (e) => {
-    setTagLine1(e.target.value);
-    setCharTag2(e.target.value.length);
+    const value = e.target.value;
+    if (value.length <= 40) {
+      setTagLine(value);
+      setCharTag(value.length);
+    }
   };
 
-  //  const [selectedMedia, setSelectedMedia] = useState(null);
-  //  const [mediaType, setMediaType] = useState(null);
-  const [isFileOptionVisible, setFileOptionVisible] = useState(false);
+  const handleTagLineInputChange1 = (e) => {
+    const value = e.target.value;
+    if (value.length <= 60) {
+      setTagLine1(value);
+      setCharTag2(value.length);
+    }
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
+    if (!file) return;
+
+    const fileSizeMB = file.size / (1024 * 1024);
+    if (fileSizeMB > 4) {
+      alert("File size exceeds 4MB. Please choose a smaller file.");
+      return;
     }
+
     setVideo(file);
     setSelectedMedia(URL.createObjectURL(file));
-
-    // Determine the type of media selected (image or video)
-    if (file.type.includes("video")) {
-      setMediaType("video");
-    } else if (file.type.includes("image")) {
-      setMediaType("image");
-    }
+    setMediaType(file.type.includes("video") ? "video" : "image");
   };
-
-  //  const handleMediaClick = () => {
-  //    document.getElementById("fileInput").click();
-  //  };
-
-  const handleMediaMouseEnter = () => {
-    if (selectedMedia) {
-      setFileOptionVisible(true);
-    }
-  };
-
-  const handleMediaMouseLeave = () => {
-    if (selectedMedia) {
-      setFileOptionVisible(false);
-    }
-  };
-
 
   return (
-    <div className="h-[185vh] [@media(max-width:1024px)]:h-screen [@media(max-width:1024px)]:mb-[10rem]">
-      <h1 className="font-medium text-7xl pb-[1rem] text-center">HOME SECTION</h1>
-      <h5 className="text-[#939393] text-center">
-        <strong>Introduce Your Brand:</strong><br />
-        Create a powerful opening that grabs visitors' attention. Highlight what makes your brand unique and share your core values that set you apart.
-      </h5>
-      <div className="flex justify-center ml-[20%] [@media(max-width:1024px)]:ml-0">
-        <div className="w-[80%] p-8 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
-          <div className="relative mt-2">
-            <h5
-              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
-            >
-              <TextInput
-                type="text"
-                id="inputField"
-                value={TagLine}
-                onChange={handleTagLineInputChange}
-                className="w-full"
-                style={{
-                  borderColor: "#D1D5DB",
-                  backgroundColor: "#F9FAFB",
-                  borderRadius: "8px",
-                }}
-                placeholder="Enter Short Description TagLine "
-                autoFocus
-                maxlength="40"
-              />
-            </h5>
-            <p>{charTag}/40</p>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiHome className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Home Section</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Create a powerful first impression with engaging taglines and media that showcase your dance studio's unique identity.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* Taglines Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiEdit className="w-5 h-5 text-teal-600" />
+            Taglines
+          </h2>
+
+          <div className="space-y-6">
+            {/* First Tagline */}
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-1">
+                Primary Tagline <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <TextInput
+                  type="text"
+                  value={TagLine}
+                  onChange={handleTagLineInputChange}
+                  placeholder="Enter your main tagline"
+                  className="w-full"
+                />
+                <span className="absolute right-2 top-2.5 text-sm text-gray-400">
+                  {charTag}/40
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                A short, impactful statement about your dance studio
+              </p>
+            </div>
+
+            {/* Second Tagline */}
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-1">
+                Secondary Tagline
+              </Label>
+              <div className="relative">
+                <TextInput
+                  type="text"
+                  value={TagLine1}
+                  onChange={handleTagLineInputChange1}
+                  placeholder="Enter your supporting tagline"
+                  className="w-full"
+                />
+                <span className="absolute right-2 top-2.5 text-sm text-gray-400">
+                  {charTag2}/60
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Additional context or supporting message
+              </p>
+            </div>
           </div>
-          <div className="relative mt-2">
-            <h5
-              className="w-[28rem] text-[#939393] relative cursor-pointer py-2 [@media(max-width:1024px)]:w-full"
-            >
-              <TextInput
-                type="text"
-                value={TagLine1}
-                onChange={handleTagLineInputChange1}
-                className="w-full"
-                style={{
-                  borderColor: "#D1D5DB",
-                  backgroundColor: "#F9FAFB",
-                  borderRadius: "8px",
-                }}
-                placeholder="Enter Short Description TagLine1"
-                maxlength="60"
-              />
-            </h5>
-            <p>{charTag2}/60</p>
-          </div>
-          <div className="border border-black w-[16rem] h-[10rem] mt-[2rem] relative boxtoselect">
+        </div>
+
+        {/* Media Upload Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiVideo className="w-5 h-5 text-teal-600" />
+            Featured Media
+          </h2>
+
+          <div>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Image or Video <span className="text-red-500">*</span>
+            </Label>
+            
             <label
               htmlFor="fileInput"
-              className="cursor-pointer"
-              onMouseEnter={handleMediaMouseEnter}
-              onMouseLeave={handleMediaMouseLeave}
+              className={`relative block w-full aspect-video border-2 border-dashed rounded-lg cursor-pointer 
+                ${selectedMedia ? 'border-teal-200 hover:border-teal-300' : 'border-gray-200 hover:border-gray-300'}
+                transition-colors bg-gray-50 hover:bg-gray-100`}
+              onMouseEnter={() => setFileOptionVisible(true)}
+              onMouseLeave={() => setFileOptionVisible(false)}
             >
+              <input
+                type="file"
+                id="fileInput"
+                className="hidden"
+                onChange={handleFileChange}
+                accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
+              />
+
               {!selectedMedia ? (
-                <>
-                  <input
-                    type="file"
-                    id="fileInput"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept="image/png, image/gif, image/jpeg, video/mp4, video/mov"
-                  />
-                  <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center cursor-pointer">
-                    <img
-                      src={vupload}
-                      alt="Upload"
-                      className="w-[5rem] cursor-pointer"
-                    //                  onClick={handleMediaClick}
-                    />
-                    <h4 className="text-[#939393] text-[15px] mr-1 mb-3">Upload your media</h4>
-                  </div>
-                </>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <FiUpload className="w-8 h-8 text-teal-600 mb-2" />
+                  <p className="text-sm font-medium text-gray-600">
+                    Click to upload media
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    PNG, JPG, GIF, MP4 or MOV (max. 4MB)
+                  </p>
+                </div>
               ) : (
-                <>
+                <div className="relative w-full h-full">
                   {mediaType === "video" ? (
                     <video
-                      controls
                       src={selectedMedia}
-                      className="w-full h-full object-cover"
-                    //                  onClick={handleMediaClick}
+                      className="w-full h-full object-cover rounded-lg"
+                      controls
                     />
                   ) : (
                     <img
                       src={selectedMedia}
-                      alt="Uploaded media"
-                      className="w-full h-full object-cover"
-                      //                  onClick={handleMediaClick}
-                      onError={(e) => {
-                        e.target.src = vupload; // Display default image if image fails to load
-                      }}
+                      alt="Preview"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                   )}
                   {isFileOptionVisible && (
-                    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
-                      <input
-                        type="file"
-                        id="fileInput"
-                        className="hidden"
-                        onChange={handleFileChange}
-                      />
-                      <h4 className="text-white">Choose your file</h4>
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+                      <p className="text-white font-medium">Change media</p>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </label>
+            
+            <p className="mt-2 text-xs text-gray-500">
+              Choose a high-quality image or video that represents your dance studio
+            </p>
           </div>
         </div>
       </div>
