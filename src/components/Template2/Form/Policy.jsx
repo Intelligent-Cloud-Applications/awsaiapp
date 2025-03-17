@@ -1,7 +1,19 @@
-import { useRef } from "react";
-import { Label, FileInput, TextInput } from 'flowbite-react';
+import React, { useRef } from "react";
+import { Label, TextInput, FileInput } from 'flowbite-react';
+import { FiFileText, FiPlus, FiX, FiUpload, FiBarChart2 } from 'react-icons/fi';
 
-function Policy({ policies, setPolicies, aboutImage, setAboutImage, countBanner, setCountBanner, titleOfCountBanner, values, setValues }) {
+function Policy({ 
+  policies, 
+  setPolicies, 
+  aboutImage, 
+  setAboutImage, 
+  countBanner, 
+  setCountBanner, 
+  titleOfCountBanner, 
+  values, 
+  setValues 
+}) {
+  const fileInputRef = useRef(null);
 
   const handlePolicyChange = (type, value, index) => {
     const updatedPolicies = [...policies[type]];
@@ -9,40 +21,25 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage, countBanner,
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
 
-  const fileInputRef = useRef(null);
-
-  const addPolicy = (type) => {
-    const updatedPolicies = [...policies[type], { heading: '', content: '' }];
-    setPolicies({ ...policies, [type]: updatedPolicies });
-  };
-
-  const removePolicy = (type, index) => {
-    const updatedPolicies = [...policies[type]];
-    updatedPolicies.splice(index, 1);
-    setPolicies({ ...policies, [type]: updatedPolicies });
-  };
-
   const handleFileChange = (e, index) => {
     const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
+    if (!file) return;
 
-      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
-      if (validTypes.includes(file.type)) {
-        const updatedImages = [...aboutImage];
-        updatedImages[index] = file; // Replace or add the file at the correct index
-        setAboutImage(updatedImages);
-      } else {
-        alert("Invalid file type. Please select a JPG, JPEG, PNG, or SVG file.");
-        e.target.value = "";
-      }
+    if (file.size > 4 * 1024 * 1024) {
+      alert("File size exceeds 4MB. Please choose a smaller file.");
+      return;
+    }
+
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
+    if (validTypes.includes(file.type)) {
+      const updatedImages = [...aboutImage];
+      updatedImages[index] = file;
+      setAboutImage(updatedImages);
+    } else {
+      alert("Invalid file type. Please select a JPG, JPEG, PNG, or SVG file.");
+      e.target.value = "";
     }
   };
-  console.log("Images:", aboutImage);
 
   const handlecountChange = (index, value) => {
     setCountBanner(prevCountBanner =>
@@ -58,177 +55,180 @@ function Policy({ policies, setPolicies, aboutImage, setAboutImage, countBanner,
     setValues(updatedValues);
   };
 
-  // Function to add a new input field
-  const addValueField1 = () => {
-    setValues([...values, '']); // Add an empty string for the new input
+  const addPolicy = (type) => {
+    const updatedPolicies = [...policies[type], { content: '' }];
+    setPolicies({ ...policies, [type]: updatedPolicies });
   };
 
-  // Function to remove an input field
-  const removeValueField1 = (index) => {
+  const removePolicy = (type, index) => {
+    const updatedPolicies = [...policies[type]];
+    updatedPolicies.splice(index, 1);
+    setPolicies({ ...policies, [type]: updatedPolicies });
+  };
+
+  const addValue = () => {
+    setValues([...values, '']);
+  };
+
+  const removeValue = (index) => {
     const updatedValues = values.filter((_, i) => i !== index);
     setValues(updatedValues);
   };
 
-  const addValueField = () => {
-    setAboutImage([...aboutImage, null]); // Add null as a placeholder for a new file
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+  const addImage = () => {
+    setAboutImage([...aboutImage, null]);
   };
 
-  const removeValueField = (index) => {
-    setAboutImage((prevImages) => prevImages.filter((_, i) => i !== index));
+  const removeImage = (index) => {
+    setAboutImage(prevImages => prevImages.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="mx-auto [@media(max-width:1024px)]:mb-10" style={{ overflowY: 'auto', maxHeight: '74vh' }}>
-      <h1 className="font-medium text-7xl text-center">ABOUT COMPANY</h1>
-      <h5 className="text-center text-[#939393]">
-        Establish transparent guidelines, sharing policies and terms for clarity and understanding and also your count banner.
-      </h5>
-      <div className="flex justify-center [@media(max-width:1024px)]:ml-0">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-2">
-          <div className="relative mt-4 [@media(max-width:1024px)]:flex-col">
-            <div className="pb-6">
-              {titleOfCountBanner.map((title, index) => (
-                <div key={index} className="mt-2">
-                  <div className="flex">
-                    <h2 className="font-medium text-xl">{title}</h2>
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={countBanner[index].count}
-                      onChange={(e) => handlecountChange(index, e.target.value)}
-                      placeholder={`Number of ${title}`}
-                      className="w-full"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiFileText className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">About Company</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Share your company's story, values, and key metrics to build trust with your audience.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* Count Banner Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiBarChart2 className="w-5 h-5 text-teal-600" />
+            Key Metrics
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {titleOfCountBanner.map((title, index) => (
+              <div key={index}>
+                <Label className="block text-sm font-medium text-gray-700 mb-1">
+                  {title} <span className="text-red-500">*</span>
+                </Label>
+                <TextInput
+                  type="number"
+                  value={countBanner[index].count}
+                  onChange={(e) => handlecountChange(index, e.target.value)}
+                  placeholder={`Number of ${title}`}
+                  className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
+                />
+              </div>
+            ))}
           </div>
-          <div className="relative mt-4">
-            <div className="pb-6">
-              <h2 className="font-medium text-xl">Company Values</h2>
-              {values && values.map((title, index) => (
-                <div key={index} className="mt-2">
-                  <div className="relative">
-                    <TextInput
-                      value={title}
-                      onChange={(e) => handleValueChange(index, e.target.value)}
-                      placeholder="Give the values of our company"
-                      className="w-full"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeValueField1(index)} // Remove field on click
-                      className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2"
-                    >
-                      <span>X</span>
-                    </button>
-                  </div>
+        </div>
+
+        {/* Company Values Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiFileText className="w-5 h-5 text-teal-600" />
+            Company Values
+          </h2>
+
+          <div className="space-y-4">
+            {values?.map((value, index) => (
+              <div key={index} className="relative">
+                <TextInput
+                  value={value}
+                  onChange={(e) => handleValueChange(index, e.target.value)}
+                  placeholder="Enter company value"
+                  className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg pr-10"
+                />
+                <button
+                  onClick={() => removeValue(index)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+
+            <button
+              onClick={addValue}
+              className="w-full py-3 border-2 border-dashed border-teal-200 rounded-lg text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <FiPlus className="w-5 h-5" />
+              Add Value
+            </button>
+          </div>
+        </div>
+
+        {/* Policies Section */}
+        {Object.entries(policies).map(([type, policyList], sectionIndex) => (
+          <div key={sectionIndex} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <FiFileText className="w-5 h-5 text-teal-600" />
+              {type}
+            </h2>
+
+            <div className="space-y-4">
+              {policyList.map((policy, index) => (
+                <div key={index} className="relative">
+                  <TextInput
+                    value={policy.content}
+                    onChange={(e) => handlePolicyChange(type, e.target.value, index)}
+                    placeholder={`Enter ${type.toLowerCase()} content`}
+                    className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg pr-10"
+                  />
+                  <button
+                    onClick={() => removePolicy(type, index)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
                 </div>
               ))}
+
               <button
-                type="button"
-                onClick={addValueField1} // Add field on click
-                className="bg-[#30AFBC] text-white px-4 py-2 rounded-md mt-5"
+                onClick={() => addPolicy(type)}
+                className="w-full py-3 border-2 border-dashed border-teal-200 rounded-lg text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2"
               >
-                Add Value
+                <FiPlus className="w-5 h-5" />
+                Add {type}
               </button>
             </div>
           </div>
-          <div className="mt-8">
-            {Object.entries(policies).map(([type, value], index) => (
-              <div key={index} className="mt-4">
-                <h2 className="font-medium text-xl">{type}</h2>
-                {Array.isArray(value) && value.map((item, itemIndex) => (
-                  <div key={itemIndex} className="mt-4">
-                    <div className="relative">
-                      <button
-                        onClick={() => removePolicy(type, itemIndex)}
-                        className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm"
-                      >
-                        X
-                      </button>
-                    </div>
-                    <TextInput
-                      value={item.content}
-                      onChange={(e) => handlePolicyChange(type, e.target.value, itemIndex)}
-                      placeholder="Content"
-                      className="w-full"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      rows={3}
-                    />
-                  </div>
-                ))}
-                <div className="mt-2 flex justify-center">
-                  <button onClick={() => addPolicy(type)} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-                    Add {type}
+        ))}
+
+        {/* About Images Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiUpload className="w-5 h-5 text-teal-600" />
+            About Images
+          </h2>
+
+          <div className="space-y-4">
+            {aboutImage.map((file, index) => (
+              <div key={index} className="relative">
+                <Label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image {index + 1} <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <FileInput
+                    onChange={(e) => handleFileChange(e, index)}
+                    accept="image/*"
+                    className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
+                  />
+                  <button
+                    onClick={() => removeImage(index)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <FiX className="w-5 h-5" />
                   </button>
                 </div>
               </div>
             ))}
-            <div className="relative mt-4">
-              <div className="pb-6">
-                <h2 className="font-medium text-xl">About Us Images</h2>
-                {aboutImage.map((file, index) => (
-                  <div key={index} className="mt-2">
-                    <div className="relative">
-                      <div className="max-w-md relative">
-                        <div className="mb-2 block">
-                          <Label
-                            htmlFor={`fileInput-${index}`}
-                            value="Image Upload File"
-                          />
-                          <span className="text-red-500 ml-1">*</span>
-                        </div>
-                        <FileInput
-                          id={`fileInput-${index}`}
-                          onChange={(e) => handleFileChange(e, index)}
-                          helperText={file ? file.name : "It’s the Images to About Us Page"}
-                          style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeValueField(index)}
-                        className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] mt-2"
-                      >
-                        <span>X</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addValueField}
-                  className="bg-[#30AFBC] text-white px-4 py-2 rounded-md mt-5"
-                >
-                  Add images
-                </button>
-              </div>
-            </div>
+
+            <button
+              onClick={addImage}
+              className="w-full py-3 border-2 border-dashed border-teal-200 rounded-lg text-teal-600 hover:border-teal-600 hover:text-teal-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <FiPlus className="w-5 h-5" />
+              Add Image
+            </button>
           </div>
         </div>
       </div>

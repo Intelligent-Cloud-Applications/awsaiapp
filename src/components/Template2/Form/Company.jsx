@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState } from 'react';
 import "../../../pages/Template.css";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import theme from "../../../theme";
+import { FiType, FiEdit2, FiUpload } from 'react-icons/fi';
+import { GrCafeteria } from "react-icons/gr";
+
+// Constants
+const MAX_FILE_SIZE_MB = 50;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+// Utility function for color contrast
+const getContrastColor = (hexcolor) => {
+  const hex = hexcolor.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#ffffff';
+};
 
 function Company({
   companyName,
@@ -23,18 +39,17 @@ function Company({
   selectedFile,
   setSelectedFile,
 }) {
+  const [errors, setErrors] = useState({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCompanyInputChange = (e) => {
-    const inputValue = e.target.value; // Get the value from the event
-    setCompanyName(inputValue);  // Set the state with the input value
+    const inputValue = e.target.value;
+    setCompanyName(inputValue);
 
-    const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
-    const id = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
-    const newid = noSpaces + id;  // Combine the two parts to form the new ID
-
-    setinstitutionId(newid);  // Update the institution ID state
-
-    console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
+    const noSpaces = inputValue.replace(/\s+/g, '');
+    const id = Math.floor(Math.random() * 9000) + 1000;
+    const newid = noSpaces + id;
+    setinstitutionId(newid);
   };
 
   const handleCompanyDescriptionInputChange = (e) => {
@@ -56,23 +71,32 @@ function Company({
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
+    if (!file) return;
+
+    try {
+      setIsProcessing(true);
+
+      if (file.size / (1024 * 1024) > MAX_FILE_SIZE_MB) {
+        throw new Error(`File size exceeds ${MAX_FILE_SIZE_MB}MB`);
       }
 
-      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
-      if (file instanceof File && validTypes.includes(file.type)) {
-        setLogo(file);
-        setSelectedFile(URL.createObjectURL(file));
-      } else {
-        alert("Invalid file type. Please select a JPG, JPEG, PNG, or SVG file.");
-        setLogo(null);
-        setSelectedFile(null);
-        event.target.value = "";
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        throw new Error('Invalid file type. Please select a JPG, PNG, or GIF file.');
       }
+
+      setLogo(file);
+      setSelectedFile(URL.createObjectURL(file));
+      setErrors(prev => ({ ...prev, logo: null }));
+
+    } catch (error) {
+      setErrors(prev => ({
+        ...prev,
+        logo: error.message
+      }));
+      setLogo(null);
+      setSelectedFile(null);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -86,126 +110,163 @@ function Company({
     setLightestPrimaryColor(e.target.value);
   };
 
-  return (
-    <div className=" w-full h-[auto] mb-[2rem]" style={{ overflowY: 'auto' }}>
-      <h1 className="font-medium text-7xl comphead text-center">Company Profile</h1>
-      <h5 className="text-[#939393] text-center">
-        Company profile, design preferences, and essential details for creating a tailored website experience.
-      </h5>
-      {/* <div className="relative mt-6 px-[1px] mr-10">
-        <div className="mb-2 block">
-          <Label
-            htmlFor="institutionid"
-            color="gray"
-            value="Institution ID"
-          />
-          <span className="text-red-500 ml-1">*</span>
+  const renderLogoPreview = () => {
+    if (!selectedFile) {
+      return (
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <FiUpload className={`w-8 h-8 ${errors.logo ? 'text-red-400' : 'text-teal-600'}`} />
+          <p className={`text-sm ${errors.logo ? 'text-red-500' : 'text-gray-500'}`}>
+            Click to upload logo
+          </p>
+          <p className="text-xs text-gray-500">Maximum file size: {MAX_FILE_SIZE_MB}MB</p>
+          <p className="text-xs text-gray-500">Image will be compressed automatically</p>
         </div>
-        <TextInput
-          id="institutionid"
-          placeholder="Enter institution ID"
-          required
-          value={institutionId}
-          sizing="sm"
-          helperText="This input will only accept lowercase letters and numbers. No spaces or uppercase letters will be allowed.it wil not chnageble later"
-          onChange={handleinstitutionIdInputChange}
-          style={{
-            borderColor: "#D1D5DB",
-            backgroundColor: "#F9FAFB",
-            borderRadius: "8px",
-          }}
+      );
+    }
+
+    if (isProcessing) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative w-full h-64 flex items-center justify-center">
+        <img
+          src={selectedFile}
+          alt="Logo Preview"
+          className="max-w-full max-h-full object-contain p-4"
         />
-      </div> */}
-      <div className="flex justify-center [@media(max-width:1024px)]:flex-none [@media(max-width:1024px)]:justify-start">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:mb-5">
-          <div className="relative mt-2 px-[1px] mr-10 text-[24px]">
-            <div className="mb-2 block">
-              <Label htmlFor="companyName" color="gray" value="Company Name" className='font-medium text-xl' />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <TextInput
-              id="companyName"
-              placeholder="Enter company Name"
-              required
-              value={companyName}
-              onChange={handleCompanyInputChange}
-              style={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-                borderRadius: "8px",
-              }}
-            />
+        <div className="absolute inset-0 bg-teal-600/10 opacity-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+          <div className="bg-white/95 px-4 py-2 rounded-md shadow-lg">
+            <p className="text-teal-600 text-sm font-medium">Click to change logo</p>
           </div>
-          <div className="relative mt-2 px-[1px] mr-10">
-            <div className="mb-2 block">
-              <Label
-                htmlFor="companyDescription"
-                color="gray"
-                value="Company Description"
-                className='font-medium text-xl'
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <GrCafeteria className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Company Info</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Let's set up your company profile and branding
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* Basic Information */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiType className="w-5 h-5 text-teal-600" />
+            Basic Information
+          </h2>
+          
+          <div className="grid grid-cols-1 gap-6">
+            <div>
+              <Label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
+                Company Name <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="companyName"
+                value={companyName || ''}
+                onChange={handleCompanyInputChange}
+                placeholder="Enter your company name"
+                required
+                className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
               />
-              <span className="text-red-500 ml-1">*</span>
+              {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>}
             </div>
-            <TextInput
-              id="companyDescription"
-              placeholder="Enter company Description"
-              required
-              value={companyDescription}
-              onChange={handleCompanyDescriptionInputChange}
-              style={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-                borderRadius: "8px",
-              }}
-            />
-          </div>
 
-          <div className="mt-4">
-            <h4 className="font-medium text-xl">Choose Your Theme Color</h4>
-            <div className="flex gap-8 mt-2">
-              <input
-                type="color"
-                value={PrimaryColor}
-                onChange={handleColorChange1}
-                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-              />
-
-              <input
-                type="color"
-                onChange={handleSecondarycolor}
-                value={SecondaryColor}
-                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-              />
-              <input
-                type="color"
-                onChange={handleLightcolor}
-                value={LightPrimaryColor}
-                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
-              />
-              <input
-                type="color"
-                onChange={handleLitestcolor}
-                value={LightestPrimaryColor}
-                className="rounded-xl h-12 w-12 cursor-pointer border-none outline-none colorbox"
+            <div>
+              <Label htmlFor="companyDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                Company Description <span className="text-red-500">*</span>
+              </Label>
+              <TextInput
+                id="companyDescription"
+                value={companyDescription || ''}
+                onChange={handleCompanyDescriptionInputChange}
+                placeholder="Enter company description"
+                required
+                className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
               />
             </div>
           </div>
+        </div>
 
-          <div className="max-w-md relative mt-4">
-            <div className="mb-2 block">
-              <Label htmlFor="fileInput" value="Logo Upload File" className='font-medium text-xl' />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <FileInput
-              id="fileInput"
-              onChange={handleFileChange}
-              helperText={selectedFile ? selectedFile.name : "It’s the logo of the company"}
-              style={{
-                borderColor: "#D1D5DB",
-                backgroundColor: "#F9FAFB",
-                borderRadius: "8px",
-              }}
-            />
+        {/* Theme Colors */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiEdit2 className="w-5 h-5 text-teal-600" />
+            Theme Colors
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { value: PrimaryColor, onChange: setPrimaryColor, label: 'Primary Color' },
+              { value: SecondaryColor, onChange: setSecondaryColor, label: 'Secondary Color' },
+              { value: LightPrimaryColor, onChange: setLightPrimaryColor, label: 'Light Primary' },
+              { value: LightestPrimaryColor, onChange: setLightestPrimaryColor, label: 'Lightest Primary' }
+            ].map(({ value, onChange, label }, index) => (
+              <div key={index} className="relative group flex flex-col items-center">
+                <div className="relative">
+                  <div 
+                    className="w-16 h-16 rounded-full border-4 border-white shadow-md transition-transform hover:scale-110 cursor-pointer"
+                    style={{ backgroundColor: value }}
+                  />
+                  <FiEdit2 
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" 
+                    style={{ color: getContrastColor(value) }}
+                  />
+                  <input
+                    type="color"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                    title={`Choose ${label.toLowerCase()}`}
+                  />
+                </div>
+                <Label className="mt-3 text-sm font-medium text-gray-600 text-center">
+                  {label}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Logo Upload */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiUpload className="w-5 h-5 text-teal-600" />
+            Company Logo
+          </h2>
+          
+          <div>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Logo <span className="text-red-500">*</span>
+            </Label>
+            <label
+              htmlFor="logo-upload"
+              className={`flex flex-col items-center justify-center w-full h-64 border-[2.5px] border-dashed rounded-lg cursor-pointer bg-gray-50/50 transition-all duration-300 ${
+                errors.logo ? 'border-red-500' : 'border-gray-200 hover:border-teal-500'
+              }`}
+            >
+              <input
+                id="logo-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {renderLogoPreview()}
+            </label>
+            {errors.logo && <p className="mt-2 text-sm text-red-500">{errors.logo}</p>}
           </div>
         </div>
       </div>

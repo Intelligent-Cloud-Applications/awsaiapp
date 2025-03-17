@@ -1,6 +1,7 @@
 // Template.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/CourseBasedCG/Footer';
 // import Preview from '../components/Template/Preview';
@@ -17,10 +18,32 @@ import { API, Storage } from "aws-amplify";
 import PrevSectionDraftHandler from '../components/CourseBasedCG/Form/PrevSectionDraftHandler';
 import "./Template.css";
 import Context from "../context/Context";
+import ErrorBoundary from '../components/ErrorBoundary';
 // import {CSVUpload} from '../components/UploadFile/CSVUpload';
+
+// Define sections with icons
+const FORM_SECTIONS = [
+    { id: 'company', title: 'Company' },
+    { id: 'contact', title: 'Contact' },
+    { id: 'home', title: 'Home' },
+    { id: 'services', title: 'Services' },
+    { id: 'testimonials', title: 'Testimonials' },
+    { id: 'subscription', title: 'Subscription' },
+    { id: 'faqs', title: 'FAQs' },
+    { id: 'policy', title: 'Policy' }
+];
+
 const CourseBasedCG = () => {
     const Navigate = useNavigate();
-    const [currentSection, setCurrentSection] = useState(0);
+    const [currentSection, setCurrentSection] = useState(() => {
+        try {
+            const savedSection = localStorage.getItem('courseBasedCurrentSection');
+            return savedSection ? parseInt(savedSection, 10) : 0;
+        } catch (error) {
+            console.error('Error loading current section:', error);
+            return 0;
+        }
+    });
     const [savedData, setsavedData] = useState();
 
     console.log("🚀 ~ file: CourseBasedCG.jsx:21 ~ CourseBasedCG ~ savedData:", savedData)
@@ -199,6 +222,17 @@ const CourseBasedCG = () => {
         facebook: '',
     });
 
+    // Add new state for section validation
+    const [isCurrentSectionValid, setIsCurrentSectionValid] = useState(false);
+
+    // Save current section to localStorage whenever it changes
+    useEffect(() => {
+        try {
+            localStorage.setItem('courseBasedCurrentSection', currentSection.toString());
+        } catch (error) {
+            console.error('Error saving current section:', error);
+        }
+    }, [currentSection]);
 
     useEffect(() => {
         console.log(policies);
@@ -1126,140 +1160,174 @@ const CourseBasedCG = () => {
     };
     //  console.log("Logo in Template:", logo);
     return (
-        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-            <Navbar />
-            <div className="flex-grow flex">
-                {/* <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
-        </div> */}
-                <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
-                    {currentSection === 0 &&
-                        <Company
-                            courseBasedCGCountry={courseBasedCGCountry}
-                            setcourseBasedCGCountry={setcourseBasedCGCountry}
-                            clients={Companydata}
-                            companyName={companyName}
-                            setCompanyName={setCompanyName}
-                            companyDescription={companyDescription}
-                            setCompanyDescription={setCompanyDescription}
-                            institutionId={institutionId}
-                            setinstitutionId={setinstitutionId}
-                            PrimaryColor={PrimaryColor}
-                            setPrimaryColor={setPrimaryColor}
-                            SecondaryColor={SecondaryColor}
-                            setSecondaryColor={setSecondaryColor}
-                            logo={logo}
-                            // institutionType={institutionType}
-                            // setInstitutionType={setInstitutionType}
-                            institutionFormat={institutionFormat}
-                            setInstitutionFormat={setInstitutionFormat}
-                            setLogo={setLogo}
-                            LightestPrimaryColor={LightestPrimaryColor}
-                            setLightestPrimaryColor={setLightestPrimaryColor}
-                            LightPrimaryColor={LightPrimaryColor}
-                            setLightPrimaryColor={setLightPrimaryColor}
-                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                            CSVFile={CSVFile}
-                            setCSVFile={setCSVFile}
-                            registrationFee={registrationFee}
-                            setRegistrationFee={setRegistrationFee}
-                            registrationFeeCurrency={registrationFeeCurrency}
-                            setRegistrationFeeCurrency={setRegistrationFeeCurrency}
-                        />}
-                    {currentSection === 1 &&
-                        <Contact
-                            contactInfo={contactInfo}
-                            setContactInfo={setContactInfo}
-                            SubscriptionBg={SubscriptionBg}
-                            setSubscriptionBg={setSubscriptionBg}
-                            InstructorBg={InstructorBg}
-                            setInstructorBg={setInstructorBg}
-                        />}
-                    {currentSection === 2 &&
-                        <Home
-                            TagLine={TagLine}
-                            setTagLine={setTagLine}
-                            TagLine1={TagLine1}
-                            setTagLine1={setTagLine1}
-                            video={video}
-                            setVideo={setVideo}
-                            selectedMedia={selectedMedia}
-                            setSelectedMedia={setSelectedMedia}
-                            mediaType={mediaType}
-                            setMediaType={setMediaType}
-                        />}
+        <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
+            <Navbar className="fixed top-0 w-full z-50" />
 
-                    {currentSection === 3 &&
-                        <Services
-                            setServicesPortrait={setServicesPortrait}
-                            servicesPortrait={servicesPortrait}
-                            setServicesBg={setServicesBg}
-                            servicesBg={servicesBg}
-                            services={services}
-                            setServices={setServices}
-                            danceTypes={danceTypes}
-                            setDanceTypes={setDanceTypes}
-                        />}
+            <div className="fixed top-[64px] left-0 w-full h-1 bg-gray-100 z-40">
+                <motion.div 
+                    className="h-full bg-gradient-to-r from-teal-600 to-teal-500"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${((currentSection + 1) / FORM_SECTIONS.length) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                />
+            </div>
 
-                    {currentSection === 4 &&
-                        <Testimonials
-                            testimonials={testimonials}
-                            setTestimonials={setTestimonials}
-                            TestimonialBg={TestimonialBg}
-                            setTestimonialBg={setTestimonialBg}
-                        />}
+            <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto w-full">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentSection}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 lg:p-10"
+                        >
+                            <ErrorBoundary>
+                                {currentSection === 0 && (
+                                    <Company
+                                        courseBasedCGCountry={courseBasedCGCountry}
+                                        setcourseBasedCGCountry={setcourseBasedCGCountry}
+                                        clients={Companydata}
+                                        companyName={companyName}
+                                        setCompanyName={setCompanyName}
+                                        companyDescription={companyDescription}
+                                        setCompanyDescription={setCompanyDescription}
+                                        institutionId={institutionId}
+                                        setinstitutionId={setinstitutionId}
+                                        PrimaryColor={PrimaryColor}
+                                        setPrimaryColor={setPrimaryColor}
+                                        SecondaryColor={SecondaryColor}
+                                        setSecondaryColor={setSecondaryColor}
+                                        logo={logo}
+                                        // institutionType={institutionType}
+                                        // setInstitutionType={setInstitutionType}
+                                        institutionFormat={institutionFormat}
+                                        setInstitutionFormat={setInstitutionFormat}
+                                        setLogo={setLogo}
+                                        LightestPrimaryColor={LightestPrimaryColor}
+                                        setLightestPrimaryColor={setLightestPrimaryColor}
+                                        LightPrimaryColor={LightPrimaryColor}
+                                        setLightPrimaryColor={setLightPrimaryColor}
+                                        selectedFile={selectedFile}
+                                        setSelectedFile={setSelectedFile}
+                                        CSVFile={CSVFile}
+                                        setCSVFile={setCSVFile}
+                                        registrationFee={registrationFee}
+                                        setRegistrationFee={setRegistrationFee}
+                                        registrationFeeCurrency={registrationFeeCurrency}
+                                        setRegistrationFeeCurrency={setRegistrationFeeCurrency}
+                                    />
+                                )}
+                                {currentSection === 1 && (
+                                    <Contact
+                                        contactInfo={contactInfo}
+                                        setContactInfo={setContactInfo}
+                                        SubscriptionBg={SubscriptionBg}
+                                        setSubscriptionBg={setSubscriptionBg}
+                                        InstructorBg={InstructorBg}
+                                        setInstructorBg={setInstructorBg}
+                                    />
+                                )}
+                                {currentSection === 2 && (
+                                    <Home
+                                        TagLine={TagLine}
+                                        setTagLine={setTagLine}
+                                        TagLine1={TagLine1}
+                                        setTagLine1={setTagLine1}
+                                        video={video}
+                                        setVideo={setVideo}
+                                        selectedMedia={selectedMedia}
+                                        setSelectedMedia={setSelectedMedia}
+                                        mediaType={mediaType}
+                                        setMediaType={setMediaType}
+                                    />
+                                )}
 
-                    {currentSection === 5 &&
-                        <Subscription
-                            subscriptions={subscriptions}
-                            setSubscriptions={setSubscriptions}
-                            country={country}
-                            setCountry={setCountry}
-                            countryCode={countryCode}
-                            setCountryCode={setCountryCode}
-                        />}
+                                {currentSection === 3 && (
+                                    <Services
+                                        setServicesPortrait={setServicesPortrait}
+                                        servicesPortrait={servicesPortrait}
+                                        setServicesBg={setServicesBg}
+                                        servicesBg={servicesBg}
+                                        services={services}
+                                        setServices={setServices}
+                                        danceTypes={danceTypes}
+                                        setDanceTypes={setDanceTypes}
+                                    />
+                                )}
 
-                    {currentSection === 6 &&
-                        <FAQs
-                            faqs={faqs}
-                            setFaqs={setFaqs}
-                        />}
+                                {currentSection === 4 && (
+                                    <Testimonials
+                                        testimonials={testimonials}
+                                        setTestimonials={setTestimonials}
+                                        TestimonialBg={TestimonialBg}
+                                        setTestimonialBg={setTestimonialBg}
+                                    />
+                                )}
 
-                    {/* {currentSection === 7 &&
+                                {currentSection === 5 && (
+                                    <Subscription
+                                        subscriptions={subscriptions}
+                                        setSubscriptions={setSubscriptions}
+                                        country={country}
+                                        setCountry={setCountry}
+                                        countryCode={countryCode}
+                                        setCountryCode={setCountryCode}
+                                    />
+                                )}
+
+                                {currentSection === 6 && (
+                                    <FAQs
+                                        faqs={faqs}
+                                        setFaqs={setFaqs}
+                                    />
+                                )}
+
+                                {/* {currentSection === 7 &&
             <Instructors
               instructors={instructors}
               setInstructors={setInstructors}
             />} */}
 
-                    {currentSection === 7 &&
-                        <Policy
-                            policies={policies}
-                            setPolicies={setPolicies}
-                            AboutUsBg={AboutUsBg}
-                            setAboutUsBg={setAboutUsBg}
-                        />}
-
-
+                                {currentSection === 7 && (
+                                    <Policy
+                                        policies={policies}
+                                        setPolicies={setPolicies}
+                                        AboutUsBg={AboutUsBg}
+                                        setAboutUsBg={setAboutUsBg}
+                                    />
+                                )}
+                            </ErrorBoundary>
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
-                <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
-                    <Footer
-                        saveData={saveData}
-                        currentSection={currentSection}
-                        nextSection={handleNextSection}
-                        prevSection={handlePrevSectionDraft}
-                        showModal={() => setShowModal(true)}
-                        institutionId={institutionId}
-                    />
-                </div>
+            </main>
 
-            </div>
+            <Footer 
+                currentSection={currentSection}
+                nextSection={handleNextSection}
+                prevSection={handlePrevSectionDraft}
+                saveData={saveData}
+                showModal={() => setShowModal(true)}
+                institutionId={institutionId}
+                sections={FORM_SECTIONS}
+                isCurrentSectionValid={isCurrentSectionValid}
+            />
+
             <PrevSectionDraftHandler
                 isOpen={showModal}
                 onClose={handleCloseModal}
                 onClear={handleClearData}
                 onSaveDraft={handleSaveDraft}
-                currentSection={currentSection}
-                setCurrentSection={setCurrentSection}
+                onContinue={() => {
+                    if (currentSection === 0) {
+                        Navigate('/dashboard');
+                    } else {
+                        setCurrentSection(prev => Math.max(prev - 1, 0));
+                    }
+                    setShowModal(false);
+                }}
             />
         </div>
     );

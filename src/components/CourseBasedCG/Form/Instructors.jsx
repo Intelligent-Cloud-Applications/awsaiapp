@@ -1,238 +1,205 @@
 import React, { useState, useRef, useContext } from 'react';
+import { TextInput, Label } from 'flowbite-react';
+import { FiUsers, FiUpload, FiX, FiUser, FiMail, FiBriefcase, FiPlusCircle } from 'react-icons/fi';
 import Context from '../../../context/Context';
-import {API} from "aws-amplify";
+import { API } from "aws-amplify";
 
 function Instructors({ instructors, setInstructors }) {
-  const { instructordetails, util } = useContext(Context)
-  console.log("instructordetails",instructordetails)
-  // const [instructors, setInstructors] = useState([
-  //   { imgSrc: '', name: '', uploadedFile: null },
-  //   { imgSrc: '', name: '', uploadedFile: null },
-  //   { imgSrc: '', name: '', uploadedFile: null },
-  //   { imgSrc: '', name: '', uploadedFile: null },
-  // ]);
-  
-
+  const { instructordetails, util } = useContext(Context);
   const instructorsContainerRef = useRef(null);
+  const [activeInstructorIndex, setActiveInstructorIndex] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const handleInstructorChange = (index, field, value) => {
     const updatedInstructors = [...instructors];
     updatedInstructors[index][field] = value;
     setInstructors(updatedInstructors);
-  };
-
-  const [activeInstructorIndex, setActiveInstructorIndex] = useState(null);
-
-  const toggleActiveInstructor = (index) => {
-    setActiveInstructorIndex(index === activeInstructorIndex ? null : index);
+    setErrors(prev => ({ ...prev, [field + index]: null }));
   };
 
   const handleImageChange = (index, event) => {
     const file = event.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }}
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const updatedInstructors = [...instructors];
-        updatedInstructors[index].imgSrc = reader.result;
-        updatedInstructors[index].uploadedFile = file.name;
-        updatedInstructors[index].actualFile = file;
-        setInstructors(updatedInstructors);
-      };
+    if (!file) return;
+
+    const fileSizeMB = file.size / (1024 * 1024);
+    if (fileSizeMB > 4) {
+      setErrors(prev => ({ ...prev, [`image${index}`]: "File size exceeds 4MB. Please choose a smaller file." }));
+      return;
     }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const updatedInstructors = [...instructors];
+      updatedInstructors[index].imgSrc = reader.result;
+      updatedInstructors[index].uploadedFile = file.name;
+      updatedInstructors[index].actualFile = file;
+      setInstructors(updatedInstructors);
+      setErrors(prev => ({ ...prev, [`image${index}`]: null }));
+    };
   };
 
   const shortenFileName = (fileName) => {
-    const maxLength = 10;
-    if (!fileName) {
-      return '';
-    }
-    if (fileName.length > maxLength) {
-      return fileName.substring(0, maxLength - 3) + '...';
-    }
-    return fileName;
+    if (!fileName) return '';
+    return fileName.length > 15 ? fileName.substring(0, 12) + '...' : fileName;
   };
-const removeInstructor = async (indexToRemove) => {
-  const instructor = instructors[indexToRemove]
-  if (instructor.instructorId) {
-    util.setLoader(true);
-    try {
-      await API.del("clients", `/user/development-form/delete-instructor/${instructor.institution}`, {
-        body: {
-          instructorId: instructor.instructorId,
-        }
-      });
-    } catch (e) {
-      console.log(e);
-    } finally {
-      util.setLoader(false);
+
+  const removeInstructor = async (indexToRemove) => {
+    const instructor = instructors[indexToRemove];
+    if (instructor.instructorId) {
+      util.setLoader(true);
+      try {
+        await API.del("clients", `/user/development-form/delete-instructor/${instructor.institution}`, {
+          body: { instructorId: instructor.instructorId }
+        });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        util.setLoader(false);
+      }
     }
-  }
-  const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
-  setInstructors(updatedInstructors);
-};
-const addNewInstructor = () => {
-  if (instructors.length ) {
-    setInstructors([
-      ...instructors,
-      { imgSrc: '', name: '', uploadedFile: null, emailId: '', position: '' },
-    ]);
-    // Scroll to the newly added instructor
-    instructorsContainerRef.current.scrollTo({
-      top: instructorsContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
-  }
-};
+    const updatedInstructors = instructors.filter((_, index) => index !== indexToRemove);
+    setInstructors(updatedInstructors);
+  };
+
+  const addNewInstructor = () => {
+    if (instructors.length) {
+      setInstructors([
+        ...instructors,
+        { imgSrc: '', name: '', uploadedFile: null, emailId: '', position: '' }
+      ]);
+      setTimeout(() => {
+        instructorsContainerRef.current?.scrollTo({
+          top: instructorsContainerRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  };
 
   return (
-    <div className="mx-auto max-w-[800px] max-h-screen overflow-y-auto">
-      <h1 className="font-medium text-7xl">INSTRUCTORS SECTION</h1>
-      <h5 className="w-[28rem] max950:w-[15rem] text-[#cc3f3f] text-[13px]">
-      ** The Instructor page shown is just an example how your given data will look like for the Instructors page it will not change on giving your input.**
-      </h5>
-      <h5 className="w-[28rem] max950:w-[17rem] text-[#939393]">
-      Introduce expert team members, emphasizing expertise and value they bring to your organization.
-      </h5>
-<div className="">
-        <div ref={instructorsContainerRef} className="pb-6">
-          {instructors.map((instructor, index) => (
-            <div key={index} className="mt-2">
-              <h2 className="font-medium text-[1.1rem]">INSTRUCTOR {index + 1}</h2>
-              
-              <div className="relative flex items-center">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(index, e)}
-                  className="hidden"
-                  id={`instructorImgInput${index}`}
-                />
-                <label
-                  htmlFor={`instructorImgInput${index}`}
-                  onClick={() => toggleActiveInstructor(index)}
-                  className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-                  style={{
-                    borderColor: 'cement',
-                    borderWidth: '2px',
-                    borderStyle: 'solid',
-                    backgroundColor: '#D9D9D9',
-                  }}
-                >
-                  <span
-                    className={`block text-[#000000] font-inter text-[14px] ${
-                      instructor.uploadedFile ? 'hidden' : 'block'
-                    }`}
-                  >
-                    Choose File
-                  </span>
-                  
-                  <div
-                    className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${
-                      instructor.uploadedFile ? 'block' : 'hidden'
-                    }`}
-                  >
-                    <span className="text-[#636262]">
-                      {shortenFileName(instructor.uploadedFile)}
-                    </span>
-                    <span
-                      onClick={() =>
-                        handleImageChange(index, { target: { files: [null] } })
-                      }
-                      className="text-[#3b9d33] cursor-pointer"
-                    >
-                      Change
-                    </span>
-                    
-                  </div>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiUsers className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Instructors Section</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Introduce expert team members, emphasizing expertise and value they bring to your organization.
+        </p>
+        <p className="text-sm text-red-500 mt-2">
+          ** The Instructor page shown is just an example of how your given data will look like for the Instructors page. It will not change on giving your input. **
+        </p>
+      </div>
 
-                </label>
-                {/* Rest of your image upload structure */}
-                {index >= 4 && (
+      <div className="space-y-6" ref={instructorsContainerRef}>
+        {instructors.map((instructor, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <FiUser className="w-5 h-5 text-teal-600" />
+                Instructor {index + 1}
+              </h2>
+              {index >= 4 && (
                 <button
                   onClick={() => removeInstructor(index)}
-                  className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1 rounded-full text-sm mr-[12px] "
+                  className="text-red-500 hover:text-red-600 transition-colors"
+                  title="Remove Instructor"
                 >
-                  <span>✕</span>
+                  <FiX className="w-5 h-5" />
                 </button>
               )}
-              </div>
-              <div className="relative mt-2">
-                {/* Name input */}
-                
-                <input
-    type="text"
-    name="name"
-    value={instructor.name}
-    onChange={(e) => handleInstructorChange(index, 'name', e.target.value)}
-    placeholder="Name"
-    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent"
-    onFocus={() => toggleActiveInstructor(index)}
-    onBlur={() => toggleActiveInstructor(null)}
-  />
-                {/* Name line container */}
-                <div
-    className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${
-      activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
-    }`}
-  ></div>
-
-              </div>
-              <div className="relative">    
-<input
-    type="text"
-    name="emailId"
-    value={instructor.emailId}
-    onChange={(e) => handleInstructorChange(index, 'emailId', e.target.value)}
-    placeholder="emailId"
-    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent"
-    onFocus={() => toggleActiveInstructor(index)}
-    onBlur={() => toggleActiveInstructor(null)}
-  />
-                {/* Name line container */}
-                <div
-    className={`absolute left-0 right-0  h-[0.5px] ${
-      activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
-    }`}
-  ></div>
-</div> <div className="relative">
-<input
-    type="text"
-    name="position"
-    value={instructor.position}
-    onChange={(e) => handleInstructorChange(index, 'position', e.target.value)}
-    placeholder="position"
-    className="w-full max-w-[28rem] text-black border-none outline-none bg-transparent"
-    onFocus={() => toggleActiveInstructor(index)}
-    onBlur={() => toggleActiveInstructor(null)}
-  />
-                {/* Name line container */}
-                <div
-    className={`absolute left-0 right-0 bottom-0 h-[0.5px] ${
-      activeInstructorIndex === index ? 'bg-black' : 'bg-[#939393]'
-    }`}
-  ></div></div>
             </div>
-          ))}
-        </div>
-       
-        
-          <div className="mb-10 flex justify-center ">
-            <button
-              onClick={addNewInstructor}
-              className="bg-[#30AFBC] text-white px-4 py-2 rounded-md"
-            >
-              Add Instructor
-            </button>
+
+            <div className="space-y-4">
+              {/* Image Upload */}
+              <div>
+                <Label className="block text-sm font-medium text-gray-700 mb-2">
+                  Profile Image <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(index, e)}
+                    className="hidden"
+                    id={`instructorImgInput${index}`}
+                  />
+                  <label
+                    htmlFor={`instructorImgInput${index}`}
+                    className={`flex items-center gap-2 px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer hover:border-teal-500 transition-colors ${
+                      errors[`image${index}`] ? 'border-red-500' : 'border-gray-200'
+                    }`}
+                  >
+                    <FiUpload className="w-5 h-5 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      {instructor.uploadedFile ? shortenFileName(instructor.uploadedFile) : 'Choose Image'}
+                    </span>
+                  </label>
+                  {errors[`image${index}`] && (
+                    <p className="mt-1 text-sm text-red-500">{errors[`image${index}`]}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Name Input */}
+              <div>
+                <Label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <FiUser className="w-4 h-4" />
+                  Name <span className="text-red-500">*</span>
+                </Label>
+                <TextInput
+                  type="text"
+                  value={instructor.name}
+                  onChange={(e) => handleInstructorChange(index, 'name', e.target.value)}
+                  placeholder="Enter instructor name"
+                  className="w-full bg-gray-50"
+                />
+              </div>
+
+              {/* Email Input */}
+              <div>
+                <Label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <FiMail className="w-4 h-4" />
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <TextInput
+                  type="email"
+                  value={instructor.emailId}
+                  onChange={(e) => handleInstructorChange(index, 'emailId', e.target.value)}
+                  placeholder="Enter instructor email"
+                  className="w-full bg-gray-50"
+                />
+              </div>
+
+              {/* Position Input */}
+              <div>
+                <Label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <FiBriefcase className="w-4 h-4" />
+                  Position <span className="text-red-500">*</span>
+                </Label>
+                <TextInput
+                  type="text"
+                  value={instructor.position}
+                  onChange={(e) => handleInstructorChange(index, 'position', e.target.value)}
+                  placeholder="Enter instructor position"
+                  className="w-full bg-gray-50"
+                />
+              </div>
+            </div>
           </div>
-      
-      </div>      
+        ))}
+      </div>
+
+      <div className="flex justify-center mt-8">
+        <button
+          onClick={addNewInstructor}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+        >
+          <FiPlusCircle className="w-5 h-5" />
+          Add Instructor
+        </button>
+      </div>
     </div>
   );
 }

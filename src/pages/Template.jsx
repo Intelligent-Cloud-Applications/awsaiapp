@@ -1,6 +1,7 @@
 // Template.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Home/Navbar';
 import Footer from '../components/Template/Footer';
 // import Preview from '../components/Template/Preview';
@@ -952,36 +953,39 @@ const Template = () => {
         // handleCompanyUpload();
         // break;
         case 1:
-          if (!contactInfo.address || !contactInfo["Owner Name"] || !contactInfo.phoneNumber || !contactInfo.email || !contactInfo.UpiId) {
-            if (!contactInfo.address) {
-              alert("Please enter a valid Address before proceeding.");
+          // First check if required fields exist
+          if (!contactInfo.phoneNumber || !contactInfo.email || !contactInfo["Owner Name"]) {
+
+            if (!contactInfo.phoneNumber) {
+              alert("Please enter a valid phone number before proceeding.");
+              return prevSection;
             }
             if (!contactInfo["Owner Name"]) {
               alert("Please enter a valid Owner Name before proceeding.");
-            }
-            if (!contactInfo.phoneNumber) {
-              alert("Please enter a valid phone number before proceeding.");
+              return prevSection;
             }
             if (!contactInfo.email) {
               alert("Please enter a valid email address before proceeding.");
+              return prevSection;
+
             }
-            if (!contactInfo.UpiId) {
-              alert("Please enter a valid Upi Id before proceeding.");
-            }
-            return prevSection;
           }
+
+          // Then validate phone number format
           const phoneRegex = /^[0-9]+$/;
           if (!phoneRegex.test(contactInfo.phoneNumber)) {
-            alert("Please enter a valid phone number.");
+            alert("Please enter a valid phone number (numbers only).");
             return prevSection;
           }
 
-          // Validate email address
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          // Validate email format
+          const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
           if (!emailRegex.test(contactInfo.email)) {
             alert("Please enter a valid email address.");
             return prevSection;
           }
+
+          // If all validations pass, proceed with upload
           handleContactUpload();
           break;
         case 2:
@@ -1116,131 +1120,150 @@ const Template = () => {
   };
   //  console.log("Logo in Template:", logo);
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-      <Navbar />
-      <div className="flex-grow flex">
-        {/* <div className="w-[65%] bg-[#30AFBC] pt-[8rem] relative max950:hidden cont">
-          <Preview currentSection={currentSection} logo={logo} setLogo={setLogo} TagLine={TagLine} setTagLine={setTagLine} TagLine1={TagLine1} setTagLine1={setTagLine1} video={video} setVideo={setVideo} services={services} setServices={setServices} faqs={faqs} setFaqs={setFaqs} instructors={instructors} setInstructors={setInstructors} />
-        </div> */}
-        <div className="pt-[6rem] w-full max950:mb-10 max950:px-14 max600:px-0 m-[2%]" style={{ overflow: 'auto' }}>
-          {currentSection === 0 &&
-            <Company
-            courseBasedCG={courseBasedCG}
-            setCourseBasedCG={setCourseBasedCG}
-            courseBasedCGCountry={courseBasedCGCountry}
-            setcourseBasedCGCountry={setcourseBasedCGCountry}
-              clients={Companydata}
-              companyName={companyName}
-              setCompanyName={setCompanyName}
-              companyDescription={companyDescription}
-              setCompanyDescription={setCompanyDescription}
-              institutionId={institutionId}
-              setinstitutionId={setinstitutionId}
-              PrimaryColor={PrimaryColor}
-              setPrimaryColor={setPrimaryColor}
-              SecondaryColor={SecondaryColor}
-              setSecondaryColor={setSecondaryColor}
-              logo={logo}
-              // institutionType={institutionType}
-              // setInstitutionType={setInstitutionType}
-              institutionFormat={institutionFormat}
-              setInstitutionFormat={setInstitutionFormat}
-              setLogo={setLogo}
-              LightestPrimaryColor={LightestPrimaryColor}
-              setLightestPrimaryColor={setLightestPrimaryColor}
-              LightPrimaryColor={LightPrimaryColor}
-              setLightPrimaryColor={setLightPrimaryColor}
-              selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-              CSVFile={CSVFile}
-              setCSVFile={setCSVFile}
-            />}
-          {currentSection === 1 &&
-            <Contact
-              contactInfo={contactInfo}
-              setContactInfo={setContactInfo}
-              SubscriptionBg={SubscriptionBg}
-              setSubscriptionBg={setSubscriptionBg}
-              InstructorBg={InstructorBg}
-              setInstructorBg={setInstructorBg}
-            />}
-          {currentSection === 2 &&
-            <Home
-              TagLine={TagLine}
-              setTagLine={setTagLine}
-              TagLine1={TagLine1}
-              setTagLine1={setTagLine1}
-              video={video}
-              setVideo={setVideo}
-              selectedMedia={selectedMedia}
-              setSelectedMedia={setSelectedMedia}
-              mediaType={mediaType}
-              setMediaType={setMediaType}
-            />}
+    <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
+      <Navbar className="fixed top-0 w-full z-50" />
 
-          {currentSection === 3 &&
-            <Services
-              setServicesPortrait={setServicesPortrait}
-              servicesPortrait={servicesPortrait}
-              setServicesBg={setServicesBg}
-              servicesBg={servicesBg}
-              services={services}
-              setServices={setServices}
-              danceTypes={danceTypes}
-              setDanceTypes={setDanceTypes}
-            />}
-
-          {currentSection === 4 &&
-            <Testimonials
-              testimonials={testimonials}
-              setTestimonials={setTestimonials}
-              TestimonialBg={TestimonialBg}
-              setTestimonialBg={setTestimonialBg}
-            />}
-
-          {currentSection === 5 &&
-            <Subscription
-              subscriptions={subscriptions}
-              setSubscriptions={setSubscriptions}
-              country={country}
-              setCountry={setCountry}
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-            />}
-
-          {currentSection === 6 &&
-            <FAQs
-              faqs={faqs}
-              setFaqs={setFaqs}
-            />}
-
-          {/* {currentSection === 7 &&
-            <Instructors
-              instructors={instructors}
-              setInstructors={setInstructors}
-            />} */}
-
-          {currentSection === 7 &&
-            <Policy
-              policies={policies}
-              setPolicies={setPolicies}
-              AboutUsBg={AboutUsBg}
-              setAboutUsBg={setAboutUsBg}
-            />}
-
-
-        </div>
-        <div style={{ position: 'fixed', width: '100%', bottom: 0, zIndex: 99 }}>
-          <Footer
-            saveData={saveData}
-            currentSection={currentSection}
-            nextSection={handleNextSection}
-            prevSection={handlePrevSectionDraft}
-            showModal={() => setShowModal(true)}
-            institutionId={institutionId}
-          />
-        </div>
-
+      {/* Add progress bar */}
+      <div className="fixed top-[64px] left-0 w-full h-1 bg-gray-100 z-40">
+        <motion.div 
+          className="h-full bg-gradient-to-r from-teal-600 to-teal-500"
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 0.5 }}
+        />
       </div>
+
+      <main className="flex-grow pt-24 pb-32 px-4 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto w-full">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSection}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 lg:p-10"
+            >
+              {currentSection === 0 &&
+                <Company
+                courseBasedCG={courseBasedCG}
+                setCourseBasedCG={setCourseBasedCG}
+                courseBasedCGCountry={courseBasedCGCountry}
+                setcourseBasedCGCountry={setcourseBasedCGCountry}
+                  clients={Companydata}
+                  companyName={companyName}
+                  setCompanyName={setCompanyName}
+                  companyDescription={companyDescription}
+                  setCompanyDescription={setCompanyDescription}
+                  institutionId={institutionId}
+                  setinstitutionId={setinstitutionId}
+                  PrimaryColor={PrimaryColor}
+                  setPrimaryColor={setPrimaryColor}
+                  SecondaryColor={SecondaryColor}
+                  setSecondaryColor={setSecondaryColor}
+                  logo={logo}
+                  // institutionType={institutionType}
+                  // setInstitutionType={setInstitutionType}
+                  institutionFormat={institutionFormat}
+                  setInstitutionFormat={setInstitutionFormat}
+                  setLogo={setLogo}
+                  LightestPrimaryColor={LightestPrimaryColor}
+                  setLightestPrimaryColor={setLightestPrimaryColor}
+                  LightPrimaryColor={LightPrimaryColor}
+                  setLightPrimaryColor={setLightPrimaryColor}
+                  selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                  CSVFile={CSVFile}
+                  setCSVFile={setCSVFile}
+                />}
+              {currentSection === 1 &&
+                <Contact
+                  contactInfo={contactInfo}
+                  setContactInfo={setContactInfo}
+                  SubscriptionBg={SubscriptionBg}
+                  setSubscriptionBg={setSubscriptionBg}
+                  InstructorBg={InstructorBg}
+                  setInstructorBg={setInstructorBg}
+                />}
+              {currentSection === 2 &&
+                <Home
+                  TagLine={TagLine}
+                  setTagLine={setTagLine}
+                  TagLine1={TagLine1}
+                  setTagLine1={setTagLine1}
+                  video={video}
+                  setVideo={setVideo}
+                  selectedMedia={selectedMedia}
+                  setSelectedMedia={setSelectedMedia}
+                  mediaType={mediaType}
+                  setMediaType={setMediaType}
+                />}
+
+              {currentSection === 3 &&
+                <Services
+                  setServicesPortrait={setServicesPortrait}
+                  servicesPortrait={servicesPortrait}
+                  setServicesBg={setServicesBg}
+                  servicesBg={servicesBg}
+                  services={services}
+                  setServices={setServices}
+                  danceTypes={danceTypes}
+                  setDanceTypes={setDanceTypes}
+                />}
+
+              {currentSection === 4 &&
+                <Testimonials
+                  testimonials={testimonials}
+                  setTestimonials={setTestimonials}
+                  TestimonialBg={TestimonialBg}
+                  setTestimonialBg={setTestimonialBg}
+                />}
+
+              {currentSection === 5 &&
+                <Subscription
+                  subscriptions={subscriptions}
+                  setSubscriptions={setSubscriptions}
+                  country={country}
+                  setCountry={setCountry}
+                  countryCode={countryCode}
+                  setCountryCode={setCountryCode}
+                />}
+
+              {currentSection === 6 &&
+                <FAQs
+                  faqs={faqs}
+                  setFaqs={setFaqs}
+                />}
+
+              {/* {currentSection === 7 &&
+                <Instructors
+                  instructors={instructors}
+                  setInstructors={setInstructors}
+                />} */}
+
+              {currentSection === 7 &&
+                <Policy
+                  policies={policies}
+                  setPolicies={setPolicies}
+                  AboutUsBg={AboutUsBg}
+                  setAboutUsBg={setAboutUsBg}
+                />}
+
+
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+
+      <Footer 
+        currentSection={currentSection}
+        nextSection={handleNextSection}
+        prevSection={handlePrevSectionDraft}
+        saveData={saveData}
+        showModal={() => setShowModal(true)}
+        institutionId={institutionId}
+        className="fixed bottom-0 w-full z-50"
+      />
+
       <PrevSectionDraftHandler
         isOpen={showModal}
         onClose={handleCloseModal}
