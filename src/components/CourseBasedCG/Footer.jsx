@@ -3,21 +3,23 @@ import './Footer.css';
 import { useNavigate } from 'react-router-dom';
 import { API } from 'aws-amplify';
 import Context from '../../context/Context';
+import { FiChevronLeft, FiChevronRight, FiCheck, FiX } from 'react-icons/fi';
 
 function Footer({ currentSection, nextSection, prevSection, saveData, showModal, institutionId }) {
-  console.log(institutionId)
-  const UserCtx = useContext(Context)
+  const UserCtx = useContext(Context);
   const Navigate = useNavigate();
   const sections = [
-    'COMPANY INFO',
-    'CONTACT INFO',
-    'HOME',
-    'SERVICES',
-    'TESTIMONIALS',
-    'SUBSCRIPTION',
-    'FAQS',
-    'POLICY',
+    { id: 'company', title: 'COMPANY INFO' },
+    { id: 'contact', title: 'CONTACT INFO' },
+    { id: 'home', title: 'HOME' },
+    { id: 'services', title: 'SERVICES' },
+    { id: 'testimonials', title: 'TESTIMONIALS' },
+    { id: 'subscription', title: 'SUBSCRIPTION' },
+    { id: 'faqs', title: 'FAQS' },
+    { id: 'policy', title: 'POLICY' }
   ];
+
+  const progress = ((currentSection + 1) / sections.length) * 100;
 
   const handleNextClick = () => {
     saveData();
@@ -46,44 +48,71 @@ function Footer({ currentSection, nextSection, prevSection, saveData, showModal,
         cognitoId: UserCtx.userData.cognitoId
       }
     });
-  }
+  };
 
   return (
-    <div className='footer-wrapper relative'>
-      <div className="bg-white h-[4rem] footer flex justify-end items-center relative mt-10">
-        <div className="absolute left-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:left-1">
-          {currentSection === 0 && (
-            <button
-              onClick={handleBackClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
-            >
-              BACK
-            </button>
-          )}
-          {currentSection > 0 && (
-            <button
-              onClick={handlePrevClick}
-              className="bg-black w-24 text-white px-4 py-2 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
-            >
-              BACK
-            </button>
-          )}
-        </div>
-        <div className="absolute right-8 bottom-4 flex gap-4 [@media(max-width:1024px)]:right-1">
-          {currentSection < sections.length - 1 && (
-            <button
-              onClick={handleNextClick}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
-            >
-              NEXT
-            </button>
-          )}
-          {currentSection === sections.length - 1 && (
+    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="h-16 flex items-center justify-between gap-4">
+          {/* Back/Previous Button */}
+          <button
+            onClick={currentSection === 0 ? handleBackClick : handlePrevClick}
+            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+          >
+            {currentSection === 0 ? (
+              <>
+                <FiX className="w-4 h-4" />
+                CLOSE
+              </>
+            ) : (
+              <>
+                <FiChevronLeft className="w-4 h-4" />
+                PREVIOUS
+              </>
+            )}
+          </button>
+
+          {/* Progress Section */}
+          <div className="flex-1 max-w-3xl">
+            <div className="hidden md:flex items-center justify-between mb-2">
+              {sections.map((section, index) => (
+                <div
+                  key={section.id}
+                  className={`flex items-center gap-2 text-sm font-medium
+                    ${index === currentSection ? 'text-[#30afbc]' : 
+                      index < currentSection ? 'text-[#2b9ea9]' : 'text-gray-400'}`}
+                >
+                  {index < currentSection && (
+                    <FiCheck className="w-4 h-4 text-[#30afbc]" />
+                  )}
+                  {section.title}
+                </div>
+              ))}
+            </div>
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[#30afbc] rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Next/Submit Button */}
+          {currentSection === sections.length - 1 ? (
             <button
               onClick={submitSections}
-              className="bg-black text-white px-4 py-2 w-24 rounded-[2px] [@media(max-width:1024px)]:px-1 [@media(max-width:1024px)]:py-1 [@media(max-width:1024px)]:w-20"
+              className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
             >
               SUBMIT
+              <FiCheck className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={handleNextClick}
+              className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-[#30afbc] rounded-lg hover:bg-[#2b9ea9] transition-colors"
+            >
+              NEXT
+              <FiChevronRight className="w-4 h-4" />
             </button>
           )}
         </div>
