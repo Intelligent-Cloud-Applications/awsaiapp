@@ -368,8 +368,8 @@ function NewMemberList({ tempInstitution }) {
         util.setLoader(true); // Set loader to true before uploading
         const isProd = process.env.REACT_APP_STAGE === "PROD";
         const fileNameForBucket = isProd
-        ? "member-creation-with-cognito-id-and-default-password"
-        : "institution-utils";
+          ? "member-creation-with-cognito-id-and-default-password"
+          : "institution-utils";
         await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -432,17 +432,17 @@ function NewMemberList({ tempInstitution }) {
 
   return (
     <>
-      {screenWidth > 1025 ? (
+      {screenWidth > 1023 ? (
         <>
-          <div className="mt-5">
-            <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
+          <div>
+            <div className="flex items-center justify-between bg-white px-5 rounded-t-md [@media(max-width:1440px)]:mx-[8%]">
               {/* Left: Filter Buttons */}
-              <div className="flex gap-4">
+              <div className="flex gap-4 py-4">
                 <Button
                   onClick={() => setFilter("All")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "All"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md [@media(max-width:1440px)]:h-[3rem] ${filter === "All"
+                    ? "bg-[#30afbc] text-white"
+                    : "bg-white border border-gray-200 text-gray-700"
                     } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
@@ -450,9 +450,9 @@ function NewMemberList({ tempInstitution }) {
                 </Button>
                 <Button
                   onClick={() => setFilter("Active")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Active"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md [@media(max-width:1440px)]:h-[3rem] ${filter === "Active"
+                    ? "bg-[#30afbc] text-white"
+                    : "bg-white border border-gray-200 text-gray-700"
                     } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
@@ -460,9 +460,9 @@ function NewMemberList({ tempInstitution }) {
                 </Button>
                 <Button
                   onClick={() => setFilter("Inactive")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Inactive"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
+                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md [@media(max-width:1440px)]:h-[3rem] ${filter === "Inactive"
+                    ? "bg-[#30afbc] text-white"
+                    : "bg-white border border-gray-200 text-gray-700"
                     } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
                   style={{ minWidth: "70px" }}
                 >
@@ -494,7 +494,7 @@ function NewMemberList({ tempInstitution }) {
               <div className="flex items-center gap-4">
                 <Button
                   onClick={handleButtonClick}
-                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] [@media(max-width:1440px)]:h-[3rem]"
                   style={{ minWidth: "70px" }}
                 >
                   <FaFileImport className="mr-2 mt-[0.20rem]" />
@@ -518,7 +518,7 @@ function NewMemberList({ tempInstitution }) {
                       filter
                     )
                   }
-                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] [@media(max-width:1440px)]:h-[3rem]"
                   style={{ minWidth: "70px" }}
                 >
                   <FaFileExport className="mr-2 mt-[0.20rem]" />
@@ -529,7 +529,7 @@ function NewMemberList({ tempInstitution }) {
           </div>
 
           {/* Table */}
-          <div className="bg-white max-w-full mx-auto rounded-b-md">
+          <div className="bg-white max-w-full mx-auto rounded-b-md [@media(max-width:1440px)]:mx-[8%]">
             <div className="overflow-x-auto">
               <Table hoverable className="min-w-full">
                 <Table.Head>
@@ -596,8 +596,8 @@ function NewMemberList({ tempInstitution }) {
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active"
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
                             } `}
                         >
                           {member.status}
@@ -641,42 +641,39 @@ function NewMemberList({ tempInstitution }) {
         </>
       ) : (
         <>
-
           <div className="mt-5 px-4">
-          <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0">
-                         <Button
-                           onClick={handleButtonClick}
-                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
-                         >
-                           <FaFileImport className="mr-2 mt-[0.20rem]" />
-                           Upload CSV
-                           <input
-                             type="file"
-                             accept=".csv"
-                             onChange={handleCSVFile}
-                             className="hidden"
-                             ref={fileInputRef}
-                             id="CSVFileInput"
-                           />
-                         </Button>
-                         <Button
-                         onClick={() =>
-                          handleExportExcel(
-                            user,
-                            userData,
-                            tempInstitution,
-                            members,
-                            filter
-                          )
-                        }
-                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
-                         >
-                           <FaFileExport className="mr-2 mt-[0.20rem]" />
-                           Export CSV
-                         </Button>
-                       
-                  
-                     </div>
+            <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0 buttonTop">
+              <Button
+                onClick={handleButtonClick}
+                className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+              >
+                <FaFileImport className="mr-2 mt-[0.20rem]" />
+                Upload CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleCSVFile}
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="CSVFileInput"
+                />
+              </Button>
+              <Button
+                onClick={() =>
+                  handleExportExcel(
+                    user,
+                    userData,
+                    tempInstitution,
+                    members,
+                    filter
+                  )
+                }
+                className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+              >
+                <FaFileExport className="mr-2 mt-[0.20rem]" />
+                Export CSV
+              </Button>
+            </div>
             <div className="flex flex-col gap-3">
               <form className="flex items-center border border-gray rounded-md">
                 <div className="relative w-full">
@@ -697,14 +694,14 @@ function NewMemberList({ tempInstitution }) {
                 </div>
               </form>
 
-              <div className="flex gap-2 justify-around">
+              <div className="flex gap-2 justify-around buttonTop">
                 {["All", "Active", "Inactive"].map((status) => (
                   <Button
                     key={status}
                     onClick={() => setFilter(status)}
                     className={`flex items-center justify-center py-1 px-2 text-xs rounded-md ${filter === status
-                        ? "bg-[#30afbc] text-white"
-                        : "bg-white border border-gray-200 text-gray-700"
+                      ? "bg-[#30afbc] text-white"
+                      : "bg-white border border-gray-200 text-gray-700"
                       }`}
                   >
                     {status} (
@@ -756,8 +753,8 @@ function NewMemberList({ tempInstitution }) {
                         <strong>Status:</strong>{" "}
                         <span
                           className={`px-2 py-1 inline-block text-xs font-medium rounded-full ${member.status === "Active"
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
                             }`}
                         >
                           {member.status}
@@ -790,8 +787,8 @@ function NewMemberList({ tempInstitution }) {
                   }
                   disabled={currentPage === 1}
                   className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-500"
-                      : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                     }`}
                 >
                   Previous
@@ -802,8 +799,8 @@ function NewMemberList({ tempInstitution }) {
                   }
                   disabled={currentPage === totalPages}
                   className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                      ? "bg-gray-200 text-gray-500"
-                      : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                     }`}
                 >
                   Next

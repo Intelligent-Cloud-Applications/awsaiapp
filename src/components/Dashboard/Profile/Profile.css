@@ -63,5 +63,6 @@
   @media (max-width: 650px) {
     .change{
       margin-left: 0rem;
+      margin-bottom: 3rem;
     }
   }

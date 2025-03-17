@@ -1,5 +1,5 @@
-import React, { useState, useContext,useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import LeftBanner from "../components/Dashboard/LeftBanner/LeftBanner";
 import Context from "../context/Context";
 // import ClientsPayments from "../components/Dashboard/ClientsPayment/ClientsPayments";
@@ -61,10 +61,10 @@ const DashBoard = () => {
 
         case 4:
           return <AdminMemberlist />
-          
+
         case 5:
           return <AwsaiappRevenue />
-        
+
         default:
           return <div>Sorry, the server is down. Please try again later.</div>;
       }
@@ -109,10 +109,7 @@ const DashBoard = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="">
-        <NavBar />
-      </div>
-
+      <NavBar />
       <div>
         {Ctx.userData.userType === "admin" &&
           Ctx.userData.institutionName !== "awsaiapp" && (

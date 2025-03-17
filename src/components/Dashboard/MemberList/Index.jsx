@@ -49,10 +49,10 @@ const Index = ({ tempInstitution, setShowMemberList, selectedInstitutionType }) 
   };
 
   return (
-    <div className="h-[96vh] bg-[#f1f1f1]">
-      {screenWidth > 1025 ? (
+    <div className="w-screen ml-[4rem] bg-[#f1f1f1] [@media(max-width:600px)]:ml-0">
+      {screenWidth > 1023 ? (
         <>
-          <div className="w-[97vw] flex flex-col items-center ml-[220px]">
+          <div className="w-full h-[96vh] flex flex-col items-center ml-[5%]">
             <div>
               <Navbar />
               <div className="flex flex-col items-center mt-5">
@@ -74,8 +74,8 @@ const Index = ({ tempInstitution, setShowMemberList, selectedInstitutionType }) 
         </>
       ) : (
         <>
-          <div className="w-full gap-2">
-            <div className="mt-20">
+          <div className="gap-5 ml-[1rem] pb-[4rem]">
+            <div className="">
               <div
                 onClick={goBack}
                 className="border bg-[#30afbc] rounded cursor-pointer w-[36px] text-[30px] "
