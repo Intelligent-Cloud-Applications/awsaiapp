@@ -1,8 +1,8 @@
-import { TextInput } from 'flowbite-react';
 import React from 'react';
+import { TextInput, Label, Textarea } from 'flowbite-react';
+import { FiFileText, FiUpload, FiX, FiPlusCircle, FiImage, FiBook, FiShield, FiDollarSign, FiInfo } from 'react-icons/fi';
 
 function Policy({ policies, setPolicies, AboutUsBg, setAboutUsBg }) {
-
   const handlePolicyChange = (type, field, value, index) => {
     const updatedPolicies = [...policies[type]];
     updatedPolicies[index][field] = value;
@@ -19,129 +19,137 @@ function Policy({ policies, setPolicies, AboutUsBg, setAboutUsBg }) {
     updatedPolicies.splice(index, 1);
     setPolicies({ ...policies, [type]: updatedPolicies });
   };
-  const handleBgImageChange3 = (e) => {
+
+  const handleBgImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 4) {
-        alert("File size exceeds 4MB. Please choose a smaller file.");
-        return;
-      }
+    if (!file) return;
+
+    const fileSizeMB = file.size / (1024 * 1024);
+    if (fileSizeMB > 4) {
+      alert("File size exceeds 4MB. Please choose a smaller file.");
+      return;
     }
-    if (file) {
-      setAboutUsBg(file);
-    }
+    setAboutUsBg(file);
   };
 
-  const shortenFileName1 = (file) => {
+  const shortenFileName = (file) => {
     if (!file || !file.name) return '';
-    const maxLength = 15;
-    const fileName = file.name;
-    if (fileName.length > maxLength) {
-      return `${fileName.substring(0, maxLength)}...`;
-    }
-    return fileName;
+    return file.name.length > 15 ? `${file.name.substring(0, 12)}...` : file.name;
   };
+
+  const policyIcons = {
+    'Privacy Policy': <FiShield className="w-5 h-5 text-teal-600" />,
+    'About Us': <FiInfo className="w-5 h-5 text-teal-600" />,
+    'Refund Policy': <FiDollarSign className="w-5 h-5 text-teal-600" />,
+    'Terms and Conditions': <FiFileText className="w-5 h-5 text-teal-600" />
+  };
+
   return (
-    <div className="mx-[2%] mb-[5%] [@media(max-width:1024px)]:mb-10">
-      <h1 className="font-medium text-7xl pb-[1rem] text-center">POLICY AND TERMS</h1>
-      <h5 className="text-[#939393] text-center">
-        Establish transparent guidelines, sharing policies and terms for clarity and understanding.
-      </h5>
-      <div className="flex justify-center ml-[8%] [@media(max-width:1024px)]:ml-0">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-2">
-          <div className="relative flex items-center mt-4 [@media(max-width:1024px)]:flex-col">
-            <h2 className="font-medium text-xl">AboutUsBg</h2>
-            <div className='mr-10'></div>
-            <TextInput
-              type="file"
-              accept="image/*"
-              // onChange={(e) => handleImageChange(setAboutUsBg, e)}
-              onChange={handleBgImageChange3}
-              className="hidden"
-              id="AboutUsBgInput"
-            />
-            <label
-              htmlFor="AboutUsBgInput"
-              className="w-[150px] h-[25px] border border-[#3f3e3e] flex items-center justify-center cursor-pointer relative"
-              style={{
-                borderColor: 'cement',
-                borderWidth: '2px',
-                borderStyle: 'solid',
-                backgroundColor: '#D9D9D9',
-              }}
-            >
-              <span
-                className={`block text-[#000000] font-inter text-[14px] ${AboutUsBg ? 'hidden' : 'block'
-                  }`}
-              >
-                Choose File
-              </span>
-              <div
-                className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-between px-2 truncate ${AboutUsBg ? 'block' : 'hidden'
-                  }`}
-              >
-                <span className="text-[#636262]">
-                  {shortenFileName1(AboutUsBg)}
-                </span>
-                <span
-                  onClick={() => setAboutUsBg(null)}
-                  className="text-[#3b9d33] cursor-pointer"
-                >
-                  Change
-                </span>
-              </div>
-            </label>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiBook className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Policy and Terms</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Establish transparent guidelines, sharing policies and terms for clarity and understanding.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* About Us Background Image Upload */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <div className="flex items-center gap-4 mb-4">
+            <FiImage className="w-5 h-5 text-teal-600" />
+            <h2 className="text-xl font-semibold text-gray-900">About Us Background</h2>
           </div>
-          <div className="mt-8">
-            {Object.entries(policies).map(([type, value], index) => (
-              <div key={index} className="mt-4">
-                <h2 className="font-medium text-xl">{type}</h2>
-                {value.map((item, itemIndex) => (
-                  <div key={itemIndex} className="mt-4">
-                    <div className="relative">
-                      <button
-                        onClick={() => removePolicy(type, itemIndex)}
-                        className="absolute top-0 right-0 m-1 px-[6px] rounded-full bg-red-500 text-white transform text-sm z-10"
-                      >
-                        X
-                      </button>
-                    </div>
-                    <TextInput
-                      type="text"
-                      value={item.heading}
-                      onChange={(e) => handlePolicyChange(type, 'heading', e.target.value, itemIndex)}
-                      placeholder="Heading"
-                      className="w-full pt-4"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <TextInput
-                      value={item.content}
-                      onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}
-                      placeholder="Content"
-                      className="w-full pt-4"
-                      style={{
-                        borderColor: "#D1D5DB",
-                        backgroundColor: "#F9FAFB",
-                        borderRadius: "8px",
-                      }}
-                      rows={3}
-                    />
-                  </div>
-                ))}
-                <div className="mt-4 flex justify-center">
-                  <button onClick={() => addPolicy(type)} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
-                    Add {type}
-                  </button>
-                </div>
-              </div>
-            ))}
+          
+          <div className="mt-4">
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Background Image <span className="text-red-500">*</span>
+            </Label>
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleBgImageChange}
+                className="hidden"
+                id="AboutUsBgInput"
+              />
+              <label
+                htmlFor="AboutUsBgInput"
+                className="flex items-center gap-2 px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer hover:border-teal-500 transition-colors"
+              >
+                <FiUpload className="w-5 h-5 text-gray-400" />
+                <span className="text-sm text-gray-600">
+                  {AboutUsBg ? shortenFileName(AboutUsBg) : 'Choose Image'}
+                </span>
+              </label>
+            </div>
           </div>
         </div>
+
+        {/* Policy Sections */}
+        {Object.entries(policies).map(([type, value], index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center gap-4 mb-6">
+              {policyIcons[type]}
+              <h2 className="text-xl font-semibold text-gray-900">{type}</h2>
+            </div>
+
+            <div className="space-y-6">
+              {value.map((item, itemIndex) => (
+                <div key={itemIndex} className="relative bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <button
+                    onClick={() => removePolicy(type, itemIndex)}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors"
+                    title="Remove Section"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        Heading
+                      </Label>
+                      <TextInput
+                        type="text"
+                        value={item.heading}
+                        onChange={(e) => handlePolicyChange(type, 'heading', e.target.value, itemIndex)}
+                        placeholder="Enter section heading"
+                        className="w-full bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        Content
+                      </Label>
+                      <Textarea
+                        value={item.content}
+                        onChange={(e) => handlePolicyChange(type, 'content', e.target.value, itemIndex)}
+                        placeholder="Enter section content"
+                        className="w-full bg-white"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => addPolicy(type)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                >
+                  <FiPlusCircle className="w-4 h-4" />
+                  Add {type} Section
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

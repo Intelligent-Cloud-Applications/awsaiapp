@@ -5,3 +5,26 @@
 .perv {
     box-shadow: 0px 14px 16px rgb(52, 47, 47);
 }
+
+.footer-progress {
+    transition: width 0.3s ease-in-out;
+}
+
+.section-title {
+    transition: color 0.3s ease-in-out;
+}
+
+.button-hover {
+    transition: all 0.2s ease-in-out;
+}
+
+.button-hover:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .section-titles {
+        display: none;
+    }
+}

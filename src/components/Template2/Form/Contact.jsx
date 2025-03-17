@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Country from '../../Auth/Country';
 import { Label, TextInput } from 'flowbite-react';
+import { FiMail, FiPhone, FiMapPin, FiUser, FiInstagram, FiFacebook, FiYoutube } from 'react-icons/fi';
+
 function Contact({ contactInfo, setContactInfo }) {
   // const [contactInfo, setContactInfo] = useState({
   //   address: '',
@@ -83,104 +85,111 @@ function Contact({ contactInfo, setContactInfo }) {
   //   }
   //   return fileName;
   // };
-  return (
-    <div className="mx-[2%] [@media(max-width:1024px)]:m-0" style={{ overflowY: 'auto' }}>
-      <h1 className="font-medium text-7xl text-center">CONTACT INFORMATION</h1>
-      {/* <h5 className="text-[#cc3f3f] text-[13px]">
-        ** The Footer shown is just an example how your given data will look like for the Footer it will not change on giving your input.**
-      </h5> */}
-      <h5 class="text-[#939393] text-center">
-        Offer comprehensive contact details, facilitating easy communication and connection through various platforms.
-      </h5>
-      <div className="flex justify-center min-h-screen">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:ml-0 [@media(max-width:1024px)]:p-0 [@media(max-width:1024px)]:w-full">
-          <div className="mb-8">
-            {Object.keys(contactInfo)
-              .filter((key) => key !== 'country' && key !== 'countryCode')
-              .map((key, index) => {
-                const placeholderText = (() => {
-                  switch (key) {
-                    case 'facebook':
-                      return 'Enter the Facebook link';
-                    case 'instagram':
-                      return 'Enter the Instagram link';
-                    case 'youTube':
-                      return 'Enter the YouTube link';
-                    default:
-                      return `Enter the ${key}`;
-                  }
-                })();
 
-                return (
-                  <div key={index} className="mt-1">
-                    <div className="mb-2 block">
-                      <Label
-                        color="gray"
-                        value={key.charAt(0).toUpperCase() + key.slice(1)}
-                        className="font-medium text-xl"
+  // Define form sections for better organization
+  const formSections = [
+    {
+      title: 'Basic Information',
+      icon: <FiUser className="w-5 h-5 text-teal-600" />,
+      fields: ['Owner Name', 'Establishment Year of Company']
+    },
+    {
+      title: 'Contact Details',
+      icon: <FiPhone className="w-5 h-5 text-teal-600" />,
+      fields: ['Phone Number', 'email']
+    },
+    {
+      title: 'Location',
+      icon: <FiMapPin className="w-5 h-5 text-teal-600" />,
+      fields: ['address']
+    },
+    {
+      title: 'Social Media',
+      icon: <FiInstagram className="w-5 h-5 text-teal-600" />,
+      fields: ['instagram', 'facebook', 'youTube']
+    }
+  ];
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiMail className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Contact Information</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Provide your contact details to help customers reach you easily
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {formSections.map((section, sectionIndex) => (
+          <div key={section.title} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              {section.icon}
+              {section.title}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {section.fields.map((field, fieldIndex) => (
+                <div key={field}>
+                  <Label 
+                    htmlFor={field}
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    {field.split(/(?=[A-Z])/).join(' ')}
+                    {!['instagram', 'facebook', 'youTube'].includes(field) && 
+                      <span className="text-red-500 ml-1">*</span>
+                    }
+                  </Label>
+
+                  {field === 'Phone Number' ? (
+                    <div className="flex gap-2">
+                      <select
+                        value={selectedCountryCode}
+                        onChange={handleCountryChange}
+                        className="w-24 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500"
+                      >
+                        <Country />
+                      </select>
+                      <TextInput
+                        type="text"
+                        name={field}
+                        value={contactInfo[field] || ''}
+                        onChange={handleContactChange}
+                        placeholder="Enter phone number"
+                        required
+                        maxLength={10}
+                        className="flex-1"
                       />
-                      {(key === 'facebook' || key === 'instagram' || key === 'youTube') ? (
-                        <></>
-                      ) : (
-                        <span className="text-red-500 ml-1">*</span>
-                      )
-                      }
                     </div>
+                  ) : (
                     <div className="relative">
-                      {key === 'Phone Number' ? (
-                        <div className="flex items-center gap-4">
-                          <select
-                            value={selectedCountryCode}
-                            onChange={handleCountryChange}
-                            className="w-[20%]"
-                            style={{
-                              borderColor: "#D1D5DB",
-                              backgroundColor: "#F9FAFB",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            <Country />
-                          </select>
-                          <input
-                            type="text"
-                            name={key}
-                            value={contactInfo[key]}
-                            onChange={handleContactChange}
-                            placeholder="Enter 10-digit phone number" // Use the computed placeholder here
-                            required
-                            maxLength='10'
-                            className='w-[80%]'
-                            style={{
-                              borderColor: "#D1D5DB",
-                              backgroundColor: "#F9FAFB",
-                              borderRadius: "8px",
-                              font: "sm"
-                            }}
-                          />
+                      <TextInput
+                        id={field}
+                        name={field}
+                        value={contactInfo[field] || ''}
+                        onChange={handleContactChange}
+                        placeholder={`Enter ${field.toLowerCase().split(/(?=[A-Z])/).join(' ')}`}
+                        required={!['instagram', 'facebook', 'youTube'].includes(field)}
+                        className="w-full bg-gray-50 border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 rounded-lg"
+                        onFocus={() => toggleActiveContact(fieldIndex)}
+                        onBlur={() => toggleActiveContact(null)}
+                      />
+                      {['instagram', 'facebook', 'youTube'].includes(field) && (
+                        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                          {field === 'instagram' && <FiInstagram className="text-gray-400" />}
+                          {field === 'facebook' && <FiFacebook className="text-gray-400" />}
+                          {field === 'youTube' && <FiYoutube className="text-gray-400" />}
                         </div>
-                      ) : (
-                        <TextInput
-                          id={key} // Ensure unique ids
-                          name={key}
-                          value={contactInfo[key]}
-                          onChange={handleContactChange}
-                          placeholder={placeholderText} // Use the computed placeholder here
-                          required
-                          style={{
-                            borderColor: "#D1D5DB",
-                            backgroundColor: "#F9FAFB",
-                            borderRadius: "8px",
-                          }}
-                          onFocus={() => toggleActiveContact(index)}
-                          onBlur={() => toggleActiveContact(null)}
-                        />
                       )}
                     </div>
-                  </div>
-                );
-              })}
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
       {/* <div className="relative flex items-center">
         <h2 className='font-bold'>Subscription Bg</h2>

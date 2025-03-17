@@ -1,86 +1,140 @@
 import { TextInput } from 'flowbite-react';
 import React, { useState, useRef } from 'react';
+import { FiHelpCircle, FiPlus, FiX, FiMessageSquare, FiMessageCircle } from 'react-icons/fi';
 
 function FAQs({ faqs, setFaqs }) {
   const [activeFAQIndex, setActiveFAQIndex] = useState(null);
+  const [errors, setErrors] = useState({});
+  const faqsContainerRef = useRef(null);
 
   const handleFAQChange = (index, e) => {
+    const { name, value } = e.target;
     const updatedFaqs = [...faqs];
     updatedFaqs[index] = {
       ...updatedFaqs[index],
-      [e.target.name]: e.target.value,
+      [name]: value,
     };
     setFaqs(updatedFaqs);
+
+    // Validate the FAQ
+    const newErrors = { ...errors };
+    if (!value.trim()) {
+      newErrors[`${index}-${name}`] = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    } else {
+      delete newErrors[`${index}-${name}`];
+    }
+    setErrors(newErrors);
   };
 
   const toggleActiveFAQ = (index) => {
     setActiveFAQIndex(index === activeFAQIndex ? null : index);
   };
 
-  const faqsContainerRef = useRef(null);
-
   const removeFAQ = (indexToRemove) => {
     const updatedFaqs = faqs.filter((_, index) => index !== indexToRemove);
     setFaqs(updatedFaqs);
+    
+    // Clear any errors for the removed FAQ
+    const newErrors = { ...errors };
+    delete newErrors[`${indexToRemove}-question`];
+    delete newErrors[`${indexToRemove}-answer`];
+    setErrors(newErrors);
+  };
+
+  const addFAQ = () => {
+    if (faqs.length < 5) {
+      setFaqs([...faqs, { question: '', answer: '' }]);
+    }
   };
 
   return (
-    <div className="mx-[2%] mb-[5%] [@media(max-width:1024px)]:mb-10">
-      <h1 className="font-medium text-7xl pb-[1rem] text-center">FAQs SECTION</h1>
-      <h5 className="text-[#939393] text-center">
-        Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
-      </h5>
-      <div className="flex justify-center ml-[8%] ">
-        <div className="w-[60%] p-8 [@media(max-width:1024px)]:w-full [@media(max-width:1024px)]:p-0">
-          <div className="mt-4 pb-4  " ref={faqsContainerRef}>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-50 mb-6">
+          <FiHelpCircle className="w-8 h-8 text-teal-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">FAQs Section</h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Address common inquiries efficiently, ensuring users find answers to their most pressing questions.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiMessageSquare className="w-5 h-5 text-teal-600" />
+            Frequently Asked Questions
+          </h2>
+
+          <div className="space-y-6" ref={faqsContainerRef}>
             {faqs.map((faq, index) => (
-              <div key={index} className="mt-4 relative">
+              <div
+                key={index}
+                className={`relative p-4 rounded-lg border ${
+                  activeFAQIndex === index
+                    ? 'border-teal-200 bg-teal-50/30'
+                    : 'border-gray-100 hover:border-gray-200'
+                } transition-all duration-200`}
+              >
                 {index >= 3 && (
                   <button
                     onClick={() => removeFAQ(index)}
-                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-1  rounded-full text-sm mr-[12px] mt-4 "
+                    className="absolute top-2 right-2 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    title="Remove FAQ"
                   >
-                    <span>✕</span>
+                    <FiX className="w-5 h-5" />
                   </button>
                 )}
-                <h2 className="font-medium text-xl">FAQ {index + 1}</h2>
-                <div className="relative py-4">
-                  <TextInput
-                    type="text"
-                    name="question"
-                    value={faq.question}
-                    onChange={(e) => handleFAQChange(index, e)}
-                    placeholder="Question"
-                    className="w-full"
-                    style={{
-                      borderColor: "#D1D5DB",
-                      backgroundColor: "#F9FAFB",
-                      borderRadius: "8px",
-                    }}
-                    onFocus={() => toggleActiveFAQ(index)}
-                    onBlur={() => toggleActiveFAQ(null)}
-                  />
+
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiMessageCircle className="w-4 h-4 text-teal-600" />
+                      <span className="text-sm font-medium text-gray-700">
+                        Question {index + 1}
+                      </span>
+                    </div>
+                    <TextInput
+                      type="text"
+                      name="question"
+                      value={faq.question}
+                      onChange={(e) => handleFAQChange(index, e)}
+                      placeholder="Enter your question"
+                      className="w-full bg-white"
+                      onFocus={() => toggleActiveFAQ(index)}
+                      onBlur={() => toggleActiveFAQ(null)}
+                    />
+                    {errors[`${index}-question`] && (
+                      <p className="mt-1 text-sm text-red-500">{errors[`${index}-question`]}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <TextInput
+                      type="text"
+                      name="answer"
+                      value={faq.answer}
+                      onChange={(e) => handleFAQChange(index, e)}
+                      placeholder="Enter your answer"
+                      className="w-full bg-white"
+                      onFocus={() => toggleActiveFAQ(index)}
+                      onBlur={() => toggleActiveFAQ(null)}
+                    />
+                    {errors[`${index}-answer`] && (
+                      <p className="mt-1 text-sm text-red-500">{errors[`${index}-answer`]}</p>
+                    )}
+                  </div>
                 </div>
-                <TextInput
-                  name="answer"
-                  value={faq.answer}
-                  onChange={(e) => handleFAQChange(index, e)}
-                  placeholder="Answer"
-                  className="w-full"
-                  style={{
-                    borderColor: "#D1D5DB",
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: "8px",
-                  }}
-                  rows={activeFAQIndex === index ? 2 : 1}
-                  onFocus={() => toggleActiveFAQ(index)}
-                  onBlur={() => toggleActiveFAQ(null)}
-                />
               </div>
             ))}
+
             {faqs.length < 5 && (
-              <div className="mt-4 flex justify-center">
-                <button onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="bg-[#30AFBC] text-white px-4 py-2 rounded-md">
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={addFAQ}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-200"
+                >
+                  <FiPlus className="w-5 h-5" />
                   Add FAQ
                 </button>
               </div>
