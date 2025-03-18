@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Label, TextInput, FileInput } from 'flowbite-react';
+import React, { useState } from 'react';
+import { Label, TextInput } from 'flowbite-react';
 import { FiType, FiEdit2, FiUpload } from 'react-icons/fi';
 import { GrCafeteria } from "react-icons/gr";
-
-// Constants
-const MAX_FILE_SIZE_MB = 50;
-const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 // Add utility function for color contrast
 const getContrastColor = (hexcolor) => {
@@ -18,7 +14,6 @@ const getContrastColor = (hexcolor) => {
 };
 
 function Company({
-  clients,
   companyName,
   setCompanyName,
   companyDescription,
@@ -37,32 +32,27 @@ function Company({
   setLightestPrimaryColor,
   selectedFile,
   setSelectedFile,
-  CSVFile,
-  setCSVFile,
   setInstitutionFormat,
   institutionFormat,
 }) {
-  const [errors, setErrors] = useState({});
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [errors] = useState({});
 
   const handleInstitutionFormatChange = (e) => {
     setInstitutionFormat(e.target.value);
   };
+
   const handleCompanyInputChange = (e) => {
-    const inputValue = e.target.value; // Get the value from the event
-    setCompanyName(inputValue);  // Set the state with the input value    
-    const noSpaces = inputValue.replace(/\s+/g, ''); // Removes all white spaces from the input value
-    const id = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
-    const newid = noSpaces + id;  // Combine the two parts to form the new ID
-
-    setinstitutionId(newid);  // Update the institution ID state
-    console.log("newid", institutionId);  // Log the new ID, not the outdated institutionId state
-
+    const inputValue = e.target.value;
+    setCompanyName(inputValue);    
+    const noSpaces = inputValue.replace(/\s+/g, '');
+    const id = Math.floor(Math.random() * 9000) + 1000;
+    const newid = noSpaces + id;
+    setinstitutionId(newid);
   };
 
   const handleCompanyDescriptionChange = (e) => {
-    const inputValue = e.target.value; // Get the value from the event
-    setCompanyDescription(inputValue);  // Set the state with the input value    
+    const inputValue = e.target.value;
+    setCompanyDescription(inputValue);    
   };
 
   const handleColorChange1 = (e) => {
@@ -250,7 +240,7 @@ function Company({
                 <div className="flex flex-col items-center justify-center space-y-2">
                   <FiUpload className="w-8 h-8 text-teal-600" />
                   <p className="text-sm text-gray-500">Click to upload logo</p>
-                  <p className="text-xs text-gray-500">Maximum file size: {MAX_FILE_SIZE_MB}MB</p>
+                  <p className="text-xs text-gray-500">Maximum file size: 4MB</p>
                 </div>
               )}
             </label>

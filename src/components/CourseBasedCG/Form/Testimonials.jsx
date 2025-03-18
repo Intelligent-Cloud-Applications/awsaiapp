@@ -1,10 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { TextInput, Label } from 'flowbite-react';
 import { FiMessageSquare, FiImage, FiUpload, FiX, FiUser } from 'react-icons/fi';
 
 function Testimonials({ testimonials, setTestimonials, TestimonialBg, setTestimonialBg }) {
-  const testimonialsContainerRef = useRef(null);
-  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleTestimonialChange = (index, field, value) => {

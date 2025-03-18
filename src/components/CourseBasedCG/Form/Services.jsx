@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { TextInput, Label } from 'flowbite-react';
-import { FiImage, FiGrid, FiUpload, FiX, FiPlusCircle, FiList, FiPackage, FiMusic } from 'react-icons/fi';
+import { FiImage, FiGrid, FiUpload, FiX, FiPlusCircle, FiPackage, FiMusic } from 'react-icons/fi';
 
 function Services({ 
   services, 
@@ -12,9 +12,9 @@ function Services({
   servicesPortrait, 
   setServicesPortrait 
 }) {
-  const [activeServiceIndex, setActiveServiceIndex] = useState(null);
+  // const [activeServiceIndex, setActiveServiceIndex] = useState(null);
   const danceTypesContainerRef = useRef(null);
-  const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
+  // const [activeDanceTypeIndex, setActiveDanceTypeIndex] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleDanceTypeChange = (index, value) => {
