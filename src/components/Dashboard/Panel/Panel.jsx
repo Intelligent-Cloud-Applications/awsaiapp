@@ -22,7 +22,7 @@ import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 // import { Start } from "@mui/icons-material";
 
 const Panel = () => {
-    const itemsPerPage = 5;
+    const itemsPerPage = 6;
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState(null);
@@ -403,7 +403,7 @@ const Panel = () => {
     };
 
     const handleRowClick = (institution) => {
-        setTempInstitution(institution.institutionId);
+        setTempInstitution(institution.institutionid);
         setSelectedInstitutionType(institution.instituteType);
         setisMonthlyReport(institution.institutionid);
         setisMonthlyReport(institution.institutionid);
@@ -516,7 +516,7 @@ const Panel = () => {
                     {screenWidth > 1023 ? (
                         <>
                             <div
-                                className={`w-screen h-[98vh] flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
+                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
                                     }`}
                             >
                                 <ToastContainer />
@@ -1189,7 +1189,7 @@ const Panel = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="[@media(max-width:1000px)]:ml-[10%]">
+                        <div className="[@media(max-width:1000px)]:ml-[10%] mb-[5rem]">
                             <Select
                                 value={instituteType}
                                 onChange={(e) => setInstituteType(e.target.value)}

@@ -4,7 +4,7 @@ import Context from "../../../context/Context";
 import InfoTooltip from "./InfoTooltip";
 import MobileView from "./MobileView";
 import LaptopView from "./LaptopView"
-function BatchJobs({ institution: tempInstitution }) {
+function BatchJobs({ tempInstitution }) {
   const [batchJobs, setBatchJobs] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
   const { util, userData } = useContext(Context);

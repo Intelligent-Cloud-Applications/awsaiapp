@@ -20,7 +20,7 @@ export const SEARCH_FIELDS = [
 export const STATS_CONFIG = [
   {
     id: 'total_members',
-    label: 'Total Members',
+    label: 'Total Staffs',
     icon: 'FiUsers',
     iconColor: 'text-cyan-600',
     trend: '+12% from last month',
@@ -28,14 +28,14 @@ export const STATS_CONFIG = [
   },
   {
     id: 'active_members',
-    label: 'Active Members',
+    label: 'Active Staffs',
     icon: 'FiCheckCircle',
     iconColor: 'text-green-600',
     sortConfig: { field: 'status', direction: 'asc', filterValue: 'Active' }
   },
   {
     id: 'inactive_members',
-    label: 'Inactive Members',
+    label: 'Inactive Staffs',
     icon: 'FiClock',
     iconColor: 'text-red-600',
     sortConfig: { field: 'status', direction: 'desc', filterValue: 'Inactive' }
