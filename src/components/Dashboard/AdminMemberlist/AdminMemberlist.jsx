@@ -112,8 +112,6 @@ const AdminMemberlist = () => {
             <StatsGrid
               stats={stats}
               onStatClick={handleStatClickWrapper}
-
-
               activeSort={activeSort}
             />
           </div>
@@ -124,9 +122,9 @@ const AdminMemberlist = () => {
             <div className="p-6 border-b border-gray-200">
               <div className="flex flex-col lg:flex-row justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-semibold text-gray-900">Member List</h1>
+                  <h1 className="text-2xl font-semibold text-gray-900">Staff List</h1>
                   <p className="mt-2 text-sm text-gray-600">
-                    Manage and monitor member activities
+                    Manage and monitor staff activities
                   </p>
                 </div>
                 <div className="flex items-center gap-4">

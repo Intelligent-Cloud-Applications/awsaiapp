@@ -21,14 +21,7 @@
 }
 
 
-@media (min-width: 1025px) and (max-width: 1300px) {
-    .custom-sidebar {
-        width: 25%;
-    }
-}
-
-
-@media (min-width: 1200px) and (max-width: 1500px) {
+@media (min-width: 1025px) and (max-width: 1500px) {
     .custom-sidebar {
         width: 20%;
     }

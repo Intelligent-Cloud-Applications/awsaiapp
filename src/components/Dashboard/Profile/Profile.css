@@ -63,5 +63,12 @@
   @media (max-width: 650px) {
     .change{
       margin-left: 0rem;
+      margin-bottom: 3rem;
+    }
+  }
+
+  @media (max-width: 1009px) {
+    .modal{
+      margin-bottom: 2rem;
     }
   }

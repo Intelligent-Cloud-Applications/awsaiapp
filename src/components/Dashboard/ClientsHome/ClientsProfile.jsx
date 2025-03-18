@@ -216,7 +216,7 @@ const ClientsProfile = ({ institution }) => {
           Edit
         </button>
         {isEditing && (
-          <div className='flex flex-row gap-5'>
+          <div className='flex flex-row gap-5 [@media(max-width:1009px)]:mb-5'>
             <button
               onClick={() => setIsEditing(false)}
               className="absolute top-3 right-15 bg-[#30afbc] text-white rounded-lg p-2 hover:bg-[#64d5db] transition-all"

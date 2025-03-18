@@ -726,7 +726,7 @@ const LeadsList = ({ tempInstitution }) => {
   // console.log("filtered data", filteredLeads);
   return (
     <div>
-      {screenWidth > 1025 ? (
+      {screenWidth > 1024 ? (
         <main>
           <div>
             <div className="flex items-center justify-between bg-white px-5 rounded-t-md">
@@ -1358,7 +1358,7 @@ const LeadsList = ({ tempInstitution }) => {
         </main>
       ) : (
         <>
-          <main className="w-screen">
+          <main className="w-screen lead">
             <div className="mt-5">
               <div className="flex flex-col md:flex-row flex-wrap items-center justify-between bg-white px-4 md:px-5 py-3 rounded-t-md">
                 {/* Center: Search Bar */}

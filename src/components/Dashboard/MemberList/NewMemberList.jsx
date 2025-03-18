@@ -10,12 +10,14 @@ import Swal from "sweetalert2";
 import UserModal from "./UserModal";
 import { CSVUpload } from "../../UploadFile/CSVUpload";
 import { handleExportExcel } from "../../UploadFile/DownloadCsvButton";
+import "./MembersList.css"
 
 function NewMemberList({ tempInstitution }) {
   const [members, setMembers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isResponsive, setIsResponsive] = useState(false);
   // const [selectedIndices, setSelectedIndices] = useState([]);
   // eslint-disable-next-line no-unused-vars
   // const [selectedMember, setSelectedMember] = useState([]);
@@ -30,7 +32,11 @@ function NewMemberList({ tempInstitution }) {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const Ctx = useContext(Context);
   useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+      setIsResponsive(window.innerWidth < 1030);
+    };
+
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -368,8 +374,8 @@ function NewMemberList({ tempInstitution }) {
         util.setLoader(true); // Set loader to true before uploading
         const isProd = process.env.REACT_APP_STAGE === "PROD";
         const fileNameForBucket = isProd
-        ? "member-creation-with-cognito-id-and-default-password"
-        : "institution-utils";
+          ? "member-creation-with-cognito-id-and-default-password"
+          : "institution-utils";
         await CSVUpload(file, institution, fileNameForBucket); // Await CSV upload
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -432,106 +438,105 @@ function NewMemberList({ tempInstitution }) {
 
   return (
     <>
-      {screenWidth > 1025 ? (
-        <>
-          <div className="mt-5">
-            <div className="flex items-center justify-between bg-white h-12 px-5 rounded-t-md">
-              {/* Left: Filter Buttons */}
-              <div className="flex gap-4">
-                <Button
-                  onClick={() => setFilter("All")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "All"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
-                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-                  style={{ minWidth: "70px" }}
-                >
-                  All ({members.length})
-                </Button>
-                <Button
-                  onClick={() => setFilter("Active")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Active"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
-                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-                  style={{ minWidth: "70px" }}
-                >
-                  Active ({members.filter((m) => m.status === "Active").length})
-                </Button>
-                <Button
-                  onClick={() => setFilter("Inactive")}
-                  className={`flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md ${filter === "Inactive"
-                      ? "bg-[#30afbc] text-white"
-                      : "bg-white border border-gray-200 text-gray-700"
-                    } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
-                  style={{ minWidth: "70px" }}
-                >
-                  Inactive (
-                  {members.filter((m) => m.status !== "Active").length})
-                </Button>
-              </div>
-              {/* Center: Search Bar */}
-              <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
-                <div className="relative w-full">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <FiSearch
-                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <input
-                    type="search"
-                    id="default-search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Quick search Members"
-                    required
+      {screenWidth > 1023 ? (
+        <div className="wholeTable">
+          <div className="mx-[6.8%] flex items-center justify-between bg-white px-5 rounded-t-md [@media(max-width:1260px)]:flex-col">
+            {/* Left: Filter Buttons */}
+            <div className="flex gap-4 py-4">
+              <Button
+                onClick={() => setFilter("All")}
+                className={`flex items-center justify-center py-0 px-2 h-[3rem] text-sm rounded-md ${filter === "All"
+                  ? "bg-[#30afbc] text-white"
+                  : "bg-white border border-gray-200 text-gray-700"
+                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                style={{ minWidth: "80px" }}
+              >
+                All ({members.length})
+              </Button>
+              <Button
+                onClick={() => setFilter("Active")}
+                className={`flex items-center justify-center py-0 px-2 h-[3rem] text-sm rounded-md ${filter === "Active"
+                  ? "bg-[#30afbc] text-white"
+                  : "bg-white border border-gray-200 text-gray-700"
+                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                style={{ minWidth: "70px" }}
+              >
+                Active ({members.filter((m) => m.status === "Active").length})
+              </Button>
+              <Button
+                onClick={() => setFilter("Inactive")}
+                className={`flex items-center justify-center py-0 px-2 h-[3rem] text-sm rounded-md ${filter === "Inactive"
+                  ? "bg-[#30afbc] text-white"
+                  : "bg-white border border-gray-200 text-gray-700"
+                  } hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]`}
+                style={{ minWidth: "70px" }}
+              >
+                Inactive (
+                {members.filter((m) => m.status !== "Active").length})
+              </Button>
+            </div>
+            {/* Center: Search Bar */}
+            <form className="flex items-center mx-4 w-[30rem] border border-gray rounded-md">
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <FiSearch
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
                   />
                 </div>
-              </form>
-              {/* Right: Import and Export Buttons */}
-              <div className="flex items-center gap-4">
-                <Button
-                  onClick={handleButtonClick}
-                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
-                  style={{ minWidth: "70px" }}
-                >
-                  <FaFileImport className="mr-2 mt-[0.20rem]" />
-                  Upload CSV
-                  <input
-                    type="file"
-                    accept=".csv, .xls, .xlsx"
-                    onChange={handleCSVFile}
-                    className="hidden"
-                    ref={fileInputRef}
-                    id="CSVFileInput"
-                  />
-                </Button>
-                <Button
-                  onClick={() =>
-                    handleExportExcel(
-                      user,
-                      userData,
-                      tempInstitution,
-                      members,
-                      filter
-                    )
-                  }
-                  className="flex items-center justify-center py-0 px-2 h-8 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
-                  style={{ minWidth: "70px" }}
-                >
-                  <FaFileExport className="mr-2 mt-[0.20rem]" />
-                  Export CSV
-                </Button>
+                <input
+                  type="search"
+                  id="default-search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Quick search Members"
+                  required
+                />
               </div>
+            </form>
+            {/* Right: Import and Export Buttons */}
+            <div className="flex items-center gap-4 [@media(max-width:1260px)]:my-2">
+              <Button
+                onClick={handleButtonClick}
+                className="flex items-center justify-center py-0 px-2 h-[3rem] text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: "70px" }}
+              >
+                <FaFileImport className="mr-2 mt-[0.20rem]" />
+                Upload CSV
+                <input
+                  type="file"
+                  accept=".csv, .xls, .xlsx"
+                  onChange={handleCSVFile}
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="CSVFileInput"
+                />
+              </Button>
+              <Button
+                onClick={() =>
+                  handleExportExcel(
+                    user,
+                    userData,
+                    tempInstitution,
+                    members,
+                    filter
+                  )
+                }
+                className="flex items-center justify-center py-0 px-2 h-[3rem] text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc]"
+                style={{ minWidth: "70px" }}
+              >
+                <FaFileExport className="mr-2 mt-[0.20rem]" />
+                Export CSV
+              </Button>
             </div>
           </div>
 
           {/* Table */}
-          <div className="bg-white max-w-full mx-auto rounded-b-md">
-            <div className="overflow-x-auto">
-              <Table hoverable className="min-w-full">
+          <div className="bg-white mx-auto rounded-b-md table">
+            <div className={`overflow-x-auto w-full mb-4 max-h-[600px] md:max-h-[600px] overflow-y-auto ${isResponsive ? "px-2" : ""
+              }`}>
+              <Table hoverable className="w-full text-sm text-left text-gray-500">
                 <Table.Head>
                   {/* <Table.HeadCell className="p-2">
               </Table.HeadCell> */}
@@ -596,8 +601,8 @@ function NewMemberList({ tempInstitution }) {
                       <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.status === "Active"
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
                             } `}
                         >
                           {member.status}
@@ -638,45 +643,42 @@ function NewMemberList({ tempInstitution }) {
               />
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <>
-
           <div className="mt-5 px-4">
-          <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0">
-                         <Button
-                           onClick={handleButtonClick}
-                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
-                         >
-                           <FaFileImport className="mr-2 mt-[0.20rem]" />
-                           Upload CSV
-                           <input
-                             type="file"
-                             accept=".csv"
-                             onChange={handleCSVFile}
-                             className="hidden"
-                             ref={fileInputRef}
-                             id="CSVFileInput"
-                           />
-                         </Button>
-                         <Button
-                         onClick={() =>
-                          handleExportExcel(
-                            user,
-                            userData,
-                            tempInstitution,
-                            members,
-                            filter
-                          )
-                        }
-                           className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
-                         >
-                           <FaFileExport className="mr-2 mt-[0.20rem]" />
-                           Export CSV
-                         </Button>
-                       
-                  
-                     </div>
+            <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0 buttonTop">
+              <Button
+                onClick={handleButtonClick}
+                className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+              >
+                <FaFileImport className="mr-2 mt-[0.20rem]" />
+                Upload CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleCSVFile}
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="CSVFileInput"
+                />
+              </Button>
+              <Button
+                onClick={() =>
+                  handleExportExcel(
+                    user,
+                    userData,
+                    tempInstitution,
+                    members,
+                    filter
+                  )
+                }
+                className="flex items-center justify-center py-1 px-3 h-10 text-sm rounded-md bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white active:bg-[#30afbc] w-full sm:w-auto"
+              >
+                <FaFileExport className="mr-2 mt-[0.20rem]" />
+                Export CSV
+              </Button>
+            </div>
             <div className="flex flex-col gap-3">
               <form className="flex items-center border border-gray rounded-md">
                 <div className="relative w-full">
@@ -697,14 +699,14 @@ function NewMemberList({ tempInstitution }) {
                 </div>
               </form>
 
-              <div className="flex gap-2 justify-around">
+              <div className="flex gap-2 justify-around buttonTop">
                 {["All", "Active", "Inactive"].map((status) => (
                   <Button
                     key={status}
                     onClick={() => setFilter(status)}
                     className={`flex items-center justify-center py-1 px-2 text-xs rounded-md ${filter === status
-                        ? "bg-[#30afbc] text-white"
-                        : "bg-white border border-gray-200 text-gray-700"
+                      ? "bg-[#30afbc] text-white"
+                      : "bg-white border border-gray-200 text-gray-700"
                       }`}
                   >
                     {status} (
@@ -756,8 +758,8 @@ function NewMemberList({ tempInstitution }) {
                         <strong>Status:</strong>{" "}
                         <span
                           className={`px-2 py-1 inline-block text-xs font-medium rounded-full ${member.status === "Active"
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
                             }`}
                         >
                           {member.status}
@@ -790,8 +792,8 @@ function NewMemberList({ tempInstitution }) {
                   }
                   disabled={currentPage === 1}
                   className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-500"
-                      : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                     }`}
                 >
                   Previous
@@ -802,8 +804,8 @@ function NewMemberList({ tempInstitution }) {
                   }
                   disabled={currentPage === totalPages}
                   className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                      ? "bg-gray-200 text-gray-500"
-                      : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                    ? "bg-gray-200 text-gray-500"
+                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                     }`}
                 >
                   Next
