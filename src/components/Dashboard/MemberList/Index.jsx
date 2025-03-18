@@ -37,7 +37,7 @@ const Index = ({ tempInstitution, setShowMemberList, selectedInstitutionType }) 
       case 'economy':
         return <InstitutionRevenue institution={tempInstitution} />
       case 'batch':
-        return <BatchJobs />
+        return <BatchJobs tempInstitution={tempInstitution}/>
       default:
         return null;
     }
@@ -52,14 +52,14 @@ const Index = ({ tempInstitution, setShowMemberList, selectedInstitutionType }) 
     <div className="w-screen ml-[4rem] bg-[#f1f1f1] [@media(max-width:600px)]:ml-0">
       {screenWidth > 1023 ? (
         <>
-          <div className="w-full h-[96vh] flex flex-col items-center ml-[5%]">
+          <div className="w-full h-[98vh] flex flex-col items-center ml-[5%] [@media(max-width:1260px)]:ml-[2%] [@media(max-width)]:mb-0">
             <div>
               <Navbar />
-              <div className="flex flex-col items-center mt-5">
-                <div className="fixed mt-14 z-50 bg-[#f1f1f1] w-[calc(90vw-200px)] flex justify-evenly items-center">
+              <div className="flex flex-col items-center mt-t [@media(max-width:1260px)]:mt-2">
+                <div className="fixed mt-14 z-50 bg-transperent w-[calc(80vw-200px)] flex justify-evenly items-center">
                   <div
                     onClick={goBack}
-                    className="border bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4"
+                    className="border bg-[#30afbc] ml-[2rem] rounded cursor-pointer w-[36px] h-[30px] text-[30px] mb-4 [@media(max-width:1260px)]:top-0  [@media(max-width:1260px)]:ml-0"
                   >
                     <IoCaretBack />
                   </div>

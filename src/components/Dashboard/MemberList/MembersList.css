@@ -130,9 +130,9 @@ div:where(.swal2-container) button:where(.swal2-styled) {
 }
 
 @media (max-width: 600px) {
-.respons{
-  width: 80vw;
-}
+  .respons {
+    width: 80vw;
+  }
 }
 
 div:where(.swal2-container) .swal2-html-container {
@@ -141,8 +141,29 @@ div:where(.swal2-container) .swal2-html-container {
 }
 
 @media (max-width: 1024px) {
-  .buttonTop{
+  .buttonTop {
     margin-bottom: 4%;
   }
-  
+
+}
+
+@media (max-width: 1400px) {
+  .table {
+    width: 80%;
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
+
+  .wholeTable {
+    margin-left: 5rem;
+    margin-right: 5rem;
+    margin-top: 2rem;
+    z-index: 10000;
+  }
+}
+
+@media (max-width: 1300px) {
+  .table{
+    width: 50%;
+  }
 }

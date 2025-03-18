@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import RevenueTab from './Components/RevenueTab';
 import CashoutTab from './Components/CashoutTab';
+import "./Revenue.css";
 
 function InstitutionRevenue({ institution }) {
   const [activeTab, setActiveTab] = useState("revenue");
 
   return (
-    <div className="w-[75vw] bg-white max-w-full">
+    <div className="w-[75vw] bg-white max-w-full revenue">
       <div className="border-b border-gray-200">
         <div className="flex border-b mb-4">
           <button

@@ -30,8 +30,8 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
 
   return (
     <div>
-      {screenWidth > 1025 ? (
-        <div className="flex flex-row items-center justify-between ml-[2rem] w-full">
+      {screenWidth > 1023 ? (
+        <div className="flex flex-row items-center justify-between ml-[2rem] [@media(max-width:1260px)]:justify-center [@media(max-width:1050px)]:ml-1">
           <Button.Group className="flex h-12">
             <Button
               style={{
@@ -102,7 +102,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
               backgroundColor: "#30afbc",
               color: "#fff",
             }}
-            className="relative z-[100] flex items-center rounded-md ml-[10rem]"
+            className="relative z-[100] flex items-center rounded-md ml-[10rem] [@media(max-width:1260px)]:my-[1rem] [@media(max-width:1260px)]:ml-[2rem]"
             onClick={() => {
               const targetPath =
                 institutionType === "DanceStudio" ? "/full" : "/completeDraft";
@@ -147,7 +147,7 @@ const ButtonGroup = ({ onTabChange, institutionNames, institutionType }) => {
                 onClick={() => handleTabChange("economy")}
               >
                 <IoMdCash className="mr-2" />
-                Economy
+                Revenue
               </button>
               <button
                 className={`flex items-center p-2 rounded-md ${

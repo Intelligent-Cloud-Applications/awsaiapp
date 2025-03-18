@@ -44,3 +44,9 @@
     font-size: 1.5rem;
     cursor: pointer;
 }
+
+@media (amx-width: 500px) {
+    .lead{
+        margin-left: 0;
+    }
+}
