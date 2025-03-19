@@ -526,7 +526,7 @@ const Panel = () => {
 
 const handleStatClickWrapper = (sortConfig, index) => {
     let newFilterStatus = null;
-    if (index === 0) {
+    if (index === 2) {
         setPendingFilter(!pendingFilter);
         setCompletedFilter(false);
         setDeliveredFilter(false);
@@ -534,7 +534,7 @@ const handleStatClickWrapper = (sortConfig, index) => {
         setPendingFilter(false);
         setCompletedFilter(!completedFilter);
         setDeliveredFilter(false);
-    } else if (index === 2) {
+    } else if (index === 0) {
         setPendingFilter(false);
         setCompletedFilter(false);
         setDeliveredFilter(!deliveredFilter);

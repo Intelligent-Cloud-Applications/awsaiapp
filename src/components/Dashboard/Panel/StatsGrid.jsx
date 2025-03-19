@@ -38,7 +38,7 @@ const filteredStats = {
                     >
                         <div className="flex justify-between items-start gap-4">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">{config.label}</p>
+                                <p className="text-md font-medium text-gray-600">{config.label}</p>
                                 <h3 className="text-2xl font-bold text-gray-900 mt-1">{statValue}</h3>
                             </div>
                             <div className={`p-2 bg-gray-50 rounded-lg ${config.iconColor}`}>
