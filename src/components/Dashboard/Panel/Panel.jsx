@@ -20,6 +20,8 @@ import { BsQrCodeScan } from "react-icons/bs";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
 // import { Start } from "@mui/icons-material";
+import StatsGrid from './StatsGrid';
+import { useTableManagement } from '../AdminMemberlist/hooks/useTableManagement.js';
 
 const Panel = () => {
     const itemsPerPage = 6;
@@ -509,6 +511,30 @@ const Panel = () => {
         };
     }, []);
 
+    const {
+        activeSort,
+        handleStatClick,
+    } = useTableManagement([], filterStatus);
+
+
+    const handleStatClickWrapper = (sortConfig, index) => {
+        let newFilterStatus = null;
+        if (index === 1) { // Active members stat
+            newFilterStatus = filterStatus === 'Active' ? null : 'Active';
+        } else if (index === 2) { // Inactive members stat
+            newFilterStatus = filterStatus === 'Inactive' ? null : 'Inactive';
+        }
+        setFilterStatus(newFilterStatus);
+        handleStatClick(sortConfig, index);
+    };
+
+    const stats = {
+        total_members: filterClients?.length || 0,
+        // active_members: data?.filter(m => m.status === 'Active').length || 0,
+        // inactive_members: data?.filter(m => m.status !== 'Active').length || 0,
+        // total_delivered: data?.reduce((acc, curr) => acc + (parseInt(curr.delivered) || 0), 0) || 0
+    };
+
     return (
         <>
             {!showMemberList ? (
@@ -520,8 +546,17 @@ const Panel = () => {
                                     }`}
                             >
                                 <ToastContainer />
+                                <div className="md:mb-6">
+                                    <StatsGrid
+                                        stats={stats}
+                                        onStatClick={handleStatClickWrapper}
+                                        activeSort={activeSort}
+                                        deliverableStatus={deliveryStatuses}
+                                    />
+
+                                </div>
                                 <div
-                                    className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
+                                    className={`w-[78%] mt-2 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
                                         }`}
                                 >
                                     <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
@@ -768,7 +803,7 @@ const Panel = () => {
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
 
-                                                        onClick={(e) => handleRowClick(client, e)}
+                                                            onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
                                                                 onClick={() => {
@@ -1337,7 +1372,7 @@ const Panel = () => {
                                             <div
                                                 className="flex justify-between items-center text-center"
 
-                                            onClick={(e) => handleRowClick(client, e)}
+                                                onClick={(e) => handleRowClick(client, e)}
                                             >
                                                 <div className="font-semibold text-[#11192B]">
                                                     {client.institutionid}
@@ -1693,8 +1728,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === 1}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                                                    ? "bg-gray-200 text-gray-500"
-                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Previous
@@ -1706,8 +1741,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === totalPages}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                                                    ? "bg-gray-200 text-gray-500"
-                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Next
