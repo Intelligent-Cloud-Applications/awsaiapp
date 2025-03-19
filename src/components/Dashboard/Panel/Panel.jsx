@@ -529,11 +529,14 @@ const Panel = () => {
     };
 
     const stats = {
-        total_members: filterClients?.length || 0,
-        // active_members: data?.filter(m => m.status === 'Active').length || 0,
-        // inactive_members: data?.filter(m => m.status !== 'Active').length || 0,
-        // total_delivered: data?.reduce((acc, curr) => acc + (parseInt(curr.delivered) || 0), 0) || 0
+        total_delivered: clientsData?.filter(m => m[1].isDelivered === true).length,
+        Completed: clientsData?.filter(m => m[1].deliverable === 'Completed').length,
+        Pending: clientsData?.filter(m => m[1].deliverable === 'Pending' || (!m[1].deliverable && m[1].isFormFilled)).length,
+        In_Progress: clientsData?.filter(m => m[1].deliverable === 'In-progress').length,
+
     };
+
+    console.log("the stats value", stats);
 
     return (
         <>
@@ -542,7 +545,7 @@ const Panel = () => {
                     {screenWidth > 1023 ? (
                         <>
                             <div
-                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
+                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-20 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
                                     }`}
                             >
                                 <ToastContainer />
@@ -553,7 +556,6 @@ const Panel = () => {
                                         activeSort={activeSort}
                                         deliverableStatus={deliveryStatuses}
                                     />
-
                                 </div>
                                 <div
                                     className={`w-[78%] mt-2 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
@@ -1224,7 +1226,15 @@ const Panel = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="[@media(max-width:1000px)]:ml-[10%] mb-[5rem]">
+                        <div className="[@media(max-width:1000px)]:ml-[8%] [@media(max-width:550px)]:ml-2 [@media(max-width:550px)]:mx-2 mb-[5rem]">
+                            <div className="mt-[5rem] md:mb-6">
+                                <StatsGrid
+                                    stats={stats}
+                                    onStatClick={handleStatClickWrapper}
+                                    activeSort={activeSort}
+                                    deliverableStatus={deliveryStatuses}
+                                />
+                            </div>
                             <Select
                                 value={instituteType}
                                 onChange={(e) => setInstituteType(e.target.value)}

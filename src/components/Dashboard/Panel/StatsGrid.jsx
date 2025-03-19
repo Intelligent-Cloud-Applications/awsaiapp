@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FiUsers, FiCheckCircle, FiClock, FiTrendingUp } from 'react-icons/fi';
+import { FiLoader, FiCheckCircle, FiClock, FiTrendingUp } from 'react-icons/fi';
 import { STATS_CONFIG } from './Constant';
 
 const IconMap = {
-    FiUsers,
+    FiLoader,
     FiCheckCircle,
     FiClock,
     FiTrendingUp
@@ -19,18 +19,15 @@ const StatsGrid = ({ stats, onStatClick, activeSort, deliverableStatus = {} }) =
     };
 
     const filteredStats = {
-        total_members: stats.total_members,
-        active_members: stats.active_members,
-        inactive_members: stats.inactive_members,
+        
         total_delivered: stats.total_delivered,
-        pending: deliverableStatus.pending || 0,
-        in_progress: deliverableStatus.in_progress || 0,
-        completed: deliverableStatus.completed || 0,
-
+        Pending: stats.Pending || 0,
+        In_Progress: stats.In_Progress || 0,
+        Completed: stats.Completed || 0,
     };
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 [@media(min-width:1390px)]:grid-cols-4 gap-10 mb-3 [@media(min-width:1023px)]:grid-cols-3">
             {STATS_CONFIG.map((config, index) => {
                 const statValue = filteredStats[config.id] || 0;
 
@@ -38,10 +35,10 @@ const StatsGrid = ({ stats, onStatClick, activeSort, deliverableStatus = {} }) =
                     <div
                         key={config.id}
                         onClick={() => onStatClick(config.sortConfig, index)}
-                        className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 p-4 cursor-pointer ${activeSort === index ? 'ring-1 ring-cyan-500 shadow-md' : ''
+                        className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 p-4 cursor-pointer ${activeSort === index ? 'ring-1 ring-cyan-500 shadow-md' : ''
                             }`}
                     >
-                        <div className="flex justify-between items-start">
+                        <div className="flex justify-between items-start gap-4">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">{config.label}</p>
                                 <h3 className="text-2xl font-bold text-gray-900 mt-1">{statValue}</h3>
