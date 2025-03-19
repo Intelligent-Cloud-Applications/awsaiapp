@@ -55,8 +55,6 @@ const AdminMemberlist = () => {
     handleStatClick(sortConfig, index);
   };
 
-
-
   // Initial data fetch
   useEffect(() => {
     const loadData = async () => {

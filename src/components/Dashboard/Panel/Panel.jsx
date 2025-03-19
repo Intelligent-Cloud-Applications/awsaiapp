@@ -1,6 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import React, { useState, useContext, useRef, useCallback, useMemo, useEffect } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import Context from "../../../context/Context";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +8,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
-import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
 import Index from "../MemberList/Index";
 import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
@@ -19,7 +16,8 @@ import { RiExternalLinkLine } from "react-icons/ri";
 import { BsQrCodeScan } from "react-icons/bs";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
-// import { Start } from "@mui/icons-material";
+import StatsGrid from './StatsGrid';
+import { useTableManagement } from '../AdminMemberlist/hooks/useTableManagement.js';
 
 const Panel = () => {
     const itemsPerPage = 6;
@@ -31,7 +29,7 @@ const Panel = () => {
     const { clients, userData } = useContext(Context);
     const clientsData = Object.entries(clients?.data || {});
     const [selectedStatuses, setSelectedStatuses] = useState({});
-    const [deliveryStatuses, setDeliveryStatuses] = useState({});
+    const [deliveryStatuses, setDeliveryStatuses] = useState([]); // Initialize as an array
     const [planStatuses, setPlanStatuses] = useState({});
     const [userCheck, setUserCheck] = useState(0);
     const [isMoreVisible, setIsMoreVisible] = useState(false);
@@ -56,11 +54,13 @@ const Panel = () => {
         "Furniture",
         "Marble shop",
     ];
-    // const [memberCounts, setMemberCounts] = useState({});
     const [filterStatus, setFilterStatus] = useState(null);
     const [domainLinks, setDomainLinks] = useState({});
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [isResponsive, setIsResponsive] = useState(false);
+    const [pendingFilter, setPendingFilter] = useState(false);
+    const [completedFilter, setCompletedFilter] = useState(false);
+    const [deliveredFilter, setDeliveredFilter] = useState(false);
 
     const menuRef = useRef(null);
 
@@ -227,6 +227,9 @@ const Panel = () => {
         setSelectedType(null);
         setActiveMenu(null);
         setActiveSubMenu(null);
+        setCompletedFilter(false);
+        setPendingFilter(false);
+        setDeliveredFilter(false);
     };
     const handleDeliverFilter = (value) => {
         if (value === "Delivered") {
@@ -252,13 +255,17 @@ const Panel = () => {
             });
 
         // Step 2: If no filters are applied, return the initial sorted data
-        if (!searchQuery && !selectedType && filterStatus === null) {
+        if (!searchQuery && !selectedType && filterStatus === null && !pendingFilter && !deliveredFilter && !completedFilter) {
             return initialData;
         }
 
         // Step 3: Apply filters only on the initially displayed data
         const query = searchQuery?.toLowerCase();
         const filtered = initialData.filter(([key, client]) => {
+            let pendingFilterData = pendingFilter ? (!client.payment || client.deliverable !== 'Completed' || !client.isDelivered) : true;
+            let completedFilterData = completedFilter ? (client.deliverable === 'Completed') : true;
+            let deliveredFilterData = deliveredFilter ? (client.isDelivered) : true;
+
             const institution = client?.institutionid
                 ? String(client.institutionid).toLowerCase()
                 : "";
@@ -268,7 +275,9 @@ const Panel = () => {
             const matchesDelivery =
                 filterStatus === null || client.isDelivered === filterStatus;
 
-            return matchesQuery && matchesType && matchesDelivery;
+
+            return matchesQuery && matchesType && matchesDelivery && pendingFilterData && completedFilterData && deliveredFilterData;
+
         });
 
         console.log("Filtered Clients:", filtered);
@@ -368,11 +377,11 @@ const Panel = () => {
         }
     }, [currentPage, totalPages]);
 
-    const getBadgeProps = (payment, delivered) => {
+    const getBadgeProps = (payment, delivered, deliverable) => {
         let text, color;
 
         // if (web) {
-        if (payment && delivered) {
+        if (payment && deliverable === 'Completed' && delivered) {
             text = "Active";
             color = "success";
         } else {
@@ -509,6 +518,38 @@ const Panel = () => {
         };
     }, []);
 
+    const {
+        activeSort,
+        handleStatClick,
+    } = useTableManagement([], filterStatus);
+
+
+const handleStatClickWrapper = (sortConfig, index) => {
+    let newFilterStatus = null;
+    if (index === 2) {
+        setPendingFilter(!pendingFilter);
+        setCompletedFilter(false);
+        setDeliveredFilter(false);
+    } else if (index === 1) {
+        setPendingFilter(false);
+        setCompletedFilter(!completedFilter);
+        setDeliveredFilter(false);
+    } else if (index === 0) {
+        setPendingFilter(false);
+        setCompletedFilter(false);
+        setDeliveredFilter(!deliveredFilter);
+    }
+    setFilterStatus(newFilterStatus);
+    handleStatClick(sortConfig, index);
+};
+
+
+const stats = {
+    total_delivered: clientsData?.filter(m => m[1].isDelivered === true ).length,
+    Completed: clientsData?.filter(m => m[1].deliverable === 'Completed' ).length,
+    Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered)).length,
+};
+
     return (
         <>
             {!showMemberList ? (
@@ -516,12 +557,20 @@ const Panel = () => {
                     {screenWidth > 1023 ? (
                         <>
                             <div
-                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-40 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
+                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-20 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
                                     }`}
                             >
                                 <ToastContainer />
+                                <div className="md:mb-6">
+                                    <StatsGrid
+                                        stats={stats}
+                                        onStatClick={handleStatClickWrapper}
+                                        activeSort={activeSort}
+                                        deliverableStatus={deliveryStatuses}
+                                    />
+                                </div>
                                 <div
-                                    className={`w-[78%] mt-4 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
+                                    className={`w-[78%] mt-2 rounded-[0] flex flex-col md:flex-row justify-end space-y-4 items-center bg-white py-3 pr-4 shadow-lg lg:space-x-4 lg:space-y-0 upper-section ${isResponsive ? "flex-col" : "flex-row"
                                         }`}
                                 >
                                     <div className="flex flex-col md:flex-row sm:w-auto space-y-4 sm:space-x-4 justify-center items-center md:items-end">
@@ -768,7 +817,7 @@ const Panel = () => {
                                                         <Table.Cell
                                                             className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
 
-                                                        onClick={(e) => handleRowClick(client, e)}
+                                                            onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
                                                                 onClick={() => {
@@ -797,7 +846,8 @@ const Panel = () => {
                                                                 const { text, color } = getBadgeProps(
                                                                     // client.isFormFilled,
                                                                     client.payment,
-                                                                    client.isDelivered
+                                                                    client.isDelivered,
+                                                                    client.deliverable
                                                                 );
                                                                 return (
                                                                     <Badge
@@ -1189,7 +1239,15 @@ const Panel = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="[@media(max-width:1000px)]:ml-[10%] mb-[5rem]">
+                        <div className="[@media(max-width:1000px)]:ml-[8%] [@media(max-width:550px)]:ml-2 [@media(max-width:550px)]:mx-2 mb-[5rem]">
+                            <div className="mt-[5rem] md:mb-6">
+                                <StatsGrid
+                                    stats={stats}
+                                    onStatClick={handleStatClickWrapper}
+                                    activeSort={activeSort}
+                                    deliverableStatus={deliveryStatuses}
+                                />
+                            </div>
                             <Select
                                 value={instituteType}
                                 onChange={(e) => setInstituteType(e.target.value)}
@@ -1337,7 +1395,7 @@ const Panel = () => {
                                             <div
                                                 className="flex justify-between items-center text-center"
 
-                                            onClick={(e) => handleRowClick(client, e)}
+                                                onClick={(e) => handleRowClick(client, e)}
                                             >
                                                 <div className="font-semibold text-[#11192B]">
                                                     {client.institutionid}
@@ -1374,16 +1432,18 @@ const Panel = () => {
                                                             getBadgeProps(
                                                                 // client.isFormFilled,
                                                                 client.payment,
-                                                                client.isDelivered
+                                                                client.isDelivered,
+                                                                client.deliverable
                                                             ).color
                                                         }
                                                         size="sm"
                                                     >
                                                         {
                                                             getBadgeProps(
-                                                                client.isFormFilled,
+                                                                // client.isFormFilled,
                                                                 client.payment,
-                                                                client.isDelivered
+                                                                client.isDelivered,
+                                                                client.deliverable
                                                             ).text
                                                         }
                                                     </Badge>
@@ -1693,8 +1753,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === 1}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === 1
-                                                    ? "bg-gray-200 text-gray-500"
-                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Previous
@@ -1706,8 +1766,8 @@ const Panel = () => {
                                             }
                                             disabled={currentPage === totalPages}
                                             className={`px-2 py-1 text-xs font-medium rounded ${currentPage === totalPages
-                                                    ? "bg-gray-200 text-gray-500"
-                                                    : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
+                                                ? "bg-gray-200 text-gray-500"
+                                                : "bg-[#30afbc] text-white hover:bg-[#28a2ab]"
                                                 }`}
                                         >
                                             Next
