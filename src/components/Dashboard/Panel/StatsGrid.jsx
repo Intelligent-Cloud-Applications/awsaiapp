@@ -17,12 +17,12 @@ const StatsGrid = ({ stats, onStatClick, activeSort }) => {
         return Icon ? <Icon className="w-6 h-6" /> : null;
     };
 
-    const filteredStats = {
-        
-        total_delivered: stats.total_delivered,
-        Pending: stats.Pending || 0,
-        Completed: stats.Completed || 0,
-    };
+const filteredStats = {
+    total_delivered: stats.total_delivered,
+    Pending: stats.Pending || 0,
+    Completed: stats.Completed || 0,
+};
+
 
     return (
         <div className="grid grid-cols-2 gap-10 mb-3 [@media(min-width:1023px)]:grid-cols-3">

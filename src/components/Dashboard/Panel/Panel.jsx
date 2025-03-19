@@ -58,6 +58,9 @@ const Panel = () => {
     const [domainLinks, setDomainLinks] = useState({});
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [isResponsive, setIsResponsive] = useState(false);
+    const [pendingFilter, setPendingFilter] = useState(false);
+    const [completedFilter, setCompletedFilter] = useState(false);
+    const [deliveredFilter, setDeliveredFilter] = useState(false);
 
     const menuRef = useRef(null);
 
@@ -224,6 +227,9 @@ const Panel = () => {
         setSelectedType(null);
         setActiveMenu(null);
         setActiveSubMenu(null);
+        setCompletedFilter(false);
+        setPendingFilter(false);
+        setDeliveredFilter(false);
     };
     const handleDeliverFilter = (value) => {
         if (value === "Delivered") {
@@ -249,13 +255,17 @@ const Panel = () => {
             });
 
         // Step 2: If no filters are applied, return the initial sorted data
-        if (!searchQuery && !selectedType && filterStatus === null) {
+        if (!searchQuery && !selectedType && filterStatus === null && !pendingFilter && !deliveredFilter && !completedFilter) {
             return initialData;
         }
 
         // Step 3: Apply filters only on the initially displayed data
         const query = searchQuery?.toLowerCase();
         const filtered = initialData.filter(([key, client]) => {
+            let pendingFilterData = pendingFilter ? (!client.payment && client.deliverable !== 'Completed' && !client.isDelivered) : true;
+            let completedFilterData = completedFilter ? (client.deliverable === 'Completed') : true;
+            let deliveredFilterData = deliveredFilter ? (client.isDelivered) : true;
+
             const institution = client?.institutionid
                 ? String(client.institutionid).toLowerCase()
                 : "";
@@ -264,8 +274,17 @@ const Panel = () => {
                 !selectedType || client.institutionType === selectedType;
             const matchesDelivery =
                 filterStatus === null || client.isDelivered === filterStatus;
+            if (pendingFilter) {
+                pendingFilterData = !client.payment || client.deliverable !== 'Completed' || !client.isDelivered;
+            };
+            if(completedFilter){
+                completedFilterData = client.deliverable === 'Completed';
+            };
+            if(deliveredFilter){
+                deliveredFilterData = client.isDelivered;
+            }
+            return matchesQuery && matchesType && matchesDelivery && pendingFilterData && completedFilterData && deliveredFilterData;
 
-            return matchesQuery && matchesType && matchesDelivery;
         });
 
         console.log("Filtered Clients:", filtered);
@@ -512,22 +531,31 @@ const Panel = () => {
     } = useTableManagement([], filterStatus);
 
 
-    const handleStatClickWrapper = (sortConfig, index) => {
-        let newFilterStatus = null;
-        if (index === 1) { // Active members stat
-            newFilterStatus = filterStatus === 'Active' ? null : 'Active';
-        } else if (index === 2) { // Inactive members stat
-            newFilterStatus = filterStatus === 'Inactive' ? null : 'Inactive';
-        }
-        setFilterStatus(newFilterStatus);
-        handleStatClick(sortConfig, index);
-    };
+const handleStatClickWrapper = (sortConfig, index) => {
+    let newFilterStatus = null;
+    if (index === 0) {
+        setPendingFilter(!pendingFilter);
+        setCompletedFilter(false);
+        setDeliveredFilter(false);
+    } else if (index === 1) {
+        setPendingFilter(false);
+        setCompletedFilter(!completedFilter);
+        setDeliveredFilter(false);
+    } else if (index === 2) {
+        setPendingFilter(false);
+        setCompletedFilter(false);
+        setDeliveredFilter(!deliveredFilter);
+    }
+    setFilterStatus(newFilterStatus);
+    handleStatClick(sortConfig, index);
+};
 
-    const stats = {
-        total_delivered: clientsData?.filter(m => m[1].isDelivered === true).length,
-        Completed: clientsData?.filter(m => m[1].deliverable === 'Completed').length,
-        Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered )).length,
-    };
+
+const stats = {
+    total_delivered: clientsData?.filter(m => m[1].isDelivered === true ).length,
+    Completed: clientsData?.filter(m => m[1].deliverable === 'Completed' ).length,
+    Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered)).length,
+};
 
     return (
         <>
