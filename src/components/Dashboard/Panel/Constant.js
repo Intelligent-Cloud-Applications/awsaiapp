@@ -2,14 +2,14 @@
 export const STATS_CONFIG = [
     {
         id: 'Pending',
-        label: 'Institutions Pending',
+        label: 'Pending',
         icon: 'FiClock',
         iconColor: 'text-red-600',
         sortConfig: { status: 'Pending' }
     },
     {
         id: 'Completed',
-        label: 'Institutions Completed',
+        label: 'Completed',
         icon: 'FiCheckCircle',
         iconColor: 'text-green-600',
         sortConfig: { status: 'Completed' }
