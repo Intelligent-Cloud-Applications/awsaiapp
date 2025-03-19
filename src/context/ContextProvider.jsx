@@ -44,14 +44,14 @@ const ContextProvider = (props) => {
     try {
       setLoader(true);
       let response;
-     
+
       if (userProfile.role === "owner" || userProfile.role === "operation") {
         try {
-        response = await API.get("clients", "/admin/list-institution");
-      } catch (error) {
-        // Log the error if there is an issue with the API calls
-        console.error("Error fetching data:", error);
-      }
+          response = await API.get("clients", "/admin/list-institution");
+        } catch (error) {
+          // Log the error if there is an issue with the API calls
+          console.error("Error fetching data:", error);
+        }
       } else {
         try {
           // Fetch data from both APIs
@@ -61,7 +61,9 @@ const ContextProvider = (props) => {
           console.error("Error fetching data:", error);
         }
       }
+      console.log("Fetched clients data:", response); // Log the response for debugging
       setClients(response);
+
     } catch (error) {
       console.error("Error fetching clients:", error);
     } finally {
@@ -177,7 +179,7 @@ const ContextProvider = (props) => {
       data: clients,
       fetchClients: fetchClients,
       onReload: fetchClients,
-      setClients:setClients,
+      setClients: setClients,
     },
     products: products,
     fetchProducts: () => { },
