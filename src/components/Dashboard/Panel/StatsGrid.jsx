@@ -10,8 +10,7 @@ const IconMap = {
     FiTrendingUp
 };
 
-const StatsGrid = ({ stats, onStatClick, activeSort, deliverableStatus = {} }) => {
-
+const StatsGrid = ({ stats, onStatClick, activeSort }) => {
 
     const renderIcon = (iconName) => {
         const Icon = IconMap[iconName];
@@ -22,12 +21,11 @@ const StatsGrid = ({ stats, onStatClick, activeSort, deliverableStatus = {} }) =
         
         total_delivered: stats.total_delivered,
         Pending: stats.Pending || 0,
-        In_Progress: stats.In_Progress || 0,
         Completed: stats.Completed || 0,
     };
 
     return (
-        <div className="grid grid-cols-2 [@media(min-width:1390px)]:grid-cols-4 gap-10 mb-3 [@media(min-width:1023px)]:grid-cols-3">
+        <div className="grid grid-cols-2 gap-10 mb-3 [@media(min-width:1023px)]:grid-cols-3">
             {STATS_CONFIG.map((config, index) => {
                 const statValue = filteredStats[config.id] || 0;
 
@@ -56,9 +54,8 @@ const StatsGrid = ({ stats, onStatClick, activeSort, deliverableStatus = {} }) =
 
 StatsGrid.propTypes = {
     stats: PropTypes.shape({
-        total_members: PropTypes.number,
-        active_members: PropTypes.number,
-        inactive_members: PropTypes.number,
+        Pending: PropTypes.number,
+        Completed: PropTypes.number,
         total_delivered: PropTypes.number
     }).isRequired,
     onStatClick: PropTypes.func.isRequired,

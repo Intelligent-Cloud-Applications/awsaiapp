@@ -5,23 +5,20 @@ export const STATS_CONFIG = [
         label: 'Institutions Pending',
         icon: 'FiClock',
         iconColor: 'text-red-600',
-    },
-    {
-        id: 'In_Progress',
-        label: 'Institutions In-Progress',
-        icon: 'FiLoader',
-        iconColor: 'text-cyan-600',
+        sortConfig: { status: 'Pending' }
     },
     {
         id: 'Completed',
         label: 'Institutions Completed',
         icon: 'FiCheckCircle',
         iconColor: 'text-green-600',
+        sortConfig: { status: 'Completed' }
     },
     {
         id: 'total_delivered',
         label: 'Total Delivered',
         icon: 'FiTrendingUp',
         iconColor: 'text-blue-600',
+        sortConfig: { status: 'total_delivered' }
     }
-]; 
+];

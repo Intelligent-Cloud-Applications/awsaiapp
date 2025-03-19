@@ -1,6 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import React, { useState, useContext, useRef, useCallback, useMemo, useEffect } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import Context from "../../../context/Context";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +8,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Table, Badge } from "flowbite-react";
 import "./Panel.css";
-import { useEffect } from "react";
 import { Pagination } from "flowbite-react";
 import Index from "../MemberList/Index";
 import { TextInput, Dropdown, Button, Modal, Select } from "flowbite-react";
@@ -19,7 +16,6 @@ import { RiExternalLinkLine } from "react-icons/ri";
 import { BsQrCodeScan } from "react-icons/bs";
 import QR from "../../../Common/Qr";
 import { HiChevronDown, HiChevronUp, HiChevronRight } from "react-icons/hi";
-// import { Start } from "@mui/icons-material";
 import StatsGrid from './StatsGrid';
 import { useTableManagement } from '../AdminMemberlist/hooks/useTableManagement.js';
 
@@ -33,7 +29,7 @@ const Panel = () => {
     const { clients, userData } = useContext(Context);
     const clientsData = Object.entries(clients?.data || {});
     const [selectedStatuses, setSelectedStatuses] = useState({});
-    const [deliveryStatuses, setDeliveryStatuses] = useState({});
+    const [deliveryStatuses, setDeliveryStatuses] = useState([]); // Initialize as an array
     const [planStatuses, setPlanStatuses] = useState({});
     const [userCheck, setUserCheck] = useState(0);
     const [isMoreVisible, setIsMoreVisible] = useState(false);
@@ -58,7 +54,6 @@ const Panel = () => {
         "Furniture",
         "Marble shop",
     ];
-    // const [memberCounts, setMemberCounts] = useState({});
     const [filterStatus, setFilterStatus] = useState(null);
     const [domainLinks, setDomainLinks] = useState({});
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -370,11 +365,11 @@ const Panel = () => {
         }
     }, [currentPage, totalPages]);
 
-    const getBadgeProps = (payment, delivered) => {
+    const getBadgeProps = (payment, delivered, deliverable) => {
         let text, color;
 
         // if (web) {
-        if (payment && delivered) {
+        if (payment && deliverable === 'Completed' && delivered) {
             text = "Active";
             color = "success";
         } else {
@@ -531,12 +526,8 @@ const Panel = () => {
     const stats = {
         total_delivered: clientsData?.filter(m => m[1].isDelivered === true).length,
         Completed: clientsData?.filter(m => m[1].deliverable === 'Completed').length,
-        Pending: clientsData?.filter(m => m[1].deliverable === 'Pending' || (!m[1].deliverable && m[1].isFormFilled)).length,
-        In_Progress: clientsData?.filter(m => m[1].deliverable === 'In-progress').length,
-
+        Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered )).length,
     };
-
-    console.log("the stats value", stats);
 
     return (
         <>
@@ -834,7 +825,8 @@ const Panel = () => {
                                                                 const { text, color } = getBadgeProps(
                                                                     // client.isFormFilled,
                                                                     client.payment,
-                                                                    client.isDelivered
+                                                                    client.isDelivered,
+                                                                    client.deliverable
                                                                 );
                                                                 return (
                                                                     <Badge
@@ -1419,16 +1411,18 @@ const Panel = () => {
                                                             getBadgeProps(
                                                                 // client.isFormFilled,
                                                                 client.payment,
-                                                                client.isDelivered
+                                                                client.isDelivered,
+                                                                client.deliverable
                                                             ).color
                                                         }
                                                         size="sm"
                                                     >
                                                         {
                                                             getBadgeProps(
-                                                                client.isFormFilled,
+                                                                // client.isFormFilled,
                                                                 client.payment,
-                                                                client.isDelivered
+                                                                client.isDelivered,
+                                                                client.deliverable
                                                             ).text
                                                         }
                                                     </Badge>
