@@ -262,7 +262,7 @@ const Panel = () => {
         // Step 3: Apply filters only on the initially displayed data
         const query = searchQuery?.toLowerCase();
         const filtered = initialData.filter(([key, client]) => {
-            let pendingFilterData = pendingFilter ? (!client.payment && client.deliverable !== 'Completed' && !client.isDelivered) : true;
+            let pendingFilterData = pendingFilter ? (!client.payment || client.deliverable !== 'Completed' || !client.isDelivered) : true;
             let completedFilterData = completedFilter ? (client.deliverable === 'Completed') : true;
             let deliveredFilterData = deliveredFilter ? (client.isDelivered) : true;
 
@@ -274,15 +274,8 @@ const Panel = () => {
                 !selectedType || client.institutionType === selectedType;
             const matchesDelivery =
                 filterStatus === null || client.isDelivered === filterStatus;
-            if (pendingFilter) {
-                pendingFilterData = !client.payment || client.deliverable !== 'Completed' || !client.isDelivered;
-            };
-            if(completedFilter){
-                completedFilterData = client.deliverable === 'Completed';
-            };
-            if(deliveredFilter){
-                deliveredFilterData = client.isDelivered;
-            }
+
+
             return matchesQuery && matchesType && matchesDelivery && pendingFilterData && completedFilterData && deliveredFilterData;
 
         });
