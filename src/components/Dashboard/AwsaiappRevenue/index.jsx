@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dropdown, Table } from "flowbite-react";
+import { Dropdown, Table, Pagination } from "flowbite-react";
 import Context from '../../../context/Context';
 import "./Revenue.css";
 
@@ -17,29 +17,54 @@ const CustomDropdownItem = ({ onClick, children }) => {
 function AwsaiappRevenue() {
   const { payments } = useContext(Context);
   const [filteredPayments, setFilteredPayments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 6;
+  console.log("Filtered Payments Length:", filteredPayments);
+  const currentPayments = filteredPayments.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
   const [timeFilter, setTimeFilter] = useState("all"); // "all" or "specific"
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [years, setYears] = useState([new Date().getFullYear()]);
   const [paymentGateway, setPaymentGateway] = useState("all"); // "all", "razorpay", or "paypal"
 
+  const customTheme = {
+    pages: {
+      base: "bg-white xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      active: "bg-blue-500 text-white",
+      disabled: "bg-gray-200",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white",
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white",
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50",
+      },
+    },
+  };
   // Collection stats for different time periods
   const [currentMonthStats, setCurrentMonthStats] = useState({
-    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
   });
 
   const [lastMonthStats, setLastMonthStats] = useState({
-    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
   });
 
   const [currentYearStats, setCurrentYearStats] = useState({
-    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
-    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
   });
 
   const months = [
@@ -177,7 +202,7 @@ function AwsaiappRevenue() {
 
   // Get current year
   const currentYear = new Date().getFullYear();
-
+  const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
   return (
     <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
       <div className='w-full responsive-container'>
@@ -198,7 +223,9 @@ function AwsaiappRevenue() {
                   <Dropdown.Divider />
                   {years.map(year => (
                     <CustomDropdownItem key={year} onClick={() => {
-                      setSelectedYear(year);
+                    setSelectedYear(year);
+                    setCurrentPage(1);
+
                       setTimeFilter("specific");
                     }}>
                       {year}
@@ -238,10 +265,18 @@ function AwsaiappRevenue() {
                 <CustomDropdownItem onClick={() => setPaymentGateway("all")}>
                   All Gateways
                 </CustomDropdownItem>
-                <CustomDropdownItem onClick={() => setPaymentGateway("razorpay")}>
+                <CustomDropdownItem onClick={() => {
+                    setPaymentGateway("razorpay");
+                    setCurrentPage(1);
+                }}>
+
                   Razorpay (INR)
                 </CustomDropdownItem>
-                <CustomDropdownItem onClick={() => setPaymentGateway("paypal")}>
+                <CustomDropdownItem onClick={() => {
+                    setPaymentGateway("paypal");
+                    setCurrentPage(1);
+                }}>
+
                   PayPal (USD)
                 </CustomDropdownItem>
               </div>
@@ -299,7 +334,6 @@ function AwsaiappRevenue() {
               </span>
               <h3 className="text-lg font-medium">Last Month Revenue ({lastMonthName})</h3>
             </div>
-
             <div className="mb-3">
               <p className="text-sm text-gray-500">Total Payment</p>
               <div className="flex items-center justify-between">
@@ -381,7 +415,7 @@ function AwsaiappRevenue() {
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                {filteredPayments.map((payment, index) => {
+                {currentPayments.map((payment, index) => {
                   // Calculate renewal date (1 month after payment date)
                   const paymentDate = new Date(payment.paymentDate);
                   const renewDate = new Date(paymentDate);
@@ -412,10 +446,10 @@ function AwsaiappRevenue() {
                       </Table.Cell>
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
-                            ? "bg-blue-100 text-blue-800"
-                            : gateway === "Razorpay"
-                              ? "bg-purple-100 text-purple-800"
-                              : "bg-gray-100 text-gray-800"
+                          ? "bg-blue-100 text-blue-800"
+                          : gateway === "Razorpay"
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-gray-100 text-gray-800"
                           }`}>
                           {gateway}
                         </span>
@@ -439,24 +473,17 @@ function AwsaiappRevenue() {
           {/* Pagination */}
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
             <div className="text-sm text-gray-700">
-              Showing 1-{filteredPayments.length} of {filteredPayments.length}
+              Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length} (Filtered)
+
             </div>
-            <div>
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button
-                  disabled
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Next
-                </button>
-              </nav>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              className="flex justify-end"
+              showIcons
+              theme={customTheme}
+            />
           </div>
         </div>
       </div>
