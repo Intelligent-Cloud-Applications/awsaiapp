@@ -60,13 +60,13 @@ function AwsaiappRevenue() {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
-    
+
     const currentMonthPayments = filteredList.filter(payment => {
       const paymentDate = new Date(payment.paymentDate);
-      return paymentDate.getMonth() === currentMonth && 
-             paymentDate.getFullYear() === currentYear;
+      return paymentDate.getMonth() === currentMonth &&
+        paymentDate.getFullYear() === currentYear;
     });
-    
+
     // Last month stats
     let lastMonth = currentMonth - 1;
     let lastMonthYear = currentYear;
@@ -74,13 +74,13 @@ function AwsaiappRevenue() {
       lastMonth = 11;
       lastMonthYear--;
     }
-    
+
     const lastMonthPayments = filteredList.filter(payment => {
       const paymentDate = new Date(payment.paymentDate);
-      return paymentDate.getMonth() === lastMonth && 
-             paymentDate.getFullYear() === lastMonthYear;
+      return paymentDate.getMonth() === lastMonth &&
+        paymentDate.getFullYear() === lastMonthYear;
     });
-    
+
     // Current year stats
     const currentYearPayments = filteredList.filter(payment => {
       const paymentDate = new Date(payment.paymentDate);
@@ -91,7 +91,7 @@ function AwsaiappRevenue() {
     setCurrentMonthStats(calculatePeriodStats(currentMonthPayments));
     setLastMonthStats(calculatePeriodStats(lastMonthPayments));
     setCurrentYearStats(calculatePeriodStats(currentYearPayments));
-    
+
     // Update filtered payments based on current time filter
     let displayPayments = [];
     if (timeFilter === "all") {
@@ -101,10 +101,10 @@ function AwsaiappRevenue() {
       displayPayments = filteredList.filter(payment => {
         const paymentDate = new Date(payment.paymentDate);
         return paymentDate.getFullYear() === selectedYear &&
-               paymentDate.getMonth() === selectedMonth;
+          paymentDate.getMonth() === selectedMonth;
       });
     }
-    
+
     setFilteredPayments(displayPayments);
   };
 
@@ -114,13 +114,13 @@ function AwsaiappRevenue() {
     const usdTotal = usdPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
     const usdReceived = usdPayments.filter(p => p.status === "completed")
       .reduce((sum, p) => sum + (p.amount / 100), 0);
-      
+
     // INR stats
     const inrPayments = periodPayments.filter(p => p.currency === "INR" && p.paymentMode === "online");
     const inrTotal = inrPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
     const inrReceived = inrPayments.filter(p => p.status === "completed")
       .reduce((sum, p) => sum + (p.amount / 100), 0);
-      
+
     // Combined stats
     return {
       usd: {
@@ -169,12 +169,12 @@ function AwsaiappRevenue() {
 
   // Get current month name
   const currentMonthName = months[new Date().getMonth()];
-  
+
   // Get last month name
   let lastMonthIndex = new Date().getMonth() - 1;
   if (lastMonthIndex < 0) lastMonthIndex = 11;
   const lastMonthName = months[lastMonthIndex];
-  
+
   // Get current year
   const currentYear = new Date().getFullYear();
 
@@ -259,7 +259,7 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">{currentMonthName} Revenue</h3>
+              <h3 className="text-lg font-medium">Current Month Revenue ({currentMonthName})</h3>
             </div>
 
             <div className="mb-3">
@@ -267,15 +267,6 @@ function AwsaiappRevenue() {
               <div className="flex items-center justify-between">
                 <p className="text-lg font-bold text-blue-600">
                   ${currentMonthStats.usd.totalPayment.toFixed(2)} + ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Received</p>
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-green-600">
-                  ${currentMonthStats.usd.totalReceived.toFixed(2)} + ₹{currentMonthStats.inr.totalReceived.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -306,7 +297,7 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">{lastMonthName} Revenue</h3>
+              <h3 className="text-lg font-medium">Last Month Revenue ({lastMonthName})</h3>
             </div>
 
             <div className="mb-3">
@@ -314,15 +305,6 @@ function AwsaiappRevenue() {
               <div className="flex items-center justify-between">
                 <p className="text-lg font-bold text-blue-600">
                   ${lastMonthStats.usd.totalPayment.toFixed(2)} + ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Received</p>
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-green-600">
-                  ${lastMonthStats.usd.totalReceived.toFixed(2)} + ₹{lastMonthStats.inr.totalReceived.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -353,7 +335,7 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">{currentYear} Revenue</h3>
+              <h3 className="text-lg font-medium"> Current Year Revenue ({currentYear})</h3>
             </div>
 
             <div className="mb-3">
@@ -361,15 +343,6 @@ function AwsaiappRevenue() {
               <div className="flex items-center justify-between">
                 <p className="text-lg font-bold text-blue-600">
                   ${currentYearStats.usd.totalPayment.toFixed(2)} + ₹{currentYearStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Received</p>
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-green-600">
-                  ${currentYearStats.usd.totalReceived.toFixed(2)} + ₹{currentYearStats.inr.totalReceived.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -415,11 +388,11 @@ function AwsaiappRevenue() {
                   renewDate.setMonth(renewDate.getMonth() + 1);
 
                   // Determine payment gateway
-                  const gateway = payment.paymentMode === "offline" 
-                                ? "Offline" 
-                                : payment.currency === "USD" 
-                                  ? "PayPal" 
-                                  : "Razorpay";
+                  const gateway = payment.paymentMode === "offline"
+                    ? "Offline"
+                    : payment.currency === "USD"
+                      ? "PayPal"
+                      : "Razorpay";
 
                   return (
                     <Table.Row key={payment.paymentId || index} className="bg-white">
@@ -438,13 +411,12 @@ function AwsaiappRevenue() {
                         </span>
                       </Table.Cell>
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          gateway === "PayPal" 
-                            ? "bg-blue-100 text-blue-800" 
-                            : gateway === "Razorpay" 
-                              ? "bg-purple-100 text-purple-800" 
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
+                            ? "bg-blue-100 text-blue-800"
+                            : gateway === "Razorpay"
+                              ? "bg-purple-100 text-purple-800"
                               : "bg-gray-100 text-gray-800"
-                        }`}>
+                          }`}>
                           {gateway}
                         </span>
                       </Table.Cell>
