@@ -3,43 +3,6 @@ import { Dropdown, Table } from "flowbite-react";
 import Context from '../../../context/Context';
 import "./Revenue.css";
 
-// Custom styles for dropdowns
-const customDropdownStyles = {
-  button: {
-    backgroundColor: "#30afbc",
-    color: "white",
-    borderRadius: "0.375rem",
-    padding: "0.5rem 1rem",
-    fontSize: "0.875rem",
-    fontWeight: "500",
-    border: "none",
-    width: "100%",
-  },
-  item: {
-    display: "block",
-    width: "100%",
-    padding: "0.5rem 1rem",
-    clear: "both",
-    fontWeight: "400",
-    textAlign: "inherit",
-    whiteSpace: "nowrap",
-    backgroundColor: "white",
-    border: "0",
-  }
-};
-
-// Custom Dropdown component with our styling
-const CustomDropdown = ({ label, children, className }) => {
-  return (
-    <Dropdown
-      label={label}
-      className={`custom-dropdown-button ${className}`}
-      style={customDropdownStyles.button}>
-      {children}
-    </Dropdown>
-  );
-};
-
 // Custom Dropdown Item with our styling
 const CustomDropdownItem = ({ onClick, children }) => {
   return (
@@ -58,26 +21,25 @@ function AwsaiappRevenue() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [years, setYears] = useState([new Date().getFullYear()]);
+  const [paymentGateway, setPaymentGateway] = useState("all"); // "all", "razorpay", or "paypal"
 
-  // Collection stats
-  const [usdCollection, setUsdCollection] = useState({
-    totalPayment: 0,
-    totalReceived: 0,
-    pending: 0,
-    transactions: 0
+  // Collection stats for different time periods
+  const [currentMonthStats, setCurrentMonthStats] = useState({
+    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
   });
 
-  const [inrCollection, setInrCollection] = useState({
-    totalPayment: 0,
-    totalReceived: 0,
-    pending: 0,
-    transactions: 0,
-    lastCashout: "1/31/2025"
+  const [lastMonthStats, setLastMonthStats] = useState({
+    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
   });
 
-  const [offlineCollection, setOfflineCollection] = useState({
-    totalCollected: 0,
-    transactions: 0
+  const [currentYearStats, setCurrentYearStats] = useState({
+    usd: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    inr: { totalPayment: 0, totalReceived: 0, transactions: 0 },
+    total: { totalPayment: 0, totalReceived: 0, transactions: 0 }
   });
 
   const months = [
@@ -85,58 +47,98 @@ function AwsaiappRevenue() {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const processPaymentData = () => {
-    // Filter payments based on selected time period
-    let filtered = [];
-
-    if (timeFilter === "all") {
-      filtered = [...payments];
-    } else {
-      // Filter for specific year and month
-      filtered = payments.filter(payment => {
-        const paymentDate = new Date(payment.paymentDate);
-        return paymentDate.getFullYear() === selectedYear &&
-          paymentDate.getMonth() === selectedMonth;
-      });
+  const calculateStats = (paymentsList) => {
+    // Filter based on payment gateway
+    let filteredList = [...paymentsList];
+    if (paymentGateway === "razorpay") {
+      filteredList = paymentsList.filter(p => p.currency === "INR" && p.paymentMode === "online");
+    } else if (paymentGateway === "paypal") {
+      filteredList = paymentsList.filter(p => p.currency === "USD" && p.paymentMode === "online");
     }
 
-    setFilteredPayments(filtered);
+    // Current month stats
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    const currentMonthPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getMonth() === currentMonth && 
+             paymentDate.getFullYear() === currentYear;
+    });
+    
+    // Last month stats
+    let lastMonth = currentMonth - 1;
+    let lastMonthYear = currentYear;
+    if (lastMonth < 0) {
+      lastMonth = 11;
+      lastMonthYear--;
+    }
+    
+    const lastMonthPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getMonth() === lastMonth && 
+             paymentDate.getFullYear() === lastMonthYear;
+    });
+    
+    // Current year stats
+    const currentYearPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getFullYear() === currentYear;
+    });
 
-    // Calculate USD online collection stats
-    const usdPayments = filtered.filter(p => p.currency === "USD" && p.paymentMode === "online");
+    // Calculate stats for each time period
+    setCurrentMonthStats(calculatePeriodStats(currentMonthPayments));
+    setLastMonthStats(calculatePeriodStats(lastMonthPayments));
+    setCurrentYearStats(calculatePeriodStats(currentYearPayments));
+    
+    // Update filtered payments based on current time filter
+    let displayPayments = [];
+    if (timeFilter === "all") {
+      displayPayments = filteredList;
+    } else {
+      // Filter for specific year and month
+      displayPayments = filteredList.filter(payment => {
+        const paymentDate = new Date(payment.paymentDate);
+        return paymentDate.getFullYear() === selectedYear &&
+               paymentDate.getMonth() === selectedMonth;
+      });
+    }
+    
+    setFilteredPayments(displayPayments);
+  };
+
+  const calculatePeriodStats = (periodPayments) => {
+    // USD stats
+    const usdPayments = periodPayments.filter(p => p.currency === "USD" && p.paymentMode === "online");
     const usdTotal = usdPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
     const usdReceived = usdPayments.filter(p => p.status === "completed")
       .reduce((sum, p) => sum + (p.amount / 100), 0);
-
-    setUsdCollection({
-      totalPayment: usdTotal,
-      totalReceived: usdReceived,
-      pending: usdTotal - usdReceived,
-      transactions: usdPayments.length
-    });
-
-    // Calculate INR online collection stats
-    const inrPayments = filtered.filter(p => p.currency === "INR" && p.paymentMode === "online");
+      
+    // INR stats
+    const inrPayments = periodPayments.filter(p => p.currency === "INR" && p.paymentMode === "online");
     const inrTotal = inrPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
     const inrReceived = inrPayments.filter(p => p.status === "completed")
       .reduce((sum, p) => sum + (p.amount / 100), 0);
-
-    setInrCollection({
-      totalPayment: inrTotal,
-      totalReceived: inrReceived,
-      pending: inrTotal - inrReceived,
-      transactions: inrPayments.length,
-      lastCashout: "1/31/2025" // Hardcoded as shown in the images
-    });
-
-    // Calculate offline collection stats
-    const offlinePayments = filtered.filter(p => p.paymentMode === "offline");
-    const offlineTotal = offlinePayments.reduce((sum, p) => sum + (p.amount / 100), 0);
-
-    setOfflineCollection({
-      totalCollected: offlineTotal,
-      transactions: offlinePayments.length
-    });
+      
+    // Combined stats
+    return {
+      usd: {
+        totalPayment: usdTotal,
+        totalReceived: usdReceived,
+        transactions: usdPayments.length
+      },
+      inr: {
+        totalPayment: inrTotal,
+        totalReceived: inrReceived,
+        transactions: inrPayments.length
+      },
+      total: {
+        totalPayment: usdTotal + inrTotal,
+        totalReceived: usdReceived + inrReceived,
+        transactions: usdPayments.length + inrPayments.length
+      }
+    };
   };
 
   const updateAvailableYears = (payments) => {
@@ -148,9 +150,9 @@ function AwsaiappRevenue() {
   useEffect(() => {
     if (payments) {
       updateAvailableYears(payments);
-      processPaymentData();
+      calculateStats(payments);
     }
-  }, [payments, selectedYear, selectedMonth, timeFilter]);
+  }, [payments, selectedYear, selectedMonth, timeFilter, paymentGateway]);
 
   // Helper function to format currency
   const formatCurrency = (amount, currency) => {
@@ -165,56 +167,91 @@ function AwsaiappRevenue() {
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
   };
 
+  // Get current month name
+  const currentMonthName = months[new Date().getMonth()];
+  
+  // Get last month name
+  let lastMonthIndex = new Date().getMonth() - 1;
+  if (lastMonthIndex < 0) lastMonthIndex = 11;
+  const lastMonthName = months[lastMonthIndex];
+  
+  // Get current year
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
       <div className='w-full responsive-container'>
-        {/* Time Filter Selection */}
-        <div className='flex justify-center mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
-          <div className='responsive-dropdown'>
-            <Dropdown
-              label={timeFilter === "all" ? "All time" : `${selectedYear}`}
-              className="custom-dropdown-button"
-              style={{ backgroundColor: "#30afbc", color: "white" }}
-            >
-              <div>
-                <CustomDropdownItem onClick={() => setTimeFilter("all")}>
-                  All time
-                </CustomDropdownItem>
-                <Dropdown.Divider />
-                {years.map(year => (
-                  <CustomDropdownItem key={year} onClick={() => {
-                    setSelectedYear(year);
-                    setTimeFilter("specific");
-                  }}>
-                    {year}
-                  </CustomDropdownItem>
-                ))}
-              </div>
-            </Dropdown>
-          </div>
-
-          {timeFilter === "specific" && (
-            <div className='sm:w-40 sm:ml-2 responsive-dropdown'>
+        {/* Filter Section */}
+        <div className='flex justify-between mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
+          {/* Time Filter - Original dropdowns preserved */}
+          <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 responsive-dropdown'>
+            <div className='responsive-dropdown'>
               <Dropdown
-                label={months[selectedMonth]}
+                label={timeFilter === "all" ? "All time" : `${selectedYear}`}
                 className="custom-dropdown-button"
                 style={{ backgroundColor: "#30afbc", color: "white" }}
               >
                 <div>
-                  {months.map((month, index) => (
-                    <CustomDropdownItem key={month} onClick={() => setSelectedMonth(index)}>
-                      {month}
+                  <CustomDropdownItem onClick={() => setTimeFilter("all")}>
+                    All time
+                  </CustomDropdownItem>
+                  <Dropdown.Divider />
+                  {years.map(year => (
+                    <CustomDropdownItem key={year} onClick={() => {
+                      setSelectedYear(year);
+                      setTimeFilter("specific");
+                    }}>
+                      {year}
                     </CustomDropdownItem>
                   ))}
                 </div>
               </Dropdown>
             </div>
-          )}
+
+            {timeFilter === "specific" && (
+              <div className='sm:w-40 sm:ml-2 responsive-dropdown'>
+                <Dropdown
+                  label={months[selectedMonth]}
+                  className="custom-dropdown-button"
+                  style={{ backgroundColor: "#30afbc", color: "white" }}
+                >
+                  <div>
+                    {months.map((month, index) => (
+                      <CustomDropdownItem key={month} onClick={() => setSelectedMonth(index)}>
+                        {month}
+                      </CustomDropdownItem>
+                    ))}
+                  </div>
+                </Dropdown>
+              </div>
+            )}
+          </div>
+
+          {/* Payment Gateway Filter */}
+          <div className='responsive-dropdown'>
+            <Dropdown
+              label={paymentGateway === "all" ? "All Gateways" : paymentGateway === "razorpay" ? "Razorpay" : "PayPal"}
+              className="custom-dropdown-button"
+              style={{ backgroundColor: "#30afbc", color: "white" }}
+            >
+              <div>
+                <CustomDropdownItem onClick={() => setPaymentGateway("all")}>
+                  All Gateways
+                </CustomDropdownItem>
+                <CustomDropdownItem onClick={() => setPaymentGateway("razorpay")}>
+                  Razorpay (INR)
+                </CustomDropdownItem>
+                <CustomDropdownItem onClick={() => setPaymentGateway("paypal")}>
+                  PayPal (USD)
+                </CustomDropdownItem>
+              </div>
+            </Dropdown>
+          </div>
         </div>
 
         {/* Collection Panels */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 tabs">
-          {/* USD Online Collection */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 tabs">
+          {/* Current Month Revenue */}
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-gray-200 p-2 rounded">
@@ -222,33 +259,46 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">USD Online Collection</h3>
+              <h3 className="text-lg font-medium">{currentMonthName} Revenue</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <div>
-                <p className="text-sm text-gray-500">Total Payment</p>
-                <p className="text-xl font-bold text-blue-600">${usdCollection.totalPayment.toFixed(2)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Received</p>
-                <p className="text-xl font-bold text-green-600">${usdCollection.totalReceived.toFixed(2)}</p>
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Payment</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-blue-600">
+                  ${currentMonthStats.usd.totalPayment.toFixed(2)} + ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 bg-gray-50 p-2 rounded">
-              <div className="text-center">
-                <p className="text-xl font-medium text-blue-600">{usdCollection.transactions}</p>
-                <p className="text-xs text-gray-500">Transactions</p>
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Received</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-green-600">
+                  ${currentMonthStats.usd.totalReceived.toFixed(2)} + ₹{currentMonthStats.inr.totalReceived.toFixed(2)}
+                </p>
               </div>
-              <div className="text-center">
-                <p className="text-xl font-medium text-red-600">${usdCollection.pending.toFixed(2)}</p>
-                <p className="text-xs text-gray-500">Amount Pending</p>
+            </div>
+
+            <div className="bg-gray-50 p-2 rounded text-center mb-2">
+              <div className="flex justify-around">
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.usd.transactions}</p>
+                  <p className="text-xs text-gray-500">USD Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.inr.transactions}</p>
+                  <p className="text-xs text-gray-500">INR Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.total.transactions}</p>
+                  <p className="text-xs text-gray-500">Total</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* INR Online Collection */}
+          {/* Last Month Revenue */}
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-gray-200 p-2 rounded">
@@ -256,37 +306,46 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">INR Online Collection</h3>
+              <h3 className="text-lg font-medium">{lastMonthName} Revenue</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <div>
-                <p className="text-sm text-gray-500">Total Payment</p>
-                <p className="text-xl font-bold text-blue-600">₹{inrCollection.totalPayment.toFixed(2)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Received</p>
-                <p className="text-xl font-bold text-green-600">₹{inrCollection.totalReceived.toFixed(2)}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 bg-gray-50 p-2 rounded">
-              <div className="text-center">
-                <p className="text-xl font-medium text-blue-600">{inrCollection.transactions}</p>
-                <p className="text-xs text-gray-500">Transactions</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xl font-medium text-red-600">₹{inrCollection.pending.toFixed(2)}</p>
-                <p className="text-xs text-gray-500">Amount Pending</p>
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Payment</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-blue-600">
+                  ${lastMonthStats.usd.totalPayment.toFixed(2)} + ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
+                </p>
               </div>
             </div>
 
-            <div className="mt-2 text-xs text-gray-500 text-center">
-              Last cashout on {inrCollection.lastCashout}
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Received</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-green-600">
+                  ${lastMonthStats.usd.totalReceived.toFixed(2)} + ₹{lastMonthStats.inr.totalReceived.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-2 rounded text-center mb-2">
+              <div className="flex justify-around">
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.usd.transactions}</p>
+                  <p className="text-xs text-gray-500">USD Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.inr.transactions}</p>
+                  <p className="text-xs text-gray-500">INR Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.total.transactions}</p>
+                  <p className="text-xs text-gray-500">Total</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Offline Collection */}
+          {/* Current Year Revenue */}
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-gray-200 p-2 rounded">
@@ -294,17 +353,42 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">Offline Collection</h3>
+              <h3 className="text-lg font-medium">{currentYear} Revenue</h3>
             </div>
 
-            <div className="mb-4">
-              <p className="text-sm text-gray-500">Total Collected</p>
-              <p className="text-xl font-bold text-blue-600">₹{offlineCollection.totalCollected.toFixed(2)}</p>
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Payment</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-blue-600">
+                  ${currentYearStats.usd.totalPayment.toFixed(2)} + ₹{currentYearStats.inr.totalPayment.toFixed(2)}
+                </p>
+              </div>
             </div>
 
-            <div className="bg-gray-50 p-2 rounded text-center">
-              <p className="text-xl font-medium text-blue-600">{offlineCollection.transactions}</p>
-              <p className="text-xs text-gray-500">Transactions</p>
+            <div className="mb-3">
+              <p className="text-sm text-gray-500">Total Received</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-green-600">
+                  ${currentYearStats.usd.totalReceived.toFixed(2)} + ₹{currentYearStats.inr.totalReceived.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-2 rounded text-center mb-2">
+              <div className="flex justify-around">
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentYearStats.usd.transactions}</p>
+                  <p className="text-xs text-gray-500">USD Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentYearStats.inr.transactions}</p>
+                  <p className="text-xs text-gray-500">INR Trans</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-600">{currentYearStats.total.transactions}</p>
+                  <p className="text-xs text-gray-500">Total</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -318,6 +402,7 @@ function AwsaiappRevenue() {
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Subscription Type</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Mode</Table.HeadCell>
+                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Renew Date</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
@@ -328,6 +413,13 @@ function AwsaiappRevenue() {
                   const paymentDate = new Date(payment.paymentDate);
                   const renewDate = new Date(paymentDate);
                   renewDate.setMonth(renewDate.getMonth() + 1);
+
+                  // Determine payment gateway
+                  const gateway = payment.paymentMode === "offline" 
+                                ? "Offline" 
+                                : payment.currency === "USD" 
+                                  ? "PayPal" 
+                                  : "Razorpay";
 
                   return (
                     <Table.Row key={payment.paymentId || index} className="bg-white">
@@ -343,6 +435,17 @@ function AwsaiappRevenue() {
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
                         <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           {payment.paymentMode === "offline" ? "Offline" : "Online"}
+                        </span>
+                      </Table.Cell>
+                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          gateway === "PayPal" 
+                            ? "bg-blue-100 text-blue-800" 
+                            : gateway === "Razorpay" 
+                              ? "bg-purple-100 text-purple-800" 
+                              : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {gateway}
                         </span>
                       </Table.Cell>
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
