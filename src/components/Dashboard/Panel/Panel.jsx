@@ -524,31 +524,31 @@ const Panel = () => {
     } = useTableManagement([], filterStatus);
 
 
-const handleStatClickWrapper = (sortConfig, index) => {
-    let newFilterStatus = null;
-    if (index === 2) {
-        setPendingFilter(!pendingFilter);
-        setCompletedFilter(false);
-        setDeliveredFilter(false);
-    } else if (index === 1) {
-        setPendingFilter(false);
-        setCompletedFilter(!completedFilter);
-        setDeliveredFilter(false);
-    } else if (index === 0) {
-        setPendingFilter(false);
-        setCompletedFilter(false);
-        setDeliveredFilter(!deliveredFilter);
-    }
-    setFilterStatus(newFilterStatus);
-    handleStatClick(sortConfig, index);
-};
+    const handleStatClickWrapper = (sortConfig, index) => {
+        let newFilterStatus = null;
+        if (index === 0) {
+            setDeliveredFilter(!deliveredFilter);
+            setPendingFilter(false);
+            setCompletedFilter(false);
+        } else if (index === 1) {
+            setDeliveredFilter(false);
+            setPendingFilter(!pendingFilter);
+            setCompletedFilter(false);
+        } else if (index === 2) {
+            setPendingFilter(false);
+            setDeliveredFilter(false);
+            setCompletedFilter(!completedFilter);
+        }
+        setFilterStatus(newFilterStatus);
+        handleStatClick(sortConfig, index);
+    };
 
 
-const stats = {
-    total_delivered: clientsData?.filter(m => m[1].isDelivered === true ).length,
-    Completed: clientsData?.filter(m => m[1].deliverable === 'Completed' ).length,
-    Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered)).length,
-};
+    const stats = {
+        total_delivered: clientsData?.filter(m => m[1].isDelivered === true).length,
+        Completed: clientsData?.filter(m => m[1].deliverable === 'Completed').length,
+        Pending: clientsData?.filter(m => m[1].isFormFilled && (!m[1].payment || m[1].deliverable !== 'Completed' || !m[1].isDelivered)).length,
+    };
 
     return (
         <>
