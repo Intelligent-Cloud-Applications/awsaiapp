@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown, Table, Pagination } from "flowbite-react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+
 import Context from '../../../context/Context';
 import "./Revenue.css";
 
@@ -19,7 +22,6 @@ function AwsaiappRevenue() {
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 6;
-  console.log("Filtered Payments Length:", filteredPayments);
   const currentPayments = filteredPayments.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
   const [timeFilter, setTimeFilter] = useState("all"); // "all" or "specific"
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -223,9 +225,8 @@ function AwsaiappRevenue() {
                   <Dropdown.Divider />
                   {years.map(year => (
                     <CustomDropdownItem key={year} onClick={() => {
-                    setSelectedYear(year);
-                    setCurrentPage(1);
-
+                      setSelectedYear(year);
+                      setCurrentPage(1);
                       setTimeFilter("specific");
                     }}>
                       {year}
@@ -266,15 +267,15 @@ function AwsaiappRevenue() {
                   All Gateways
                 </CustomDropdownItem>
                 <CustomDropdownItem onClick={() => {
-                    setPaymentGateway("razorpay");
-                    setCurrentPage(1);
+                  setPaymentGateway("razorpay");
+                  setCurrentPage(1);
                 }}>
 
                   Razorpay (INR)
                 </CustomDropdownItem>
                 <CustomDropdownItem onClick={() => {
-                    setPaymentGateway("paypal");
-                    setCurrentPage(1);
+                  setPaymentGateway("paypal");
+                  setCurrentPage(1);
                 }}>
 
                   PayPal (USD)
@@ -294,14 +295,19 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">Current Month Revenue ({currentMonthName})</h3>
+              <h3 className="text-lg font-medium">{currentMonthName} Collection</h3>
             </div>
-
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Payment</p>
-              <div className="flex items-center justify-between">
+            <div className="flex flex-row mb-2 justify-between">
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
-                  ${currentMonthStats.usd.totalPayment.toFixed(2)} + ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
+                  ${currentMonthStats.usd.totalPayment.toFixed(2)}
+                </p>
+              </div>
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                <p className="text-lg font-bold text-blue-600">
+                  ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -332,17 +338,22 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium">Last Month Revenue ({lastMonthName})</h3>
+              <h3 className="text-lg font-medium">{lastMonthName} Collection</h3>
             </div>
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Payment</p>
-              <div className="flex items-center justify-between">
+            <div className="flex flex-row mb-2 justify-between">
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
-                  ${lastMonthStats.usd.totalPayment.toFixed(2)} + ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
+                  ${lastMonthStats.usd.totalPayment.toFixed(2)}
+                </p>
+              </div>
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                <p className="text-lg font-bold text-blue-600">
+                  ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
                 </p>
               </div>
             </div>
-
             <div className="bg-gray-50 p-2 rounded text-center mb-2">
               <div className="flex justify-around">
                 <div>
@@ -369,18 +380,22 @@ function AwsaiappRevenue() {
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </span>
-              <h3 className="text-lg font-medium"> Current Year Revenue ({currentYear})</h3>
+              <h3 className="text-lg font-medium">This Year Collection</h3>
             </div>
-
-            <div className="mb-3">
-              <p className="text-sm text-gray-500">Total Payment</p>
-              <div className="flex items-center justify-between">
+            <div className="flex flex-row mb-2 justify-between">
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
-                  ${currentYearStats.usd.totalPayment.toFixed(2)} + ₹{currentYearStats.inr.totalPayment.toFixed(2)}
+                  ${currentYearStats.usd.totalPayment.toFixed(2)}
+                </p>
+              </div>
+              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                <p className="text-lg font-bold text-blue-600">
+                  ₹{currentYearStats.inr.totalPayment.toFixed(2)}
                 </p>
               </div>
             </div>
-
             <div className="bg-gray-50 p-2 rounded text-center mb-2">
               <div className="flex justify-around">
                 <div>
@@ -405,14 +420,16 @@ function AwsaiappRevenue() {
           <div className="table-responsive">
             <Table hoverable>
               <Table.Head>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Name</Table.HeadCell>
+                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Institution</Table.HeadCell>
+                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payer</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Subscription Type</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Mode</Table.HeadCell>
+                {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Mode</Table.HeadCell> */}
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Renew Date</Table.HeadCell>
+                {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Renew Date</Table.HeadCell> */}
                 <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
+                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
                 {currentPayments.map((payment, index) => {
@@ -431,6 +448,9 @@ function AwsaiappRevenue() {
                   return (
                     <Table.Row key={payment.paymentId || index} className="bg-white">
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {payment.childInstitution || 'N/A'}
+                      </Table.Cell>
+                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {payment.userDetails?.userName || 'N/A'}
                       </Table.Cell>
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
@@ -439,12 +459,12 @@ function AwsaiappRevenue() {
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {payment.subscriptionType || 'N/A'}
                       </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
+                      {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
                         <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           {payment.paymentMode === "offline" ? "Offline" : "Online"}
                         </span>
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
+                      </Table.Cell> */}
+                      <Table.Cell className=" py-3 whitespace-nowrap text-sm text-center">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
                           ? "bg-blue-100 text-blue-800"
                           : gateway === "Razorpay"
@@ -457,11 +477,16 @@ function AwsaiappRevenue() {
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(payment.paymentDate)}
                       </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                      {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(renewDate)}
-                      </Table.Cell>
+                      </Table.Cell> */}
                       <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {formatCurrency(payment.amount / 100, payment.currency)}
+                      </Table.Cell>
+                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        <button aria-label="View">
+                          <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
+                        </button>
                       </Table.Cell>
                     </Table.Row>
                   );
