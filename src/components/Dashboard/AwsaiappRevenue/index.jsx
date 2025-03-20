@@ -203,7 +203,7 @@ function AwsaiappRevenue() {
   const lastMonthName = months[lastMonthIndex];
 
   // Get current year
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
   const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
   return (
     <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
@@ -498,7 +498,7 @@ function AwsaiappRevenue() {
           {/* Pagination */}
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
             <div className="text-sm text-gray-700">
-              Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length} (Filtered)
+              Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
 
             </div>
             <Pagination

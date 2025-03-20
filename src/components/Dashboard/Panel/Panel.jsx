@@ -280,7 +280,6 @@ const Panel = () => {
 
         });
 
-        console.log("Filtered Clients:", filtered);
         return filtered;
     }, [searchQuery, selectedType, clientsData, filterStatus]);
 
@@ -353,7 +352,6 @@ const Panel = () => {
         const user = useDataForSales.find((user) => {
             return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
         });
-        console.log("user Name:", user);
         return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
     };
 
@@ -480,7 +478,6 @@ const Panel = () => {
                 },
             });
         } else {
-            console.log("Data to set", client);
             setTempInstitution(client.institutionid);
             setSelectedInstitutionType(client.institutionType);
             setisMonthlyReport(client.institutionid);
@@ -601,7 +598,6 @@ const Panel = () => {
                                             onClick={(e) => {
                                                 if (instituteType === "") {
                                                     e.stopPropagation();
-                                                    console.log("Showing toast message"); // Debug line
                                                     toast.error("Please Select a type of Institution.", {
                                                         position: "top-right",
                                                         autoClose: 5000,
