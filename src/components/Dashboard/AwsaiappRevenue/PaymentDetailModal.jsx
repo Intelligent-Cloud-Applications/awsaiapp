@@ -121,12 +121,12 @@ function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
                                 <span className="text-gray-600 font-medium">Payment Date:</span>
                                 <span className="text-gray-800">{formatDate(payment.paymentDate)}</span>
                             </div>
-                            {recurringValue && (
+                            {/* {recurringValue && ( */}
                                 <div className="flex justify-between">
                                     <span className="text-gray-600 font-medium">Renew Date:</span>
                                     <span className="text-gray-800">{formatDate(payment.renewDate)}</span>
                                 </div>
-                            )}
+                            {/* )} */}
                             {recurringValue && (
                                 <div className="flex justify-between">
                                     <span className="text-gray-600 font-medium">Last Payment Date:</span>

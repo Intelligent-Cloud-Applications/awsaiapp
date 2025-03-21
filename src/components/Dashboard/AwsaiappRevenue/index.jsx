@@ -101,19 +101,30 @@ const AwsaiappRevenue = () => {
     setInstitutionPaymentHistory(history);
   };
 
-  // Function to check if a payment is recurring
-  const isPaymentRecurring = (payment) => {
+  // Updated function to check if a payment is recurring and get the last payment date
+  const getPaymentRecurringInfo = (payment) => {
     const institution = payment.childInstitution || 'unknown';
     const paymentDate = new Date(payment.paymentDate);
 
     // If the institution doesn't have payment history, it's not recurring
-    if (!institutionPaymentHistory[institution] || institution === 'unknown') return false;
+    if (!institutionPaymentHistory[institution] || institution === 'unknown')
+      return { recurring: false, lastPaymentDate: null };
 
-    // Check if there's a payment from this institution before the current one
-    return institutionPaymentHistory[institution].some(prevPayment =>
+    // Find the most recent payment that happened before the current one
+    const previousPayments = institutionPaymentHistory[institution].filter(prevPayment =>
       prevPayment.paymentId !== payment.paymentId &&
       new Date(prevPayment.paymentDate) < paymentDate
     );
+
+    if (previousPayments.length === 0) return { recurring: false, lastPaymentDate: null };
+
+    // Sort previous payments to get the most recent one
+    previousPayments.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+
+    return {
+      recurring: true,
+      lastPaymentDate: previousPayments[0].paymentDate
+    };
   };
 
   const calculateStats = (paymentsList) => {
@@ -493,8 +504,8 @@ const AwsaiappRevenue = () => {
                           ? "PayPal"
                           : "Razorpay";
 
-                      // Check if payment is recurring based on institution history
-                      const recurring = isPaymentRecurring(payment);
+                      // Get recurring info including last payment date
+                      const { recurring, lastPaymentDate } = getPaymentRecurringInfo(payment);
 
                       return (
                         <Table.Row key={payment.paymentId || index} className="bg-white">
@@ -534,8 +545,14 @@ const AwsaiappRevenue = () => {
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                             <button aria-label="View" onClick={() => {
-                              setSelectedPayment(payment); // Set the selected payment
-                              setIsModalOpen((prev) => !prev); // Toggle the modal visibility
+                              // Create a copy of the payment with the lastPaymentDate and renewDate added
+                              const paymentWithDates = {
+                                lastPaymentDate: lastPaymentDate,
+                                ...payment,
+                                renewDate: renewDate.toISOString()
+                              };
+                              setSelectedPayment(paymentWithDates);
+                              setIsModalOpen((prev) => !prev);
                               setInstitutionReccuring(recurring);
                             }}>
                               <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
