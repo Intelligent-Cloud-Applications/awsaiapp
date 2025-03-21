@@ -3,7 +3,6 @@ import PaymentDetailModal from './PaymentDetailModal'; // Import the modal compo
 import { Dropdown, Table, Pagination } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-
 import Context from '../../../context/Context';
 import "./Revenue.css";
 
@@ -19,7 +18,7 @@ const CustomDropdownItem = ({ onClick, children }) => {
 };
 
 const AwsaiappRevenue = () => {
-  const { payments } = useContext(Context);
+  const { payments, products } = useContext(Context);
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState({}); // State for selected payment
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
@@ -31,7 +30,8 @@ const AwsaiappRevenue = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [years, setYears] = useState([new Date().getFullYear()]);
   const [paymentGateway, setPaymentGateway] = useState("all"); // "all", "razorpay", or "paypal"
-
+  const [institutionPaymentHistory, setInstitutionPaymentHistory] = useState({});
+  const [institutionReccuring, setInstitutionReccuring] = useState();
   const customTheme = {
     pages: {
       base: "bg-white xs:mt-0 mt-2 inline-flex items-center -space-x-px",
@@ -76,6 +76,45 @@ const AwsaiappRevenue = () => {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+
+  // Function to build institution payment history
+  const buildInstitutionPaymentHistory = (paymentsList) => {
+    const history = {};
+
+    // Sort payments by date (oldest first)
+    const sortedPayments = [...paymentsList].sort((a, b) =>
+      new Date(a.paymentDate) - new Date(b.paymentDate)
+    );
+
+    // Build payment history for each institution
+    sortedPayments.forEach(payment => {
+      const institution = payment.childInstitution || 'unknown';
+      if (!history[institution]) {
+        history[institution] = [];
+      }
+      history[institution].push({
+        paymentId: payment.paymentId,
+        paymentDate: payment.paymentDate
+      });
+    });
+
+    setInstitutionPaymentHistory(history);
+  };
+
+  // Function to check if a payment is recurring
+  const isPaymentRecurring = (payment) => {
+    const institution = payment.childInstitution || 'unknown';
+    const paymentDate = new Date(payment.paymentDate);
+
+    // If the institution doesn't have payment history, it's not recurring
+    if (!institutionPaymentHistory[institution] || institution === 'unknown') return false;
+
+    // Check if there's a payment from this institution before the current one
+    return institutionPaymentHistory[institution].some(prevPayment =>
+      prevPayment.paymentId !== payment.paymentId &&
+      new Date(prevPayment.paymentDate) < paymentDate
+    );
+  };
 
   const calculateStats = (paymentsList) => {
     // Filter based on payment gateway
@@ -179,6 +218,7 @@ const AwsaiappRevenue = () => {
 
   useEffect(() => {
     if (payments) {
+      buildInstitutionPaymentHistory(payments);
       updateAvailableYears(payments);
       calculateStats(payments);
     }
@@ -209,14 +249,19 @@ const AwsaiappRevenue = () => {
   // const currentYear = new Date().getFullYear();
   const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
 
+  const nameProduct = (value) => {
+    const product = products.find(product => product.productId === value);
+    return product ? product.heading : null;
+  }
+
   return (
     <div>
       {!isModalOpen ? (
         <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
           <div className='w-full responsive-container'>
-        {/* Filter Section */}
+            {/* Filter Section */}
             <div className='flex justify-between mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
-          {/* Time Filter - Original dropdowns preserved */}
+              {/* Time Filter - Original dropdowns preserved */}
               <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 responsive-dropdown'>
                 <div className='responsive-dropdown'>
                   <Dropdown
@@ -261,7 +306,7 @@ const AwsaiappRevenue = () => {
                 )}
               </div>
 
-          {/* Payment Gateway Filter */}
+              {/* Payment Gateway Filter */}
               <div className='responsive-dropdown'>
                 <Dropdown
                   label={paymentGateway === "all" ? "All Gateways" : paymentGateway === "razorpay" ? "Razorpay" : "PayPal"}
@@ -276,14 +321,12 @@ const AwsaiappRevenue = () => {
                       setPaymentGateway("razorpay");
                       setCurrentPage(1);
                     }}>
-
                       Razorpay (INR)
                     </CustomDropdownItem>
                     <CustomDropdownItem onClick={() => {
                       setPaymentGateway("paypal");
                       setCurrentPage(1);
                     }}>
-
                       PayPal (USD)
                     </CustomDropdownItem>
                   </div>
@@ -291,9 +334,9 @@ const AwsaiappRevenue = () => {
               </div>
             </div>
 
-        {/* Collection Panels */}
+            {/* Collection Panels */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 tabs">
-          {/* Current Month Revenue */}
+              {/* Current Month Revenue */}
               <div className="bg-white rounded-lg shadow p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-gray-200 p-2 rounded">
@@ -336,7 +379,7 @@ const AwsaiappRevenue = () => {
                 </div>
               </div>
 
-          {/* Last Month Revenue */}
+              {/* Last Month Revenue */}
               <div className="bg-white rounded-lg shadow p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-gray-200 p-2 rounded">
@@ -378,7 +421,7 @@ const AwsaiappRevenue = () => {
                 </div>
               </div>
 
-          {/* Current Year Revenue */}
+              {/* Current Year Revenue */}
               <div className="bg-white rounded-lg shadow p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-gray-200 p-2 rounded">
@@ -421,7 +464,7 @@ const AwsaiappRevenue = () => {
               </div>
             </div>
 
-        {/* Table Section */}
+            {/* Table Section */}
             <div className="bg-white rounded-lg shadow overflow-hidden table-container">
               <div className="table-responsive">
                 <Table hoverable>
@@ -429,27 +472,29 @@ const AwsaiappRevenue = () => {
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Institution</Table.HeadCell>
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payer</Table.HeadCell>
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
-                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Subscription Type</Table.HeadCell>
-                {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Mode</Table.HeadCell> */}
-                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
-                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
-                {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Renew Date</Table.HeadCell> */}
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Product</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Type</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
                   </Table.Head>
                   <Table.Body className="divide-y">
                     {currentPayments.map((payment, index) => {
-                  // Calculate renewal date (1 month after payment date)
+                      // Calculate renewal date (1 month after payment date)
                       const paymentDate = new Date(payment.paymentDate);
                       const renewDate = new Date(paymentDate);
                       renewDate.setMonth(renewDate.getMonth() + 1);
 
-                  // Determine payment gateway
+                      // Determine payment gateway
                       const gateway = payment.paymentMode === "offline"
                         ? "Offline"
                         : payment.currency === "USD"
                           ? "PayPal"
                           : "Razorpay";
+
+                      // Check if payment is recurring based on institution history
+                      const recurring = isPaymentRecurring(payment);
 
                       return (
                         <Table.Row key={payment.paymentId || index} className="bg-white">
@@ -457,20 +502,27 @@ const AwsaiappRevenue = () => {
                             {payment.childInstitution || 'N/A'}
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {payment.userDetails?.userName || 'N/A'}
+                            {payment.userDetails?.userName || 'N/A'}
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {payment.userDetails?.phoneNumber || 'N/A'}
+                            {payment.userDetails?.phoneNumber || 'N/A'}
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {payment.subscriptionType || 'N/A'}
+                            {formatCurrency(payment.amount / 100, payment.currency)}
                           </Table.Cell>
-                      {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
-                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {payment.paymentMode === "offline" ? "Offline" : "Online"}
-                        </span>
-                      </Table.Cell> */}
-                          <Table.Cell className=" py-3 whitespace-nowrap text-sm text-center">
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {nameProduct(payment.productId)}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(payment.paymentDate)}
+                          </Table.Cell>
+                          <Table.Cell className="px-2 py-3 whitespace-nowrap text-sm">
+                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                              ${recurring ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>
+                              {recurring ? "Recurring" : "New"}
+                            </span>
+                          </Table.Cell>
+                          <Table.Cell className="px-1 py-3 whitespace-nowrap text-sm">
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
                               ? "bg-blue-100 text-blue-800"
                               : gateway === "Razorpay"
@@ -481,22 +533,11 @@ const AwsaiappRevenue = () => {
                             </span>
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {formatDate(payment.paymentDate)}
-                          </Table.Cell>
-                      {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(renewDate)}
-                      </Table.Cell> */}
-                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {formatCurrency(payment.amount / 100, payment.currency)}
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                             <button aria-label="View" onClick={() => {
-                                console.log("Selected Payment:", payment); // Log the selected payment
-
                               setSelectedPayment(payment); // Set the selected payment
                               setIsModalOpen((prev) => !prev); // Toggle the modal visibility
+                              setInstitutionReccuring(recurring);
                             }}>
-
                               <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
                             </button>
                           </Table.Cell>
@@ -507,11 +548,10 @@ const AwsaiappRevenue = () => {
                 </Table>
               </div>
 
-          {/* Pagination */}
+              {/* Pagination */}
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
                 <div className="text-sm text-gray-700">
                   Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
-
                 </div>
                 <Pagination
                   currentPage={currentPage}
@@ -526,7 +566,7 @@ const AwsaiappRevenue = () => {
           </div>
         </div>
       ) : (
-        <PaymentDetailModal payment={selectedPayment} onClose={() => setIsModalOpen(false)} isOpen={true}/>
+        <PaymentDetailModal payment={selectedPayment} onClose={() => setIsModalOpen(false)} isOpen={true} recurringValue={institutionReccuring} />
       )}
     </div>
   );

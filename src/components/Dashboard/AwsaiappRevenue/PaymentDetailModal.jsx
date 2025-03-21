@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Modal } from "flowbite-react";
+import Context from '../../../context/Context';
 
-function PaymentDetailModal({ isOpen, onClose, payment }) {
+function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
+    const { products } = useContext(Context); // Moved to the top
+    if (!payment) return null; // Check for payment immediately after useContext
+
     console.log("Received Payment:", payment); // Log the received payment
-    if (!payment) return null;
 
     // Format date as MM/DD/YYYY
     const formatDate = (dateString) => {
@@ -30,6 +33,11 @@ function PaymentDetailModal({ isOpen, onClose, payment }) {
         : payment.currency === "USD"
             ? "PayPal"
             : "Razorpay";
+
+    const nameProduct = (value) => {
+        const product = products.find(product => product.productId === value);
+        return product ? product.heading : null;
+    }
 
     return (
         <Modal show={isOpen} onClose={onClose} size="4xl">
@@ -65,10 +73,7 @@ function PaymentDetailModal({ isOpen, onClose, payment }) {
                                 <span className="text-gray-600 font-medium">Mobile Number:</span>
                                 <span className="text-gray-800">{payment.userDetails?.phoneNumber || 'N/A'}</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-600 font-medium">Email:</span>
-                                <span className="text-gray-800">{payment.userDetails?.email || 'N/A'}</span>
-                            </div>
+
                         </div>
                     </div>
 
@@ -83,14 +88,14 @@ function PaymentDetailModal({ isOpen, onClose, payment }) {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600 font-medium">Product:</span>
-                                <span className="text-gray-800">{payment.subscriptionType || 'N/A'}</span>
+                                <span className="text-gray-800">{nameProduct(payment.productId)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600 font-medium">Payment Type:</span>
                                 <span className="text-gray-800">
                                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${payment.isRecurring ? "bg-purple-100 text-purple-800" : "bg-green-100 text-green-800"}`}>
-                                        {payment.isRecurring ? "Recurring" : "New"}
+                    ${recurringValue ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>
+                                        {recurringValue ? "Recurring" : "New"}
                                     </span>
                                 </span>
                             </div>
@@ -116,27 +121,18 @@ function PaymentDetailModal({ isOpen, onClose, payment }) {
                                 <span className="text-gray-600 font-medium">Payment Date:</span>
                                 <span className="text-gray-800">{formatDate(payment.paymentDate)}</span>
                             </div>
-                            {payment.isRecurring && (
+                            {recurringValue && (
                                 <div className="flex justify-between">
                                     <span className="text-gray-600 font-medium">Renew Date:</span>
-                                    <span className="text-gray-800">{formatDate(renewDate)}</span>
+                                    <span className="text-gray-800">{formatDate(payment.renewDate)}</span>
                                 </div>
                             )}
-                            {payment.isRecurring && (
+                            {recurringValue && (
                                 <div className="flex justify-between">
                                     <span className="text-gray-600 font-medium">Last Payment Date:</span>
                                     <span className="text-gray-800">{formatDate(payment.lastPaymentDate)}</span>
                                 </div>
                             )}
-                            <div className="flex justify-between">
-                                <span className="text-gray-600 font-medium">Payment Status:</span>
-                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    $>{payment.status === "completed" ? "bg-green-100 text-green-800" :
-                                        payment.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-                                            "bg-red-100 text-red-800"}`}>
-                                    {payment.status ? payment.status.charAt(0).toUpperCase() + payment.status.slice(1) : 'N/A'}
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
