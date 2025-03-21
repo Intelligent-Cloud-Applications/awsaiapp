@@ -808,8 +808,7 @@ const Panel = () => {
                                                         className="clients-data-table border-b hover:cursor-pointer hover:bg-white"
                                                     >
                                                         <Table.Cell
-                                                            className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline  bg-white"
-
+                                                            className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline py-0 bg-white"
                                                             onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
@@ -825,11 +824,11 @@ const Panel = () => {
 
                                                         {Ctx.userData.userType === "member" &&
                                                             Ctx.userData.role === "operation" && (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900  bg-white text-transform: capitalize">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 py-0 bg-white text-transform: capitalize">
                                                                     {client.companyName}
                                                                 </Table.Cell>
                                                             )}
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             {splitandjoin(client.institutionType)}
                                                         </Table.Cell>
                                                         <Table.Cell
@@ -843,7 +842,7 @@ const Panel = () => {
                                                         {(Ctx.userData.role === "owner" ||
                                                             Ctx.userData.role === "sale") &&
                                                             (client.payment ? (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     <Dropdown
                                                                         label={
                                                                             planStatuses[client.institutionid] ||
@@ -890,16 +889,16 @@ const Panel = () => {
                                                                     </Dropdown>
                                                                 </Table.Cell>
                                                             ) : (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     No Plan
                                                                 </Table.Cell>
                                                             ))}
                                                         {Ctx.userData.role !== "operation" && (
-                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white">
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                 {client.payment ? "Paid" : "Not Paid"}
                                                             </Table.Cell>
                                                         )}
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             {Ctx.userData.role !== "sale" ? (
                                                                 <Dropdown
                                                                     label={
@@ -963,7 +962,7 @@ const Panel = () => {
                                                         </Table.Cell>
                                                         {Ctx.userData.role !== "operation" &&
                                                             (client.payment ? (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     <Dropdown
                                                                         label={
                                                                             deliveryStatuses[client.institutionid] ??
@@ -1007,13 +1006,13 @@ const Panel = () => {
                                                                     </Dropdown>
                                                                 </Table.Cell>
                                                             ) : (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     {client.isDelivered
                                                                         ? "Delivered"
                                                                         : "Not Delivered"}
                                                                 </Table.Cell>
                                                             ))}
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             {(() => {
                                                                 const { text, color } = getBadgeProps(
                                                                     // client.isFormFilled,
@@ -1034,7 +1033,7 @@ const Panel = () => {
                                                         </Table.Cell>
 
                                                         {Ctx.userData.role !== "sale" && (
-                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white ">
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white ">
                                                                 <div className="flex items-center gap-2">
                                                                     <TextInput
                                                                         id="domain"
@@ -1079,7 +1078,7 @@ const Panel = () => {
                                                             </Table.Cell>
                                                         )}
 
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500   bg-white mt-2">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  py-0 bg-white mt-2">
                                                             <div className="flex items-center gap-2">
                                                                 {client.domainLink ? (
                                                                     <RiExternalLinkLine
@@ -1192,7 +1191,7 @@ const Panel = () => {
                                                             className="hidden change-page"
                                                         ></Link> */}
 
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             <Link
                                                             // onClick={() => handleInstitutionClick(client)}
                                                             >
