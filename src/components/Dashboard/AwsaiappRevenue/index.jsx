@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import PaymentDetailModal from './PaymentDetailModal'; // Import the modal component
 import { Dropdown, Table, Pagination } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
@@ -17,9 +18,11 @@ const CustomDropdownItem = ({ onClick, children }) => {
   );
 };
 
-function AwsaiappRevenue() {
+const AwsaiappRevenue = () => {
   const { payments } = useContext(Context);
   const [filteredPayments, setFilteredPayments] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState({}); // State for selected payment
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const currentPayments = filteredPayments.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
@@ -205,315 +208,328 @@ function AwsaiappRevenue() {
   // Get current year
   // const currentYear = new Date().getFullYear();
   const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
-  return (
-    <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
-      <div className='w-full responsive-container'>
-        {/* Filter Section */}
-        <div className='flex justify-between mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
-          {/* Time Filter - Original dropdowns preserved */}
-          <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 responsive-dropdown'>
-            <div className='responsive-dropdown'>
-              <Dropdown
-                label={timeFilter === "all" ? "All time" : `${selectedYear}`}
-                className="custom-dropdown-button"
-                style={{ backgroundColor: "#30afbc", color: "white" }}
-              >
-                <div>
-                  <CustomDropdownItem onClick={() => setTimeFilter("all")}>
-                    All time
-                  </CustomDropdownItem>
-                  <Dropdown.Divider />
-                  {years.map(year => (
-                    <CustomDropdownItem key={year} onClick={() => {
-                      setSelectedYear(year);
-                      setCurrentPage(1);
-                      setTimeFilter("specific");
-                    }}>
-                      {year}
-                    </CustomDropdownItem>
-                  ))}
-                </div>
-              </Dropdown>
-            </div>
 
-            {timeFilter === "specific" && (
-              <div className='sm:w-40 sm:ml-2 responsive-dropdown'>
+  return (
+    <div>
+      {!isModalOpen ? (
+        <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
+          <div className='w-full responsive-container'>
+        {/* Filter Section */}
+            <div className='flex justify-between mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
+          {/* Time Filter - Original dropdowns preserved */}
+              <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 responsive-dropdown'>
+                <div className='responsive-dropdown'>
+                  <Dropdown
+                    label={timeFilter === "all" ? "All time" : `${selectedYear}`}
+                    className="custom-dropdown-button"
+                    style={{ backgroundColor: "#30afbc", color: "white" }}
+                  >
+                    <div>
+                      <CustomDropdownItem onClick={() => setTimeFilter("all")}>
+                        All time
+                      </CustomDropdownItem>
+                      <Dropdown.Divider />
+                      {years.map(year => (
+                        <CustomDropdownItem key={year} onClick={() => {
+                          setSelectedYear(year);
+                          setCurrentPage(1);
+                          setTimeFilter("specific");
+                        }}>
+                          {year}
+                        </CustomDropdownItem>
+                      ))}
+                    </div>
+                  </Dropdown>
+                </div>
+
+                {timeFilter === "specific" && (
+                  <div className='sm:w-40 sm:ml-2 responsive-dropdown'>
+                    <Dropdown
+                      label={months[selectedMonth]}
+                      className="custom-dropdown-button"
+                      style={{ backgroundColor: "#30afbc", color: "white" }}
+                    >
+                      <div>
+                        {months.map((month, index) => (
+                          <CustomDropdownItem key={month} onClick={() => setSelectedMonth(index)}>
+                            {month}
+                          </CustomDropdownItem>
+                        ))}
+                      </div>
+                    </Dropdown>
+                  </div>
+                )}
+              </div>
+
+          {/* Payment Gateway Filter */}
+              <div className='responsive-dropdown'>
                 <Dropdown
-                  label={months[selectedMonth]}
+                  label={paymentGateway === "all" ? "All Gateways" : paymentGateway === "razorpay" ? "Razorpay" : "PayPal"}
                   className="custom-dropdown-button"
                   style={{ backgroundColor: "#30afbc", color: "white" }}
                 >
                   <div>
-                    {months.map((month, index) => (
-                      <CustomDropdownItem key={month} onClick={() => setSelectedMonth(index)}>
-                        {month}
-                      </CustomDropdownItem>
-                    ))}
+                    <CustomDropdownItem onClick={() => setPaymentGateway("all")}>
+                      All Gateways
+                    </CustomDropdownItem>
+                    <CustomDropdownItem onClick={() => {
+                      setPaymentGateway("razorpay");
+                      setCurrentPage(1);
+                    }}>
+
+                      Razorpay (INR)
+                    </CustomDropdownItem>
+                    <CustomDropdownItem onClick={() => {
+                      setPaymentGateway("paypal");
+                      setCurrentPage(1);
+                    }}>
+
+                      PayPal (USD)
+                    </CustomDropdownItem>
                   </div>
                 </Dropdown>
               </div>
-            )}
-          </div>
-
-          {/* Payment Gateway Filter */}
-          <div className='responsive-dropdown'>
-            <Dropdown
-              label={paymentGateway === "all" ? "All Gateways" : paymentGateway === "razorpay" ? "Razorpay" : "PayPal"}
-              className="custom-dropdown-button"
-              style={{ backgroundColor: "#30afbc", color: "white" }}
-            >
-              <div>
-                <CustomDropdownItem onClick={() => setPaymentGateway("all")}>
-                  All Gateways
-                </CustomDropdownItem>
-                <CustomDropdownItem onClick={() => {
-                  setPaymentGateway("razorpay");
-                  setCurrentPage(1);
-                }}>
-
-                  Razorpay (INR)
-                </CustomDropdownItem>
-                <CustomDropdownItem onClick={() => {
-                  setPaymentGateway("paypal");
-                  setCurrentPage(1);
-                }}>
-
-                  PayPal (USD)
-                </CustomDropdownItem>
-              </div>
-            </Dropdown>
-          </div>
-        </div>
+            </div>
 
         {/* Collection Panels */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 tabs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 tabs">
           {/* Current Month Revenue */}
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="bg-gray-200 p-2 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                </svg>
-              </span>
-              <h3 className="text-lg font-medium">{currentMonthName} Collection</h3>
-            </div>
-            <div className="flex flex-row mb-2 justify-between gap-2">
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (USD)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ${currentMonthStats.usd.totalPayment.toFixed(2)}
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (INR)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">{currentMonthName} Collection</h3>
+                </div>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${currentMonthStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
 
-            <div className="bg-gray-50 p-2 rounded text-center mb-2">
-              <div className="flex justify-around">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.usd.transactions}</p>
-                  <p className="text-xs text-gray-500">USD Trans</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.inr.transactions}</p>
-                  <p className="text-xs text-gray-500">INR Trans</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentMonthStats.total.transactions}</p>
-                  <p className="text-xs text-gray-500">Total</p>
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
           {/* Last Month Revenue */}
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="bg-gray-200 p-2 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                </svg>
-              </span>
-              <h3 className="text-lg font-medium">{lastMonthName} Collection</h3>
-            </div>
-            <div className="flex flex-row mb-2 justify-between gap-2">
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (USD)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ${lastMonthStats.usd.totalPayment.toFixed(2)}
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (INR)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
-            <div className="bg-gray-50 p-2 rounded text-center mb-2">
-              <div className="flex justify-around">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.usd.transactions}</p>
-                  <p className="text-xs text-gray-500">USD Trans</p>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">{lastMonthName} Collection</h3>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.inr.transactions}</p>
-                  <p className="text-xs text-gray-500">INR Trans</p>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${lastMonthStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{lastMonthStats.total.transactions}</p>
-                  <p className="text-xs text-gray-500">Total</p>
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
           {/* Current Year Revenue */}
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="bg-gray-200 p-2 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                </svg>
-              </span>
-              <h3 className="text-lg font-medium">This Year Collection</h3>
-            </div>
-            <div className="flex flex-row mb-2 justify-between gap-2">
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (USD)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ${currentYearStats.usd.totalPayment.toFixed(2)}
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
-                <p className="text-sm text-gray-500">Total Payment (INR)</p>
-                <p className="text-lg font-bold text-blue-600">
-                  ₹{currentYearStats.inr.totalPayment.toFixed(2)}
-                </p>
-              </div>
-            </div>
-            <div className="bg-gray-50 p-2 rounded text-center mb-2">
-              <div className="flex justify-around">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentYearStats.usd.transactions}</p>
-                  <p className="text-xs text-gray-500">USD Trans</p>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">This Year Collection</h3>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentYearStats.inr.transactions}</p>
-                  <p className="text-xs text-gray-500">INR Trans</p>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${currentYearStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{currentYearStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-600">{currentYearStats.total.transactions}</p>
-                  <p className="text-xs text-gray-500">Total</p>
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
         {/* Table Section */}
-        <div className="bg-white rounded-lg shadow overflow-hidden table-container">
-          <div className="table-responsive">
-            <Table hoverable>
-              <Table.Head>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Institution</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payer</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Subscription Type</Table.HeadCell>
+            <div className="bg-white rounded-lg shadow overflow-hidden table-container">
+              <div className="table-responsive">
+                <Table hoverable>
+                  <Table.Head>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Institution</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payer</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Subscription Type</Table.HeadCell>
                 {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Mode</Table.HeadCell> */}
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
                 {/* <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Renew Date</Table.HeadCell> */}
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
-                <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {currentPayments.map((payment, index) => {
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                  </Table.Head>
+                  <Table.Body className="divide-y">
+                    {currentPayments.map((payment, index) => {
                   // Calculate renewal date (1 month after payment date)
-                  const paymentDate = new Date(payment.paymentDate);
-                  const renewDate = new Date(paymentDate);
-                  renewDate.setMonth(renewDate.getMonth() + 1);
+                      const paymentDate = new Date(payment.paymentDate);
+                      const renewDate = new Date(paymentDate);
+                      renewDate.setMonth(renewDate.getMonth() + 1);
 
                   // Determine payment gateway
-                  const gateway = payment.paymentMode === "offline"
-                    ? "Offline"
-                    : payment.currency === "USD"
-                      ? "PayPal"
-                      : "Razorpay";
+                      const gateway = payment.paymentMode === "offline"
+                        ? "Offline"
+                        : payment.currency === "USD"
+                          ? "PayPal"
+                          : "Razorpay";
 
-                  return (
-                    <Table.Row key={payment.paymentId || index} className="bg-white">
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {payment.childInstitution || 'N/A'}
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                      return (
+                        <Table.Row key={payment.paymentId || index} className="bg-white">
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {payment.childInstitution || 'N/A'}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {payment.userDetails?.userName || 'N/A'}
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {payment.userDetails?.phoneNumber || 'N/A'}
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {payment.subscriptionType || 'N/A'}
-                      </Table.Cell>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {payment.subscriptionType || 'N/A'}
+                          </Table.Cell>
                       {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-center">
                         <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           {payment.paymentMode === "offline" ? "Offline" : "Online"}
                         </span>
                       </Table.Cell> */}
-                      <Table.Cell className=" py-3 whitespace-nowrap text-sm text-center">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
-                          ? "bg-blue-100 text-blue-800"
-                          : gateway === "Razorpay"
-                            ? "bg-purple-100 text-purple-800"
-                            : "bg-gray-100 text-gray-800"
-                          }`}>
-                          {gateway}
-                        </span>
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(payment.paymentDate)}
-                      </Table.Cell>
+                          <Table.Cell className=" py-3 whitespace-nowrap text-sm text-center">
+                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
+                              ? "bg-blue-100 text-blue-800"
+                              : gateway === "Razorpay"
+                                ? "bg-purple-100 text-purple-800"
+                                : "bg-gray-100 text-gray-800"
+                              }`}>
+                              {gateway}
+                            </span>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(payment.paymentDate)}
+                          </Table.Cell>
                       {/* <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(renewDate)}
                       </Table.Cell> */}
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        {formatCurrency(payment.amount / 100, payment.currency)}
-                      </Table.Cell>
-                      <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        <button aria-label="View">
-                          <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
-                        </button>
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })}
-              </Table.Body>
-            </Table>
-          </div>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {formatCurrency(payment.amount / 100, payment.currency)}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            <button aria-label="View" onClick={() => {
+                                console.log("Selected Payment:", payment); // Log the selected payment
+
+                              setSelectedPayment(payment); // Set the selected payment
+                              setIsModalOpen((prev) => !prev); // Toggle the modal visibility
+                            }}>
+
+                              <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      );
+                    })}
+                  </Table.Body>
+                </Table>
+              </div>
 
           {/* Pagination */}
-          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
-            <div className="text-sm text-gray-700">
-              Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
+              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
+                <div className="text-sm text-gray-700">
+                  Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
 
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  className="flex justify-end"
+                  showIcons
+                  theme={customTheme}
+                />
+              </div>
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-              className="flex justify-end"
-              showIcons
-              theme={customTheme}
-            />
           </div>
         </div>
-      </div>
+      ) : (
+        <PaymentDetailModal payment={selectedPayment} onClose={() => setIsModalOpen(false)} isOpen={true}/>
+      )}
     </div>
   );
-}
+};
 
 export default AwsaiappRevenue;
