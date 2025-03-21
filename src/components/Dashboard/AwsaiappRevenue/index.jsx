@@ -21,7 +21,7 @@ function AwsaiappRevenue() {
   const { payments } = useContext(Context);
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 6;
+  const rowsPerPage = 10;
   const currentPayments = filteredPayments.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
   const [timeFilter, setTimeFilter] = useState("all"); // "all" or "specific"
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -297,7 +297,7 @@ function AwsaiappRevenue() {
               </span>
               <h3 className="text-lg font-medium">{currentMonthName} Collection</h3>
             </div>
-            <div className="flex flex-row mb-2 justify-between">
+            <div className="flex flex-row mb-2 justify-between gap-2">
               <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
                 <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
@@ -340,7 +340,7 @@ function AwsaiappRevenue() {
               </span>
               <h3 className="text-lg font-medium">{lastMonthName} Collection</h3>
             </div>
-            <div className="flex flex-row mb-2 justify-between">
+            <div className="flex flex-row mb-2 justify-between gap-2">
               <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
                 <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
@@ -382,7 +382,7 @@ function AwsaiappRevenue() {
               </span>
               <h3 className="text-lg font-medium">This Year Collection</h3>
             </div>
-            <div className="flex flex-row mb-2 justify-between">
+            <div className="flex flex-row mb-2 justify-between gap-2">
               <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
                 <p className="text-sm text-gray-500">Total Payment (USD)</p>
                 <p className="text-lg font-bold text-blue-600">
