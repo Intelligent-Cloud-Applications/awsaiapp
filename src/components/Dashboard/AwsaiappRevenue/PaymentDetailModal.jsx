@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Button, Modal } from "flowbite-react";
 import Context from '../../../context/Context';
+import "./Revenue.css";
 
 function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
     const { products } = useContext(Context); // Moved to the top
