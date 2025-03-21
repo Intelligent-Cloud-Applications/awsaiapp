@@ -1,154 +1,592 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dropdown, Table } from "flowbite-react";
-import ChartComponent2 from '../MonthlyReport/ChartComponents/ChartComponent2';
+import PaymentDetailModal from './PaymentDetailModal'; // Import the modal component
+import { Dropdown, Table, Pagination } from "flowbite-react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import Context from '../../../context/Context';
 import "./Revenue.css";
 
-function AwsaiappRevenue() {
-  const { payments } = useContext(Context);
-  const [monthlyRevenue, setMonthlyRevenue] = useState([]);
-  // eslint-disable-next-line
-  const [paymentModeDistribution, setPaymentModeDistribution] = useState({
-    online: 0,
-    offline: 0,
-  });
+// Custom Dropdown Item with our styling
+const CustomDropdownItem = ({ onClick, children }) => {
+  return (
+    <Dropdown.Item
+      onClick={onClick}
+      className="custom-dropdown-item hover:bg-[#30afbc] hover:text-white transition-colors duration-200">
+      {children}
+    </Dropdown.Item>
+  );
+};
+
+const AwsaiappRevenue = () => {
+  const { payments, products } = useContext(Context);
+  const [filteredPayments, setFilteredPayments] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState({}); // State for selected payment
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const currentPayments = filteredPayments.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const [timeFilter, setTimeFilter] = useState("all"); // "all" or "specific"
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [years, setYears] = useState([new Date().getFullYear()]);
+  const [paymentGateway, setPaymentGateway] = useState("all"); // "all", "razorpay", or "paypal"
+  const [institutionPaymentHistory, setInstitutionPaymentHistory] = useState({});
+  const [institutionReccuring, setInstitutionReccuring] = useState();
+  const customTheme = {
+    pages: {
+      base: "bg-white xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      showIcon: "inline-flex",
+      active: "bg-blue-500 text-white",
+      disabled: "bg-gray-200",
+      previous: {
+        base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white",
+      },
+      next: {
+        base: "rounded-r-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        icon: "h-5 w-5 text-gray-500 hover:text-white",
+      },
+      selector: {
+        base: "w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
+        active: "bg-[#30afbc] text-white hover:bg-[#30afbc] hover:text-white",
+        disabled: "cursor-not-allowed opacity-50",
+      },
+    },
+  };
+  // Collection stats for different time periods
+  const [currentMonthStats, setCurrentMonthStats] = useState({
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
+  });
 
-  const processPaymentData = (payments, year) => {
-    const months = Array(12).fill(0);
-    let online = 0;
-    let offline = 0;
+  const [lastMonthStats, setLastMonthStats] = useState({
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
+  });
 
-    payments
-      .filter((payment) => new Date(payment.paymentDate).getFullYear() === year)
-      .forEach((payment) => {
-        const date = new Date(payment.paymentDate);
-        const month = date.getMonth(); // get month index (0-11)
-        months[month] += payment.amount / 100 || 0;
+  const [currentYearStats, setCurrentYearStats] = useState({
+    usd: { totalPayment: 0, transactions: 0 },
+    inr: { totalPayment: 0, transactions: 0 },
+    total: { totalPayment: 0, transactions: 0 }
+  });
 
-        if (payment.paymentMode === 'online') {
-          online += payment.amount / 100 || 0;
-        } else if (payment.paymentMode === 'offline') {
-          offline += payment.amount / 100 || 0;
-        }
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  // Function to build institution payment history
+  const buildInstitutionPaymentHistory = (paymentsList) => {
+    const history = {};
+
+    // Sort payments by date (oldest first)
+    const sortedPayments = [...paymentsList].sort((a, b) =>
+      new Date(a.paymentDate) - new Date(b.paymentDate)
+    );
+
+    // Build payment history for each institution
+    sortedPayments.forEach(payment => {
+      const institution = payment.childInstitution || 'unknown';
+      if (!history[institution]) {
+        history[institution] = [];
+      }
+      history[institution].push({
+        paymentId: payment.paymentId,
+        paymentDate: payment.paymentDate
       });
+    });
 
-    setMonthlyRevenue(months);
-    setPaymentModeDistribution({ online, offline });
+    setInstitutionPaymentHistory(history);
+  };
+
+  // Updated function to check if a payment is recurring and get the last payment date
+  const getPaymentRecurringInfo = (payment) => {
+    const institution = payment.childInstitution || 'unknown';
+    const paymentDate = new Date(payment.paymentDate);
+
+    // If the institution doesn't have payment history, it's not recurring
+    if (!institutionPaymentHistory[institution] || institution === 'unknown')
+      return { recurring: false, lastPaymentDate: null };
+
+    // Find the most recent payment that happened before the current one
+    const previousPayments = institutionPaymentHistory[institution].filter(prevPayment =>
+      prevPayment.paymentId !== payment.paymentId &&
+      new Date(prevPayment.paymentDate) < paymentDate
+    );
+
+    if (previousPayments.length === 0) return { recurring: false, lastPaymentDate: null };
+
+    // Sort previous payments to get the most recent one
+    previousPayments.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+
+    return {
+      recurring: true,
+      lastPaymentDate: previousPayments[0].paymentDate
+    };
+  };
+
+  const calculateStats = (paymentsList) => {
+    // Filter based on payment gateway
+    let filteredList = [...paymentsList];
+    if (paymentGateway === "razorpay") {
+      filteredList = paymentsList.filter(p => p.currency === "INR" && p.paymentMode === "online");
+    } else if (paymentGateway === "paypal") {
+      filteredList = paymentsList.filter(p => p.currency === "USD" && p.paymentMode === "online");
+    }
+
+    // Current month stats
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    const currentMonthPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getMonth() === currentMonth &&
+        paymentDate.getFullYear() === currentYear;
+    });
+
+    // Last month stats
+    let lastMonth = currentMonth - 1;
+    let lastMonthYear = currentYear;
+    if (lastMonth < 0) {
+      lastMonth = 11;
+      lastMonthYear--;
+    }
+
+    const lastMonthPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getMonth() === lastMonth &&
+        paymentDate.getFullYear() === lastMonthYear;
+    });
+
+    // Current year stats
+    const currentYearPayments = filteredList.filter(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      return paymentDate.getFullYear() === currentYear;
+    });
+
+    // Calculate stats for each time period
+    setCurrentMonthStats(calculatePeriodStats(currentMonthPayments));
+    setLastMonthStats(calculatePeriodStats(lastMonthPayments));
+    setCurrentYearStats(calculatePeriodStats(currentYearPayments));
+
+    // Update filtered payments based on current time filter
+    let displayPayments = [];
+    if (timeFilter === "all") {
+      displayPayments = filteredList;
+    } else {
+      // Filter for specific year and month
+      displayPayments = filteredList.filter(payment => {
+        const paymentDate = new Date(payment.paymentDate);
+        return paymentDate.getFullYear() === selectedYear &&
+          paymentDate.getMonth() === selectedMonth;
+      });
+    }
+
+    setFilteredPayments(displayPayments);
+  };
+
+  const calculatePeriodStats = (periodPayments) => {
+    // USD stats
+    const usdPayments = periodPayments.filter(p => p.currency === "USD" && p.paymentMode === "online");
+    const usdTotal = usdPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
+    const usdReceived = usdPayments.filter(p => p.status === "completed")
+      .reduce((sum, p) => sum + (p.amount / 100), 0);
+
+    // INR stats
+    const inrPayments = periodPayments.filter(p => p.currency === "INR" && p.paymentMode === "online");
+    const inrTotal = inrPayments.reduce((sum, p) => sum + (p.amount / 100), 0);
+    const inrReceived = inrPayments.filter(p => p.status === "completed")
+      .reduce((sum, p) => sum + (p.amount / 100), 0);
+
+    // Combined stats
+    return {
+      usd: {
+        totalPayment: usdTotal,
+        totalReceived: usdReceived,
+        transactions: usdPayments.length
+      },
+      inr: {
+        totalPayment: inrTotal,
+        totalReceived: inrReceived,
+        transactions: inrPayments.length
+      },
+      total: {
+        totalPayment: usdTotal + inrTotal,
+        totalReceived: usdReceived + inrReceived,
+        transactions: usdPayments.length + inrPayments.length
+      }
+    };
   };
 
   const updateAvailableYears = (payments) => {
-    const uniqueYears = [...new Set(payments.map((payment) => new Date(payment.paymentDate).getFullYear()))];
+    const uniqueYears = [...new Set(payments.map((payment) =>
+      new Date(payment.paymentDate).getFullYear()))];
     setYears(uniqueYears);
   };
+
   useEffect(() => {
     if (payments) {
+      buildInstitutionPaymentHistory(payments);
       updateAvailableYears(payments);
-      processPaymentData(payments, selectedYear);
+      calculateStats(payments);
     }
-    // eslint-disable-next-line
-  }, [selectedYear]);
+  }, [payments, selectedYear, selectedMonth, timeFilter, paymentGateway]);
 
-  // const handleYearChange = (event) => {
-  //   setSelectedYear(parseInt(event.target.value));
-  // };
-
-  console.log(monthlyRevenue)
-  const barChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Monthly Revenue',
-        data: monthlyRevenue,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
+  // Helper function to format currency
+  const formatCurrency = (amount, currency) => {
+    if (currency === "USD") return `$${amount.toFixed(2)}`;
+    if (currency === "INR") return `₹${amount.toFixed(2)}`;
+    return amount.toFixed(2);
   };
 
+  // Format date as MM/DD/YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  };
+
+  // Get current month name
+  const currentMonthName = months[new Date().getMonth()];
+
+  // Get last month name
+  let lastMonthIndex = new Date().getMonth() - 1;
+  if (lastMonthIndex < 0) lastMonthIndex = 11;
+  const lastMonthName = months[lastMonthIndex];
+
+  // Get current year
+  // const currentYear = new Date().getFullYear();
+  const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
+
+  const nameProduct = (value) => {
+    const product = products.find(product => product.productId === value);
+    return product ? product.heading : null;
+  }
+
   return (
-    <div className='p-4 w-[70vw] h-[70vh] ml-[8rem] max600:ml-0'>
-      <div className='w-full'>
-        <h2 className='text-2xl font-bold text-center Poppins'>Revenue Generated</h2>
-        {/* Dropdown for Year Selection */}
-        <div className='Poppins border flex gap-2 items-center justify-center w-[8rem] py-1 rounded-md max600:w-full'>
-          <div className="font-[400] text-[1.1rem]">Year</div>
-          <Dropdown label={selectedYear} inline>
-            <div className="font-[500] Poppins flex flex-col items-center year ">
-              {years?.map(year => (
-                <Dropdown.Item className='text-[1.1rem] px-[4rem] ' key={year} onClick={() => setSelectedYear(year)} inline>{year}</Dropdown.Item>
-              ))}
-            </div>
-          </Dropdown>
-        </div>
+    <div>
+      {!isModalOpen ? (
+        <div className='p-2 ml-[10rem] sm:p-4 w-[120vh] wholeRevenue'>
+          <div className='w-full responsive-container'>
+            {/* Filter Section */}
+            <div className='flex justify-between mb-4 flex-col sm:flex-row items-center space-y-2 sm:space-y-0 filter-container'>
+              {/* Time Filter - Original dropdowns preserved */}
+              <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 responsive-dropdown'>
+                <div className='responsive-dropdown'>
+                  <Dropdown
+                    label={timeFilter === "all" ? "All time" : `${selectedYear}`}
+                    className="custom-dropdown-button"
+                    style={{ backgroundColor: "#30afbc", color: "white" }}
+                  >
+                    <div>
+                      <CustomDropdownItem onClick={() => setTimeFilter("all")}>
+                        All time
+                      </CustomDropdownItem>
+                      <Dropdown.Divider />
+                      {years.map(year => (
+                        <CustomDropdownItem key={year} onClick={() => {
+                          setSelectedYear(year);
+                          setCurrentPage(1);
+                          setTimeFilter("specific");
+                        }}>
+                          {year}
+                        </CustomDropdownItem>
+                      ))}
+                    </div>
+                  </Dropdown>
+                </div>
 
-        <div className="flex justify-center gap-[4rem] w-[70vw] items-center flex-wrap-reverse max600:w-full">
-          <div className=' mt-6 bg-white max-w-full mx-auto rounded-b-md max600:min-w-[90vw]'>
-            <div className='scrollbar-none overflow-x-auto border rounded-[1rem]'>
-              <Table hoverable className='min-w-full'>
-                <Table.Head>
-                  <Table.HeadCell className='px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase'>Name</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Phone Number</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Products</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Subscription Type</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Payment Mode</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Payment Date</Table.HeadCell>
-                  <Table.HeadCell className='px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase'>Amount</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className='divide-y'>
-                  {payments?.map((payment) => (
-                    <Table.Row
-                      key={payment.paymentId}
-                      className='hover:bg-gray-200 cursor-pointer'
-                    // onClick={() => handleRowClick(payment)}
+                {timeFilter === "specific" && (
+                  <div className='sm:w-40 sm:ml-2 responsive-dropdown'>
+                    <Dropdown
+                      label={months[selectedMonth]}
+                      className="custom-dropdown-button"
+                      style={{ backgroundColor: "#30afbc", color: "white" }}
                     >
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {payment.userDetails?.userName}
-                      </Table.Cell>
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {payment.userDetails?.phoneNumber}
-                      </Table.Cell>
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {payment.userDetails?.products?.length > 0 ? (
-                          payment.userDetails.products?.map((product, index) => (
-                            <p key={index}>{product.S}
-                            </p>
-                          ))
-                        ) : 'N/A'}
-                      </Table.Cell>
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {payment.subscriptionType}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${payment.paymentMode === "offline" ? "bg-purple-100 text-purple-600" : "bg-green-100 text-green-600"}`}>
-                          {payment.paymentMode === "offline" ? "Offline" : "Razorpay"}
-                        </span>
-                      </Table.Cell>
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {/* {formatEpochToReadableDate(payment.paymentDate)} */}
-                      </Table.Cell>
-                      <Table.Cell className='whitespace-nowrap text-sm text-gray-500 text-center bg-white'>
-                        {/* {formatAmountWithCurrency(payment.amount, payment.currency)} */}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
+                      <div>
+                        {months.map((month, index) => (
+                          <CustomDropdownItem key={month} onClick={() => setSelectedMonth(index)}>
+                            {month}
+                          </CustomDropdownItem>
+                        ))}
+                      </div>
+                    </Dropdown>
+                  </div>
+                )}
+              </div>
+
+              {/* Payment Gateway Filter */}
+              <div className='responsive-dropdown'>
+                <Dropdown
+                  label={paymentGateway === "all" ? "All Gateways" : paymentGateway === "razorpay" ? "Razorpay" : "PayPal"}
+                  className="custom-dropdown-button"
+                  style={{ backgroundColor: "#30afbc", color: "white" }}
+                >
+                  <div>
+                    <CustomDropdownItem onClick={() => setPaymentGateway("all")}>
+                      All Gateways
+                    </CustomDropdownItem>
+                    <CustomDropdownItem onClick={() => {
+                      setPaymentGateway("razorpay");
+                      setCurrentPage(1);
+                    }}>
+                      Razorpay (INR)
+                    </CustomDropdownItem>
+                    <CustomDropdownItem onClick={() => {
+                      setPaymentGateway("paypal");
+                      setCurrentPage(1);
+                    }}>
+                      PayPal (USD)
+                    </CustomDropdownItem>
+                  </div>
+                </Dropdown>
+              </div>
+            </div>
+
+            {/* Collection Panels */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 tabs">
+              {/* Current Month Revenue */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">{currentMonthName} Collection</h3>
+                </div>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${currentMonthStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{currentMonthStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentMonthStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Last Month Revenue */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">{lastMonthName} Collection</h3>
+                </div>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${lastMonthStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{lastMonthStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{lastMonthStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Current Year Revenue */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-gray-200 p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 3a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <h3 className="text-lg font-medium">This Year Collection</h3>
+                </div>
+                <div className="flex flex-row mb-2 justify-between gap-2">
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (USD)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ${currentYearStats.usd.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center bg-gray-50 p-2 rounded text-center mb-2">
+                    <p className="text-sm text-gray-500">Total Payment (INR)</p>
+                    <p className="text-lg font-bold text-blue-600">
+                      ₹{currentYearStats.inr.totalPayment.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-2 rounded text-center mb-2">
+                  <div className="flex justify-around">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.usd.transactions}</p>
+                      <p className="text-xs text-gray-500">USD Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.inr.transactions}</p>
+                      <p className="text-xs text-gray-500">INR Trans</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">{currentYearStats.total.transactions}</p>
+                      <p className="text-xs text-gray-500">Total</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Table Section */}
+            <div className="bg-white rounded-lg shadow overflow-hidden table-container">
+              <div className="table-responsive">
+                <Table hoverable>
+                  <Table.Head>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Institution</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payer</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Phone Number</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Amount</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Product</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Date</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Type</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Payment Gateway</Table.HeadCell>
+                    <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
+                  </Table.Head>
+                  <Table.Body className="divide-y">
+                    {currentPayments.map((payment, index) => {
+                      // Calculate renewal date (1 month after payment date)
+                      const paymentDate = new Date(payment.paymentDate);
+                      const renewDate = new Date(paymentDate);
+                      renewDate.setMonth(renewDate.getMonth() + 1);
+
+                      // Determine payment gateway
+                      const gateway = payment.paymentMode === "offline"
+                        ? "Offline"
+                        : payment.currency === "USD"
+                          ? "PayPal"
+                          : "Razorpay";
+
+                      // Get recurring info including last payment date
+                      const { recurring, lastPaymentDate } = getPaymentRecurringInfo(payment);
+
+                      return (
+                        <Table.Row key={payment.paymentId || index} className="bg-white">
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {payment.childInstitution || 'N/A'}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {payment.userDetails?.userName || 'N/A'}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {payment.userDetails?.phoneNumber || 'N/A'}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {formatCurrency(payment.amount / 100, payment.currency)}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {nameProduct(payment.productId)}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(payment.paymentDate)}
+                          </Table.Cell>
+                          <Table.Cell className="px-2 py-3 whitespace-nowrap text-sm">
+                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                              ${recurring ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>
+                              {recurring ? "Recurring" : "New"}
+                            </span>
+                          </Table.Cell>
+                          <Table.Cell className="px-1 py-3 whitespace-nowrap text-sm">
+                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${gateway === "PayPal"
+                              ? "bg-blue-100 text-blue-800"
+                              : gateway === "Razorpay"
+                                ? "bg-purple-100 text-purple-800"
+                                : "bg-gray-100 text-gray-800"
+                              }`}>
+                              {gateway}
+                            </span>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            <button aria-label="View" onClick={() => {
+                              // Create a copy of the payment with the lastPaymentDate and renewDate added
+                              const paymentWithDates = {
+                                lastPaymentDate: lastPaymentDate,
+                                ...payment,
+                                renewDate: renewDate.toISOString()
+                              };
+                              setSelectedPayment(paymentWithDates);
+                              setIsModalOpen((prev) => !prev);
+                              setInstitutionReccuring(recurring);
+                            }}>
+                              <FontAwesomeIcon icon={faEye} className="text-[#30afbc]" />
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      );
+                    })}
+                  </Table.Body>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
+                <div className="text-sm text-gray-700">
+                  Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  className="flex justify-end"
+                  showIcons
+                  theme={customTheme}
+                />
+              </div>
             </div>
           </div>
-
-          {/* Bar Chart */}
-          <div className='mt-6 w-[40vw] min-w-[40rem] max600:min-w-[95vw]'>
-            <h3 className='text-xl font-semibold text-center'>Monthly Revenue</h3>
-            <ChartComponent2 data={barChartData} type="bar" />
-          </div>
         </div>
-      </div>
+      ) : (
+        <PaymentDetailModal payment={selectedPayment} onClose={() => setIsModalOpen(false)} isOpen={true} recurringValue={institutionReccuring} />
+      )}
     </div>
   );
-}
+};
 
 export default AwsaiappRevenue;
