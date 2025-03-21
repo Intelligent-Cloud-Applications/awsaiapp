@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Label, TextInput } from 'flowbite-react';
 import { FiGrid, FiUpload, FiPlus, FiX, FiImage, FiList, FiActivity } from 'react-icons/fi';
-import { GiTeacher } from 'react-icons/gi';
 
 function Services({ 
   services, 
@@ -13,7 +12,7 @@ function Services({
   servicesPortrait, 
   setServicesPortrait 
 }) {
-  const [activeServiceIndex, setActiveServiceIndex] = useState(null);
+  const [errors, setErrors] = useState({});
   const danceTypesContainerRef = useRef(null);
 
   const handleDanceTypeChange = (index, value) => {
@@ -37,10 +36,11 @@ function Services({
     setDanceTypes(updatedDanceTypes);
   };
 
-  const handleServiceChange = (index, e) => {
+  const handleServiceChange = (index, field, value) => {
     const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], [e.target.name]: e.target.value };
+    updatedServices[index][field] = value;
     setServices(updatedServices);
+    setErrors(prev => ({ ...prev, [`service${index}_${field}`]: null }));
   };
 
   const handleAddItem = (index) => {
@@ -198,7 +198,7 @@ function Services({
                   <TextInput
                     name="title"
                     value={service.title || ''}
-                    onChange={(e) => handleServiceChange(serviceIndex, e)}
+                    onChange={(e) => handleServiceChange(serviceIndex, 'title', e.target.value)}
                     placeholder="Enter service title"
                   />
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../../pages/Template.css";
-import { Label, TextInput, FileInput } from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 import { FiType, FiEdit2, FiUpload } from 'react-icons/fi';
 import { GrCafeteria } from "react-icons/gr";
 import CountryList from "../../Auth/CountryList";

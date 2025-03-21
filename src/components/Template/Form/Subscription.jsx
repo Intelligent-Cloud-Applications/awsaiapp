@@ -15,7 +15,6 @@ function Subscription({
   setCountryCode 
 }) {
   const [provides, setProvides] = useState([]);
-  const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
   const [classType, setclassType] = useState([]);
   const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([]));

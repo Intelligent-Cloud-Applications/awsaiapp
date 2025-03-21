@@ -8,14 +8,14 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{8,15}$/;
 
 // Add phone formatting function
-const formatPhoneNumber = (value) => {
-  const cleaned = value.replace(/[^\d+]/g, '');
-  const normalizedNumber = cleaned.startsWith('+') 
-    ? cleaned
-    : cleaned.replace(/\+/g, '');
-  const groups = normalizedNumber.match(/.{1,4}/g) || [];
-  return groups.join(' ').trim();
-};
+// const formatPhoneNumber = (value) => {
+//   const cleaned = value.replace(/[^\d+]/g, '');
+//   const normalizedNumber = cleaned.startsWith('+') 
+//     ? cleaned
+//     : cleaned.replace(/\+/g, '');
+//   const groups = normalizedNumber.match(/.{1,4}/g) || [];
+//   return groups.join(' ').trim();
+// };
 
 function Contact({ contactInfo, setContactInfo, SubscriptionBg, setSubscriptionBg, InstructorBg, setInstructorBg }) {
   const [selectedCountryCode, setSelectedCountryCode] = useState('+91');

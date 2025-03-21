@@ -4,16 +4,15 @@ import { API } from "aws-amplify";
 import Currency from "../../Auth/Currency";
 import Context from "../../../context/Context";
 import { TextInput, Label } from 'flowbite-react';
-import { FiDollarSign, FiPackage, FiPlusCircle, FiX, FiClock, FiCalendar, FiList, FiToggleRight } from 'react-icons/fi';
+import { FiDollarSign, FiPackage, FiPlusCircle, FiX, FiToggleRight } from 'react-icons/fi';
 
-function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
+// function Subscription({ subscriptions, setSubscriptions, country, setCountry, countryCode, setCountryCode }) {
+  function Subscription({ subscriptions, setSubscriptions}) {
   const [provides, setProvides] = useState([]);
-  const [activeSubscriptionIndex, setActiveSubscriptionIndex] = useState(null);
   const [subscriptionTypes, setSubscriptionTypes] = useState(Array(subscriptions.length).fill('monthly'));
   const [classType, setclassType] = useState([]);
   const [selectedclassType, setSelectedclassType] = useState(Array(subscriptions.length).fill([]));
   const [countryCodes, setCountryCodes] = useState(Array(subscriptions.length).fill(''));
-  const [errors, setErrors] = useState({});
   const Ctx = useContext(Context);
   const util = useContext(Context).util;
 
@@ -50,7 +49,6 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     const updatedSubscriptions = [...subscriptions];
     updatedSubscriptions[subscriptionIndex].classType = updatedSelectedclassType[subscriptionIndex];
     setSubscriptions(updatedSubscriptions);
-    setErrors(prev => ({ ...prev, [`classType${subscriptionIndex}`]: null }));
   };
 
   const handleSubscriptionChange = (subscriptionIndex, e) => {
@@ -99,7 +97,6 @@ function Subscription({ subscriptions, setSubscriptions, country, setCountry, co
     }
 
     setSubscriptions(updatedSubscriptions);
-    setErrors(prev => ({ ...prev, [`subscription${subscriptionIndex}`]: null }));
   };
 
   const addService = (index) => {
