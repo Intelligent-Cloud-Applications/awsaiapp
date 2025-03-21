@@ -114,5 +114,5 @@
 }
 
 .modalHeader svg {
-    color: white;
+    color: white !important;
 }
