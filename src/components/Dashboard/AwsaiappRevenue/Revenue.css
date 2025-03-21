@@ -1,3 +1,118 @@
-.year :hover{
-    background: #bfc0c0 !important;
+
+.custom-dropdown-item:hover {
+    background-color: #30afbc !important;
+    color: white !important;
+}
+
+/* Base responsive styles */
+/* @media (max-width: 1400px) {
+    .wholeRevenue {
+        margin-left: 8rem;
+    }
+} */
+
+@media (max-width: 1024px) {
+    .wholeRevenue {
+        margin-bottom: 5rem;
+        margin-left: 4rem;
+    }
+}
+
+/* Tablet and mobile responsive styles */
+@media (max-width: 750px) {
+
+    /* Fix layout container to prevent overflow */
+    .wholeRevenue {
+        margin-left: 0;
+        padding: 1rem;
+        max-width: 100%;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    /* Add padding to move content away from left edge */
+    .responsive-container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Make tabs display as a single column */
+    .tabs {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Make each card take full width but not overflow */
+    .tabs div {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Ensure table container doesn't overflow */
+    .table-container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scrolling on iOS */
+    }
+
+    /* Force table to be scrollable */
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Adjust dropdown width and positioning */
+    .filter-container {
+        padding-left: 0.5rem;
+        width: 100%;
+    }
+
+    .responsive-dropdown {
+        width: 80% !important;
+        margin: 0 auto 0.5rem auto;
+    }
+}
+
+/* Small mobile styles */
+@media (max-width: 640px) {
+
+    /* Further reduce padding to maximize content space */
+    .wholeRevenue {
+        padding: 0.5rem;
+    }
+
+    /* Improve text readability */
+    .text-xl {
+        font-size: 1.1rem;
+    }
+
+    /* Compact table cells */
+    .px-4.py-3 {
+        padding: 0.375rem;
+    }
+
+    /* Make pagination more compact */
+    .pagination-container {
+        padding: 0.5rem;
+    }
+}
+
+.modal:hover{
+    background: #30afbc !important;
+    color: white !important;
+    border: none !important;
+}
+
+.modalHeader svg {
+    color: white;
 }

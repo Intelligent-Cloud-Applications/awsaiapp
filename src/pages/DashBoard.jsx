@@ -136,7 +136,7 @@ const DashBoard = () => {
         </div>
 
         <div className={` ${click === 1 ? "mt-0" : click === 0
-          ? "mt-[34px]" : "flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[85vw]"
+          ? "mt-[34px]" : "flex flex-col mt-[6rem] justify-center items-center max800:justify-center w-[90vw]"
           }`}>
           <div className="">{displayAfterClick()}</div>
         </div>

@@ -20,7 +20,7 @@ import StatsGrid from './StatsGrid';
 import { useTableManagement } from '../AdminMemberlist/hooks/useTableManagement.js';
 
 const Panel = () => {
-    const itemsPerPage = 6;
+    const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedType, setSelectedType] = useState(null);
@@ -280,7 +280,6 @@ const Panel = () => {
 
         });
 
-        console.log("Filtered Clients:", filtered);
         return filtered;
     }, [searchQuery, selectedType, clientsData, filterStatus]);
 
@@ -353,7 +352,6 @@ const Panel = () => {
         const user = useDataForSales.find((user) => {
             return user.cognitoId && String(user.cognitoId).trim() === trimmedInputId;
         });
-        console.log("user Name:", user);
         return user ? user.userName : "Unknown"; // Return userName if found, otherwise 'Unknown'
     };
 
@@ -480,7 +478,6 @@ const Panel = () => {
                 },
             });
         } else {
-            console.log("Data to set", client);
             setTempInstitution(client.institutionid);
             setSelectedInstitutionType(client.institutionType);
             setisMonthlyReport(client.institutionid);
@@ -601,7 +598,6 @@ const Panel = () => {
                                             onClick={(e) => {
                                                 if (instituteType === "") {
                                                     e.stopPropagation();
-                                                    console.log("Showing toast message"); // Debug line
                                                     toast.error("Please Select a type of Institution.", {
                                                         position: "top-right",
                                                         autoClose: 5000,
@@ -760,54 +756,51 @@ const Panel = () => {
                                             <Table.Head className="text-xs text-[#6B7280] bg-[#F9FAFB]">
                                                 {/* <Table.HeadCell></Table.HeadCell> */}
 
-                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                <Table.HeadCell className=" py-2  text-xs font-medium text-gray-500 uppercase">
                                                     Institution Id
                                                 </Table.HeadCell>
 
                                                 {Ctx.userData.userType === "member" &&
                                                     Ctx.userData.role === "operation" && (
-                                                        <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                        <Table.HeadCell className=" py-2  text-xs font-medium text-gray-500 uppercase">
                                                             Institution Name
                                                         </Table.HeadCell>
                                                     )}
-                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                <Table.HeadCell className=" py-2  text-xs font-medium text-gray-500 uppercase">
                                                     Type
                                                 </Table.HeadCell>
-                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                                                    Status
-                                                </Table.HeadCell>
-                                                {Ctx.userData.role !== "operation" && (
-                                                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                                                        Delivered
-                                                    </Table.HeadCell>
-                                                )}
-                                                {Ctx.userData.role !== "operation" && (
-                                                    <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                                                        Payment
-                                                    </Table.HeadCell>
-                                                )}
-                                                {(Ctx.userData.role === "owner" ||
-                                                    Ctx.userData.role === "sale") && (
-                                                        <Table.HeadCell className="px-6 py-2 text-xs font-medium text-gray-500 uppercase pl-10">
-                                                            Plan
-                                                        </Table.HeadCell>
-                                                    )}
                                                 <Table.HeadCell
                                                     className={`${showHiddenContent ? "" : "max1008:hidden"
-                                                        } px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase`}
+                                                        }  py-2  text-xs font-medium text-gray-500 uppercase`}
                                                 >
                                                     Created By
                                                 </Table.HeadCell>
-
-                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                {(Ctx.userData.role === "owner" ||
+                                                    Ctx.userData.role === "sale") && (
+                                                        <Table.HeadCell className=" py-2 text-xs font-medium text-gray-500 uppercase">
+                                                            Plan
+                                                        </Table.HeadCell>
+                                                    )}
+                                                {Ctx.userData.role !== "operation" && (
+                                                    <Table.HeadCell className=" py-2  text-xs font-medium text-gray-500 uppercase">
+                                                        Payment
+                                                    </Table.HeadCell>
+                                                )}
+                                                <Table.HeadCell className=" py-2  text-xs font-medium text-gray-500 uppercase">
                                                     Deliverable
                                                 </Table.HeadCell>
-
-                                                <Table.HeadCell className="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                                {Ctx.userData.role !== "operation" && (
+                                                    <Table.HeadCell className=" py-2 text-xs font-medium text-gray-500 uppercase">
+                                                        Delivered
+                                                    </Table.HeadCell>
+                                                )}
+                                                <Table.HeadCell className=" py-2 text-xs font-medium text-gray-500 uppercase">
+                                                    Status
+                                                </Table.HeadCell>
+                                                <Table.HeadCell className=" py-2 text-xs font-medium text-gray-500 uppercase text-center">
                                                     Links
                                                 </Table.HeadCell>
                                             </Table.Head>
-
                                             <Table.Body className="bg-white">
                                                 {clientsToDisplay.map(([key, client], index) => (
                                                     <Table.Row
@@ -815,8 +808,7 @@ const Panel = () => {
                                                         className="clients-data-table border-b hover:cursor-pointer hover:bg-white"
                                                     >
                                                         <Table.Cell
-                                                            className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline text-center bg-white"
-
+                                                            className="whitespace-nowrap text-sm font-medium text-gray-900 hover:underline py-0 bg-white"
                                                             onClick={(e) => handleRowClick(client, e)}
                                                         >
                                                             <Link
@@ -832,95 +824,25 @@ const Panel = () => {
 
                                                         {Ctx.userData.userType === "member" &&
                                                             Ctx.userData.role === "operation" && (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 text-center bg-white text-transform: capitalize">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-900 py-0 bg-white text-transform: capitalize">
                                                                     {client.companyName}
                                                                 </Table.Cell>
                                                             )}
-
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             {splitandjoin(client.institutionType)}
                                                         </Table.Cell>
-
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                                            {(() => {
-                                                                const { text, color } = getBadgeProps(
-                                                                    // client.isFormFilled,
-                                                                    client.payment,
-                                                                    client.isDelivered,
-                                                                    client.deliverable
-                                                                );
-                                                                return (
-                                                                    <Badge
-                                                                        color={color}
-                                                                        size="sm"
-                                                                        className="flex justify-center items-center"
-                                                                    >
-                                                                        {text}
-                                                                    </Badge>
-                                                                );
-                                                            })()}
+                                                        <Table.Cell
+                                                            className={`${showHiddenContent ? "" : "max1008:hidden"
+                                                                } whitespace-nowrap text-sm text-gray-500  bg-white`}
+                                                        >
+                                                            {client.createdBy
+                                                                ? getUsernameByCognitoId(client.createdBy)
+                                                                : "Unknown"}{" "}
                                                         </Table.Cell>
-                                                        {Ctx.userData.role !== "operation" &&
-                                                            (client.payment ? (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
-                                                                    <Dropdown
-                                                                        label={
-                                                                            deliveryStatuses[client.institutionid] ??
-                                                                            (client.isDelivered
-                                                                                ? "Delivered"
-                                                                                : "Not Delivered")
-                                                                        }
-                                                                        inline
-                                                                    >
-                                                                        <Dropdown.Item
-                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
-                                                                            onClick={() => {
-                                                                                setDeliveryStatuses((prev) => ({
-                                                                                    ...prev,
-                                                                                    [client.institutionid]:
-                                                                                        "Not Delivered",
-                                                                                }));
-                                                                                handleDropdownChange(
-                                                                                    client,
-                                                                                    "Not Delivered"
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            Not Delivered
-                                                                        </Dropdown.Item>
-                                                                        <Dropdown.Item
-                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
-                                                                            onClick={() => {
-                                                                                setDeliveryStatuses((prev) => ({
-                                                                                    ...prev,
-                                                                                    [client.institutionid]: "Delivered",
-                                                                                }));
-                                                                                handleDropdownChange(
-                                                                                    client,
-                                                                                    "Delivered"
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            Delivered
-                                                                        </Dropdown.Item>
-                                                                    </Dropdown>
-                                                                </Table.Cell>
-                                                            ) : (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
-                                                                    {client.isDelivered
-                                                                        ? "Delivered"
-                                                                        : "Not Delivered"}
-                                                                </Table.Cell>
-                                                            ))}
-                                                        {Ctx.userData.role !== "operation" && (
-                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
-                                                                {client.payment ? "Paid" : "Not Paid"}
-                                                            </Table.Cell>
-                                                        )}
                                                         {(Ctx.userData.role === "owner" ||
                                                             Ctx.userData.role === "sale") &&
                                                             (client.payment ? (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     <Dropdown
                                                                         label={
                                                                             planStatuses[client.institutionid] ||
@@ -967,20 +889,16 @@ const Panel = () => {
                                                                     </Dropdown>
                                                                 </Table.Cell>
                                                             ) : (
-                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 bg-white pl-10">
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                                     No Plan
                                                                 </Table.Cell>
                                                             ))}
-                                                        <Table.Cell
-                                                            className={`${showHiddenContent ? "" : "max1008:hidden"
-                                                                } whitespace-nowrap text-sm text-gray-500 text-center bg-white`}
-                                                        >
-                                                            {client.createdBy
-                                                                ? getUsernameByCognitoId(client.createdBy)
-                                                                : "Unknown"}{" "}
-                                                        </Table.Cell>
-
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                        {Ctx.userData.role !== "operation" && (
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
+                                                                {client.payment ? "Paid" : "Not Paid"}
+                                                            </Table.Cell>
+                                                        )}
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             {Ctx.userData.role !== "sale" ? (
                                                                 <Dropdown
                                                                     label={
@@ -1042,8 +960,80 @@ const Panel = () => {
                                                                 </span>
                                                             )}
                                                         </Table.Cell>
+                                                        {Ctx.userData.role !== "operation" &&
+                                                            (client.payment ? (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
+                                                                    <Dropdown
+                                                                        label={
+                                                                            deliveryStatuses[client.institutionid] ??
+                                                                            (client.isDelivered
+                                                                                ? "Delivered"
+                                                                                : "Not Delivered")
+                                                                        }
+                                                                        inline
+                                                                    >
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setDeliveryStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]:
+                                                                                        "Not Delivered",
+                                                                                }));
+                                                                                handleDropdownChange(
+                                                                                    client,
+                                                                                    "Not Delivered"
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Not Delivered
+                                                                        </Dropdown.Item>
+                                                                        <Dropdown.Item
+                                                                            className="hover:bg-gray-200 focus:bg-gray-200"
+                                                                            onClick={() => {
+                                                                                setDeliveryStatuses((prev) => ({
+                                                                                    ...prev,
+                                                                                    [client.institutionid]: "Delivered",
+                                                                                }));
+                                                                                handleDropdownChange(
+                                                                                    client,
+                                                                                    "Delivered"
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Delivered
+                                                                        </Dropdown.Item>
+                                                                    </Dropdown>
+                                                                </Table.Cell>
+                                                            ) : (
+                                                                <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
+                                                                    {client.isDelivered
+                                                                        ? "Delivered"
+                                                                        : "Not Delivered"}
+                                                                </Table.Cell>
+                                                            ))}
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
+                                                            {(() => {
+                                                                const { text, color } = getBadgeProps(
+                                                                    // client.isFormFilled,
+                                                                    client.payment,
+                                                                    client.isDelivered,
+                                                                    client.deliverable
+                                                                );
+                                                                return (
+                                                                    <Badge
+                                                                        color={color}
+                                                                        size="sm"
+                                                                        className="flex justify-center items-center"
+                                                                    >
+                                                                        {text}
+                                                                    </Badge>
+                                                                );
+                                                            })()}
+                                                        </Table.Cell>
+
                                                         {Ctx.userData.role !== "sale" && (
-                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white ">
+                                                            <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white ">
                                                                 <div className="flex items-center gap-2">
                                                                     <TextInput
                                                                         id="domain"
@@ -1088,7 +1078,7 @@ const Panel = () => {
                                                             </Table.Cell>
                                                         )}
 
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center  bg-white mt-2">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500  py-0 bg-white mt-2">
                                                             <div className="flex items-center gap-2">
                                                                 {client.domainLink ? (
                                                                     <RiExternalLinkLine
@@ -1144,11 +1134,11 @@ const Panel = () => {
                                                                                                 size={300}
                                                                                             />
                                                                                         </figure>
-                                                                                        <h1 className="text-center font-semibold">
+                                                                                        <h1 className=" font-semibold">
                                                                                             Institution Name:{" "}
                                                                                             {client.companyName}
                                                                                         </h1>
-                                                                                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 text-center">
+                                                                                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 ">
                                                                                             This is the attendance QR for the{" "}
                                                                                             {client.companyName} institution.
                                                                                             Please tap on the QR code to
@@ -1201,7 +1191,7 @@ const Panel = () => {
                                                             className="hidden change-page"
                                                         ></Link> */}
 
-                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 text-center bg-white">
+                                                        <Table.Cell className="whitespace-nowrap text-sm text-gray-500 py-0 bg-white">
                                                             <Link
                                                             // onClick={() => handleInstitutionClick(client)}
                                                             >
@@ -1393,7 +1383,7 @@ const Panel = () => {
                                     >
                                         <div className="flex flex-col gap-2">
                                             <div
-                                                className="flex justify-between items-center text-center"
+                                                className="flex justify-between items-center "
 
                                                 onClick={(e) => handleRowClick(client, e)}
                                             >
