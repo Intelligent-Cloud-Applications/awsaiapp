@@ -281,7 +281,7 @@ const Panel = () => {
         });
 
         return filtered;
-    }, [searchQuery, selectedType, clientsData, filterStatus]);
+    }, [searchQuery, selectedType, clientsData, filterStatus, completedFilter, deliveredFilter, pendingFilter]);
 
     const filteredClients = useMemo(() => filterClients(), [filterClients]);
 

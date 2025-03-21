@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import PaymentDetailModal from './PaymentDetailModal'; // Import the modal component
 import { Dropdown, Table, Pagination } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -127,7 +127,7 @@ const AwsaiappRevenue = () => {
     };
   };
 
-  const calculateStats = (paymentsList) => {
+  const calculateStats = useCallback((paymentsList) => {
     // Filter based on payment gateway
     let filteredList = [...paymentsList];
     if (paymentGateway === "razorpay") {
@@ -186,7 +186,7 @@ const AwsaiappRevenue = () => {
     }
 
     setFilteredPayments(displayPayments);
-  };
+  }, [paymentGateway, selectedYear, selectedMonth, timeFilter]);
 
   const calculatePeriodStats = (periodPayments) => {
     // USD stats
@@ -233,7 +233,7 @@ const AwsaiappRevenue = () => {
       updateAvailableYears(payments);
       calculateStats(payments);
     }
-  }, [payments, selectedYear, selectedMonth, timeFilter, paymentGateway]);
+  }, [payments, selectedYear, selectedMonth, timeFilter, paymentGateway, calculateStats]);
 
   // Helper function to format currency
   const formatCurrency = (amount, currency) => {
