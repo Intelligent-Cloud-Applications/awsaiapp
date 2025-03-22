@@ -1227,7 +1227,7 @@ const Panel = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="[@media(max-width:1000px)]:ml-[8%] [@media(max-width:550px)]:ml-2 [@media(max-width:550px)]:mx-2 mb-[5rem]">
+                        <div className="w-full [@media(max-width:1000px)]:ml-[8%] [@media(max-width:550px)]:ml-2 [@media(max-width:550px)]:mx-2 mb-[5rem]">
                             <div className="mt-[5rem] md:mb-6">
                                 <StatsGrid
                                     stats={stats}
