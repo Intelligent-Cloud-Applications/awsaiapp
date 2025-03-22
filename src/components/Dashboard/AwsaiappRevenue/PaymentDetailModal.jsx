@@ -4,7 +4,7 @@ import Context from '../../../context/Context';
 import "./Revenue.css";
 
 function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
-    const { products } = useContext(Context); // Moved to the top
+    const { products, clients } = useContext(Context); // Moved to the top
     if (!payment) return null; // Check for payment immediately after useContext
 
     console.log("Received Payment:", payment); // Log the received payment
@@ -40,11 +40,16 @@ function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
         return product ? product.heading : null;
     }
 
+    const institutionType = (Id) => {
+        const Type = clients.data.find(client => client.institutionid === Id);
+        return Type ? Type.institutionType : null;    
+    }
+
     return (
         <Modal show={isOpen} onClose={onClose} size="4xl">
             <Modal.Header className="bg-[#30afbc] modalHeader">
                 <div className="flex justify-between items-center w-full">
-                    <h3 className="text-xl font-semibold text-white">Payment Details</h3>
+                    <h3 className="text-2xl font-semibold text-white">Payment Details</h3>
                 </div>
             </Modal.Header>
             <Modal.Body>
@@ -58,7 +63,7 @@ function PaymentDetailModal({ isOpen, onClose, payment, recurringValue }) {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600 font-medium">Institution Type:</span>
-                                <span className="text-gray-800">{payment.institutionType || 'N/A'}</span>
+                                <span className="text-gray-800">{institutionType(payment.childInstitution) || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
