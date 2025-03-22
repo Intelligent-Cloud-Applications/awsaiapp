@@ -274,8 +274,6 @@ const Panel = () => {
                 !selectedType || client.institutionType === selectedType;
             const matchesDelivery =
                 filterStatus === null || client.isDelivered === filterStatus;
-
-
             return matchesQuery && matchesType && matchesDelivery && pendingFilterData && completedFilterData && deliveredFilterData;
 
         });
@@ -554,7 +552,7 @@ const Panel = () => {
                     {screenWidth > 1023 ? (
                         <>
                             <div
-                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-20 bg-[#e6e4e4] panel ${isResponsive ? "px-4" : "lg:ml-[10%]"
+                                className={`w-screen flex flex-col justify-center items-center mx-[4rem] shadow-xl rounded-[0] pt-20 bg-[#e6e4e4] panel pb-20 ${isResponsive ? "px-4" : "lg:ml-[10%]"
                                     }`}
                             >
                                 <ToastContainer />

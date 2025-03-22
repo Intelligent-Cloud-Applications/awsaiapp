@@ -34,10 +34,8 @@ const AwsaiappRevenue = () => {
   const [institutionReccuring, setInstitutionReccuring] = useState();
   const customTheme = {
     pages: {
-      base: "bg-white xs:mt-0 mt-2 inline-flex items-center -space-x-px",
+      base: "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
       showIcon: "inline-flex",
-      active: "bg-blue-500 text-white",
-      disabled: "bg-gray-200",
       previous: {
         base: "ml-0 rounded-l-md border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-[#30afbc] hover:text-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 hover:dark:bg-[#30afbc] hover:dark:text-white",
         icon: "h-5 w-5 text-gray-500 hover:text-white",
@@ -491,22 +489,23 @@ const AwsaiappRevenue = () => {
                     <Table.HeadCell className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">View</Table.HeadCell>
                   </Table.Head>
                   <Table.Body className="divide-y">
-                    {currentPayments.map((payment, index) => {
+                    {currentPayments.length === 0 ? (
+                      <Table.Row className='text-gray-200 text-2xl text-center items-center justify-center w-full py-4'>
+                        <td colSpan="8">No Data Found</td>
+                      </Table.Row>
+                    ) : (currentPayments.map((payment, index) => {
                       // Calculate renewal date (1 month after payment date)
                       const paymentDate = new Date(payment.paymentDate);
                       const renewDate = new Date(paymentDate);
                       renewDate.setMonth(renewDate.getMonth() + 1);
-
                       // Determine payment gateway
                       const gateway = payment.paymentMode === "offline"
                         ? "Offline"
                         : payment.currency === "USD"
                           ? "PayPal"
                           : "Razorpay";
-
                       // Get recurring info including last payment date
                       const { recurring, lastPaymentDate } = getPaymentRecurringInfo(payment);
-
                       return (
                         <Table.Row key={payment.paymentId || index} className="bg-white">
                           <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
@@ -560,23 +559,23 @@ const AwsaiappRevenue = () => {
                           </Table.Cell>
                         </Table.Row>
                       );
-                    })}
+                    }))}
                   </Table.Body>
                 </Table>
               </div>
-
               {/* Pagination */}
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 flex-col sm:flex-row space-y-2 sm:space-y-0 pagination-container">
                 <div className="text-sm text-gray-700">
                   Showing {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredPayments.length)} of {filteredPayments.length}
                 </div>
                 <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
+                  currentPage={filteredPayments.length > 0 ? currentPage : 1}
+                  totalPages={filteredPayments.length > 0 ? totalPages : 0}
                   onPageChange={setCurrentPage}
                   className="flex justify-end"
                   showIcons
                   theme={customTheme}
+                  disabled={filteredPayments.length === 0}
                 />
               </div>
             </div>
