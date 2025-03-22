@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Label, TextInput, FileInput } from 'flowbite-react';
 import { FiFileText, FiPlus, FiX, FiUpload, FiBarChart2 } from 'react-icons/fi';
 
@@ -13,7 +13,7 @@ function Policy({
   values, 
   setValues 
 }) {
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
 
   const handlePolicyChange = (type, value, index) => {
     const updatedPolicies = [...policies[type]];

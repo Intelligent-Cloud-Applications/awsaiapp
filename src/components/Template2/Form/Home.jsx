@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Label, TextInput, FileInput } from 'flowbite-react';
-import { FiHome, FiUpload, FiEdit, FiType } from 'react-icons/fi';
+import { Label, TextInput } from 'flowbite-react';
+import { FiHome, FiUpload, FiType } from 'react-icons/fi';
 
 function Home({ 
   TagLine, 

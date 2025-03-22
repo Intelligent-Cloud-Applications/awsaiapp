@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Label, TextInput, FileInput } from 'flowbite-react';
+import React, { useState, useRef } from 'react';
+import { Label, TextInput } from 'flowbite-react';
 import { FiMessageSquare, FiUpload, FiX, FiPlus, FiUser } from 'react-icons/fi';
 
 function Testimonials({ testimonials, setTestimonials }) {
   const testimonialsContainerRef = useRef(null);
-  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(null);
+  // const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleTestimonialChange = (index, field, value) => {
