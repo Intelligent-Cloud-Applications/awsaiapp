@@ -43,6 +43,8 @@ function Services({
     setErrors(prev => ({ ...prev, [`service${index}_${field}`]: null }));
   };
 
+  console.log("Error in the Service page", errors);
+
   const handleAddItem = (index) => {
     const updatedServices = [...services];
     updatedServices[index].items.push('');

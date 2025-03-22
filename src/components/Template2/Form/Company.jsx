@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../../../pages/Template.css";
-import { Label, TextInput, FileInput } from 'flowbite-react';
-import theme from "../../../theme";
+import { Label, TextInput } from 'flowbite-react';
+// import theme from "../../../theme";
 import { FiType, FiEdit2, FiUpload } from 'react-icons/fi';
 import { GrCafeteria } from "react-icons/gr";
 
@@ -24,13 +24,13 @@ function Company({
   setCompanyName,
   companyDescription,
   setCompanyDescription,
-  institutionId,
+  // institutionId,
   setinstitutionId,
   PrimaryColor,
   setPrimaryColor,
   SecondaryColor,
   setSecondaryColor,
-  logo,
+  // logo,
   setLogo,
   LightPrimaryColor,
   setLightPrimaryColor,
@@ -61,13 +61,13 @@ function Company({
   //   setinstitutionId(validValue);
   // };
 
-  const handleColorChange1 = (e) => {
-    setPrimaryColor(e.target.value);
-    const generatedTheme = theme(PrimaryColor);
-    setSecondaryColor(generatedTheme.secondary);
-    setLightPrimaryColor(generatedTheme.accent);
-    setLightestPrimaryColor(generatedTheme.background);
-  };
+  // const handleColorChange1 = (e) => {
+  //   setPrimaryColor(e.target.value);
+  //   const generatedTheme = theme(PrimaryColor);
+  //   setSecondaryColor(generatedTheme.secondary);
+  //   setLightPrimaryColor(generatedTheme.accent);
+  //   setLightestPrimaryColor(generatedTheme.background);
+  // };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -100,15 +100,15 @@ function Company({
     }
   };
 
-  const handleSecondarycolor = (e) => {
-    setSecondaryColor(e.target.value);
-  };
-  const handleLightcolor = (e) => {
-    setLightPrimaryColor(e.target.value);
-  };
-  const handleLitestcolor = (e) => {
-    setLightestPrimaryColor(e.target.value);
-  };
+  // const handleSecondarycolor = (e) => {
+  //   setSecondaryColor(e.target.value);
+  // };
+  // const handleLightcolor = (e) => {
+  //   setLightPrimaryColor(e.target.value);
+  // };
+  // const handleLitestcolor = (e) => {
+  //   setLightestPrimaryColor(e.target.value);
+  // };
 
   const renderLogoPreview = () => {
     if (!selectedFile) {

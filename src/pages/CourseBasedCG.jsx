@@ -223,7 +223,7 @@ const CourseBasedCG = () => {
     });
 
     // Add new state for section validation
-    const [isCurrentSectionValid, setIsCurrentSectionValid] = useState(false);
+    // const [isCurrentSectionValid, setIsCurrentSectionValid] = useState(false);
 
     // Save current section to localStorage whenever it changes
     useEffect(() => {
@@ -1312,7 +1312,7 @@ const CourseBasedCG = () => {
                 showModal={() => setShowModal(true)}
                 institutionId={institutionId}
                 sections={FORM_SECTIONS}
-                isCurrentSectionValid={isCurrentSectionValid}
+                // isCurrentSectionValid={isCurrentSectionValid}
             />
 
             <PrevSectionDraftHandler
